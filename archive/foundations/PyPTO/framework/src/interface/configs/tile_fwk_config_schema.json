@@ -1,0 +1,1132 @@
+{
+    "additionalProperties": false,
+    "type": "object",
+    "properties": {
+        "pass": {
+            "type": "object",
+            "label": {
+                "zh": "通过编译Pass处理与优化函数计算，将其承载的计算图转换为执行图，同时提供可扩展的编译与优化框架，达成差异化的优化效果。",
+                "en": "By processing and optimizing function computations, compilation passes transform their underlying computational graphs into execution graphs, providing an extensible compilation and optimization framework to deliver differentiated optimization outcomes."
+            },
+            "properties": {
+                "pg_parallel_lower_bound": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "合图参数，用于配置相同结构子图的最小并行度。当某个相同结构的子图数小于该值时不做合并。",
+                        "en": "Graph merging parameter, used to configure the minimum parallelism of subgraphs with identical structures. Merging is not performed when the number of subgraphs with the same structure is less than this value."
+                    },
+                    "minimum": 0,
+                    "maximum": 2147483647
+                },
+                "pg_lower_bound": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "合图参数，用于配置子图大小下界。当子图大小小于下界时尝试与其他子图合并。",
+                        "en": "Graph merging parameter, used to configure the lower bound of subgraph size. When the subgraph size is smaller than the lower bound, an attempt is made to merge it with other subgraphs."
+                    },
+                    "minimum": 0,
+                    "maximum": 2147483647
+                },
+                "pg_partition_algorithm": {
+                    "type": "string",
+                    "enum": ["Iso", "OspSarkar", "OspBsp"],
+                    "default" : "Iso",
+                    "label": {
+                        "zh": "",
+                        "en": "Graph merging parameter, used to configure the partitioning algorithm."
+                    },
+                    "options": [
+                        {
+                            "value": "Iso",
+                            "label": {
+                                "zh": "基于同构检测融合瓦片内核",
+                                "en": "Fuses tile kernels based on isomorphism detection."
+                            }
+                        },
+                        {
+                            "value": "OspSarkar",
+                            "label": {
+                                "zh": "基于关键路径缩减的瓦片内核融合。",
+                                "en": "Fuses tile kernels based on critical path reduction."
+                            }
+                        },
+                        {
+                            "value": "OspBsp",
+                            "label": {
+                                "zh": "基于 BSP 模型融合瓦片内核，用于并行计算和同构检测。",
+                                "en": "Fuses tile kernels based on the BSP model for parallel computation and isomorphism detection."
+                            }
+                        }
+                    ]
+                },
+                "cube_l1_reuse_setting": {
+                    "type": "object",
+                    "typeHints": "intmap",
+                    "label": {
+                        "zh": "合图参数，用于配置结构相同且重复搬运同一GM数据的子图合并数量。该参数适用于含有CUBE计算的子图合并。",
+                        "en": "Graph merging parameter, used to configure the merging count of subgraphs with identical structures that repeatedly transfer the same GM data. This parameter is applicable to the merging of subgraphs involving CUBE computation."
+                    },
+                    "key_minimum": -1,
+                    "key_maximum": 2147483647,
+                    "value_minimum": 0,
+                    "value_maximum": 2147483647
+                },
+                "cube_nbuffer_setting": {
+                    "type": "object",
+                    "typeHints": "intmap",
+                    "label": {
+                        "zh": "合图参数，用于配置相同结构AIC子图的合并数量。该参数适用于结构相同的AIC子图合并。",
+                        "en": "Graph merging parameter, used to configure the merging count of AIC subgraphs with identical structures. This parameter is applicable to the merging of AIC subgraphs that share the same structure."
+                    },
+                    "key_minimum": -1,
+                    "key_maximum": 2147483647,
+                    "value_minimum": 1,
+                    "value_maximum": 2147483647
+
+                },
+                "mg_copyin_upper_bound": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "合图参数，用于配置合图大小。该参数控制子图内搬运数据总量上界。当子图内数据搬运量大于该值则不再合并。",
+                        "en": "Graph merging parameter, used to configure the graph merging size. This parameter controls the upper limit of the total data transfer volume within a subgraph. Mergeing will not be performed if the data transfer volume within the subgraph exceeds this value."
+                    },
+                    "minimum": 0,
+                    "maximum": 2147483647
+                },
+                "vec_nbuffer_setting": {
+                    "type": "object",
+                    "typeHints": "intmap",
+                    "label": {
+                        "zh": "合图参数，用于配置相同结构AIV子图的合并数量。该参数适用于结构相同的AIV子图合并。",
+                        "en": "Graph merging parameter, used to configure the merging count of AIV subgraphs with identical structures. This parameter is applicable to the merging of AIV subgraphs that share the same structures."
+                    },
+                    "key_minimum": -2,
+                    "key_maximum": 2147483647,
+                    "value_minimum": 0,
+                    "value_maximum": 2147483647
+                },
+                "cube_l1_reuse_setting_by_func": {
+                    "type": "object",
+                    "typeHints": "stringmap",
+                    "label": {
+                        "zh": "合图参数，按Function粒度配置L1数据复用子图的合并数量。Key格式为'func{magic}_{order}'或'DEFAULT'。Value为合并数量，Value=1表示不进行合图，Value>1表示将N个结构相同的子图合并为1个。",
+                        "en": "Graph merging parameter, used to configure the merging count of L1 data reuse subgraphs by function granularity. Key format is 'func{magic}_{order}' or 'DEFAULT'. Value is the merge count, Value=1 means no merging, Value>1 means merge N subgraphs with the same structure into 1."
+                    }
+                },
+                "cube_nbuffer_setting_by_func": {
+                    "type": "object",
+                    "typeHints": "stringmap",
+                    "label": {
+                        "zh": "合图参数，按Function粒度配置相同结构AIC子图的合并数量。Key格式为'func{magic}_{order}'或'DEFAULT'。Value为合并数量，Value=1表示不进行合图，Value>1表示将N个结构相同的子图合并为1个。",
+                        "en": "Graph merging parameter, used to configure the merging count of AIC subgraphs with identical structures by function granularity. Key format is 'func{magic}_{order}' or 'DEFAULT'. Value is the merge count, Value=1 means no merging, Value>1 means merge N subgraphs with the same structure into 1."
+                    }
+                },
+                "vec_nbuffer_setting_by_func": {
+                    "type": "object",
+                    "typeHints": "stringmap",
+                    "label": {
+                        "zh": "合图参数，按Function粒度配置相同结构AIV子图的合并数量。Key格式为'func{magic}_{order}'或'DEFAULT'。Value为合并数量，Value=1表示不进行合图，Value>1表示将N个结构相同的子图合并为1个。",
+                        "en": "Graph merging parameter, used to configure the merging count of AIV subgraphs with identical structures by function granularity. Key format is 'func{magic}_{order}' or 'DEFAULT'. Value is the merge count, Value=1 means no merging, Value>1 means merge N subgraphs with the same structure into 1."
+                    }
+                },
+                "cube_l1_reuse_setting_by_label": {
+                    "type": "object",
+                    "typeHints": "stringmap",
+                    "label": {
+                        "zh": "合图参数，按语义标签配置L1数据复用子图的合并数量。",
+                        "en": "Graph merging parameter, used to configure the merging count of L1 data reuse subgraphs by semantic label."
+                    }
+                },
+                "cube_nbuffer_setting_by_label": {
+                    "type": "object",
+                    "typeHints": "stringmap",
+                    "label": {
+                        "zh": "合图参数，按语义标签配置相同结构AIC子图的合并数量。",
+                        "en": "Graph merging parameter, used to configure the merging count of AIC subgraphs with identical structures by semantic label."
+                    }
+                },
+                "vec_nbuffer_setting_by_label": {
+                    "type": "object",
+                    "typeHints": "stringmap",
+                    "label": {
+                        "zh": "合图参数，按语义标签配置相同结构AIV子图的合并数量。",
+                        "en": "Graph merging parameter, used to configure the merging count of AIV subgraphs with identical structures by semantic label."
+                    }
+                },
+                "mg_vec_parallel_lb": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "合图参数，用于配置相同结构AIV子图的最小并行度。当某个相同结构的子图数小于该值时不做合并。",
+                        "en": "Graph merging parameters, used to configure the minimum parallelism of AIV subgraphs with identical structures. Merging will not be performed when the number of subgraphs with the same structure is less than this value."
+                    },
+                    "minimum": 1,
+                    "maximum": 48
+                },
+                "copyout_resolve_coalescing": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "手动控制片上内存拷贝输出优化策略。置0时关闭合并优化；非0时筛选离散copyout指令，合并为连续大粒度操作并完成地址规整。",
+                        "en": "Manual control for on-chip copyout optimization. 0 disables merging; non-zero values aggregate discrete copyout instructions into continuous large-grain operations with address alignment."
+                    },
+                    "minimum": 0,
+                    "maximum": 1000000
+                },
+                "auto_mix_partition": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "控制ReduceCopyMerge Pass中的自动混合子图切分行为。",
+                        "en": "Controls the automatic mixed subgraph partitioning behavior in the ReduceCopyMerge Pass."
+                    },
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "sg_set_tunevf_mode": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "控制VF（Vector Fusion）调优Pass的行为模式。0为默认行为；1为旁路TuneTileOpSeqForVF和TuneSyncForVF两个Pass；2为在TuneSyncForVF中忽略性能建模最大化融合。",
+                        "en": "Controls the VF (Vector Fusion) tuning pass behavior. 0 for default; 1 to bypass TuneTileOpSeqForVF and TuneSyncForVF; 2 to ignore performance modeling and maximize fusion in TuneSyncForVF."
+                    },
+                    "minimum": 0,
+                    "maximum": 2
+                },
+                "enable_slice": {
+                    "type": "boolean",
+                    "label": {
+                        "zh": "是否启用 slice 相关处理。默认为 false。",
+                        "en": "Whether to enable slice-related processing. Defaults to false."
+                    }
+                },
+                "sg_set_scope": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "label": {
+                        "zh": "手动控制合图参数。将operation赋予特定的scopeId，若相邻的operation具有相同的非-1的scopeId，则会被强制合并在一个子图之中，并且这个子图不会与其他子图合并。",
+                        "en": "Parameter for manual control of graph merging. Assign a specific scopeId to an operation; if adjacent operations have the same non-1 scopeId, they will be forcibly merged into one subgraph, and this subgraph will not be merged with any other subgraphs."
+                    }
+                },
+                "sg_set_ooo_scope": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "label": {
+                        "zh": "OoO调度手动控制切图参数。相同ooo_scope的连通op会被合并到同一个task中。",
+                        "en": "OoO schedule manual task grouping. Connected ops with the same ooo_scope will be merged into one task."
+                    }
+                },
+                "ooo_sched_mode": {
+                    "type": "string",
+                    "label": {
+                        "zh": "OoO调度模式。取值为空字符串时使用基于拓扑序遍历与局部搜索的调度（GapMin基线调度+local-search）；取值为HLF时使用最高层级优先调度，按任务到汇点的最长路径降序排列后做EFT插入调度；取值为GAPMIN时仅执行GapMin基线调度，跳过local-search。",
+                        "en": "OoO schedule mode. Empty string uses topology-order traversal with local search (GapMin baseline + local-search); HLF uses Highest Level First scheduling: tasks are ordered by descending longest path to sink, then scheduled via EFT insertion; GAPMIN runs only the GapMin baseline scheduling, skipping local-search."
+                    }
+                },
+                "ooo_sort_mode_aic": {
+                    "type": "string",
+                    "label": {
+                        "zh": "OoO排序模式(AIC)。取值为空字符串时使用默认排序算法(PriorDFS)。",
+                        "en": "OoO sort mode (AIC). Empty string uses default sort algorithm (PriorDFS)."
+                    }
+                },
+                "ooo_sort_mode_aiv": {
+                    "type": "string",
+                    "label": {
+                        "zh": "OoO排序模式(AIV)。取值为空字符串时使用默认排序算法(PriorDFS)。",
+                        "en": "OoO sort mode (AIV). Empty string uses default sort algorithm (PriorDFS)."
+                    }
+                }
+            }
+        },
+        "runtime": {
+            "type": "object",
+            "label": {
+                "zh": "设置运行时优化参数信息",
+                "en": "Set Runtime Optimization Parameters"
+            },
+            "properties": {
+                "device_sched_mode": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "设置计算子图的调度模式",
+                        "en": "Set the schedule mode for subgraphs"
+                    },
+                    "minimum": 0,
+                    "maximum": 3,
+                    "options": [
+                        {
+                            "value": 0,
+                            "label": {
+                                "zh": "默认调度模式:ready子图放入共享队列，各个调度线程抢占子图进行发送，子图获取发送遵循先入先出",
+                                "en": "default schedule mode:Ready subgraph enter a shared queue. Schedule threads fetch and dispatch subgraph on first-in-first-out basis"
+                            }
+                        },
+                        {
+                            "value": 1,
+                            "label": {
+                                "zh": "L2cache亲和调度模式:选择最新依赖ready的子图优先下发，达到复用L2cache的效果",
+                                "en": "L2 cache affinity schedule mode: prioritizes dispatching the most recently dependency-ready subgraph to improve L2 cache reuse"
+                            }
+                        },
+                        {
+                            "value": 2,
+                            "label": {
+                                "zh": "公平调度模式：下发子图时尽量控制多线程间的公平性，但会带来额外的调度开销",
+                                "en": "Fair schedule mode: maintains fairness across threads when dispatching subgraph, at the cost of additional schedule overhead"
+                            }
+                        },
+                        {
+                            "value": 3,
+                            "label": {
+                                "zh": "公平调度兼L2cache亲和调度模式:同时开启L2cache亲和调度模式以及公平调度模式",
+                                "en": "Fair & L2 cache affinity schedule mode: enables both L2 cache affinity and fair schedule"
+                            }
+                        }
+                    ]
+                },
+                "stitch_function_max_num": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "设置运行时ctrlflow aicpu里stitch构建device task的rootfunction数量",
+                        "en": "Set the number of rootfunction generated for device task in ctrlflow AICPU"
+                    },
+                    "minimum": 1,
+                    "maximum": 1024
+                },
+                "max_workspace_kb": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "DeviceTask workspace 总内存上限(KB), 按当前内存预算进行stitch构建, 不再受stitch_function_max_num限制, 0表示不使能",
+                        "en": "Total memory limit (KB) for DeviceTask workspace. Stitch construction is performed based on the current memory budget and is no longer constrained by stitch_function_max_num; a value of 0 disables this feature."
+                    },
+                    "minimum": 0,
+                    "maximum": 2147483647
+                },
+
+                "run_mode": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "设置计算子图的执行设备",
+                        "en": "Set the execution device for computational subgraph"
+                    },
+                    "minimum": 0,
+                    "maximum": 1,
+                    "options": [
+                        {
+                            "value": 0,
+                            "label": {
+                                "zh": "设置计算子图在NPU上执行",
+                                "en": "Execute computation subgraph on NPU"
+                            }
+                        },
+                        {
+                            "value": 1,
+                            "label": {
+                                "zh": "设置计算子图在模拟器上执行",
+                                "en": "Execute computation subgraph on the simulator"
+                            }
+                        }
+                    ]
+                },
+                "valid_shape_optimize": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "动态图编译优化选项",
+                        "en": "Dynamic validShape compilation optimization option"
+                    },
+                    "minimum": 0,
+                    "maximum": 1,
+                    "options": [
+                        {
+                            "value": 0,
+                            "label": {
+                                "zh": "默认值，所有块采用动态图进行编译",
+                                "en": "Default value, all blocks are compiled using dynamic shape"
+                            }
+                        },
+                        {
+                            "value": 1,
+                            "label": {
+                                "zh": "主块采用静态图编译，尾块采用动态图编译",
+                                "en": "The main block is compiled using static shape, and the tile block is compiled using dynamic shape"
+                            }
+                        }
+                    ]
+                },
+                "ready_on_host_tensors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "zh": "标记在Host端准备好的Tensor名称列表",
+                        "en": "Specify the list of Tensor names that are ready on Host"
+                    }
+                },
+                "device_sched_parallelism": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "当 pypto.loop 设置了可并行标记(parallel=True)时,此配置项用于指定 pypto.loop 调度执行时的并行度",
+                        "en": "When a pypto.loop is marked as parallelizable (parallel=True), this configuration item is used to set the degree of parallelism when the pypto.loop is scheduled and executed"
+                    },
+                    "default": 1,
+                    "minimum": 1,
+                    "maximum": 8
+                },
+                "launch_sched_aicpu_num": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "指定启动的Schdule线程AICPU数量, 当指定的数量大于硬件最大可用aicpu数量或者小于等于0时, 将启用硬件自动计算值",
+                        "en": "Specifies the number of AICPUs for the scheduled startup thread, if the specified number is greater than the maximum available AICPUs in the hardware or less than or equal to 0, the hardware's automatic calculation value will be used"
+                    },
+                    "default": 7,
+                    "minimum": 1,
+                    "maximum": 7
+                },
+                "launch_early_mode": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "aicpu提前发射模式, 0:仅capture模式提前发射(默认); 1:所有模式都提前发射; 2:所有模式都不提前发射",
+                        "en": "aicpu early launch mode, 0: early launch only in capture mode (default); 1: early launch in all modes; 2: no early launch in any mode"
+                    },
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 2
+                }
+            }
+        },
+        "host": {
+            "type": "object",
+            "label": {
+                "zh": "主机端相关配置",
+                "en": "host-related configuration"
+            },
+            "properties": {
+                "compile_stage": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5,
+                    "label": {
+                        "zh": "控制编译执行的阶段",
+                        "en": "Set the stage of compile."
+                    }
+                },
+                "compile_monitor_enable": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2,
+                    "default": 1,
+                    "label": {
+                        "zh": "控制编译阶段监控模式，0表示关闭，1表示开启编译监控但关闭Pass明细，2表示开启编译监控和Pass明细",
+                        "en": "Control compiler monitor mode: 0 disables monitor, 1 enables monitor without pass details, 2 enables monitor with pass details."
+                    }
+                },
+                "compile_monitor_print_interval": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "default": 60,
+                    "label": {
+                        "zh": "控制某个阶段编译过程进度打印的频率",
+                        "en": "Control the frequency of printing the compilation progress for a certain stage."
+                    }
+                },
+                "compile_timeout_stage": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "default": 0,
+                    "label": {
+                        "zh": "控制某个阶段编译过程超时的时间",
+                        "en": "Control the timeout duration of a certain stage of the compilation process."
+                    }
+                },
+                "compile_timeout": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "default": 600,
+                    "label": {
+                        "zh": "控制整个编译过程超时的时间",
+                        "en": "Control the timeout duration for the entire compilation process."
+                    }
+                }
+            }
+        },
+        "codegen": {
+            "type": "object",
+            "label": {
+                "zh": "生成Device侧运行的类C代码，作为毕昇编译器输入，用于编译出可在设备侧运行的二进制",
+                "en": "Generate C-like code that runs on the Device side, which serves as input to the Bisheng Compiler for compiling into Device-side executable binaries"
+            },
+            "properties": {
+                "support_dynamic_aligned": {
+                    "type": "boolean",
+                    "label": {
+                        "zh": "（不建议使用，后续收编）动态Shape场景下，用户若能确认运行时所有切分数据均能对齐到Tile块大小，即不包含非对齐的尾块，则可启用该选项，提示PTO框架尝试优化",
+                        "en": "(Deprecated)In Dynamic Shape scenarios, if the user can confirm that all data at runtime can be aligned to the tiled block size, this option can be enabled to prompt the PTO framework to attempt optimization"
+                    }
+                },
+                "soc_version": {
+                    "type": "string",
+                    "label": {
+                        "zh": "用于指定芯片版本，用于编译和推理",
+                        "en": "Used to specify specific soc_version for kernel compile and runtime"
+                    }
+                },
+                "enable_pmu_trace": {
+                    "type": "boolean",
+                    "label": {
+                        "zh": "是否开启PMU trace",
+                        "en": "Whether to enable PMU tracing"
+                    }
+                },
+                "vf_options": {
+                    "type": "string",
+                    "label": {
+                        "zh": "VF选项",
+                        "en": "VF options"
+                    }
+                }
+            }
+        },
+        "verify": {
+            "type": "object",
+            "label": {
+                "zh": "精度工具参数信息",
+                "en": "Verification tool parameter information"
+            },
+            "properties": {
+                "enable_pass_verify": {
+                    "type": "boolean",
+                    "label": {
+                        "zh": "是否开启Pass验证",
+                        "en": "Enable Pass verification"
+                    }
+                },
+                "pass_verify_save_tensor": {
+                    "type": "boolean",
+                    "label": {
+                        "zh": "是否开启Pass验证时保存Tensor",
+                        "en": "Enable saving tensors when Pass verification is enabled"
+                    }
+                },
+                "pass_verify_save_tensor_dir": {
+                    "type": "string",
+                    "label": {
+                        "zh": "指定Pass验证时保存Tensor的目录",
+                        "en": "Specify the directory to save tensors when Pass verification is enabled"
+                    }
+                },
+                "pass_verify_pass_filter": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "zh": "指定Pass验证时需要验证的Pass名称列表",
+                        "en": "Specify the list of Pass names to filter when Pass verification is enabled"
+                    }
+                },
+                "pass_verify_error_tol": {
+                    "type": "array",
+                    "items": {
+                        "type": "double"
+                    },
+                    "label": {
+                        "zh": "指定Pass验证时的误差阈值列表",
+                        "en": "Specify the error tolerance list when Pass verification is enabled"
+                    }
+                }
+            }
+        },
+        "debug": {
+            "type": "object",
+            "label": {
+                "zh": "设置调试模式",
+                "en": "Set debug mode"
+            },
+            "properties": {
+                "compile_debug_mode": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "设置编译阶段调试模式。0：不使能；1：使能，一键开启图编译相关配置（如计算图）；2：使能，一键开启固定CCE功能（固定设备侧代码输出路径、不覆盖已存在的CCE文件）；并行编译线程数由 codegen.parallel_compile 控制，kernel 名确定性编号保证多线程产物可复现。",
+                        "en": "Set debug mode during compilation stage. 0: disabled; 1: enabled, one-click to enable graph compilation related configurations (e.g. compute graph); 2: enabled, one-click to enable fixed CCE (fix device-side code output path, do not overwrite existing CCE files); parallel compile threads are controlled by codegen.parallel_compile, and deterministic kernel naming keeps multi-thread outputs reproducible."
+                    },
+                    "minimum": 0,
+                    "maximum": 2
+                },
+                "runtime_debug_mode": {
+                    "type": "integer",
+                    "label": {
+                        "zh": "设置执行阶段调试模式。0：不使能；1：使能，一键开启图执行相关配置（如泳道图）；2：使能,一键开启端到端Host侧仿真；3：使能,运行时依赖正确性校验数据 dump；4：使能, 运行时GM内存越界检查",
+                        "en": "Set debug mode during execution stage. 0: disabled; 1: enabled, one-click to enable execution-related configs (e.g. swimlane graph); 2:  enable, One-click start of end-to-end host-side simulation; 3: enable, runtime dependency-verification data dump; 4: enable, runtime GM memory out-of-bounds check."
+                    },
+                    "minimum": 0,
+                    "maximum": 4
+                },
+                "dump_pass_graph": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "zh": "指定一个或多个Pass开启计算图和IR输出。配置值为当前Pass策略中的Pass标识符列表，而非PassName枚举。为空列表时不启用；仅对匹配Pass开启计算图dump和IR打印，未匹配的标识符输出告警。",
+                        "en": "Specify one or more passes to dump computation graph and print IR. The value is a list of pass identifiers in the current pass strategy, not PassName enums. Empty list disables it; only matched passes dump graph and print IR, and unmatched identifiers emit warnings."
+                    }
+                }
+            }
+        },
+        "operation": {
+            "type": "object",
+            "label": {
+                "zh": "operation相关配置",
+                "en": "Operation-related configuration"
+            },
+            "properties": {
+                "combine_axis": {
+                    "type": "boolean",
+                    "label": {
+                        "zh": "在代码生成阶段实现尾轴broadcast inline",
+                        "en": "Implement tail axis broadcast inline during code generation phase."
+                    }
+                }
+            }
+        },
+        "global": {
+            "type": "object",
+            "label": {
+                "zh": "...",
+                "en": "..."
+            },
+            "properties": {
+                "platform": {
+                    "type": "object",
+                    "label": {
+                        "zh": "...",
+                        "en": "..."
+                    },
+                    "properties": {
+                        "enable_cost_model": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "是否启用静态shape场景下的costModel仿真",
+                                "en": "Whether to enable costModel simulation in static shape scenarios"
+                            }
+                        },
+                        "enable_dyn_cost_model": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "是否启用动态shape场景下的costModel仿真，且为每个leafFunc构建一个task",
+                                "en": "Whether to enable costModel simulation in dynamic shape scenarios and build a task for each leafFunc"
+                            }
+                        },
+                        "enable_aihac_backend": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "...",
+                                "en": "..."
+                            }
+                        },
+                        "test_is_tig": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "...",
+                                "en": "..."
+                            }
+                        },
+                        "dump_source_location": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "...",
+                                "en": "..."
+                            }
+                        },
+                        "enable_checker": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "...",
+                                "en": "..."
+                            }
+                        },
+                        "device_platform": {
+                            "type": "string",
+                            "label": {
+                                "zh": "...",
+                                "en": "..."
+                            }
+                        },
+                        "enable_prof_aicore_time": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "是否使能采集泳道图性能数据, 可以采集每个leafFuntion的执行耗时",
+                                "en": "Enable PMU data collection, collect each leafFunction's execution latency"
+                            }
+                        },
+                        "enable_prof_aicore_pmu": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "是否使能采集pmu数据, 可以采集每个leafFuntion的执行耗时以及对应leafFunction的pmu值",
+                                "en": "Enable PMU data collection, collect each leafFunction's execution latency and PMU values."
+                            }
+                        }
+                    }
+                },
+                "host": {
+                    "type": "object",
+                    "label": {
+                        "zh": "主机端相关参数集合，包含运行管控、资源调度与通信规则配置。",
+                        "en": "A parameter set for host-side configuration, encompassing runtime governance, resource scheduling, and communication rules."
+                    },
+                    "properties": {
+                        "strategy": {
+                            "type": "string",
+                            "label": {
+                                "zh": "主机端运行调度策略。",
+                                "en": "Host-side Execution and Scheduling Policy"
+                            }
+                        }
+                    }
+                },
+                "simulation": {
+                    "type": "object",
+                    "label": {
+                        "zh": "仿真相关配置",
+                        "en": "Simulation-related configuration"
+                    },
+                    "properties": {
+                        "debug_single_func": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "是否只针对一个指定的leaf进行仿真，不生成完整拓扑文件",
+                                "en": "Is it to simulate only a specified leaf without generating a complete topology file"
+                            }
+                        },
+                        "leaf_function": {
+                            "type": "string",
+                            "label": {
+                                "zh": "指定的leaf function名称",
+                                "en": "Specified leaf function name"
+                            }
+                        },
+                        "draw_function_graph": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "是否绘制task间、TILE和TILEOP间的依赖关系图（dot 文件）",
+                                "en": "Whether to draw dependency graphs (dot files) between tasks, TILEs, and TILEOPs"
+                            }
+                        },
+                        "build_task_based_topo": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "是否使用前端传入的TOPO信息构建task间依赖",
+                                "en": "Whether to use the TOPO information passed from the front end to build dependencies between tasks"
+                            }
+                        },
+                        "sim_mode": {
+                            "type": "integer",
+                            "default": 0,
+                            "enum": [0, 1, 2],
+                            "label": {
+                                "zh": "仿真模式",
+                                "en": "Simulation Mode"
+                            },
+                            "options": [
+                              {
+                                "value": 0,
+                                "label": {
+                                  "zh": "AICPU、AICORE、PIPE仿真",
+                                  "en": "AICPU, AICORE, PIPE simulation"
+                                }
+                              },
+                              {
+                                "value": 1,
+                                "label": {
+                                  "zh": "通信仿真",
+                                  "en": "communication simulation"
+                                }
+                              },
+                              {
+                                "value": 2,
+                                "label": {
+                                  "zh": "功能仿真",
+                                  "en": "functional simulation"
+                                }
+                              }
+                            ]
+                        },
+                        "accuracy_level": {
+                            "type": "integer",
+                            "default": 2,
+                            "enum": [0, 1, 2],
+                            "label": {
+                                "zh": "TILEOP 仿真时延计算的准确度等级",
+                                "en": "Accuracy level of TILEOP simulation delay calculation"
+                            },
+                            "options": [
+                              {
+                                "value": 0,
+                                "label": {
+                                  "zh": "对于新增TILEOP,根据对应PIPE 的计算并行度以及TILEOP 的计算量,计算Cycles",
+                                  "en": "For the newly added TILEOP, calculate the Cycles based on the computational parallelism of the corresponding PIPE and the computational workload of TILEOP"
+                                }
+                              },
+                              {
+                                "value": 1,
+                                "label": {
+                                  "zh": "根据历史上板数据,对不同TILE OP 进行数据统计和线性拟合,得到TILEOP 相关的参数表格;输入shape、dataType 等参数 通过公式计算Cycles",
+                                  "en": "Based on historical board data, perform data statistics and linear fitting on different TILE OPs to obtain a parameter table related to TILEOP; input parameters such as shape and dataType to calculate Cycles through a formula"
+                                }
+                              },
+                              {
+                                "value": 2,
+                                "label": {
+                                  "zh": "根据CCE代码,执行AICORE的CAModel获取Cycles,对单个TileOp生成codeGen代码,编译之后得到真实的指令,对指令进行仿真",
+                                  "en": "According to the CCE code, execute AICORE's CAModel to obtain Cycles, generate codeGen code for a single TileOp, compile it to obtain the actual instructions, and simulate the instructions"
+                                }
+                              }
+                            ]
+                        },
+                        "pv_run_level": {
+                            "type": "integer",
+                            "default": 0,
+                            "enum": [0, 1, 2],
+                            "label": {
+                                "zh": "PvModel的运行等级",
+                                "en": "The operational level of PvModel"
+                            },
+                            "options": [
+                              {
+                                "value": 0,
+                                "label": {
+                                  "zh": "不启用",
+                                  "en": "Not enabled"
+                                }
+                              },
+                              {
+                                "value": 1,
+                                "label": {
+                                  "zh": "仅测试流程启用",
+                                  "en": "Only the testing process is enabled"
+                                }
+                              },
+                              {
+                                "value": 2,
+                                "label": {
+                                  "zh": "启用PvModel",
+                                  "en": "Enable PvModel"
+                                }
+                              }
+                            ]
+                        },
+                        "log_level": {
+                            "type": "integer",
+                            "default": 3,
+                            "enum": [1, 2, 3, 4, 5],
+                            "label": {
+                                "zh": "日志输出等级",
+                                "en": "Log output level"
+                            },
+                            "options": [
+                              {
+                                "value": 1,
+                                "label": {
+                                  "zh": "DEBUG",
+                                  "en": "DEBUG"
+                                }
+                              },
+                              {
+                                "value": 2,
+                                "label": {
+                                  "zh": "INFO",
+                                  "en": "INFO"
+                                }
+                              },
+                              {
+                                "value": 3,
+                                "label": {
+                                  "zh": "WARN",
+                                  "en": "WARN"
+                                }
+                              },
+                              {
+                                "value": 4,
+                                "label": {
+                                  "zh": "ERROR",
+                                  "en": "ERROR"
+                                }
+                              },
+                              {
+                                "value": 5,
+                                "label": {
+                                  "zh": "FATAL",
+                                  "en": "FATAL"
+                                }
+                              }
+                            ]
+                        },
+                        "timeout_threshold": {
+                            "type": "integer",
+                            "label": {
+                                "zh": "仿真Cycle限制,当Cycle超过指定值时主动停止仿真。默认值-1为全部仿真完成",
+                                "en": "Simulation Cycle limit: When the Cycle exceeds the specified value, the simulation will be actively stopped. The default value is -1, indicating that the simulation will be completed in its entirety"
+                            }
+                        },
+                        "json_path": {
+                            "type": "string",
+                            "label": {
+                                "zh": "加载的JSON文件路径",
+                                "en": "Input json file to load"
+                            }
+                        },
+                        "agent_json_path": {
+                            "type": "string",
+                            "label": {
+                                "zh": "program.json的路径，用于重新构建AscendFunction并执行CostModel",
+                                "en": "The path to program.json, used for rebuilding AscendFunction and executing CostModel"
+                            }
+                        },
+                        "args": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            },
+                            "label": {
+                                "zh": "命令行参数列表",
+                                "en": "List of command-line arguments"
+                            }
+                        }
+                    }
+                },
+                "codegen": {
+                    "type": "object",
+                    "label": {
+                        "zh": "生成Device侧运行的类C代码，作为毕昇编译器输入，用于编译出可在设备侧运行的二进制",
+                        "en": "Generate C-like code that runs on the Device side, which serves as input to the Bisheng Compiler for compiling into Device-side executable binaries"
+                    },
+                    "properties": {
+                        "parallel_compile": {
+                            "type": "integer",
+                            "label": {
+                                "zh": "控制CodeGen框架对多个子图并发生成设备侧中间代码及二进制的线程数量",
+                                "en": "Control the number of threads used by the CodeGen framework to concurrently generate device-side code and binaries for multiple subgraphs"
+                            }
+                        },
+                        "support_dynamic_aligned": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "（不建议使用，后续收编）动态Shape场景下，用户若能确认运行时所有切分数据均能对齐到Tile块大小，即不包含非对齐的尾块，则可启用该选项，提示PTO框架尝试优化",
+                                "en": "(Deprecated)In Dynamic Shape scenarios, if the user can confirm that all data at runtime can be aligned to the tiled block size, this option can be enabled to prompt the PTO framework to attempt optimization"
+                            }
+                        },
+                        "soc_version": {
+                            "type": "string",
+                            "label": {
+                                "zh": "用于指定芯片版本，用于编译和推理",
+                                "en": "Used to specify specific soc_version for kernel compile and runtime"
+                            }
+                        },
+                        "fixed_output_path": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "固定设备侧代码及二进制的输出路径",
+                                "en": "Fix the output paths of the device-side code and binaries"
+                            }
+                        },
+                        "force_overwrite": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "每次编译是否重新生成设备侧代码",
+                                "en": "Whether to regenerate device-side code for each compilation"
+                            }
+                        },
+                        "codegen_support_tile_tensor": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "生成的设备侧代码是否支持PTO-ISA指令",
+                                "en": "Whether the generated device-side code supports PTO-ISA instruction"
+                            }
+                        }
+                    }
+                },
+                "tensor_print": {
+                    "type": "object",
+                    "label": {
+                        "zh": "张量的打印参数",
+                        "en": "tensor print configuration"
+                    },
+                    "properties": {
+                        "edgeitems": {
+                            "type": "integer",
+                            "label": {
+                                "zh": "张量头部和尾部打印的最大元素数量",
+                                "en": "print max items in tensor head and tail"
+                            }
+                        },
+                        "precision": {
+                            "type": "integer",
+                            "label": {
+                                "zh": "打印的精度",
+                                "en": "print precision"
+                            }
+                        },
+                        "threshold": {
+                            "type": "integer",
+                            "label": {
+                                "zh": "触发省略打印（使用...）的阈值",
+                                "en": "threshold to use ..."
+                            }
+                        },
+                        "linewidth": {
+                            "type": "integer",
+                            "label": {
+                                "zh": "打印的最大行宽",
+                                "en": "max line width"
+                            }
+                        }
+                    }
+                },
+                "pass": {
+                    "type": "object",
+                    "label": {
+                        "zh": "通过编译Pass处理与优化函数计算，将其承载的计算图转换为执行图，同时提供可扩展的编译与优化框架，达成差异化的优化效果。",
+                        "en": "By processing and optimizing function computations, compilation passes transform their underlying computational graphs into execution graphs, providing an extensible compilation and optimization framework to deliver differentiated optimization outcomes."
+                    },
+                    "properties": {
+                        "enable_binary_cache": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "二进制缓存开关，通过复用预编译产物以加速构建过程。",
+                                "en": "Binary cache switch, which reuses pre-compiled artifacts to accelerate the build process."
+                            }
+                        },
+                        "enable_pass_configs": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "Pass模块专属配置加载开关，加载该模块配置并使其相关参数生效。",
+                                "en": "Pass config loader, which loads the module‘s dedicated configurations to activate its parameters."
+                            }
+                        },
+                        "enable_cv_fuse": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "CV融合开关，执行Cube/Vector（矩阵/向量）混合计算融合，通过协同调度以提升硬件利用率和计算性能。",
+                                "en": "CV fusion switch, performing Cube/Vector hybrid computation fusion to enhance hardware utilization and computational performance through co-scheduling."
+                            }
+                        },
+                        "pass_thread_num": {
+                            "type": "integer",
+                            "label": {
+                                "zh": "Pass模块工作线程数开关，设置该模块的工作线程数量以控制其并发处理能力。",
+                                "en": "Pass module worker thread count switch, which sets the number of worker threads to control the module's concurrent processing capability."
+                            },
+                            "minimum": 1
+                        },
+                        "vf_opt_mark_for": {
+                            "type": "boolean",
+                            "label": {
+                                "zh": "VF融合优化支撑开关，通过标记For循环来保障向量化函数融合优化流程的执行。",
+                                "en": "VF fusion optimization enabler switch, ensuring the execution of the Vector Function fusion process by marking for-loops"
+                            }
+                        },
+                        "default_pass_configs": {
+                            "type": "object",
+                            "label": {
+                                "zh": "Pass模块默认配置集，定义该模块的系统默认配置，无自定义配置时自动生效。",
+                                "en": "Pass module default configuration set, which defines the system-default configurations for the module and takes effect automatically in the absence of custom configurations."
+                            },
+                            "properties": {
+                                "print_graph": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "计算图IR打印开关，输出计算图的中间表示结构及节点关系等调试信息。",
+                                        "en": "Computational Graph IR Printer, outputs debugging information including the IR structure and node relationships of the graph."
+                                    }
+                                },
+                                "print_program": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "框架计算图JSON导出开关，将程序中所有算子抽象为统一的CallOp中间表示，并导出为包含函数级输入输出依赖关系的标准JSON文件。",
+                                        "en": "Framework Computational Graph JSON Export Switch, which abstracts all operators into a unified CallOp intermediate representation and exports it as a standard JSON file containing function-level I/O dependencies."
+                                    }
+                                },
+                                "dump_graph": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "计算图序列化转储开关，将独立编译Pass的计算图结构与节点信息导出为独立的JSON文件。",
+                                        "en": "Computational Graph Serialization Dump Switch, exports the graph structure and node information of independently compiled passes into separate JSON files."
+                                    }
+                                },
+                                "dump_pass_time_cost": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "编译Pass耗时统计转储开关，导出各独立编译Pass的执行耗时数据。",
+                                        "en": "Compilation Pass Timing Statistics Dump Switch, exports the execution time cost data of each independent compilation pass."
+                                    }
+                                },
+                                "pre_check": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "前置校验开关，在核心流程执行前完成参数合法性、格式规范及依赖完整性等检查。",
+                                        "en": "Pre-check Switch, performs checks on parameter validity, format compliance, and dependency integrity before core process execution."
+                                    }
+                                },
+                                "post_check": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "后置校验开关，在核心流程执行后完成参数合法性、格式规范及依赖完整性等校验。",
+                                        "en": "Post-check Switch, performs validation of parameter legality, format compliance, and dependency integrity after core process execution."
+                                    }
+                                },
+                                "expected_value_check": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "期望值校验开关，在核心流程执行前完成对输入参数及中间结果的固定值、范围与枚举校验。",
+                                        "en": "Expected Value Validation Switch, performs validation of fixed values, ranges, and enumerations for input parameters and intermediate results prior to core process execution."
+                                    }
+                                },
+                                "disable_pass": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "Pass排除开关，将目标Pass模块从编译优化流程中排除，使其不参与执行。",
+                                        "en": "Pass Exclusion Switch, excludes the target pass module from the compilation and optimization workflow, preventing its execution."
+                                    }
+                                },
+                                "health_check": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "编译过程健康检查开关，对编译进程资源、Pass间依赖关系及中间表示状态进行检测。",
+                                        "en": "Compilation Health Check Switch, inspects the status of compiler process resources, inter-pass dependencies, and intermediate representation."
+                                    }
+                                },
+                                "use_max_freq_label": {
+                                    "type": "boolean",
+                                    "label": {
+                                        "zh": "最高频标签统一标记开关，在子图转函数时，复用全局统计的最高频标签。",
+                                        "en": "Most-Frequent Tag Unification Switch, reuses the globally most frequent tag when converting subgraphs to functions."
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                },
+                "pass_strategies": {
+                    "type": "object",
+                    "properties": {
+                        "PVC2_OOO": {
+                            "type": "object",
+                            "label": {
+                                "zh": "PVC2_OOO调度策略。",
+                                "en": "PVC2_OOO Pass Scheduling Strategy."
+                            },
+                            "properties": {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

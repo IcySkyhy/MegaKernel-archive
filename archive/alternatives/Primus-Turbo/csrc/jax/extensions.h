@@ -1,0 +1,61 @@
+/***************************************************************************************************
+ * Copyright (c) 2025, Advanced Micro Devices, Inc. All rights reserved.
+ *
+ * See LICENSE for license information.
+ **************************************************************************************************/
+
+#pragma once
+
+#include "ffi.h"
+#include "primus_turbo/common.h"
+#include <vector>
+#include <xla/ffi/api/ffi.h>
+
+namespace ffi = xla::ffi;
+
+namespace primus_turbo::jax {
+
+//==================================================================
+//  RMSNorm
+//==================================================================
+XLA_FFI_DECLARE_HANDLER_SYMBOL(RMSNormFwdHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(RMSNormBwdHandler);
+
+//==================================================================
+//  Grouped GEMM
+//==================================================================
+XLA_FFI_DECLARE_HANDLER_SYMBOL(CKGroupedGemmHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(CKGroupedGemmVariableKHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(ComputeGroupOffsHandler);
+
+XLA_FFI_DECLARE_HANDLER_SYMBOL(CKGroupedGemmFP8Handler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(CKGroupedGemmFP8VariableKHandler);
+
+int64_t GetCKGroupedGemmWorkspaceSize(int32_t group_num);
+int64_t GetCKGroupedGemmFP8WorkspaceSize(int32_t group_num);
+int64_t GetCKGroupedGemmFP8VariableKWorkspaceSize(int32_t group_num);
+
+//==================================================================
+//  Quantization
+//==================================================================
+XLA_FFI_DECLARE_HANDLER_SYMBOL(QuantizeFP8TensorwiseHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(DequantizeFP8TensorwiseHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(QuantizeFP8RowwiseHandler);
+
+int64_t GetQuantizeFP8TensorwiseWorkspaceSize(int64_t n);
+int64_t GetQuantizeFP8RowwiseWorkspaceSize(const std::vector<int64_t> &shape, int64_t axis);
+
+//==================================================================
+//  DeepEP
+//==================================================================
+XLA_FFI_DECLARE_HANDLER_SYMBOL(MoEDispatchHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(MoECachedDispatchHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(MoECombineHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(MoEDispatchPerProcessHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(MoECachedDispatchPerProcessHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(MoECombinePerProcessHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(MoEInternodeDispatchPerProcessHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(MoEInternodeCachedDispatchPerProcessHandler);
+XLA_FFI_DECLARE_HANDLER_SYMBOL(MoEInternodeCombinePerProcessHandler);
+
+} // namespace primus_turbo::jax

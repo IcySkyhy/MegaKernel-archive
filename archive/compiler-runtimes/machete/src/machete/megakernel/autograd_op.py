@@ -1,0 +1,127 @@
+# Copyright (c) 2025, Machete Authors
+"""
+Host-side autograd protocol for megakernel ops.
+
+AutogradOp is a companion to the GPU-side ``Op`` class. It describes the
+tensor contract seen by PyTorch autograd: named inputs and outputs, which
+inputs require gradients, and which tensors should be preserved for backward.
+
+Subclasses must set ``op_cls`` and implement ``tensor_specs()``. Override
+``prepare_tensors()`` when host-side autograd tensors need reshaping before
+the GPU op is scheduled.
+
+Usage:
+    class RopeAutogradOp(AutogradOp):
+        op_cls = RopeOp
+
+        def tensor_specs(self):
+            return [
+                TensorSpec("q", needs_grad=True),
+                TensorSpec("cos"),
+                TensorSpec("sin"),
+                TensorSpec("q_rotated", is_output=True, mutated_from="q"),
+            ]
+
+        def prepare_tensors(self, q, cos, sin, **kw):
+            b, s, h, d = q.shape
+            return {"q": q.view(b * s, h, d).contiguous(), "cos": cos, "sin": sin}
+"""
+
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import ClassVar, Dict, List, Optional, Type
+
+import torch
+
+from .ops import Op
+
+
+@dataclass
+class TensorSpec:
+    """Describe one named tensor in an autograd op contract.
+
+    Attributes:
+        name: Identifier (e.g., "q", "cos", "grad_q").
+        needs_grad: Whether this input requires a gradient in backward.
+        is_output: True if this tensor is produced by the op.
+        mutated_from: If this output is an in-place mutation of an input,
+            name the input. The same tensor object is returned (zero-copy).
+            None means the output is a fresh tensor.
+    """
+
+    name: str
+    needs_grad: bool = False
+    is_output: bool = False
+    mutated_from: Optional[str] = None
+
+
+class AutogradOp(ABC):
+    """Host-side contract that wraps one GPU ``Op`` for autograd.
+
+    Subclasses declare named tensor inputs and outputs, select tensors to
+    retain for backward, and optionally reshape tensors before
+    ``Op.schedule()`` runs. The GPU op itself remains unaware of autograd
+    bookkeeping.
+    """
+
+    op_cls: ClassVar[Type[Op]]
+    bwd_op_cls: ClassVar[Optional[Type[Op]]] = None  # Separate backward Op class
+
+    @abstractmethod
+    def tensor_specs(self) -> List[TensorSpec]:
+        """Declare all input and output tensors with their autograd roles.
+
+        Order matters: inputs first, outputs second.
+
+        Example for RoPE::
+
+            [
+                TensorSpec("q", needs_grad=True),
+                TensorSpec("cos"),
+                TensorSpec("sin"),
+                TensorSpec("q_rotated", is_output=True, mutated_from="q"),
+            ]
+        """
+        ...
+
+    def save_for_backward(self, **tensors) -> Dict[str, torch.Tensor]:
+        """Select tensors to keep for backward execution.
+
+        Default: save all inputs that don't require grad (constants like
+        cos, sin that are needed for the backward computation).
+        """
+        result = {}
+        for spec in self.input_specs():
+            if not spec.needs_grad and spec.name in tensors:
+                result[spec.name] = tensors[spec.name]
+        return result
+
+    def prepare_tensors(self, **tensors) -> Dict[str, torch.Tensor]:
+        """Normalize tensors into the layout expected by ``op_cls``.
+
+        Returns a dict of tensors matching the Op's declared shapes,
+        used by Op.schedule() for config packing and tile computation.
+        Default: pass through unchanged.
+        """
+        return tensors
+
+    def get_tile_sizes(self) -> Optional[Dict[str, int]]:
+        """Return ``tile_sizes`` forwarded to ``Op.schedule()``.
+
+        Subclasses should override to specify tile sizes.
+        Default: None (all dims use full extent).
+        """
+        return None
+
+    # --- Helpers ---
+
+    def input_specs(self) -> List[TensorSpec]:
+        """Return only input specs (not outputs)."""
+        return [s for s in self.tensor_specs() if not s.is_output]
+
+    def output_specs(self) -> List[TensorSpec]:
+        """Return only output specs."""
+        return [s for s in self.tensor_specs() if s.is_output]
+
+
+__all__ = ["TensorSpec", "AutogradOp"]

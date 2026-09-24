@@ -1,0 +1,17 @@
+#ARK
+build/
+
+# Python
+**/__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Git
+**/.git
+!/.git
+**/.gitmodules
+**/.dockerignore
+.github/
+.azure-pipelines/

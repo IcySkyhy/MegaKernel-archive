@@ -1,0 +1,13 @@
+function foo incast(v0_logical_tensor %x@0 #dtype(float) #shape([64, 32]) #offset([0, 0]) #dynvalidshape([64, 32]), v0_logical_tensor %y@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32])) outcast() #type(Opaque) #entry(false) {
+    v0_logical_tensor %y_5@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = for %loop_idx_5 inrange 0, 10, 1 iter { v0_logical_tensor %y_1@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = %y@1; } #parallel(false) #submit_before_loop(false) #_loop_conds(Unsupported) #_config_scope(Unsupported) #unroll_times(1) {
+        v0_logical_tensor %y_7@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = if v0eq(loop_idx_5, 0) then {
+            v0_logical_tensor %y_3@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = !10001 ASSEMBLE(%x@0) token() #toOffset(Unsupported);
+            yield %y_3@1;
+        } else {
+            v0_logical_tensor %y_9@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = !10003 ASSEMBLE(%x@0) token() #toOffset(Unsupported);
+            yield %y_9@1;
+        }
+        continue %y_7@1;
+    }
+    return %x@0, %y_5@1;
+}

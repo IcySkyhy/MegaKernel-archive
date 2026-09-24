@@ -1,0 +1,361 @@
+#!/usr/bin/env python3
+# coding: utf-8
+# Copyright (c) 2026 CANN community contributors.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+from .test_pil_builder_utils import Expr
+from .test_pil_builder_utils import PILTestCase
+
+class ClassTest(PILTestCase):
+
+    def test_cls_basic(self):
+
+        class Cls:
+            _pil_0 = Expr.int
+            _pil_1 = _pil_0(20)
+            _pil_2 = Expr.int
+            _pil_3 = _pil_2(30)
+            _pil_4 = _pil_1 + _pil_3
+            a = _pil_4
+            _pil_5 = Expr.int
+            _pil_6 = _pil_5(20)
+            _pil_7 = a + _pil_6
+            b = _pil_7
+            _pil_8 = b + a
+            c = _pil_8
+        _pil_9 = Cls.a
+        _var_a = _pil_9
+        _pil_10 = Cls.b
+        _var_b = _pil_10
+        _pil_11 = Cls.c
+        _var_c = _pil_11
+        _pil_12 = self.assertEqual
+        _pil_13 = Expr.trace
+        _pil_15 = ('int', 20)
+        _pil_16 = ('int', 30)
+        _pil_17 = ('int', 20)
+        _pil_14 = [_pil_15, _pil_16, _pil_17]
+        _pil_18 = _pil_12(_pil_13, _pil_14)
+        _pil_19 = self.assertEqual
+        _pil_20 = self.get_var
+        _pil_21 = locals()
+        _pil_22 = _pil_20(_pil_21)
+        _pil_23 = {}
+        _pil_24 = _pil_19(_pil_22, _pil_23)
+
+    def test_cls_decorate(self):
+        _pil_25 = Expr(0)
+        var_e = _pil_25
+        _pil_26 = var_e.decorate
+        _pil_27 = _pil_26(1)
+        _pil_28 = var_e.decorate
+        _pil_29 = _pil_28(2)
+
+        @_pil_27
+        @_pil_29
+        class Cls:
+            _pil_30 = Expr.int
+            _pil_31 = _pil_30(20)
+            _pil_32 = Expr.int
+            _pil_33 = _pil_32(30)
+            _pil_34 = _pil_31 + _pil_33
+            a = _pil_34
+            _pil_35 = Expr.int
+            _pil_36 = _pil_35(20)
+            _pil_37 = a + _pil_36
+            b = _pil_37
+            _pil_38 = b + a
+            c = _pil_38
+        _pil_39 = Cls.a
+        _var_a = _pil_39
+        _pil_40 = Cls.b
+        _var_b = _pil_40
+        _pil_41 = Cls.c
+        _var_c = _pil_41
+        _pil_42 = self.assertEqual
+        _pil_43 = Expr.trace
+        _pil_45 = ('init', 0)
+        _pil_46 = ('decorate', 1)
+        _pil_47 = ('decorate', 2)
+        _pil_48 = ('int', 20)
+        _pil_49 = ('int', 30)
+        _pil_50 = ('int', 20)
+        _pil_51 = ('decorate.wrapper', 2)
+        _pil_52 = ('decorate.wrapper', 1)
+        _pil_44 = [_pil_45, _pil_46, _pil_47, _pil_48, _pil_49, _pil_50, _pil_51, _pil_52]
+        _pil_53 = _pil_42(_pil_43, _pil_44)
+        _pil_54 = self.assertEqual
+        _pil_55 = self.get_var
+        _pil_56 = locals()
+        _pil_57 = _pil_55(_pil_56)
+        _pil_58 = {}
+        _pil_59 = {}
+        _pil_60 = Expr(0, _pil_58, _pil_59)
+        _pil_61 = {'var_e': _pil_60}
+        _pil_62 = _pil_54(_pil_57, _pil_61)
+
+    def test_cls_inherit(self):
+        _pil_63 = Expr(0)
+        var_e = _pil_63
+
+        class Base:
+            _pil_64 = Expr.int
+            _pil_65 = _pil_64(20)
+            _pil_66 = Expr.int
+            _pil_67 = _pil_66(30)
+            _pil_68 = _pil_65 + _pil_67
+            d = _pil_68
+        _pil_69 = [Base]
+        e = _pil_69
+        _pil_70 = var_e.decorate
+        _pil_71 = _pil_70(1)
+        _pil_72 = var_e.decorate
+        _pil_73 = _pil_72(2)
+        _pil_83 = e[0]
+
+        @_pil_71
+        @_pil_73
+        class Cls(_pil_83):
+            _pil_74 = Expr.int
+            _pil_75 = _pil_74(20)
+            _pil_76 = Expr.int
+            _pil_77 = _pil_76(30)
+            _pil_78 = _pil_75 + _pil_77
+            a = _pil_78
+            _pil_79 = Expr.int
+            _pil_80 = _pil_79(20)
+            _pil_81 = a + _pil_80
+            b = _pil_81
+            _pil_82 = b + a
+            c = _pil_82
+        _pil_84 = Cls.a
+        _var_a = _pil_84
+        _pil_85 = Cls.b
+        _var_b = _pil_85
+        _pil_86 = Cls.c
+        _var_c = _pil_86
+        _pil_87 = Cls.d
+        _var_d = _pil_87
+        _pil_88 = self.assertEqual
+        _pil_89 = Expr.trace
+        _pil_91 = ('init', 0)
+        _pil_92 = ('int', 20)
+        _pil_93 = ('int', 30)
+        _pil_94 = ('decorate', 1)
+        _pil_95 = ('decorate', 2)
+        _pil_96 = ('int', 20)
+        _pil_97 = ('int', 30)
+        _pil_98 = ('int', 20)
+        _pil_99 = ('decorate.wrapper', 2)
+        _pil_100 = ('decorate.wrapper', 1)
+        _pil_90 = [_pil_91, _pil_92, _pil_93, _pil_94, _pil_95, _pil_96, _pil_97, _pil_98, _pil_99, _pil_100]
+        _pil_101 = _pil_88(_pil_89, _pil_90)
+        _pil_102 = self.assertEqual
+        _pil_103 = self.get_var
+        _pil_104 = locals()
+        _pil_105 = _pil_103(_pil_104)
+        _pil_106 = {}
+        _pil_107 = {}
+        _pil_108 = Expr(0, _pil_106, _pil_107)
+        _pil_109 = {'var_e': _pil_108}
+        _pil_110 = _pil_102(_pil_105, _pil_109)
+
+    def test_cls_inherit_list(self):
+        _pil_111 = Expr(0)
+        var_e = _pil_111
+
+        class Base:
+            _pil_112 = Expr.int
+            _pil_113 = _pil_112(20)
+            _pil_114 = Expr.int
+            _pil_115 = _pil_114(30)
+            _pil_116 = _pil_113 + _pil_115
+            d = _pil_116
+
+        class Base2:
+            _pil_117 = Expr.int
+            _pil_118 = _pil_117(100)
+            _pil_119 = Expr.int
+            _pil_120 = _pil_119(110)
+            _pil_121 = _pil_118 + _pil_120
+            d = _pil_121
+        _pil_122 = [Base, Base2]
+        e = _pil_122
+        _pil_123 = var_e.decorate
+        _pil_124 = _pil_123(1)
+        _pil_125 = var_e.decorate
+        _pil_126 = _pil_125(2)
+
+        @_pil_124
+        @_pil_126
+        class Cls(*e):
+            _pil_127 = Expr.int
+            _pil_128 = _pil_127(320)
+            _pil_129 = Expr.int
+            _pil_130 = _pil_129(330)
+            _pil_131 = _pil_128 + _pil_130
+            a = _pil_131
+            _pil_132 = Expr.int
+            _pil_133 = _pil_132(420)
+            _pil_134 = a + _pil_133
+            b = _pil_134
+            _pil_135 = b + a
+            c = _pil_135
+        _pil_136 = Cls.a
+        _var_a = _pil_136
+        _pil_137 = Cls.b
+        _var_b = _pil_137
+        _pil_138 = Cls.c
+        _var_c = _pil_138
+        _pil_139 = Cls.d
+        _var_d = _pil_139
+        _pil_140 = self.assertEqual
+        _pil_141 = Expr.trace
+        _pil_143 = ('init', 0)
+        _pil_144 = ('int', 20)
+        _pil_145 = ('int', 30)
+        _pil_146 = ('int', 100)
+        _pil_147 = ('int', 110)
+        _pil_148 = ('decorate', 1)
+        _pil_149 = ('decorate', 2)
+        _pil_150 = ('int', 320)
+        _pil_151 = ('int', 330)
+        _pil_152 = ('int', 420)
+        _pil_153 = ('decorate.wrapper', 2)
+        _pil_154 = ('decorate.wrapper', 1)
+        _pil_142 = [_pil_143, _pil_144, _pil_145, _pil_146, _pil_147, _pil_148, _pil_149, _pil_150, _pil_151, _pil_152, _pil_153, _pil_154]
+        _pil_155 = _pil_140(_pil_141, _pil_142)
+        _pil_156 = self.assertEqual
+        _pil_157 = self.get_var
+        _pil_158 = locals()
+        _pil_159 = _pil_157(_pil_158)
+        _pil_160 = {}
+        _pil_161 = {}
+        _pil_162 = Expr(0, _pil_160, _pil_161)
+        _pil_163 = {'var_e': _pil_162}
+        _pil_164 = _pil_156(_pil_159, _pil_163)
+
+class WithTest(PILTestCase):
+
+    def test_with_basic(self):
+
+        class Cls:
+
+            @classmethod
+            def __enter__(cls):
+                _pil_165 = Expr.str
+                _pil_166 = _pil_165(20)
+                _pil_167 = Expr.str
+                _pil_168 = _pil_167(30)
+                _pil_169 = _pil_166 + _pil_168
+                return _pil_169
+
+            @classmethod
+            def __exit__(cls, exc_type, exc_value, traceback):
+                _pil_170 = Expr.int
+                _pil_171 = _pil_170(40)
+        _pil_174 = Cls()
+        with _pil_174:
+            _pil_172 = Expr.int
+            _pil_173 = _pil_172(20)
+            _var_g = _pil_173
+        _pil_175 = self.assertEqual
+        _pil_176 = Expr.trace
+        _pil_178 = ('str', 20)
+        _pil_179 = ('str', 30)
+        _pil_180 = ('int', 20)
+        _pil_181 = ('int', 40)
+        _pil_177 = [_pil_178, _pil_179, _pil_180, _pil_181]
+        _pil_182 = _pil_175(_pil_176, _pil_177)
+        _pil_183 = self.assertEqual
+        _pil_184 = self.get_var
+        _pil_185 = locals()
+        _pil_186 = _pil_184(_pil_185)
+        _pil_187 = {}
+        _pil_188 = _pil_183(_pil_186, _pil_187)
+
+    def test_with_target(self):
+
+        class Cls:
+
+            @classmethod
+            def __enter__(cls):
+                _pil_189 = Expr.str
+                _pil_190 = _pil_189(20)
+                _pil_191 = Expr.str
+                _pil_192 = _pil_191(30)
+                _pil_193 = _pil_190 + _pil_192
+                return _pil_193
+
+            @classmethod
+            def __exit__(cls, exc_type, exc_value, traceback):
+                _pil_194 = Expr.int
+                _pil_195 = _pil_194(40)
+        _pil_197 = Cls()
+        with _pil_197 as _pil_198:
+            var_f = _pil_198
+            _pil_196 = var_f[0]
+            _var_g = _pil_196
+        _pil_199 = self.assertEqual
+        _pil_200 = Expr.trace
+        _pil_202 = ('str', 20)
+        _pil_203 = ('str', 30)
+        _pil_204 = ('int', 40)
+        _pil_201 = [_pil_202, _pil_203, _pil_204]
+        _pil_205 = _pil_199(_pil_200, _pil_201)
+        _pil_206 = self.assertEqual
+        _pil_207 = self.get_var
+        _pil_208 = locals()
+        _pil_209 = _pil_207(_pil_208)
+        _pil_210 = {'var_f': 'str(20)str(30)'}
+        _pil_211 = _pil_206(_pil_209, _pil_210)
+
+    def test_with_multiple_target(self):
+
+        class Cls:
+
+            @classmethod
+            def __enter__(cls):
+                _pil_212 = Expr.str
+                _pil_213 = _pil_212(20)
+                _pil_214 = Expr.str
+                _pil_215 = _pil_214(30)
+                _pil_216 = _pil_213 + _pil_215
+                return _pil_216
+
+            @classmethod
+            def __exit__(cls, exc_type, exc_value, traceback):
+                _pil_217 = Expr.int
+                _pil_218 = _pil_217(40)
+        _pil_223 = Cls()
+        with _pil_223 as _pil_224:
+            var_f0 = _pil_224
+            _pil_221 = Cls()
+            with _pil_221 as _pil_222:
+                var_f1 = _pil_222
+                _pil_219 = var_f0[0]
+                _var_g0 = _pil_219
+                _pil_220 = var_f1[1]
+                _var_g1 = _pil_220
+        _pil_225 = self.assertEqual
+        _pil_226 = Expr.trace
+        _pil_228 = ('str', 20)
+        _pil_229 = ('str', 30)
+        _pil_230 = ('str', 20)
+        _pil_231 = ('str', 30)
+        _pil_232 = ('int', 40)
+        _pil_233 = ('int', 40)
+        _pil_227 = [_pil_228, _pil_229, _pil_230, _pil_231, _pil_232, _pil_233]
+        _pil_234 = _pil_225(_pil_226, _pil_227)
+        _pil_235 = self.assertEqual
+        _pil_236 = self.get_var
+        _pil_237 = locals()
+        _pil_238 = _pil_236(_pil_237)
+        _pil_239 = {'var_f0': 'str(20)str(30)', 'var_f1': 'str(20)str(30)'}
+        _pil_240 = _pil_235(_pil_238, _pil_239)

@@ -1,0 +1,2108 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Erf_test_0",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                128,
+                1
+            ],
+            "tile_shape": [
+                32,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "Erf_test_1",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                128,
+                1
+            ],
+            "tile_shape": [
+                16,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "Erf_test_2",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1001,
+                        2
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1001,
+                        2
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                100,
+                2
+            ],
+            "tile_shape": [
+                33,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "Erf_test_3",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2049,
+                        4
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 6.283185
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2049,
+                        4
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                256,
+                4
+            ],
+            "tile_shape": [
+                8,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "Erf_test_4",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        513,
+                        8
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3.141593,
+                        "max": 3.141593
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        513,
+                        8
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                64,
+                8
+            ],
+            "tile_shape": [
+                16,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "Erf_test_5",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4097,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1.570796
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4097,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                256,
+                1
+            ],
+            "tile_shape": [
+                16,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "Erf_test_6",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1500,
+                        3
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1500,
+                        3
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                101,
+                3
+            ],
+            "tile_shape": [
+                25,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "Erf_test_7",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1500,
+                        3
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1500,
+                        3
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                101,
+                3
+            ],
+            "tile_shape": [
+                13,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "Erf_test_8",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2050,
+                        2
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 6.283185
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2050,
+                        2
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                129,
+                2
+            ],
+            "tile_shape": [
+                32,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "Erf_test_9",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3007,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3.141593,
+                        "max": 3.141593
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3007,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                191,
+                1
+            ],
+            "tile_shape": [
+                15,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "Erf_test_10",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        100,
+                        101
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        100,
+                        101
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                25,
+                26
+            ],
+            "tile_shape": [
+                13,
+                13
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "Erf_test_11",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        100,
+                        101
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        100,
+                        101
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                25,
+                26
+            ],
+            "tile_shape": [
+                6,
+                12
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "Erf_test_12",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        505,
+                        5
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 6.283185
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        505,
+                        5
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                65,
+                5
+            ],
+            "tile_shape": [
+                13,
+                5
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "Erf_test_13",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        707,
+                        7
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3.141593,
+                        "max": 3.141593
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        707,
+                        7
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                91,
+                7
+            ],
+            "tile_shape": [
+                5,
+                7
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "Erf_test_14",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        123,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        123,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                41,
+                1
+            ],
+            "tile_shape": [
+                16,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 14
+        },
+        {
+            "case_index": 15,
+            "case_name": "Erf_test_15",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        456
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        456
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                57
+            ],
+            "tile_shape": [
+                1,
+                4
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 15
+        },
+        {
+            "case_index": 16,
+            "case_name": "Erf_test_16",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2048,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2048,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                129,
+                1
+            ],
+            "tile_shape": [
+                32,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 16
+        },
+        {
+            "case_index": 17,
+            "case_name": "Erf_test_17",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1024,
+                        2
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1e-10,
+                        "max": 1e-10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1024,
+                        2
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                65,
+                2
+            ],
+            "tile_shape": [
+                8,
+                2
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 17
+        },
+        {
+            "case_index": 18,
+            "case_name": "Erf_test_18",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4096,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 3.141593,
+                        "max": 3.141593
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4096,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                257,
+                1
+            ],
+            "tile_shape": [
+                32,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 18
+        },
+        {
+            "case_index": 19,
+            "case_name": "Erf_test_19",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        512,
+                        4
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -100000.0,
+                        "max": 100000.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        512,
+                        4
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                65,
+                4
+            ],
+            "tile_shape": [
+                8,
+                4
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 19
+        },
+        {
+            "case_index": 20,
+            "case_name": "Erf_test_20",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        64,
+                        64,
+                        4
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        64,
+                        64,
+                        4
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                33,
+                33,
+                4
+            ],
+            "tile_shape": [
+                11,
+                11,
+                4
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 20
+        },
+        {
+            "case_index": 21,
+            "case_name": "Erf_test_21",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                17,
+                17,
+                17
+            ],
+            "tile_shape": [
+                5,
+                5,
+                8
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 21
+        },
+        {
+            "case_index": 22,
+            "case_name": "Erf_test_22",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        4
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 6.283185
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        4
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                9,
+                9,
+                9,
+                4
+            ],
+            "tile_shape": [
+                3,
+                3,
+                4,
+                4
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 22
+        },
+        {
+            "case_index": 23,
+            "case_name": "Erf_test_23",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128,
+                        128,
+                        2
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3.141593,
+                        "max": 3.141593
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        128,
+                        2
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                43,
+                43,
+                2
+            ],
+            "tile_shape": [
+                5,
+                5,
+                2
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 23
+        },
+        {
+            "case_index": 24,
+            "case_name": "Erf_test_24",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        256,
+                        128,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        256,
+                        128,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                51,
+                51,
+                1
+            ],
+            "tile_shape": [
+                17,
+                17,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 24
+        },
+        {
+            "case_index": 25,
+            "case_name": "Erf_test_25",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        100,
+                        50,
+                        25
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        100,
+                        50,
+                        25
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                34,
+                17,
+                9
+            ],
+            "tile_shape": [
+                5,
+                6,
+                2
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 25
+        },
+        {
+            "case_index": 26,
+            "case_name": "Erf_test_26",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 6.283185
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                3,
+                3,
+                3
+            ],
+            "tile_shape": [
+                2,
+                2,
+                2,
+                8
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 26
+        },
+        {
+            "case_index": 27,
+            "case_name": "Erf_test_27",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        20,
+                        30,
+                        40,
+                        2
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3.141593,
+                        "max": 3.141593
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        20,
+                        30,
+                        40,
+                        2
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                11,
+                13,
+                2
+            ],
+            "tile_shape": [
+                3,
+                4,
+                2,
+                2
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 27
+        },
+        {
+            "case_index": 28,
+            "case_name": "Erf_test_28",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                1,
+                1
+            ],
+            "tile_shape": [
+                1,
+                1,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 28
+        },
+        {
+            "case_index": 29,
+            "case_name": "Erf_test_29",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "tile_shape": [
+                1,
+                1,
+                1,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 29
+        },
+        {
+            "case_index": 30,
+            "case_name": "Erf_test_30",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        93,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 6.283185
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        93,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                93,
+                1
+            ],
+            "tile_shape": [
+                31,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 30
+        },
+        {
+            "case_index": 31,
+            "case_name": "Erf_test_31",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        93
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3.141593,
+                        "max": 3.141593
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        93
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                93
+            ],
+            "tile_shape": [
+                1,
+                4
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 31
+        },
+        {
+            "case_index": 32,
+            "case_name": "Erf_test_32",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        23,
+                        23
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        23,
+                        23
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                23,
+                23
+            ],
+            "tile_shape": [
+                23,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 32
+        },
+        {
+            "case_index": 33,
+            "case_name": "Erf_test_33",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        11,
+                        11,
+                        11
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        11,
+                        11,
+                        11
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                11,
+                11,
+                11
+            ],
+            "tile_shape": [
+                11,
+                11,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 33
+        },
+        {
+            "case_index": 34,
+            "case_name": "Erf_test_34",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        100000,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        100000,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2501,
+                1
+            ],
+            "tile_shape": [
+                25,
+                1
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 34
+        },
+        {
+            "case_index": 35,
+            "case_name": "Erf_test_35",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        100000
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        100000
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                2501
+            ],
+            "tile_shape": [
+                1,
+                4
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 35
+        },
+        {
+            "case_index": 36,
+            "case_name": "Erf_test_36",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1024,
+                        1024
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 6.283185
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1024,
+                        1024
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                257,
+                257
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 36
+        },
+        {
+            "case_index": 37,
+            "case_name": "Erf_test_37",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        512,
+                        1,
+                        512,
+                        2
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3.141593,
+                        "max": 3.141593
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        512,
+                        1,
+                        512,
+                        2
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                257,
+                1,
+                257,
+                2
+            ],
+            "tile_shape": [
+                16,
+                1,
+                16,
+                2
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 37
+        },
+        {
+            "case_index": 38,
+            "case_name": "Erf_test_38",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        9,
+                        10
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        9,
+                        10
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                9,
+                10
+            ],
+            "tile_shape": [
+                9,
+                10
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 38
+        },
+        {
+            "case_index": 39,
+            "case_name": "Erf_test_39",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        1,
+                        92
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        1,
+                        92
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                1,
+                92
+            ],
+            "tile_shape": [
+                1,
+                1,
+                4
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 39
+        },
+        {
+            "case_index": 40,
+            "case_name": "Erf_test_40",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1001
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1001
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                100
+            ],
+            "tile_shape": [
+                32
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 40
+        },
+        {
+            "case_index": 41,
+            "case_name": "Erf_test_41",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": "nan",
+                        "max": "nan"
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                17,
+                17,
+                17
+            ],
+            "tile_shape": [
+                5,
+                5,
+                8
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 41
+        },
+        {
+            "case_index": 42,
+            "case_name": "Erf_test_42",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": "-inf",
+                        "max": "-inf"
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                17,
+                17,
+                17
+            ],
+            "tile_shape": [
+                5,
+                5,
+                8
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 42
+        },
+        {
+            "case_index": 43,
+            "case_name": "Erf_test_43",
+            "operation": "Erf",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": "inf",
+                        "max": "inf"
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                17,
+                17,
+                17
+            ],
+            "tile_shape": [
+                5,
+                5,
+                8
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 43
+        }
+    ]
+}

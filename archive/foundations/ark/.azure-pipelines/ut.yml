@@ -1,0 +1,109 @@
+trigger:
+- main
+
+pr:
+  branches:
+    include:
+    - main
+  drafts: false
+
+jobs:
+- job: UnitTest
+  timeoutInMinutes: 30
+  pool:
+    name: mscclpp
+  strategy:
+    matrix:
+      cuda11:
+        containerImage: ghcr.io/microsoft/ark/ark:base-dev-cuda11.8
+      cuda12:
+        containerImage: ghcr.io/microsoft/ark/ark:base-dev-cuda12.2
+
+  container:
+    image: $[ variables['containerImage'] ]
+    options: --privileged --ipc=host --gpus=all --ulimit memlock=-1:-1
+
+  steps:
+  - task: Bash@3
+    name: LockGPUClockFrequency
+    displayName: Lock GPU clock frequency
+    inputs:
+      targetType: 'inline'
+      script: |
+        sudo nvidia-smi -pm 1
+        for i in $(seq 0 $(( $(nvidia-smi -L | wc -l) - 1 ))); do
+          sudo nvidia-smi -ac $(nvidia-smi --query-gpu=clocks.max.memory,clocks.max.sm --format=csv,noheader,nounits -i $i | sed 's/\ //') -i $i
+        done
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+  - task: Bash@3
+    name: UpdateSubmodules
+    displayName: Update submodules
+    inputs:
+      targetType: 'inline'
+      script: |
+        git submodule foreach --recursive git reset --hard
+        git submodule foreach --recursive git clean -fdx
+        git submodule foreach git fetch
+        git submodule update --init --recursive
+
+  - task: Bash@3
+    name: Build
+    displayName: Build
+    inputs:
+      targetType: 'inline'
+      script: |
+        mkdir build && cd build
+        cmake -DCMAKE_BUILD_TYPE=Debug ..
+        make -j ut
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+  - task: Bash@3
+    name: RunUT
+    displayName: Run UT
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd build && ARK_ROOT=$PWD ARK_IGNORE_BINARY_CACHE=1 ctest --stop-on-failure --verbose --schedule-random
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+  - task: Bash@3
+    name: ReportCoverage
+    displayName: Report Coverage
+    env:
+      CODECOV_TOKEN: $(codecovToken)
+    inputs:
+      targetType: 'inline'
+      script: |
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info \
+            '/usr/*' \
+            '/tmp/*' \
+            '*/third_party/*' \
+            '*/ark/*_test.*' \
+            '*/examples/*' \
+            '*/python/*' \
+            '*/ark/unittest/unittest_utils.cc' \
+            --output-file coverage.info
+        lcov --list coverage.info
+        bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+      workingDirectory: '$(System.DefaultWorkingDirectory)/build'
+
+  - task: Bash@3
+    name: BuildPython
+    displayName: Build Python
+    inputs:
+      targetType: 'inline'
+      script: |
+        python3 -m pip install -r requirements.txt
+        python3 -m pip install .
+      workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+  # - task: Bash@3
+  #   name: RunPythonUT
+  #   displayName: Run Python UT
+  #   inputs:
+  #     targetType: 'inline'
+  #     script: |
+  #       cd python/unittest && python3 test_matmul.py
+  #     workingDirectory: '$(System.DefaultWorkingDirectory)'

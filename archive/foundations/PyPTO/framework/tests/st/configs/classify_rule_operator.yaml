@@ -1,0 +1,60 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+# 说明:
+#   本文件用于 Tests 用例分类分组定义
+# 格式:
+#   tests_type        [required]   --- 任务类型, 当前支持 [stest, utest]
+#     group_name      [required]   --- 任务分组, 如 operator, operation, interface, codegen, operation_moe 等
+#       write_list    [optional]   --- 任务分组下的白名单, 即修改文件若仅涉及对应白名单路径, 则本任务不需执行
+#       cases         [required]   --- 测试用例, 对应 GTestFilter
+
+stest:
+  operator_nsa:
+    cases:
+      # - DynamicNSATest.nsa_b_16_s1_1_s2_8192_h_7168_fp16
+      # - DynamicSATest.slc_attn_fp16
+      # - DynamicNSATest.mini
+      # - DynamicSATest.slc_attn_mtp_s1_2_fp16
+      # - DynamicSATest.slc_attn_bf16_b48_s1_perf
+
+  operator_nsa_MlaProlog:
+    cases:
+      # - MlaPrologSTest.b32_s1_pa_nz_bf16_quant
+      # - MlaPrologSTest.b32_s2_pa_nz_bf16_quant
+      # - MlaPrologSTest.b32_s2_pa_nd_fp16_quant
+
+  operator_nsa_AttentionPost:
+    cases:
+      # - AttentionPostSTest.b32_s1_nz_bf16_quant
+      # - AttentionPostSTest.b32_s2_nz_bf16_quant
+
+  operator_lightning_indexer_prolog:
+    cases:
+      # - LightningIndexerPrologSTest.bf16_indexer_prolog
+      # - LightningIndexerPrologSTest.b48_s1_1_s2_8k
+      # - LightningIndexerPrologSTest.b2_s1_2_s2_2k
+      # - LightningIndexerPrologSTest.b35_s1_2_s2_8k
+      # - LightningIndexerPrologSTest.b40_s1_4_s2_8k
+      # - LightningIndexerPrologSTest.b4_s1_1_s2_64k
+
+  operator_lightning_indexer:
+    cases:
+      # - DynamicIndexerTopk.indexer_topk_quant_4_b_1_s1_64k_s2
+
+  operator_decode_sparse_attention:
+    cases:
+      # - DecodeIndexerAttentionSTest.mini
+      # - DeepSeekIndexerAttentionQuantSTest.4B_mtp_perf
+      # - MlaPrologQuantV32STest.b8_s64k2_pa_nd_fp16_quantB # mla prolog quant version for deepseek-v3.2-exp
+
+  operator_dsa_gather_slc_attn:
+    cases:
+      # - DynamicGatherSlcFlashAttnDSASTest.dsa_gather_slc_attn_bf16_b32_s1_seq511_int8
+      # - DynamicGatherSlcFlashAttnDSASTest.dsa_gather_slc_attn_bf16_b8_s1_seq128k_int8

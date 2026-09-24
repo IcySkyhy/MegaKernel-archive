@@ -1,0 +1,848 @@
+{
+  "test_cases": [
+    {
+      "case_index": 0,
+      "case_name": "FillPad_1D_test_0",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [32],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -10,
+            "max": 10
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [32],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [16],
+      "tile_shape": [32],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 0
+    },
+    {
+      "case_index": 1,
+      "case_name": "FillPad_1D_test_1",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [32],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -100,
+            "max": 100
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [32],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [16],
+      "tile_shape": [16],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 1
+    },
+    {
+      "case_index": 2,
+      "case_name": "FillPad_1D_test_2",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [16],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -5,
+            "max": 5
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [8],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [8],
+      "tile_shape": [8],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 2
+    },
+    {
+      "case_index": 3,
+      "case_name": "FillPad_1D_test_3_min",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [16],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -10,
+            "max": 10
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [16],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [16],
+      "tile_shape": [8],
+      "params": {
+        "pad_value_type": "min",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 3
+    },
+    {
+      "case_index": 4,
+      "case_name": "FillPad_1D_test_4_max",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [16],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -10,
+            "max": 10
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [16],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [16],
+      "tile_shape": [8],
+      "params": {
+        "pad_value_type": "max",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 4
+    },
+    {
+      "case_index": 5,
+      "case_name": "FillPad_1D_test_9",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [512],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -50,
+            "max": 50
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [512],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [256],
+      "tile_shape": [256],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 5
+    },
+    {
+      "case_index": 6,
+      "case_name": "FillPad_1D_test_18_min",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [512],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -50,
+            "max": 50
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [512],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [256],
+      "tile_shape": [128],
+      "params": {
+        "pad_value_type": "min",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 6
+    },
+    {
+      "case_index": 7,
+      "case_name": "FillPad_1D_test_19_max",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [512],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -50,
+            "max": 50
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [512],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [256],
+      "tile_shape": [128],
+      "params": {
+        "pad_value_type": "max",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 7
+    },
+    {
+      "case_index": 8,
+      "case_name": "FillPad_1D_test_35",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [4],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -1,
+            "max": 1
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [4],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [4],
+      "tile_shape": [4],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 8
+    },
+    {
+      "case_index": 9,
+      "case_name": "FillPad_1D_test_40_min",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [4],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -1,
+            "max": 1
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [4],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [4],
+      "tile_shape": [2],
+      "params": {
+        "pad_value_type": "min",
+        "on_board": true,
+        "func_id": 1
+      },
+      "index": 9
+    },
+    {
+      "case_index": 10,
+      "case_name": "FillPad_2D_test_0",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [32, 32],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -10,
+            "max": 10
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [32, 32],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [16, 16],
+      "tile_shape": [32, 32],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 10
+    },
+    {
+      "case_index": 11,
+      "case_name": "FillPad_2D_test_1",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [32, 32],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -100,
+            "max": 100
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [32, 32],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [16, 16],
+      "tile_shape": [16, 16],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 11
+    },
+    {
+      "case_index": 12,
+      "case_name": "FillPad_2D_test_2",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [16, 32],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -5,
+            "max": 5
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [16, 32],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [16, 32],
+      "tile_shape": [8, 8],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 12
+    },
+    {
+      "case_index": 13,
+      "case_name": "FillPad_2D_test_3_min",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [16, 16],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -10,
+            "max": 10
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [16, 16],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [16, 16],
+      "tile_shape": [8, 8],
+      "params": {
+        "pad_value_type": "min",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 13
+    },
+    {
+      "case_index": 14,
+      "case_name": "FillPad_2D_test_4_max",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [16, 16],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -10,
+            "max": 10
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [16, 16],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [16, 16],
+      "tile_shape": [8, 8],
+      "params": {
+        "pad_value_type": "max",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 14
+    },
+    {
+      "case_index": 15,
+      "case_name": "FillPad_2D_test_9",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [512, 512],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -50,
+            "max": 50
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [512, 512],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [256, 256],
+      "tile_shape": [128, 128],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 15
+    },
+    {
+      "case_index": 16,
+      "case_name": "FillPad_2D_test_10",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [16, 32],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -10,
+            "max": 10
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [16, 32],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [8, 16],
+      "tile_shape": [8, 16],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 16
+    },
+    {
+      "case_index": 17,
+      "case_name": "FillPad_2D_test_20",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [20, 30],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -15,
+            "max": 15
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [20, 30],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [10, 15],
+      "tile_shape": [10, 15],
+      "params": {
+        "pad_value_type": "zero",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 17
+    },
+    {
+      "case_index": 18,
+      "case_name": "FillPad_2D_test_20_min",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [20, 30],
+          "dtype": "bf16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -15,
+            "max": 15
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [20, 30],
+          "dtype": "bf16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [10, 15],
+      "tile_shape": [5, 7],
+      "params": {
+        "pad_value_type": "min",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 18
+    },
+    {
+      "case_index": 19,
+      "case_name": "FillPad_2D_test_20_max",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [20, 30],
+          "dtype": "bf16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -15,
+            "max": 15
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [20, 30],
+          "dtype": "bf16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [10, 15],
+      "tile_shape": [5, 7],
+      "params": {
+        "pad_value_type": "max",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 19
+    },
+    {
+      "case_index": 20,
+      "case_name": "FillPad_2D_test_20_custom_0",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [20, 30],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -15,
+            "max": 15
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [20, 30],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [10, 15],
+      "tile_shape": [5, 7],
+      "params": {
+        "pad_value": 2.0,
+        "pad_value_type": "custom",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 20
+    },
+    {
+      "case_index": 21,
+      "case_name": "FillPad_2D_test_20_custom_1",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [20, 30],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -15,
+            "max": 15
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [20, 30],
+          "dtype": "fp32",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [10, 15],
+      "tile_shape": [10, 15],
+      "params": {
+        "pad_value": 8.0,
+        "pad_value_type": "custom",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 21
+    },
+    {
+      "case_index": 22,
+      "case_name": "FillPad_2D_test_20_custom_2",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [20, 30],
+          "dtype": "bf16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -15,
+            "max": 15
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [20, 30],
+          "dtype": "bf16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [10, 15],
+      "tile_shape": [5, 7],
+      "params": {
+        "pad_value": 2.0,
+        "pad_value_type": "custom",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 22
+    },
+    {
+      "case_index": 23,
+      "case_name": "FillPad_2D_test_20_custom_3",
+      "operation": "FillPad",
+      "input_tensors": [
+        {
+          "name": "input0",
+          "shape": [20, 30],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false,
+          "data_range": {
+            "min": -15,
+            "max": 15
+          }
+        }
+      ],
+      "output_tensors": [
+        {
+          "name": "output0",
+          "shape": [20, 30],
+          "dtype": "fp16",
+          "format": "ND",
+          "need_trans": false
+        }
+      ],
+      "view_shape": [10, 15],
+      "tile_shape": [10, 15],
+      "params": {
+        "pad_value": 8.0,
+        "pad_value_type": "custom",
+        "on_board": true,
+        "func_id": -1
+      },
+      "index": 23
+    }
+  ]
+}

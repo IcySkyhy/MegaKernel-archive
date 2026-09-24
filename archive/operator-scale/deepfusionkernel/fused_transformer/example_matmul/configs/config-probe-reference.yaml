@@ -1,0 +1,16 @@
+defaults:
+  - override hydra/launcher: joblib
+
+seed: 1
+
+wandb:
+  name: "simple_matmul"
+  group: "debug-profile"
+  type: "debug"
+
+providers: ["ref_lib", "matmul_silu", "matmul_silu_vec"]
+# Debug
+batch_sizes: [1, 5, 10, 32, 128, 512]
+fp8_inputs: false
+
+best_config_path: autotune-simple_matmul

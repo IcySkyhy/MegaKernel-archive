@@ -1,0 +1,304 @@
+//! # RingKernel Core
+//!
+//! Core traits and types for the RingKernel GPU-native persistent actor system.
+//!
+//! This crate provides the foundational abstractions for building GPU-accelerated
+//! actor systems with persistent kernels, lock-free message passing, and hybrid
+//! logical clocks for temporal ordering.
+//!
+//! ## Core Abstractions
+//!
+//! - [`RingMessage`] - Trait for messages between kernels
+//! - [`MessageQueue`] - Lock-free ring buffer for message passing
+//! - [`RingKernelRuntime`] - Backend-agnostic runtime management
+//! - [`RingContext`] - GPU intrinsics facade for kernel handlers
+//! - [`HlcTimestamp`] - Hybrid Logical Clock for causal ordering
+//!
+//! ## Example
+//!
+//! ```ignore
+//! use ringkernel_core::prelude::*;
+//!
+//! #[derive(RingMessage)]
+//! struct MyMessage {
+//!     #[message(id)]
+//!     id: MessageId,
+//!     payload: Vec<f32>,
+//! }
+//! ```
+
+#![warn(missing_docs)]
+#![warn(clippy::unwrap_used)]
+#![warn(clippy::all)]
+#![deny(unsafe_op_in_unsafe_fn)]
+
+pub mod actor;
+pub mod backpressure;
+#[macro_use]
+pub mod backend_stub;
+pub mod analytics_context;
+pub mod audit;
+
+/// Benchmark framework (requires `benchmark` feature).
+#[cfg(feature = "benchmark")]
+pub mod benchmark;
+
+pub mod checkpoint;
+
+/// Cloud storage backends for checkpoints (requires `cloud-storage` feature).
+#[cfg(feature = "cloud-storage")]
+pub mod cloud_storage;
+
+pub mod config;
+pub mod context;
+pub mod control;
+pub mod dispatcher;
+pub mod dlq;
+pub mod domain;
+pub mod drain;
+pub mod error;
+pub mod health;
+pub mod hlc;
+pub mod hot_reload;
+pub mod hybrid;
+pub mod idempotency;
+pub mod introspection;
+pub mod k2k;
+pub mod memory;
+pub mod memory_pressure;
+pub mod message;
+pub mod multi_gpu;
+pub mod observability;
+pub mod persistent_message;
+pub mod provenance;
+pub mod pubsub;
+pub mod queue;
+pub mod reduction;
+pub mod registry;
+pub mod resource;
+pub mod rules;
+pub mod runtime;
+pub mod runtime_context;
+pub mod scheduling;
+pub mod security;
+pub mod shutdown;
+pub mod state;
+pub mod telemetry;
+pub mod telemetry_pipeline;
+pub mod types;
+pub mod vector;
+
+// Enterprise modules
+pub mod alerting;
+pub mod auth;
+pub mod logging;
+pub mod rate_limiting;
+pub mod rbac;
+pub mod secrets;
+pub mod tenancy;
+pub mod timeout;
+
+/// TLS support (requires `tls` feature).
+#[cfg(feature = "tls")]
+pub mod tls;
+
+/// Private module for proc macro integration.
+/// Not part of the public API - exposed for macro-generated code only.
+#[doc(hidden)]
+pub mod __private;
+
+/// Prelude module for convenient imports
+pub mod prelude {
+    pub use crate::analytics_context::{
+        AllocationHandle, AnalyticsContext, AnalyticsContextBuilder, ContextStats,
+    };
+    pub use crate::audit::{
+        AuditConfig, AuditEvent, AuditEventType, AuditLevel, AuditLogger, AuditLoggerBuilder,
+        AuditSink, CloudWatchConfig, CloudWatchSink, FileSink, MemorySink, SyslogConfig,
+        SyslogFacility, SyslogSeverity, SyslogSink,
+    };
+    #[cfg(feature = "alerting")]
+    pub use crate::audit::{ElasticsearchConfig, ElasticsearchSink};
+    pub use crate::config::{
+        CheckpointStorageType, CloudStorageConfig, ConfigBuilder, Environment, GeneralConfig,
+        GeneralConfigBuilder, HealthConfig, HealthConfigBuilder, LogLevel, MigrationConfig,
+        MigrationConfigBuilder, MultiGpuConfig, MultiGpuConfigBuilder, ObservabilityConfig,
+        ObservabilityConfigBuilder, RetryConfig, RingKernelConfig,
+    };
+    pub use crate::context::*;
+    pub use crate::control::*;
+    pub use crate::dispatcher::{
+        DispatcherBuilder, DispatcherConfig, DispatcherMetrics, KernelDispatcher,
+    };
+    pub use crate::domain::{Domain, DomainMessage, DomainParseError};
+    pub use crate::error::*;
+    pub use crate::health::{
+        BackoffStrategy, CircuitBreaker, CircuitBreakerConfig, CircuitBreakerStats, CircuitState,
+        DegradationLevel, DegradationManager, DegradationStats, FailureType, HealthCheck,
+        HealthCheckResult, HealthChecker, HealthStatus, KernelHealth, KernelWatchdog,
+        LoadSheddingPolicy, RecoveryAction, RecoveryConfig, RecoveryConfigBuilder, RecoveryManager,
+        RecoveryPolicy, RecoveryResult, RecoveryStatsSnapshot, RetryPolicy,
+    };
+    pub use crate::hlc::*;
+    pub use crate::hybrid::{
+        HybridConfig, HybridConfigBuilder, HybridDispatcher, HybridError, HybridResult,
+        HybridStats, HybridStatsSnapshot, HybridWorkload, ProcessingMode,
+    };
+    pub use crate::k2k::{
+        AuditTag, DeliveryStatus, K2KBroker, K2KBuilder, K2KConfig, K2KEndpoint, K2KMessage,
+        K2KMessageRegistration, K2KStats, K2KSubBroker, K2KTypeRegistry, TenantId, TenantInfo,
+        TenantQuota, TenantRegistry as K2KTenantRegistry, TenantStats, UNSPECIFIED_TENANT,
+    };
+    #[cfg(feature = "crypto")]
+    pub use crate::k2k::{
+        EncryptedK2KBuilder, EncryptedK2KEndpoint, EncryptedK2KMessage, K2KEncryptionAlgorithm,
+        K2KEncryptionConfig, K2KEncryptionStatsSnapshot, K2KEncryptor, K2KKeyMaterial,
+    };
+    pub use crate::memory::*;
+    pub use crate::message::{
+        priority, CorrelationId, MessageEnvelope, MessageHeader, MessageId, Priority, RingMessage,
+    };
+    pub use crate::multi_gpu::{
+        CrossGpuK2KRouter, CrossGpuRouterStatsSnapshot, DeviceInfo, DeviceStatus,
+        DeviceUnregisterResult, GpuConnection, GpuTopology, HotReloadConfig, HotReloadManager,
+        HotReloadRequest, HotReloadResult, HotReloadState, HotReloadStatsSnapshot,
+        HotReloadableKernel, InterconnectType, KernelCodeFormat, KernelCodeSource,
+        KernelMigrationPlan, KernelMigrator, LoadBalancingStrategy, MigratableKernel,
+        MigrationPriority, MigrationRequest, MigrationResult, MigrationState,
+        MigrationStatsSnapshot, MultiGpuBuilder, MultiGpuCoordinator, PendingK2KMessage,
+        RoutingDecision,
+    };
+    pub use crate::observability::{
+        GpuDeviceMemoryStats, GpuMemoryAllocation, GpuMemoryDashboard, GpuMemoryPoolStats,
+        GpuMemoryThresholds, GpuMemoryType, GrafanaDashboard, GrafanaPanel, MemoryPressureLevel,
+        ObservabilityContext, OtlpConfig, OtlpExportResult, OtlpExporter, OtlpExporterStats,
+        OtlpTransport, PanelType, PrometheusCollector, PrometheusExporter, RingKernelCollector,
+        Span, SpanBuilder, SpanEvent, SpanId, SpanKind, SpanStatus, TraceId,
+    };
+    pub use crate::persistent_message::{
+        message_flags, DispatchTable, HandlerRegistration, PersistentMessage,
+        MAX_INLINE_PAYLOAD_SIZE,
+    };
+    pub use crate::provenance::{
+        validate_chain, ProvNodeType, ProvRelation, ProvRelationKind, ProvenanceBuilder,
+        ProvenanceError, ProvenanceHeader, INLINE_RELATION_SLOTS, MAX_CHAIN_DEPTH,
+    };
+    pub use crate::pubsub::{PubSubBroker, PubSubBuilder, Publication, QoS, Subscription, Topic};
+    pub use crate::queue::*;
+    pub use crate::reduction::{
+        GlobalReduction, ReductionConfig, ReductionHandle, ReductionOp, ReductionScalar,
+    };
+    pub use crate::resource::{
+        global_guard, LinearEstimator, MemoryEstimate, MemoryEstimator, ReservationGuard,
+        ResourceError, ResourceGuard, ResourceResult, DEFAULT_MAX_MEMORY_BYTES,
+        SYSTEM_MEMORY_MARGIN,
+    };
+    pub use crate::rules::{
+        ActorConfig, CompiledRule, NoopSwapBackend, ReloadReport, RuleError, RuleHandle,
+        RuleMetadata, RuleRegistry, RuleStatus, RuleSwapBackend, SignatureVerifier,
+    };
+    pub use crate::runtime::*;
+    pub use crate::runtime_context::{
+        AppInfo, BackgroundTaskStatus, CircuitGuard, ContextMetrics, DegradationGuard,
+        HealthCycleResult, LifecycleState, MonitoringConfig, MonitoringHandles, OperationPriority,
+        RingKernelContext, RuntimeBuilder, RuntimeStatsSnapshot, ShutdownReport, WatchdogResult,
+    };
+    pub use crate::scheduling::{
+        LoadEntry, LoadTable, SchedulerConfig, SchedulerWarpConfig, SchedulingStrategy, StealOp,
+        WorkItem,
+    };
+    pub use crate::security::{
+        AccessLevel, ComplianceCheck, ComplianceReport, ComplianceReporter, ComplianceStandard,
+        ComplianceStatus, ComplianceSummary, EncryptedRegion, EncryptionAlgorithm,
+        EncryptionConfig, EncryptionKey, EncryptionStats, KernelSandbox, KeyDerivation,
+        MemoryEncryption, ReportFormat, ResourceLimits, SandboxPolicy, SandboxStats,
+        SandboxViolation, ViolationType,
+    };
+    pub use crate::shutdown::{GracefulShutdown, ShutdownGuard, ShutdownSignal};
+    pub use crate::state::{
+        ControlBlockStateHelper, EmbeddedState, EmbeddedStateSize, GpuState, StateDescriptor,
+        StateSnapshot, CONTROL_BLOCK_STATE_SIZE, STATE_DESCRIPTOR_MAGIC,
+    };
+    pub use crate::telemetry::*;
+    pub use crate::telemetry_pipeline::{
+        MetricsCollector, MetricsSnapshot, TelemetryAlert, TelemetryConfig, TelemetryEvent,
+        TelemetryPipeline,
+    };
+    pub use crate::types::*;
+
+    // Cloud storage types (feature-gated)
+    #[cfg(feature = "cloud-storage")]
+    pub use crate::cloud_storage::{AsyncCheckpointStorage, CloudProvider, S3Config, S3Storage};
+
+    // Enterprise modules
+    pub use crate::alerting::{
+        Alert, AlertRouter, AlertRouterStats, AlertSeverity, AlertSink, AlertSinkError,
+        AlertSinkResult, DeduplicationConfig, InMemorySink, LogSink,
+    };
+    #[cfg(feature = "alerting")]
+    pub use crate::alerting::{WebhookFormat, WebhookSink};
+    pub use crate::auth::{
+        ApiKeyAuth, AuthContext, AuthError, AuthProvider, AuthResult, ChainedAuthProvider,
+        Credentials, Identity,
+    };
+    #[cfg(feature = "auth")]
+    pub use crate::auth::{JwtAuth, JwtClaims, JwtConfig};
+    pub use crate::logging::{
+        ConsoleSink, FileLogSink, LogConfig as StructuredLogConfig,
+        LogConfigBuilder as StructuredLogConfigBuilder, LogEntry, LogLevel as StructuredLogLevel,
+        LogOutput, LogSink as StructuredLogSink, LogSinkError as StructuredLogSinkError, LogValue,
+        LoggerStats, MemoryLogSink, StructuredLogger, TraceContext,
+    };
+    pub use crate::rate_limiting::{
+        shared_rate_limiter, RateLimitAlgorithm, RateLimitConfig, RateLimitError, RateLimitGuard,
+        RateLimitResult, RateLimiter, RateLimiterBuilder, RateLimiterExt, RateLimiterStatsSnapshot,
+        SharedRateLimiter,
+    };
+    pub use crate::rbac::{
+        Permission, PolicyEvaluator, RbacError, RbacPolicy, RbacResult, ResourceRule, Role, Subject,
+    };
+    pub use crate::secrets::{
+        CachedSecretStore, ChainedSecretStore, EnvVarSecretStore, InMemorySecretStore,
+        KeyRotationManager, SecretError, SecretKey, SecretResult, SecretStore, SecretValue,
+    };
+    pub use crate::tenancy::{
+        QuotaUtilization, ResourceQuota, ResourceUsage, TenantContext, TenantError, TenantRegistry,
+        TenantResult,
+    };
+    pub use crate::timeout::{
+        timeout, timeout_named, with_timeout, with_timeout_named, CancellationToken, Deadline,
+        OperationContext, Timeout, TimeoutError, TimeoutStats, TimeoutStatsSnapshot,
+    };
+    #[cfg(feature = "tls")]
+    pub use crate::tls::{
+        CertificateInfo, CertificateStore, ClientAuth, SniResolver, TlsAcceptor, TlsConfig,
+        TlsConfigBuilder, TlsConnector, TlsError, TlsResult, TlsSessionInfo, TlsVersion,
+    };
+
+    // Benchmark framework (feature-gated)
+    #[cfg(feature = "benchmark")]
+    pub use crate::benchmark::{
+        BenchmarkBaseline, BenchmarkConfig, BenchmarkResult, BenchmarkSuite, Benchmarkable,
+        ConfidenceInterval, DetailedStatistics, RegressionEntry, RegressionReport,
+        RegressionStatus, ScalingMetrics, WorkloadConfig, WorkloadSize,
+    };
+}
+
+// Re-exports for convenience
+pub use context::RingContext;
+pub use control::ControlBlock;
+pub use domain::{Domain, DomainMessage};
+pub use error::{Result, RingKernelError};
+pub use hlc::HlcTimestamp;
+pub use memory::{DeviceMemory, GpuBuffer, MemoryPool, PinnedMemory};
+pub use message::{priority, MessageHeader, MessageId, Priority, RingMessage};
+pub use provenance::{
+    ProvNodeType, ProvRelation, ProvRelationKind, ProvenanceBuilder, ProvenanceError,
+    ProvenanceHeader,
+};
+pub use queue::{MessageQueue, QueueStats};
+pub use runtime::{
+    Backend, KernelHandle, KernelId, KernelState, KernelStatus, LaunchOptions, RingKernelRuntime,
+};
+pub use telemetry::TelemetryBuffer;
+pub use types::{BlockId, GlobalThreadId, ThreadId, WarpId};

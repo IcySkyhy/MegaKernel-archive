@@ -1,0 +1,39 @@
+/**
+ * Copyright (c) 2025 Huawei Technologies Co., Ltd.
+ * This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+ * CANN Open Software License Agreement Version 2.0 (the "License").
+ * Please refer to the License for details. You may not use this file except in compliance with the License.
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+ * See LICENSE in the root of the software repository for the full text of the License.
+ */
+
+/*!
+ * \file ws_categories.in
+ * \brief
+ */
+
+X(UNCLASSIFIED)
+X(WS_SLOT_MEM_BLOCK)
+
+X(UNCLASSIFIED_VECTOR)
+X(VECTOR_TEMPORARY)
+X(VECTOR_DEV_STITCH)
+X(VECTOR_DYN_FUNC_DATA)
+X(VECTOR_SLOT_LIST)
+X(VECTOR_READY_QUEUE)
+X(VECTOR_STITCHED_LIST)
+X(VECTOR_RUNTIME_OUTCAST_RECYCLE_LIST)
+X(VECTOR_SYMBOL_TABLE)
+
+X(UNCLASSIFIED_ITEMPOOL)
+X(ITEMPOOL_RUNTIME_OUTCAST)
+
+X(DUP_FUNC)
+X(DYN_DEVICE_TASK)
+X(FUNC_OP_ATTR)
+X(DUPPED_STITCH)
+X(READY_QUEUE)
+
+X(TENSOR_ROOTFUNC_INTERNAL)
+X(TENSOR_ROOTFUNC_OUTCAST_SLOT)

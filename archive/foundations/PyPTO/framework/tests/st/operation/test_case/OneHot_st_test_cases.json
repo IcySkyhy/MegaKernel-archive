@@ -1,0 +1,783 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "OneHot_test_0",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128
+                    ],
+                    "dtype": "int8",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "OneHot_test_1",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "int8",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                32
+            ],
+            "tile_shape": [
+                16,
+                8,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "OneHot_test_2",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32,
+                        2
+                    ],
+                    "dtype": "int8",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        2,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                2,
+                32
+            ],
+            "tile_shape": [
+                16,
+                8,
+                2,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "OneHot_test_3",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "OneHot_test_4",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                32
+            ],
+            "tile_shape": [
+                16,
+                8,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "OneHot_test_5",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32,
+                        2
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        2,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                2,
+                32
+            ],
+            "tile_shape": [
+                16,
+                8,
+                2,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "OneHot_test_6",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "OneHot_test_7",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                32
+            ],
+            "tile_shape": [
+                16,
+                8,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "OneHot_test_8",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32,
+                        2
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        2,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                2,
+                32
+            ],
+            "tile_shape": [
+                16,
+                8,
+                2,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "OneHot_test_9",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128
+                    ],
+                    "dtype": "int64",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "OneHot_test_10",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                32
+            ],
+            "tile_shape": [
+                16,
+                8,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "OneHot_test_11",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32,
+                        2
+                    ],
+                    "dtype": "int64",
+                    "data_range": {
+                        "min": 0,
+                        "max": 31
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32,
+                        2,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                2,
+                32
+            ],
+            "tile_shape": [
+                16,
+                8,
+                2,
+                32
+            ],
+            "params": {
+                "num_classes": 32,
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "OneHot_test_12",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        120
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 63
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        120,
+                        64
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                40,
+                64
+            ],
+            "tile_shape": [
+                32,
+                64
+            ],
+            "params": {
+                "num_classes": 64,
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "OneHot_test_13",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        120
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 63
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        120,
+                        64
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                64
+            ],
+            "tile_shape": [
+                40,
+                64
+            ],
+            "params": {
+                "num_classes": 64,
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "OneHot_test_14",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        120
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 63
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        120,
+                        64
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                64
+            ],
+            "tile_shape": [
+                32,
+                64
+            ],
+            "params": {
+                "num_classes": 64,
+                "func_id": -1
+            },
+            "index": 14
+        },
+        {
+            "case_index": 15,
+            "case_name": "OneHot_test_15",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 854
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        1007
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                1007
+            ],
+            "tile_shape": [
+                8,
+                1007
+            ],
+            "params": {
+                "num_classes": 1007,
+                "func_id": -1
+            },
+            "index": 15
+        },
+        {
+            "case_index": 16,
+            "case_name": "OneHot_test_16",
+            "operation": "OneHot",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": 451,
+                        "max": 975
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        1007
+                    ],
+                    "dtype": "int64",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                1007
+            ],
+            "tile_shape": [
+                8,
+                1007
+            ],
+            "params": {
+                "num_classes": 1007,
+                "func_id": -1
+            },
+            "index": 16
+        }
+    ]
+}

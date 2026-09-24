@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>基准测试 — TensorSharp 维基</title>
+  <meta name="description" content="TensorSharp 对比 llama.cpp 的基准测试结果，以及测试框架如何运作。">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem('ts-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.classList.toggle('dark',t==='dark');}catch(e){}</script>
+  <script defer src="assets/search-index-zh.js"></script>
+  <script defer src="assets/app.js"></script>
+</head>
+<body data-page="benchmarks">
+<a class="skip" href="#content">跳到正文</a>
+<main class="content" id="content">
+  <div class="breadcrumb"><a href="index_zh-cn.html">首页</a> › 基准测试</div>
+  <h1>基准测试</h1>
+  <p class="lede">TensorSharp 在相同模型与硬件上与其他推理引擎的对比，以及守护正确性的测试框架。</p>
+
+  <h2 id="head-to-head">同台对比：TensorSharp vs llama.cpp</h2>
+  <p>一个<strong>纯 .NET 引擎与手工优化的 C++ <code>llama.cpp</code> 正面较量</strong> —— 相同 GGUF、相同 <strong>NVIDIA RTX 3080 Laptop GPU（16 GB）</strong>、统一的 OpenAI <code>/v1/chat/completions</code> 接口，且<strong>两个引擎均分别在 GGML CUDA 与 GGML Vulkan 构建上测量</strong>，覆盖短提示、长上下文与多轮对话场景。下方数据来自当前签入的 <code>benchmarks/engine_comparison</code> harness 运行（<code>docs/engine_comparison_report.md</code>），可在自己的硬件上复现。</p>
+
+  <div class="card-grid">
+    <div class="card"><div class="ic">🏆</div><h3>CUDA prefill 与 TTFT</h3><p>Gemma 4 <strong>E4B</strong> 的 prefill 几何平均快 <strong>1.28×</strong>（短提示最高 <strong>1.39×</strong>）；2-bit 量化的 Qwen 3.6 <strong>35B-A3B</strong> MoE 同样达到 <strong>1.28× prefill / 1.27× TTFT</strong>。</p></div>
+    <div class="card"><div class="ic">💬</div><h3>多轮 prefill 全面获胜</h3><p>在 CUDA 上，后续轮次的 prefill 在<strong>每个模型</strong>上都更快 —— 1.27×（E4B）、<strong>1.39×</strong>（12B）、<strong>1.49×</strong>（35B-A3B）、1.11×（27B）—— 首 token 最高早 <strong>1.47×</strong> 到达。</p></div>
+    <div class="card"><div class="ic">⚡</div><h3>CUDA decode：持平或更快</h3><p>几何平均 E4B <strong>1.02×</strong>、12B <strong>1.04×</strong>、27B <strong>1.07×</strong> —— 长上下文 decode 最高 <strong>1.12×</strong> —— 35B-A3B MoE 差距在 2% 以内（0.98×）。</p></div>
+    <div class="card"><div class="ic">🌋</div><h3>Vulkan dense decode 1.21×</h3><p>Gemma 4 <strong>12B</strong> 在厂商中立的 Vulkan 路径上 decode 快 <strong>1.21×</strong>（长上下文最高 <strong>1.32×</strong>），prefill / TTFT 不低于持平。</p></div>
+  </div>
+
+  <p>下表为 TensorSharp 相对 llama.cpp 在<strong>相同后端</strong>上的几何平均加速比（单流、贪心采样、关闭 MTP）。<strong>&gt; 1.0× 表示 TensorSharp 更快</strong>（decode / prefill）或延迟更低（TTFT）：</p>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>模型</th><th>后端</th><th>decode</th><th>prefill</th><th>TTFT</th></tr></thead>
+    <tbody>
+      <tr><td>Gemma 4 E4B it (Q8_0, dense 多模态)</td><td>CUDA</td><td>1.02×</td><td><span class="yes">1.28×</span></td><td><span class="yes">1.27×</span></td></tr>
+      <tr><td>Gemma 4 E4B it (Q8_0, dense 多模态)</td><td>Vulkan</td><td>1.00×</td><td>1.05×</td><td>1.03×</td></tr>
+      <tr><td>Gemma 4 12B it (UD-Q4_K_XL, dense)</td><td>CUDA</td><td>1.04×</td><td><span class="yes">1.17×</span></td><td><span class="yes">1.16×</span></td></tr>
+      <tr><td>Gemma 4 12B it (UD-Q4_K_XL, dense)</td><td>Vulkan</td><td><span class="yes">1.21×</span></td><td>1.04×</td><td>1.03×</td></tr>
+      <tr><td>Qwen 3.6 35B-A3B (UD-IQ2_XXS, <strong>MoE</strong>)</td><td>CUDA</td><td>0.98×</td><td><span class="yes">1.28×</span></td><td><span class="yes">1.27×</span></td></tr>
+      <tr><td>Qwen 3.6 35B-A3B (UD-IQ2_XXS, <strong>MoE</strong>)</td><td>Vulkan</td><td>0.87×</td><td>1.04×</td><td>1.03×</td></tr>
+      <tr><td>Qwen 3.6 27B (UD-IQ2_XXS, dense)</td><td>CUDA</td><td><span class="yes">1.07×</span></td><td>0.96×</td><td>0.95×</td></tr>
+      <tr><td>Qwen 3.6 27B (UD-IQ2_XXS, dense)</td><td>Vulkan</td><td>1.02×</td><td>0.85×</td><td>0.84×</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>这些领先来自 TensorSharp 的架构专属快路径：融合的整模型 prefill/verify 图（配以融合的 FFN / attention 内核）、融合的整模型 decode，以及 vLLM 式<a href="advanced_zh-cn.html#continuous-batching">带跨请求前缀共享的分页 KV 缓存</a>。即便在极限量化下引擎也不落下风：在 2-bit IQ2_XXS 权重上，dense Qwen 3.6 27B 的 decode 快 1.07×（CUDA）/ 1.02×（Vulkan），35B-A3B MoE 的 prefill 快 1.28×——纯 .NET 引擎与手工优化的 C++ 并驾齐驱。剩余低于 1.0× 的项——主要是 Qwen 3.6 35B-A3B 在 Vulkan 上的 decode（0.87×）、Qwen 3.6 27B dense 的 prefill（CUDA 0.96× / Vulkan 0.85×）以及 E4B 在 Vulkan 上的长提示 prefill（0.71×）——仍是正在优化的目标，而非最终结果。</p>
+
+  <p><strong>文本场景之外</strong> —— harness 还支持工具调用、结构化输出（JSON）、图像 / 音频 / 视频、MTP 开/关与并发扩展等场景，以及对比 <code>stable-diffusion.cpp</code> 的 <code>image_edit</code> 场景；该场景较早的一次 CUDA 运行（Qwen-Image-Edit 2511 Q2_K DiT + Lightning 4-step LoRA，544×1184，4 步，相同输入与 seed）测得 TensorSharp 预热后的编辑耗时 <strong>40.44 s vs 48.16 s，约快 1.19×</strong>。这些 cell 可通过 <code>benchmarks/engine_comparison</code> 中记录的 harness 参数启用。</p>
+
+  <div class="callout note"><div class="ic">⚖️</div><p>诚实的对比会同时展示胜势与差距。这些数字来自单台机器（RTX 3080 Laptop、单流）；你的硬件、模型与量化都会改变它们。请在你自己的机器上运行内置基准与引擎对比框架，得到对你而言真正有意义的数字。</p></div>
+
+  <h2 id="testing">测试</h2>
+  <h3>单元测试（xUnit）</h3>
+  <p><code>InferenceWeb.Tests</code> 测试无需运行服务器的进程内行为：托管量化运算、直接 CUDA 与 MLX 后端内核（在硬件可用时）、分页 KV 调度、批量执行器正确性、各模型批量前向与 legacy 路径的一致性、MTP / NextN 推测解码正确性、DiffusionGemma 探针、编解码器往返、提示词渲染，以及服务器 CLI 选项构建器。</p>
+  <pre data-lang="bash"><code>dotnet test InferenceWeb.Tests/InferenceWeb.Tests.csproj</code></pre>
+
+  <h3>服务器集成测试</h3>
+  <p><code>TensorSharp.Server/testdata/</code> 中的集成测试覆盖全部三种 API 风格（Web UI SSE、Ollama、OpenAI）、多轮对话、思考模式、工具调用、结构化输出、队列状态兼容、并发请求与中止支持。架构相关功能会自动检测，并在当前模型不支持时跳过。</p>
+  <pre data-lang="bash"><code># 先启动 TensorSharp.Server，然后运行：
+python3 TensorSharp.Server/testdata/test_multiturn.py
+# 或
+bash TensorSharp.Server/testdata/test_multiturn.sh</code></pre>
+
+  <h3>推理矩阵运行器</h3>
+  <p><code>TensorSharp.TestMatrix</code> 是更广泛的、由 CLI 驱动的长时段 模型 × 后端 × 功能 × 环境变量 覆盖框架。它发现 GGUF 文件、过滤不可用后端与不支持的提示类型、运行基线加环境变量扫描的各个 cell、为每个 cell 写一份 JSON 结果、生成聚合 Markdown 报告，并与各主机基线对比。</p>
+  <pre data-lang="bash"><code>dotnet build TensorSharp.TestMatrix/TensorSharp.TestMatrix.csproj -c Release
+dotnet run --project TensorSharp.TestMatrix -c Release -- --dry-run</code></pre>
+
+  <div class="callout note"><div class="ic">📊</div><p>基准数字高度依赖硬件、模型、量化与 KV 缓存 dtype。请把上面的数字当作单台机器上可复现的参考点，而非普适保证 —— 在你自己的硬件上运行内置基准，得到对你真正有意义的数字。</p></div>
+
+  <div class="content-footer">
+    <a href="advanced_zh-cn.html">← 高级功能</a>
+    <a href="api-reference_zh-cn.html">下一篇：API 参考 →</a>
+  </div>
+</main>
+</body>
+</html>

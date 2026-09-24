@@ -1,0 +1,309 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+
+#include "ark/executor.hpp"
+
+#include "ark/planner.hpp"
+#include "gpu/gpu.hpp"
+#include "model/model_json.hpp"
+#include "unittest/unittest_utils.h"
+
+template <bool LoopMode>
+ark::unittest::State test_executor() {
+    ark::gpuStream stream;
+    UNITTEST_EQ(
+        ark::gpuStreamCreateWithFlags(&stream, ark::gpuStreamNonBlocking),
+        ark::gpuSuccess);
+
+    ark::Model empty;
+    {
+        ark::DefaultExecutor executor(empty, 0, stream, {}, "test", LoopMode);
+        UNITTEST_EQ(executor.device_id(), 0);
+        UNITTEST_EQ(executor.stream(), stream);
+
+        executor.launch();
+        executor.run(1);
+        executor.wait();
+        executor.stop();
+        executor.destroy();
+
+        UNITTEST_TRUE(executor.destroyed());
+    }
+    {
+        ark::DefaultExecutor executor(empty, 0, stream, {}, "test", LoopMode);
+        executor.launch();
+        executor.run(1);
+        executor.wait();
+        executor.stop();
+
+        executor.launch();
+        executor.run(1);
+        executor.wait();
+        executor.stop();
+
+        executor.destroy();
+    }
+    {
+        ark::DefaultExecutor executor(empty, 0, stream, {}, "test", LoopMode);
+
+        executor.launch();
+        executor.launch();  // Will be ignored with a warning.
+        executor.run(1);
+        executor.wait();
+        executor.wait();  // nothing to do
+
+        // Stop & destroy automatically.
+    }
+
+    // Raw executor test
+    ark::Model m;
+    auto tensor = m.tensor({1024}, ark::FP32);
+    m.noop(tensor);
+
+    ark::Planner planner(m, 0);
+    auto plan = planner.plan();
+    {
+        std::vector<float> array(1024);
+
+        ark::Executor exe;
+        UNITTEST_EQ(exe.tensor_address(tensor), nullptr);
+        UNITTEST_THROW(
+            exe.tensor_read(tensor, array.data(), array.size() * sizeof(float)),
+            ark::InvalidUsageError);
+        UNITTEST_THROW(exe.tensor_write(tensor, array.data(),
+                                        array.size() * sizeof(float)),
+                       ark::InvalidUsageError);
+        UNITTEST_THROW(exe.launch(), ark::InvalidUsageError);
+
+        exe.compile(plan, 0);
+        UNITTEST_NE(exe.tensor_address(tensor), nullptr);
+
+        exe.launch();
+        exe.run(1);
+        exe.wait();
+    }
+
+    UNITTEST_EQ(ark::gpuStreamDestroy(stream), ark::gpuSuccess);
+    return ark::unittest::SUCCESS;
+}
+
+ark::unittest::State test_executor_loop() { return test_executor<true>(); }
+
+ark::unittest::State test_executor_no_loop() { return test_executor<false>(); }
+
+ark::unittest::State test_executor_tensor_read_write(ark::Dims shape,
+                                                     ark::Dims stride,
+                                                     ark::Dims offset) {
+    // Alloc CPU array
+    std::vector<float> host_data(shape.nelems());
+    for (size_t i = 0; i < host_data.size(); ++i) {
+        host_data[i] = static_cast<float>(i);
+    }
+
+    // Alloc GPU array
+    void *dev_ptr;
+    UNITTEST_EQ(ark::gpuMalloc(&dev_ptr, shape.nelems() * sizeof(float)),
+                ark::gpuSuccess);
+
+    // Create an ARK tensor
+    ark::Model m;
+    auto tensor = m.tensor(shape, ark::FP32, stride, offset);
+    m.noop(tensor);
+
+    ark::DefaultExecutor executor(m, 0);
+
+    UNITTEST_NE(executor.tensor_address(tensor), nullptr);
+
+    // Copy data from CPU array to ARK tensor
+    executor.tensor_write(tensor, host_data.data(),
+                          shape.nelems() * sizeof(float));
+
+    // Copy data from ARK tensor to GPU array
+    executor.tensor_read(tensor, dev_ptr, shape.nelems() * sizeof(float),
+                         nullptr, true);
+
+    // Check the data
+    std::vector<float> dev_data(shape.nelems());
+    executor.tensor_read(tensor, dev_data.data(),
+                         shape.nelems() * sizeof(float));
+    for (size_t i = 0; i < dev_data.size(); ++i) {
+        UNITTEST_EQ(dev_data[i], static_cast<float>(i));
+        dev_data[i] = -1;
+    }
+
+    ark::gpuStream stream;
+    UNITTEST_EQ(
+        ark::gpuStreamCreateWithFlags(&stream, ark::gpuStreamNonBlocking),
+        ark::gpuSuccess);
+
+    UNITTEST_EQ(ark::gpuMemcpyAsync(dev_data.data(), dev_ptr,
+                                    shape.nelems() * sizeof(float),
+                                    ark::gpuMemcpyDeviceToHost, stream),
+                ark::gpuSuccess);
+    UNITTEST_EQ(ark::gpuStreamSynchronize(stream), ark::gpuSuccess);
+
+    for (size_t i = 0; i < dev_data.size(); ++i) {
+        UNITTEST_EQ(dev_data[i], static_cast<float>(i));
+        dev_data[i] = -1;
+    }
+
+    // Copy -1s back to GPU array
+    UNITTEST_EQ(ark::gpuMemcpyAsync(dev_ptr, dev_data.data(),
+                                    shape.nelems() * sizeof(float),
+                                    ark::gpuMemcpyHostToDevice, stream),
+                ark::gpuSuccess);
+    UNITTEST_EQ(ark::gpuStreamSynchronize(stream), ark::gpuSuccess);
+
+    // Copy data from GPU array to ARK tensor
+    executor.tensor_write(tensor, dev_ptr, shape.nelems() * sizeof(float),
+                          nullptr, true);
+
+    // Copy data from ARK tensor to CPU array
+    executor.tensor_read(tensor, host_data.data(),
+                         shape.nelems() * sizeof(float));
+
+    // Check the data
+    for (size_t i = 0; i < host_data.size(); ++i) {
+        UNITTEST_EQ(host_data[i], -1);
+    }
+
+    // Provide a stream
+    executor.tensor_read(tensor, host_data.data(),
+                         shape.nelems() * sizeof(float), stream);
+    executor.tensor_write(tensor, host_data.data(),
+                          shape.nelems() * sizeof(float), stream);
+    UNITTEST_EQ(ark::gpuStreamDestroy(stream), ark::gpuSuccess);
+
+    // Invalid copy size
+    UNITTEST_THROW(executor.tensor_read(tensor, host_data.data(),
+                                        shape.nelems() * sizeof(float) + 1),
+                   ark::InvalidUsageError);
+    UNITTEST_THROW(executor.tensor_write(tensor, host_data.data(),
+                                         shape.nelems() * sizeof(float) + 1),
+                   ark::InvalidUsageError);
+
+    executor.stop();
+
+    UNITTEST_EQ(ark::gpuFree(dev_ptr), ark::gpuSuccess);
+    return ark::unittest::SUCCESS;
+}
+
+ark::unittest::State test_executor_tensor_read_write_no_stride() {
+    return test_executor_tensor_read_write({1024}, {}, {});
+}
+
+ark::unittest::State test_executor_tensor_read_write_stride_offset() {
+    return test_executor_tensor_read_write({4, 512}, {4, 1024}, {0, 512});
+}
+
+ark::unittest::State test_executor_invalid() {
+    ark::Executor exe;
+
+    // Invalid plan.
+    UNITTEST_THROW(exe.compile("not a json", 0), ark::InvalidUsageError);
+
+    // Invalid device ID.
+    UNITTEST_THROW(exe.compile(ark::PlanJson().dump(), -1),
+                   ark::InvalidUsageError);
+
+    // Invalid rank.
+    ark::PlanJson plan;
+    plan["Rank"] = 1;
+    UNITTEST_THROW(exe.compile(plan.dump(), 0), ark::InvalidUsageError);
+
+    return ark::unittest::SUCCESS;
+}
+
+// Smoke test: compile + launch on device 0 with a ReLU kernel.
+// The set_current() calls in compile() and launch() are exercised but are
+// effectively no-ops on device 0. The multi-GPU pinning fix (world_size >= 4)
+// requires multi-process testing and is not covered here.
+ark::unittest::State test_executor_device_pinning() {
+    ark::Model m;
+    auto tensor = m.tensor({256}, ark::FP32);
+    auto out = m.relu(tensor);
+
+    ark::Planner planner(m, 0);
+    auto plan = planner.plan();
+
+    // Compile and launch on device 0 — set_current() is called in
+    // compile() and launch() but is a no-op on device 0.
+    ark::Executor exe;
+    exe.compile(plan, 0);
+    exe.launch();
+
+    // Write data, run, read back
+    std::vector<float> input(256);
+    for (int i = 0; i < 256; ++i) input[i] = static_cast<float>(i - 128);
+    exe.tensor_write(tensor, input.data(), input.size() * sizeof(float));
+
+    exe.run(1);
+    exe.wait();
+
+    std::vector<float> output(256);
+    exe.tensor_read(out, output.data(), output.size() * sizeof(float));
+
+    // Verify ReLU: max(0, x)
+    for (int i = 0; i < 256; ++i) {
+        float expected = std::max(0.0f, input[i]);
+        UNITTEST_EQ(output[i], expected);
+    }
+
+    exe.stop();
+    return ark::unittest::SUCCESS;
+}
+
+// Test repeated compile-launch-stop cycles on the same executor to verify
+// that device pinning and resource cleanup work correctly across cycles.
+ark::unittest::State test_executor_recompile_cycle() {
+    ark::Model m;
+    auto tensor = m.tensor({64}, ark::FP32);
+    m.noop(tensor);
+
+    ark::Planner planner(m, 0);
+    auto plan = planner.plan();
+
+    ark::Executor exe;
+    for (int cycle = 0; cycle < 3; ++cycle) {
+        exe.compile(plan, 0);
+        exe.launch();
+        exe.run(1);
+        exe.wait();
+        exe.stop();
+    }
+    return ark::unittest::SUCCESS;
+}
+
+// Smoke test: run multiple iterations in loop mode to exercise the
+// atomicLoad/Store polling path. Does not inspect flag values directly;
+// verifies only that the host-side poll completes without hanging.
+ark::unittest::State test_executor_flag_polling() {
+    ark::Model m;
+    auto tensor = m.tensor({64}, ark::FP32);
+    m.noop(tensor);
+
+    ark::DefaultExecutor executor(m, 0);
+    executor.launch();
+
+    // Run a few iterations and wait — exercises the atomicLoad/Store
+    // polling loop on the host-mapped flag buffer.
+    for (int i = 0; i < 5; ++i) {
+        executor.run(1);
+        executor.wait();
+    }
+
+    executor.stop();
+    return ark::unittest::SUCCESS;
+}
+
+int main() {
+    UNITTEST(test_executor_loop);
+    UNITTEST(test_executor_no_loop);
+    UNITTEST(test_executor_tensor_read_write_no_stride);
+    UNITTEST(test_executor_tensor_read_write_stride_offset);
+    UNITTEST(test_executor_invalid);
+    UNITTEST(test_executor_device_pinning);
+    UNITTEST(test_executor_recompile_cycle);
+    UNITTEST(test_executor_flag_polling);
+    return 0;
+}

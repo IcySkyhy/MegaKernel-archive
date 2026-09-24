@@ -1,0 +1,19 @@
+defaults:
+  - override hydra/launcher: joblib
+
+seed: 1
+
+wandb:
+  name: "fused_gmlp"
+  group: "end2end"
+  type: "case_study"
+
+providers: ["ref_lib", "sep_knls"]
+batch_sizes: [1, 4, 16, 64]
+fp8_inputs: false
+
+best_config_path: calibrate-fused_gmlp-Llama-3-405B
+model_name: meta-llama/Llama-3.1-405B
+num_gen_tokens: 5
+hidden_size: 16384
+intermediate_size: 53248

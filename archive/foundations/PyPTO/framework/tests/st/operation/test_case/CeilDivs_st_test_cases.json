@@ -1,0 +1,160 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "CeilDivs_test_1",
+            "operation": "CeilDivs",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        64,
+                        128
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        64,
+                        128
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                43
+            ],
+            "tile_shape": [
+                192,
+                120
+            ],
+            "params": {
+                "scalar": 1,
+                "scalar_type": "int32",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "CeilDivs_test_2",
+            "operation": "CeilDivs",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        128,
+                        64
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16,
+                        128,
+                        64
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                4,
+                8
+            ],
+            "tile_shape": [
+                5,
+                142,
+                8
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_type": "int32",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "CeilDivs_test_3",
+            "operation": "CeilDivs",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        64,
+                        1024,
+                        16,
+                        128
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        64,
+                        1024,
+                        16,
+                        128
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                25,
+                477,
+                6,
+                7
+            ],
+            "tile_shape": [
+                16,
+                1,
+                169,
+                8
+            ],
+            "params": {
+                "scalar": 3,
+                "scalar_type": "int32",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 2
+        }
+    ]
+}

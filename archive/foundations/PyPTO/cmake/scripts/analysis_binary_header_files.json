@@ -1,0 +1,235 @@
+{
+  "libtile_fwk_cann_host_runtime.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/cann_host_runtime/"
+      ],
+      "Area": [
+        "framework/src/utils"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+      ]
+    }
+  },
+  "libtile_fwk_platform.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/platform/"
+      ],
+      "Area": [
+        "framework/src/cann_host_runtime/",
+        "framework/src/utils",
+        "framework/src/interface/utils/"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+      ]
+    }
+  },
+  "libtile_fwk_operator.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/operator/"
+      ],
+      "Area": [
+        "framework/src/interface/",
+        "framework/src/passes/"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+        "framework/src/interface/tileop/"
+      ]
+    }
+  },
+  "libtile_fwk_interface.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/interface/"
+      ],
+      "Area": [
+        "framework/src/operator/",
+        "framework/src/passes/",
+        "framework/src/platform/",
+        "framework/src/utils"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+        "framework/src/interface/tileop/"
+      ]
+    }
+  },
+  "libtile_fwk_codegen.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/codegen/"
+      ],
+      "Area": [
+        "framework/src/interface/",
+        "framework/src/passes/",
+        "framework/src/utils"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+      ]
+    }
+  },
+  "libtile_fwk_compiler.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/machine/"
+      ],
+      "Area": [
+        "framework/src/interface/",
+        "framework/src/passes/",
+        "framework/src/codegen/",
+        "framework/src/utils"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+        "framework/src/cost_model/simulation/"
+      ],
+      "BlackList": [
+      ]
+    }
+  },
+  "libtile_fwk_bundle.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/machine/runtime/bundle/"
+      ],
+      "Area": [
+        "framework/src/adapter",
+        "framework/src/interface/",
+        "framework/src/passes/",
+        "framework/src/machine/",
+        "framework/src/utils"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+      ]
+    }
+  },
+  "libtile_fwk_runtime.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/tests/runtime/"
+      ],
+      "Area": [
+        "framework/src/adapter",
+        "framework/src/interface/",
+        "framework/src/passes/",
+        "framework/src/machine/",
+        "framework/src/cost_model/simulation/",
+        "framework/src/utils"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+      ]
+    }
+  },
+  "libtile_fwk_simulation.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/cost_model/simulation/"
+      ],
+      "Area": [
+        "framework/src/interface/",
+        "framework/src/passes/",
+        "framework/src/utils"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+        "framework/src/interface/tileop/"
+      ]
+    }
+  },
+  "libtile_fwk_simulation_pv.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/cost_model/simulation_pv/"
+      ],
+      "Area": [
+        "framework/src/interface/",
+        "framework/src/passes/",
+        "framework/src/codegen/",
+        "framework/src/cost_model/simulation/",
+        "framework/src/utils"
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+        "framework/src/interface/tileop/"
+      ]
+    }
+  },
+  "libtile_fwk_utils.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/utils"
+      ],
+      "Area": [
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+      ]
+    }
+  },
+  "libtile_fwk_adapter.so": {
+    "Source-Header": {
+      "Self": [
+        "framework/src/adapter"
+      ],
+      "Area": [
+      ],
+      "Include": [
+        "framework/include/"
+      ],
+      "WhiteList": [
+      ],
+      "BlackList": [
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+defaults:
+  - override hydra/launcher: joblib
+
+seed: 1
+
+wandb:
+  name: "fused_gmlp"
+  group: "profile-cmp_bs"
+  type: "debug"
+
+providers: ["ref_lib", "m_tkn", "m_tkn_vec", "mt_kn", "mt_kn_vec", "mt_kn_keepA2", "mt_kn_keepA2_vec", "t_mkn", "t_mkn_vec", "sep_knls", "sep_knls_vec"]
+batch_sizes: [1, 10, 32, 128]
+fp8_inputs: false
+
+best_config_path: autotune-fused_gmlp

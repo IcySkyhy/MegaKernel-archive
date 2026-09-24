@@ -1,0 +1,6 @@
+function foo incast(v0_logical_tensor %a@0 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16])) outcast() #type(Opaque) #entry(false) {
+    v0_logical_tensor %$0@1 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), token %$0_w, token %a_r = !10000 EXP(%a@0) token();
+    v0_logical_tensor %$1@2 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), token %$1_w, token %a_r = !10001 EXP(%a@0) token();
+    v0_logical_tensor %a_1@0 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), token %a_1_w, token %$0_r = !10002 ASSEMBLE(%$0@1) token(%$0_w, %a_r) #toOffset(Unsupported);
+    return %a_1@0;
+}

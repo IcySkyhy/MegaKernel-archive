@@ -1,0 +1,26 @@
+{
+    "PyptoInit": {
+        "opInfo": {
+            "computeCost": "100",
+            "engine": "DNN_VM_AICPU",
+            "flagAsync": "False",
+            "flagPartial": "False",
+            "functionName": "DynTileFwkKernelServerInit",
+            "kernelSo": "libaicpu_extend_kernels.so",
+            "opKernelLib": "KFCKernel",
+            "userDefined": "False"
+        }
+    },
+    "PyptoRun": {
+        "opInfo": {
+            "computeCost": "100",
+            "engine": "DNN_VM_AICPU",
+            "flagAsync": "False",
+            "flagPartial": "False",
+            "functionName": "DynTileFwkKernelServer",
+            "kernelSo": "libaicpu_extend_kernels.so",
+            "opKernelLib": "KFCKernel",
+            "userDefined": "False"
+        }
+    }
+}

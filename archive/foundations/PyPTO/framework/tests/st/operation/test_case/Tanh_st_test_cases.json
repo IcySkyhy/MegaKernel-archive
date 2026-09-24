@@ -1,0 +1,1024 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Tanh_test_0",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [16384, 1],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -5.0,
+                        "max": 5.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [16384, 1],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [2352, 2],
+            "tile_shape": [121, 144],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "Tanh_test_1",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [1024, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3.0,
+                        "max": 3.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [1024, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [256, 32],
+            "tile_shape": [64, 32],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "Tanh_test_2",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [2048, 16],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2.0,
+                        "max": 2.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [2048, 16],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [128, 32],
+            "tile_shape": [64, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "Tanh_test_3",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [4096, 8],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1.0,
+                        "max": 1.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [4096, 8],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 64],
+            "tile_shape": [32, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "Tanh_test_4",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [8192, 4],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10.0,
+                        "max": 10.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [8192, 4],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [128, 64],
+            "tile_shape": [64, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "Tanh_test_5",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [8192, 4],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10.0,
+                        "max": 10.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [8192, 4],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [128, 64],
+            "tile_shape": [64, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "Tanh_test_6",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [1024, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -5.0,
+                        "max": 5.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [1024, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [256, 32],
+            "tile_shape": [64, 32],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "Tanh_test_7",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [16, 128, 64],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2.0,
+                        "max": 2.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [16, 128, 64],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [16, 128, 64],
+            "tile_shape": [16, 32, 32],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "Tanh_test_8",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [16384, 1],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10.0,
+                        "max": -0.1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [16384, 1],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [2352, 2],
+            "tile_shape": [121, 144],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "Tanh_test_9",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [16384, 1],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0.1,
+                        "max": 10.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [16384, 1],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [2352, 2],
+            "tile_shape": [121, 144],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "Tanh_test_10",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [256, 256],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1.0,
+                        "max": 1.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [256, 256],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [128, 128],
+            "tile_shape": [64, 64],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "Tanh_test_11",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [512, 128],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -5.0,
+                        "max": 5.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [512, 128],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 128],
+            "tile_shape": [32, 64],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "Tanh_test_12",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [128, 256],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3.0,
+                        "max": 3.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [128, 256],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 128],
+            "tile_shape": [32, 64],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "Tanh_test_13",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [1, 1024],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2.0,
+                        "max": 2.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [1, 1024],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [1, 1024],
+            "tile_shape": [1, 64],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "Tanh_test_14",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [4, 4, 4, 4],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2.0,
+                        "max": 2.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [4, 4, 4, 4],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [4, 4, 4, 4],
+            "tile_shape": [2, 2, 2, 2],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 14
+        },
+        {
+            "case_index": 15,
+            "case_name": "Tanh_test_15",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [8, 8, 8],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10.0,
+                        "max": 10.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [8, 8, 8],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [8, 8, 8],
+            "tile_shape": [4, 4, 4],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 15
+        },
+        {
+            "case_index": 16,
+            "case_name": "Tanh_test_16",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [32, 32, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1.0,
+                        "max": 1.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [32, 32, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [32, 32, 32],
+            "tile_shape": [16, 16, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 16
+        },
+        {
+            "case_index": 17,
+            "case_name": "Tanh_test_17",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [64, 64],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -5.0,
+                        "max": 5.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [64, 64],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 64],
+            "tile_shape": [16, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 17
+        },
+        {
+            "case_index": 18,
+            "case_name": "Tanh_test_18",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [64, 16],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -100.0,
+                        "max": 100.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [64, 16],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 16],
+            "tile_shape": [32, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 18
+        },
+        {
+            "case_index": 19,
+            "case_name": "Tanh_test_19",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [4096, 2],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1.0,
+                        "max": 1.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [4096, 2],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [128, 64],
+            "tile_shape": [64, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 19
+        },
+        {
+            "case_index": 20,
+            "case_name": "Tanh_test_20",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [1024, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1e-4,
+                        "max": 1e-4
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [1024, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [256, 32],
+            "tile_shape": [64, 32],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 20
+        },
+        {
+            "case_index": 21,
+            "case_name": "Tanh_test_21",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [512, 64],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1e-5,
+                        "max": 1e-5
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [512, 64],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 64],
+            "tile_shape": [32, 32],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 21
+        },
+        {
+            "case_index": 22,
+            "case_name": "Tanh_test_22",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [256, 128],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1e-6,
+                        "max": 1e-6
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [256, 128],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 128],
+            "tile_shape": [32, 64],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 22
+        },
+        {
+            "case_index": 23,
+            "case_name": "Tanh_test_23",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [1024, 16],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -50.0,
+                        "max": 50.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [1024, 16],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [256, 16],
+            "tile_shape": [64, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 23
+        },
+        {
+            "case_index": 24,
+            "case_name": "Tanh_test_24",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [512, 32],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -100.0,
+                        "max": 100.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [512, 32],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 32],
+            "tile_shape": [32, 32],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 24
+        },
+        {
+            "case_index": 25,
+            "case_name": "Tanh_test_25",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [256, 64],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -50.0,
+                        "max": 50.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [256, 64],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 64],
+            "tile_shape": [32, 32],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 25
+        },
+        {
+            "case_index": 26,
+            "case_name": "Tanh_test_26",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [2048, 8],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000.0,
+                        "max": 1000.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [2048, 8],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [128, 32],
+            "tile_shape": [64, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 26
+        },
+        {
+            "case_index": 27,
+            "case_name": "Tanh_test_27",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [1024, 16],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -500.0,
+                        "max": 500.0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [1024, 16],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [128, 16],
+            "tile_shape": [64, 16],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 27
+        },
+        {
+            "case_index": 28,
+            "case_name": "Tanh_test_28",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [512, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -0.5,
+                        "max": 0.5
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [512, 32],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 32],
+            "tile_shape": [32, 32],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 28
+        },
+        {
+            "case_index": 29,
+            "case_name": "Tanh_test_29",
+            "operation": "Tanh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [256, 64],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -0.5,
+                        "max": 0.5
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [256, 64],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [64, 64],
+            "tile_shape": [32, 32],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 29
+        }
+    ]
+}

@@ -1,0 +1,558 @@
+[
+ {
+  "funcName": "TENSOR_LLAMA_leaf0_5",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessors": [],
+  "remainingPredecessors": 0,
+  "semanticLabel": "",
+  "successors": [
+   2
+  ],
+  "taskId": 0
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf0_5",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessors": [],
+  "remainingPredecessors": 0,
+  "semanticLabel": "",
+  "successors": [
+   2
+  ],
+  "taskId": 1
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf2_7",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   0,
+   1
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 2,
+  "semanticLabel": "",
+  "successors": [
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "taskId": 2
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf3_8",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   2
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   11
+  ],
+  "taskId": 3
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf3_8",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   2
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   11
+  ],
+  "taskId": 4
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf3_8",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   2
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   11
+  ],
+  "taskId": 5
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf3_8",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   2
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   11
+  ],
+  "taskId": 6
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf3_8",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   2
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   11
+  ],
+  "taskId": 7
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf3_8",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   2
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   11
+  ],
+  "taskId": 8
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf3_8",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   2
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   11
+  ],
+  "taskId": 9
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf3_8",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   2
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   11
+  ],
+  "taskId": 10
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf11_16",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 8,
+  "semanticLabel": "",
+  "successors": [
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19
+  ],
+  "taskId": 11
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf12_17",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   11
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   20
+  ],
+  "taskId": 12
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf12_17",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   11
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   20
+  ],
+  "taskId": 13
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf12_17",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   11
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   20
+  ],
+  "taskId": 14
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf12_17",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   11
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   20
+  ],
+  "taskId": 15
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf12_17",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   11
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   20
+  ],
+  "taskId": 16
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf12_17",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   11
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   20
+  ],
+  "taskId": 17
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf12_17",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   11
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   20
+  ],
+  "taskId": 18
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf12_17",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   11
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   20
+  ],
+  "taskId": 19
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf20_25",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 8,
+  "semanticLabel": "",
+  "successors": [
+   21,
+   22
+  ],
+  "taskId": 20
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf21_26",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   20
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   23,
+   26,
+   32
+  ],
+  "taskId": 21
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf21_26",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   20
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   23,
+   26,
+   33
+  ],
+  "taskId": 22
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf23_28",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   21,
+   22
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 2,
+  "semanticLabel": "",
+  "successors": [
+   24,
+   25,
+   27,
+   28,
+   29,
+   30
+  ],
+  "taskId": 23
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf24_29",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   23
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   31
+  ],
+  "taskId": 24
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf24_29",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   23
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 1,
+  "semanticLabel": "",
+  "successors": [
+   31
+  ],
+  "taskId": 25
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf26_31",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   21,
+   22
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 2,
+  "semanticLabel": "",
+  "successors": [
+   27,
+   28,
+   29,
+   30
+  ],
+  "taskId": 26
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf24_29",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   23,
+   26
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 2,
+  "semanticLabel": "",
+  "successors": [
+   31
+  ],
+  "taskId": 27
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf24_29",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   23,
+   26
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 2,
+  "semanticLabel": "",
+  "successors": [
+   31
+  ],
+  "taskId": 28
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf24_29",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   23,
+   26
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 2,
+  "semanticLabel": "",
+  "successors": [
+   31
+  ],
+  "taskId": 29
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf24_29",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   23,
+   26
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 2,
+  "semanticLabel": "",
+  "successors": [
+   31
+  ],
+  "taskId": 30
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf31_36",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   24,
+   25,
+   27,
+   28,
+   29,
+   30
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 6,
+  "semanticLabel": "",
+  "successors": [
+   32,
+   33
+  ],
+  "taskId": 31
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf32_37",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   21,
+   31
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 2,
+  "semanticLabel": "",
+  "successors": [],
+  "taskId": 32
+ },
+ {
+  "funcName": "TENSOR_LLAMA_leaf32_37",
+  "coreType": "AIV",
+  "execTime": 1,
+  "predecessor": [
+   22,
+   31
+  ],
+  "predecessors": [],
+  "remainingPredecessors": 2,
+  "semanticLabel": "",
+  "successors": [],
+  "taskId": 33
+ }
+]

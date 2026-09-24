@@ -1,0 +1,327 @@
+% sections/discussion.tex — Discussion
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{What the Model Does Not Cover}
+\label{sec:disc:limits}
+
+We collect, in one place, the ways in which the formal model
+abstracts over the runtime.  Each is a candidate for future work
+and a limitation of the current paper's claims.
+
+\paragraph{Warp divergence}
+The model treats a \textsc{Process} step as atomic; in the runtime,
+a \textsc{Process} step is executed by a warp of 32 threads in SIMT
+fashion, and divergent control flow within the warp serializes
+through predicated execution.  The cost model the runtime presents
+to applications is conservative (assume the worst-case branch);
+the formal calculus is silent on divergence.  A finer-grained
+calculus that models per-thread state and predicated execution
+would let one prove tighter bounds for divergent actor bodies but
+would substantially complicate every theorem.  We chose the
+coarser abstraction.
+
+\paragraph{Cooperative-group fault semantics}
+Cooperative kernel launches assume that all blocks of the grid are
+co-resident on the SMs; if an SM faults (e.g., ECC uncorrected
+error), the entire kernel is torn down and the supervisor must
+restart all actors of the failed grid.  The formal model treats
+this as ``every actor's life'' transitioning to \Failed{} via a
+single supervisor-issued \textsc{Fail} step; the actual
+device-level fault recovery is not modeled.  A more complete
+model would distinguish recoverable per-block faults from
+unrecoverable per-grid faults; we leave this to future work.
+
+\paragraph{Migration: proof sketch plus bounded mechanization, not
+full analytical proof}
+The migration protocol of \Cref{sec:migration} is stated as a phase
+machine, and \Cref{thm:migration-safety} is given with a proof
+sketch and discharged by bounded TLC in
+\texttt{docs/verification/migration.tla} and
+\texttt{multi\_gpu\_k2k.tla}.  We do not give a full analytical
+proof in this paper.  Two complications are left to a companion
+treatment: the cross-device HLC merge argument of
+\Cref{sec:migration:hlc-cross} under non-negligible host
+wall-clock skew, and DSMEM re-establishment on the destination
+(DSMEM is per-device, so the destination device must rebuild the
+cluster topology before the actor resumes).  The bounded
+mechanization rules out counterexamples within its configuration
+but does not discharge the theorem at arbitrary scale.
+
+\paragraph{Adversary model for tenant isolation}
+The cross-tenant-isolation theorem
+(\Cref{thm:cross-tenant-isolation}) is proved against the calculus's
+own routing rule.  It is not proved against an adversary who can
+subvert the runtime—e.g., by forging an audit tag, by writing
+directly into another tenant's HBM region, or by exploiting a
+device-level memory-protection failure.  Such an adversary is
+outside the scope of the formal model; defending against it is a
+question of runtime hardening (we discussed defense in depth in
+\Cref{sec:tenancy:limits}).  An adversary-aware version of the
+isolation theorem would require modeling the device's memory
+protection guarantees, which depend on hardware features (e.g.,
+Multi-Instance GPU, Confidential Computing for Hopper) we have
+not yet incorporated.
+
+\subsection{What the Verification Pass Caught}
+\label{sec:disc:tlc-bug}
+
+The model-checking pass against the six \TLA{} specifications
+(\Cref{sec:eval:tlc}) is normally a confirmation step — it checks
+that the spec the paper describes still satisfies the invariants
+the paper claims.  In the v1.1 verification pass it caught a real
+specification-level bug.
+
+The migration spec (\texttt{migration.tla}) declares a
+\texttt{ChecksumMatch} invariant: at the moment of
+\textsc{SwapRouting}, the source's captured checksum equals the
+target's restored checksum (\Cref{thm:migration-safety}, clause~4).
+The original spec computed both checksums from the live
+\texttt{src\_state} variable.  But \texttt{AcceptDuringQuiesce}
+(the action that handles late messages arriving during
+\state{Quiesced}, \state{Transferring}, and \state{Swapping})
+mutates \texttt{src\_state} while the migration is in progress.
+A trace exists in which a late message lands in
+\texttt{src\_state} between \texttt{CaptureState} and
+\texttt{Transfer}; the source's checksum is recomputed before the
+swap and now disagrees with the target's restored checksum.  TLC
+reported the counterexample after $\sim$2 minutes of search.
+
+The Rust implementation was already correct: it captures the
+staging buffer as a single immutable byte slice at
+\textsc{CaptureState} and both sides compute CRC32 over those
+bytes.  The spec's bug was that it did not model the immutability
+of the captured snapshot.  We patched the spec to introduce an
+explicit \texttt{captured\_state} variable, frozen at
+\texttt{CaptureState}, used by both \texttt{Transfer} and the
+checksum check.  After the patch the invariant holds under the
+full bound.
+
+The episode is of the kind that formal methods are often cited as
+being useful for: a divergence between the spec's idealization of
+an implementation detail and the implementation itself.  In this
+case the implementation happened to be the more careful party; in
+another project the asymmetry could go the other way.  The
+verification pass is what surfaces the disagreement.
+
+\subsection{Open Questions}
+\label{sec:disc:open}
+
+\paragraph{Scaling the verification}
+The bounded \TLA{} verification covers parameter ranges of 2--3
+actors per spec, 4--10 messages per spec, queue capacity 2--4.  This
+is sufficient to expose state-machine bugs (the kind that show up at
+small configurations or do not show up at any) but does not cover
+production scales (thousands of actors, millions of messages).
+Scaling the verification will likely require symbolic abstraction
+techniques or compositional reasoning; a TLAPS-style proof of a
+scale-independent invariant, separately validated by TLC at small
+scales, is one direction.
+
+\paragraph{Heterogeneous backends}
+The formal model is GPU-agnostic in its statement (no rule
+references CUDA-specific primitives) but GPU-specific in its
+implementation: AMD HIP and Intel oneAPI offer analogous
+primitives, but the cost models differ enough that the same
+calculus on a different backend would produce a different
+performance profile.  A unified backend abstraction in
+\texttt{ringkernel-core} that maps the same high-level rules onto
+CUDA, HIP, and oneAPI realizations is the largest engineering
+direction we see.
+
+\paragraph{NSAI (neuro-symbolic AI) workloads}
+The motivating workload for \system{} is neuro-symbolic
+reasoning: a population of actors representing logical rules, a
+neural-network actor representing perception, a supervisor
+actor coordinating restart on rule-engine timeouts.  We expect to
+report on this workload in a follow-up paper.  The formal model
+of this paper is the substrate; the NSAI application is the test
+of whether the substrate's primitives compose into something
+domain-experts can reason about productively.
+
+\paragraph{Comparison against alternative GPU programming abstractions}
+We focused this paper on the formal model and validated the
+empirical numbers against the formal claims.  A comprehensive
+performance study against Triton, JAX, and CUDA Graphs across
+diverse workloads is out of scope here; we expect specific
+workloads will favor each of those abstractions over \system{},
+and equally specific workloads will favor \system{} over each of
+them (in particular, workloads with long-lived per-actor state and
+fine-grained inter-actor messaging).  Sketching the trade-off
+landscape is future work.
+
+\subsection{Future Hardware}
+\label{sec:disc:hw}
+
+The formal model is parameterized by a small set of hardware
+primitives: cluster size, DSMEM scope and latency, cooperative
+launch semantics, atomic-allocation cost, and the per-device
+fault-detection surface.  Two NVIDIA architectures beyond Hopper
+are relevant: Blackwell (B100/B200, GB200~NVL72, shipping; features
+documented in NVIDIA's public tuning and whitepaper materials) and
+Rubin (R100/R200, NVL144, in production Q1~2026; figures are
+NVIDIA's announced specifications and subject to change before
+silicon is publicly evaluable).  We distinguish between the two
+throughout this subsection.  We split the extensions into
+\textbf{documented} (grounded in current vendor documentation and
+published microbenchmarks) and \textbf{speculative} (contingent on
+announced specifications whose details have not been publicly
+confirmed).  We catalog each as a starting point for follow-on
+work; we do not predict performance.
+
+\paragraph{Documented extensions (Blackwell)}
+The items in this block rest on current NVIDIA documentation and
+published microbenchmarking results for Blackwell silicon.
+
+\paragraph{Cluster size and per-cluster supervision}
+Blackwell preserves Hopper's cluster geometry: up to 8 blocks
+portable, 16 blocks
+nonportable~\citep{nvidia2024blackwell-tuning,colfax2024clusters}.
+Cluster size therefore is not a Blackwell-specific extension.  The
+formal model's per-supervisor child count
+(\Cref{sec:supervision:policies}) is an implementation parameter
+rather than a soundness parameter, so it does not affect
+\Cref{thm:lifecycle-soundness} regardless.  The relevant new
+opportunity is to prove a \emph{cluster-locality} bound on a
+fault's blast radius: a supervisor whose children all reside in
+the same nonportable-size-16 cluster has cross-cluster K2K traffic
+only when escalating to its own supervisor.  This bound is
+expressible on Hopper too, but Blackwell's larger
+shared-memory-per-block (up to 227~KiB on
+B200~\citep{nvidia2024blackwell-tuning}) makes 16-actor clusters
+practical for state-heavy supervisor workloads.  Whether Rubin
+changes cluster geometry is not publicly disclosed at the time of
+writing (NVIDIA's Rubin platform documentation describes per-die
+SM count and NVLink-6 bandwidth but not cluster
+geometry~\citep{nvidia2025rubin}).
+
+\paragraph{Subset-synchronization barriers}
+Blackwell's \texttt{tcgen05.commit} bitmask synchronization
+primitive~\citep{colfax2024clusters} permits a cluster-scoped
+barrier on a strict subset of the cluster's blocks rather than the
+entire cluster.  In K2K terms, this lets the
+\textsc{Dsmem} tier of \Cref{sec:k2k:tiers} synchronize only the
+blocks involved in a given conversation, rather than draining the
+whole cluster's tick.  A further theorem becomes stateable:
+\emph{per-conversation liveness}—if blocks $B_1, B_2$ exchange a
+message, the conversation makes progress without quiescing the
+cluster's other blocks.  The current K2K calculus does not state
+this; doing so would require a refinement of the tick semantics
+to expose the subset structure.  We regard this as one of the
+natural candidates for a Blackwell-targeted refinement of the
+model.
+
+\paragraph{Confidential computing for tenant isolation}
+Blackwell is the first NVIDIA GPU with TEE-I/O capability
+(hardware-enforced encrypted I/O paths) and Multi-Instance GPU /
+Confidential Computing
+composability~\citep{nvidia2024secureai}.  Rubin
+extends this to NVLink-C2C (CPU--GPU) and NVLink (GPU--GPU)
+encryption~\citep{nvidia2025rubin}.  The cross-tenant isolation
+theorem (\Cref{thm:cross-tenant-isolation}) is currently a
+structural argument over the runtime's routing function, with the
+limitation noted in \Cref{sec:tenancy:limits} that the model does
+not formalize the adversary's hardware capabilities.  A
+Blackwell-or-later target lets the theorem be stated against an
+adversary with the standard hardware-attacker model: the
+encrypted I/O paths reduce the adversary's surface to one that the
+TEE specification already characterizes, and the isolation theorem
+becomes a corollary of the TEE's confidentiality guarantee
+composed with the runtime's routing function.  This would close
+the gap between the structural argument and the cryptographic
+argument.
+
+\paragraph{Speculative extensions (Rubin and rack-scale follow-on)}
+The remaining items rest on NVIDIA's announced Rubin
+specifications; cluster geometry, DSMEM scope, and
+\texttt{cluster.sync()} latency on Rubin have not been publicly
+disclosed at the time of writing.  Each should be re-examined once
+silicon is available.
+
+\paragraph{Self-healing actor systems (Rubin)}
+Rubin's second-generation RAS engine includes in-field SRAM repair
+and zero-downtime self-testing~\citep{nvidia2025rubin}, replacing
+Blackwell's detection-and-localization capability with active
+remediation.  The actor model gains the ability to migrate
+actors off a degrading SM \emph{before} the SM fails, rather than
+restart actors after a fault has already occurred.  A new
+predictive-restart rule could be added to
+\Cref{sec:supervision:policies}; the corresponding safety
+property would be that the new instance starts before the old
+instance's HLC is observable to be ``stuck.''  Stating and
+mechanizing this requires modeling the supervisor's view of
+device-health telemetry, which is currently outside the model.
+
+\paragraph{Rack-scale collapses the K2K tier hierarchy}
+GB200~NVL72 (Blackwell) and the Rubin~NVL144 follow-on present 72
+or 144 GPUs as a single all-to-all NVLink fabric (1.8~TB/s and
+3.6~TB/s per GPU, respectively~\citep{nvidia2024gb200,%
+nvidia2025rubin}).  At this scale, the cost gap between intra-cluster
+K2K (\textsc{Dsmem}) and inter-GPU K2K (NVLink P2P, per
+\Cref{sec:migration:cross-gpu}) narrows to a single order of
+magnitude rather than two; the fallback-to-host path of
+\Cref{thm:fast-path-selection} does not occur for any pair of
+GPUs in the rack.  The formal model's three-tier K2K hierarchy can
+be collapsed to two tiers in this regime (intra-cluster and
+intra-rack), with a new \emph{rack-locality} theorem stating that
+no cross-rack message exists in a single-rack deployment.  The
+operational reading is that an entire rack acts as a logical GPU
+to the actor system; the supervisor tree of
+\Cref{fig:supervisor-tree} extends naturally without changing the
+restart-policy semantics.
+
+\paragraph{Hardware decompression as a system actor}
+Blackwell's Decompression Engine is a fixed-function block on the
+copy engine, executing LZ4/Snappy/Deflate at $\sim$800~GB/s in
+parallel with SM kernels~\citep{nvidia2024decomp}.  Within our
+formal model, this maps cleanly to a \emph{system actor}: an actor
+whose \(\delta\) function is implemented in hardware rather than
+in CUDA, with bounded per-tick throughput and no SM-cycle
+consumption.  Adding a new actor class for hardware-implemented
+\(\delta\) functions—keeping the lifecycle, K2K, and supervisor
+machinery, but bypassing the persistent-kernel substrate for the
+\textsc{Process} step—is a small extension that opens the model to
+a class of accelerator primitives that are otherwise difficult to
+expose in actor-style code.
+
+\paragraph{Tensor Memory: a constraint, not an extension}
+Blackwell's per-SM 256~KiB Tensor Memory (TMEM) is reachable only
+via \texttt{tcgen05.*} instructions, not from ordinary
+SMEM/DSMEM addresses~\citep{microbench-blackwell}.  Actor state
+must therefore continue to live in HBM, SMEM, DSMEM, or
+registers; TMEM is a substrate for matrix operations that the
+\(\delta\) function may invoke but not a substrate for actor
+state.  This is worth saying explicitly because a reader might
+otherwise expect a 256~KiB on-chip extension of \(\mathit{snap}\)
+to be available; it is not.
+
+\paragraph{Caveats on the road map}
+We treat the speculative items above as research \emph{directions}
+contingent on the as-yet-unpublished Rubin parameters; a
+formal-model update for any specific Rubin extension would follow a
+hardware-availability checkpoint similar to the one the H100~NVL
+evaluation of \Cref{sec:evaluation} represents for Hopper.  The
+documented Blackwell items are better supported but still require
+that we validate the hardware behavior we model—microbenchmarks
+first, extensions to the calculus second—before the corresponding
+theorems can be claimed.
+
+\subsection{A Broader Framing}
+\label{sec:disc:big}
+
+The framing we would suggest, and would be happy to have disputed,
+is that recent GPU architectures have begun to expose primitives
+that systems work can plausibly target, not just numerics.  The
+coprocessor framing---the host writes a batch of data, calls a
+function, reads the results back---has served GPU programming for
+most of its history.  The Hopper-era additions of clusters, DSMEM,
+asynchronous allocation, and cooperative launches are performance
+features in the first instance, but they also make it possible to
+treat the GPU as a long-running computational fabric in ways that
+earlier architectures did not readily support.  This paper takes
+one step in that direction by treating the fabric as a target for
+the actor model.  Whether analogues of other systems abstractions
+(databases, queues, schedulers, supervisors of other kinds) will
+sit as naturally on the same fabric, and whether the
+formal-model-then-mechanization methodology we apply here will
+carry over, is an open question.

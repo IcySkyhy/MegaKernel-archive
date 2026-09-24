@@ -1,0 +1,101 @@
+# 介绍
+
+inductor-npu-ext 正在为 Inductor 添加一个亲和 NPU 的 Codegen 后端，该后端定位于使用 NPU 上的 SOTA DSL 生成 Inductor 融合 Kernel。
+
+inductor-npu-ext 当前基于 AscendC 生成融合Kernel，同时持续集成 NPU 上的新兴 DSL PTO，以保证融合 Kernel 生成的先进性。
+
+<img src="image/README/framework.png" width="40%" />
+
+当前的主要工作：
+
+* [X] 支持 Pointwise/Reduction 融合
+* [ ] 支持水平融合与垂直融合
+* [X] 支持动态 Shape
+* [ ] 支持MM尾声&序幕融合
+* [ ] SuperKernel融合(一种降低 Device 上 Kernel 调度间隙的技术)
+* [ ] 静态化编译支持（一种静态shape场景下降低算子头开销的技术）
+* [X] 支持需要 Workspace 内存的 Kernel
+* [ ] PGO（Profiling Guide Optimize）性能寻优
+* [X] 基于硬件性能建模的模板&Tiling寻优
+* [ ] 稳健地扩充支持融合的算子白名单
+* [ ] 支持离散访存类融合
+
+---
+
+## 软件安装
+
+### 安装torch_npu
+
+> inductor-npu-ext 依赖 torch 2.8+ 版本
+
+```bash
+pip3 install numpy
+pip3 install pyyaml
+pip3 install setuptools
+pip3 install torch_npu==2.8 # 通过pip安装torch_npu时会自动安装依赖的torch版本
+```
+
+### 安装CANN主线版本
+
+inductor-npu-ext 依赖 CANN 主线版本。如果您是外部用户，可以联系对应的支撑团队获取安装包。
+
+### 安装inductor-npu-ext
+
+```bash
+git clone https://gitcode.com/Ascend/torchair.git
+cd torchair/experimental/_inductor_npu_ext/
+pip3 install -e ./python/
+```
+
+### 其他环境依赖
+
+- CMake >= 3.16.0
+- GCC >= 7.3.0
+
+在 openEuler 系统上，您可以通过以下命令安装：
+
+```shell
+sudo yum install cmake gcc
+```
+
+在 Ubuntu 系统上，您可以通过以下命令安装：
+
+```shell
+sudo apt-get install cmake gcc
+```
+
+---
+
+## 功能验证
+
+> 详细的使用说明参见 [使用手册](./docs/manuals.md)。
+
+执行前，需要执行 CANN 安装目录下的 set_env.sh 设置 CANN 相关环境变量
+
+> 例如CANN安装路径为 `/usr/local/Ascend/cann`，则执行：
+
+```bash
+source /usr/local/Ascend/cann/set_env.sh
+```
+
+运行以下代码进行功能验证：
+
+```python
+import torch
+import torch_npu
+import inductor_npu_ext
+
+@torch.compile
+def test_add_sum(x, y):
+    return torch.add(x, y).sum()
+
+x = torch.randn(32, 1024).npu()
+y = torch.randn(1, 1024).npu()
+
+out = test_add_sum(x, y)
+golden = (x + y).sum()
+
+max_diff = torch.max(torch.abs(out - golden))
+assert max_diff < 1e-3, max_diff
+print("Succeed")
+```

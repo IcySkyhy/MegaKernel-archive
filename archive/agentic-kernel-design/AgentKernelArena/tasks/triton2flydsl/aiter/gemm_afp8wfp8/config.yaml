@@ -1,0 +1,17 @@
+source_file_path:
+- gemm_afp8wfp8.py
+target_kernel_functions:
+- gemm_afp8wfp8
+- _gemm_afp8wfp8_kernel
+compile_command:
+- python3 test_kernel_harness.py --compile
+correctness_command:
+- python3 test_kernel_harness.py --correctness
+performance_command:
+- python3 test_kernel_harness.py --full-benchmark
+task_type: triton2flydsl
+platform_support:
+  required_arch: gfx950
+  status: active
+  skip_reason: null
+task_result_template: null

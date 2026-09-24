@@ -1,0 +1,194 @@
+% Persistent GPU Actors: A Formal Model for Living Computation on the Device
+%
+% arXiv preprint — compile with: pdflatex main && bibtex main && pdflatex main && pdflatex main
+
+\documentclass[11pt,a4paper]{article}
+
+% ── Core packages ──────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\rmfamily
+\DeclareFontShape{T1}{lmr}{bx}{sc}{<->ssub*lmr/bx/n}{}
+\DeclareFontShape{T1}{lmr}{m}{scit}{<->ssub*lmr/m/sc}{}
+
+% ── Math ───────────────────────────────────────────────────────────────
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+% Semantic brackets \llbracket / \rrbracket — defined via mathtools to
+% avoid the stmaryrd dependency (not in texlive-latex-recommended).
+\DeclarePairedDelimiter{\sembrack}{\lBrack}{\rBrack}
+\providecommand{\lBrack}{[\!\!\,[}
+\providecommand{\rBrack}{]\!\!\,]}
+\providecommand{\llbracket}{\lBrack}
+\providecommand{\rrbracket}{\rBrack}
+% Load only the `inference` feature of the semantic package; the default
+% (loading all options) activates math-mode ligatures that break inline
+% \(...\) math.
+\usepackage[inference]{semantic}
+
+% ── Layout ─────────────────────────────────────────────────────────────
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% Allow LaTeX to stretch interword spaces by up to 3em when a paragraph
+% would otherwise produce an overfull line (typically caused by long
+% \texttt{...} identifiers or URLs that cannot hyphenate).  This is the
+% single-shot fix that avoids peppering the sources with \allowbreak.
+\setlength{\emergencystretch}{3em}
+
+% ── Figures / tables ───────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{pifont}                 % \cmark / \xmark
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, automata, positioning, shapes, calc, fit, backgrounds}
+% Declare a background layer for fit-based grouping figures.
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+% ── Algorithms ─────────────────────────────────────────────────────────
+% algorithm2e ships in texlive-science; load only when present so the
+% paper builds against a stock texlive-latex-recommended install.
+\IfFileExists{algorithm2e.sty}{%
+  \usepackage[ruled,vlined,linesnumbered]{algorithm2e}%
+}{}
+
+% ── Code listings ──────────────────────────────────────────────────────
+\usepackage{listings}
+\lstdefinelanguage{TLA}{
+  morekeywords={MODULE, EXTENDS, CONSTANTS, VARIABLES, EQUAL, NEW, IF, THEN, ELSE,
+                LET, IN, CASE, OTHER, DOMAIN, EXCEPT, CHOOSE, UNCHANGED,
+                Init, Next, Spec, Invariant, INSTANCE, ASSUME, THEOREM},
+  morecomment=[s]{(*}{*)},
+  morestring=[b]",
+  sensitive=true,
+}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue!70!black},
+  commentstyle=\color{green!50!black},
+  stringstyle=\color{red!60!black},
+}
+
+% ── Colors / hyperlinks ───────────────────────────────────────────────
+\usepackage[dvipsnames]{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!50!black,urlcolor=blue!70!black,breaklinks=true]{hyperref}
+\usepackage{cleveref}
+
+% Encourage URL line breaks at any character (not just / - .).  Without
+% this, long NVIDIA / Colfax / ETH blog URLs in the bibliography
+% produce overfull lines.
+\PassOptionsToPackage{hyphens}{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\makeatother
+\Urlmuskip=0mu plus 1mu
+
+% ── Bibliography ───────────────────────────────────────────────────────
+\usepackage[numbers,sort&compress]{natbib}
+
+% ── Theorem environments ──────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{property}[theorem]{Property}
+
+% ── Custom commands ───────────────────────────────────────────────────
+\newcommand{\system}{\texorpdfstring{\textsc{RingKernel}}{RingKernel}}
+\newcommand{\actor}{\textsc{Actor}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\hlc}{\mathsf{HLC}}
+\DeclareMathOperator{\dom}{dom}
+\newcommand{\state}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+\newcommand{\trans}[1]{\xrightarrow{#1}}
+\newcommand{\ttrans}[1]{\overset{#1}{\longrightarrow}}
+
+% Convenience: TLA+ logo, used a lot in text mode.
+\newcommand{\TLA}{\textsc{TLA}\ensuremath{^{+}}}
+
+% Lifecycle states (typeset consistently throughout)
+\newcommand{\Dormant}{\state{Dormant}}
+\newcommand{\Initializing}{\state{Initializing}}
+\newcommand{\Active}{\state{Active}}
+\newcommand{\Draining}{\state{Draining}}
+\newcommand{\Terminated}{\state{Terminated}}
+\newcommand{\Failed}{\state{Failed}}
+
+% Lifecycle action verbs (transitions, not states)
+\newcommand{\Spawn}{\textsc{Spawn}}
+\newcommand{\Activate}{\textsc{Activate}}
+\newcommand{\Process}{\textsc{Process}}
+\newcommand{\Quiesce}{\textsc{Quiesce}}
+\newcommand{\Terminate}{\textsc{Terminate}}
+\newcommand{\Fail}{\textsc{Fail}}
+
+% ═══════════════════════════════════════════════════════════════════════
+\title{%
+  Persistent GPU Actors:\\
+  A Formal Model for Living Computation on the Device%
+}
+
+\author{%
+  Michael Ivertowski\\
+  \textit{Independent Researcher}\\
+  \textit{Zurich, Switzerland}\\[2pt]
+  \small\url{https://orcid.org/0009-0008-7829-2249}
+}
+
+\date{April 2026}
+
+% ═══════════════════════════════════════════════════════════════════════
+\begin{document}
+\maketitle
+
+% ── Abstract ──────────────────────────────────────────────────────────
+\input{sections/abstract}
+
+% ── Main body ─────────────────────────────────────────────────────────
+\input{sections/introduction}
+\input{sections/background}
+\input{sections/related_work}
+\input{sections/model}
+\input{sections/memory}
+\input{sections/k2k}
+\input{sections/supervision}
+\input{sections/tenancy}
+\input{sections/migration}
+\input{sections/implementation}
+\input{sections/evaluation}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+% ── References ────────────────────────────────────────────────────────
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% ── Appendices ────────────────────────────────────────────────────────
+\appendix
+\input{sections/appendix}
+
+\end{document}

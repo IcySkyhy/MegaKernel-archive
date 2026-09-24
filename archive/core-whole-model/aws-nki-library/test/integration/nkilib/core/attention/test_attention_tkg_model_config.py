@@ -1,0 +1,28 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import os as _os
+if _os.environ.get("SKIP_MODEL_TESTS"):
+    raise ImportError("Model tests skipped via SKIP_MODEL_TESTS")
+
+"""
+Attention TKG model configuration data
+
+Config format: [AttnTKGConfig, AttnTKGTestParams]
+"""
+
+from nkilib_src.nkilib.core.attention.attention_tkg_utils import AttnTKGConfig
+from test.integration.nkilib.core.attention.test_attention_tkg_utils import AttnTKGTestParams
+
+attention_tkg_model_configs = []

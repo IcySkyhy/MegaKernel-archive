@@ -1,0 +1,36 @@
+{
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "peak_gbs": 1008.0,
+  "sms": 128,
+  "driver": "570.211.01",
+  "cuda": "12.8",
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "dtype": "bfloat16",
+  "weights_gb": 3.09,
+  "config": {"context": 512, "decode_tokens": 128, "batch": 1},
+  "ladder_ms_per_token": {
+    "eager": 18.976,
+    "torch_compile_cudagraph": 5.694,
+    "vllm_0_11_0": 4.414,
+    "fused_megakernel_graph": 3.716,
+    "memory_floor": 3.063
+  },
+  "ladder_tok_s": {
+    "eager": 53,
+    "torch_compile_cudagraph": 176,
+    "vllm_0_11_0": 227,
+    "fused_megakernel_graph": 269,
+    "memory_floor": 330
+  },
+  "notes": {
+    "eager_launches_per_step": 1197,
+    "vllm_vs_floor": 1.44,
+    "fused_vs_floor": 1.21,
+    "fused_vs_vllm": 0.84,
+    "vllm_env": "vllm==0.11.0 on torch 2.8.0+cu128 (latest vllm wheels need CUDA 13 / driver >=580; this box is on 12.8)",
+    "fused_recipe": "from-scratch Triton kernels fused into one CUDA-graph-captured decode step: fused RMSNorm+QKV-bias GEMV, fused RoPE+KV-cache-write, split-K flash-decode attention, fused RMSNorm+gate/up+SwiGLU, o/down GEMV with residual epilogue. autotuned per matrix shape (small BN to fill SMs, wide BK for K streaming). verified argmax-identical to a hand-rolled torch oracle over prefill+greedy decode.",
+    "fused_profile_ms": {"swiglu_gate_up": 1.63, "gemv_o_down": 1.02, "lm_head_cublas": 0.48, "qkv_rmsnorm": 0.24, "attn_splitk": 0.24, "rope_write": 0.04},
+    "optimization_ladder_ms": {"eager_fused_no_graph": 7.79, "graph_BN64": 6.95, "graph_autotuned_gemv": 4.59, "graph_splitk_attn": 4.09, "graph_fused_rope": 3.716},
+    "result": "beat vLLM 4.414 -> 3.716 (1.19x faster, 269 vs 227 tok/s), 1.21x the 3.063ms memory floor. every op is now a fused kernel at its bandwidth/compute floor; residual gap to floor is intrinsic small-matrix (qkv/o) inefficiency + attention compute."
+  }
+}

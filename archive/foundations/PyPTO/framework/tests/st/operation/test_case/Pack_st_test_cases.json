@@ -1,0 +1,826 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Pack_test_0",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2147483648,
+                        "max": 2147483647
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                32
+            ],
+            "tile_shape": [
+                32
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "Pack_test_1",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2147483648,
+                        "max": 2147483647
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4096
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "Pack_test_2",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2,
+                        32,
+                        32
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2147483648,
+                        "max": 2147483647
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8192
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                32,
+                32
+            ],
+            "tile_shape": [
+                2,
+                32,
+                32
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "Pack_test_3",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2,
+                        2,
+                        32,
+                        32
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2147483648,
+                        "max": 2147483647
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16384
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                32,
+                32
+            ],
+            "tile_shape": [
+                2,
+                2,
+                32,
+                32
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "Pack_test_4",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2147483648,
+                        "max": 2147483647
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        244
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                23
+            ],
+            "tile_shape": [
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "Pack_test_5",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2147483648,
+                        "max": 2147483647
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        9028
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "Pack_test_6",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37,
+                        13
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2147483648,
+                        "max": 2147483647
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        117364
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                9,
+                23,
+                23
+            ],
+            "tile_shape": [
+                19,
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "Pack_test_7",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37,
+                        13,
+                        7
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2147483648,
+                        "max": 2147483647
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        821548
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                23,
+                17,
+                9,
+                3
+            ],
+            "tile_shape": [
+                7,
+                19,
+                5,
+                16
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "Pack_test_8",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        9028
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "Pack_test_9",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4514
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "Pack_test_10",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4514
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "Pack_test_11",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "uint64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 18446744073709551615
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        18056
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "Pack_test_12",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -9223372036854775808,
+                        "max": 9223372036854775807
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        18056
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "Pack_test_13",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "uint32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 4294967295
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        9028
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "Pack_test_14",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "uint16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 65535
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4514
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 14
+        },
+        {
+            "case_index": 15,
+            "case_name": "Pack_test_15",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "int16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -32768,
+                        "max": 32767
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4514
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 15
+        },
+        {
+            "case_index": 16,
+            "case_name": "Pack_test_16",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 255
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2257
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 16
+        },
+        {
+            "case_index": 17,
+            "case_name": "Pack_test_17",
+            "operation": "Pack",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        37
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -128,
+                        "max": 127
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2257
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                23
+            ],
+            "tile_shape": [
+                5,
+                17
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 17
+        }
+    ]
+}

@@ -1,0 +1,80 @@
+# Version control
+.git
+.gitignore
+.github
+
+# Virtual environments
+.venv
+venv/
+/opt/venv
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Caches
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.ipynb_checkpoints
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+sdist/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Docs
+docs/_build/
+.readthedocs.yml
+
+# Local benchmark scripts
+bench_kernels.py
+
+# Cherimoya specific
+*.torch
+*.final.torch
+*.log
+build.log
+
+# Pipeline outputs and temporary parameter files
+*.pipeline.json
+*.fit.json
+*.evaluate.json
+*.attribute.json
+*.marginalize.json
+*.ohe.npz
+*.attr.npz
+*.idx.npy
+*.idxs.npy
+*.performance.tsv
+*.bed
+*.narrowPeak
+*.bw
+*.+.bw
+*.-.bw
+*_modisco_results.h5
+*_modisco/
+*_marginalize/
+motif_seqlet_count.tsv
+
+# Docker
+Dockerfile
+.dockerignore
+*.sif
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

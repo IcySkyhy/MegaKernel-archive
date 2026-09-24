@@ -1,0 +1,859 @@
+{
+  "patterns": [
+    {
+      "pattern_id": "P001",
+      "category": "boundary_check",
+      "category_cn": "边界/范围检查错误",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "LoopaxesProc"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/loopaxes_proc.cpp"
+      ],
+      "phenomenon_keywords": [
+        "overlap",
+        "addr range",
+        "Loopaxes",
+        "IsOverLap",
+        "address conflict"
+      ],
+      "code_anti_pattern": "A single overlap flag is computed by cross-comparing an input-range bound with an output-range bound (e.g. input end vs output start).",
+      "fix_pattern": "Split the check into two independent booleans (isOverLapInput / isOverLapOutput). A new range can be recorded only when it does not overlap with either input or output ranges.",
+      "example_commits": [
+        "b8cca837"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Locate all addrRange overlap comparisons in the target pass.",
+        "Confirm input/output ranges are checked independently, not cross-checked.",
+        "Add cases with adjacent but non-overlapping ranges and cases with partial overlaps."
+      ]
+    },
+    {
+      "pattern_id": "P002",
+      "category": "semantic_mismatch",
+      "category_cn": "函数语义与命名/实现不符",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "OoOScheduler",
+        "SpillBuffer"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/ooo_scheduler.h",
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp"
+      ],
+      "phenomenon_keywords": [
+        "spill",
+        "multi producer",
+        "HasUnexecutedProducer",
+        "IsUnusedTensor",
+        "unused tensor"
+      ],
+      "code_anti_pattern": "A helper method name describes a different condition than its body actually tests, causing callers to make wrong decisions.",
+      "fix_pattern": "Rename the helper to match its real semantics (e.g. HasUnexecutedProducer -> IsUnusedTensor) and update all call sites.",
+      "example_commits": [
+        "3e379fa0"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Read the body of every boolean helper used in the failing condition.",
+        "Check whether the function name accurately describes the returned value.",
+        "Trace all callers to see if they assume the old (wrong) semantics."
+      ]
+    },
+    {
+      "pattern_id": "P003",
+      "category": "accumulation_error",
+      "category_cn": "累加/赋值错误",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "SpillBuffer"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp"
+      ],
+      "phenomenon_keywords": [
+        "spill",
+        "deleteRetiredOpSize",
+        "statistic",
+        "counter",
+        "accumulate"
+      ],
+      "code_anti_pattern": "A statistic field is overwritten with '=' inside a function that may be called multiple times, instead of being incremented.",
+      "fix_pattern": "Change the assignment to a compound assignment (+=) so repeated calls accumulate correctly.",
+      "example_commits": [
+        "3e379fa0"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Search for size/counter fields that are assigned in loops or repeated cleanup functions.",
+        "Check whether the field is expected to be monotonically increasing across calls.",
+        "Add a UT that triggers the cleanup path more than once."
+      ]
+    },
+    {
+      "pattern_id": "P004",
+      "category": "missing_opcode_case",
+      "category_cn": "OPCode 特判缺失",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "RemoveRedundantReshape",
+        "ViewReshapeAssembleReorder"
+      ],
+      "files": [
+        "framework/src/passes/pass_utils/view_reshape_assemble_reorder_utils.cpp"
+      ],
+      "phenomenon_keywords": [
+        "precision",
+        "GDR",
+        "OP_SUB",
+        "reshape",
+        "assemble",
+        "TryRecordReshapeAssemble"
+      ],
+      "code_anti_pattern": "A reshape->assemble reorder utility handles a whitelist of opcodes and silently skips or mishandles a newly appearing opcode (OP_SUB).",
+      "fix_pattern": "Add the missing opcode to the handled set and adjust the downstream shape/attr logic accordingly.",
+      "example_commits": [
+        "336914aa"
+      ],
+      "related_issues": [
+        "2391"
+      ],
+      "verification_hints": [
+        "List every opcode that reaches the failing utility.",
+        "Check whether any opcode falls through a switch/if chain without explicit handling.",
+        "Add a UT containing the missing opcode in the reshape->assemble path."
+      ]
+    },
+    {
+      "pattern_id": "P005",
+      "category": "validshape_inference",
+      "category_cn": "validshape 推导错误",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "SplitLargeFanoutTensor"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp",
+        "framework/src/interface/interpreter/calc_common.cpp"
+      ],
+      "phenomenon_keywords": [
+        "validshape",
+        "SplitLargeFanout",
+        "merge view",
+        "view",
+        "infer validshape"
+      ],
+      "code_anti_pattern": "When merging views, the validshape is inferred from the wrong tensor source or the dynamic-to-static conversion ignores an op-level attribute.",
+      "fix_pattern": "Use the op attribute's ToDynValidShape when deriving the merged view's validshape; ensure the source tensor and the target dynamic shape are aligned.",
+      "example_commits": [
+        "6d0f7055"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Dump the validshape before and after the merge.",
+        "Check whether ToDynValidShape is being used from the op attribute.",
+        "Add dynamic-shape cases where the merged views have different valid shapes."
+      ]
+    },
+    {
+      "pattern_id": "P006",
+      "category": "dtype_path",
+      "category_cn": "dtype/数据搬移路径错误",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "OoOScheduler",
+        "SpillBuffer"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp"
+      ],
+      "phenomenon_keywords": [
+        "spill",
+        "L0C",
+        "L1",
+        "copyOut",
+        "copyIn",
+        "dtype",
+        "fixpipe",
+        "reload"
+      ],
+      "code_anti_pattern": "A spill buffer uses the source tensor's dtype for the intermediate GM buffer, but the reload target expects a different dtype. The conversion is then attempted on a copy path that does not support dtype conversion.",
+      "fix_pattern": "Set the GM dtype of the spill buffer to match the reload target, so dtype conversion happens on copyOut (fixpipe) instead of copyIn (MTE2). Group consumers by dtype when necessary.",
+      "example_commits": [
+        "9b89dbd8"
+      ],
+      "related_issues": [
+        "2428"
+      ],
+      "verification_hints": [
+        "Trace the spill path: source -> GM -> reload target.",
+        "Confirm which copy direction supports dtype conversion (copyOut/fixpipe vs copyIn/MTE2).",
+        "Check all consumers of the spilled tensor for dtype differences."
+      ]
+    },
+    {
+      "pattern_id": "P007",
+      "category": "view_merge_condition",
+      "category_cn": "视图/Reshape 合并条件错误",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "SupernodeGraphBuilder",
+        "GraphPartition"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_partition/supernode_graph_builder.cpp"
+      ],
+      "phenomenon_keywords": [
+        "reshape",
+        "merge",
+        "SupernodeGraphBuilder",
+        "view assemble",
+        "pad axis"
+      ],
+      "code_anti_pattern": "A reshape or assemble node is merged under conditions that do not cover multi-input/output, dynamic shapes, or axis-combine padding scenarios.",
+      "fix_pattern": "Add explicit guards: prohibit merging when input/output count > 1, when shapes contain -1, or when the pad axis under axis-combine is incorrectly identified.",
+      "example_commits": [
+        "09ac5e3d",
+        "705ed0f6",
+        "fab94d96",
+        "8248a429",
+        "9ddb6566"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Inspect all 'mergeable' predicates for reshape/assemble/view nodes.",
+        "Check whether multi-input/output reshape nodes are excluded.",
+        "Verify the pad-axis logic under axis-combine."
+      ]
+    },
+    {
+      "pattern_id": "P008",
+      "category": "memory_type_inference",
+      "category_cn": "内存类型/地址推断错误",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "AssignMemoryType"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp"
+      ],
+      "phenomenon_keywords": [
+        "VIEW_TYPE",
+        "memory type",
+        "forward view chain",
+        "AssignMemoryType",
+        "DDR",
+        "L0C",
+        "L1"
+      ],
+      "code_anti_pattern": "The memory type of a view tensor is inferred from its immediate producer instead of following the forward view chain to the original buffer.",
+      "fix_pattern": "Walk the forward view chain until a non-view source is found, then propagate the inferred memory type back through the chain.",
+      "example_commits": [
+        "a0d4151f"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Dump the memory type of each view in the chain.",
+        "Check whether inference stops at the first view instead of the chain root.",
+        "Add cases with nested views ending on different memory types."
+      ]
+    },
+    {
+      "pattern_id": "P009",
+      "category": "attribute_clone",
+      "category_cn": "属性拷贝/克隆不完整",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "CopyOpAttribute"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/*"
+      ],
+      "phenomenon_keywords": [
+        "CopyOpAttribute",
+        "clone",
+        "attribute missing",
+        "attr"
+      ],
+      "code_anti_pattern": "When cloning an operation, only a subset of attributes is copied; dynamic or optional attributes are dropped.",
+      "fix_pattern": "Clone all attributes (including dynamic/optional ones) from the source op to the new op.",
+      "example_commits": [
+        "b65479d1"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Compare the attribute list of the original op and the cloned op.",
+        "Check for dynamic or optional attributes that are often omitted.",
+        "Add a UT that validates every attribute survives the clone."
+      ]
+    },
+    {
+      "pattern_id": "P010",
+      "category": "graph_cycle",
+      "category_cn": "计算图成环/自环错误",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "COE"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/*"
+      ],
+      "phenomenon_keywords": [
+        "self loop",
+        "cycle",
+        "COE",
+        "topological sort",
+        "circular dependency"
+      ],
+      "code_anti_pattern": "A graph rewriting pass creates an edge from a node back to itself or introduces a cycle while optimizing common operations.",
+      "fix_pattern": "Before adding an edge, verify source != target and that the target is not an ancestor of the source in the current DAG.",
+      "example_commits": [
+        "2f18692c",
+        "799d057f"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Run a cycle detection pass before and after the failing pass.",
+        "Inspect every place that adds a use/consumer edge during rewriting.",
+        "Add a UT where the optimization would otherwise create a self-loop."
+      ]
+    },
+    {
+      "pattern_id": "P011",
+      "category": "multi_consumer",
+      "category_cn": "多生产者/多消费者场景处理错误",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "OoOScheduler",
+        "SpillBuffer"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp"
+      ],
+      "phenomenon_keywords": [
+        "multi producer",
+        "multi consumer",
+        "spill",
+        "memId",
+        "rewire"
+      ],
+      "code_anti_pattern": "When a spilled tensor has multiple producers or consumers, the pass reconnects one consumer but breaks the data flow for other outputs/multi-output ops.",
+      "fix_pattern": "Rewire spilled inputs by memId so each consumer gets the correct spilled copy without disturbing unrelated outputs.",
+      "example_commits": [
+        "fedab26e",
+        "090e0042"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Draw the data-flow around the spilled tensor.",
+        "Count producers and consumers of the spilled tensor.",
+        "Check whether multi-output ops lose connections after the fix."
+      ]
+    },
+    {
+      "pattern_id": "P012",
+      "category": "atomic_condition",
+      "category_cn": "原子操作/同步条件错误",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "MVA"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/*"
+      ],
+      "phenomenon_keywords": [
+        "atomic",
+        "MVA",
+        "splitk",
+        "multi consumer",
+        "process atomic condition"
+      ],
+      "code_anti_pattern": "The condition that decides whether to insert or process an atomic operation is too restrictive or too permissive for split-K or multi-consumer cases.",
+      "fix_pattern": "Adjust the atomic-condition predicate to cover split-K and multi-consumer scenarios correctly without over-atomicizing single-consumer cases.",
+      "example_commits": [
+        "75782528",
+        "aac4c900"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Locate the atomic-condition predicate in the pass.",
+        "Check how it handles split-K reductions and multiple consumers.",
+        "Verify performance does not regress due to excessive atomics."
+      ]
+    },
+    {
+      "pattern_id": "P013",
+      "category": "hash_order",
+      "category_cn": "哈希/排序顺序敏感错误",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "ReduceCopy"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp"
+      ],
+      "phenomenon_keywords": [
+        "hash",
+        "order-invariant",
+        "BuildReduceNodeHash",
+        "ReduceCopy",
+        "non-deterministic"
+      ],
+      "code_anti_pattern": "A hash key or graph hash depends on iteration order of an unordered container, causing non-deterministic behavior or missed merge opportunities.",
+      "fix_pattern": "Make the hash computation order-invariant (e.g. sort operands before hashing, use commutative combine).",
+      "example_commits": [
+        "8a99ad83"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check whether the hash combines values in container iteration order.",
+        "Run the same test multiple times and compare hashes.",
+        "Add a UT with operands in different orders that should hash to the same value."
+      ]
+    },
+    {
+      "pattern_id": "P014",
+      "category": "op_sched",
+      "category_cn": "调度/事件标识错误",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "OoOScheduler"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/schedule_ooo/*"
+      ],
+      "phenomenon_keywords": [
+        "OoO",
+        "sched mode",
+        "vecBranchId",
+        "eventid",
+        "HLF"
+      ],
+      "code_anti_pattern": "Out-of-order scheduling logic uses the wrong branch/event identifier, causing incorrect ordering or event assignment for vector/Cube operations.",
+      "fix_pattern": "Use the correct scheduling identifier (e.g. vecBranchId) for the target operation class and align event-id allocation with the hardware limit.",
+      "example_commits": [
+        "f40725ad",
+        "7ec4523e"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Inspect where branch/event IDs are assigned for vector vs cube ops.",
+        "Check the event-id count against hardware limits.",
+        "Add UT for out-of-order scheduling with mixed vector/cube ops."
+      ]
+    },
+    {
+      "pattern_id": "P015",
+      "category": "direct_memory_path",
+      "category_cn": "直连内存路径回退错误",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "AssignMemoryType"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp"
+      ],
+      "phenomenon_keywords": [
+        "DDR fallback",
+        "direct memory path",
+        "parallel consumer",
+        "ooo issue",
+        "reshape DDR"
+      ],
+      "code_anti_pattern": "A tensor is forced to DDR or a direct memory path is chosen for a special case, but the decision ignores parallel-consumer requirements or out-of-order constraints.",
+      "fix_pattern": "Add guards for parallel-consumer requirements and OoO constraints before forcing DDR or selecting a direct memory path.",
+      "example_commits": [
+        "957571de",
+        "76d3acda",
+        "72c7201a"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check all places that force a tensor to DDR.",
+        "Verify whether parallel consumers can still be satisfied after the decision.",
+        "Test with OoO scheduling enabled."
+      ]
+    },
+    {
+      "pattern_id": "P016",
+      "category": "dyn_validshape_loss",
+      "category_cn": "新建中间 Tensor 丢失 DynValidShape",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "InsertOpForViewAssemble",
+        "MergeViewAssemble",
+        "ReplaceTensor"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_optimization/insert_op_for_viewassemble.cpp"
+      ],
+      "phenomenon_keywords": [
+        "validShape",
+        "DynValidShape",
+        "InsertOpForViewAssemble",
+        "VIEW",
+        "ASSEMBLE",
+        "shape verify",
+        "dynamic shape"
+      ],
+      "code_anti_pattern": "A pass creates DDR/UB intermediate tensors from an existing view/assemble tensor but only copies dtype and shape, leaving DynValidShape empty or reset to full shape.",
+      "fix_pattern": "After CreateTensorVar/AddOperation creates the intermediate tensor, immediately copy the source tensor DynValidShape with UpdateDynValidShape; also propagate validShape into ViewOpAttribute/AssembleOpAttribute/CopyOpAttribute.",
+      "example_commits": [
+        "af20e717"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Search newly created tensors in view/assemble/copy insertion paths and check whether UpdateDynValidShape is called.",
+        "Dump source tensor, inserted DDR tensor, inserted move-in tensor, and final consumer tensor DynValidShape.",
+        "Add a dynamic validShape case where the full shape is larger than the valid region."
+      ]
+    },
+    {
+      "pattern_id": "P017",
+      "category": "reshape_assemble_reorder_validshape",
+      "category_cn": "Reshape->Assemble 重排破坏 validShape",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "ViewReshapeAssembleReorder",
+        "RemoveRedundantReshape"
+      ],
+      "files": [
+        "framework/src/passes/pass_utils/view_reshape_assemble_reorder_utils.cpp"
+      ],
+      "phenomenon_keywords": [
+        "reshape",
+        "assemble",
+        "reorder",
+        "validShape",
+        "DDR out-of-range",
+        "MTE",
+        "OP_SUB",
+        "dynamic shape"
+      ],
+      "code_anti_pattern": "The reorder path rewrites reshape->assemble chains without proving every middle dynamic shape is concrete and remappable, so new ops may use full shape instead of validShape.",
+      "fix_pattern": "Skip reorder when required middle dynamic shape is not ConcreteValid; build assembled validShape from assemble offsets; preserve known non-reorderable chains such as sub->reshape->assemble.",
+      "example_commits": [
+        "4a067951",
+        "336914aa"
+      ],
+      "related_issues": [
+        "2518"
+      ],
+      "verification_hints": [
+        "Check TryRecordDirectReshapeAssemble and fanin/fanout reorder paths for ConcreteValid guards.",
+        "Dump generated reshape/assemble tensor shape, dyn shape, validShape, static offset, and dyn offset before and after reorder.",
+        "Add a reshape->assemble->reshape or SUB->reshape->assemble case whose validShape is smaller than full tile."
+      ]
+    },
+    {
+      "pattern_id": "P018",
+      "category": "axis_combine_pad_axis",
+      "category_cn": "Axis-combine 下 shape-transform OP pad 轴错误",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "PadLocalBuffer",
+        "AxisCombineMarker"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_constraint/pad_local_buffer.cpp"
+      ],
+      "phenomenon_keywords": [
+        "axis combine",
+        "combineAxis",
+        "pad",
+        "OP_ASSEMBLE",
+        "OP_VIEW",
+        "OP_RESHAPE",
+        "rawshape",
+        "second-last axis"
+      ],
+      "code_anti_pattern": "VIEW/ASSEMBLE/RESHAPE are handled by different branches in PadVectorForAxisCombine; ASSEMBLE may fall through to tail-axis padding although shape-transform semantics require second-last-axis padding.",
+      "fix_pattern": "Centralize shape-transform opcodes in one set and apply the same second-last-axis padding rule to OP_VIEW, OP_ASSEMBLE, and OP_RESHAPE.",
+      "example_commits": [
+        "fab94d96"
+      ],
+      "related_issues": [
+        "2458"
+      ],
+      "verification_hints": [
+        "Search PadVectorForAxisCombine for scattered opcode-specific VIEW/ASSEMBLE/RESHAPE branches.",
+        "Construct cast->assemble or view->assemble axis-combine path with rawshape like [22, 1] and verify [32, 1], not [22, 32].",
+        "Run PadLocalBuffer tests with OP_VIEW, OP_ASSEMBLE, and OP_RESHAPE in the same combineAxis mode."
+      ]
+    },
+    {
+      "pattern_id": "P019",
+      "category": "coe_skip_semantic_opcode",
+      "category_cn": "公共算子消除误删语义敏感 OP",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "CommonOperationEliminate",
+        "ReduceCopyMerge"
+      ],
+      "files": [
+        "framework/src/passes/pass_utils/common_operation_eliminate_utils.cpp"
+      ],
+      "phenomenon_keywords": [
+        "COE",
+        "CommonOperationEliminate",
+        "OP_VEC_DUP",
+        "OP_VIEW",
+        "dontTouch",
+        "hash",
+        "precision"
+      ],
+      "code_anti_pattern": "Common operation elimination relies on producer hash equivalence and eliminates opcodes whose semantics depend on position, aliasing, or graph-partition behavior.",
+      "fix_pattern": "Maintain an explicit skip-eliminate opcode set for semantic/stateful operations such as OP_VIEW and OP_VEC_DUP; check dontTouch before hash merge.",
+      "example_commits": [
+        "72fe6828"
+      ],
+      "related_issues": [
+        "2476"
+      ],
+      "verification_hints": [
+        "Check TensorHashExist for the skip opcode set and dontTouch guard before ComputeHash.",
+        "Add two syntactically identical OP_VEC_DUP producers whose separate existence affects downstream execution.",
+        "Compare graph before and after COE to ensure skipped opcodes are not SetAsDeleted."
+      ]
+    },
+    {
+      "pattern_id": "P020",
+      "category": "mix_subgraph_attr_identity",
+      "category_cn": "MixSubgraphSplit 属性查找只按指针身份",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "MixSubgraphSplit",
+        "SubgraphToFunction"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/mix_subgraph_split/mix_call_operation_builder.cpp"
+      ],
+      "phenomenon_keywords": [
+        "MixSubgraphSplit",
+        "rawMagic",
+        "CallOpAttribute",
+        "argList",
+        "offset",
+        "propagated incast",
+        "propagated outcast"
+      ],
+      "code_anti_pattern": "When propagated incast/outcast tensors are cloned, offset lookup compares shared_ptr identity only; the original mix function still has the same rawMagic but not the same pointer.",
+      "fix_pattern": "First try exact tensor identity; if not found, scan original mix function operands by rawMagic and reuse the operand attribute whose offset is valid.",
+      "example_commits": [
+        "b5d3611a"
+      ],
+      "related_issues": [
+        "2502"
+      ],
+      "verification_hints": [
+        "Trace FindOriginalAttrInMixFunction for propagated incast/outcast tensors added by dependency propagation.",
+        "Verify fallback by rawMagic scans both input and output operands and ignores offset == -1.",
+        "Build a split mix function where a propagated tensor is cloned but should keep the original CallOp arg offset."
+      ]
+    },
+    {
+      "pattern_id": "P021",
+      "category": "reduce_copy_external_inner_tensor",
+      "category_cn": "ReduceCopy 合并后内部 Tensor 仍被外部子图使用",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "ReduceCopyMerge",
+        "GraphPartition",
+        "SupernodeGraphBuilder"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp"
+      ],
+      "phenomenon_keywords": [
+        "ReduceCopy",
+        "autoMixPartition",
+        "mix subgraph",
+        "inner tensor",
+        "external usage",
+        "cross subgraph",
+        "reshape"
+      ],
+      "code_anti_pattern": "Auto-mix merges subgraphs based on graph latency/cycle checks but does not track whether a boundary tensor would become internal to the merged group while still used by an external subgraph.",
+      "fix_pattern": "Record boundary tensor producer/consumer subgraphs, reject merge groups that make a tensor have both producer and consumer inside the merge while any endpoint remains outside, and update boundary tensor indices after each union.",
+      "example_commits": [
+        "43cb5627",
+        "9668b4f4"
+      ],
+      "related_issues": [
+        "2279",
+        "2365"
+      ],
+      "verification_hints": [
+        "Dump boundary tensor producerSubgraphs/consumerSubgraphs before ReduceCopy merge.",
+        "Check MarkCrossSubgraph and CheckNoExternalUseOfMergedInnerTensor for reshape-adjacent tensors.",
+        "Construct a graph where reshape output has both same-subgraph and other-subgraph consumers and verify no merge occurs."
+      ]
+    },
+    {
+      "pattern_id": "P022",
+      "category": "dynamic_axis_default_tile_hang",
+      "category_cn": "动态轴默认 tile 推导溢出或卡死",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "InferMemoryConflict",
+        "SetHeuristicTileShapes"
+      ],
+      "files": [
+        "framework/src/passes/tensor_graph_pass/infer_memory_conflict.cpp"
+      ],
+      "phenomenon_keywords": [
+        "dyn axis",
+        "dynamic axis",
+        "SetDefaultShape",
+        "GetPowerOfTwo",
+        "pass stuck",
+        "compile timeout",
+        "-1",
+        "empty shape"
+      ],
+      "code_anti_pattern": "Dynamic or invalid dimensions are converted to unsigned values before power-of-two expansion; -1 becomes a huge value and left shifting may overflow to zero, causing a non-terminating loop or invalid tile.",
+      "fix_pattern": "Use signed int64_t for dimension math, return 1 for cur <= 1, guard left-shift overflow, reject empty shapes, and handle non-tail <=0 dims with conservative tile 1.",
+      "example_commits": [
+        "90d72725"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Search default tile derivation for uint32_t dimensions, reverse loops, and shape[shapeDim - 1] access.",
+        "Test tensors with empty shape, tail dim -1, non-tail dim -1, and very large dims.",
+        "Confirm compile terminates and inserted register-copy ops get valid VecTile shapes."
+      ]
+    },
+    {
+      "pattern_id": "P023",
+      "category": "insert_sync_eventid_relaxation",
+      "category_cn": "InsertSync 事件 ID 放松逻辑误判失败或迭代失效",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "InsertSync",
+        "PipeSync",
+        "OoOScheduler"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/insert_sync.cpp"
+      ],
+      "phenomenon_keywords": [
+        "InsertSync",
+        "eventid",
+        "RelaxMultipleEventIds",
+        "HandleEventID",
+        "CV_SYNC",
+        "deadlock",
+        "setPipe",
+        "iterator"
+      ],
+      "code_anti_pattern": "Event-id relaxation retries only one core-pair direction, treats no-mergeable-pair as hard failure, or iterates op.setPipe while ProcessEventIdElement mutates the same vector.",
+      "fix_pattern": "Try both core-pair directions, make RelaxCvEventIdMain report failedFlag separately from Status, and iterate over a snapshot copy of setPipe when dependency processing may mutate it.",
+      "example_commits": [
+        "34156240"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Inspect RelaxMultipleEventIds, RelaxCvEventIdMain, and HandleEventID for failedFlag propagation and setPipe snapshotting.",
+        "Dump CV dep map and set/wait event IDs when event-id exhaustion or deadlock occurs.",
+        "Create a case requiring multiple CV event-id relaxations with both forward and reverse core pairs."
+      ]
+    },
+    {
+      "pattern_id": "P024",
+      "category": "split_raw_special_copyout",
+      "category_cn": "SplitRaw 漏处理特殊 copyout 语义 OP",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "SplitRawTensor",
+        "Distributed",
+        "SHMEM"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_raw.cpp"
+      ],
+      "phenomenon_keywords": [
+        "SplitRaw",
+        "OP_SHMEM_GET",
+        "CopyOpAttribute",
+        "toOffset",
+        "raw tensor",
+        "shmem",
+        "copyout"
+      ],
+      "code_anti_pattern": "SplitRaw updates VIEW fromOffset and ASSEMBLE toOffset after replacing a raw tensor, but ignores producer ops with copyout semantics such as OP_SHMEM_GET, leaving CopyOpAttribute toOffset stale.",
+      "fix_pattern": "Classify special copyout producers explicitly; for OP_SHMEM_GET update CopyOpAttribute toOffset with tensor offset, including dynamic/specified OpImmediate forms.",
+      "example_commits": [
+        "4437fe36"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check SplitRawTensor for UpdateProducerShmemGet or equivalent special-copyout handling.",
+        "Verify UpdateImmediateOffset handles specified and dynamic tensor offsets with matching rank.",
+        "Add a shmem_get output tensor whose raw shape is split and verify copy attr toOffset is adjusted."
+      ]
+    },
+    {
+      "pattern_id": "P025",
+      "category": "copyout_rawshape_attr_stale",
+      "category_cn": "CopyOut 级联内存复用后 raw_shape 属性未刷新",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "ReplaceTensor",
+        "CopyOutResolve",
+        "Hub"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_constraint/replace_tensor.cpp"
+      ],
+      "phenomenon_keywords": [
+        "ReplaceTensor",
+        "copyout",
+        "HUB",
+        "raw_shape",
+        "rawshape",
+        "memory reuse",
+        "CopyOpAttribute"
+      ],
+      "code_anti_pattern": "A pass reuses raw tensor storage across COPY_OUT -> HUB -> ASSEMBLE/OUTCAST, updates copyout toOffset, but leaves CopyOpAttribute raw_shape pointing to the old tensor shape.",
+      "fix_pattern": "Whenever HUB/assemble memory reuse redirects tensor storage, update CopyOpAttribute raw shape from the final shared tensor DynRawShape together with offset changes.",
+      "example_commits": [
+        "8b3cacc1"
+      ],
+      "related_issues": [
+        "2072"
+      ],
+      "verification_hints": [
+        "Search ReplaceTensor HUB processing for SetToOffset without SetRawShape.",
+        "Dump CopyOpAttribute toOffset and raw_shape before and after HUB memory reuse.",
+        "Add COPY_OUT -> HUB -> ASSEMBLE -> OUTCAST case and confirm codegen sees the updated raw_shape."
+      ]
+    }
+  ]
+}

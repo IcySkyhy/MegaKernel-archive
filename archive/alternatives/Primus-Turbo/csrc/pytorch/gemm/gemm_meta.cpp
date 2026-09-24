@@ -1,0 +1,52 @@
+/***************************************************************************************************
+ * Copyright (c) 2025, Advanced Micro Devices, Inc. All rights reserved.
+ *
+ * See LICENSE for license information.
+ **************************************************************************************************/
+
+#include <torch/extension.h>
+
+#include "../extensions.h"
+
+namespace primus_turbo::pytorch {
+
+at::Tensor hipblaslt_gemm_meta(at::Tensor A, at::Tensor B, const at::ScalarType out_dtype,
+                               bool transA, bool transB, bool transC, const double beta,
+                               c10::optional<at::Tensor> out) {
+    if (out.has_value()) {
+        return out.value();
+    }
+
+    const int64_t m = transA ? A.size(1) : A.size(0);
+    const int64_t n = transB ? B.size(0) : B.size(1);
+
+    std::vector<int64_t> c_shape = transC ? std::vector<int64_t>{n, m} : std::vector<int64_t>{m, n};
+    at::TensorOptions    options = at::TensorOptions().dtype(out_dtype).device(at::kMeta);
+    return at::empty(c_shape, options);
+}
+
+at::Tensor hipblaslt_gemm_fp8_meta(at::Tensor A, at::Tensor scaleA_inv, at::Tensor B,
+                                   at::Tensor scaleB_inv, const at::ScalarType out_dtype,
+                                   bool transA, bool transB, bool transC,
+                                   const std::string &granularity, const double beta,
+                                   c10::optional<at::Tensor> out) {
+    return hipblaslt_gemm_meta(A, B, out_dtype, transA, transB, transC, beta, out);
+}
+
+at::Tensor ck_gemm_fp8_meta(at::Tensor &a, at::Tensor &b, at::Tensor &a_scales,
+                            at::Tensor &b_scales, const bool transA, const bool transB,
+                            at::ScalarType out_dtype, const std::string &granularity) {
+    const int64_t m = transA ? a.size(1) : a.size(0);
+    const int64_t n = transB ? b.size(0) : b.size(1);
+    at::Tensor    c = at::empty({m, n}, at::dtype(out_dtype).device(at::kMeta));
+    return c;
+}
+
+at::Tensor turbo_gemm_fp8_meta(at::Tensor A, at::Tensor scaleA_inv, at::Tensor B,
+                               at::Tensor scaleB_inv, const at::ScalarType out_dtype, bool transA,
+                               bool transB, bool transC, const std::string &granularity) {
+    return hipblaslt_gemm_meta(A, B, out_dtype, transA, transB, transC, /*beta=*/0.0,
+                               /*out=*/c10::nullopt);
+}
+
+} // namespace primus_turbo::pytorch

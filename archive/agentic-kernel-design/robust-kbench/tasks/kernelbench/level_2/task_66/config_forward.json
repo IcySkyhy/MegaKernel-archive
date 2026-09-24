@@ -1,0 +1,28 @@
+{
+    "single_input_configs": [
+        {
+            "batch_size": 128
+        }
+    ],
+    "single_init_configs": [
+        {
+            "out_features": 50,
+            "dropout_p": 0.2,
+            "training": true
+        }
+    ],
+    "single_shared_configs": [
+        {
+            "in_features": 100
+        }
+    ],
+    "multi_input_configs": [
+        {}
+    ],
+    "multi_init_configs": [
+        {}
+    ],
+    "multi_shared_configs": [
+        {}
+    ]
+}

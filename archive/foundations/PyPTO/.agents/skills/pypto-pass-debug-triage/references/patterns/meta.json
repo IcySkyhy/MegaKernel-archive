@@ -1,0 +1,12 @@
+{
+  "version": "1.1.0",
+  "last_updated": "2026-07-10",
+  "description": "Static bug-pattern knowledge base mined from PyPTO fix commits and source audits across all modules (pass, operation, machine, interpreter, ir, codegen, frontend, operator, tileop, adapter). No online update or git retrieval is performed at runtime.",
+  "match_strategy": "Agent should first match cross_module_triage by symptom_keywords to determine the likely module. Then match patterns/source_patterns by pass_modules + phenomenon_keywords + files, and non_pass_source_patterns by likely_modules + symptom_keywords + files_to_check.",
+  "schema_notes": {
+    "example_commits": "Non-empty for historical fix patterns; empty for source-audit patterns without a confirmed historical commit.",
+    "evidence_type": "historical_fix when example_commits is non-empty; source_audit_hypothesis otherwise. Hypothesis entries must use conditional wording.",
+    "non_pass_source_patterns.symptom_keywords": "Required for matching. When mined from pass-facing symptoms, values may duplicate pass_symptoms.",
+    "diagnostic_action_policy": "Required for output safety. Any suggestion to disable a pass must be checked against required_passes, structural_or_dependency_sensitive_passes, and optional_optimization_passes first."
+  }
+}

@@ -1,0 +1,964 @@
+{
+ "cores": [
+  {
+   "coreId": 0,
+   "tasks": []
+  },
+  {
+   "coreId": 1,
+   "tasks": []
+  },
+  {
+   "coreId": 2,
+   "tasks": []
+  },
+  {
+   "coreId": 3,
+   "tasks": []
+  },
+  {
+   "coreId": 4,
+   "tasks": []
+  },
+  {
+   "coreId": 5,
+   "tasks": []
+  },
+  {
+   "coreId": 6,
+   "tasks": []
+  },
+  {
+   "coreId": 7,
+   "tasks": []
+  },
+  {
+   "coreId": 8,
+   "tasks": []
+  },
+  {
+   "coreId": 9,
+   "tasks": []
+  },
+  {
+   "coreId": 10,
+   "tasks": []
+  },
+  {
+   "coreId": 11,
+   "tasks": []
+  },
+  {
+   "coreId": 12,
+   "tasks": []
+  },
+  {
+   "coreId": 13,
+   "tasks": []
+  },
+  {
+   "coreId": 14,
+   "tasks": []
+  },
+  {
+   "coreId": 15,
+   "tasks": []
+  },
+  {
+   "coreId": 16,
+   "tasks": []
+  },
+  {
+   "coreId": 17,
+   "tasks": []
+  },
+  {
+   "coreId": 18,
+   "tasks": []
+  },
+  {
+   "coreId": 19,
+   "tasks": []
+  },
+  {
+   "coreId": 20,
+   "tasks": []
+  },
+  {
+   "coreId": 21,
+   "tasks": []
+  },
+  {
+   "coreId": 22,
+   "tasks": []
+  },
+  {
+   "coreId": 23,
+   "tasks": []
+  },
+  {
+   "coreId": 24,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 0,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "1",
+     "taskId": 0
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 1,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 2,
+     "operation": "set"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 6,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "3",
+     "taskId": 3
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 7,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 8,
+     "operation": "set"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 62,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "11",
+     "taskId": 31
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 63,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 64,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 25,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 2,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "1",
+     "taskId": 1
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 3,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 4,
+     "operation": "set"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 8,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "3",
+     "taskId": 4
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 9,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 10,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 26,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 10,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "3",
+     "taskId": 5
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 11,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 12,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 27,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 12,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "3",
+     "taskId": 6
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 13,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 14,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 28,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 14,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "3",
+     "taskId": 7
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 15,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 16,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 29,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 16,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "3",
+     "taskId": 8
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 17,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 18,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 30,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 18,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "3",
+     "taskId": 9
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 19,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 20,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 31,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 20,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "3",
+     "taskId": 10
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 21,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 22,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 32,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 4,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "2",
+     "taskId": 2
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 5,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 6,
+     "operation": "set"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 24,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "5",
+     "taskId": 12
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 25,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 26,
+     "operation": "set"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 46,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "8",
+     "taskId": 23
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 47,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 48,
+     "operation": "set"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 64,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "12",
+     "taskId": 32
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 65,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 66,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 33,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 26,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "5",
+     "taskId": 13
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 27,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 28,
+     "operation": "set"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 48,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "10",
+     "taskId": 26
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 49,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 50,
+     "operation": "set"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 66,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "12",
+     "taskId": 33
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 67,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 68,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 34,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 28,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "5",
+     "taskId": 14
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 29,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 30,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 35,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 30,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "5",
+     "taskId": 15
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 31,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 32,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 36,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 32,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "5",
+     "taskId": 16
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 33,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 34,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 37,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 34,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "5",
+     "taskId": 17
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 35,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 36,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 38,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 36,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "5",
+     "taskId": 18
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 37,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 38,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 39,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 38,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "5",
+     "taskId": 19
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 39,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 40,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 40,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 22,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "4",
+     "taskId": 11
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 23,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 24,
+     "operation": "set"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 42,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "7",
+     "taskId": 21
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 43,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 44,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 41,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 44,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "7",
+     "taskId": 22
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 45,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 46,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 42,
+   "tasks": []
+  },
+  {
+   "coreId": 43,
+   "tasks": []
+  },
+  {
+   "coreId": 44,
+   "tasks": []
+  },
+  {
+   "coreId": 45,
+   "tasks": []
+  },
+  {
+   "coreId": 46,
+   "tasks": []
+  },
+  {
+   "coreId": 47,
+   "tasks": []
+  },
+  {
+   "coreId": 48,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 40,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "6",
+     "taskId": 20
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 41,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 42,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 49,
+   "tasks": []
+  },
+  {
+   "coreId": 50,
+   "tasks": []
+  },
+  {
+   "coreId": 51,
+   "tasks": []
+  },
+  {
+   "coreId": 52,
+   "tasks": []
+  },
+  {
+   "coreId": 53,
+   "tasks": []
+  },
+  {
+   "coreId": 54,
+   "tasks": []
+  },
+  {
+   "coreId": 55,
+   "tasks": []
+  },
+  {
+   "coreId": 56,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 50,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "9",
+     "taskId": 24
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 51,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 52,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 57,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 52,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "9",
+     "taskId": 25
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 53,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 54,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 58,
+   "tasks": []
+  },
+  {
+   "coreId": 59,
+   "tasks": []
+  },
+  {
+   "coreId": 60,
+   "tasks": []
+  },
+  {
+   "coreId": 61,
+   "tasks": []
+  },
+  {
+   "coreId": 62,
+   "tasks": []
+  },
+  {
+   "coreId": 63,
+   "tasks": []
+  },
+  {
+   "coreId": 64,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 54,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "9",
+     "taskId": 27
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 55,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 56,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 65,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 56,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "9",
+     "taskId": 28
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 57,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 58,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 66,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 58,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "9",
+     "taskId": 29
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 59,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 60,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 67,
+   "tasks": [
+    {
+     "counterId": 0,
+     "expectedValue": 60,
+     "operation": "wait"
+    },
+    {
+     "functionHash": "9",
+     "taskId": 30
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 61,
+     "operation": "setWait"
+    },
+    {
+     "counterId": 0,
+     "expectedValue": 62,
+     "operation": "set"
+    }
+   ]
+  },
+  {
+   "coreId": 68,
+   "tasks": []
+  },
+  {
+   "coreId": 69,
+   "tasks": []
+  },
+  {
+   "coreId": 70,
+   "tasks": []
+  },
+  {
+   "coreId": 71,
+   "tasks": []
+  }
+ ],
+ "numSupportedCounters": 1
+}

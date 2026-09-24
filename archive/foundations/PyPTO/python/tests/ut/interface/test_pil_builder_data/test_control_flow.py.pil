@@ -1,0 +1,2412 @@
+#!/usr/bin/env python3
+# coding: utf-8
+# Copyright (c) 2026 CANN community contributors.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+from .test_pil_builder_utils import Expr
+from .test_pil_builder_utils import PILTestCase
+
+class ForTest(PILTestCase):
+
+    def test_for_simple_name(self):
+        _pil_1 = Expr.int
+        _pil_2 = _pil_1(0)
+        _pil_3 = Expr.int
+        _pil_4 = _pil_3(1)
+        _pil_5 = Expr.int
+        _pil_6 = _pil_5(2)
+        _pil_0 = [_pil_2, _pil_4, _pil_6]
+        for _pil_7 in _pil_0:
+            var_x = _pil_7
+            _pil_8 = Expr.str
+            _pil_9 = _pil_8(var_x)
+        _pil_10 = self.assertEqual
+        _pil_11 = Expr.trace
+        _pil_13 = ('int', 0)
+        _pil_14 = ('int', 1)
+        _pil_15 = ('int', 2)
+        _pil_16 = ('str', 0)
+        _pil_17 = ('str', 1)
+        _pil_18 = ('str', 2)
+        _pil_12 = [_pil_13, _pil_14, _pil_15, _pil_16, _pil_17, _pil_18]
+        _pil_19 = _pil_10(_pil_11, _pil_12)
+        _pil_20 = self.assertEqual
+        _pil_21 = self.get_var
+        _pil_22 = locals()
+        _pil_23 = _pil_21(_pil_22)
+        _pil_24 = {'var_x': 2}
+        _pil_25 = _pil_20(_pil_23, _pil_24)
+
+    def test_for_with_orelse(self):
+        _pil_27 = Expr.int
+        _pil_28 = _pil_27(0)
+        _pil_29 = Expr.int
+        _pil_30 = _pil_29(1)
+        _pil_26 = [_pil_28, _pil_30]
+        for _pil_31 in _pil_26:
+            var_x = _pil_31
+            _pil_32 = Expr.str
+            _pil_33 = _pil_32(var_x)
+        else:
+            _pil_34 = Expr.str
+            _pil_35 = _pil_34(99)
+        _pil_36 = self.assertEqual
+        _pil_37 = Expr.trace
+        _pil_39 = ('int', 0)
+        _pil_40 = ('int', 1)
+        _pil_41 = ('str', 0)
+        _pil_42 = ('str', 1)
+        _pil_43 = ('str', 99)
+        _pil_38 = [_pil_39, _pil_40, _pil_41, _pil_42, _pil_43]
+        _pil_44 = _pil_36(_pil_37, _pil_38)
+        _pil_45 = self.assertEqual
+        _pil_46 = self.get_var
+        _pil_47 = locals()
+        _pil_48 = _pil_46(_pil_47)
+        _pil_49 = {'var_x': 1}
+        _pil_50 = _pil_45(_pil_48, _pil_49)
+
+    def test_for_tuple_unpack_target(self):
+        _pil_53 = Expr.int
+        _pil_54 = _pil_53(0)
+        _pil_55 = Expr.int
+        _pil_56 = _pil_55(1)
+        _pil_52 = (_pil_54, _pil_56)
+        _pil_58 = Expr.int
+        _pil_59 = _pil_58(2)
+        _pil_60 = Expr.int
+        _pil_61 = _pil_60(3)
+        _pil_57 = (_pil_59, _pil_61)
+        _pil_51 = [_pil_52, _pil_57]
+        for _pil_62 in _pil_51:
+            _pil_63, _pil_64 = _pil_62
+            var_x = _pil_63
+            var_y = _pil_64
+            _pil_65 = Expr.str
+            _pil_66 = _pil_65(var_x)
+            _pil_67 = Expr.str
+            _pil_68 = _pil_67(var_y)
+        _pil_69 = self.assertEqual
+        _pil_70 = Expr.trace
+        _pil_72 = ('int', 0)
+        _pil_73 = ('int', 1)
+        _pil_74 = ('int', 2)
+        _pil_75 = ('int', 3)
+        _pil_76 = ('str', 0)
+        _pil_77 = ('str', 1)
+        _pil_78 = ('str', 2)
+        _pil_79 = ('str', 3)
+        _pil_71 = [_pil_72, _pil_73, _pil_74, _pil_75, _pil_76, _pil_77, _pil_78, _pil_79]
+        _pil_80 = _pil_69(_pil_70, _pil_71)
+        _pil_81 = self.assertEqual
+        _pil_82 = self.get_var
+        _pil_83 = locals()
+        _pil_84 = _pil_82(_pil_83)
+        _pil_85 = {'var_x': 2, 'var_y': 3}
+        _pil_86 = _pil_81(_pil_84, _pil_85)
+
+    def test_for_tuple_unpack_target_with_orelse(self):
+        _pil_89 = Expr.int
+        _pil_90 = _pil_89(0)
+        _pil_91 = Expr.int
+        _pil_92 = _pil_91(1)
+        _pil_88 = (_pil_90, _pil_92)
+        _pil_87 = [_pil_88]
+        for _pil_93 in _pil_87:
+            _pil_94, _pil_95 = _pil_93
+            var_x = _pil_94
+            var_y = _pil_95
+            _pil_96 = Expr.str
+            _pil_97 = _pil_96(var_x)
+            _pil_98 = Expr.str
+            _pil_99 = _pil_98(var_y)
+        else:
+            _pil_100 = Expr.str
+            _pil_101 = _pil_100(99)
+        _pil_102 = self.assertEqual
+        _pil_103 = Expr.trace
+        _pil_105 = ('int', 0)
+        _pil_106 = ('int', 1)
+        _pil_107 = ('str', 0)
+        _pil_108 = ('str', 1)
+        _pil_109 = ('str', 99)
+        _pil_104 = [_pil_105, _pil_106, _pil_107, _pil_108, _pil_109]
+        _pil_110 = _pil_102(_pil_103, _pil_104)
+        _pil_111 = self.assertEqual
+        _pil_112 = self.get_var
+        _pil_113 = locals()
+        _pil_114 = _pil_112(_pil_113)
+        _pil_115 = {'var_x': 0, 'var_y': 1}
+        _pil_116 = _pil_111(_pil_114, _pil_115)
+
+    def test_for_attribute_target(self):
+        _pil_117 = Expr(0)
+        var_obj = _pil_117
+        _pil_118 = Expr.int
+        _pil_119 = -1
+        _pil_120 = _pil_118(_pil_119)
+        var_obj.val = _pil_120
+        _pil_122 = Expr.int
+        _pil_123 = _pil_122(0)
+        _pil_124 = Expr.int
+        _pil_125 = _pil_124(1)
+        _pil_121 = [_pil_123, _pil_125]
+        for _pil_126 in _pil_121:
+            var_obj.val = _pil_126
+            _pil_127 = Expr.str
+            _pil_128 = var_obj.val
+            _pil_129 = _pil_127(_pil_128)
+        _pil_130 = self.assertEqual
+        _pil_131 = Expr.trace
+        _pil_133 = ('init', 0)
+        _pil_135 = -1
+        _pil_134 = ('int', _pil_135)
+        _pil_137 = -1
+        _pil_136 = ('setattr', 0, 'val', _pil_137)
+        _pil_138 = ('int', 0)
+        _pil_139 = ('int', 1)
+        _pil_140 = ('setattr', 0, 'val', 0)
+        _pil_141 = ('getattr', 0, 'val')
+        _pil_142 = ('str', 0)
+        _pil_143 = ('setattr', 0, 'val', 1)
+        _pil_144 = ('getattr', 0, 'val')
+        _pil_145 = ('str', 1)
+        _pil_132 = [_pil_133, _pil_134, _pil_136, _pil_138, _pil_139, _pil_140, _pil_141, _pil_142, _pil_143, _pil_144, _pil_145]
+        _pil_146 = _pil_130(_pil_131, _pil_132)
+        _pil_147 = self.assertEqual
+        _pil_148 = self.get_var
+        _pil_149 = locals()
+        _pil_150 = _pil_148(_pil_149)
+        _pil_151 = {}
+        _pil_152 = {'val': 1}
+        _pil_153 = Expr(0, _pil_151, _pil_152)
+        _pil_154 = {'var_obj': _pil_153}
+        _pil_155 = _pil_147(_pil_150, _pil_154)
+
+    def test_for_subscript_target(self):
+        _pil_156 = Expr(0)
+        var_obj = _pil_156
+        _pil_157 = Expr.int
+        _pil_158 = -1
+        _pil_159 = _pil_157(_pil_158)
+        var_obj[0] = _pil_159
+        _pil_161 = Expr.int
+        _pil_162 = _pil_161(0)
+        _pil_163 = Expr.int
+        _pil_164 = _pil_163(1)
+        _pil_160 = [_pil_162, _pil_164]
+        for _pil_165 in _pil_160:
+            var_obj[0] = _pil_165
+            _pil_166 = Expr.str
+            _pil_167 = var_obj[0]
+            _pil_168 = _pil_166(_pil_167)
+        _pil_169 = self.assertEqual
+        _pil_170 = Expr.trace
+        _pil_172 = ('init', 0)
+        _pil_174 = -1
+        _pil_173 = ('int', _pil_174)
+        _pil_176 = -1
+        _pil_175 = ('setitem', 0, 0, _pil_176)
+        _pil_177 = ('int', 0)
+        _pil_178 = ('int', 1)
+        _pil_179 = ('setitem', 0, 0, 0)
+        _pil_180 = ('getitem', 0, 0)
+        _pil_181 = ('str', 0)
+        _pil_182 = ('setitem', 0, 0, 1)
+        _pil_183 = ('getitem', 0, 0)
+        _pil_184 = ('str', 1)
+        _pil_171 = [_pil_172, _pil_173, _pil_175, _pil_177, _pil_178, _pil_179, _pil_180, _pil_181, _pil_182, _pil_183, _pil_184]
+        _pil_185 = _pil_169(_pil_170, _pil_171)
+        _pil_186 = self.assertEqual
+        _pil_187 = self.get_var
+        _pil_188 = locals()
+        _pil_189 = _pil_187(_pil_188)
+        _pil_190 = {0: 1}
+        _pil_191 = {}
+        _pil_192 = Expr(0, _pil_190, _pil_191)
+        _pil_193 = {'var_obj': _pil_192}
+        _pil_194 = _pil_186(_pil_189, _pil_193)
+
+    def test_for_call_iter(self):
+        _pil_195 = Expr.int
+        _pil_196 = _pil_195(3)
+        _pil_197 = range(_pil_196)
+        for _pil_198 in _pil_197:
+            var_x = _pil_198
+            _pil_199 = Expr.str
+            _pil_200 = _pil_199(var_x)
+        _pil_201 = self.assertEqual
+        _pil_202 = Expr.trace
+        _pil_204 = ('int', 3)
+        _pil_205 = ('str', 0)
+        _pil_206 = ('str', 1)
+        _pil_207 = ('str', 2)
+        _pil_203 = [_pil_204, _pil_205, _pil_206, _pil_207]
+        _pil_208 = _pil_201(_pil_202, _pil_203)
+        _pil_209 = self.assertEqual
+        _pil_210 = self.get_var
+        _pil_211 = locals()
+        _pil_212 = _pil_210(_pil_211)
+        _pil_213 = {'var_x': 2}
+        _pil_214 = _pil_209(_pil_212, _pil_213)
+
+    def test_for_call_iter_with_orelse(self):
+        _pil_215 = Expr.int
+        _pil_216 = _pil_215(2)
+        _pil_217 = range(_pil_216)
+        for _pil_218 in _pil_217:
+            var_x = _pil_218
+            _pil_219 = Expr.str
+            _pil_220 = _pil_219(var_x)
+        else:
+            _pil_221 = Expr.str
+            _pil_222 = _pil_221(99)
+        _pil_223 = self.assertEqual
+        _pil_224 = Expr.trace
+        _pil_226 = ('int', 2)
+        _pil_227 = ('str', 0)
+        _pil_228 = ('str', 1)
+        _pil_229 = ('str', 99)
+        _pil_225 = [_pil_226, _pil_227, _pil_228, _pil_229]
+        _pil_230 = _pil_223(_pil_224, _pil_225)
+        _pil_231 = self.assertEqual
+        _pil_232 = self.get_var
+        _pil_233 = locals()
+        _pil_234 = _pil_232(_pil_233)
+        _pil_235 = {'var_x': 1}
+        _pil_236 = _pil_231(_pil_234, _pil_235)
+
+    def test_for_nested(self):
+        _pil_238 = Expr.int
+        _pil_239 = _pil_238(0)
+        _pil_240 = Expr.int
+        _pil_241 = _pil_240(1)
+        _pil_237 = [_pil_239, _pil_241]
+        for _pil_242 in _pil_237:
+            var_i = _pil_242
+            _pil_244 = Expr.int
+            _pil_245 = _pil_244(0)
+            _pil_246 = Expr.int
+            _pil_247 = _pil_246(1)
+            _pil_243 = [_pil_245, _pil_247]
+            for _pil_248 in _pil_243:
+                var_j = _pil_248
+                _pil_249 = Expr.str
+                _pil_250 = _pil_249(var_i)
+                _pil_251 = Expr.str
+                _pil_252 = _pil_251(var_j)
+        _pil_253 = self.assertEqual
+        _pil_254 = Expr.trace
+        _pil_256 = ('int', 0)
+        _pil_257 = ('int', 1)
+        _pil_258 = ('int', 0)
+        _pil_259 = ('int', 1)
+        _pil_260 = ('str', 0)
+        _pil_261 = ('str', 0)
+        _pil_262 = ('str', 0)
+        _pil_263 = ('str', 1)
+        _pil_264 = ('int', 0)
+        _pil_265 = ('int', 1)
+        _pil_266 = ('str', 1)
+        _pil_267 = ('str', 0)
+        _pil_268 = ('str', 1)
+        _pil_269 = ('str', 1)
+        _pil_255 = [_pil_256, _pil_257, _pil_258, _pil_259, _pil_260, _pil_261, _pil_262, _pil_263, _pil_264, _pil_265, _pil_266, _pil_267, _pil_268, _pil_269]
+        _pil_270 = _pil_253(_pil_254, _pil_255)
+        _pil_271 = self.assertEqual
+        _pil_272 = self.get_var
+        _pil_273 = locals()
+        _pil_274 = _pil_272(_pil_273)
+        _pil_275 = {'var_i': 1, 'var_j': 1}
+        _pil_276 = _pil_271(_pil_274, _pil_275)
+
+    def test_for_nested_outer_orelse(self):
+        _pil_278 = Expr.int
+        _pil_279 = _pil_278(0)
+        _pil_280 = Expr.int
+        _pil_281 = _pil_280(1)
+        _pil_277 = [_pil_279, _pil_281]
+        for _pil_282 in _pil_277:
+            var_i = _pil_282
+            _pil_284 = Expr.int
+            _pil_285 = _pil_284(0)
+            _pil_283 = [_pil_285]
+            for _pil_286 in _pil_283:
+                var_j = _pil_286
+                _pil_287 = Expr.str
+                _pil_288 = _pil_287(var_i)
+                _pil_289 = Expr.str
+                _pil_290 = _pil_289(var_j)
+        else:
+            _pil_291 = Expr.str
+            _pil_292 = _pil_291(99)
+        _pil_293 = self.assertEqual
+        _pil_294 = Expr.trace
+        _pil_296 = ('int', 0)
+        _pil_297 = ('int', 1)
+        _pil_298 = ('int', 0)
+        _pil_299 = ('str', 0)
+        _pil_300 = ('str', 0)
+        _pil_301 = ('int', 0)
+        _pil_302 = ('str', 1)
+        _pil_303 = ('str', 0)
+        _pil_304 = ('str', 99)
+        _pil_295 = [_pil_296, _pil_297, _pil_298, _pil_299, _pil_300, _pil_301, _pil_302, _pil_303, _pil_304]
+        _pil_305 = _pil_293(_pil_294, _pil_295)
+        _pil_306 = self.assertEqual
+        _pil_307 = self.get_var
+        _pil_308 = locals()
+        _pil_309 = _pil_307(_pil_308)
+        _pil_310 = {'var_i': 1, 'var_j': 0}
+        _pil_311 = _pil_306(_pil_309, _pil_310)
+
+    def test_for_nested_both_orelse(self):
+        _pil_313 = Expr.int
+        _pil_314 = _pil_313(0)
+        _pil_315 = Expr.int
+        _pil_316 = _pil_315(1)
+        _pil_312 = [_pil_314, _pil_316]
+        for _pil_317 in _pil_312:
+            var_i = _pil_317
+            _pil_319 = Expr.int
+            _pil_320 = _pil_319(0)
+            _pil_318 = [_pil_320]
+            for _pil_321 in _pil_318:
+                var_j = _pil_321
+                _pil_322 = Expr.str
+                _pil_323 = _pil_322(var_i)
+                _pil_324 = Expr.str
+                _pil_325 = _pil_324(var_j)
+            else:
+                _pil_326 = Expr.str
+                _pil_327 = _pil_326(88)
+        else:
+            _pil_328 = Expr.str
+            _pil_329 = _pil_328(99)
+        _pil_330 = self.assertEqual
+        _pil_331 = Expr.trace
+        _pil_333 = ('int', 0)
+        _pil_334 = ('int', 1)
+        _pil_335 = ('int', 0)
+        _pil_336 = ('str', 0)
+        _pil_337 = ('str', 0)
+        _pil_338 = ('str', 88)
+        _pil_339 = ('int', 0)
+        _pil_340 = ('str', 1)
+        _pil_341 = ('str', 0)
+        _pil_342 = ('str', 88)
+        _pil_343 = ('str', 99)
+        _pil_332 = [_pil_333, _pil_334, _pil_335, _pil_336, _pil_337, _pil_338, _pil_339, _pil_340, _pil_341, _pil_342, _pil_343]
+        _pil_344 = _pil_330(_pil_331, _pil_332)
+        _pil_345 = self.assertEqual
+        _pil_346 = self.get_var
+        _pil_347 = locals()
+        _pil_348 = _pil_346(_pil_347)
+        _pil_349 = {'var_i': 1, 'var_j': 0}
+        _pil_350 = _pil_345(_pil_348, _pil_349)
+
+    def test_for_three_level_nesting(self):
+        _pil_351 = Expr.int
+        _pil_352 = _pil_351(2)
+        _pil_353 = range(_pil_352)
+        for _pil_354 in _pil_353:
+            var_i = _pil_354
+            _pil_356 = Expr.int
+            _pil_357 = _pil_356(0)
+            _pil_358 = Expr.int
+            _pil_359 = _pil_358(1)
+            _pil_355 = [_pil_357, _pil_359]
+            for _pil_360 in _pil_355:
+                var_j = _pil_360
+                _pil_363 = Expr.int
+                _pil_364 = _pil_363(0)
+                _pil_365 = Expr.int
+                _pil_366 = _pil_365(1)
+                _pil_362 = (_pil_364, _pil_366)
+                _pil_361 = [_pil_362]
+                for _pil_367 in _pil_361:
+                    _pil_368, _pil_369 = _pil_367
+                    var_x = _pil_368
+                    var_y = _pil_369
+                    _pil_370 = Expr.str
+                    _pil_371 = _pil_370(var_i)
+                    _pil_372 = Expr.str
+                    _pil_373 = _pil_372(var_j)
+                    _pil_374 = Expr.str
+                    _pil_375 = _pil_374(var_x)
+                    _pil_376 = Expr.str
+                    _pil_377 = _pil_376(var_y)
+        _pil_378 = self.assertEqual
+        _pil_379 = Expr.trace
+        _pil_381 = ('int', 2)
+        _pil_382 = ('int', 0)
+        _pil_383 = ('int', 1)
+        _pil_384 = ('int', 0)
+        _pil_385 = ('int', 1)
+        _pil_386 = ('str', 0)
+        _pil_387 = ('str', 0)
+        _pil_388 = ('str', 0)
+        _pil_389 = ('str', 1)
+        _pil_390 = ('int', 0)
+        _pil_391 = ('int', 1)
+        _pil_392 = ('str', 0)
+        _pil_393 = ('str', 1)
+        _pil_394 = ('str', 0)
+        _pil_395 = ('str', 1)
+        _pil_396 = ('int', 0)
+        _pil_397 = ('int', 1)
+        _pil_398 = ('int', 0)
+        _pil_399 = ('int', 1)
+        _pil_400 = ('str', 1)
+        _pil_401 = ('str', 0)
+        _pil_402 = ('str', 0)
+        _pil_403 = ('str', 1)
+        _pil_404 = ('int', 0)
+        _pil_405 = ('int', 1)
+        _pil_406 = ('str', 1)
+        _pil_407 = ('str', 1)
+        _pil_408 = ('str', 0)
+        _pil_409 = ('str', 1)
+        _pil_380 = [_pil_381, _pil_382, _pil_383, _pil_384, _pil_385, _pil_386, _pil_387, _pil_388, _pil_389, _pil_390, _pil_391, _pil_392, _pil_393, _pil_394, _pil_395, _pil_396, _pil_397, _pil_398, _pil_399, _pil_400, _pil_401, _pil_402, _pil_403, _pil_404, _pil_405, _pil_406, _pil_407, _pil_408, _pil_409]
+        _pil_410 = _pil_378(_pil_379, _pil_380)
+        _pil_411 = self.assertEqual
+        _pil_412 = self.get_var
+        _pil_413 = locals()
+        _pil_414 = _pil_412(_pil_413)
+        _pil_415 = {'var_i': 1, 'var_j': 1, 'var_x': 0, 'var_y': 1}
+        _pil_416 = _pil_411(_pil_414, _pil_415)
+
+class WhileTest(PILTestCase):
+
+    def test_while_false_no_body(self):
+        _pil_417 = Expr.false
+        _pil_418 = _pil_417(0)
+        while _pil_418:
+            _pil_419 = Expr.str
+            _pil_420 = _pil_419(1)
+            _pil_421 = Expr.false
+            _pil_422 = _pil_421(0)
+            _pil_418 = _pil_422
+        _pil_423 = self.assertEqual
+        _pil_424 = Expr.trace
+        _pil_426 = ('false', 0)
+        _pil_425 = [_pil_426]
+        _pil_427 = _pil_423(_pil_424, _pil_425)
+        _pil_428 = self.assertEqual
+        _pil_429 = self.get_var
+        _pil_430 = locals()
+        _pil_431 = _pil_429(_pil_430)
+        _pil_432 = {}
+        _pil_433 = _pil_428(_pil_431, _pil_432)
+
+    def test_while_false_with_orelse(self):
+        _pil_434 = Expr.false
+        _pil_435 = _pil_434(0)
+        while _pil_435:
+            _pil_436 = Expr.str
+            _pil_437 = _pil_436(1)
+            _pil_440 = Expr.false
+            _pil_441 = _pil_440(0)
+            _pil_435 = _pil_441
+        else:
+            _pil_438 = Expr.str
+            _pil_439 = _pil_438(2)
+        _pil_442 = self.assertEqual
+        _pil_443 = Expr.trace
+        _pil_445 = ('false', 0)
+        _pil_446 = ('str', 2)
+        _pil_444 = [_pil_445, _pil_446]
+        _pil_447 = _pil_442(_pil_443, _pil_444)
+        _pil_448 = self.assertEqual
+        _pil_449 = self.get_var
+        _pil_450 = locals()
+        _pil_451 = _pil_449(_pil_450)
+        _pil_452 = {}
+        _pil_453 = _pil_448(_pil_451, _pil_452)
+
+    def test_while_true_break(self):
+        _pil_454 = Expr.true
+        _pil_455 = _pil_454(0)
+        while _pil_455:
+            _pil_456 = Expr.str
+            _pil_457 = _pil_456(1)
+            break
+            _pil_458 = Expr.true
+            _pil_459 = _pil_458(0)
+            _pil_455 = _pil_459
+        _pil_460 = self.assertEqual
+        _pil_461 = Expr.trace
+        _pil_463 = ('true', 0)
+        _pil_464 = ('str', 1)
+        _pil_462 = [_pil_463, _pil_464]
+        _pil_465 = _pil_460(_pil_461, _pil_462)
+        _pil_466 = self.assertEqual
+        _pil_467 = self.get_var
+        _pil_468 = locals()
+        _pil_469 = _pil_467(_pil_468)
+        _pil_470 = {}
+        _pil_471 = _pil_466(_pil_469, _pil_470)
+
+    def test_while_true_break_orelse_not_fired(self):
+        _pil_472 = Expr.true
+        _pil_473 = _pil_472(0)
+        while _pil_473:
+            _pil_474 = Expr.str
+            _pil_475 = _pil_474(1)
+            break
+            _pil_478 = Expr.true
+            _pil_479 = _pil_478(0)
+            _pil_473 = _pil_479
+        else:
+            _pil_476 = Expr.str
+            _pil_477 = _pil_476(99)
+        _pil_480 = self.assertEqual
+        _pil_481 = Expr.trace
+        _pil_483 = ('true', 0)
+        _pil_484 = ('str', 1)
+        _pil_482 = [_pil_483, _pil_484]
+        _pil_485 = _pil_480(_pil_481, _pil_482)
+        _pil_486 = self.assertEqual
+        _pil_487 = self.get_var
+        _pil_488 = locals()
+        _pil_489 = _pil_487(_pil_488)
+        _pil_490 = {}
+        _pil_491 = _pil_486(_pil_489, _pil_490)
+
+    def test_while_true_body_then_break(self):
+        _pil_492 = Expr.true
+        _pil_493 = _pil_492(0)
+        while _pil_493:
+            _pil_494 = Expr.str
+            _pil_495 = _pil_494(1)
+            _pil_496 = Expr.str
+            _pil_497 = _pil_496(2)
+            break
+            _pil_498 = Expr.true
+            _pil_499 = _pil_498(0)
+            _pil_493 = _pil_499
+        _pil_500 = self.assertEqual
+        _pil_501 = Expr.trace
+        _pil_503 = ('true', 0)
+        _pil_504 = ('str', 1)
+        _pil_505 = ('str', 2)
+        _pil_502 = [_pil_503, _pil_504, _pil_505]
+        _pil_506 = _pil_500(_pil_501, _pil_502)
+        _pil_507 = self.assertEqual
+        _pil_508 = self.get_var
+        _pil_509 = locals()
+        _pil_510 = _pil_508(_pil_509)
+        _pil_511 = {}
+        _pil_512 = _pil_507(_pil_510, _pil_511)
+
+    def test_while_const_var_break(self):
+        while 1:
+            _pil_513 = Expr.str
+            _pil_514 = _pil_513(0)
+            break
+        _pil_515 = self.assertEqual
+        _pil_516 = Expr.trace
+        _pil_518 = ('str', 0)
+        _pil_517 = [_pil_518]
+        _pil_519 = _pil_515(_pil_516, _pil_517)
+        _pil_520 = self.assertEqual
+        _pil_521 = self.get_var
+        _pil_522 = locals()
+        _pil_523 = _pil_521(_pil_522)
+        _pil_524 = {}
+        _pil_525 = _pil_520(_pil_523, _pil_524)
+
+    def test_while_const_var_break_orelse_not_fired(self):
+        while 1:
+            _pil_526 = Expr.str
+            _pil_527 = _pil_526(0)
+            break
+        else:
+            _pil_528 = Expr.str
+            _pil_529 = _pil_528(99)
+        _pil_530 = self.assertEqual
+        _pil_531 = Expr.trace
+        _pil_533 = ('str', 0)
+        _pil_532 = [_pil_533]
+        _pil_534 = _pil_530(_pil_531, _pil_532)
+        _pil_535 = self.assertEqual
+        _pil_536 = self.get_var
+        _pil_537 = locals()
+        _pil_538 = _pil_536(_pil_537)
+        _pil_539 = {}
+        _pil_540 = _pil_535(_pil_538, _pil_539)
+
+    def test_while_const_var_multi_body_break(self):
+        while 1:
+            _pil_541 = Expr.str
+            _pil_542 = _pil_541(0)
+            _pil_543 = Expr.str
+            _pil_544 = _pil_543(1)
+            _pil_545 = Expr.str
+            _pil_546 = _pil_545(2)
+            break
+        _pil_547 = self.assertEqual
+        _pil_548 = Expr.trace
+        _pil_550 = ('str', 0)
+        _pil_551 = ('str', 1)
+        _pil_552 = ('str', 2)
+        _pil_549 = [_pil_550, _pil_551, _pil_552]
+        _pil_553 = _pil_547(_pil_548, _pil_549)
+        _pil_554 = self.assertEqual
+        _pil_555 = self.get_var
+        _pil_556 = locals()
+        _pil_557 = _pil_555(_pil_556)
+        _pil_558 = {}
+        _pil_559 = _pil_554(_pil_557, _pil_558)
+
+    def test_while_nested_func_func(self):
+        _pil_560 = Expr.true
+        _pil_561 = _pil_560(0)
+        while _pil_561:
+            _pil_562 = Expr.true
+            _pil_563 = _pil_562(1)
+            while _pil_563:
+                _pil_564 = Expr.str
+                _pil_565 = _pil_564(2)
+                break
+                _pil_566 = Expr.true
+                _pil_567 = _pil_566(1)
+                _pil_563 = _pil_567
+            _pil_568 = Expr.str
+            _pil_569 = _pil_568(3)
+            break
+            _pil_570 = Expr.true
+            _pil_571 = _pil_570(0)
+            _pil_561 = _pil_571
+        _pil_572 = self.assertEqual
+        _pil_573 = Expr.trace
+        _pil_575 = ('true', 0)
+        _pil_576 = ('true', 1)
+        _pil_577 = ('str', 2)
+        _pil_578 = ('str', 3)
+        _pil_574 = [_pil_575, _pil_576, _pil_577, _pil_578]
+        _pil_579 = _pil_572(_pil_573, _pil_574)
+        _pil_580 = self.assertEqual
+        _pil_581 = self.get_var
+        _pil_582 = locals()
+        _pil_583 = _pil_581(_pil_582)
+        _pil_584 = {}
+        _pil_585 = _pil_580(_pil_583, _pil_584)
+
+    def test_while_nested_func_func_inner_orelse(self):
+        _pil_586 = Expr.true
+        _pil_587 = _pil_586(0)
+        while _pil_587:
+            _pil_588 = Expr.false
+            _pil_589 = _pil_588(1)
+            while _pil_589:
+                _pil_590 = Expr.str
+                _pil_591 = _pil_590(2)
+                _pil_594 = Expr.false
+                _pil_595 = _pil_594(1)
+                _pil_589 = _pil_595
+            else:
+                _pil_592 = Expr.str
+                _pil_593 = _pil_592(3)
+            break
+            _pil_596 = Expr.true
+            _pil_597 = _pil_596(0)
+            _pil_587 = _pil_597
+        _pil_598 = self.assertEqual
+        _pil_599 = Expr.trace
+        _pil_601 = ('true', 0)
+        _pil_602 = ('false', 1)
+        _pil_603 = ('str', 3)
+        _pil_600 = [_pil_601, _pil_602, _pil_603]
+        _pil_604 = _pil_598(_pil_599, _pil_600)
+        _pil_605 = self.assertEqual
+        _pil_606 = self.get_var
+        _pil_607 = locals()
+        _pil_608 = _pil_606(_pil_607)
+        _pil_609 = {}
+        _pil_610 = _pil_605(_pil_608, _pil_609)
+
+    def test_while_nested_const_outer_func_inner(self):
+        while 1:
+            _pil_611 = Expr.true
+            _pil_612 = _pil_611(0)
+            while _pil_612:
+                _pil_613 = Expr.str
+                _pil_614 = _pil_613(1)
+                break
+                _pil_615 = Expr.true
+                _pil_616 = _pil_615(0)
+                _pil_612 = _pil_616
+            break
+        _pil_617 = self.assertEqual
+        _pil_618 = Expr.trace
+        _pil_620 = ('true', 0)
+        _pil_621 = ('str', 1)
+        _pil_619 = [_pil_620, _pil_621]
+        _pil_622 = _pil_617(_pil_618, _pil_619)
+        _pil_623 = self.assertEqual
+        _pil_624 = self.get_var
+        _pil_625 = locals()
+        _pil_626 = _pil_624(_pil_625)
+        _pil_627 = {}
+        _pil_628 = _pil_623(_pil_626, _pil_627)
+
+    def test_while_nested_const_outer_false_inner_orelse(self):
+        while True:
+            _pil_629 = Expr.false
+            _pil_630 = _pil_629(0)
+            while _pil_630:
+                _pil_631 = Expr.str
+                _pil_632 = _pil_631(1)
+                _pil_635 = Expr.false
+                _pil_636 = _pil_635(0)
+                _pil_630 = _pil_636
+            else:
+                _pil_633 = Expr.str
+                _pil_634 = _pil_633(2)
+            break
+        _pil_637 = self.assertEqual
+        _pil_638 = Expr.trace
+        _pil_640 = ('false', 0)
+        _pil_641 = ('str', 2)
+        _pil_639 = [_pil_640, _pil_641]
+        _pil_642 = _pil_637(_pil_638, _pil_639)
+        _pil_643 = self.assertEqual
+        _pil_644 = self.get_var
+        _pil_645 = locals()
+        _pil_646 = _pil_644(_pil_645)
+        _pil_647 = {}
+        _pil_648 = _pil_643(_pil_646, _pil_647)
+
+    def test_while_three_level_nesting(self):
+        while 1:
+            _pil_649 = Expr.true
+            _pil_650 = _pil_649(0)
+            while _pil_650:
+                _pil_651 = Expr.true
+                _pil_652 = _pil_651(1)
+                while _pil_652:
+                    _pil_653 = Expr.str
+                    _pil_654 = _pil_653(2)
+                    break
+                    _pil_655 = Expr.true
+                    _pil_656 = _pil_655(1)
+                    _pil_652 = _pil_656
+                _pil_657 = Expr.str
+                _pil_658 = _pil_657(3)
+                break
+                _pil_659 = Expr.true
+                _pil_660 = _pil_659(0)
+                _pil_650 = _pil_660
+            break
+        _pil_661 = self.assertEqual
+        _pil_662 = Expr.trace
+        _pil_664 = ('true', 0)
+        _pil_665 = ('true', 1)
+        _pil_666 = ('str', 2)
+        _pil_667 = ('str', 3)
+        _pil_663 = [_pil_664, _pil_665, _pil_666, _pil_667]
+        _pil_668 = _pil_661(_pil_662, _pil_663)
+        _pil_669 = self.assertEqual
+        _pil_670 = self.get_var
+        _pil_671 = locals()
+        _pil_672 = _pil_670(_pil_671)
+        _pil_673 = {}
+        _pil_674 = _pil_669(_pil_672, _pil_673)
+
+    def test_while_three_level_mixed_orelse(self):
+        var_outer = True
+        while var_outer:
+            _pil_675 = Expr.true
+            _pil_676 = _pil_675(0)
+            while _pil_676:
+                _pil_677 = Expr.false
+                _pil_678 = _pil_677(1)
+                while _pil_678:
+                    _pil_679 = Expr.str
+                    _pil_680 = _pil_679(2)
+                    _pil_683 = Expr.false
+                    _pil_684 = _pil_683(1)
+                    _pil_678 = _pil_684
+                else:
+                    _pil_681 = Expr.str
+                    _pil_682 = _pil_681(3)
+                break
+                _pil_685 = Expr.true
+                _pil_686 = _pil_685(0)
+                _pil_676 = _pil_686
+            break
+            var_outer = var_outer
+        _pil_687 = self.assertEqual
+        _pil_688 = Expr.trace
+        _pil_690 = ('true', 0)
+        _pil_691 = ('false', 1)
+        _pil_692 = ('str', 3)
+        _pil_689 = [_pil_690, _pil_691, _pil_692]
+        _pil_693 = _pil_687(_pil_688, _pil_689)
+        _pil_694 = self.assertEqual
+        _pil_695 = self.get_var
+        _pil_696 = locals()
+        _pil_697 = _pil_695(_pil_696)
+        _pil_698 = {'var_outer': True}
+        _pil_699 = _pil_694(_pil_697, _pil_698)
+
+class IfTest(PILTestCase):
+
+    def test_simple_if_true(self):
+        _pil_700 = Expr.true
+        _pil_701 = _pil_700(0)
+        if _pil_701:
+            _pil_702 = Expr.str
+            _pil_703 = _pil_702(1)
+        _pil_704 = self.assertEqual
+        _pil_705 = Expr.trace
+        _pil_707 = ('true', 0)
+        _pil_708 = ('str', 1)
+        _pil_706 = [_pil_707, _pil_708]
+        _pil_709 = _pil_704(_pil_705, _pil_706)
+        _pil_710 = self.assertEqual
+        _pil_711 = self.get_var
+        _pil_712 = locals()
+        _pil_713 = _pil_711(_pil_712)
+        _pil_714 = {}
+        _pil_715 = _pil_710(_pil_713, _pil_714)
+
+    def test_simple_if_false(self):
+        _pil_716 = Expr.false
+        _pil_717 = _pil_716(0)
+        if _pil_717:
+            _pil_718 = Expr.str
+            _pil_719 = _pil_718(1)
+        _pil_720 = self.assertEqual
+        _pil_721 = Expr.trace
+        _pil_723 = ('false', 0)
+        _pil_722 = [_pil_723]
+        _pil_724 = _pil_720(_pil_721, _pil_722)
+        _pil_725 = self.assertEqual
+        _pil_726 = self.get_var
+        _pil_727 = locals()
+        _pil_728 = _pil_726(_pil_727)
+        _pil_729 = {}
+        _pil_730 = _pil_725(_pil_728, _pil_729)
+
+    def test_if_else_true(self):
+        _pil_731 = Expr.true
+        _pil_732 = _pil_731(0)
+        if _pil_732:
+            _pil_733 = Expr.str
+            _pil_734 = _pil_733(1)
+        else:
+            _pil_735 = Expr.str
+            _pil_736 = _pil_735(2)
+        _pil_737 = self.assertEqual
+        _pil_738 = Expr.trace
+        _pil_740 = ('true', 0)
+        _pil_741 = ('str', 1)
+        _pil_739 = [_pil_740, _pil_741]
+        _pil_742 = _pil_737(_pil_738, _pil_739)
+        _pil_743 = self.assertEqual
+        _pil_744 = self.get_var
+        _pil_745 = locals()
+        _pil_746 = _pil_744(_pil_745)
+        _pil_747 = {}
+        _pil_748 = _pil_743(_pil_746, _pil_747)
+
+    def test_if_else_false(self):
+        _pil_749 = Expr.false
+        _pil_750 = _pil_749(0)
+        if _pil_750:
+            _pil_751 = Expr.str
+            _pil_752 = _pil_751(1)
+        else:
+            _pil_753 = Expr.str
+            _pil_754 = _pil_753(2)
+        _pil_755 = self.assertEqual
+        _pil_756 = Expr.trace
+        _pil_758 = ('false', 0)
+        _pil_759 = ('str', 2)
+        _pil_757 = [_pil_758, _pil_759]
+        _pil_760 = _pil_755(_pil_756, _pil_757)
+        _pil_761 = self.assertEqual
+        _pil_762 = self.get_var
+        _pil_763 = locals()
+        _pil_764 = _pil_762(_pil_763)
+        _pil_765 = {}
+        _pil_766 = _pil_761(_pil_764, _pil_765)
+
+    def test_if_elif_else_first(self):
+        _pil_767 = Expr.true
+        _pil_768 = _pil_767(0)
+        if _pil_768:
+            _pil_769 = Expr.str
+            _pil_770 = _pil_769(1)
+        else:
+            _pil_771 = Expr.true
+            _pil_772 = _pil_771(2)
+            if _pil_772:
+                _pil_773 = Expr.str
+                _pil_774 = _pil_773(3)
+            else:
+                _pil_775 = Expr.str
+                _pil_776 = _pil_775(4)
+        _pil_777 = self.assertEqual
+        _pil_778 = Expr.trace
+        _pil_780 = ('true', 0)
+        _pil_781 = ('str', 1)
+        _pil_779 = [_pil_780, _pil_781]
+        _pil_782 = _pil_777(_pil_778, _pil_779)
+        _pil_783 = self.assertEqual
+        _pil_784 = self.get_var
+        _pil_785 = locals()
+        _pil_786 = _pil_784(_pil_785)
+        _pil_787 = {}
+        _pil_788 = _pil_783(_pil_786, _pil_787)
+
+    def test_if_elif_else_second(self):
+        _pil_789 = Expr.false
+        _pil_790 = _pil_789(0)
+        if _pil_790:
+            _pil_791 = Expr.str
+            _pil_792 = _pil_791(1)
+        else:
+            _pil_793 = Expr.true
+            _pil_794 = _pil_793(2)
+            if _pil_794:
+                _pil_795 = Expr.str
+                _pil_796 = _pil_795(3)
+            else:
+                _pil_797 = Expr.str
+                _pil_798 = _pil_797(4)
+        _pil_799 = self.assertEqual
+        _pil_800 = Expr.trace
+        _pil_802 = ('false', 0)
+        _pil_803 = ('true', 2)
+        _pil_804 = ('str', 3)
+        _pil_801 = [_pil_802, _pil_803, _pil_804]
+        _pil_805 = _pil_799(_pil_800, _pil_801)
+        _pil_806 = self.assertEqual
+        _pil_807 = self.get_var
+        _pil_808 = locals()
+        _pil_809 = _pil_807(_pil_808)
+        _pil_810 = {}
+        _pil_811 = _pil_806(_pil_809, _pil_810)
+
+    def test_if_elif_else_third(self):
+        _pil_812 = Expr.false
+        _pil_813 = _pil_812(0)
+        if _pil_813:
+            _pil_814 = Expr.str
+            _pil_815 = _pil_814(1)
+        else:
+            _pil_816 = Expr.false
+            _pil_817 = _pil_816(2)
+            if _pil_817:
+                _pil_818 = Expr.str
+                _pil_819 = _pil_818(3)
+            else:
+                _pil_820 = Expr.str
+                _pil_821 = _pil_820(4)
+        _pil_822 = self.assertEqual
+        _pil_823 = Expr.trace
+        _pil_825 = ('false', 0)
+        _pil_826 = ('false', 2)
+        _pil_827 = ('str', 4)
+        _pil_824 = [_pil_825, _pil_826, _pil_827]
+        _pil_828 = _pil_822(_pil_823, _pil_824)
+        _pil_829 = self.assertEqual
+        _pil_830 = self.get_var
+        _pil_831 = locals()
+        _pil_832 = _pil_830(_pil_831)
+        _pil_833 = {}
+        _pil_834 = _pil_829(_pil_832, _pil_833)
+
+    def test_nested_if_true_true(self):
+        _pil_835 = Expr.true
+        _pil_836 = _pil_835(0)
+        if _pil_836:
+            _pil_837 = Expr.true
+            _pil_838 = _pil_837(1)
+            if _pil_838:
+                _pil_839 = Expr.str
+                _pil_840 = _pil_839(2)
+            else:
+                _pil_841 = Expr.str
+                _pil_842 = _pil_841(3)
+        else:
+            _pil_843 = Expr.str
+            _pil_844 = _pil_843(4)
+        _pil_845 = self.assertEqual
+        _pil_846 = Expr.trace
+        _pil_848 = ('true', 0)
+        _pil_849 = ('true', 1)
+        _pil_850 = ('str', 2)
+        _pil_847 = [_pil_848, _pil_849, _pil_850]
+        _pil_851 = _pil_845(_pil_846, _pil_847)
+        _pil_852 = self.assertEqual
+        _pil_853 = self.get_var
+        _pil_854 = locals()
+        _pil_855 = _pil_853(_pil_854)
+        _pil_856 = {}
+        _pil_857 = _pil_852(_pil_855, _pil_856)
+
+    def test_nested_if_true_false(self):
+        _pil_858 = Expr.true
+        _pil_859 = _pil_858(0)
+        if _pil_859:
+            _pil_860 = Expr.false
+            _pil_861 = _pil_860(1)
+            if _pil_861:
+                _pil_862 = Expr.str
+                _pil_863 = _pil_862(2)
+            else:
+                _pil_864 = Expr.str
+                _pil_865 = _pil_864(3)
+        else:
+            _pil_866 = Expr.str
+            _pil_867 = _pil_866(4)
+        _pil_868 = self.assertEqual
+        _pil_869 = Expr.trace
+        _pil_871 = ('true', 0)
+        _pil_872 = ('false', 1)
+        _pil_873 = ('str', 3)
+        _pil_870 = [_pil_871, _pil_872, _pil_873]
+        _pil_874 = _pil_868(_pil_869, _pil_870)
+        _pil_875 = self.assertEqual
+        _pil_876 = self.get_var
+        _pil_877 = locals()
+        _pil_878 = _pil_876(_pil_877)
+        _pil_879 = {}
+        _pil_880 = _pil_875(_pil_878, _pil_879)
+
+    def test_nested_if_false(self):
+        _pil_881 = Expr.false
+        _pil_882 = _pil_881(0)
+        if _pil_882:
+            _pil_883 = Expr.true
+            _pil_884 = _pil_883(1)
+            if _pil_884:
+                _pil_885 = Expr.str
+                _pil_886 = _pil_885(2)
+            else:
+                _pil_887 = Expr.str
+                _pil_888 = _pil_887(3)
+        else:
+            _pil_889 = Expr.str
+            _pil_890 = _pil_889(4)
+        _pil_891 = self.assertEqual
+        _pil_892 = Expr.trace
+        _pil_894 = ('false', 0)
+        _pil_895 = ('str', 4)
+        _pil_893 = [_pil_894, _pil_895]
+        _pil_896 = _pil_891(_pil_892, _pil_893)
+        _pil_897 = self.assertEqual
+        _pil_898 = self.get_var
+        _pil_899 = locals()
+        _pil_900 = _pil_898(_pil_899)
+        _pil_901 = {}
+        _pil_902 = _pil_897(_pil_900, _pil_901)
+
+    def test_if_and_condition_both_true(self):
+        _pil_904 = Expr.true
+        _pil_905 = _pil_904(0)
+        if _pil_905:
+            _pil_906 = Expr.true
+            _pil_907 = _pil_906(1)
+            _pil_903 = _pil_907
+        else:
+            _pil_903 = _pil_905
+        if _pil_903:
+            _pil_908 = Expr.str
+            _pil_909 = _pil_908(2)
+        else:
+            _pil_910 = Expr.str
+            _pil_911 = _pil_910(3)
+        _pil_912 = self.assertEqual
+        _pil_913 = Expr.trace
+        _pil_915 = ('true', 0)
+        _pil_916 = ('true', 1)
+        _pil_917 = ('str', 2)
+        _pil_914 = [_pil_915, _pil_916, _pil_917]
+        _pil_918 = _pil_912(_pil_913, _pil_914)
+        _pil_919 = self.assertEqual
+        _pil_920 = self.get_var
+        _pil_921 = locals()
+        _pil_922 = _pil_920(_pil_921)
+        _pil_923 = {}
+        _pil_924 = _pil_919(_pil_922, _pil_923)
+
+    def test_if_and_condition_first_false(self):
+        _pil_926 = Expr.false
+        _pil_927 = _pil_926(0)
+        if _pil_927:
+            _pil_925 = True
+        else:
+            _pil_925 = _pil_927
+        if _pil_925:
+            _pil_928 = Expr.str
+            _pil_929 = _pil_928(2)
+        else:
+            _pil_930 = Expr.str
+            _pil_931 = _pil_930(3)
+        _pil_932 = self.assertEqual
+        _pil_933 = Expr.trace
+        _pil_935 = ('false', 0)
+        _pil_936 = ('str', 3)
+        _pil_934 = [_pil_935, _pil_936]
+        _pil_937 = _pil_932(_pil_933, _pil_934)
+        _pil_938 = self.assertEqual
+        _pil_939 = self.get_var
+        _pil_940 = locals()
+        _pil_941 = _pil_939(_pil_940)
+        _pil_942 = {}
+        _pil_943 = _pil_938(_pil_941, _pil_942)
+
+    def test_if_and_condition_second_false(self):
+        _pil_945 = Expr.true
+        _pil_946 = _pil_945(0)
+        if _pil_946:
+            _pil_944 = False
+        else:
+            _pil_944 = _pil_946
+        if _pil_944:
+            _pil_947 = Expr.str
+            _pil_948 = _pil_947(2)
+        else:
+            _pil_949 = Expr.str
+            _pil_950 = _pil_949(3)
+        _pil_951 = self.assertEqual
+        _pil_952 = Expr.trace
+        _pil_954 = ('true', 0)
+        _pil_955 = ('str', 3)
+        _pil_953 = [_pil_954, _pil_955]
+        _pil_956 = _pil_951(_pil_952, _pil_953)
+        _pil_957 = self.assertEqual
+        _pil_958 = self.get_var
+        _pil_959 = locals()
+        _pil_960 = _pil_958(_pil_959)
+        _pil_961 = {}
+        _pil_962 = _pil_957(_pil_960, _pil_961)
+
+    def test_if_or_condition_both_false(self):
+        if False:
+            _pil_963 = False
+        else:
+            _pil_964 = Expr.false
+            _pil_965 = _pil_964(1)
+            _pil_963 = _pil_965
+        if _pil_963:
+            _pil_966 = Expr.str
+            _pil_967 = _pil_966(2)
+        else:
+            _pil_968 = Expr.str
+            _pil_969 = _pil_968(3)
+        _pil_970 = self.assertEqual
+        _pil_971 = Expr.trace
+        _pil_973 = ('false', 1)
+        _pil_974 = ('str', 3)
+        _pil_972 = [_pil_973, _pil_974]
+        _pil_975 = _pil_970(_pil_971, _pil_972)
+        _pil_976 = self.assertEqual
+        _pil_977 = self.get_var
+        _pil_978 = locals()
+        _pil_979 = _pil_977(_pil_978)
+        _pil_980 = {}
+        _pil_981 = _pil_976(_pil_979, _pil_980)
+
+    def test_if_or_condition_first_true(self):
+        _pil_983 = Expr.true
+        _pil_984 = _pil_983(0)
+        if _pil_984:
+            _pil_982 = _pil_984
+        else:
+            _pil_985 = Expr.false
+            _pil_986 = _pil_985(1)
+            _pil_982 = _pil_986
+        if _pil_982:
+            _pil_987 = Expr.str
+            _pil_988 = _pil_987(2)
+        else:
+            _pil_989 = Expr.str
+            _pil_990 = _pil_989(3)
+        _pil_991 = self.assertEqual
+        _pil_992 = Expr.trace
+        _pil_994 = ('true', 0)
+        _pil_995 = ('str', 2)
+        _pil_993 = [_pil_994, _pil_995]
+        _pil_996 = _pil_991(_pil_992, _pil_993)
+        _pil_997 = self.assertEqual
+        _pil_998 = self.get_var
+        _pil_999 = locals()
+        _pil_1000 = _pil_998(_pil_999)
+        _pil_1001 = {}
+        _pil_1002 = _pil_997(_pil_1000, _pil_1001)
+
+    def test_if_or_condition_second_true(self):
+        _pil_1004 = Expr.false
+        _pil_1005 = _pil_1004(0)
+        if _pil_1005:
+            _pil_1003 = _pil_1005
+        else:
+            _pil_1006 = Expr.true
+            _pil_1007 = _pil_1006(1)
+            _pil_1003 = _pil_1007
+        if _pil_1003:
+            _pil_1008 = Expr.str
+            _pil_1009 = _pil_1008(2)
+        else:
+            _pil_1010 = Expr.str
+            _pil_1011 = _pil_1010(3)
+        _pil_1012 = self.assertEqual
+        _pil_1013 = Expr.trace
+        _pil_1015 = ('false', 0)
+        _pil_1016 = ('true', 1)
+        _pil_1017 = ('str', 2)
+        _pil_1014 = [_pil_1015, _pil_1016, _pil_1017]
+        _pil_1018 = _pil_1012(_pil_1013, _pil_1014)
+        _pil_1019 = self.assertEqual
+        _pil_1020 = self.get_var
+        _pil_1021 = locals()
+        _pil_1022 = _pil_1020(_pil_1021)
+        _pil_1023 = {}
+        _pil_1024 = _pil_1019(_pil_1022, _pil_1023)
+
+    def test_if_and_or_combined(self):
+        _pil_1027 = Expr.true
+        _pil_1028 = _pil_1027(0)
+        if _pil_1028:
+            _pil_1029 = Expr.false
+            _pil_1030 = _pil_1029(1)
+            _pil_1026 = _pil_1030
+        else:
+            _pil_1026 = _pil_1028
+        if _pil_1026:
+            _pil_1025 = _pil_1026
+        else:
+            _pil_1031 = Expr.true
+            _pil_1032 = _pil_1031(2)
+            _pil_1025 = _pil_1032
+        if _pil_1025:
+            _pil_1033 = Expr.str
+            _pil_1034 = _pil_1033(3)
+        else:
+            _pil_1035 = Expr.str
+            _pil_1036 = _pil_1035(4)
+        _pil_1037 = self.assertEqual
+        _pil_1038 = Expr.trace
+        _pil_1040 = ('true', 0)
+        _pil_1041 = ('false', 1)
+        _pil_1042 = ('true', 2)
+        _pil_1043 = ('str', 3)
+        _pil_1039 = [_pil_1040, _pil_1041, _pil_1042, _pil_1043]
+        _pil_1044 = _pil_1037(_pil_1038, _pil_1039)
+        _pil_1045 = self.assertEqual
+        _pil_1046 = self.get_var
+        _pil_1047 = locals()
+        _pil_1048 = _pil_1046(_pil_1047)
+        _pil_1049 = {}
+        _pil_1050 = _pil_1045(_pil_1048, _pil_1049)
+
+    def test_sequential_ifs(self):
+        _pil_1051 = Expr.true
+        _pil_1052 = _pil_1051(0)
+        if _pil_1052:
+            _pil_1053 = Expr.str
+            _pil_1054 = _pil_1053(1)
+        _pil_1055 = Expr.false
+        _pil_1056 = _pil_1055(2)
+        if _pil_1056:
+            _pil_1057 = Expr.str
+            _pil_1058 = _pil_1057(3)
+        _pil_1059 = Expr.true
+        _pil_1060 = _pil_1059(4)
+        if _pil_1060:
+            _pil_1061 = Expr.str
+            _pil_1062 = _pil_1061(5)
+        _pil_1063 = self.assertEqual
+        _pil_1064 = Expr.trace
+        _pil_1066 = ('true', 0)
+        _pil_1067 = ('str', 1)
+        _pil_1068 = ('false', 2)
+        _pil_1069 = ('true', 4)
+        _pil_1070 = ('str', 5)
+        _pil_1065 = [_pil_1066, _pil_1067, _pil_1068, _pil_1069, _pil_1070]
+        _pil_1071 = _pil_1063(_pil_1064, _pil_1065)
+        _pil_1072 = self.assertEqual
+        _pil_1073 = self.get_var
+        _pil_1074 = locals()
+        _pil_1075 = _pil_1073(_pil_1074)
+        _pil_1076 = {}
+        _pil_1077 = _pil_1072(_pil_1075, _pil_1076)
+
+class BreakTest(PILTestCase):
+
+    def test_break_for_first(self):
+        _pil_1079 = Expr.int
+        _pil_1080 = _pil_1079(0)
+        _pil_1081 = Expr.int
+        _pil_1082 = _pil_1081(1)
+        _pil_1083 = Expr.int
+        _pil_1084 = _pil_1083(2)
+        _pil_1078 = [_pil_1080, _pil_1082, _pil_1084]
+        for _pil_1085 in _pil_1078:
+            var_x = _pil_1085
+            _pil_1086 = Expr.str
+            _pil_1087 = _pil_1086(var_x)
+            break
+        _pil_1088 = self.assertEqual
+        _pil_1089 = Expr.trace
+        _pil_1091 = ('int', 0)
+        _pil_1092 = ('int', 1)
+        _pil_1093 = ('int', 2)
+        _pil_1094 = ('str', 0)
+        _pil_1090 = [_pil_1091, _pil_1092, _pil_1093, _pil_1094]
+        _pil_1095 = _pil_1088(_pil_1089, _pil_1090)
+        _pil_1096 = self.assertEqual
+        _pil_1097 = self.get_var
+        _pil_1098 = locals()
+        _pil_1099 = _pil_1097(_pil_1098)
+        _pil_1100 = {'var_x': 0}
+        _pil_1101 = _pil_1096(_pil_1099, _pil_1100)
+
+    def test_break_for_conditional(self):
+        _pil_1103 = Expr.int
+        _pil_1104 = _pil_1103(0)
+        _pil_1105 = Expr.int
+        _pil_1106 = _pil_1105(1)
+        _pil_1107 = Expr.int
+        _pil_1108 = _pil_1107(2)
+        _pil_1102 = [_pil_1104, _pil_1106, _pil_1108]
+        for _pil_1109 in _pil_1102:
+            var_x = _pil_1109
+            _pil_1110 = Expr.str
+            _pil_1111 = _pil_1110(var_x)
+            _pil_1112 = Expr.true
+            _pil_1113 = _pil_1112(var_x)
+            if _pil_1113:
+                break
+        _pil_1114 = self.assertEqual
+        _pil_1115 = Expr.trace
+        _pil_1117 = ('int', 0)
+        _pil_1118 = ('int', 1)
+        _pil_1119 = ('int', 2)
+        _pil_1120 = ('str', 0)
+        _pil_1121 = ('true', 0)
+        _pil_1116 = [_pil_1117, _pil_1118, _pil_1119, _pil_1120, _pil_1121]
+        _pil_1122 = _pil_1114(_pil_1115, _pil_1116)
+        _pil_1123 = self.assertEqual
+        _pil_1124 = self.get_var
+        _pil_1125 = locals()
+        _pil_1126 = _pil_1124(_pil_1125)
+        _pil_1127 = {'var_x': 0}
+        _pil_1128 = _pil_1123(_pil_1126, _pil_1127)
+
+    def test_break_for_suppresses_orelse(self):
+        _pil_1130 = Expr.int
+        _pil_1131 = _pil_1130(0)
+        _pil_1132 = Expr.int
+        _pil_1133 = _pil_1132(1)
+        _pil_1129 = [_pil_1131, _pil_1133]
+        for _pil_1134 in _pil_1129:
+            var_x = _pil_1134
+            _pil_1135 = Expr.str
+            _pil_1136 = _pil_1135(var_x)
+            break
+        else:
+            _pil_1137 = Expr.str
+            _pil_1138 = _pil_1137(99)
+        _pil_1139 = self.assertEqual
+        _pil_1140 = Expr.trace
+        _pil_1142 = ('int', 0)
+        _pil_1143 = ('int', 1)
+        _pil_1144 = ('str', 0)
+        _pil_1141 = [_pil_1142, _pil_1143, _pil_1144]
+        _pil_1145 = _pil_1139(_pil_1140, _pil_1141)
+        _pil_1146 = self.assertEqual
+        _pil_1147 = self.get_var
+        _pil_1148 = locals()
+        _pil_1149 = _pil_1147(_pil_1148)
+        _pil_1150 = {'var_x': 0}
+        _pil_1151 = _pil_1146(_pil_1149, _pil_1150)
+
+    def test_break_for_nested_inner(self):
+        _pil_1153 = Expr.int
+        _pil_1154 = _pil_1153(0)
+        _pil_1155 = Expr.int
+        _pil_1156 = _pil_1155(1)
+        _pil_1152 = [_pil_1154, _pil_1156]
+        for _pil_1157 in _pil_1152:
+            var_i = _pil_1157
+            _pil_1159 = Expr.int
+            _pil_1160 = _pil_1159(0)
+            _pil_1161 = Expr.int
+            _pil_1162 = _pil_1161(1)
+            _pil_1163 = Expr.int
+            _pil_1164 = _pil_1163(2)
+            _pil_1158 = [_pil_1160, _pil_1162, _pil_1164]
+            for _pil_1165 in _pil_1158:
+                var_j = _pil_1165
+                _pil_1166 = Expr.str
+                _pil_1167 = _pil_1166(var_j)
+                break
+            _pil_1168 = Expr.str
+            _pil_1169 = _pil_1168(var_i)
+        _pil_1170 = self.assertEqual
+        _pil_1171 = Expr.trace
+        _pil_1173 = ('int', 0)
+        _pil_1174 = ('int', 1)
+        _pil_1175 = ('int', 0)
+        _pil_1176 = ('int', 1)
+        _pil_1177 = ('int', 2)
+        _pil_1178 = ('str', 0)
+        _pil_1179 = ('str', 0)
+        _pil_1180 = ('int', 0)
+        _pil_1181 = ('int', 1)
+        _pil_1182 = ('int', 2)
+        _pil_1183 = ('str', 0)
+        _pil_1184 = ('str', 1)
+        _pil_1172 = [_pil_1173, _pil_1174, _pil_1175, _pil_1176, _pil_1177, _pil_1178, _pil_1179, _pil_1180, _pil_1181, _pil_1182, _pil_1183, _pil_1184]
+        _pil_1185 = _pil_1170(_pil_1171, _pil_1172)
+        _pil_1186 = self.assertEqual
+        _pil_1187 = self.get_var
+        _pil_1188 = locals()
+        _pil_1189 = _pil_1187(_pil_1188)
+        _pil_1190 = {'var_i': 1, 'var_j': 0}
+        _pil_1191 = _pil_1186(_pil_1189, _pil_1190)
+
+    def test_break_for_nested_outer(self):
+        _pil_1193 = Expr.int
+        _pil_1194 = _pil_1193(0)
+        _pil_1195 = Expr.int
+        _pil_1196 = _pil_1195(1)
+        _pil_1192 = [_pil_1194, _pil_1196]
+        for _pil_1197 in _pil_1192:
+            var_i = _pil_1197
+            _pil_1199 = Expr.int
+            _pil_1200 = _pil_1199(0)
+            _pil_1201 = Expr.int
+            _pil_1202 = _pil_1201(1)
+            _pil_1198 = [_pil_1200, _pil_1202]
+            for _pil_1203 in _pil_1198:
+                var_j = _pil_1203
+                _pil_1204 = Expr.str
+                _pil_1205 = _pil_1204(var_j)
+            _pil_1206 = Expr.str
+            _pil_1207 = _pil_1206(var_i)
+            break
+        _pil_1208 = self.assertEqual
+        _pil_1209 = Expr.trace
+        _pil_1211 = ('int', 0)
+        _pil_1212 = ('int', 1)
+        _pil_1213 = ('int', 0)
+        _pil_1214 = ('int', 1)
+        _pil_1215 = ('str', 0)
+        _pil_1216 = ('str', 1)
+        _pil_1217 = ('str', 0)
+        _pil_1210 = [_pil_1211, _pil_1212, _pil_1213, _pil_1214, _pil_1215, _pil_1216, _pil_1217]
+        _pil_1218 = _pil_1208(_pil_1209, _pil_1210)
+        _pil_1219 = self.assertEqual
+        _pil_1220 = self.get_var
+        _pil_1221 = locals()
+        _pil_1222 = _pil_1220(_pil_1221)
+        _pil_1223 = {'var_i': 0, 'var_j': 1}
+        _pil_1224 = _pil_1219(_pil_1222, _pil_1223)
+
+    def test_break_while_const(self):
+        while True:
+            _pil_1225 = Expr.str
+            _pil_1226 = _pil_1225(0)
+            break
+        _pil_1227 = self.assertEqual
+        _pil_1228 = Expr.trace
+        _pil_1230 = ('str', 0)
+        _pil_1229 = [_pil_1230]
+        _pil_1231 = _pil_1227(_pil_1228, _pil_1229)
+        _pil_1232 = self.assertEqual
+        _pil_1233 = self.get_var
+        _pil_1234 = locals()
+        _pil_1235 = _pil_1233(_pil_1234)
+        _pil_1236 = {}
+        _pil_1237 = _pil_1232(_pil_1235, _pil_1236)
+
+    def test_break_while_func_cond(self):
+        _pil_1238 = Expr.true
+        _pil_1239 = _pil_1238(0)
+        while _pil_1239:
+            _pil_1240 = Expr.str
+            _pil_1241 = _pil_1240(1)
+            break
+            _pil_1242 = Expr.true
+            _pil_1243 = _pil_1242(0)
+            _pil_1239 = _pil_1243
+        _pil_1244 = self.assertEqual
+        _pil_1245 = Expr.trace
+        _pil_1247 = ('true', 0)
+        _pil_1248 = ('str', 1)
+        _pil_1246 = [_pil_1247, _pil_1248]
+        _pil_1249 = _pil_1244(_pil_1245, _pil_1246)
+        _pil_1250 = self.assertEqual
+        _pil_1251 = self.get_var
+        _pil_1252 = locals()
+        _pil_1253 = _pil_1251(_pil_1252)
+        _pil_1254 = {}
+        _pil_1255 = _pil_1250(_pil_1253, _pil_1254)
+
+    def test_break_while_suppresses_orelse(self):
+        _pil_1256 = Expr.true
+        _pil_1257 = _pil_1256(0)
+        while _pil_1257:
+            _pil_1258 = Expr.str
+            _pil_1259 = _pil_1258(1)
+            break
+            _pil_1262 = Expr.true
+            _pil_1263 = _pil_1262(0)
+            _pil_1257 = _pil_1263
+        else:
+            _pil_1260 = Expr.str
+            _pil_1261 = _pil_1260(99)
+        _pil_1264 = self.assertEqual
+        _pil_1265 = Expr.trace
+        _pil_1267 = ('true', 0)
+        _pil_1268 = ('str', 1)
+        _pil_1266 = [_pil_1267, _pil_1268]
+        _pil_1269 = _pil_1264(_pil_1265, _pil_1266)
+        _pil_1270 = self.assertEqual
+        _pil_1271 = self.get_var
+        _pil_1272 = locals()
+        _pil_1273 = _pil_1271(_pil_1272)
+        _pil_1274 = {}
+        _pil_1275 = _pil_1270(_pil_1273, _pil_1274)
+
+    def test_break_while_named_expr_cond(self):
+        _pil_1277 = Expr.int
+        _pil_1278 = _pil_1277(0)
+        _pil_1279 = Expr.int
+        _pil_1280 = _pil_1279(1)
+        _pil_1281 = Expr.int
+        _pil_1282 = _pil_1281(2)
+        _pil_1276 = [_pil_1278, _pil_1280, _pil_1282]
+        var_items = _pil_1276
+        _pil_1283 = [0]
+        var_i = _pil_1283
+        _pil_1284 = var_i[0]
+        _pil_1285 = len(var_items)
+        _pil_1286 = _pil_1284 < _pil_1285
+        var_n = _pil_1286
+        while var_n:
+            _pil_1287 = Expr.str
+            _pil_1288 = var_i[0]
+            _pil_1289 = var_items[_pil_1288]
+            _pil_1290 = _pil_1287(_pil_1289)
+            _pil_1291 = var_i[0]
+            _pil_1292 = _pil_1291 + 1
+            var_i[0] = _pil_1292
+            _pil_1293 = var_i[0]
+            _pil_1294 = _pil_1293 == 2
+            if _pil_1294:
+                break
+            _pil_1295 = var_i[0]
+            _pil_1296 = len(var_items)
+            _pil_1297 = _pil_1295 < _pil_1296
+            var_n = _pil_1297
+            var_n = var_n
+        _pil_1298 = Expr.str
+        _pil_1299 = _pil_1298(var_n)
+        _pil_1300 = self.assertEqual
+        _pil_1301 = Expr.trace
+        _pil_1303 = ('int', 0)
+        _pil_1304 = ('int', 1)
+        _pil_1305 = ('int', 2)
+        _pil_1306 = ('str', 0)
+        _pil_1307 = ('str', 1)
+        _pil_1308 = ('str', True)
+        _pil_1302 = [_pil_1303, _pil_1304, _pil_1305, _pil_1306, _pil_1307, _pil_1308]
+        _pil_1309 = _pil_1300(_pil_1301, _pil_1302)
+        _pil_1310 = self.assertEqual
+        _pil_1311 = self.get_var
+        _pil_1312 = locals()
+        _pil_1313 = _pil_1311(_pil_1312)
+        _pil_1314 = [0, 1, 2]
+        _pil_1315 = [2]
+        _pil_1316 = {'var_items': _pil_1314, 'var_i': _pil_1315, 'var_n': True}
+        _pil_1317 = _pil_1310(_pil_1313, _pil_1316)
+
+    def test_break_while_named_expr_cond_suppresses_orelse(self):
+        _pil_1319 = Expr.int
+        _pil_1320 = _pil_1319(0)
+        _pil_1321 = Expr.int
+        _pil_1322 = _pil_1321(1)
+        _pil_1318 = [_pil_1320, _pil_1322]
+        var_items = _pil_1318
+        _pil_1323 = [0]
+        var_i = _pil_1323
+        _pil_1324 = var_i[0]
+        _pil_1325 = len(var_items)
+        _pil_1326 = _pil_1324 < _pil_1325
+        var_n = _pil_1326
+        while var_n:
+            _pil_1327 = Expr.str
+            _pil_1328 = var_i[0]
+            _pil_1329 = var_items[_pil_1328]
+            _pil_1330 = _pil_1327(_pil_1329)
+            break
+            _pil_1333 = var_i[0]
+            _pil_1334 = len(var_items)
+            _pil_1335 = _pil_1333 < _pil_1334
+            var_n = _pil_1335
+            var_n = var_n
+        else:
+            _pil_1331 = Expr.str
+            _pil_1332 = _pil_1331(99)
+        _pil_1336 = Expr.str
+        _pil_1337 = _pil_1336(var_n)
+        _pil_1338 = self.assertEqual
+        _pil_1339 = Expr.trace
+        _pil_1341 = ('int', 0)
+        _pil_1342 = ('int', 1)
+        _pil_1343 = ('str', 0)
+        _pil_1344 = ('str', True)
+        _pil_1340 = [_pil_1341, _pil_1342, _pil_1343, _pil_1344]
+        _pil_1345 = _pil_1338(_pil_1339, _pil_1340)
+        _pil_1346 = self.assertEqual
+        _pil_1347 = self.get_var
+        _pil_1348 = locals()
+        _pil_1349 = _pil_1347(_pil_1348)
+        _pil_1350 = [0, 1]
+        _pil_1351 = [0]
+        _pil_1352 = {'var_items': _pil_1350, 'var_i': _pil_1351, 'var_n': True}
+        _pil_1353 = _pil_1346(_pil_1349, _pil_1352)
+
+    def test_break_while_nested(self):
+        _pil_1354 = Expr.true
+        _pil_1355 = _pil_1354(0)
+        while _pil_1355:
+            _pil_1356 = Expr.true
+            _pil_1357 = _pil_1356(1)
+            while _pil_1357:
+                _pil_1358 = Expr.str
+                _pil_1359 = _pil_1358(2)
+                break
+                _pil_1360 = Expr.true
+                _pil_1361 = _pil_1360(1)
+                _pil_1357 = _pil_1361
+            _pil_1362 = Expr.str
+            _pil_1363 = _pil_1362(3)
+            break
+            _pil_1364 = Expr.true
+            _pil_1365 = _pil_1364(0)
+            _pil_1355 = _pil_1365
+        _pil_1366 = self.assertEqual
+        _pil_1367 = Expr.trace
+        _pil_1369 = ('true', 0)
+        _pil_1370 = ('true', 1)
+        _pil_1371 = ('str', 2)
+        _pil_1372 = ('str', 3)
+        _pil_1368 = [_pil_1369, _pil_1370, _pil_1371, _pil_1372]
+        _pil_1373 = _pil_1366(_pil_1367, _pil_1368)
+        _pil_1374 = self.assertEqual
+        _pil_1375 = self.get_var
+        _pil_1376 = locals()
+        _pil_1377 = _pil_1375(_pil_1376)
+        _pil_1378 = {}
+        _pil_1379 = _pil_1374(_pil_1377, _pil_1378)
+
+class ContinueTest(PILTestCase):
+
+    def test_continue_for_basic(self):
+        _pil_1381 = Expr.int
+        _pil_1382 = _pil_1381(0)
+        _pil_1383 = Expr.int
+        _pil_1384 = _pil_1383(1)
+        _pil_1385 = Expr.int
+        _pil_1386 = _pil_1385(2)
+        _pil_1380 = [_pil_1382, _pil_1384, _pil_1386]
+        for _pil_1387 in _pil_1380:
+            var_x = _pil_1387
+            continue
+            _pil_1388 = Expr.str
+            _pil_1389 = _pil_1388(var_x)
+        _pil_1390 = self.assertEqual
+        _pil_1391 = Expr.trace
+        _pil_1393 = ('int', 0)
+        _pil_1394 = ('int', 1)
+        _pil_1395 = ('int', 2)
+        _pil_1392 = [_pil_1393, _pil_1394, _pil_1395]
+        _pil_1396 = _pil_1390(_pil_1391, _pil_1392)
+        _pil_1397 = self.assertEqual
+        _pil_1398 = self.get_var
+        _pil_1399 = locals()
+        _pil_1400 = _pil_1398(_pil_1399)
+        _pil_1401 = {'var_x': 2}
+        _pil_1402 = _pil_1397(_pil_1400, _pil_1401)
+
+    def test_continue_for_conditional(self):
+        _pil_1404 = Expr.int
+        _pil_1405 = _pil_1404(0)
+        _pil_1406 = Expr.int
+        _pil_1407 = _pil_1406(1)
+        _pil_1408 = Expr.int
+        _pil_1409 = _pil_1408(2)
+        _pil_1403 = [_pil_1405, _pil_1407, _pil_1409]
+        for _pil_1410 in _pil_1403:
+            var_x = _pil_1410
+            _pil_1411 = Expr.true
+            _pil_1412 = _pil_1411(var_x)
+            if _pil_1412:
+                continue
+            _pil_1413 = Expr.str
+            _pil_1414 = _pil_1413(var_x)
+        _pil_1415 = self.assertEqual
+        _pil_1416 = Expr.trace
+        _pil_1418 = ('int', 0)
+        _pil_1419 = ('int', 1)
+        _pil_1420 = ('int', 2)
+        _pil_1421 = ('true', 0)
+        _pil_1422 = ('true', 1)
+        _pil_1423 = ('true', 2)
+        _pil_1417 = [_pil_1418, _pil_1419, _pil_1420, _pil_1421, _pil_1422, _pil_1423]
+        _pil_1424 = _pil_1415(_pil_1416, _pil_1417)
+        _pil_1425 = self.assertEqual
+        _pil_1426 = self.get_var
+        _pil_1427 = locals()
+        _pil_1428 = _pil_1426(_pil_1427)
+        _pil_1429 = {'var_x': 2}
+        _pil_1430 = _pil_1425(_pil_1428, _pil_1429)
+
+    def test_continue_for_orelse_fires(self):
+        _pil_1432 = Expr.int
+        _pil_1433 = _pil_1432(0)
+        _pil_1434 = Expr.int
+        _pil_1435 = _pil_1434(1)
+        _pil_1431 = [_pil_1433, _pil_1435]
+        for _pil_1436 in _pil_1431:
+            var_x = _pil_1436
+            _pil_1437 = Expr.str
+            _pil_1438 = _pil_1437(var_x)
+            continue
+        else:
+            _pil_1439 = Expr.str
+            _pil_1440 = _pil_1439(99)
+        _pil_1441 = self.assertEqual
+        _pil_1442 = Expr.trace
+        _pil_1444 = ('int', 0)
+        _pil_1445 = ('int', 1)
+        _pil_1446 = ('str', 0)
+        _pil_1447 = ('str', 1)
+        _pil_1448 = ('str', 99)
+        _pil_1443 = [_pil_1444, _pil_1445, _pil_1446, _pil_1447, _pil_1448]
+        _pil_1449 = _pil_1441(_pil_1442, _pil_1443)
+        _pil_1450 = self.assertEqual
+        _pil_1451 = self.get_var
+        _pil_1452 = locals()
+        _pil_1453 = _pil_1451(_pil_1452)
+        _pil_1454 = {'var_x': 1}
+        _pil_1455 = _pil_1450(_pil_1453, _pil_1454)
+
+    def test_continue_for_nested_inner(self):
+        _pil_1457 = Expr.int
+        _pil_1458 = _pil_1457(0)
+        _pil_1459 = Expr.int
+        _pil_1460 = _pil_1459(1)
+        _pil_1456 = [_pil_1458, _pil_1460]
+        for _pil_1461 in _pil_1456:
+            var_i = _pil_1461
+            _pil_1462 = Expr.str
+            _pil_1463 = _pil_1462(var_i)
+            _pil_1465 = Expr.int
+            _pil_1466 = _pil_1465(0)
+            _pil_1467 = Expr.int
+            _pil_1468 = _pil_1467(1)
+            _pil_1469 = Expr.int
+            _pil_1470 = _pil_1469(2)
+            _pil_1464 = [_pil_1466, _pil_1468, _pil_1470]
+            for _pil_1471 in _pil_1464:
+                var_j = _pil_1471
+                _pil_1472 = Expr.true
+                _pil_1473 = _pil_1472(var_j)
+                if _pil_1473:
+                    continue
+                _pil_1474 = Expr.str
+                _pil_1475 = _pil_1474(var_j)
+        _pil_1476 = self.assertEqual
+        _pil_1477 = Expr.trace
+        _pil_1479 = ('int', 0)
+        _pil_1480 = ('int', 1)
+        _pil_1481 = ('str', 0)
+        _pil_1482 = ('int', 0)
+        _pil_1483 = ('int', 1)
+        _pil_1484 = ('int', 2)
+        _pil_1485 = ('true', 0)
+        _pil_1486 = ('true', 1)
+        _pil_1487 = ('true', 2)
+        _pil_1488 = ('str', 1)
+        _pil_1489 = ('int', 0)
+        _pil_1490 = ('int', 1)
+        _pil_1491 = ('int', 2)
+        _pil_1492 = ('true', 0)
+        _pil_1493 = ('true', 1)
+        _pil_1494 = ('true', 2)
+        _pil_1478 = [_pil_1479, _pil_1480, _pil_1481, _pil_1482, _pil_1483, _pil_1484, _pil_1485, _pil_1486, _pil_1487, _pil_1488, _pil_1489, _pil_1490, _pil_1491, _pil_1492, _pil_1493, _pil_1494]
+        _pil_1495 = _pil_1476(_pil_1477, _pil_1478)
+        _pil_1496 = self.assertEqual
+        _pil_1497 = self.get_var
+        _pil_1498 = locals()
+        _pil_1499 = _pil_1497(_pil_1498)
+        _pil_1500 = {'var_i': 1, 'var_j': 2}
+        _pil_1501 = _pil_1496(_pil_1499, _pil_1500)
+
+    def test_continue_for_nested_outer(self):
+        _pil_1503 = Expr.int
+        _pil_1504 = _pil_1503(0)
+        _pil_1505 = Expr.int
+        _pil_1506 = _pil_1505(1)
+        _pil_1507 = Expr.int
+        _pil_1508 = _pil_1507(2)
+        _pil_1502 = [_pil_1504, _pil_1506, _pil_1508]
+        for _pil_1509 in _pil_1502:
+            var_i = _pil_1509
+            _pil_1510 = Expr.true
+            _pil_1511 = _pil_1510(var_i)
+            if _pil_1511:
+                continue
+            _pil_1513 = Expr.int
+            _pil_1514 = _pil_1513(0)
+            _pil_1515 = Expr.int
+            _pil_1516 = _pil_1515(1)
+            _pil_1512 = [_pil_1514, _pil_1516]
+            for _pil_1517 in _pil_1512:
+                var_j = _pil_1517
+                _pil_1518 = Expr.str
+                _pil_1519 = _pil_1518(var_j)
+            _pil_1520 = Expr.str
+            _pil_1521 = _pil_1520(var_i)
+        _pil_1522 = self.assertEqual
+        _pil_1523 = Expr.trace
+        _pil_1525 = ('int', 0)
+        _pil_1526 = ('int', 1)
+        _pil_1527 = ('int', 2)
+        _pil_1528 = ('true', 0)
+        _pil_1529 = ('true', 1)
+        _pil_1530 = ('true', 2)
+        _pil_1524 = [_pil_1525, _pil_1526, _pil_1527, _pil_1528, _pil_1529, _pil_1530]
+        _pil_1531 = _pil_1522(_pil_1523, _pil_1524)
+        _pil_1532 = self.assertEqual
+        _pil_1533 = self.get_var
+        _pil_1534 = locals()
+        _pil_1535 = _pil_1533(_pil_1534)
+        _pil_1536 = {'var_i': 2}
+        _pil_1537 = _pil_1532(_pil_1535, _pil_1536)
+
+    def test_continue_while_const(self):
+        _pil_1538 = [0]
+        var_n = _pil_1538
+        _pil_1539 = var_n[0]
+        _pil_1540 = _pil_1539 < 3
+        while _pil_1540:
+            _pil_1541 = var_n[0]
+            _pil_1542 = _pil_1541 + 1
+            var_n[0] = _pil_1542
+            _pil_1543 = var_n[0]
+            _pil_1544 = _pil_1543 == 2
+            if _pil_1544:
+                _pil_1545 = var_n[0]
+                _pil_1546 = _pil_1545 < 3
+                _pil_1540 = _pil_1546
+                continue
+            _pil_1547 = Expr.str
+            _pil_1548 = var_n[0]
+            _pil_1549 = _pil_1547(_pil_1548)
+            _pil_1550 = var_n[0]
+            _pil_1551 = _pil_1550 < 3
+            _pil_1540 = _pil_1551
+        _pil_1552 = self.assertEqual
+        _pil_1553 = Expr.trace
+        _pil_1555 = ('str', 1)
+        _pil_1556 = ('str', 3)
+        _pil_1554 = [_pil_1555, _pil_1556]
+        _pil_1557 = _pil_1552(_pil_1553, _pil_1554)
+        _pil_1558 = self.assertEqual
+        _pil_1559 = self.get_var
+        _pil_1560 = locals()
+        _pil_1561 = _pil_1559(_pil_1560)
+        _pil_1562 = [3]
+        _pil_1563 = {'var_n': _pil_1562}
+        _pil_1564 = _pil_1558(_pil_1561, _pil_1563)
+
+    def test_continue_while_func_cond(self):
+        _pil_1565 = [0]
+        var_i = _pil_1565
+        _pil_1566 = Expr.true
+        _pil_1567 = var_i[0]
+        _pil_1568 = _pil_1566(_pil_1567)
+        while _pil_1568:
+            _pil_1569 = var_i[0]
+            _pil_1570 = _pil_1569 + 1
+            var_i[0] = _pil_1570
+            _pil_1571 = var_i[0]
+            _pil_1572 = _pil_1571 < 2
+            if _pil_1572:
+                _pil_1573 = Expr.true
+                _pil_1574 = var_i[0]
+                _pil_1575 = _pil_1573(_pil_1574)
+                _pil_1568 = _pil_1575
+                continue
+            _pil_1576 = Expr.str
+            _pil_1577 = var_i[0]
+            _pil_1578 = _pil_1576(_pil_1577)
+            break
+            _pil_1579 = Expr.true
+            _pil_1580 = var_i[0]
+            _pil_1581 = _pil_1579(_pil_1580)
+            _pil_1568 = _pil_1581
+        _pil_1582 = self.assertEqual
+        _pil_1583 = Expr.trace
+        _pil_1585 = ('true', 0)
+        _pil_1586 = ('true', 1)
+        _pil_1587 = ('str', 2)
+        _pil_1584 = [_pil_1585, _pil_1586, _pil_1587]
+        _pil_1588 = _pil_1582(_pil_1583, _pil_1584)
+        _pil_1589 = self.assertEqual
+        _pil_1590 = self.get_var
+        _pil_1591 = locals()
+        _pil_1592 = _pil_1590(_pil_1591)
+        _pil_1593 = [2]
+        _pil_1594 = {'var_i': _pil_1593}
+        _pil_1595 = _pil_1589(_pil_1592, _pil_1594)
+
+    def test_continue_while_orelse_fires(self):
+        _pil_1596 = [0]
+        var_n = _pil_1596
+        _pil_1597 = var_n[0]
+        _pil_1598 = _pil_1597 < 2
+        while _pil_1598:
+            _pil_1599 = var_n[0]
+            _pil_1600 = _pil_1599 + 1
+            var_n[0] = _pil_1600
+            _pil_1601 = var_n[0]
+            _pil_1602 = _pil_1601 < 2
+            _pil_1598 = _pil_1602
+            continue
+            _pil_1605 = var_n[0]
+            _pil_1606 = _pil_1605 < 2
+            _pil_1598 = _pil_1606
+        else:
+            _pil_1603 = Expr.str
+            _pil_1604 = _pil_1603(99)
+        _pil_1607 = self.assertEqual
+        _pil_1608 = Expr.trace
+        _pil_1610 = ('str', 99)
+        _pil_1609 = [_pil_1610]
+        _pil_1611 = _pil_1607(_pil_1608, _pil_1609)
+        _pil_1612 = self.assertEqual
+        _pil_1613 = self.get_var
+        _pil_1614 = locals()
+        _pil_1615 = _pil_1613(_pil_1614)
+        _pil_1616 = [2]
+        _pil_1617 = {'var_n': _pil_1616}
+        _pil_1618 = _pil_1612(_pil_1615, _pil_1617)
+
+    def test_continue_while_named_expr_cond(self):
+        _pil_1620 = Expr.int
+        _pil_1621 = _pil_1620(0)
+        _pil_1622 = Expr.int
+        _pil_1623 = _pil_1622(1)
+        _pil_1624 = Expr.int
+        _pil_1625 = _pil_1624(2)
+        _pil_1619 = [_pil_1621, _pil_1623, _pil_1625]
+        var_items = _pil_1619
+        _pil_1626 = [0]
+        var_i = _pil_1626
+        _pil_1627 = var_i[0]
+        _pil_1628 = len(var_items)
+        _pil_1629 = _pil_1627 < _pil_1628
+        var_n = _pil_1629
+        while var_n:
+            _pil_1630 = var_i[0]
+            var_cur = _pil_1630
+            _pil_1631 = var_i[0]
+            _pil_1632 = _pil_1631 + 1
+            var_i[0] = _pil_1632
+            _pil_1633 = var_cur == 1
+            if _pil_1633:
+                _pil_1634 = var_i[0]
+                _pil_1635 = len(var_items)
+                _pil_1636 = _pil_1634 < _pil_1635
+                var_n = _pil_1636
+                var_n = var_n
+                continue
+            _pil_1637 = Expr.str
+            _pil_1638 = var_items[var_cur]
+            _pil_1639 = _pil_1637(_pil_1638)
+            _pil_1640 = var_i[0]
+            _pil_1641 = len(var_items)
+            _pil_1642 = _pil_1640 < _pil_1641
+            var_n = _pil_1642
+            var_n = var_n
+        _pil_1643 = Expr.str
+        _pil_1644 = _pil_1643(var_n)
+        _pil_1645 = self.assertEqual
+        _pil_1646 = Expr.trace
+        _pil_1648 = ('int', 0)
+        _pil_1649 = ('int', 1)
+        _pil_1650 = ('int', 2)
+        _pil_1651 = ('str', 0)
+        _pil_1652 = ('str', 2)
+        _pil_1653 = ('str', False)
+        _pil_1647 = [_pil_1648, _pil_1649, _pil_1650, _pil_1651, _pil_1652, _pil_1653]
+        _pil_1654 = _pil_1645(_pil_1646, _pil_1647)
+        _pil_1655 = self.assertEqual
+        _pil_1656 = self.get_var
+        _pil_1657 = locals()
+        _pil_1658 = _pil_1656(_pil_1657)
+        _pil_1659 = [0, 1, 2]
+        _pil_1660 = [3]
+        _pil_1661 = {'var_items': _pil_1659, 'var_i': _pil_1660, 'var_n': False, 'var_cur': 2}
+        _pil_1662 = _pil_1655(_pil_1658, _pil_1661)
+
+    def test_continue_while_nested(self):
+        _pil_1663 = [0]
+        var_i = _pil_1663
+        _pil_1664 = Expr.true
+        _pil_1665 = var_i[0]
+        _pil_1666 = _pil_1664(_pil_1665)
+        while _pil_1666:
+            _pil_1667 = [0]
+            var_j = _pil_1667
+            _pil_1668 = Expr.true
+            _pil_1669 = var_j[0]
+            _pil_1670 = _pil_1668(_pil_1669)
+            while _pil_1670:
+                _pil_1671 = var_j[0]
+                _pil_1672 = _pil_1671 + 1
+                var_j[0] = _pil_1672
+                _pil_1673 = var_j[0]
+                _pil_1674 = _pil_1673 < 2
+                if _pil_1674:
+                    _pil_1675 = Expr.true
+                    _pil_1676 = var_j[0]
+                    _pil_1677 = _pil_1675(_pil_1676)
+                    _pil_1670 = _pil_1677
+                    continue
+                _pil_1678 = Expr.str
+                _pil_1679 = var_j[0]
+                _pil_1680 = _pil_1678(_pil_1679)
+                break
+                _pil_1681 = Expr.true
+                _pil_1682 = var_j[0]
+                _pil_1683 = _pil_1681(_pil_1682)
+                _pil_1670 = _pil_1683
+            _pil_1684 = var_i[0]
+            _pil_1685 = _pil_1684 + 1
+            var_i[0] = _pil_1685
+            _pil_1686 = var_i[0]
+            _pil_1687 = _pil_1686 < 2
+            if _pil_1687:
+                _pil_1688 = Expr.true
+                _pil_1689 = var_i[0]
+                _pil_1690 = _pil_1688(_pil_1689)
+                _pil_1666 = _pil_1690
+                continue
+            _pil_1691 = Expr.str
+            _pil_1692 = var_i[0]
+            _pil_1693 = _pil_1691(_pil_1692)
+            break
+            _pil_1694 = Expr.true
+            _pil_1695 = var_i[0]
+            _pil_1696 = _pil_1694(_pil_1695)
+            _pil_1666 = _pil_1696
+        _pil_1697 = self.assertEqual
+        _pil_1698 = Expr.trace
+        _pil_1700 = ('true', 0)
+        _pil_1701 = ('true', 0)
+        _pil_1702 = ('true', 1)
+        _pil_1703 = ('str', 2)
+        _pil_1704 = ('true', 1)
+        _pil_1705 = ('true', 0)
+        _pil_1706 = ('true', 1)
+        _pil_1707 = ('str', 2)
+        _pil_1708 = ('str', 2)
+        _pil_1699 = [_pil_1700, _pil_1701, _pil_1702, _pil_1703, _pil_1704, _pil_1705, _pil_1706, _pil_1707, _pil_1708]
+        _pil_1709 = _pil_1697(_pil_1698, _pil_1699)
+        _pil_1710 = self.assertEqual
+        _pil_1711 = self.get_var
+        _pil_1712 = locals()
+        _pil_1713 = _pil_1711(_pil_1712)
+        _pil_1714 = [2]
+        _pil_1715 = [2]
+        _pil_1716 = {'var_i': _pil_1714, 'var_j': _pil_1715}
+        _pil_1717 = _pil_1710(_pil_1713, _pil_1716)
+
+class WithTest(PILTestCase):
+
+    def test_with_single_no_as(self):
+        _pil_1720 = Expr.ContextManager
+        _pil_1721 = _pil_1720(enter_n=0, exit_n=1)
+        with _pil_1721:
+            _pil_1718 = Expr.str
+            _pil_1719 = _pil_1718(2)
+        _pil_1722 = self.assertEqual
+        _pil_1723 = Expr.trace
+        _pil_1725 = ('str', 0)
+        _pil_1726 = ('str', 2)
+        _pil_1727 = ('str', 1)
+        _pil_1724 = [_pil_1725, _pil_1726, _pil_1727]
+        _pil_1728 = _pil_1722(_pil_1723, _pil_1724)
+        _pil_1729 = self.assertEqual
+        _pil_1730 = self.get_var
+        _pil_1731 = locals()
+        _pil_1732 = _pil_1730(_pil_1731)
+        _pil_1733 = {}
+        _pil_1734 = _pil_1729(_pil_1732, _pil_1733)
+
+    def test_with_single_as_name(self):
+        _pil_1740 = Expr.ContextManager
+        _pil_1741 = _pil_1740(enter_n=0, exit_n=1)
+        with _pil_1741 as _pil_1742:
+            var_ctx = _pil_1742
+            _pil_1735 = Expr.str
+            _pil_1736 = _pil_1735(2)
+            _pil_1737 = Expr.str
+            _pil_1738 = var_ctx._enter_n
+            _pil_1739 = _pil_1737(_pil_1738)
+        _pil_1743 = self.assertEqual
+        _pil_1744 = Expr.trace
+        _pil_1746 = ('str', 0)
+        _pil_1747 = ('str', 2)
+        _pil_1748 = ('str', 0)
+        _pil_1749 = ('str', 1)
+        _pil_1745 = [_pil_1746, _pil_1747, _pil_1748, _pil_1749]
+        _pil_1750 = _pil_1743(_pil_1744, _pil_1745)
+        _pil_1751 = self.assertEqual
+        _pil_1752 = self.get_var
+        _pil_1753 = locals()
+        _pil_1754 = _pil_1752(_pil_1753)
+        _pil_1755 = Expr.ContextManager
+        _pil_1756 = _pil_1755(enter_n=0, exit_n=1)
+        _pil_1757 = {'var_ctx': _pil_1756}
+        _pil_1758 = _pil_1751(_pil_1754, _pil_1757)
+
+    def test_with_ctx_from_call(self):
+
+        def make_cm():
+            _pil_1759 = Expr.ContextManager
+            _pil_1760 = Expr.int
+            _pil_1761 = _pil_1760(0)
+            _pil_1762 = _pil_1759(init_n=_pil_1761)
+            return _pil_1762
+        _pil_1765 = make_cm()
+        with _pil_1765:
+            _pil_1763 = Expr.str
+            _pil_1764 = _pil_1763(1)
+        _pil_1766 = self.assertEqual
+        _pil_1767 = Expr.trace
+        _pil_1769 = ('int', 0)
+        _pil_1770 = ('str', 0)
+        _pil_1771 = ('str', 1)
+        _pil_1768 = [_pil_1769, _pil_1770, _pil_1771]
+        _pil_1772 = _pil_1766(_pil_1767, _pil_1768)
+        _pil_1773 = self.assertEqual
+        _pil_1774 = self.get_var
+        _pil_1775 = locals()
+        _pil_1776 = _pil_1774(_pil_1775)
+        _pil_1777 = {}
+        _pil_1778 = _pil_1773(_pil_1776, _pil_1777)
+
+    def test_with_multiple_no_as(self):
+        _pil_1783 = Expr.ContextManager
+        _pil_1784 = _pil_1783(enter_n=0, exit_n=10)
+        with _pil_1784:
+            _pil_1781 = Expr.ContextManager
+            _pil_1782 = _pil_1781(enter_n=1, exit_n=11)
+            with _pil_1782:
+                _pil_1779 = Expr.str
+                _pil_1780 = _pil_1779(2)
+        _pil_1785 = self.assertEqual
+        _pil_1786 = Expr.trace
+        _pil_1788 = ('str', 0)
+        _pil_1789 = ('str', 1)
+        _pil_1790 = ('str', 2)
+        _pil_1791 = ('str', 11)
+        _pil_1792 = ('str', 10)
+        _pil_1787 = [_pil_1788, _pil_1789, _pil_1790, _pil_1791, _pil_1792]
+        _pil_1793 = _pil_1785(_pil_1786, _pil_1787)
+        _pil_1794 = self.assertEqual
+        _pil_1795 = self.get_var
+        _pil_1796 = locals()
+        _pil_1797 = _pil_1795(_pil_1796)
+        _pil_1798 = {}
+        _pil_1799 = _pil_1794(_pil_1797, _pil_1798)
+
+    def test_with_multiple_as_names(self):
+        _pil_1811 = Expr.ContextManager
+        _pil_1812 = _pil_1811(enter_n=0, exit_n=10)
+        with _pil_1812 as _pil_1813:
+            var_a = _pil_1813
+            _pil_1808 = Expr.ContextManager
+            _pil_1809 = _pil_1808(enter_n=1, exit_n=11)
+            with _pil_1809 as _pil_1810:
+                var_b = _pil_1810
+                _pil_1800 = Expr.str
+                _pil_1801 = _pil_1800(2)
+                _pil_1802 = Expr.str
+                _pil_1803 = var_a._enter_n
+                _pil_1804 = _pil_1802(_pil_1803)
+                _pil_1805 = Expr.str
+                _pil_1806 = var_b._enter_n
+                _pil_1807 = _pil_1805(_pil_1806)
+        _pil_1814 = self.assertEqual
+        _pil_1815 = Expr.trace
+        _pil_1817 = ('str', 0)
+        _pil_1818 = ('str', 1)
+        _pil_1819 = ('str', 2)
+        _pil_1820 = ('str', 0)
+        _pil_1821 = ('str', 1)
+        _pil_1822 = ('str', 11)
+        _pil_1823 = ('str', 10)
+        _pil_1816 = [_pil_1817, _pil_1818, _pil_1819, _pil_1820, _pil_1821, _pil_1822, _pil_1823]
+        _pil_1824 = _pil_1814(_pil_1815, _pil_1816)
+        _pil_1825 = self.assertEqual
+        _pil_1826 = self.get_var
+        _pil_1827 = locals()
+        _pil_1828 = _pil_1826(_pil_1827)
+        _pil_1829 = Expr.ContextManager
+        _pil_1830 = _pil_1829(enter_n=0, exit_n=10)
+        _pil_1831 = Expr.ContextManager
+        _pil_1832 = _pil_1831(enter_n=1, exit_n=11)
+        _pil_1833 = {'var_a': _pil_1830, 'var_b': _pil_1832}
+        _pil_1834 = _pil_1825(_pil_1828, _pil_1833)
+
+    def test_with_multiple_mixed_as(self):
+        _pil_1842 = Expr.ContextManager
+        _pil_1843 = _pil_1842(enter_n=0, exit_n=10)
+        with _pil_1843 as _pil_1844:
+            var_a = _pil_1844
+            _pil_1840 = Expr.ContextManager
+            _pil_1841 = _pil_1840(enter_n=1, exit_n=11)
+            with _pil_1841:
+                _pil_1835 = Expr.str
+                _pil_1836 = _pil_1835(2)
+                _pil_1837 = Expr.str
+                _pil_1838 = var_a._enter_n
+                _pil_1839 = _pil_1837(_pil_1838)
+        _pil_1845 = self.assertEqual
+        _pil_1846 = Expr.trace
+        _pil_1848 = ('str', 0)
+        _pil_1849 = ('str', 1)
+        _pil_1850 = ('str', 2)
+        _pil_1851 = ('str', 0)
+        _pil_1852 = ('str', 11)
+        _pil_1853 = ('str', 10)
+        _pil_1847 = [_pil_1848, _pil_1849, _pil_1850, _pil_1851, _pil_1852, _pil_1853]
+        _pil_1854 = _pil_1845(_pil_1846, _pil_1847)
+        _pil_1855 = self.assertEqual
+        _pil_1856 = self.get_var
+        _pil_1857 = locals()
+        _pil_1858 = _pil_1856(_pil_1857)
+        _pil_1859 = Expr.ContextManager
+        _pil_1860 = _pil_1859(enter_n=0, exit_n=10)
+        _pil_1861 = {'var_a': _pil_1860}
+        _pil_1862 = _pil_1855(_pil_1858, _pil_1861)
+
+    def test_with_three_items(self):
+        _pil_1869 = Expr.ContextManager
+        _pil_1870 = _pil_1869(enter_n=0, exit_n=10)
+        with _pil_1870:
+            _pil_1867 = Expr.ContextManager
+            _pil_1868 = _pil_1867(enter_n=1, exit_n=11)
+            with _pil_1868:
+                _pil_1865 = Expr.ContextManager
+                _pil_1866 = _pil_1865(enter_n=2, exit_n=12)
+                with _pil_1866:
+                    _pil_1863 = Expr.str
+                    _pil_1864 = _pil_1863(3)
+        _pil_1871 = self.assertEqual
+        _pil_1872 = Expr.trace
+        _pil_1874 = ('str', 0)
+        _pil_1875 = ('str', 1)
+        _pil_1876 = ('str', 2)
+        _pil_1877 = ('str', 3)
+        _pil_1878 = ('str', 12)
+        _pil_1879 = ('str', 11)
+        _pil_1880 = ('str', 10)
+        _pil_1873 = [_pil_1874, _pil_1875, _pil_1876, _pil_1877, _pil_1878, _pil_1879, _pil_1880]
+        _pil_1881 = _pil_1871(_pil_1872, _pil_1873)
+        _pil_1882 = self.assertEqual
+        _pil_1883 = self.get_var
+        _pil_1884 = locals()
+        _pil_1885 = _pil_1883(_pil_1884)
+        _pil_1886 = {}
+        _pil_1887 = _pil_1882(_pil_1885, _pil_1886)
+
+    def test_with_as_attr_target(self):
+        _pil_1888 = Expr(2)
+        var_obj = _pil_1888
+        _pil_1891 = Expr.ContextManager
+        _pil_1892 = _pil_1891(enter_n=0, exit_n=1)
+        with _pil_1892 as _pil_1893:
+            var_obj.val = _pil_1893
+            _pil_1889 = Expr.str
+            _pil_1890 = _pil_1889(3)
+        _pil_1894 = self.assertEqual
+        _pil_1895 = Expr.trace
+        _pil_1896 = list(_pil_1895)
+        _pil_1898 = ('init', 2)
+        _pil_1899 = ('str', 0)
+        _pil_1901 = Expr.ContextManager
+        _pil_1902 = _pil_1901(enter_n=0, exit_n=1)
+        _pil_1900 = ('setattr', 2, 'val', _pil_1902)
+        _pil_1903 = ('str', 3)
+        _pil_1904 = ('str', 1)
+        _pil_1897 = [_pil_1898, _pil_1899, _pil_1900, _pil_1903, _pil_1904]
+        _pil_1905 = _pil_1894(_pil_1896, _pil_1897)
+        _pil_1906 = self.assertEqual
+        _pil_1907 = self.get_var
+        _pil_1908 = locals()
+        _pil_1909 = _pil_1907(_pil_1908)
+        _pil_1910 = {}
+        _pil_1911 = Expr.ContextManager
+        _pil_1912 = _pil_1911(enter_n=0, exit_n=1)
+        _pil_1913 = {'val': _pil_1912}
+        _pil_1914 = Expr(2, _pil_1910, _pil_1913)
+        _pil_1915 = {'var_obj': _pil_1914}
+        _pil_1916 = _pil_1906(_pil_1909, _pil_1915)
+
+    def test_with_as_subscript_target(self):
+        _pil_1917 = Expr(2)
+        var_obj = _pil_1917
+        var_obj[0] = None
+        _pil_1920 = Expr.ContextManager
+        _pil_1921 = _pil_1920(enter_n=0, exit_n=1)
+        with _pil_1921 as _pil_1922:
+            var_obj[0] = _pil_1922
+            _pil_1918 = Expr.str
+            _pil_1919 = _pil_1918(3)
+        _pil_1923 = self.assertEqual
+        _pil_1924 = Expr.trace
+        _pil_1925 = list(_pil_1924)
+        _pil_1927 = ('init', 2)
+        _pil_1928 = ('setitem', 2, 0, None)
+        _pil_1929 = ('str', 0)
+        _pil_1931 = Expr.ContextManager
+        _pil_1932 = _pil_1931(enter_n=0, exit_n=1)
+        _pil_1930 = ('setitem', 2, 0, _pil_1932)
+        _pil_1933 = ('str', 3)
+        _pil_1934 = ('str', 1)
+        _pil_1926 = [_pil_1927, _pil_1928, _pil_1929, _pil_1930, _pil_1933, _pil_1934]
+        _pil_1935 = _pil_1923(_pil_1925, _pil_1926)
+        _pil_1936 = self.assertEqual
+        _pil_1937 = self.get_var
+        _pil_1938 = locals()
+        _pil_1939 = _pil_1937(_pil_1938)
+        _pil_1940 = Expr.ContextManager
+        _pil_1941 = _pil_1940(enter_n=0, exit_n=1)
+        _pil_1942 = {0: _pil_1941}
+        _pil_1943 = {}
+        _pil_1944 = Expr(2, _pil_1942, _pil_1943)
+        _pil_1945 = {'var_obj': _pil_1944}
+        _pil_1946 = _pil_1936(_pil_1939, _pil_1945)

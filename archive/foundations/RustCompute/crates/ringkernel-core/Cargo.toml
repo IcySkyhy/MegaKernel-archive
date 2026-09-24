@@ -1,0 +1,106 @@
+[package]
+name = "ringkernel-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "Core traits and types for RingKernel GPU-native actor system"
+keywords = ["gpu", "actor", "kernel", "core"]
+categories = ["concurrency", "asynchronous"]
+readme = "README.md"
+
+[dependencies]
+# Async runtime
+tokio = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+
+# Error handling
+thiserror = { workspace = true }
+
+# Logging/tracing
+tracing = { workspace = true }
+
+# Serialization (zero-copy)
+rkyv = { workspace = true }
+zerocopy = { workspace = true }
+bytemuck = { workspace = true }
+
+# Synchronization
+crossbeam = { workspace = true }
+parking_lot = { workspace = true }
+atomic = { workspace = true }
+
+# Utilities
+uuid = { workspace = true }
+cfg-if = { workspace = true }
+pin-project-lite = { workspace = true }
+
+# Configuration file support (optional)
+serde = { workspace = true, optional = true }
+serde_json = { workspace = true, optional = true }
+toml = { workspace = true, optional = true }
+serde_yaml = { workspace = true, optional = true }
+
+# Cloud storage / AWS (optional)
+aws-sdk-s3 = { workspace = true, optional = true }
+aws-sdk-cloudwatchlogs = { workspace = true, optional = true }
+aws-config = { workspace = true, optional = true }
+bytes = { workspace = true, optional = true }
+
+# Proc macro support
+inventory = { workspace = true }
+
+# Security / Cryptography (optional, for real encryption)
+aes-gcm = { version = "0.10", optional = true }
+chacha20poly1305 = { version = "0.10", optional = true }
+argon2 = { version = "0.5", optional = true }
+rand = { version = "0.8", optional = true }
+zeroize = { version = "1.7", features = ["derive"], optional = true }
+hkdf = { version = "0.12", optional = true }
+sha2 = { version = "0.10", optional = true }
+
+# Authentication (optional)
+jsonwebtoken = { version = "10", features = ["rust_crypto"], optional = true }
+base64 = { version = "0.21", optional = true }
+
+# Rate limiting (optional)
+governor = { version = "0.6", optional = true }
+
+# HTTP client for webhooks (optional)
+reqwest = { version = "0.11", features = ["json", "blocking", "rustls-tls"], default-features = false, optional = true }
+
+# TLS support (optional)
+rustls = { version = "0.23", optional = true }
+rustls-pemfile = { version = "2.1", optional = true }
+webpki-roots = { version = "0.26", optional = true }
+
+[dev-dependencies]
+proptest = { workspace = true }
+tokio = { workspace = true, features = ["test-util", "macros"] }
+
+[features]
+default = []
+validation = ["rkyv/validation"]
+config-file = ["serde", "toml", "serde_yaml"]
+cloud-storage = ["aws-sdk-s3", "aws-config", "bytes"]
+cloudwatch = ["aws-sdk-cloudwatchlogs", "aws-config"]
+
+# Enterprise security features
+crypto = ["aes-gcm", "chacha20poly1305", "argon2", "rand", "zeroize", "hkdf", "sha2"]
+auth = ["jsonwebtoken", "base64", "serde", "serde_json"]
+rate-limiting = ["governor"]
+alerting = ["reqwest"]
+tls = ["rustls", "rustls-pemfile", "webpki-roots"]
+
+# OpenTelemetry OTLP export (HTTP) without full alerting
+otel = ["reqwest"]
+
+# Combined enterprise feature
+enterprise = ["crypto", "auth", "rate-limiting", "alerting", "tls"]
+
+# Benchmark framework
+benchmark = ["serde", "serde_json"]

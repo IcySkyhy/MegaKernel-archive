@@ -1,0 +1,167 @@
+/**
+Copyright (c) 2025 Huawei Technologies Co., Ltd.
+This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+CANN Open Software License Agreement Version 2.0 (the "License").
+Please refer to the License for details. You may not use this file except in compliance with the License.
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+See LICENSE in the root of the software repository for the full text of the License.
+*/
+
+#ifndef PTO_COMM_TGATHER_HPP
+#define PTO_COMM_TGATHER_HPP
+
+#include <type_traits>
+
+#include "pto/common/debug.h"
+#include "pto/common/type.hpp"
+#include "pto/common/constants.hpp"
+#include "pto/common/pto_instr.hpp"
+#include "pto/comm/comm_types.hpp"
+
+namespace pto {
+namespace comm {
+
+template <typename GlobalDataDst, typename GlobalDataSrc>
+void Gather(
+    typename GlobalDataDst::DType* dst, typename GlobalDataSrc::DType* src, int64_t srcShape[], int64_t srcStride[],
+    int64_t dstStride[], int64_t dstOffset)
+{
+    auto gatherInner = [&](size_t i, size_t j, size_t k) {
+        for (size_t l = 0; l < srcShape[3]; l++) {
+            for (size_t m = 0; m < srcShape[4]; m++) {
+                int srcIndex =
+                    i * srcStride[0] + j * srcStride[1] + k * srcStride[2] + l * srcStride[3] + m * srcStride[4];
+                int dstIndex = i * dstStride[0] + j * dstStride[1] + k * dstStride[2] + (l + dstOffset) * dstStride[3] +
+                               m * dstStride[4];
+                dst[dstIndex] = src[srcIndex];
+            }
+        }
+    };
+    for (size_t i = 0; i < srcShape[0]; i++) {
+        for (size_t j = 0; j < srcShape[1]; j++) {
+            for (size_t k = 0; k < srcShape[2]; k++) {
+                gatherInner(i, j, k);
+            }
+        }
+    }
+}
+
+// ============================================================================
+// TGATHER_IMPL: Gather operation - root collects data from all ranks
+//
+// The calling NPU is the root and gathers data from all ranks, concatenating
+// the results along DIM_3 (row dimension) into a local output buffer.
+//
+// Each rank r contributes data of shape (D0, D1, D2, H, W). The destination
+// tensor has shape (D0, D1, D2, N*H, W), where rank r's data is placed at
+// rows [r*H, (r+1)*H).
+//
+// When the per-rank GlobalTensor exceeds the UB tile capacity in rows and/or
+// columns, the transfer is automatically chunked via 2D sliding:
+//   - Outer dimensions (DIM_0, DIM_1, DIM_2) are iterated explicitly.
+//   - DIM_3 (rows) is split into tileValidRow-sized chunks.
+//   - DIM_4 (cols) is split into tileValidCol-sized chunks.
+//
+// Constraints for chunked mode:
+//   - If TileData has static ValidRow, per-rank DIM_3 must be divisible by ValidRow.
+//   - If TileData has static ValidCol, DIM_4 must be divisible by ValidCol.
+//   - All source tensors in the ParallelGroup are assumed to have the same shape/strides.
+// ============================================================================
+
+template <typename ParallelGroupType, typename GlobalDstData, typename TileData>
+PTO_INTERNAL void TGATHER_IMPL(
+    ParallelGroupType& parallelGroup, GlobalDstData& dstGlobalData, TileData& stagingTileData)
+{
+    using GlobalSrcData = typename ParallelGroupTraits<ParallelGroupType>::GlobalDataType;
+    using T = typename GlobalSrcData::RawDType;
+
+    static_assert(std::is_same_v<T, typename GlobalDstData::RawDType>, "TGATHER: GlobalData type mismatch!");
+    static_assert(
+        std::is_same_v<T, typename TileData::DType>,
+        "TGATHER: TileData element type must match GlobalData element type");
+    static_assert(GlobalSrcData::layout == GlobalDstData::layout, "TGATHER: src/dst layout mismatch");
+
+    const int nranks = parallelGroup.GetSize();
+    const int rootIdx = parallelGroup.GetRootIdx();
+
+    PTO_ASSERT(nranks > 0, "ParallelGroup size must be greater than 0!");
+    PTO_ASSERT(rootIdx >= 0 && rootIdx < nranks, "rootIdx must be in range [0, nranks)!");
+
+    constexpr size_t numDims = 5;
+
+    int64_t dstStride[numDims] = {
+        dstGlobalData.GetStride(0), dstGlobalData.GetStride(1), dstGlobalData.GetStride(2), dstGlobalData.GetStride(3),
+        dstGlobalData.GetStride(4)};
+
+    GlobalSrcData& srcTensor = parallelGroup[0];
+    int64_t srcShape[numDims] = {
+        srcTensor.GetShape(0), srcTensor.GetShape(1), srcTensor.GetShape(2), srcTensor.GetShape(3),
+        srcTensor.GetShape(4)};
+    int64_t srcStride[numDims] = {
+        srcTensor.GetStride(0), srcTensor.GetStride(1), srcTensor.GetStride(2), srcTensor.GetStride(3),
+        srcTensor.GetStride(4)};
+    int64_t DST_DIM_3 = srcTensor.GetShape(3);
+
+    PTO_ASSERT(dstGlobalData.GetShape(0) == srcTensor.GetShape(0), "TSCATTER: src DIM0 must equal dst DIM0!");
+    PTO_ASSERT(dstGlobalData.GetShape(1) == srcTensor.GetShape(1), "TSCATTER: src DIM1 must equal dst DIM1!");
+    PTO_ASSERT(dstGlobalData.GetShape(2) == srcTensor.GetShape(2), "TSCATTER: src DIM2 must equal dst DIM2!");
+    PTO_ASSERT(
+        dstGlobalData.GetShape(3) == srcTensor.GetShape(3) * nranks,
+        "TSCATTER: src DIM3 must equal dst DIM3 * nranks!");
+    PTO_ASSERT(dstGlobalData.GetShape(4) == srcTensor.GetShape(4), "TSCATTER: src DIM4 must equal dst DIM4!");
+
+    for (int r = 0; r < nranks; ++r) {
+        GlobalSrcData& srcGlobalData = parallelGroup[r];
+        int64_t currentSrcOffset = r * DST_DIM_3;
+        Gather<GlobalDstData, GlobalSrcData>(
+            dstGlobalData.data(), srcGlobalData.data(), srcShape, srcStride, dstStride, currentSrcOffset);
+    }
+}
+
+// ============================================================================
+// TGATHER_IMPL (ping-pong): Gather with double buffering
+//
+// Uses two staging tiles (pingTile, pongTile) to overlap TLOAD of the next
+// chunk (MTE2) with TSTORE of the current chunk (MTE3).
+//
+// Timeline without ping-pong:
+//   [TLOAD chunk0] -> [TSTORE chunk0] -> [TLOAD chunk1] -> [TSTORE chunk1] -> ...
+//
+// Timeline with ping-pong:
+//   [TLOAD chunk0] -> [TSTORE chunk0 | TLOAD chunk1] -> [TSTORE chunk1 | TLOAD chunk2] -> ...
+//
+// Constraints: same as TGATHER_IMPL for chunked mode.
+// ============================================================================
+
+template <typename ParallelGroupType, typename GlobalDstData, typename TileData>
+PTO_INTERNAL void TGATHER_IMPL(
+    ParallelGroupType& parallelGroup, GlobalDstData& dstGlobalData, TileData& pingTile, TileData& pongTile)
+{
+    TGATHER_IMPL(parallelGroup, dstGlobalData, pingTile);
+}
+
+template <
+    CollEngine = CollEngine::CCU, typename ParallelGroupType, typename GlobalDstData, typename TileData,
+    typename... WaitEvents>
+PTO_INTERNAL void TGATHER_CCU_IMPL(
+    ParallelGroupType& parallelGroup, GlobalDstData& dstGlobalData, TileData& stagingTileData,
+    const CcuTriggerContext& ctx, WaitEvents&... events)
+{
+    TGATHER_IMPL(parallelGroup, dstGlobalData, stagingTileData);
+}
+
+template <
+    CollEngine = CollEngine::CCU, typename ParallelGroupType, typename GlobalDstData, typename TileData,
+    typename... WaitEvents>
+PTO_INTERNAL void TGATHER_CCU_IMPL(
+    ParallelGroupType& parallelGroup, GlobalDstData& dstGlobalData, TileData& pingTile, TileData& pongTile,
+    const CcuTriggerContext& ctx, WaitEvents&... events)
+{
+    TGATHER_IMPL(parallelGroup, dstGlobalData, pingTile);
+}
+
+} // namespace comm
+} // namespace pto
+
+#endif // PTO_COMM_TGATHER_HPP

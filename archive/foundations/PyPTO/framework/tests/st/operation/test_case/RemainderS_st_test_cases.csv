@@ -1,0 +1,16 @@
+case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,scalar,scalar_type
+RemainderS_1D_align_fp32_int32,"[32]",fp32,ND,"[-100,100]","[32]",fp32,ND,"[16]","[8]",3,int32
+RemainderS_1D_unalign_int32_int32,"[24]",int32,ND,"[1,50]","[24]",int32,ND,"[10]","[8]",5,int32
+RemainderS_2D_align_fp32_int32,"[32,56]",fp32,ND,"[-100,100]","[32,56]",fp32,ND,"[16,16]","[8,16]",3,int32
+RemainderS_2D_align_fp16_int32,"[32,56]",fp16,ND,"[-100,100]","[32,56]",fp16,ND,"[16,16]","[8,16]",3,int32
+RemainderS_2D_align_bf16_int32,"[32,56]",bf16,ND,"[-100,100]","[32,56]",bf16,ND,"[16,16]","[8,16]",3,int32
+RemainderS_2D_align_fp32_fp32,"[32,56]",fp32,ND,"[-100,100]","[32,56]",fp32,ND,"[16,16]","[8,16]",3.3,fp32
+RemainderS_2D_align_fp16_fp32,"[32,56]",fp16,ND,"[-100,100]","[32,56]",fp16,ND,"[16,16]","[8,16]",3.05,fp32
+RemainderS_2D_align_bf16_fp32,"[32,56]",bf16,ND,"[-100,100]","[32,56]",bf16,ND,"[16,16]","[8,16]",3.7,fp32
+RemainderS_2D_unalign_int32,"[24,40]",int32,ND,"[1,100]","[24,40]",int32,ND,"[12,16]","[6,8]",-3,int32
+RemainderS_2D_unalign_int16,"[28,44]",int16,ND,"[1,100]","[28,44]",int16,ND,"[14,20]","[7,16]",3,int32
+RemainderS_3D_align_fp32,"[16,16,16]",fp32,ND,"[-50,50]","[16,16,16]",fp32,ND,"[8,8,8]","[4,4,8]",2.5,fp32
+RemainderS_3D_unalign_fp16,"[24,24,24]",fp16,ND,"[-50,50]","[24,24,24]",fp16,ND,"[12,12,12]","[6,6,16]",1.5,fp32
+RemainderS_3D_align_int32,"[32,32,32]",int32,ND,"[1,100]","[32,32,32]",int32,ND,"[16,16,16]","[8,8,8]",5,int32
+RemainderS_4D_align_bf16,"[8,8,8,8]",bf16,ND,"[1,20]","[8,8,8,8]",bf16,ND,"[4,4,4,4]","[2,2,2,8]",3.75,fp32
+RemainderS_4D_unalign_int16,"[12,12,12,12]",int16,ND,"[1,50]","[12,12,12,12]",int16,ND,"[6,6,6,6]","[3,3,3,16]",3,int32

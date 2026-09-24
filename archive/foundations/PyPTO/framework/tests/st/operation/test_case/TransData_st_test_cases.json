@@ -1,0 +1,69 @@
+{
+    "test_cases": [
+        {
+            "case_index": 1,
+            "case_name": "Transdata_L0_bf16_32_1_1_256_16",
+            "operation": "TransData",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2,
+                        1,
+                        1,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2,
+                        5,
+                        1,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                32,
+                2,
+                2,
+                8,
+                8
+            ],
+            "tile_shape": [
+                8,
+                1,
+                2,
+                32,
+                8
+            ],
+            "params": {
+                "type": 0,
+                "group": 1,
+                "valid_shape": [
+                    2,
+                    5,
+                    1,
+                    8
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        }
+    ]
+}

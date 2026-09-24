@@ -1,0 +1,539 @@
+"""Streaming-MoE kernel A (CuTeDSL, SM90, pool layout).
+
+Forward kernel A of the problem-tile streaming pipeline:
+  * Persistent CTAs pull tiles via a count-vs-target spin
+    (`pool_arrival_count[tile] == pool_arrival_target[tile]`).
+  * For each claimed tile_id, the scheduler derives `expert_id` from a
+    warp-cooperative ballot over `expert_pool_block_offset` and computes
+    `pid_m = tile_id - expert_pool_block_offset[expert_id]`.
+  * Standard varlen_m strided TMA load of `pool[tile_id * tile_M : ..., :]`
+    (the row offset = `cu_seqlens_m[expert_id] + pid_m * tile_m` lands at
+    the correct expert-major pool row by construction).
+  * GEMM against W1[expert_id], SwiGLU register-resident epilogue, TMA-store
+    the I-half post-activation to `postact_a[tile_id * tile_M : ..., :]`.
+
+Kernel A's downstream consumer (kernel Y) runs on the SAME compute stream and
+is FIFO-ordered after A: by the time Y issues its first instruction, A has
+fully retired and its TMA stores are drained. No per-tile A→Y release/acquire
+signal is needed.
+
+Inherits the GEMM mainloop, pipeline-state machinery, and the default linear
+epilogue from `StreamingGemmBase` (= quack `GemmDefaultSm90` + the shared
+streaming scheduler hooks). Streaming/gated-specific behavior is isolated to:
+  (1) StreamingGemmBase.get_scheduler_class — return StreamingTileScheduler.
+  (2) StreamingGemmBase.get_scheduler_arguments — build
+      StreamingTileSchedulerArguments from pool-shape metadata.
+  (3) StreamingMoeA.epi_visit_subtile — the gated SwiGLU activation
+      (`act_fn(gate, up)`) writing the I-wide postact to mAuxOut's gated
+      TileStore.
+
+The streaming scheduler uses the upstream 4-int sched payload
+(pid_m, pid_n, batch_idx, is_valid) — no streaming-specific SMEM extension.
+Kernel A's mainloop and postact path land at the right pool rows via
+`cu_seqlens_m[batch_idx] + pid_m * tile_m` alone; tile_id is computed
+locally inside the scheduler warp's queue-pull and used only for the
+ready-spin and to derive expert_id/pid_m.
+"""
+
+from typing import Callable, NamedTuple, Optional, Type
+
+import cuda.bindings.driver as cuda
+import cutlass
+import cutlass.cute as cute
+import torch
+from cutlass import Float32, Int32, Int64
+from quack.activation import gate_fn_map
+from quack.cache import jit_cache
+from stream_ep.stream_moe import compile_config
+from quack.compile_utils import make_fake_tensor as fake_tensor
+from quack.cute_dsl_utils import (
+    ParamsBase,
+    get_device_capacity,
+    get_max_active_clusters,
+    mlir_namedtuple,
+    torch2cute_dtype_map,
+)
+from quack.epilogue.ops import TileStore
+from quack.gemm_default_epi import GemmDefaultEpiMixin
+from quack.gemm_tvm_ffi_utils import compile_gemm_kernel
+from quack.rounding import RoundingMode
+from quack.varlen_utils import VarlenArguments
+
+from stream_ep.stream_moe.ptx_helpers import threadfence_system
+from stream_ep.stream_moe.streaming_gemm_base import (
+    StreamingGemmBase,
+    StreamingTileSchedulerOptions,
+)
+
+
+# ---------------------------------------------------------------------------
+# Streaming kernel A class.
+# ---------------------------------------------------------------------------
+class StreamingMoeA(StreamingGemmBase):
+    """Streaming-MoE kernel A: standard strided varlen_m GEMM + gated SwiGLU
+    with the queue-pull streaming scheduler. Pool layout means kernel A uses
+    the base GEMM mainloop's varlen_m path verbatim — no per-tile gather
+    indirection.
+
+    Epilogue: the full-2I pre-activation accumulator is the main D output
+    (mD → preact_a, written when store_preact=True); the I-wide
+    post-activation half rides mAuxOut's gated ``TileStore``. The gated
+    activation ``act_fn(gate, up)`` is applied over adjacent-N accumulator
+    lanes in ``epi_visit_subtile``; the half-N aux tile + the SM90 STSM
+    register permute are owned by ``TileStore(gated=True)`` (in its
+    ``store_convert``), so no ``epi_convert_aux_out`` override is needed. The
+    streaming scheduler hooks + the ``__call__`` type-shim come from
+    ``StreamingGemmBase``.
+
+    ``act_fn`` (the compile-time gated activation, e.g. swiglu) is baked onto
+    the instance via a ``post_init`` hook (``self.act_fn``) — the same
+    plumbing kernel_y_bwd uses for ``implicit_dtype`` — so the class inherits
+    ``GemmDefaultEpiMixin``'s ``epi_to_underlying_arguments`` unchanged.
+
+    Kernel Y runs on the SAME compute stream and is FIFO-ordered after A
+    fully retires — same-stream FIFO covers cross-stage visibility, no
+    per-tile release/acquire is needed.
+
+    postact destination: the inherited ``TileStore("mAuxOut")`` path shifts
+    by ``cu_seqlens_m[batch_idx]`` then ``local_tile((pid_m, pid_n))``. The
+    combined row offset ``cu_seqlens_m[batch_idx] + pid_m * tile_m =
+    expert_pool_block_offset[e] * tile_m + (tile_id - expert_pool_block_offset[e])
+    * tile_m = tile_id * tile_m`` lands postact_a's per-tile slab — no
+    streaming-specific override needed.
+    """
+
+    _epi_ops = GemmDefaultEpiMixin._epi_ops + (TileStore("mAuxOut", gated=True),)
+    _epi_param_bases = (ParamsBase,)
+
+    @mlir_namedtuple
+    class EpilogueArguments(NamedTuple):
+        mAuxOut: cute.Tensor
+        alpha: Optional[Float32 | cute.Tensor] = None
+        beta: Optional[Float32 | cute.Tensor] = None
+        mRowVecBroadcast: Optional[cute.Tensor] = None
+        mColVecBroadcast: Optional[cute.Tensor] = None
+        rounding_mode: cutlass.Constexpr[int] = RoundingMode.RN
+        sr_seed: Optional[Int32 | cute.Tensor] = None
+
+    # EpilogueParams auto-generated from _epi_ops + _extra_param_fields by
+    # ComposableEpiMixin.__init_subclass__.
+
+    @cute.jit
+    def epi_visit_subtile(self, params, epi_loop_tensors, tRS_rD, tRS_rC=None):
+        """Gated SwiGLU forward: ``aux[i] = act_fn(acc[2i], acc[2i+1])`` over
+        adjacent-N accumulator lanes.
+
+        The linear part (alpha*acc + beta*C + rowvec + colvec) is folded into
+        ``tRS_rD`` in place first — every term is None for the MoE forward, so
+        it is a no-op, kept for parity with the default epilogue contract.
+        ``tRS_rD`` (full 2I) is then the main D output (preact); the returned
+        half-N ``tRS_rAuxOut`` rides mAuxOut's gated TileStore (SM90-only; the
+        STSM permute + half-N tile live in ``TileStore.store_convert``).
+        """
+        GemmDefaultEpiMixin.epi_visit_subtile(
+            self, params, epi_loop_tensors, tRS_rD, tRS_rC
+        )
+        tRS_rAuxOut_layout = cute.recast_layout(2, 1, tRS_rD.layout)
+        tRS_rAuxOut = cute.make_rmem_tensor(tRS_rAuxOut_layout.shape, self.acc_dtype)
+        for i in cutlass.range(cute.size(tRS_rAuxOut), unroll_full=True):
+            tRS_rAuxOut[i] = self.act_fn(tRS_rD[2 * i], tRS_rD[2 * i + 1])
+        return (tRS_rAuxOut,)
+
+
+# ---------------------------------------------------------------------------
+# JIT compile factory.
+# ---------------------------------------------------------------------------
+@jit_cache
+def _compile_streaming_moe_a(
+    a_dtype: Type[cutlass.Numeric],
+    b_dtype: Type[cutlass.Numeric],
+    postact_dtype: Type[cutlass.Numeric],
+    tile_m: int,
+    tile_n: int,
+    cluster_m: int,
+    cluster_n: int,
+    activation: str,
+    device_capacity,
+    *,
+    store_preact: bool = False,
+):
+    assert device_capacity[0] == 9, "Streaming MoE kernel A is SM90-only for now"
+    assert activation in gate_fn_map, f"Need a gated activation; got {activation}"
+
+    H_sym = cute.sym_int()
+    I2_sym = cute.sym_int()
+    I_sym = cute.sym_int()
+    E_sym = cute.sym_int()
+    TK_padded_sym = cute.sym_int()
+    Mflat_sym = cute.sym_int()  # total_tiles * tile_m, in postact's M dim
+    total_tiles_sym = cute.sym_int()
+    cu_seqlens_len_sym = cute.sym_int()  # E_local + 1 at runtime
+
+    # A: pool (TK_padded, H), k-major (H is contiguous).
+    mA = fake_tensor(a_dtype, (TK_padded_sym, H_sym), leading_dim=1, divisibility=8)
+    # B: W1 in its NATURAL batch-first storage (E_local, 2I, H), H-contiguous.
+    # quack main takes batched operands batch-first (l, ...) and rotates them
+    # to kernel order at trace time (GemmBase.rotate_batch_last), so we pass W1
+    # as-is with no host permute. This forward GEMM wants k-major B (n=2I,
+    # k=H); the natural storage is already (l, n, k)=(E, 2I, H), so the default
+    # rotate (l,n,k)→(n,k,l)=(2I,H,E) lands H-contiguous k-major B — no
+    # b_transposed. leading_dim=2 = H (the natural contiguous axis).
+    mB = fake_tensor(b_dtype, (E_sym, I2_sym, H_sym), leading_dim=2, divisibility=8)
+    # mD: optional pre-SwiGLU output. When `store_preact=True`, kernel A's
+    # standard mD TMA-store path (inherited from GemmDefaultEpiMixin) writes
+    # the [2I] accumulator (post-alpha/beta/RowVec/ColVec, pre-act-fn) to gmem
+    # alongside the postact_a [I] write.
+    # Bwd consumes preact via `kernel_a_bwd`'s SwiGLU-bwd in registers
+    # (skipping the otherwise-required `pool @ W1.T` recompute GEMM); fwd
+    # paths that don't need bwd activations leave it None.
+    if store_preact:
+        # Same pool layout as postact_a (Mflat = total_tiles * tile_m), but
+        # full N=2I instead of half-N=I. n-major (2I contiguous), bf16.
+        mD = fake_tensor(
+            postact_dtype, (Mflat_sym, I2_sym), leading_dim=1, divisibility=8
+        )
+    else:
+        mD = None
+    mC = None
+    # mAuxOut: flat (total_tiles * tile_m, I), n-major (I contiguous).
+    mAuxOut = fake_tensor(
+        postact_dtype, (Mflat_sym, I_sym), leading_dim=1, divisibility=8
+    )
+
+    # cu_seqlens_m drives the standard varlen_m m-offset for kernel A: each
+    # entry is `expert_pool_block_offset[e] * tile_m`. Length E_local + 1.
+    mCuSeqlensM = fake_tensor(
+        cutlass.Int32, (cu_seqlens_len_sym,), leading_dim=0, divisibility=1
+    )
+
+    consumer_head = fake_tensor(cutlass.Int32, (cute.sym_int(),), divisibility=1)
+    pool_arrival_count = fake_tensor(cutlass.Int32, (total_tiles_sym,), divisibility=1)
+    pool_arrival_target = fake_tensor(cutlass.Int32, (total_tiles_sym,), divisibility=1)
+    expert_pool_block_offset = fake_tensor(
+        cutlass.Int32, (cu_seqlens_len_sym,), divisibility=1
+    )
+
+    scheduler_args = StreamingTileSchedulerOptions(
+        max_active_clusters=Int32(0),  # set at runtime; 0 here keeps fake compile happy
+        consumer_head=consumer_head,
+        pool_arrival_count=pool_arrival_count,
+        pool_arrival_target=pool_arrival_target,
+        expert_pool_block_offset=expert_pool_block_offset,
+        total_tiles=Int32(0),
+    )
+
+    epi_args = StreamingMoeA.EpilogueArguments(
+        mAuxOut=mAuxOut,
+        rounding_mode=RoundingMode.RN,
+    )
+
+    varlen_args = VarlenArguments(mCuSeqlensM=mCuSeqlensM, mCuSeqlensK=None, mAIdx=None)
+
+    def _set_act_fn(gemm_obj):
+        # Bake the gated activation (compile is keyed on `activation`) as a
+        # constexpr on the instance; epi_visit_subtile reads it as
+        # self.act_fn — same post_init plumbing kernel_y_bwd uses for
+        # implicit_dtype.
+        gemm_obj.act_fn = gate_fn_map[activation]
+
+    return compile_gemm_kernel(
+        StreamingMoeA,
+        a_dtype,
+        (tile_m, tile_n),
+        (cluster_m, cluster_n, 1),
+        pingpong=False,
+        persistent=True,
+        gather_A=False,
+        is_dynamic_persistent=False,
+        device_capacity=device_capacity,
+        mA=mA,
+        mB=mB,
+        mD=mD,
+        mC=mC,
+        epi_args=epi_args,
+        scheduler_args=scheduler_args,
+        varlen_args=varlen_args,
+        post_init=_set_act_fn,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Test-only producer: walks pool_arrival_count slot-by-slot and writes the
+# matching `pool_arrival_target[i]` value (single-producer simulation of
+# dispatch's Pass 2 release-add chain — when count == target, kernel A's
+# scheduler spin unblocks). Used by tests to validate kernel A's per-tile
+# count-vs-target spin without StreamEP's dispatcher.
+# ---------------------------------------------------------------------------
+class _StreamingTileProducer:
+    @cute.jit
+    def __call__(
+        self,
+        pool_arrival_count: cute.Tensor,  # [total_tiles] int32
+        pool_arrival_target: cute.Tensor,  # [total_tiles] int32
+        total_tiles: cutlass.Int32,
+        delay_clocks: cutlass.Int32,
+        stream: cuda.CUstream,
+    ):
+        self.kernel(
+            pool_arrival_count, pool_arrival_target, total_tiles, delay_clocks
+        ).launch(grid=[1, 1, 1], block=[1, 1, 1], stream=stream)
+
+    @cute.kernel
+    def kernel(
+        self,
+        pool_arrival_count: cute.Tensor,
+        pool_arrival_target: cute.Tensor,
+        total_tiles: cutlass.Int32,
+        delay_clocks: cutlass.Int32,
+    ):
+        from cutlass._mlir.dialects import nvvm
+        from cutlass.cutlass_dsl import T
+        from quack import utils
+
+        tidx, _, _ = cute.arch.thread_idx()
+        if tidx == 0:
+            for i in cutlass.range(total_tiles):
+                start = cutlass.Int64(nvvm.read_ptx_sreg_clock64(T.i64()))
+                end = start + cutlass.Int64(delay_clocks)
+                while cutlass.Int64(nvvm.read_ptx_sreg_clock64(T.i64())) < end:
+                    pass
+                target = pool_arrival_target[i]
+                count_ptr = utils.elem_pointer(pool_arrival_count, (i,))
+                threadfence_system()
+                # `red.release.gpu.global.add.s32 [ptr], target` — single PTX
+                # mirroring the real fire_pool_blocks. Pre-set the target so
+                # one shot brings count to it.
+                from cutlass._mlir.dialects import llvm
+                count_ptr_i64 = count_ptr.toint().ir_value()
+                llvm.inline_asm(
+                    None,
+                    [count_ptr_i64, target.ir_value()],
+                    "red.release.gpu.global.add.s32 [$0], $1;",
+                    "l,r,~{memory}",
+                    has_side_effects=True,
+                    is_align_stack=False,
+                )
+
+
+@jit_cache
+def _compile_streaming_tile_producer():
+    total_tiles_sym = cute.sym_int()
+    count = fake_tensor(cutlass.Int32, (total_tiles_sym,), divisibility=1)
+    target = fake_tensor(cutlass.Int32, (total_tiles_sym,), divisibility=1)
+    op = _StreamingTileProducer()
+    return cute.compile(
+        op,
+        count,
+        target,
+        cutlass.Int32(0),
+        cutlass.Int32(0),
+        cute.runtime.make_fake_stream(use_tvm_ffi_env_stream=True),
+        options="--enable-tvm-ffi",
+    )
+
+
+def fire_tiles_with_delay(
+    pool_arrival_count: torch.Tensor,
+    pool_arrival_target: torch.Tensor,
+    delay_us: int = 50,
+) -> None:
+    """Test helper: launches a single-thread producer kernel on the current
+    CUDA stream that `red.release.gpu.global.add.s32`s
+    ``pool_arrival_target[i]`` into ``pool_arrival_count[i]`` for each tile
+    (one fire per tile, ``delay_us`` between fires). Mirrors dispatch's
+    Pass 2 protocol exactly; tests can wait on the standard scheduler spin.
+    """
+    assert pool_arrival_count.dtype == torch.int32
+    assert pool_arrival_target.dtype == torch.int32
+    assert pool_arrival_count.is_cuda and pool_arrival_count.is_contiguous()
+    assert pool_arrival_target.shape == pool_arrival_count.shape
+    total_tiles = pool_arrival_count.shape[0]
+    # H100 clock ~1.5 GHz → 1500 cycles/μs.
+    delay_clocks = max(1, int(delay_us * 1500))
+    compiled = _compile_streaming_tile_producer()
+    compiled(
+        pool_arrival_count,
+        pool_arrival_target,
+        cutlass.Int32(total_tiles),
+        cutlass.Int32(delay_clocks),
+    )
+
+
+def streaming_moe_a(
+    pool: torch.Tensor,  # (TK_padded, H) bf16 — k-major (pool data, expert-major)
+    W1: torch.Tensor,  # (E_local, 2I, H) bf16 — k-major per expert
+    postact_a: torch.Tensor,  # (total_tiles, tile_M, I) bf16
+    expert_pool_block_offset: torch.Tensor,  # (E_local + 1,) int32 — pool-block prefix sum
+    pool_arrival_count: torch.Tensor,  # (total_tiles,) int32 — dispatch Pass 2 release-add destination
+    pool_arrival_target: torch.Tensor,  # (total_tiles,) int32 — per-tile firing target
+    *,
+    preact_a: torch.Tensor | None = None,
+    tile_m: int = 128,
+    tile_n: int = 256,
+    cluster_m: int = 1,
+    cluster_n: int = 1,
+    activation: str = "swiglu",
+    num_sms: int | None = None,
+) -> None:
+    """Launch streaming-MoE kernel A on the caller's current CUDA stream (pool layout).
+
+    ``num_sms`` caps the persistent-grid CTA count to the given value. When
+    ``None`` (default) the kernel fills the GPU via ``get_max_active_clusters``.
+
+    Caller is responsible for:
+      - allocating ``postact_a`` ``(total_tiles, tile_M, I)`` ON THE SAME STREAM
+        this function is called from (so the kernel's TMA stores are naturally
+        ordered with the allocation; otherwise stale memory may leak through).
+      - ensuring ``pool_arrival_count`` / ``pool_arrival_target`` are
+        populated by the producer (StreamEP's ``Buffer.dispatch`` Pass 2 or a
+        test stub) on a stream that ``red.release.gpu.global.add.s32``s into
+        ``pool_arrival_count[tile_id]`` until it equals
+        ``pool_arrival_target[tile_id]``. Kernel A's per-tile count-vs-target
+        spin handles cross-stream visibility for those tensors and the
+        dispatch metadata they transitively depend on.
+
+    The internal ``consumer_head`` counter is allocated on the calling stream
+    so its zero-init is naturally ordered with the kernel.
+
+    Kernel Y runs on the same compute stream and is FIFO-ordered after A
+    fully retires — no per-tile A→Y signal is needed.
+
+    Optional ``preact_a`` ``(total_tiles, tile_M, 2*I) bf16`` is the pre-SwiGLU
+    accumulator destination for bwd. When passed, kernel A's standard mD
+    TMA-store path (inherited from ``GemmDefaultEpiMixin``) writes the [2I]
+    gate-up values to gmem alongside the postact_a [I] write.
+    Saving preact lets ``kernel_a_bwd`` apply SwiGLU bwd in registers without
+    a recompute GEMM (~370 µs/layer perf win at production); fwd-only paths
+    leave ``preact_a=None`` to skip the extra TMA-store traffic. The two
+    cases compile to separate kernels (different mD signature), keyed on
+    ``store_preact`` in ``_compile_streaming_moe_a``'s jit_cache.
+    """
+    assert pool.is_cuda and W1.is_cuda and postact_a.is_cuda
+    assert pool.dim() == 2 and pool.is_contiguous()
+    assert W1.dim() == 3
+    assert postact_a.dim() == 3
+    total_tiles, postact_tile_m, I = postact_a.shape
+    assert postact_tile_m == tile_m
+    assert (
+        pool_arrival_count.shape == (total_tiles,)
+        and pool_arrival_count.dtype == torch.int32
+    )
+    assert (
+        pool_arrival_target.shape == (total_tiles,)
+        and pool_arrival_target.dtype == torch.int32
+    )
+    H = pool.shape[1]
+    E_local = W1.shape[0]
+    assert expert_pool_block_offset.shape == (E_local + 1,)
+    assert (
+        W1.shape[1] == 2 * I
+    ), f"W1 dim 1 must be 2*I = {2 * I}; got W1.shape={tuple(W1.shape)}"
+    assert (
+        W1.shape[2] == H
+    ), f"W1 dim 2 (H) must match pool dim 1; got W1.shape={tuple(W1.shape)}, H={H}"
+    two_I = W1.shape[1]
+    # tile_n MUST divide the output N dim. The grouped GEMM emits one CTA per
+    # (pid_m, pid_n) and writes a full tile_n-wide slab via TMA; partial-tile
+    # tail handling silently corrupts adjacent memory. kernel A's output N is
+    # 2I (mD/preact) or I (mAuxOut/postact); both must be divisible.
+    assert two_I % tile_n == 0, (
+        f"tile_n ({tile_n}) must divide 2I ({two_I}); 2I % tile_n = {two_I % tile_n}"
+    )
+    assert I % tile_n == 0, (
+        f"tile_n ({tile_n}) must divide I ({I}); I % tile_n = {I % tile_n}"
+    )
+    if preact_a is not None:
+        assert preact_a.is_cuda and preact_a.dim() == 3
+        assert preact_a.shape == (total_tiles, tile_m, two_I), (
+            f"preact_a must be (total_tiles, tile_m, 2*I) = "
+            f"{(total_tiles, tile_m, two_I)}; got {tuple(preact_a.shape)}"
+        )
+        assert preact_a.dtype == postact_a.dtype, (
+            f"preact_a dtype must match postact_a's; got {preact_a.dtype} vs "
+            f"{postact_a.dtype}"
+        )
+    # Caller passes W1 as (E_local, 2I, H) k-major contiguous (each expert's
+    # slab has H contiguous). quack main takes batched B batch-first, so we
+    # pass W1 as-is — no host permute. The natural storage is already
+    # (l, n, k) = (E, 2I, H), so the kernel's default rotate gives k-major
+    # kernel-order B (2I, H, E) — no b_transposed needed.
+    assert (
+        W1.stride(-1) == 1
+    ), "W1[e] must be H-contiguous (caller passes (E_local, 2I, H) k-major weights)"
+    assert W1.shape == (E_local, two_I, H)
+
+    # Flatten postact_a's leading two dims to (total_tiles * tile_m, I).
+    postact_flat = postact_a.view(total_tiles * tile_m, I)
+    # Flatten preact_a similarly when present — same Mflat dim, but full N=2I.
+    preact_flat = (
+        preact_a.view(total_tiles * tile_m, two_I) if preact_a is not None else None
+    )
+
+    # Build cu_seqlens_m = expert_pool_block_offset * tile_m. The standard
+    # varlen_m path inside the GEMM uses this as the per-batch m-row offset:
+    #   m_offset(tile) = cu_seqlens_m[batch_idx] + pid_m * tile_m
+    #                  = expert_pool_block_offset[expert_id] * tile_m + tile_in_e * tile_m
+    #                  = tile_id * tile_m
+    # which lands at the correct pool row (pool is contiguous in tile_id order
+    # by construction).
+    cu_seqlens_m = (expert_pool_block_offset.to(torch.int32) * tile_m).contiguous()
+
+    device_capacity = get_device_capacity(pool.device)
+    assert device_capacity[0] == 9, "Streaming MoE kernel A is SM90-only for now"
+
+    a_dtype = torch2cute_dtype_map[pool.dtype]
+    b_dtype = torch2cute_dtype_map[W1.dtype]
+    postact_dtype = torch2cute_dtype_map[postact_a.dtype]
+
+    compiled_fn = _compile_streaming_moe_a(
+        a_dtype=a_dtype,
+        b_dtype=b_dtype,
+        postact_dtype=postact_dtype,
+        tile_m=tile_m,
+        tile_n=tile_n,
+        cluster_m=cluster_m,
+        cluster_n=cluster_n,
+        activation=activation,
+        device_capacity=device_capacity,
+        store_preact=preact_a is not None,
+    )
+
+    if compile_config.COMPILE_ONLY:
+        return
+
+    max_active_clusters = get_max_active_clusters(cluster_m * cluster_n)
+    if num_sms is not None:
+        max_active_clusters = min(
+            max_active_clusters, num_sms // (cluster_m * cluster_n)
+        )
+
+    # Internal scheduler counter — allocate on the calling stream (which is the
+    # one the kernel will run on) so the zero-init is naturally ordered with
+    # kernel A's `atomicAdd(consumer_head, 1)`. Allocating on a different stream
+    # would race with the kernel's first atomic-claim and could leak stale
+    # values from a recycled allocator slot, causing CTAs to early-exit.
+    consumer_head = torch.zeros(1, dtype=torch.int32, device=pool.device)
+
+    epi_args = StreamingMoeA.EpilogueArguments(
+        mAuxOut=postact_flat,
+        rounding_mode=None,  # Constexpr; pass None at call time
+    )
+    scheduler_args = StreamingTileSchedulerOptions(
+        max_active_clusters=Int32(max_active_clusters),
+        consumer_head=consumer_head,
+        pool_arrival_count=pool_arrival_count,
+        pool_arrival_target=pool_arrival_target,
+        expert_pool_block_offset=expert_pool_block_offset,
+        total_tiles=Int32(total_tiles),
+    )
+    varlen_args = VarlenArguments(
+        mCuSeqlensM=cu_seqlens_m, mCuSeqlensK=None, mAIdx=None
+    )
+
+    # Trailing (None, None) are mSFA / mSFB — the unified SM90/100/120 TMA
+    # scale-factor slots main's compiled arg spec always requires (None for a
+    # plain bf16 GEMM). Note main takes no host `stream` arg (it binds the
+    # TVM-FFI env stream), so these two slots follow varlen_args directly.
+    compiled_fn(
+        pool, W1, preact_flat, None, epi_args, scheduler_args, varlen_args, None, None
+    )

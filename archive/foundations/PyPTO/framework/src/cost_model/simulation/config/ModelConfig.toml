@@ -1,0 +1,32 @@
+[Model]
+# For execute info
+statisticReportToFile = false
+heartInterval=50000
+drawPngThresholdCycle = 500000
+testDeadLock=false
+
+startFunctionLabel = "root"
+useOOOPassSeq = true
+genCalendarScheduleCpp=false
+
+# For build device-aicpu-core-pipe simulation model
+deviceMachineNumber = 1
+aicpuMachineNumber = 6
+aicpuMachineSmtNum = 1
+coreMachineNumberPerAICPU = 12
+cubeMachineNumberPerAICPU = 4
+vecMachineNumberPerAICPU = 8
+coreMachineSmtNum = 1
+cubeVecMixMode = false
+
+mteUseL2Cache = false
+functionCacheSize = 8
+deviceArch = "A2A3"
+
+# For calendar schedule
+simulationFixedLatencyTask = false
+fixedLatencyTaskInfoPath = ""
+fixedLatencyTimeConvert = 1
+pipeBoardVibration = 0
+calendarMode = 0 # 0: device schedule 1: one global counter 2: optical counters
+calendarFile = ""

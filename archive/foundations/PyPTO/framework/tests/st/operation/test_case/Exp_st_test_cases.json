@@ -1,0 +1,852 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Exp_test_0",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                1
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 1,
+            "case_name": "Exp_test_1",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 2,
+            "case_name": "Exp_test_2",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 3,
+            "case_name": "Exp_test_3",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                127
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 4,
+            "case_name": "Exp_test_4",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        6144,
+                        64,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        6144,
+                        64,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                64,
+                64,
+                64
+            ],
+            "tile_shape": [
+                32,
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 5,
+            "case_name": "Exp_test_5",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 6,
+            "case_name": "Exp_test_6",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": "inf",
+                        "max": "inf"
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 7,
+            "case_name": "Exp_test_7",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": "nan",
+                        "max": "nan"
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 8,
+            "case_name": "Exp_test_8",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": "max",
+                        "max": "max"
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 9,
+            "case_name": "Exp_test_9",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": "min",
+                        "max": "min"
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 10,
+            "case_name": "Exp_test_10",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                16,
+                16
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 11,
+            "case_name": "Exp_test_11",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                16,
+                16
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 12,
+            "case_name": "Exp_test_12",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                64,
+                64
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 13,
+            "case_name": "Exp_test_13",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        12288
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        12288
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 14,
+            "case_name": "Exp_test_14",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        0
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        0
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 15,
+            "case_name": "Exp_test_15",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        96,
+                        12288
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        96,
+                        12288
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 16,
+            "case_name": "Exp_test_16",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        8192
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        8192
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 17,
+            "case_name": "Exp_test_17",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        96,
+                        8192
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        96,
+                        8192
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 18,
+            "case_name": "Exp_test_18",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        1024
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16,
+                        1024
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                7,
+                127
+            ],
+            "tile_shape": [
+                23,
+                328
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 19,
+            "case_name": "Exp_test_19",
+            "operation": "Exp",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        512,
+                        256,
+                        256
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        512,
+                        256,
+                        256
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                71,
+                8,
+                214
+            ],
+            "tile_shape": [
+                167,
+                13,
+                8
+            ],
+            "params": {
+                "func_id": -1
+            }
+        }
+    ]
+}

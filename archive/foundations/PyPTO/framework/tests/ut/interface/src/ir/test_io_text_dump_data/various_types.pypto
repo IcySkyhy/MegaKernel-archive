@@ -1,0 +1,5 @@
+program #entry(types) {
+    function types incast(float %a, tensor<4 x 8, float, tensor_view<>> %b) outcast(tensor<4 x 8, float, tensor_view<>>) #type(Opaque) #entry(true) {
+        return %b;
+    }
+}

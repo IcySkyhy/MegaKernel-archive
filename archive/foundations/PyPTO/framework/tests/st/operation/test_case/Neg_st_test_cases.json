@@ -1,0 +1,596 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Neg_test_0",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                1
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 1,
+            "case_name": "Neg_test_1",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 2,
+            "case_name": "Neg_test_2",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 3,
+            "case_name": "Neg_test_3",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                127
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 4,
+            "case_name": "Neg_test_4",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        6144,
+                        64,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        6144,
+                        64,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                64,
+                64,
+                64
+            ],
+            "tile_shape": [
+                32,
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 5,
+            "case_name": "Neg_test_5",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 6,
+            "case_name": "Neg_test_6",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        393216,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        393216,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                393216,
+                2
+            ],
+            "tile_shape": [
+                256,
+                248
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 7,
+            "case_name": "Neg_test_7",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": -5,
+                        "max": 5
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "int32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                16,
+                16
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 8,
+            "case_name": "Neg_test_8",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                64,
+                64
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 9,
+            "case_name": "Neg_test_9",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        12288
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": -5,
+                        "max": 5
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        12288
+                    ],
+                    "dtype": "int32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 10,
+            "case_name": "Neg_test_10",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        0
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        0
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 11,
+            "case_name": "Neg_test_11",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        96,
+                        12288
+                    ],
+                    "dtype": "int32",
+                    "data_range": {
+                        "min": -5,
+                        "max": 5
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        96,
+                        12288
+                    ],
+                    "dtype": "int32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 12,
+            "case_name": "Neg_test_12",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        8192
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        8192
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 13,
+            "case_name": "Neg_test_13",
+            "operation": "Neg",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        96,
+                        8192
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        96,
+                        8192
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "func_id": -1
+            }
+        }
+    ]
+}

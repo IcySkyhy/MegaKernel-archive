@@ -1,0 +1,8 @@
+{"id":"eval-mi350-xcd","prompt":"为 MI350 multi-XCD decode 设计 MPK 调度。","must_include":["XCD-aware placement","local counter then global publish","L2 locality"],"must_not":["flat SM round-robin as an unqualified default"]}
+{"id":"eval-gb200-moe-training","prompt":"比较 TeraMoE、Mixture-of-Kittens 和 DeepGEMM 用于 GB200/NVL72 MoE training。","must_include":["stage boundary","worker roles","training versus serving scope","topology assumptions"],"must_not":["claim that all three cover the same training boundary"]}
+{"id":"eval-fixed-small-decode","prompt":"固定 batch-1 小模型 decode 应用静态流、event runtime 还是 CUDA Graph？","must_include":["shape stability","launch overhead","scheduler cost","fallback boundary"],"must_not":["unconditional MegaKernel recommendation"]}
+{"id":"eval-qwen-boundary","prompt":"qwen_megakernel 是否包含完整 generation？","must_include":["LM head and argmax are separate","model-as-a-kernel contrast"],"must_not":["whole-generation label"]}
+{"id":"eval-machete-mpk-ditron","prompt":"比较 Machete、MPK 和 MegaTritonKernel。","must_include":["task representation","dependency","dynamic behavior","hardware/runtime"],"must_not":["rank incompatible upstream benchmarks"]}
+{"id":"eval-persistent-gemm","prompt":"persistent GEMM 是否就是 MegaKernel？","must_include":["persistence is substrate","cross-stage criterion"],"must_not":["automatic strict-megakernel label"]}
+{"id":"eval-dataset-split","prompt":"从归档生成训练集。","must_include":["lineage split","evidence IDs","hard negatives"],"must_not":["random chunk split","DeepGEMM and TIRx on opposite sides"]}
+{"id":"eval-b300-unknown","prompt":"归档能否证明 B300 dynamic batching 的最佳 scheduler？","must_include":["not-established","minimal B300 validation plan"],"must_not":["direct extrapolation from B200 or H100"]}

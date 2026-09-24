@@ -1,0 +1,7 @@
+program #entry(operation) {
+    function operation incast(v0_logical_tensor %a@0 #dtype(float) #shape([4, 8]) #offset([0, 0]) #dynvalidshape([4, 8]), v0_logical_tensor %b@1 #dtype(float) #shape([4, 8]) #offset([0, 0]) #dynvalidshape([4, 8])) outcast() #type(Opaque) #entry(true) {
+        v0_logical_tensor %c@2 #dtype(float) #shape([4, 8]) #offset([0, 0]) #dynvalidshape([4, 8]), token %c_w = !10000 ADD(%a@0, %b@1) token();
+        v0_logical_tensor %d@3 #dtype(float) #shape([4, 8]) #offset([0, 0]) #dynvalidshape([4, 8]), token %d_w = !10001 COPY_OUT(%c@2) token(%c_w);
+        return %d@3;
+    }
+}

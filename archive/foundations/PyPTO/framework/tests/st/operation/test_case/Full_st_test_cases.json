@@ -1,0 +1,720 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Full_test_0",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                1
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 1e-05,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 1,
+            "case_name": "Full_test_1",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 2,
+            "case_name": "Full_test_2",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2048,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2048,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 3,
+            "case_name": "Full_test_3",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2051,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2051,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 4,
+            "case_name": "Full_test_4",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                127
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 5,
+            "case_name": "Full_test_5",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        6144,
+                        64,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        6144,
+                        64,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                64,
+                64,
+                64
+            ],
+            "tile_shape": [
+                32,
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 6,
+            "case_name": "Full_test_6",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                16,
+                16
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 7,
+            "case_name": "Full_test_7",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                16,
+                16
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 8,
+            "case_name": "Full_test_8",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                64,
+                64
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 9,
+            "case_name": "Full_test_9",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        48,
+                        64,
+                        128,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        48,
+                        64,
+                        128,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                48,
+                64,
+                32,
+                16
+            ],
+            "tile_shape": [
+                16,
+                16,
+                16,
+                8
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 10,
+            "case_name": "Full_test_10",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        0
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        0
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 11,
+            "case_name": "Full_test_11",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        0,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        0,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 12,
+            "case_name": "Full_test_12",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        1536
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        1536
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                256,
+                256
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 13,
+            "case_name": "Full_test_13",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        512
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        512
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                256,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 14,
+            "case_name": "Full_test_14",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        28672
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        28672
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                256,
+                4096
+            ],
+            "tile_shape": [
+                32,
+                512
+            ],
+            "params": {
+                "scalar": 2.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 15,
+            "case_name": "Full_test_15",
+            "operation": "Full",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16384,
+                        512
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16384,
+                        512
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16384,
+                512
+            ],
+            "tile_shape": [
+                128,
+                128
+            ],
+            "params": {
+                "scalar": -0.05,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        }
+    ]
+}

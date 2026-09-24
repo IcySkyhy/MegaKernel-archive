@@ -1,0 +1,23 @@
+[Core]
+
+pipeTileAllocNum = 1
+pipeVectorBmuNum = 1
+pipeCubeBmuL1NUM = 1
+pipeCubeBmuL0ANUM = 1
+pipeCubeBmuL0BNUM = 1
+pipeCubeBmuL0CNUM = 1
+pipeMteInNum = 1
+pipeMte1Num = 1
+pipeVectorAluNum = 1
+pipeCubeNum = 1
+pipeMteOutNum = 1
+pipeSimCallNum = 1
+
+tileopSentToPipeThreshold = 1
+
+calendarSetQueueWDelay = 140
+
+bufferBackPressure = true
+logLabelMode = 1 # 0: subgraphId; 1: semantic_label;
+
+enableTileOpFlow = false

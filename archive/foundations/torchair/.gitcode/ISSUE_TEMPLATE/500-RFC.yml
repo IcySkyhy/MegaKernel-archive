@@ -1,0 +1,45 @@
+name: 💬 Request for comments (RFC).
+description:  针对重大的架构变更或设计决策，现征求反馈意见。
+title: "[RFC]: "
+labels: ["RFC"]
+
+body:
+  - type: markdown
+    attributes:
+      value: >
+        #### 请参考之前的 [RFCs](https://gitcode.com/Ascend/torchair/issues)以供参考。
+  - type: textarea
+    attributes:
+      label: 动机。
+      description: >
+        RFC 的动机。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 所提议的变更内容。
+      description: >
+        此 RFC 所提议的变更内容。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 反馈周期。
+      description: >
+        此 RFC 的反馈周期。通常建议至少持续一周。
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: 抄送列表。
+      description: >
+        您希望抄送的人员列表。
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: 其他事项。
+      description: >
+        您想提及的任何其他事项。
+    validations:
+      required: false

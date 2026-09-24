@@ -1,0 +1,99 @@
+.hypothesis/
+
+# Compiled object files
+*.o
+*.obj
+
+# Compiled dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled executables
+*.exe
+
+# CUDA object files
+*.cu.o
+*.cu.obj
+
+# CUDA PTX files
+*.ptx
+
+# CUDA C++ dependency files
+*.d
+
+# Build directories
+build/
+bin/
+/.cache/
+
+#vscode
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info
+dist/
+wheelhouse/
+.venv/
+
+# Cython
+/python/mirage/_cython/core.cpp
+
+# Bundled native libs we build
+/python/mirage/lib/
+
+# Mac OS .DS_Store
+.DS_Store
+
+# Visualizer results
+*.png
+*.dot
+!docs/**/*.png
+
+# Triton transpiler
+demo/mirage_search_checkpoint.json
+demo/*generated*
+benchmark/*generated*
+
+# Nix
+/result
+
+/.direnv
+
+# Output files of runtime
+output/
+# Temp file
+task_graph*.json
+test.cu
+kernel*.cu
+
+#runtime
+*.perfetto-trace
+
+test/[!.]*
+report
+ncu_tmp
+
+#nsys
+*.nsys-rep
+*.sqlite
+.claude/
+.humanize/
+
+# Local-only Claude docs / scratch PR description — never push
+/CLAUDE.md
+/pr.md
+*.log
+
+# Track the agent skill/agent suites (re-include from the `.claude/` rule above).
+# A file can't be re-included while its parent dir is excluded, so: re-include
+# .claude/ itself, re-ignore its other children (settings.local.json, session
+# state, ...), then re-include exactly the two shipped subtrees + their contents.
+!.claude/
+.claude/*
+!.claude/skills/
+!.claude/agents/
+!.claude/skills/**
+!.claude/agents/**

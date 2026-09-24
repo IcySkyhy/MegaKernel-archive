@@ -1,0 +1,6 @@
+if (TRITON_USE_ASCEND)
+add_subdirectory(TritonDistributedToHIVM)
+else()
+add_subdirectory(TritonDistributedToLLVM)
+add_subdirectory(TritonDistributedToTritonGPU)
+endif()

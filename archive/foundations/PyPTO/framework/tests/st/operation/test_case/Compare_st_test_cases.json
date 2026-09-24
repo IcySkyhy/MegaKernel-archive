@@ -1,0 +1,1679 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Compare_test_0",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                13,
+                9
+            ],
+            "tile_shape": [
+                472,
+                64
+            ],
+            "params": {
+                "compare_op": "eq",
+                "mode": "bool",
+                "eq_num": 108,
+                "tile_block": 1,
+                "total_size": 9.77e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 1,
+            "case_name": "Compare_test_1",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        115,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        115,
+                        8
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                20,
+                1
+            ],
+            "tile_shape": [
+                638,
+                24
+            ],
+            "params": {
+                "compare_op": "eq",
+                "mode": "bool",
+                "eq_num": 280,
+                "tile_block": 1,
+                "total_size": 6.88e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 2,
+            "case_name": "Compare_test_2",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        17,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        17,
+                        104
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        17,
+                        13
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                6,
+                8
+            ],
+            "tile_shape": [
+                396,
+                16
+            ],
+            "params": {
+                "compare_op": "ne",
+                "mode": "bit",
+                "eq_num": 161,
+                "tile_block": 1,
+                "total_size": 3.74e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 3,
+            "case_name": "Compare_test_3",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        123,
+                        48
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        123,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        123,
+                        6
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                59,
+                8
+            ],
+            "tile_shape": [
+                540,
+                16
+            ],
+            "params": {
+                "compare_op": "ne",
+                "mode": "bit",
+                "eq_num": 756,
+                "tile_block": 1,
+                "total_size": 1.26e-05,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 4,
+            "case_name": "Compare_test_4",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        71,
+                        82
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        71,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        71,
+                        82
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                19,
+                27
+            ],
+            "tile_shape": [
+                219,
+                16
+            ],
+            "params": {
+                "compare_op": "lt",
+                "mode": "bool",
+                "eq_num": 1271,
+                "tile_block": 2,
+                "total_size": 2.18e-05,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 5,
+            "case_name": "Compare_test_5",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        120
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        122,
+                        120
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        122,
+                        15
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                5,
+                8
+            ],
+            "tile_shape": [
+                506,
+                64
+            ],
+            "params": {
+                "compare_op": "gt",
+                "mode": "bit",
+                "eq_num": 3152,
+                "tile_block": 1,
+                "total_size": 3.09e-05,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 6,
+            "case_name": "Compare_test_6",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        84,
+                        81
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        84,
+                        81
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        84,
+                        81
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                38
+            ],
+            "tile_shape": [
+                128,
+                96
+            ],
+            "params": {
+                "compare_op": "le",
+                "mode": "bool",
+                "eq_num": 1058,
+                "tile_block": 1,
+                "total_size": 7.6e-05,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 7,
+            "case_name": "Compare_test_7",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        26,
+                        99
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        26,
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        26,
+                        99
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                8,
+                10
+            ],
+            "tile_shape": [
+                417,
+                64
+            ],
+            "params": {
+                "compare_op": "le",
+                "mode": "bool",
+                "eq_num": 562,
+                "tile_block": 1,
+                "total_size": 9.64e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 8,
+            "case_name": "Compare_test_8",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        49,
+                        68
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        49,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        49,
+                        68
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                7,
+                29
+            ],
+            "tile_shape": [
+                10,
+                200
+            ],
+            "params": {
+                "compare_op": "ge",
+                "mode": "bool",
+                "eq_num": 208,
+                "tile_block": 1,
+                "total_size": 2.5e-05,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 9,
+            "case_name": "Compare_test_9",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        21,
+                        116,
+                        56
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        21,
+                        116,
+                        56
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        21,
+                        116,
+                        7
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                7,
+                36,
+                8
+            ],
+            "tile_shape": [
+                204,
+                6,
+                16
+            ],
+            "params": {
+                "compare_op": "eq",
+                "mode": "bit",
+                "eq_num": 27176,
+                "tile_block": 6,
+                "total_size": 0.000539951,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 10,
+            "case_name": "Compare_test_10",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        81,
+                        69,
+                        56
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        81,
+                        69,
+                        56
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        81,
+                        69,
+                        7
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                31,
+                19,
+                8
+            ],
+            "tile_shape": [
+                226,
+                7,
+                8
+            ],
+            "params": {
+                "compare_op": "ne",
+                "mode": "bit",
+                "eq_num": 68957,
+                "tile_block": 3,
+                "total_size": 0.002477657,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 11,
+            "case_name": "Compare_test_11",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        8,
+                        13,
+                        6
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        13,
+                        6
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        13,
+                        6
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                3
+            ],
+            "tile_shape": [
+                6,
+                321,
+                16
+            ],
+            "params": {
+                "compare_op": "gt",
+                "mode": "bool",
+                "eq_num": 190,
+                "tile_block": 1,
+                "total_size": 3.49e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 12,
+            "case_name": "Compare_test_12",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        21,
+                        126,
+                        104
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        21,
+                        126,
+                        104
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        21,
+                        126,
+                        13
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                5,
+                27,
+                8
+            ],
+            "tile_shape": [
+                4,
+                81,
+                48
+            ],
+            "params": {
+                "compare_op": "le",
+                "mode": "bit",
+                "eq_num": 5638,
+                "tile_block": 2,
+                "total_size": 0.002178423,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 13,
+            "case_name": "Compare_test_13",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        50,
+                        5,
+                        1,
+                        3
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        50,
+                        5,
+                        1,
+                        3
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        50,
+                        5,
+                        1,
+                        3
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                21,
+                1,
+                2,
+                1
+            ],
+            "tile_shape": [
+                2,
+                6,
+                142,
+                16
+            ],
+            "params": {
+                "compare_op": "eq",
+                "mode": "bool",
+                "eq_num": 23,
+                "tile_block": 11,
+                "total_size": 4.19e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 14,
+            "case_name": "Compare_test_14",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        61,
+                        11,
+                        22,
+                        24
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        61,
+                        11,
+                        22,
+                        24
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        61,
+                        11,
+                        22,
+                        3
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                30,
+                2,
+                3,
+                8
+            ],
+            "tile_shape": [
+                2,
+                454,
+                1,
+                16
+            ],
+            "params": {
+                "compare_op": "ge",
+                "mode": "bit",
+                "eq_num": 54302,
+                "tile_block": 45,
+                "total_size": 0.00280463,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 15,
+            "case_name": "Compare_test_15",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        58,
+                        112
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        112
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        58,
+                        14
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                15,
+                8
+            ],
+            "tile_shape": [
+                89,
+                160
+            ],
+            "params": {
+                "compare_op": "ge",
+                "mode": "bit",
+                "eq_num": 1940,
+                "tile_block": 1,
+                "total_size": 2.76e-05,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 16,
+            "case_name": "Compare_test_16",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        96,
+                        6
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        96,
+                        6
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        96,
+                        6
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                7,
+                1
+            ],
+            "tile_shape": [
+                176,
+                16
+            ],
+            "params": {
+                "compare_op": "ge",
+                "mode": "bool",
+                "eq_num": 69,
+                "tile_block": 1,
+                "total_size": 3.22e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 17,
+            "case_name": "Compare_test_17",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        18,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        18,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        18,
+                        2
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                8,
+                8
+            ],
+            "tile_shape": [
+                60,
+                248
+            ],
+            "params": {
+                "compare_op": "lt",
+                "mode": "bit",
+                "eq_num": 53,
+                "tile_block": 1,
+                "total_size": 1.27e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 18,
+            "case_name": "Compare_test_18",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        60,
+                        82,
+                        26
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        60,
+                        82,
+                        26
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        60,
+                        82,
+                        26
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                37,
+                9
+            ],
+            "tile_shape": [
+                8,
+                15,
+                104
+            ],
+            "params": {
+                "compare_op": "le",
+                "mode": "bool",
+                "eq_num": 6036,
+                "tile_block": 6,
+                "total_size": 0.001429617,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 19,
+            "case_name": "Compare_test_19",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        7,
+                        116,
+                        8,
+                        96
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        7,
+                        116,
+                        1,
+                        96
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        7,
+                        116,
+                        8,
+                        96
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                2,
+                11,
+                4,
+                14
+            ],
+            "tile_shape": [
+                373,
+                1,
+                1,
+                24
+            ],
+            "params": {
+                "compare_op": "eq",
+                "mode": "bool",
+                "eq_num": 18064,
+                "tile_block": 44,
+                "total_size": 0.004936695,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 20,
+            "case_name": "Compare_test_20",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bf16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bf16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                13,
+                9
+            ],
+            "tile_shape": [
+                472,
+                64
+            ],
+            "params": {
+                "compare_op": "ne",
+                "mode": "bool",
+                "eq_num": 108,
+                "tile_block": 1,
+                "total_size": 9.77e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 21,
+            "case_name": "Compare_test_21",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                13,
+                9
+            ],
+            "tile_shape": [
+                472,
+                64
+            ],
+            "params": {
+                "compare_op": "eq",
+                "mode": "bool",
+                "eq_num": 108,
+                "tile_block": 1,
+                "total_size": 9.77e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 22,
+            "case_name": "Compare_test_22",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                13,
+                9
+            ],
+            "tile_shape": [
+                472,
+                64
+            ],
+            "params": {
+                "compare_op": "gt",
+                "mode": "bool",
+                "eq_num": 108,
+                "tile_block": 1,
+                "total_size": 9.77e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 23,
+            "case_name": "Compare_test_23",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                13,
+                9
+            ],
+            "tile_shape": [
+                472,
+                64
+            ],
+            "params": {
+                "compare_op": "ge",
+                "mode": "bool",
+                "eq_num": 108,
+                "tile_block": 1,
+                "total_size": 9.77e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 24,
+            "case_name": "Compare_test_24",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                13,
+                9
+            ],
+            "tile_shape": [
+                472,
+                64
+            ],
+            "params": {
+                "compare_op": "ne",
+                "mode": "bool",
+                "eq_num": 108,
+                "tile_block": 1,
+                "total_size": 9.77e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 25,
+            "case_name": "Compare_test_25",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                13,
+                9
+            ],
+            "tile_shape": [
+                472,
+                64
+            ],
+            "params": {
+                "compare_op": "le",
+                "mode": "bool",
+                "eq_num": 108,
+                "tile_block": 1,
+                "total_size": 9.77e-06,
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 26,
+            "case_name": "Compare_test_26",
+            "operation": "Compare",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "int16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33,
+                        53
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                13,
+                9
+            ],
+            "tile_shape": [
+                472,
+                64
+            ],
+            "params": {
+                "compare_op": "lt",
+                "mode": "bool",
+                "eq_num": 108,
+                "tile_block": 1,
+                "total_size": 9.77e-06,
+                "func_id": -1
+            }
+        }
+    ]
+}

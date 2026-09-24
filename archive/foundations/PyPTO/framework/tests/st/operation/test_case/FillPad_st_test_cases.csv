@@ -1,0 +1,26 @@
+case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,pad_value,pad_value_type,func_id
+FillPad_1D_int8_zero,"[32]",int8,ND,"[1, 1]","[32]",int8,ND,"[16]","[32]",0,"custom",1
+FillPad_1D_test_0,"[32]",fp16,ND,"[-10, 10]","[32]",fp16,ND,"[16]","[32]",,"zero",1
+FillPad_1D_test_1,"[32]",fp32,ND,"[-100, 100]","[32]",fp32,ND,"[16]","[16]",,"zero",1
+FillPad_1D_test_2,"[16]",fp32,ND,"[-5, 5]","[8]",fp32,ND,"[8]","[8]",,"zero",1
+FillPad_1D_test_3_min,"[16]",fp32,ND,"[-10, 10]","[16]",fp32,ND,"[16]","[8]",,"min",1
+FillPad_1D_test_4_max,"[16]",fp32,ND,"[-10, 10]","[16]",fp32,ND,"[16]","[8]",,"max",1
+FillPad_1D_test_9,"[512]",fp16,ND,"[-50, 50]","[512]",fp16,ND,"[256]","[256]",,"zero",1
+FillPad_1D_test_18_min,"[512]",fp16,ND,"[-50, 50]","[512]",fp16,ND,"[256]","[128]",,"min",1
+FillPad_1D_test_19_max,"[512]",fp16,ND,"[-50, 50]","[512]",fp16,ND,"[256]","[128]",,"max",1
+FillPad_1D_test_35,"[4]",fp16,ND,"[-1, 1]","[4]",fp16,ND,"[4]","[4]",,"zero",1
+FillPad_1D_test_40_min,"[4]",fp16,ND,"[-1, 1]","[4]",fp16,ND,"[4]","[2]",,"min",1
+FillPad_2D_test_0,"[32, 32]",fp16,ND,"[-10, 10]","[32, 32]",fp16,ND,"[16, 16]","[32, 32]",,"zero",-1
+FillPad_2D_test_1,"[32, 32]",fp32,ND,"[-100, 100]","[32, 32]",fp32,ND,"[16, 16]","[16, 16]",,"zero",-1
+FillPad_2D_test_2,"[16, 32]",fp32,ND,"[-5, 5]","[16, 32]",fp32,ND,"[16, 32]","[8, 8]",,"zero",-1
+FillPad_2D_test_3_min,"[16, 16]",fp16,ND,"[-10, 10]","[16, 16]",fp16,ND,"[16, 16]","[8, 8]",,"min",-1
+FillPad_2D_test_4_max,"[16, 16]",fp16,ND,"[-10, 10]","[16, 16]",fp16,ND,"[16, 16]","[8, 8]",,"max",-1
+FillPad_2D_test_9,"[512, 512]",fp16,ND,"[-50, 50]","[512, 512]",fp16,ND,"[256, 256]","[128, 128]",,"zero",-1
+FillPad_2D_test_10,"[16, 32]",fp32,ND,"[-10, 10]","[16, 32]",fp32,ND,"[8, 16]","[8, 16]",,"zero",-1
+FillPad_2D_test_20,"[20, 30]",fp16,ND,"[-15, 15]","[20, 30]",fp16,ND,"[10, 15]","[10, 15]",,"zero",-1
+FillPad_2D_test_20_min,"[20, 30]",bf16,ND,"[-15, 15]","[20, 30]",bf16,ND,"[10, 15]","[5, 7]",,"min",-1
+FillPad_2D_test_20_max,"[20, 30]",bf16,ND,"[-15, 15]","[20, 30]",bf16,ND,"[10, 15]","[5, 7]",,"max",-1
+FillPad_2D_test_20_custom_0,"[20, 30]",fp16,ND,"[-15, 15]","[20, 30]",fp16,ND,"[10, 15]","[5, 7]",2.0,"custom",-1
+FillPad_2D_test_20_custom_1,"[20, 30]",fp32,ND,"[-15, 15]","[20, 30]",fp32,ND,"[10, 15]","[10, 15]",8.0,"custom",-1
+FillPad_2D_test_20_custom_2,"[20, 30]",bf16,ND,"[-15, 15]","[20, 30]",bf16,ND,"[10, 15]","[5, 7]",2.0,"custom",-1
+FillPad_2D_test_20_custom_3,"[20, 30]",fp16,ND,"[-15, 15]","[20, 30]",fp16,ND,"[10, 15]","[10, 15]",8.0,"custom",-1

@@ -1,0 +1,429 @@
+/***************************************************************************************************
+ * Copyright (c) 2025, Advanced Micro Devices, Inc. All rights reserved.
+ *
+ * See LICENSE for license information.
+ **************************************************************************************************/
+
+#include "pytorch/extensions.h"
+#include "pytorch/type_traits.h"
+
+#include "primus_turbo/arch.h"
+#include "primus_turbo/grouped_gemm.h"
+
+namespace primus_turbo::pytorch {
+
+#ifdef BUILD_CK_BACKEND
+
+template <typename AType, typename BType, typename CType>
+inline CKGroupedGemmParams<AType, BType, CType>
+make_ck_groued_gemm_params(void *args_ptr, const at::Tensor &a, const at::Tensor &b, at::Tensor &c,
+                           const at::Tensor &group_lens, const at::Tensor &group_offs, bool transA,
+                           bool transB, int32_t group_num, int32_t m, int32_t n, int32_t k,
+                           hipStream_t stream, uint32_t num_cu) {
+    CKGroupedGemmParams<AType, BType, CType> params;
+    params.args_ptr       = args_ptr;
+    params.a_ptr          = reinterpret_cast<const AType *>(a.data_ptr());
+    params.b_ptr          = reinterpret_cast<const BType *>(b.data_ptr());
+    params.c_ptr          = reinterpret_cast<CType *>(c.data_ptr());
+    params.group_lens_ptr = reinterpret_cast<const int64_t *>(group_lens.data_ptr());
+    params.group_offs_ptr = reinterpret_cast<const int64_t *>(group_offs.data_ptr());
+    params.transA         = transA;
+    params.transB         = transB;
+    params.group_num      = group_num;
+    params.m              = m;
+    params.n              = n;
+    params.k              = k;
+    params.stream         = stream;
+    params.num_cu         = num_cu;
+    return params;
+}
+
+template <typename AType, typename BType, typename CType, typename ACCType>
+inline CKGroupedGemmFP8Params<AType, BType, CType, ACCType> make_ck_groued_gemm_fp8_params(
+    void *args_ptr, const at::Tensor &a, const at::Tensor &b, at::Tensor &c,
+    const at::Tensor &a_scales, const at::Tensor &b_scales, const at::Tensor &group_lens,
+    const at::Tensor &group_offs, bool transA, bool transB, int32_t group_num, int32_t m, int32_t n,
+    int32_t k, hipStream_t stream, uint32_t num_cu) {
+    CKGroupedGemmFP8Params<AType, BType, CType, ACCType> params;
+    params.args_ptr       = args_ptr;
+    params.a_ptr          = reinterpret_cast<const AType *>(a.data_ptr());
+    params.b_ptr          = reinterpret_cast<const BType *>(b.data_ptr());
+    params.c_ptr          = reinterpret_cast<CType *>(c.data_ptr());
+    params.aq_ptr         = reinterpret_cast<const ACCType *>(a_scales.data_ptr());
+    params.bq_ptr         = reinterpret_cast<const ACCType *>(b_scales.data_ptr());
+    params.group_lens_ptr = reinterpret_cast<const int64_t *>(group_lens.data_ptr());
+    params.group_offs_ptr = reinterpret_cast<const int64_t *>(group_offs.data_ptr());
+    params.transA         = transA;
+    params.transB         = transB;
+    params.group_num      = group_num;
+    params.m              = m;
+    params.n              = n;
+    params.k              = k;
+    params.stream         = stream;
+    params.num_cu         = num_cu;
+    return params;
+}
+
+uint32_t get_grouped_gemm_num_cu(c10::optional<int64_t> num_cu) {
+    auto    stream     = at::cuda::getCurrentCUDAStream();
+    int32_t cus        = get_multi_processor_count(stream.device_index());
+    int32_t num_cu_val = num_cu.has_value() ? num_cu.value() : -1;
+    return num_cu_val <= 0 ? uint32_t(cus) : uint32_t(std::min(num_cu_val, cus));
+}
+
+at::Tensor ck_grouped_gemm(at::Tensor &a, at::Tensor &b, at::Tensor &group_lens,
+                           at::Tensor &group_offs, const bool transA, const bool transB,
+                           c10::optional<int64_t> num_cu, const bool work_steal,
+                           c10::optional<at::Tensor> ws_counter, int64_t ws_local_per_xcd) {
+    auto out_dtype = a.scalar_type();
+
+    // Check
+    PRIMUS_TURBO_CHECK(is_16bit_floating_point_dtype(a.scalar_type()));
+    PRIMUS_TURBO_CHECK(is_16bit_floating_point_dtype(b.scalar_type()));
+    PRIMUS_TURBO_CHECK(group_lens.scalar_type() == at::kLong);
+    PRIMUS_TURBO_CHECK(group_offs.scalar_type() == at::kLong);
+
+    // Validate the WS counter. The buffer is owned and zeroed at allocation
+    // time by the Python wrapper (per-device cache, one-shot torch.zeros);
+    // the kernel self-resets all slots before exit (last-out CTA), so no
+    // per-call zero is needed here.
+    //
+    // Counter buffer layout: [xcd0..xcd7, global, done] -- 10 int32 slots.
+    // ws_local_per_xcd selects the WS mode (see grouped_gemm_kernel_ws.hpp).
+    int32_t *ws_counter_ptr = nullptr;
+    if (work_steal) {
+        PRIMUS_TURBO_CHECK(ws_counter.has_value(),
+                           "ck_grouped_gemm: work_steal=True requires ws_counter");
+        at::Tensor &counter = ws_counter.value();
+        PRIMUS_TURBO_CHECK(counter.scalar_type() == at::kInt, "ws_counter must be int32");
+        PRIMUS_TURBO_CHECK(counter.is_cuda(), "ws_counter must be on CUDA");
+        PRIMUS_TURBO_CHECK(counter.device() == a.device(),
+                           "ws_counter must be on the same CUDA device as `a` "
+                           "(counter cuda:",
+                           counter.device().index(), ", a cuda:", a.device().index(), ")");
+        PRIMUS_TURBO_CHECK(counter.is_contiguous(), "ws_counter must be contiguous");
+        constexpr int64_t kCounterSlots = 8 + 2; // NUM_XCDS_WS + global + done
+        PRIMUS_TURBO_CHECK(counter.numel() >= kCounterSlots, "ws_counter must have at least ",
+                           kCounterSlots, " int32 slots");
+        ws_counter_ptr = static_cast<int32_t *>(counter.data_ptr());
+    }
+    // The CK WS kernel takes ws_local_per_xcd as int32. Reject values that
+    // would truncate silently on the cast below (int32 max ~2.1B; the heuristic
+    // returns ceil(total_tiles / 8) at most, and any WS shape that fits in
+    // int32 tile count is well under this limit -- this is a defensive check).
+    PRIMUS_TURBO_CHECK(ws_local_per_xcd >= 0 && ws_local_per_xcd <= INT32_MAX,
+                       "ws_local_per_xcd must fit in int32 (got ", ws_local_per_xcd, ")");
+
+    // Alloc args workspace
+    const int64_t args_sizes = get_ck_grouped_gemm_args_sizes(group_lens.numel());
+    at::Tensor    args_tensor =
+        at::empty({args_sizes}, at::TensorOptions().dtype(at::kByte).device(group_lens.device()));
+
+    // Determine output tensor size based on transA and transB
+    const int32_t bs = b.size(0);
+    const int32_t m  = transA ? a.size(1) : a.size(0);
+    const int32_t n  = transB ? b.size(1) : b.size(2);
+    const int32_t k  = transA ? a.size(0) : a.size(1);
+    at::Tensor    c  = at::empty({m, n}, at::dtype(out_dtype).device(at::kCUDA));
+
+    auto stream = at::cuda::getCurrentCUDAStream();
+    if (a.dtype() == at::kHalf) {
+        using AType = typename TorchToCKTileType<at::kHalf>::type;
+        using BType = AType;
+        using CType = AType;
+        auto params = make_ck_groued_gemm_params<AType, BType, CType>(
+            args_tensor.data_ptr(), a, b, c, group_lens, group_offs, transA, transB, bs, m, n, k,
+            stream, get_grouped_gemm_num_cu(num_cu));
+        params.work_steal       = work_steal;
+        params.ws_counter_ptr   = ws_counter_ptr;
+        params.ws_local_per_xcd = static_cast<int32_t>(ws_local_per_xcd);
+        primus_turbo::ck_grouped_gemm<AType, BType, CType>(params);
+    } else if (a.dtype() == at::kBFloat16) {
+        using AType = typename TorchToCKTileType<at::kBFloat16>::type;
+        using BType = AType;
+        using CType = AType;
+        auto params = make_ck_groued_gemm_params<AType, BType, CType>(
+            args_tensor.data_ptr(), a, b, c, group_lens, group_offs, transA, transB, bs, m, n, k,
+            stream, get_grouped_gemm_num_cu(num_cu));
+        params.work_steal       = work_steal;
+        params.ws_counter_ptr   = ws_counter_ptr;
+        params.ws_local_per_xcd = static_cast<int32_t>(ws_local_per_xcd);
+        primus_turbo::ck_grouped_gemm<AType, BType, CType>(params);
+    } else {
+        PRIMUS_TURBO_CHECK(false, "GroupedGemm only support float16 and bfloat16");
+    }
+    return c;
+}
+
+at::Tensor ck_grouped_gemm_fp8(at::Tensor &a, at::Tensor &b, at::Tensor &a_scales,
+                               at::Tensor &b_scales, at::Tensor &group_lens, at::Tensor &group_offs,
+                               const bool transA, const bool transB, at::ScalarType out_dtype,
+                               const std::string &granularity, c10::optional<int64_t> num_cu) {
+
+    // Check
+    PRIMUS_TURBO_CHECK(is_8bit_floating_point_dtype(a.scalar_type()));
+    PRIMUS_TURBO_CHECK(is_8bit_floating_point_dtype(b.scalar_type()));
+    PRIMUS_TURBO_CHECK(group_lens.scalar_type() == at::kLong);
+    PRIMUS_TURBO_CHECK(group_offs.scalar_type() == at::kLong);
+    PRIMUS_TURBO_CHECK(out_dtype == at::kBFloat16 || out_dtype == at::kHalf,
+                       "out_dtype must be kBFloat16 or kHalf");
+    PRIMUS_TURBO_CHECK(granularity == "TENSORWISE" || granularity == "ROWWISE" ||
+                           granularity == "BLOCKWISE",
+                       "granularity must be 'TENSORWISE', 'ROWWISE', or 'BLOCKWISE'");
+
+    // Determine output tensor size based on transA and transB
+    const int64_t bs = b.size(0);
+    const int64_t m  = transA ? a.size(1) : a.size(0);
+    const int64_t n  = transB ? b.size(1) : b.size(2);
+    const int64_t k  = transA ? a.size(0) : a.size(1);
+
+    // For BLOCKWISE (ABQuantGrouped), check alignment requirements
+    if (granularity == "BLOCKWISE" && !transA) {
+        PRIMUS_TURBO_CHECK(k % 128 == 0,
+                           "For BLOCKWISE granularity, k must be a multiple of 128, got k=", k);
+        PRIMUS_TURBO_CHECK(n % 128 == 0,
+                           "For BLOCKWISE granularity, n must be a multiple of 128, got n=", n);
+        PRIMUS_TURBO_CHECK(k >= 128, "For BLOCKWISE granularity, k must be at least 128");
+    }
+
+    // Alloc args workspace
+    const int64_t args_sizes = get_ck_grouped_gemm_fp8_args_sizes(group_lens.numel());
+    at::Tensor    args_tensor =
+        at::empty({args_sizes}, at::TensorOptions().dtype(at::kByte).device(group_lens.device()));
+
+    // Handle scale tensor transpose for BLOCKWISE
+    if (granularity == "BLOCKWISE") {
+        a_scales = transA ? a_scales.transpose(-1, -2) : a_scales;
+        b_scales = !transB ? b_scales.transpose(-1, -2) : b_scales;
+    }
+
+    at::Tensor aq_tensor = a_scales.contiguous();
+    at::Tensor bq_tensor = b_scales.contiguous();
+
+    at::Tensor c      = at::empty({m, n}, at::dtype(out_dtype).device(at::kCUDA));
+    auto       stream = at::cuda::getCurrentCUDAStream();
+
+    TORCH_SCALAR_TYPE_TO_CK_TILE_TYPE_SWITCH_F16(
+        out_dtype, CType,
+        TORCH_SCALAR_TYPE_TO_CK_TILE_TYPE_SWITCH_F8(
+            a.scalar_type(), AType,
+            TORCH_SCALAR_TYPE_TO_CK_TILE_TYPE_SWITCH_F8(
+                b.scalar_type(), BType,
+                auto params = make_ck_groued_gemm_fp8_params<AType, BType, CType, float>(
+                    args_tensor.data_ptr(), a, b, c, aq_tensor, bq_tensor, group_lens, group_offs,
+                    transA, transB, bs, m, n, k, stream, get_grouped_gemm_num_cu(num_cu));
+                if (granularity == "TENSORWISE")
+                    primus_turbo::ck_grouped_gemm_fp8<AType, BType, CType, float,
+                                                      ck_tile::QuantType::TensorQuant>(params);
+                else if (granularity == "ROWWISE")
+                    primus_turbo::ck_grouped_gemm_fp8<AType, BType, CType, float,
+                                                      ck_tile::QuantType::RowColQuant>(params);
+                else // BLOCKWISE: CK support dropped; Triton is the production blockwise path.
+                     // primus_turbo::ck_grouped_gemm_fp8<AType, BType, CType, float,
+                     //                                   ck_tile::QuantType::ABQuantGrouped>(params);
+                PRIMUS_TURBO_CHECK(
+                    false,
+                    "CK grouped GEMM FP8 does not support BLOCKWISE; use the Triton backend.");)))
+
+    return c;
+}
+
+at::Tensor ck_grouped_gemm_variable_k(at::Tensor &a, at::Tensor &b, at::Tensor &group_lens,
+                                      at::Tensor &group_offs, const bool transA, const bool transB,
+                                      c10::optional<int64_t> num_cu, const bool work_steal,
+                                      c10::optional<at::Tensor> ws_counter,
+                                      int64_t                   ws_local_per_xcd) {
+    // TODO: output datatype
+    auto out_dtype = a.scalar_type();
+
+    // Check
+    PRIMUS_TURBO_CHECK(is_16bit_floating_point_dtype(a.scalar_type()));
+    PRIMUS_TURBO_CHECK(is_16bit_floating_point_dtype(b.scalar_type()));
+    PRIMUS_TURBO_CHECK(group_lens.scalar_type() == at::kLong);
+    PRIMUS_TURBO_CHECK(group_offs.scalar_type() == at::kLong);
+
+    // Validate WS counter -- kernel self-resets, no per-call zero needed.
+    // Counter layout: [xcd0..7, global, done] = 10 int32 slots.
+    int32_t *ws_counter_ptr = nullptr;
+    if (work_steal) {
+        PRIMUS_TURBO_CHECK(ws_counter.has_value(),
+                           "ck_grouped_gemm_variable_k: work_steal=True requires ws_counter");
+        at::Tensor &counter = ws_counter.value();
+        PRIMUS_TURBO_CHECK(counter.scalar_type() == at::kInt, "ws_counter must be int32");
+        PRIMUS_TURBO_CHECK(counter.is_cuda(), "ws_counter must be on CUDA");
+        PRIMUS_TURBO_CHECK(counter.device() == a.device(),
+                           "ws_counter must be on the same CUDA device as `a` "
+                           "(counter cuda:",
+                           counter.device().index(), ", a cuda:", a.device().index(), ")");
+        PRIMUS_TURBO_CHECK(counter.is_contiguous(), "ws_counter must be contiguous");
+        constexpr int64_t kCounterSlots = 8 + 2;
+        PRIMUS_TURBO_CHECK(counter.numel() >= kCounterSlots, "ws_counter must have at least ",
+                           kCounterSlots, " int32 slots");
+        ws_counter_ptr = static_cast<int32_t *>(counter.data_ptr());
+    }
+    // See ck_grouped_gemm(): the kernel takes ws_local_per_xcd as int32,
+    // reject values that would truncate silently on the cast below.
+    PRIMUS_TURBO_CHECK(ws_local_per_xcd >= 0 && ws_local_per_xcd <= INT32_MAX,
+                       "ws_local_per_xcd must fit in int32 (got ", ws_local_per_xcd, ")");
+
+    // Alloc args workspace
+    const int64_t args_sizes = get_ck_grouped_gemm_args_sizes(group_lens.numel());
+    at::Tensor    args_tensor =
+        at::empty({args_sizes}, at::TensorOptions().dtype(at::kByte).device(group_lens.device()));
+
+    // Determine output tensor size based on transA and transB
+    const int64_t bs = group_lens.numel();
+    const int64_t m  = transA ? a.size(1) : a.size(0);
+    const int64_t n  = transB ? b.size(0) : b.size(1);
+    const int64_t k  = transA ? a.size(0) : a.size(1);
+    at::Tensor    c  = at::empty({bs, m, n}, at::dtype(out_dtype).device(at::kCUDA));
+
+    auto stream = at::cuda::getCurrentCUDAStream();
+    if (a.dtype() == at::kHalf) {
+        using AType = typename TorchToCKTileType<at::kHalf>::type;
+        using BType = AType;
+        using CType = AType;
+        auto params = make_ck_groued_gemm_params<AType, BType, CType>(
+            args_tensor.data_ptr(), a, b, c, group_lens, group_offs, transA, transB, bs, m, n, k,
+            stream, get_grouped_gemm_num_cu(num_cu));
+        params.work_steal       = work_steal;
+        params.ws_counter_ptr   = ws_counter_ptr;
+        params.ws_local_per_xcd = static_cast<int32_t>(ws_local_per_xcd);
+        primus_turbo::ck_grouped_gemm_variable_k<AType, BType, CType>(params);
+    } else if (a.dtype() == at::kBFloat16) {
+        using AType = typename TorchToCKTileType<at::kBFloat16>::type;
+        using BType = AType;
+        using CType = AType;
+        auto params = make_ck_groued_gemm_params<AType, BType, CType>(
+            args_tensor.data_ptr(), a, b, c, group_lens, group_offs, transA, transB, bs, m, n, k,
+            stream, get_grouped_gemm_num_cu(num_cu));
+        params.work_steal       = work_steal;
+        params.ws_counter_ptr   = ws_counter_ptr;
+        params.ws_local_per_xcd = static_cast<int32_t>(ws_local_per_xcd);
+        primus_turbo::ck_grouped_gemm_variable_k<AType, BType, CType>(params);
+    } else {
+        PRIMUS_TURBO_CHECK(false, "GroupedGemm only support float16 and bfloat16");
+    }
+
+    return c;
+}
+
+at::Tensor ck_grouped_gemm_fp8_variable_k(at::Tensor &a, at::Tensor &b, at::Tensor &a_scales,
+                                          at::Tensor &b_scales, at::Tensor &group_lens,
+                                          at::Tensor &group_offs, const bool transA,
+                                          const bool transB, at::ScalarType out_dtype,
+                                          const std::string     &granularity,
+                                          c10::optional<int64_t> num_cu) {
+    // Check
+    PRIMUS_TURBO_CHECK(is_8bit_floating_point_dtype(a.scalar_type()));
+    PRIMUS_TURBO_CHECK(is_8bit_floating_point_dtype(b.scalar_type()));
+    PRIMUS_TURBO_CHECK(group_lens.scalar_type() == at::kLong);
+    PRIMUS_TURBO_CHECK(group_offs.scalar_type() == at::kLong);
+    PRIMUS_TURBO_CHECK(out_dtype == at::kBFloat16 || out_dtype == at::kHalf,
+                       "out_dtype must be kBFloat16 or kHalf");
+    PRIMUS_TURBO_CHECK(granularity == "TENSORWISE" || granularity == "ROWWISE" ||
+                           granularity == "BLOCKWISE",
+                       "granularity must be 'TENSORWISE', 'ROWWISE', or 'BLOCKWISE'");
+
+    // Determine output tensor size based on transA and transB
+    const int64_t bs = group_lens.numel();
+    const int64_t m  = transA ? a.size(1) : a.size(0);
+    const int64_t n  = transB ? b.size(0) : b.size(1);
+    const int64_t k  = transA ? a.size(0) : a.size(1);
+
+    // For BLOCKWISE (ABQuantGrouped), check alignment requirements
+    if (granularity == "BLOCKWISE") {
+        PRIMUS_TURBO_CHECK(m % 128 == 0,
+                           "For BLOCKWISE granularity, m must be a multiple of 128, got m=", m);
+        PRIMUS_TURBO_CHECK(n % 128 == 0,
+                           "For BLOCKWISE granularity, n must be a multiple of 128, got n=", n);
+        PRIMUS_TURBO_CHECK(k >= 128, "For BLOCKWISE granularity, k must be at least 128");
+    }
+
+    // Alloc args workspace
+    const int64_t args_sizes = get_ck_grouped_gemm_fp8_args_sizes(group_lens.numel());
+    at::Tensor    args_tensor =
+        at::empty({args_sizes}, at::TensorOptions().dtype(at::kByte).device(group_lens.device()));
+
+    at::Tensor c = at::empty({bs, m, n}, at::dtype(out_dtype).device(at::kCUDA));
+
+    // Handle scale tensor transpose for BLOCKWISE
+    if (granularity == "BLOCKWISE") {
+        a_scales = transA ? a_scales.transpose(-1, -2) : a_scales;
+        b_scales = !transB ? b_scales.transpose(-1, -2) : b_scales;
+    }
+
+    at::Tensor aq_tensor = a_scales.contiguous();
+    at::Tensor bq_tensor = b_scales.contiguous();
+
+    auto stream = at::cuda::getCurrentCUDAStream();
+
+    TORCH_SCALAR_TYPE_TO_CK_TILE_TYPE_SWITCH_F16(
+        out_dtype, CType,
+        TORCH_SCALAR_TYPE_TO_CK_TILE_TYPE_SWITCH_F8(
+            a.scalar_type(), AType,
+            TORCH_SCALAR_TYPE_TO_CK_TILE_TYPE_SWITCH_F8(
+                b.scalar_type(), BType,
+                auto params = make_ck_groued_gemm_fp8_params<AType, BType, CType, float>(
+                    args_tensor.data_ptr(), a, b, c, aq_tensor, bq_tensor, group_lens, group_offs,
+                    transA, transB, bs, m, n, k, stream, get_grouped_gemm_num_cu(num_cu));
+                if (granularity == "TENSORWISE") primus_turbo::ck_grouped_gemm_fp8_variable_k<
+                    AType, BType, CType, float, ck_tile::QuantType::TensorQuant>(params);
+                else if (granularity == "ROWWISE")
+                    primus_turbo::ck_grouped_gemm_fp8_variable_k<AType, BType, CType, float,
+                                                                 ck_tile::QuantType::RowColQuant>(
+                        params);
+                else // BLOCKWISE: CK support dropped; Triton is the production blockwise path.
+                     // primus_turbo::ck_grouped_gemm_fp8_variable_k<
+                     //     AType, BType, CType, float, ck_tile::QuantType::ABQuantGrouped>(params);
+                PRIMUS_TURBO_CHECK(false,
+                                   "CK grouped GEMM FP8 variable-K does not support BLOCKWISE; "
+                                   "use the Triton backend.");)))
+
+    return c;
+}
+
+#else // !BUILD_CK_BACKEND : CK grouped GEMM unsupported (CK backend disabled)
+
+at::Tensor ck_grouped_gemm(at::Tensor &a, at::Tensor &b, at::Tensor &group_lens,
+                           at::Tensor &group_offs, const bool transA, const bool transB,
+                           c10::optional<int64_t> num_cu, const bool work_steal,
+                           c10::optional<at::Tensor> ws_counter, int64_t ws_local_per_xcd) {
+    PRIMUS_TURBO_ERROR("ck_grouped_gemm is unavailable: CK backend not built (disabled via "
+                       "PRIMUS_TURBO_BUILD_CK, or unsupported on gfx1250). "
+                       "Rebuild on a supported architecture with PRIMUS_TURBO_BUILD_CK=1.");
+}
+
+at::Tensor ck_grouped_gemm_variable_k(at::Tensor &a, at::Tensor &b, at::Tensor &group_lens,
+                                      at::Tensor &group_offs, const bool transA, const bool transB,
+                                      c10::optional<int64_t> num_cu, const bool work_steal,
+                                      c10::optional<at::Tensor> ws_counter,
+                                      int64_t                   ws_local_per_xcd) {
+    PRIMUS_TURBO_ERROR("ck_grouped_gemm_variable_k is unavailable: CK backend not built (disabled "
+                       "via PRIMUS_TURBO_BUILD_CK, or unsupported on gfx1250). "
+                       "Rebuild on a supported architecture with PRIMUS_TURBO_BUILD_CK=1.");
+}
+
+at::Tensor ck_grouped_gemm_fp8(at::Tensor &a, at::Tensor &b, at::Tensor &a_scales,
+                               at::Tensor &b_scales, at::Tensor &group_lens, at::Tensor &group_offs,
+                               const bool transA, const bool transB, at::ScalarType out_dtype,
+                               const std::string &granularity, c10::optional<int64_t> num_cu) {
+    PRIMUS_TURBO_ERROR("ck_grouped_gemm_fp8 is unavailable: CK backend not built (disabled via "
+                       "PRIMUS_TURBO_BUILD_CK, or unsupported on gfx1250). "
+                       "Rebuild on a supported architecture with PRIMUS_TURBO_BUILD_CK=1.");
+}
+
+at::Tensor ck_grouped_gemm_fp8_variable_k(at::Tensor &a, at::Tensor &b, at::Tensor &a_scales,
+                                          at::Tensor &b_scales, at::Tensor &group_lens,
+                                          at::Tensor &group_offs, const bool transA,
+                                          const bool transB, at::ScalarType out_dtype,
+                                          const std::string     &granularity,
+                                          c10::optional<int64_t> num_cu) {
+    PRIMUS_TURBO_ERROR("ck_grouped_gemm_fp8_variable_k is unavailable: CK backend not built "
+                       "(disabled via PRIMUS_TURBO_BUILD_CK, or unsupported on gfx1250). "
+                       "Rebuild on a supported architecture with PRIMUS_TURBO_BUILD_CK=1.");
+}
+
+#endif // BUILD_CK_BACKEND
+
+} // namespace primus_turbo::pytorch

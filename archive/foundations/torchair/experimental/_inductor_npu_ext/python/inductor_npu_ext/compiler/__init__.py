@@ -1,0 +1,127 @@
+import os
+import hashlib
+import getpass
+from typing import Dict, Optional
+from ctypes import cdll, c_int64, c_void_p
+from concurrent.futures import Future
+
+import torch
+
+from ..common import logger
+from ..common.utils import validate_lib
+from .. import config
+from torch._inductor.async_compile import AsyncCompile
+from . import _compiler
+
+
+class _NpuInductorKernel:
+    default_stream = c_void_p(0)
+
+    def __init__(self, wrapper, kernel=None):
+        kernel = kernel if kernel is not None else wrapper.replace("wrapper.so", "kernel.so")
+        self.name = os.path.dirname(wrapper)
+        self.dl = cdll.LoadLibrary(wrapper)
+        self.kernel = self.dl.wrapper
+        if self.dl.init(kernel.encode('utf-8')) != 0:
+            raise RuntimeError(f"NPU kernel {self.name} init failed")
+
+    def __call__(self, *args):
+        if config.sync_around_fuse_kernel:
+            logger.info("Start sync previous kernel for %s", self.name)
+            self.sync()
+            logger.info("Succeed sync previous kernel for %s", self.name)
+            logger.info("Start launch kernel %s with args %s", self.name, self.args_str(args))
+
+        result = self.kernel(*[c_void_p(t.data_ptr()) if isinstance(t, torch.Tensor) else c_int64(t) for t in args],
+                             self.default_stream)
+        if result != 0:
+            raise RuntimeError(f"NPU kernel {self.name} execution failed({result})")
+
+        if config.sync_around_fuse_kernel:
+            logger.info("Start sync kernel %s with args %s", self.name, self.args_str(args))
+            self.sync()
+            logger.info("Succeed sync kernel %s", self.name)
+
+    @staticmethod
+    def args_str(args):
+        def _tensor_str(t):
+            if isinstance(t, torch.Tensor):
+                return (f'Tensor(dtype={t.dtype}, '
+                        f'shape={tuple(t.size())}, '
+                        f'stride={t.stride()}, '
+                        f'offset={t.storage_offset()}, '
+                        f'data={hex(t.data_ptr())}, '
+                        f'device={t.device})')
+            return str(t)
+        return ', '.join([_tensor_str(arg) for arg in args])
+
+    @staticmethod
+    def sync():
+        torch.npu.synchronize()
+
+    @staticmethod
+    def get_kernel_name(path):
+        normalized = os.path.normpath(path)
+        folders = normalized.split(os.sep)
+        return folders[-2] if len(folders) >= 2 else path
+
+
+def get_lib_dir(artifacts: Dict) -> str:
+    name = artifacts.get('name', 'default')
+    hash_str = ''.join([v for k, v in artifacts.items() if k != 'name'])
+    lib_dir = os.path.join(config.asc_cache_dir, name, hashlib.sha256(hash_str.encode()).hexdigest())
+    return lib_dir
+
+
+class _AscendcFeature(Future):
+    def __init__(self, future: Future, launcher: str):
+        super().__init__()
+        self.future = future
+        self.launcher = launcher
+
+    def result(self, timeout=None):
+        self.future.result(timeout)
+        return _NpuInductorKernel(self.launcher)
+
+
+def async_compile(executor: Optional[AsyncCompile], artifacts: Dict[str, str]):
+    from torch._inductor import config as inductor_config
+    from ..common.debug import _get_asserts_base
+    from ..common.utils import file_lock
+    from pathlib import Path
+
+    lib_dir = get_lib_dir(artifacts)
+    launcher = os.path.join(lib_dir, "wrapper.so")
+    kernel = os.path.join(lib_dir, "kernel.so")
+    with file_lock(Path(lib_dir) / "compile.lock"):
+        if os.path.exists(launcher) and os.path.exists(kernel):
+            validate_lib(launcher)
+            validate_lib(kernel)
+            logger.debug("Cache hint for %s", launcher)
+            return _NpuInductorKernel(launcher)
+
+    asserts_base = _get_asserts_base()
+    soc_version = 'cpu' if config.debugging_on_cpu else torch.npu.get_device_properties().name
+
+    compile_flags = []
+    if not config.debugging_on_cpu:
+        import torch_npu
+        torch_npu_dir = os.path.dirname(torch_npu.__file__)
+        ascend_dir = os.path.dirname(os.getenv("ASCEND_OPP_PATH", "/usr/local/Ascend/latest/opp"))
+        torch_dir = os.path.dirname(torch.__file__)
+        compile_flags = [f"-I{v}/include" for v in [ascend_dir, torch_dir, torch_npu_dir]]
+        compile_flags.extend([f"-L{ascend_dir}/lib64", f"-lascendcl", f"-lnnopbase"])
+        compile_flags.extend([f"-L{torch_npu_dir}/lib", f"-ltorch_npu"])
+    else:
+        compile_flags = [f"-I{os.path.join(os.path.dirname(__file__), 'cpu_stubs', 'include')}"]
+    # Prevent force single-threaded compile by other stubs such as triton
+    inductor_config.compile_threads = max(32, inductor_config.compile_threads)
+    if inductor_config.compile_threads > 1 and executor is not None and not config.debugging_on_cpu:
+        logger.debug("Async compile for %s", launcher)
+        future = executor.process_pool().submit(_compiler.compile_ascendc, artifacts,
+                                                lib_dir, asserts_base, soc_version=soc_version, compile_flags=compile_flags)
+        return _AscendcFeature(future, launcher)
+    else:
+        logger.debug("Sync compile for %s", launcher)
+        _compiler.compile_ascendc(artifacts, lib_dir, asserts_base, soc_version=soc_version, compile_flags=compile_flags)
+        return _NpuInductorKernel(launcher)

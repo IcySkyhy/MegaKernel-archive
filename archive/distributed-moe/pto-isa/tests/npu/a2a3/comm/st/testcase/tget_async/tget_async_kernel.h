@@ -1,0 +1,50 @@
+/**
+Copyright (c) 2025 Huawei Technologies Co., Ltd.
+This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+CANN Open Software License Agreement Version 2.0 (the "License").
+Please refer to the License for details. You may not use this file except in compliance with the License.
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+See LICENSE in the root of the software repository for the full text of the License.
+*/
+
+#pragma once
+
+#include <cstddef>
+#include <cstdint>
+
+// 1D Vector Tile tests (root reads data from all other ranks)
+template <typename T, size_t count>
+bool RunGetAsyncRootGet(int n_ranks, int n_devices, int first_rank_id, int first_device_id);
+
+// Configurable SdmaBaseConfig tests (custom block_bytes / comm_block_offset / queue_num)
+template <typename T, size_t count>
+bool RunGetAsyncWithConfig(
+    int n_ranks, int n_devices, int first_rank_id, int first_device_id, uint64_t blockBytes, uint64_t commBlockOffset,
+    uint32_t queueNum);
+
+// Multi-core tests (blockDim > 1). multiCoreMode: 0 = split, 1 = independent
+template <typename T, size_t count>
+bool RunGetAsyncMultiCore(
+    int n_ranks, int n_devices, int first_rank_id, int first_device_id, int blockDim, int multiCoreMode);
+
+// Concurrent per-rank gather: every rank runs nranks cores, core c pulls source
+// rank c via its own AsyncSession on sync channel c. iters = TGET+Wait cycles
+// per core (mirrors DispatchGather's per-core distinct-channel + per-group Wait).
+template <typename T, size_t count>
+bool RunGetAsyncConcurrentRank(
+    int n_ranks, int n_devices, int first_rank_id, int first_device_id, int iters, int freshSession);
+
+bool IsTGetAsyncPostStabilityDeviceRangeAvailable(int nRanks, int firstDeviceId);
+
+bool RunTGetAsyncImmediatePostWait(
+    int nRanks, int nDevices, int firstRankId, int firstDeviceId, uint32_t postCount, uint32_t rounds,
+    uint32_t queueNum);
+
+bool RunTGetAsyncConsecutivePostsWaitEach(
+    int nRanks, int nDevices, int firstRankId, int firstDeviceId, uint32_t postCount, uint32_t rounds,
+    uint32_t queueNum);
+
+bool RunTGetAsyncPostsWaitFinal(
+    int nRanks, int nDevices, int firstRankId, int firstDeviceId, uint32_t postCount, uint32_t rounds,
+    uint32_t queueNum);

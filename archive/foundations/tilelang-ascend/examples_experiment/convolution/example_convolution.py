@@ -1,0 +1,232 @@
+import torch
+import torch.nn.functional as F
+
+import tilelang
+import tilelang.language as T
+
+tilelang.cache.clear_cache()
+
+
+seed = 42
+
+pass_configs = {
+    tilelang.PassConfigKey.TL_ASCEND_AUTO_CV_COMBINE: True,
+    tilelang.PassConfigKey.TL_ASCEND_AUTO_SYNC: True,
+    tilelang.PassConfigKey.TL_ASCEND_MEMORY_PLANNING: True,
+}
+
+
+@tilelang.jit(out_idx=[-1], pass_configs=pass_configs)
+def matmul(M, N, K, block_M=128, block_N=256, block_K=64, dtype="float16", accum_dtype="float"):
+    m_num = M // block_M
+    n_num = N // block_N
+
+    @T.prim_func
+    def main(
+        A: T.Tensor((M, K), dtype),
+        B: T.Tensor((K, N), dtype),
+        C: T.Tensor((M, N), dtype),
+    ):
+        with T.Kernel(m_num * n_num, is_npu=True) as (cid, _):
+            bx = cid // n_num
+            by = cid % n_num
+
+            A_L1 = T.alloc_shared((block_M, block_K), dtype)
+            B_L1 = T.alloc_shared((block_K, block_N), dtype)
+
+            C_L0 = T.alloc_fragment((block_M, block_N), accum_dtype)
+
+            loop_k = T.ceildiv(K, block_K)
+            for k in T.serial(loop_k):
+                T.copy(A[bx * block_M, k * block_K], A_L1)
+                T.copy(B[k * block_K, by * block_N], B_L1)
+
+                T.gemm_v0(A_L1, B_L1, C_L0, init=(k == 0))
+
+            T.copy(C_L0, C[bx * block_M, by * block_N])
+
+    return main
+
+
+def im2col(input_tensor: torch.Tensor, KH: int, KW: int, stride: int, padding: int) -> torch.Tensor:
+    B, C, H, W = input_tensor.shape
+    HO = (H + 2 * padding - KH) // stride + 1
+    WO = (W + 2 * padding - KW) // stride + 1
+
+    input_flat = torch.zeros((C * KH * KW, B * HO * WO), dtype=input_tensor.dtype, device=input_tensor.device)
+
+    for n in range(B):
+        for i in range(HO):
+            for j in range(WO):
+                h_start = i * stride - padding
+                w_start = j * stride - padding
+
+                col_idx = n * HO * WO + i * WO + j
+                row_idx = 0
+
+                for c in range(C):
+                    for m in range(KH):
+                        for k in range(KW):
+                            h = h_start + m
+                            w = w_start + k
+
+                            if 0 <= h < H and 0 <= w < W:
+                                input_flat[row_idx, col_idx] = input_tensor[n, c, h, w]
+                            else:
+                                input_flat[row_idx, col_idx] = 0
+
+                            row_idx += 1
+
+    return input_flat
+
+
+def conv_im2col_gemm(input_tensor: torch.Tensor, kernel: torch.Tensor, stride: int = 1, padding: int = 0) -> torch.Tensor:
+    B, C, H, W = input_tensor.shape
+    OC, C_k, KH, KW = kernel.shape
+    assert C_k == C, "input channels mismatch: %d vs %d" % (C, C_k)
+    HO = (H + 2 * padding - KH) // stride + 1
+    WO = (W + 2 * padding - KW) // stride + 1
+
+    # im2col
+    input_flat = im2col(input_tensor, KH, KW, stride, padding)
+    input_flat = input_flat.contiguous()
+
+    kernel_flat = kernel.view(OC, -1)
+    kernel_flat = kernel_flat.contiguous()
+
+    M, K = kernel_flat.shape
+    N = input_flat.shape[1]
+
+    block_M, block_N, block_K = 128, 128, 128
+
+    M_pad = ((M + block_M - 1) // block_M) * block_M
+    N_pad = ((N + block_N - 1) // block_N) * block_N
+    K_pad = ((K + block_K - 1) // block_K) * block_K
+
+    need_pad = (M_pad > M) or (N_pad > N) or (K_pad > K)
+
+    if need_pad:
+        if M_pad > M or K_pad > K:
+            kernel_padded = torch.zeros(M_pad, K_pad, dtype=kernel_flat.dtype, device=kernel_flat.device)
+            kernel_padded[:M, :K] = kernel_flat
+            kernel_flat = kernel_padded.contiguous()
+        if K_pad > K or N_pad > N:
+            input_padded = torch.zeros(K_pad, N_pad, dtype=input_flat.dtype, device=input_flat.device)
+            input_padded[:K, :N] = input_flat
+            input_flat = input_padded.contiguous()
+
+    func = matmul(M_pad, N_pad, K_pad, block_M, block_N, block_K)
+    print("    GEMM(M=%d->%d, N=%d->%d, K=%d->%d)" % (M, M_pad, N, N_pad, K, K_pad))
+    print("    init successful!")
+    output = func(kernel_flat, input_flat)
+
+    output = output[:M, :N]
+    output = output.view(OC, B, HO, WO).permute(1, 0, 2, 3)
+
+    return output
+
+
+def run_test(name, B_val, C_val, H_val, W_val, OC_val, KH_val, KW_val, stride_val=1, padding_val=0):
+    torch.manual_seed(seed)
+
+    input_t = torch.randn(B_val, C_val, H_val, W_val).half().npu()
+    kernel_t = torch.randn(OC_val, C_val, KH_val, KW_val).half().npu()
+
+    result = conv_im2col_gemm(input_t, kernel_t, stride_val, padding_val)
+    ref = F.conv2d(input_t.cpu(), kernel_t.cpu(), stride=stride_val, padding=padding_val).npu()
+
+    torch.testing.assert_close(result, ref, rtol=1e-2, atol=1e-2)
+    print("    PASS: %s\n" % name)
+
+
+if __name__ == "__main__":
+    tests = [
+        # 1. Original: all dims perfectly aligned to block size 128
+        dict(
+            name="Case 1: Perfect alignment (M=N=K=128)",
+            B=2,
+            C=2,
+            H=15,
+            W=15,
+            OC=128,
+            KH=8,
+            KW=8,
+            stride=1,
+            padding=0,
+        ),
+        # 2. OC not multiple of 128 -> M padding needed
+        dict(
+            name="Case 2: M padding (OC=50 < 128)",
+            B=1,
+            C=2,
+            H=32,
+            W=32,
+            OC=50,
+            KH=3,
+            KW=3,
+            stride=1,
+            padding=0,
+        ),
+        # 3. N not multiple of 128 (spatial output wraps partially)
+        dict(
+            name="Case 3: N padding",
+            B=1,
+            C=4,
+            H=17,
+            W=17,
+            OC=128,
+            KH=3,
+            KW=3,
+            stride=1,
+            padding=0,
+        ),
+        # 4. K not multiple of 128 (small kernel channels)
+        dict(
+            name="Case 4: K padding",
+            B=2,
+            C=3,
+            H=28,
+            W=28,
+            OC=128,
+            KH=3,
+            KW=3,
+            stride=2,
+            padding=1,
+        ),
+        # 5. M, N, K all need padding simultaneously
+        dict(
+            name="Case 5: All-dim padding (M=64 N=225 K=27)",
+            B=1,
+            C=3,
+            H=17,
+            W=17,
+            OC=64,
+            KH=3,
+            KW=3,
+            stride=1,
+            padding=0,
+        ),
+        # 6. Multi-block: dims significantly larger than block size 128
+        dict(
+            name="Case 6: Multi-block (M=256 N=2304 K=200)",
+            B=4,
+            C=8,
+            H=28,
+            W=28,
+            OC=256,
+            KH=5,
+            KW=5,
+            stride=1,
+            padding=0,
+        ),
+    ]
+
+    print("=" * 60)
+    print("TileLang Ascend 2D Convolution Test Suite (6 scenarios)")
+    print("=" * 60)
+    for i, tc in enumerate(tests, 1):
+        print("[%d/6] %s" % (i, tc["name"]))
+        run_test(tc["name"], tc["B"], tc["C"], tc["H"], tc["W"], tc["OC"], tc["KH"], tc["KW"], tc.get("stride", 1), tc.get("padding", 0))
+    print("=" * 60)
+    print("TEST PASSED!")
+    print("=" * 60)

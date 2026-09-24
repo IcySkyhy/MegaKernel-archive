@@ -1,0 +1,146 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+# 说明:
+#   本文件用于 Tests 用例分类分组定义
+# 格式:
+#   tests_type        [required]   --- 任务类型, 当前支持 [stest, utest]
+#     group_name      [required]   --- 任务分组, 如 operator, operation, interface, codegen, operation_moe 等
+#       write_list    [optional]   --- 任务分组下的白名单, 即修改文件若仅涉及对应白名单路径, 则本任务不需执行
+#       cases         [required]   --- 测试用例, 对应 GTestFilter
+
+stest:
+  machine_ifa_pa:
+    cases:
+      #===========================================================================
+      # MLA
+      #===========================================================================
+      # - DyMla.low_PA_BSND
+      #===========================================================================
+      # Flash Attention
+      #===========================================================================
+      # - DynamicPATest.dynamic_pa_high_throughput_dview_large
+      # - DynamicPATest.dynamic_pa_high_throughput_dview_large_dyn_unalign
+      # - DynamicPATest.dynamic_pa_high_throughput_only_batch_loop
+      # - DynamicPATest.dynamic_pa_noflash_unalign
+      # - DynamicPATest.dynamic_pa_low_lantency_dyn_valid_shape
+      # - DynamicPATest.dynamic_pa_low_lantency_dyn_unalign
+      # - DynamicPATest.dynamic_pa_low_lantency_imm_scalar
+      #===========================================================================
+      # NSA native spare attention
+      #===========================================================================
+      # - TestGenAtten.TestDynamicGenAtten_B_16_S1_1_FP16
+      # - DynamicWinAttenTest.test_DynAttn_nas_win_attn_s1_2_actseqlen_1024_mla_fp16_v1
+      #===========================================================================
+      # NSA gatescore && compress attention part2
+      #===========================================================================
+      # - DyNsa.GateScore_b32_s2_bf
+      #===========================================================================
+      # KV Compress
+      #===========================================================================
+      # - DynKVCmp.KVCmpBatch32bf16
+
+  machine_vector:
+    cases:
+      #===========================================================================
+        # Reshape功能用例
+      #===========================================================================
+      - DynamicReshapeTest.test_only_reshape
+      - DynamicReshapeTest.test_only_reshape2
+      - DynamicReshapeTest.test_dyn_reshape2
+      - DynamicReshapeTest.test_assemble_diff_tile
+      - DynamicReshapeTest.test_merge_and_split
+      - DynamicReshapeTest.test_split_and_merge
+      - DynamicReshapeTest.test_exchange_dim
+      - DynamicReshapeTest.test_special_reshape
+      #===========================================================================
+      # 非对齐Reshape功能用例
+      #===========================================================================
+      - DynamicReshapeUnalignTest.test_add_dim
+      - DynamicReshapeUnalignTest.test_merge_dim
+      - DynamicReshapeUnalignTest.test_split_dim
+      #===========================================================================
+      # reshapeinplace非对齐场景功能用例
+      #===========================================================================
+      - DynamicReshapeUnalignImplaceTest.merge_two_dynamic_dim
+      - DynamicReshapeUnalignImplaceTest.test_exchange_dim
+      - DynamicReshapeUnalignImplaceTest.test_reshape_special
+      - DynamicReshapeUnalignImplaceTest.test_src_op_dst_op
+      #===========================================================================
+      # ViewType功能用例
+      #===========================================================================
+      - ViewType.quant_test_bf16_2_int8
+      - ViewType.dequant_test_bf16_2_int8
+
+  machine_host:
+    cases:
+      #===========================================================================
+      # basic cases
+      #===========================================================================
+      - DynamicBasicTest.TestDD
+      - DynamicBasicTest.TestHUB
+      - DynamicBasicTest.TestCheckPointRestore
+      - DynamicBasicTest.TestSlotId
+      - DynamicBasicTest.DynamicRawShape
+      - DynamicBasicTest.TestStaticUnderDynDev
+      - DynamicBasicTest.TestStaticLoop
+      - DynamicBasicTest.TestInnerLoopOrder
+      - DynamicBasicTest.TestDeviceMachineOnModel
+      - DynamicBasicTest.TestDeviceMachineBlockdimOnBoard
+      - DynamicBasicTest.TestTensorExtract
+      - DynamicBasicTest.TestGetTensorData
+      # - DynamicBasicTest.TestGetTensorDataCrossFunction
+      # - DynamicBasicTest.TestGetTensorDataUnalign
+      - DynamicBasicTest.TestGetTensorDataExpr
+      - DynamicBasicTest.TestVectorDup
+      - DynamicBasicTest.TestTensorInsert
+      - DynamicBasicTest.TestSetTensorData
+      - DynamicBasicTest.TestSetTensorDataExpr
+      - DynamicBasicTest.TestGetTensorDataAndDup
+      - DynamicBasicTest.TestGetTensorDataSymbolicValue
+      - DynamicBasicTest.TestLoopIfWithRank456
+      - DynamicBasicTest.DuplicateName
+      - DynamicBasicTest.HiddenLoopConditionMixed
+      - DynamicBasicTest.HiddenLoopConditionMixedMulLoops
+      - DynamicBinTest.testDynMulsUnalign
+      - DynamicBinTest.TestDynamicAddUnalign
+      - DynamicBrcTest.TestDynamicMulBrcUnalign
+      - DynamicBindingTest.TestDefaultCompute
+      - DynamicBindingTest.TestDeviceRunDataFromHost
+      - DynamicBindingTest.TestDeviceCompute
+      #- DynamicControlFlowCacheTest.KernelReuse
+      #- DynamicControlFlowCacheTest.CheckShape
+      #- DynamicControlFlowCacheTest.CheckLackMemory
+      #- DynamicControlFlowCacheTest.CheckGetTensorData
+      #- DynamicControlFlowCacheTest.PartialCache
+      #- DynamicControlFlowCacheTest.PartialCacheValueDependData
+      #- DynamicControlFlowCacheTest.PartialCacheValueDependControl
+      - DynamicOutcastTensorTest.TensorAllocateIntermediate
+      #===========================================================================
+      # matmul Interpreter 功能用例
+      #===========================================================================
+      # - DynamicMatmulInterpreterTest.mm_A_B_ND_bf16
+      # - DynamicMatmulInterpreterTest.mm_A_B_NZ_bf16
+      # - DynamicMatmulInterpreterTest.mm_A_Bt_ND_fp16
+      # - DynamicMatmulInterpreterTest.mm_A_Bt_NZ_fp16
+      # - DynamicMatmulInterpreterTest.mm_A_Bt_ND_fp16_tile2
+      # - DynamicMatmulInterpreterTest.mm_A_Bt_NZ_int8_tile4
+      #===========================================================================
+        # batchMatmul Interpreter 功能用例
+      #===========================================================================
+      # - DynamicBatchMatmulInterpreterTest.test_bmm_A_B_ND_bf16
+      # - DynamicBatchMatmulInterpreterTest.test_bmm_A_Bt_ND_fp16
+      # - DynamicBatchMatmulInterpreterTest.test_bmm_A_B_NZ_bf16
+      # - DynamicBatchMatmulInterpreterTest.test_bmm_A_Bt_NZ_fp16
+      # - DynamicBatchMatmulInterpreterTest.test_bmm_A_B_ND_bf16_tile1
+      # - DynamicBatchMatmulInterpreterTest.bmm4D_A_B_NZ
+      #===========================================================================
+      # NSA native spare attention Interpreter
+      #===========================================================================
+      # - DynamicWinAttenInterpreterTest.test_DynAttn_nas_win_attn_s1_2_actseqlen_1024_mla_fp16_inter

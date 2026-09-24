@@ -1,0 +1,750 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "ACosh_test_1",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1409
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.0001,
+                        "max": 18
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1409
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                353
+            ],
+            "tile_shape": [
+                176
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "ACosh_test_2",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2777
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.001,
+                        "max": 6
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2777
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                695
+            ],
+            "tile_shape": [
+                172
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "ACosh_test_3",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1984,
+                        27
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.0001,
+                        "max": 24
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1984,
+                        27
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                248,
+                7
+            ],
+            "tile_shape": [
+                124,
+                8
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "ACosh_test_4",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        897,
+                        145
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.001,
+                        "max": 5
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        897,
+                        145
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                113,
+                37
+            ],
+            "tile_shape": [
+                56,
+                16
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "ACosh_test_5",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        7,
+                        225
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.0001,
+                        "max": 40
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        7,
+                        225
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                57
+            ],
+            "tile_shape": [
+                2,
+                28
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "ACosh_test_6",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        5,
+                        19,
+                        29
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.001,
+                        "max": 6
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        19,
+                        29
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                6,
+                10
+            ],
+            "tile_shape": [
+                2,
+                6,
+                8
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "ACosh_test_7",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        9,
+                        23,
+                        41
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.0001,
+                        "max": 28
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        9,
+                        23,
+                        41
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                8,
+                14
+            ],
+            "tile_shape": [
+                3,
+                7,
+                8
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "ACosh_test_8",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        7,
+                        72,
+                        81
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.0001,
+                        "max": 32
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        7,
+                        72,
+                        81
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                2,
+                18,
+                21
+            ],
+            "tile_shape": [
+                1,
+                2,
+                16,
+                20
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "ACosh_test_9",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2,
+                        11,
+                        40,
+                        95
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.001,
+                        "max": 6
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2,
+                        11,
+                        40,
+                        95
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                4,
+                10,
+                24
+            ],
+            "tile_shape": [
+                1,
+                3,
+                8,
+                16
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "ACosh_test_10",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        4,
+                        144,
+                        121
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.0001,
+                        "max": 48
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        4,
+                        144,
+                        121
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                2,
+                36,
+                31
+            ],
+            "tile_shape": [
+                1,
+                2,
+                16,
+                24
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "ACosh_test_11",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        15,
+                        29,
+                        73
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.0001,
+                        "max": 20
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        15,
+                        29,
+                        73
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                4,
+                10,
+                19
+            ],
+            "tile_shape": [
+                4,
+                9,
+                16
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "ACosh_test_12",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        48,
+                        41,
+                        19
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.001,
+                        "max": 4
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        48,
+                        41,
+                        19
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                12,
+                11,
+                5
+            ],
+            "tile_shape": [
+                8,
+                8,
+                4
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "ACosh_test_13",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        5,
+                        17,
+                        29,
+                        71
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.0001,
+                        "max": 36
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        17,
+                        29,
+                        71
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                6,
+                10,
+                24
+            ],
+            "tile_shape": [
+                2,
+                5,
+                10,
+                16
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "ACosh_test_14",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        6,
+                        10,
+                        40,
+                        88
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.001,
+                        "max": 5
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        6,
+                        10,
+                        40,
+                        88
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                3,
+                14,
+                22
+            ],
+            "tile_shape": [
+                2,
+                3,
+                8,
+                20
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "ACosh_test_15",
+            "operation": "ACosh",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2,
+                        5,
+                        80,
+                        173
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 1.0001,
+                        "max": 44
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2,
+                        5,
+                        80,
+                        173
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                2,
+                20,
+                44
+            ],
+            "tile_shape": [
+                1,
+                2,
+                16,
+                28
+            ],
+            "params": {
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 14
+        }
+    ]
+}

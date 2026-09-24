@@ -1,0 +1,7 @@
+function foo incast(v0_logical_tensor %target@0 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), v0_logical_tensor %index@1 #dtype(int32_t) #shape([8]) #offset([0]) #dynvalidshape([8]), v0_logical_tensor %source@2 #dtype(float) #shape([8, 16]) #offset([0, 0]) #dynvalidshape([8, 16]), v0_logical_tensor %out@3 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16])) outcast() #type(Opaque) #entry(false) {
+    v0_logical_tensor %$0@0 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %$0_w, token %target_r = !10000 RESHAPE(%target@0) token();
+    v0_logical_tensor %$0_0@5 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %$0_0_w, token %$0_r, token %source_r, token %index_r = !10001 INDEX_ADD(%$0@0, %source@2, %index@1) token(%$0_w);
+    v0_logical_tensor %$2@6 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %$2_w, token %$0_0_r = !10002 ADDS(%$0_0@5) token(%$0_0_w);
+    v0_logical_tensor %out_1@3 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %out_1_w, token %$2_r = !10003 ASSEMBLE(%$2@6) token(%$2_w) #toOffset(Unsupported);
+    return %target@0, %index@1, %source@2, %out_1@3;
+}

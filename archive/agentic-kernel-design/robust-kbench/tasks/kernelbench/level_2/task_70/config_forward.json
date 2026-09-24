@@ -1,0 +1,27 @@
+{
+    "single_input_configs": [
+        {
+            "batch_size": 128
+        }
+    ],
+    "single_init_configs": [
+        {
+            "hidden_size": 512,
+            "scaling_factor": 2.0
+        }
+    ],
+    "single_shared_configs": [
+        {
+            "input_size": 1024
+        }
+    ],
+    "multi_input_configs": [
+        {}
+    ],
+    "multi_init_configs": [
+        {}
+    ],
+    "multi_shared_configs": [
+        {}
+    ]
+}

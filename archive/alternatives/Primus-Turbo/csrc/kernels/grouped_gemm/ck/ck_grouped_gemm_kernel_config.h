@@ -1,0 +1,115 @@
+/***************************************************************************************************
+ * Copyright (c) 2025, Advanced Micro Devices, Inc. All rights reserved.
+ *
+ * See LICENSE for license information.
+ **************************************************************************************************/
+
+#pragma once
+#include "ck_tile/core.hpp"
+#include "primus_turbo/arch.h"
+namespace primus_turbo {
+// clang-format off
+template<
+    ck_tile::index_t M_Tile_,
+    ck_tile::index_t N_Tile_,
+    ck_tile::index_t K_Tile_,
+    ck_tile::index_t M_Warp_Tile_,
+    ck_tile::index_t N_Warp_Tile_,
+    ck_tile::index_t K_Warp_Tile_,
+    ck_tile::index_t M_Warp_,
+    ck_tile::index_t N_Warp_,
+    ck_tile::index_t K_Warp_,
+    bool DoubleSmemBuffer_,
+    bool kPadN_
+>
+struct CKGroupedGemmTileConfig {
+    static constexpr ck_tile::index_t M_Tile = M_Tile_;
+    static constexpr ck_tile::index_t N_Tile = N_Tile_;
+    static constexpr ck_tile::index_t K_Tile = K_Tile_;
+    static constexpr ck_tile::index_t M_Warp = M_Warp_;
+    static constexpr ck_tile::index_t N_Warp = N_Warp_;
+    static constexpr ck_tile::index_t K_Warp = K_Warp_;
+    static constexpr ck_tile::index_t M_Warp_Tile = M_Warp_Tile_;
+    static constexpr ck_tile::index_t N_Warp_Tile = N_Warp_Tile_;
+    static constexpr ck_tile::index_t K_Warp_Tile = K_Warp_Tile_;
+    static constexpr bool DoubleSmemBuffer = DoubleSmemBuffer_;
+    static constexpr bool kPadM = false;
+    static constexpr bool kPadN = kPadN_;
+    static constexpr bool kPadK = false;
+    // static constexpr int              kBlockPerCu            = 1;
+    static constexpr ck_tile::index_t TileParitionerGroupNum = 8;
+    static constexpr ck_tile::index_t TileParitionerM01      = 4;
+};
+
+template<
+    GPUArch Arch_,
+    ck_tile::index_t M_Tile_,
+    ck_tile::index_t N_Tile_,
+    ck_tile::index_t K_Tile_,
+    ck_tile::index_t M_Warp_Tile_,
+    ck_tile::index_t N_Warp_Tile_,
+    ck_tile::index_t K_Warp_Tile_,
+    ck_tile::index_t M_Warp_,
+    ck_tile::index_t N_Warp_,
+    ck_tile::index_t K_Warp_,
+    bool DoubleSmemBuffer_,
+    bool kPadN_
+>
+struct CKGroupedGemmTileConfigWithArch
+    : CKGroupedGemmTileConfig<M_Tile_, N_Tile_, K_Tile_,
+                              M_Warp_Tile_, N_Warp_Tile_, K_Warp_Tile_,
+                              M_Warp_, N_Warp_, K_Warp_,
+                              DoubleSmemBuffer_, kPadN_> {
+    static constexpr GPUArch arch = Arch_;
+};
+
+// ***********************************************
+// ****** GFX942/GFX950 Tile Config Specialization ******
+// FP16
+using CKGroupedGemmTileCfg_256x256x64_32x32x16_2x2x1 = CKGroupedGemmTileConfig<
+    256, 256, 64, 32, 32, 16, 2, 2, 1, false, false
+>;
+using CKGroupedGemmTileCfg_256x128x64_32x32x16_2x2x1 = CKGroupedGemmTileConfig<
+    256, 128, 64, 32, 32, 16, 2, 2, 1, false, false
+>;
+using CKGroupedGemmTileCfg_256x128x64_32x32x16_2x2x1_padding = CKGroupedGemmTileConfig<
+    256, 128, 64, 32, 32, 16, 2, 2, 1, false, true
+>;
+// ***********************************************
+// ****** GFX942 Tile Config Specialization ******
+// FP8
+using GFX942_CKGroupedGemmTileCfg_256x256x128_32x32x32_2x2x1 = CKGroupedGemmTileConfigWithArch<
+    GPUArch::GFX942, 256, 256, 128, 32, 32, 32, 2, 2, 1, false, false
+>;
+using GFX942_CKGroupedGemmTileCfg_256x128x128_32x32x32_2x2x1 = CKGroupedGemmTileConfigWithArch<
+    GPUArch::GFX942, 256, 128, 128, 32, 32, 32, 2, 2, 1, false, false
+>;
+using GFX942_CKGroupedGemmTileCfg_256x128x128_32x32x32_2x2x1_padding = CKGroupedGemmTileConfigWithArch<
+    GPUArch::GFX942, 256, 128, 128, 32, 32, 32, 2, 2, 1, false, true
+>;
+using GFX942_CKGroupedGemmTileCfg_256x256x128_32x32x16_2x2x1_padding = CKGroupedGemmTileConfigWithArch<
+    GPUArch::GFX942, 256, 256, 128, 32, 32, 16, 2, 2, 1, false, true
+>;
+// ABQuantGrouped (blockwise) config
+using GFX942_CKGroupedGemmTileCfg_128x128x128_32x32x32_2x2x1 = CKGroupedGemmTileConfigWithArch<
+    GPUArch::GFX942, 128, 128, 128, 32, 32, 32, 2, 2, 1, false, false
+>;
+// ***********************************************
+// ****** GFX950 Tile Config Specialization ******
+// FP8
+using GFX950_CKGroupedGemmTileCfg_256x256x128_16x16x128_2x2x1 = CKGroupedGemmTileConfigWithArch<
+    GPUArch::GFX950, 256, 256, 128, 16, 16, 128, 2, 2, 1, false, false
+>;
+using GFX950_CKGroupedGemmTileCfg_256x256x128_16x16x128_2x2x1_padding = CKGroupedGemmTileConfigWithArch<
+    GPUArch::GFX950, 256, 256, 128, 16, 16, 128, 2, 2, 1, false, true
+>;
+using GFX950_CKGroupedGemmTileCfg_128x128x128_32x32x64_2x2x1 = CKGroupedGemmTileConfigWithArch<
+    GPUArch::GFX950, 128, 128, 128, 32, 32, 64, 2, 2, 1, false, false
+>;
+
+using GFX950_CKGroupedGemmTileCfg_128x128x128_16x16x128_1x4x1 = CKGroupedGemmTileConfigWithArch<
+    GPUArch::GFX950, 128, 128, 128, 16, 16, 128, 1, 4, 1, false, false
+>;
+// ***********************************************
+// clang-format on
+} // namespace primus_turbo

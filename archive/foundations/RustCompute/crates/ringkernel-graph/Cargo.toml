@@ -1,0 +1,30 @@
+[package]
+name = "ringkernel-graph"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "GPU-accelerated graph algorithm primitives for RingKernel (CSR, BFS, SCC, Union-Find, SpMV)"
+readme = "README.md"
+keywords = ["gpu", "graph", "bfs", "cuda", "parallel"]
+categories = ["science", "algorithms", "mathematics"]
+
+[dependencies]
+ringkernel-core = { workspace = true }
+bytemuck = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+# CUDA support (optional)
+cudarc = { version = "0.19.3", optional = true, features = ["cuda-version-from-build-system"] }
+
+[dev-dependencies]
+criterion = { workspace = true }
+tokio = { workspace = true, features = ["test-util", "macros", "rt-multi-thread"] }
+
+[features]
+default = []
+cuda = ["cudarc"]

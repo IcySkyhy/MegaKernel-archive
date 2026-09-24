@@ -1,0 +1,25 @@
+{
+    "single_input_configs": [
+        {
+            "batch_size": 16,
+            "dim": 16384
+        }
+    ],
+    "single_init_configs": [
+        {
+            "negative_slope": 0.01
+        }
+    ],
+    "single_shared_configs": [
+        {}
+    ],
+    "multi_input_configs": [
+        {}
+    ],
+    "multi_init_configs": [
+        {}
+    ],
+    "multi_shared_configs": [
+        {}
+    ]
+}

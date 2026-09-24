@@ -1,0 +1,1252 @@
+# Copyright (c) 2025, Machete Authors
+"""GPU integration tests for the persistent megakernel framework.
+
+Tests cover:
+1. Dependency ordering — StampOp tile i completes before CheckOp tile i starts
+2. Shared memory paging — page data write/readback via page_ptr
+3. Page recycling — circular buffer with more tiles than pages
+4. Multi-op chains (3+ ops)
+5. Mismatched tile counts with guard logic
+6. 2D tile grids with barrier stride formulas
+7. Named buffer dependencies (INPUTS/OUTPUTS with dim_names)
+8. Many-to-one tile mapping (expected > 1)
+9. Fan-in pattern (multiple producers → single consumer)
+10. Barrier reset across multiple runs
+11. High contention stress (many tiles, few SMs, few pages)
+12. Zero-page ops (no shared memory paging)
+
+Correctness is verified by writing results to global memory tensors and
+asserting on host-side readback. printf calls are kept for human debugging.
+"""
+
+import importlib.util
+import struct
+
+import pytest
+import torch
+from typing import ClassVar, List
+
+if importlib.util.find_spec("cutlass") is None:
+    pytest.skip("Requires CUTLASS", allow_module_level=True)
+
+import cutlass.cute as cute
+from cutlass import Int32, Int64
+
+from machete.megakernel import Megakernel, MegakernelConfig, ScheduledOp
+from machete.megakernel.ops import AccessRegions, Op, RegionAxis, TensorAccessRegion
+from machete.megakernel.paged_memory import (
+    st_shared_i32,
+    ld_shared_i32,
+)
+from machete.megakernel.interpreter import st_global_i32, ld_global_i32, ld_global_i64
+from machete.utils.testing import is_hopper_available
+
+
+def _pack_ptr(config, offset, ptr):
+    """Pack a 64-bit pointer into two int32 slots using struct (handles sign correctly)."""
+    lo, hi = struct.unpack("ii", struct.pack("Q", ptr))
+    config[offset] = lo
+    config[offset + 1] = hi
+
+
+# =============================================================================
+# Global result tensor pointers (set before kernel launch, resolved at
+# compile time from the method's module globals)
+# =============================================================================
+
+_stamp_result_ptr = 0
+_check_result_ptr = 0
+_check_stale_ptr = 0
+_compute_multipage_result_ptr = 0
+
+
+def _assert_i32_sequence(actual, values, label):
+    expected = torch.tensor(values, dtype=torch.int32, device="cuda")
+    assert torch.equal(actual, expected), (
+        f"{label} mismatch: got {actual.tolist()}, expected {expected.tolist()}"
+    )
+
+
+def _assert_linear_op(actual, scale, bias, label):
+    _assert_i32_sequence(actual, [i * scale + bias for i in range(len(actual))], label)
+
+
+def _run_stamp_check_case(num_tiles, *, num_sms=None):
+    global _stamp_result_ptr, _check_result_ptr, _check_stale_ptr
+
+    stamp_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+    check_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+    check_stale = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+
+    _stamp_result_ptr = stamp_results.data_ptr()
+    _check_result_ptr = check_results.data_ptr()
+    _check_stale_ptr = check_stale.data_ptr()
+
+    ops = [
+        ScheduledOp(StampOp, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+        ScheduledOp(CheckOp, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+    ]
+    config = MegakernelConfig() if num_sms is None else MegakernelConfig(num_sms=num_sms)
+    kernel = Megakernel(ops, config=config)
+    kernel.run()
+    return stamp_results, check_results, check_stale
+
+
+# =============================================================================
+# Test Ops
+# =============================================================================
+
+
+class StampOp(Op):
+    """Writes tile_0 * 100 + 42 to output page, stores readback to global tensor."""
+
+    INPUTS: ClassVar[List[str]] = []
+    OUTPUTS: ClassVar[List[str]] = ["stamp"]
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(100) + Int32(42)
+            st_shared_i32(page_ptr, value)
+            readback = ld_shared_i32(page_ptr)
+            st_global_i32(Int64(_stamp_result_ptr), tile_0, readback)
+            cute.printf("[StampOp] tile_0=%d wrote=%d readback=%d",
+                        tile_0, value, readback)
+
+
+class CheckOp(Op):
+    """Reads stale page data, writes tile_0 * 200 + 7, stores results to global tensors."""
+
+    INPUTS: ClassVar[List[str]] = ["stamp"]
+    OUTPUTS: ClassVar[List[str]] = []
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            # Read stale value for verification
+            stale = ld_shared_i32(page_ptr)
+            st_global_i32(Int64(_check_stale_ptr), tile_0, stale)
+            cute.printf("[CheckOp] tile_0=%d START stale_page_value=%d", tile_0, stale)
+            # Write and verify
+            value = tile_0 * Int32(200) + Int32(7)
+            st_shared_i32(page_ptr, value)
+            readback = ld_shared_i32(page_ptr)
+            st_global_i32(Int64(_check_result_ptr), tile_0, readback)
+            cute.printf("[CheckOp] tile_0=%d wrote=%d readback=%d",
+                        tile_0, value, readback)
+
+
+class ComputeOnlyMultiPageOp(Op):
+    """Compute-only op that requires page_ptr to be a page-address table."""
+
+    requested_page_count = 2
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            p0 = self.page_address(page_ptr, 0)
+            p1 = self.page_address(page_ptr, 1)
+            v0 = tile_0 * Int32(10) + Int32(1)
+            v1 = tile_0 * Int32(10) + Int32(2)
+            st_shared_i32(p0, v0)
+            st_shared_i32(p1, v1)
+            st_global_i32(
+                Int64(_compute_multipage_result_ptr),
+                tile_0 * Int32(3),
+                ld_shared_i32(p0),
+            )
+            st_shared_i32(p0, Int32(-777))
+            st_global_i32(
+                Int64(_compute_multipage_result_ptr),
+                tile_0 * Int32(3) + Int32(1),
+                ld_shared_i32(p1),
+            )
+            st_global_i32(
+                Int64(_compute_multipage_result_ptr),
+                tile_0 * Int32(3) + Int32(2),
+                ld_shared_i32(p0),
+            )
+
+
+# =============================================================================
+# GPU Tests
+# =============================================================================
+
+
+@pytest.mark.skipif(not is_hopper_available(), reason="Hopper (SM90+) GPU required")
+class TestSequentialOpsGPU:
+    """Integration tests for sequential ops with real shared memory usage."""
+
+    @pytest.mark.parametrize("num_tiles", [4, 8])
+    def test_two_ops_dependency_and_paging(self, num_tiles):
+        """Two ops: StampOp -> CheckOp with page recycling.
+
+        Verifies:
+        - StampOp readback matches expected values
+        - CheckOp readback matches expected values
+        - Page recycling completes without deadlock
+        """
+        stamp_results, check_results, _ = _run_stamp_check_case(num_tiles)
+        _assert_linear_op(stamp_results, 100, 42, "StampOp")
+        _assert_linear_op(check_results, 200, 7, "CheckOp")
+
+    def test_single_stamp_op(self):
+        """Single StampOp to verify basic page write/readback."""
+        global _stamp_result_ptr
+        num_tiles = 2
+
+        stamp_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        _stamp_result_ptr = stamp_results.data_ptr()
+
+        ops = [ScheduledOp(StampOp, tile_counts=(num_tiles,))]
+        kernel = Megakernel(ops)
+        kernel.run()
+
+        _assert_linear_op(stamp_results, 100, 42, "StampOp")
+
+    def test_compute_only_multipage_table(self):
+        """Compute-only replay passes a page-address table to multipage ops."""
+        global _compute_multipage_result_ptr
+        num_tiles = 4
+        results = torch.zeros(num_tiles * 3, dtype=torch.int32, device="cuda")
+        _compute_multipage_result_ptr = results.data_ptr()
+
+        ops = [ScheduledOp(ComputeOnlyMultiPageOp, tile_counts=(num_tiles,))]
+        kernel = Megakernel(ops, config=MegakernelConfig(num_pages=2))
+        assert kernel._use_compute_only_replay()
+        kernel.run()
+
+        expected = []
+        for tile in range(num_tiles):
+            expected.extend([tile * 10 + 1, tile * 10 + 2, -777])
+        _assert_i32_sequence(results, expected, "ComputeOnlyMultiPageOp")
+
+
+# =============================================================================
+# Zero-Page Ops (write directly to global memory, no shared memory pages)
+# =============================================================================
+
+# --- OpA/OpB/OpC globals (for multi-op chain tests) ---
+_opa_result_ptr = 0
+_opb_result_ptr = 0
+_opc_result_ptr = 0
+
+
+class OpA(Op):
+    """Zero-page op: writes tile_0 * 100 + 1 to global tensor."""
+
+    INPUTS: ClassVar[List[str]] = []
+    OUTPUTS: ClassVar[List[str]] = ["a"]
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(100) + Int32(1)
+            st_global_i32(Int64(_opa_result_ptr), tile_0, value)
+
+
+class OpB(Op):
+    """Zero-page op: writes tile_0 * 200 + 2 to global tensor."""
+
+    INPUTS: ClassVar[List[str]] = ["a"]
+    OUTPUTS: ClassVar[List[str]] = ["b"]
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(200) + Int32(2)
+            st_global_i32(Int64(_opb_result_ptr), tile_0, value)
+
+
+class OpC(Op):
+    """Zero-page op: writes tile_0 * 300 + 3 to global tensor."""
+
+    INPUTS: ClassVar[List[str]] = ["b"]
+    OUTPUTS: ClassVar[List[str]] = []
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(300) + Int32(3)
+            st_global_i32(Int64(_opc_result_ptr), tile_0, value)
+
+
+# --- Tag2DOp globals (for 2D tile grid tests) ---
+_tag2d_result_ptr = 0
+_tag2d_cols = 0  # tiles_n, used to compute linear index
+
+
+class Tag2DOp(Op):
+    """Zero-page op for 2D tiles: writes tile_0 * 1000 + tile_1 to global tensor.
+
+    Result index: tile_1 * _tag2d_cols_m + tile_0 (dim 0 varies fastest, matching
+    the instruction stream ordering from InstructionStreamBuilder).
+    """
+
+    INPUTS: ClassVar[List[str]] = []
+    OUTPUTS: ClassVar[List[str]] = ["tag2d"]
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0, tile_1):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(1000) + tile_1
+            idx = tile_1 * Int32(_tag2d_cols) + tile_0
+            st_global_i32(Int64(_tag2d_result_ptr), idx, value)
+
+
+class Tag2DOpB(Op):
+    """Second 2D zero-page op: writes tile_0 * 2000 + tile_1 to separate tensor."""
+
+    INPUTS: ClassVar[List[str]] = ["tag2d"]
+    OUTPUTS: ClassVar[List[str]] = []
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0, tile_1):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(2000) + tile_1
+            idx = tile_1 * Int32(_tag2d_cols) + tile_0
+            st_global_i32(Int64(_opb_result_ptr), idx, value)
+
+
+# =============================================================================
+# Named Buffer Ops (for DAG dependency tests)
+# =============================================================================
+
+_nprod_result_ptr = 0
+_ncons_result_ptr = 0
+_nprody_result_ptr = 0
+_nfanin_result_ptr = 0
+_packed_region_data_ptr = 0
+_packed_region_result_ptr = 0
+
+
+class NamedProducerOp(Op):
+    """Produces buffer 'x'. Writes tile_0 * 100 + 42."""
+
+    INPUTS: ClassVar[List[str]] = []
+    OUTPUTS: ClassVar[List[str]] = ["x"]
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(100) + Int32(42)
+            st_global_i32(Int64(_nprod_result_ptr), tile_0, value)
+
+
+class NamedConsumerOp(Op):
+    """Consumes buffer 'x'. Writes tile_0 * 200 + 7."""
+
+    INPUTS: ClassVar[List[str]] = ["x"]
+    OUTPUTS: ClassVar[List[str]] = []
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(200) + Int32(7)
+            st_global_i32(Int64(_ncons_result_ptr), tile_0, value)
+
+
+class NamedProducerY(Op):
+    """Produces buffer 'y'. Writes tile_0 * 300 + 11."""
+
+    INPUTS: ClassVar[List[str]] = []
+    OUTPUTS: ClassVar[List[str]] = ["y"]
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(300) + Int32(11)
+            st_global_i32(Int64(_nprody_result_ptr), tile_0, value)
+
+
+class NamedFanInOp(Op):
+    """Consumes both 'x' and 'y'. Writes tile_0 * 400 + 13."""
+
+    INPUTS: ClassVar[List[str]] = ["x", "y"]
+    OUTPUTS: ClassVar[List[str]] = []
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(400) + Int32(13)
+            st_global_i32(Int64(_nfanin_result_ptr), tile_0, value)
+
+
+class PackedRegionProducerOp(Op):
+    """Produces four N groups in one logical packed buffer."""
+
+    INPUTS: ClassVar[List[str]] = []
+    OUTPUTS: ClassVar[List[str]] = ["x"]
+    reads = {}
+    writes = {"x": (None, ("B", "S", "N"))}
+    tile = ("B", "S", "N")
+
+    @classmethod
+    def access_regions(cls, op):
+        return AccessRegions(
+            writes={
+                "x": TensorAccessRegion(
+                    tensor="x",
+                    axes=(
+                        RegionAxis(name="B", tile_dim="B"),
+                        RegionAxis(name="S", tile_dim="S"),
+                        RegionAxis(name="N", tile_dim="N"),
+                    ),
+                    group_dim="N",
+                    group_tiles=1,
+                    group_count=4,
+                )
+            }
+        )
+
+    @cute.jit
+    def compute(self, page_ptr, tile_B, tile_S, tile_N):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            st_global_i32(
+                Int64(_packed_region_data_ptr),
+                tile_N,
+                tile_N + Int32(10),
+            )
+
+
+class PackedRegionConsumerOp(Op):
+    """Consumes two discontiguous regions of one logical packed input."""
+
+    INPUTS: ClassVar[List[str]] = ["x"]
+    OUTPUTS: ClassVar[List[str]] = []
+    reads = {"x": (None, ("B", "S", "D"))}
+    writes = {}
+    tile = ("B", "S", "D")
+
+    @classmethod
+    def access_regions(cls, op):
+        axes = (
+            RegionAxis(name="B", tile_dim="B"),
+            RegionAxis(name="S", tile_dim="S"),
+            RegionAxis(name="N", tile_dim="D"),
+        )
+        return AccessRegions(
+            reads={
+                "x": (
+                    TensorAccessRegion(
+                        tensor="x",
+                        axes=axes,
+                        group_index_dim="N",
+                    ),
+                    TensorAccessRegion(
+                        tensor="x",
+                        axes=axes,
+                        group_index_dim="N",
+                        group_index_offset=2,
+                    ),
+                )
+            }
+        )
+
+    @cute.jit
+    def compute(self, page_ptr, tile_B, tile_S, tile_D):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            gate = ld_global_i32(Int64(_packed_region_data_ptr), tile_D)
+            up = ld_global_i32(Int64(_packed_region_data_ptr), tile_D + Int32(2))
+            st_global_i32(
+                Int64(_packed_region_result_ptr),
+                tile_D,
+                gate * Int32(100) + up,
+            )
+
+
+# =============================================================================
+# Many-to-One Ops
+# =============================================================================
+
+_mto_matrix_ptr = 0   # 2D result tensor for producer (m x n)
+_mto_cols = 0          # tiles_n for index computation
+_mto_result_ptr = 0    # 1D result tensor for consumer
+
+
+class ManyToOneProducerOp(Op):
+    """2D producer for many-to-one: writes 1 to matrix[tile_0, tile_1] for each tile."""
+
+    INPUTS: ClassVar[List[str]] = []
+    OUTPUTS: ClassVar[List[str]] = ["x"]
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0, tile_1):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            idx = tile_0 * Int32(_mto_cols) + tile_1
+            st_global_i32(Int64(_mto_matrix_ptr), idx, Int32(1))
+
+
+class ManyToOneConsumerOp(Op):
+    """1D consumer for many-to-one: writes tile_0 * 500 + 17."""
+
+    INPUTS: ClassVar[List[str]] = ["x"]
+    OUTPUTS: ClassVar[List[str]] = []
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            value = tile_0 * Int32(500) + Int32(17)
+            st_global_i32(Int64(_mto_result_ptr), tile_0, value)
+
+
+# =============================================================================
+# Comprehensive GPU Tests
+# =============================================================================
+
+
+@pytest.mark.skipif(not is_hopper_available(), reason="Hopper (SM90+) GPU required")
+class TestComprehensiveGPU:
+    """Comprehensive GPU integration tests covering all framework aspects.
+
+    All tests use small num_sms (2-4) to force multiple loop iterations
+    per block and increase contention, exposing synchronization bugs.
+    """
+
+    def test_three_op_chain(self):
+        """Three-op named dependency chain: OpA -> OpB -> OpC.
+
+        Verifies:
+        - Barrier dependencies form correct chain (OpC waits on OpB, not OpA)
+        - All 3 ops produce correct values
+        - num_sms=2 forces strided instruction processing
+        """
+        global _opa_result_ptr, _opb_result_ptr, _opc_result_ptr
+        num_tiles = 6
+
+        a_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        b_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        c_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+
+        _opa_result_ptr = a_results.data_ptr()
+        _opb_result_ptr = b_results.data_ptr()
+        _opc_result_ptr = c_results.data_ptr()
+
+        ops = [
+            ScheduledOp(OpA, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+            ScheduledOp(OpB, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+            ScheduledOp(OpC, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+        ]
+        config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=config)
+        kernel.run()
+
+        _assert_linear_op(a_results, 100, 1, "OpA")
+        _assert_linear_op(b_results, 200, 2, "OpB")
+        _assert_linear_op(c_results, 300, 3, "OpC")
+
+    def test_multiple_read_regions_execute_on_gpu(self):
+        """A consumer can wait on two discontiguous regions of one input buffer."""
+        global _packed_region_data_ptr, _packed_region_result_ptr
+
+        data = torch.full((4,), -1, dtype=torch.int32, device="cuda")
+        result = torch.zeros(2, dtype=torch.int32, device="cuda")
+        _packed_region_data_ptr = data.data_ptr()
+        _packed_region_result_ptr = result.data_ptr()
+
+        ops = [
+            ScheduledOp(
+                PackedRegionProducerOp,
+                tile_counts=(1, 1, 4),
+                dim_names={"B": 0, "S": 1, "N": 2},
+            ),
+            ScheduledOp(
+                PackedRegionConsumerOp,
+                tile_counts=(1, 1, 2),
+                dim_names={"B": 0, "S": 1, "D": 2},
+            ),
+        ]
+        kernel = Megakernel(ops, config=MegakernelConfig(num_sms=2))
+        kernel.run()
+
+        _assert_i32_sequence(data, [10, 11, 12, 13], "PackedRegionProducerOp")
+        _assert_i32_sequence(result, [1012, 1113], "PackedRegionConsumerOp")
+
+    @pytest.mark.parametrize("tiles_a,tiles_b", [(8, 4), (4, 8)])
+    def test_mismatched_tile_counts(self, tiles_a, tiles_b):
+        """Test mismatched tile counts between producer and consumer.
+
+        Guard logic prevents deadlock when ops have different tile counts:
+        - More producer tiles: consumer skips non-existent barriers
+        - More consumer tiles: extra consumer tiles skip wait via guard
+        """
+        global _opa_result_ptr, _opb_result_ptr
+
+        a_results = torch.zeros(tiles_a, dtype=torch.int32, device="cuda")
+        b_results = torch.zeros(tiles_b, dtype=torch.int32, device="cuda")
+
+        _opa_result_ptr = a_results.data_ptr()
+        _opb_result_ptr = b_results.data_ptr()
+
+        ops = [
+            ScheduledOp(OpA, tile_counts=(tiles_a,), dim_names={"tile": 0}),
+            ScheduledOp(OpB, tile_counts=(tiles_b,), dim_names={"tile": 0}),
+        ]
+        config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=config)
+        kernel.run()
+
+        _assert_linear_op(a_results, 100, 1, "OpA")
+        _assert_linear_op(b_results, 200, 2, "OpB")
+
+    def test_2d_tile_grid(self):
+        """Single 2D op: tiles_m=4, tiles_n=3 (12 tiles).
+
+        Verifies:
+        - All 12 (m, n) combinations produce correct encoded values
+        - tile_0 and tile_1 are correctly dispatched from instruction stream
+        """
+        global _tag2d_result_ptr, _tag2d_cols
+        tiles_m, tiles_n = 4, 3
+        num_tiles = tiles_m * tiles_n
+
+        _tag2d_cols = tiles_m  # m varies fastest
+        results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        _tag2d_result_ptr = results.data_ptr()
+
+        ops = [ScheduledOp(Tag2DOp, tile_counts=(tiles_m, tiles_n))]
+        config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=config)
+        kernel.run()
+
+        # Instruction stream ordering: m varies fastest
+        # Index = n * tiles_m + m
+        expected = torch.tensor(
+            [m * 1000 + n for n in range(tiles_n) for m in range(tiles_m)],
+            dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(results, expected), (
+            f"2D grid mismatch: {results.tolist()} != {expected.tolist()}"
+        )
+
+    def test_2d_two_op_chain(self):
+        """Two 2D ops chained: Tag2DOp -> Tag2DOpB, tiles_m=3, tiles_n=4.
+
+        Verifies:
+        - 2D barrier strides (coeff_m=1, coeff_n=tiles_m) work correctly
+        - Both ops produce correct results with 2D tile indices
+        """
+        global _tag2d_result_ptr, _tag2d_cols, _opb_result_ptr
+        tiles_m, tiles_n = 3, 4
+        num_tiles = tiles_m * tiles_n
+
+        _tag2d_cols = tiles_m
+        a_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        b_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        _tag2d_result_ptr = a_results.data_ptr()
+        _opb_result_ptr = b_results.data_ptr()
+
+        ops = [
+            ScheduledOp(Tag2DOp, tile_counts=(tiles_m, tiles_n), dim_names={"M": 0, "N": 1}),
+            ScheduledOp(Tag2DOpB, tile_counts=(tiles_m, tiles_n), dim_names={"M": 0, "N": 1}),
+        ]
+        config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=config)
+        kernel.run()
+
+        expected_a = torch.tensor(
+            [m * 1000 + n for n in range(tiles_n) for m in range(tiles_m)],
+            dtype=torch.int32, device="cuda",
+        )
+        expected_b = torch.tensor(
+            [m * 2000 + n for n in range(tiles_n) for m in range(tiles_m)],
+            dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(a_results, expected_a), (
+            f"Tag2DOp mismatch: {a_results.tolist()}"
+        )
+        assert torch.equal(b_results, expected_b), (
+            f"Tag2DOpB mismatch: {b_results.tolist()}"
+        )
+
+    def test_named_buffer_one_to_one(self):
+        """Named buffer DAG: Producer('x') -> Consumer('x'), 1:1 mapping.
+
+        Verifies:
+        - DAG-based dependency resolution works on GPU
+        - Both ops complete with correct values
+        """
+        global _nprod_result_ptr, _ncons_result_ptr
+        num_tiles = 4
+
+        prod_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        cons_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        _nprod_result_ptr = prod_results.data_ptr()
+        _ncons_result_ptr = cons_results.data_ptr()
+
+        ops = [
+            ScheduledOp(
+                NamedProducerOp, tile_counts=(num_tiles,),
+                dim_names={"batch": 0},
+            ),
+            ScheduledOp(
+                NamedConsumerOp, tile_counts=(num_tiles,),
+                dim_names={"batch": 0},
+            ),
+        ]
+        config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=config)
+        kernel.run()
+
+        expected_prod = torch.tensor(
+            [i * 100 + 42 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        expected_cons = torch.tensor(
+            [i * 200 + 7 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(prod_results, expected_prod), (
+            f"Producer mismatch: {prod_results.tolist()}"
+        )
+        assert torch.equal(cons_results, expected_cons), (
+            f"Consumer mismatch: {cons_results.tolist()}"
+        )
+
+    def test_named_buffer_many_to_one(self):
+        """Many-to-one: Producer(m=4, n=8) -> Consumer(m=4), expected=8.
+
+        Consumer tile m=i only runs after ALL 8 producer tiles for batch i
+        have signaled. Verifies:
+        - All 32 producer tiles write to matrix
+        - All 4 consumer tiles complete (barrier expected=8 works)
+        """
+        global _mto_matrix_ptr, _mto_cols, _mto_result_ptr
+        tiles_m, tiles_n = 4, 8
+
+        matrix = torch.zeros(tiles_m * tiles_n, dtype=torch.int32, device="cuda")
+        cons_results = torch.zeros(tiles_m, dtype=torch.int32, device="cuda")
+        _mto_matrix_ptr = matrix.data_ptr()
+        _mto_cols = tiles_n  # stride for tile_0 (row-major: tile_0 * cols + tile_1)
+        _mto_result_ptr = cons_results.data_ptr()
+
+        ops = [
+            ScheduledOp(
+                ManyToOneProducerOp, tile_counts=(tiles_m, tiles_n),
+                dim_names={"batch": 0, "seqlen": 1},
+            ),
+            ScheduledOp(
+                ManyToOneConsumerOp, tile_counts=(tiles_m,),
+                dim_names={"batch": 0},
+            ),
+        ]
+        config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=config)
+        kernel.run()
+
+        # All 32 producer entries should be 1
+        expected_matrix = torch.ones(
+            tiles_m * tiles_n, dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(matrix, expected_matrix), (
+            f"Producer matrix mismatch: {matrix.tolist()}"
+        )
+
+        # All 4 consumer tiles should complete
+        expected_cons = torch.tensor(
+            [i * 500 + 17 for i in range(tiles_m)],
+            dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(cons_results, expected_cons), (
+            f"Consumer mismatch: {cons_results.tolist()}"
+        )
+
+    def test_named_buffer_fan_in(self):
+        """Fan-in: ProducerX -> 'x', ProducerY -> 'y', FanIn reads ['x','y'].
+
+        Verifies:
+        - FanIn op waits for BOTH independent producers
+        - All 3 ops produce correct values
+        """
+        global _nprod_result_ptr, _nprody_result_ptr, _nfanin_result_ptr
+        num_tiles = 4
+
+        prod_x = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        prod_y = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        fanin = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        _nprod_result_ptr = prod_x.data_ptr()
+        _nprody_result_ptr = prod_y.data_ptr()
+        _nfanin_result_ptr = fanin.data_ptr()
+
+        ops = [
+            ScheduledOp(
+                NamedProducerOp, tile_counts=(num_tiles,),
+                dim_names={"batch": 0},
+            ),
+            ScheduledOp(
+                NamedProducerY, tile_counts=(num_tiles,),
+                dim_names={"batch": 0},
+            ),
+            ScheduledOp(
+                NamedFanInOp, tile_counts=(num_tiles,),
+                dim_names={"batch": 0},
+            ),
+        ]
+        config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=config)
+        kernel.run()
+
+        expected_x = torch.tensor(
+            [i * 100 + 42 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        expected_y = torch.tensor(
+            [i * 300 + 11 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        expected_fanin = torch.tensor(
+            [i * 400 + 13 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(prod_x, expected_x), (
+            f"ProducerX mismatch: {prod_x.tolist()}"
+        )
+        assert torch.equal(prod_y, expected_y), (
+            f"ProducerY mismatch: {prod_y.tolist()}"
+        )
+        assert torch.equal(fanin, expected_fanin), (
+            f"FanIn mismatch: {fanin.tolist()}"
+        )
+
+    def test_multiple_runs_barrier_reset(self):
+        """Run same kernel twice — barriers must reset between runs.
+
+        Verifies:
+        - First run produces correct results
+        - Second run also produces correct results (no stale barrier state)
+        """
+        global _stamp_result_ptr, _check_result_ptr, _check_stale_ptr
+        num_tiles = 4
+
+        stamp_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        check_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        check_stale = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+
+        _stamp_result_ptr = stamp_results.data_ptr()
+        _check_result_ptr = check_results.data_ptr()
+        _check_stale_ptr = check_stale.data_ptr()
+
+        ops = [
+            ScheduledOp(StampOp, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+            ScheduledOp(CheckOp, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+        ]
+        config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=config)
+
+        expected_stamp = torch.tensor(
+            [i * 100 + 42 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        expected_check = torch.tensor(
+            [i * 200 + 7 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+
+        # First run
+        kernel.run()
+        assert torch.equal(stamp_results, expected_stamp), (
+            f"Run 1 StampOp: {stamp_results.tolist()}"
+        )
+        assert torch.equal(check_results, expected_check), (
+            f"Run 1 CheckOp: {check_results.tolist()}"
+        )
+
+        # Reset result tensors to zero
+        stamp_results.zero_()
+        check_results.zero_()
+        check_stale.zero_()
+
+        # Second run — same compiled kernel, barriers must be reset
+        kernel.run()
+        assert torch.equal(stamp_results, expected_stamp), (
+            f"Run 2 StampOp: {stamp_results.tolist()}"
+        )
+        assert torch.equal(check_results, expected_check), (
+            f"Run 2 CheckOp: {check_results.tolist()}"
+        )
+
+    def test_high_contention_stress(self):
+        """32 tiles, 2 SMs, 2 pages — maximum contention stress test.
+
+        Forces:
+        - 16 loop iterations per block (32 tiles / 2 SMs)
+        - Continuous page recycling (32 acquire/release cycles with only 2 pages)
+        - Heavy barrier traffic
+
+        Verifies no deadlocks and correct values for all tiles.
+        """
+        global _stamp_result_ptr, _check_result_ptr, _check_stale_ptr
+        num_tiles = 32
+
+        stamp_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        check_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        check_stale = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+
+        _stamp_result_ptr = stamp_results.data_ptr()
+        _check_result_ptr = check_results.data_ptr()
+        _check_stale_ptr = check_stale.data_ptr()
+
+        ops = [
+            ScheduledOp(StampOp, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+            ScheduledOp(CheckOp, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+        ]
+        config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=config)
+        kernel.run()
+
+        expected_stamp = torch.tensor(
+            [i * 100 + 42 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        expected_check = torch.tensor(
+            [i * 200 + 7 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(stamp_results, expected_stamp), (
+            f"StampOp mismatch: {stamp_results.tolist()}"
+        )
+        assert torch.equal(check_results, expected_check), (
+            f"CheckOp mismatch: {check_results.tolist()}"
+        )
+
+    def test_zero_page_ops_chain(self):
+        """Three zero-page ops: OpA -> OpB -> OpC.
+
+        Tests the n_pages=0 handler path in _make_op_handler — barriers
+        work correctly without any page acquire/release.
+        """
+        global _opa_result_ptr, _opb_result_ptr, _opc_result_ptr
+        num_tiles = 8
+
+        a_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        b_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        c_results = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+
+        _opa_result_ptr = a_results.data_ptr()
+        _opb_result_ptr = b_results.data_ptr()
+        _opc_result_ptr = c_results.data_ptr()
+
+        ops = [
+            ScheduledOp(OpA, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+            ScheduledOp(OpB, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+            ScheduledOp(OpC, tile_counts=(num_tiles,), dim_names={"tile": 0}),
+        ]
+        config = MegakernelConfig(num_sms=4)
+        kernel = Megakernel(ops, config=config)
+        kernel.run()
+
+        expected_a = torch.tensor(
+            [i * 100 + 1 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        expected_b = torch.tensor(
+            [i * 200 + 2 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        expected_c = torch.tensor(
+            [i * 300 + 3 for i in range(num_tiles)],
+            dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(a_results, expected_a), (
+            f"OpA mismatch: {a_results.tolist()}"
+        )
+        assert torch.equal(b_results, expected_b), (
+            f"OpB mismatch: {b_results.tolist()}"
+        )
+        assert torch.equal(c_results, expected_c), (
+            f"OpC mismatch: {c_results.tolist()}"
+        )
+
+
+# =============================================================================
+# Config Pointer Ops (per-op runtime data via global memory config struct)
+# =============================================================================
+
+
+class ScaleOp(Op):
+    """Reads input[tile_0] from config, multiplies by scale (also from config),
+    writes to output[tile_0].
+
+    Config layout (int64 array):
+        [0] input_ptr  (int64) — pointer to input int32 tensor
+        [1] output_ptr (int64) — pointer to output int32 tensor
+        [2] scale      (int64, lower 32 bits used) — scale factor
+    """
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0, op_config_ptr):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            input_ptr = ld_global_i64(op_config_ptr, Int32(0))
+            output_ptr = ld_global_i64(op_config_ptr, Int32(1))
+            scale = ld_global_i32(op_config_ptr, Int32(4))  # word offset 4 = byte offset 16
+            val = ld_global_i32(input_ptr, tile_0)
+            st_global_i32(output_ptr, tile_0, val * scale)
+
+
+class AddOp(Op):
+    """Reads input_a[tile_0] and input_b[tile_0] from config, writes sum to output[tile_0].
+
+    Config layout (int64 array):
+        [0] input_a_ptr (int64)
+        [1] input_b_ptr (int64)
+        [2] output_ptr  (int64)
+    """
+
+    INPUTS: ClassVar[List[str]] = ["scaled"]
+    OUTPUTS: ClassVar[List[str]] = []
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0, op_config_ptr):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            input_a_ptr = ld_global_i64(op_config_ptr, Int32(0))
+            input_b_ptr = ld_global_i64(op_config_ptr, Int32(1))
+            output_ptr = ld_global_i64(op_config_ptr, Int32(2))
+            a = ld_global_i32(input_a_ptr, tile_0)
+            b = ld_global_i32(input_b_ptr, tile_0)
+            st_global_i32(output_ptr, tile_0, a + b)
+
+
+class TensorScaleOp(Op):
+    """Like ScaleOp, but uses cute.make_ptr/cute.make_tensor instead of raw PTX.
+
+    Demonstrates accessing global memory through CuTe Tensor abstraction,
+    which enables higher-level indexing and future use of TMA/copy operations.
+
+    Config layout (int64 array):
+        [0] input_ptr  (int64) — pointer to input int32 tensor
+        [1] output_ptr (int64) — pointer to output int32 tensor
+        [2] scale      (int64, lower 32 bits used) — scale factor
+    """
+
+    @cute.jit
+    def compute(self, page_ptr, tile_0, op_config_ptr):
+        tidx = cute.arch.thread_idx()[0]
+        if tidx == Int32(0):
+            # Read pointers and scale from config
+            input_ptr = ld_global_i64(op_config_ptr, Int32(0))
+            output_ptr = ld_global_i64(op_config_ptr, Int32(1))
+            scale = ld_global_i32(op_config_ptr, Int32(4))
+
+            # Create CuTe Tensors from raw pointers
+            in_tensor = cute.make_tensor(
+                cute.make_ptr(Int32, input_ptr, cute.AddressSpace.gmem),
+                cute.make_layout(1024),
+            )
+            out_tensor = cute.make_tensor(
+                cute.make_ptr(Int32, output_ptr, cute.AddressSpace.gmem),
+                cute.make_layout(1024),
+            )
+
+            # Access via tensor indexing
+            out_tensor[tile_0] = in_tensor[tile_0] * scale
+
+
+@pytest.mark.skipif(not is_hopper_available(), reason="Hopper (SM90+) GPU required")
+class TestConfigPointerGPU:
+    """Tests for per-op config pointer mechanism.
+
+    Verifies that ops can receive runtime data (tensor pointers, scalars)
+    via the op_config_ptr parameter without module-level globals.
+    """
+
+    def test_scale_op_reads_config(self):
+        """ScaleOp reads input pointer and scale from config, writes scaled output.
+
+        Config: [input_ptr, output_ptr, scale=3]
+        Expected: output[i] = input[i] * 3
+        """
+        num_tiles = 8
+        input_data = torch.tensor(
+            [10, 20, 30, 40, 50, 60, 70, 80],
+            dtype=torch.int32, device="cuda",
+        )
+        output_data = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        scale = 3
+
+        # Pack config: [input_ptr(i64), output_ptr(i64), scale(i32 at word offset 4)]
+        # We use an int32 tensor for fine-grained layout control.
+        # Layout: bytes 0-7 = input_ptr, bytes 8-15 = output_ptr, bytes 16-19 = scale
+        config = torch.zeros(5, dtype=torch.int32, device="cuda")
+        _pack_ptr(config, 0, input_data.data_ptr())
+        _pack_ptr(config, 2, output_data.data_ptr())
+        config[4] = scale
+
+        ops = [ScheduledOp(ScaleOp, tile_counts=(num_tiles,), config_data=config)]
+        kernel_config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=kernel_config)
+        kernel.run()
+
+        expected = torch.tensor(
+            [i * scale for i in [10, 20, 30, 40, 50, 60, 70, 80]],
+            dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(output_data, expected), (
+            f"ScaleOp mismatch: got {output_data.tolist()}, expected {expected.tolist()}"
+        )
+
+    def test_two_instances_same_op_different_config(self):
+        """Two ScaleOp instances with different scale factors.
+
+        Verifies tile function deduplication: same op class compiles once,
+        but each instance receives its own config pointer with different data.
+
+        Instance 0: scale=2, input=[1,2,3,4] -> output=[2,4,6,8]
+        Instance 1: scale=5, input=[10,20,30,40] -> output=[50,100,150,200]
+        """
+        num_tiles = 4
+
+        input_a = torch.tensor([1, 2, 3, 4], dtype=torch.int32, device="cuda")
+        output_a = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        input_b = torch.tensor([10, 20, 30, 40], dtype=torch.int32, device="cuda")
+        output_b = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+
+        def pack_scale_config(inp, out, scale_val):
+            cfg = torch.zeros(5, dtype=torch.int32, device="cuda")
+            _pack_ptr(cfg, 0, inp.data_ptr())
+            _pack_ptr(cfg, 2, out.data_ptr())
+            cfg[4] = scale_val
+            return cfg
+
+        config_a = pack_scale_config(input_a, output_a, 2)
+        config_b = pack_scale_config(input_b, output_b, 5)
+
+        class IndependentScaleOp(ScaleOp):
+            INPUTS: ClassVar[List[str]] = []
+            OUTPUTS: ClassVar[List[str]] = ["scaled"]
+
+        ops = [
+            ScheduledOp(
+                IndependentScaleOp,
+                tile_counts=(num_tiles,),
+                config_data=config_a,
+                tensor_ptrs={"scaled": output_a.data_ptr()},
+            ),
+            ScheduledOp(
+                IndependentScaleOp,
+                tile_counts=(num_tiles,),
+                config_data=config_b,
+                tensor_ptrs={"scaled": output_b.data_ptr()},
+            ),
+        ]
+        kernel_config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=kernel_config)
+        kernel.run()
+
+        expected_a = torch.tensor([2, 4, 6, 8], dtype=torch.int32, device="cuda")
+        expected_b = torch.tensor([50, 100, 150, 200], dtype=torch.int32, device="cuda")
+
+        assert torch.equal(output_a, expected_a), (
+            f"ScaleOp instance 0: got {output_a.tolist()}, expected {expected_a.tolist()}"
+        )
+        assert torch.equal(output_b, expected_b), (
+            f"ScaleOp instance 1: got {output_b.tolist()}, expected {expected_b.tolist()}"
+        )
+
+    def test_config_ptr_chain_with_dependency(self):
+        """ScaleOp -> AddOp chain where both ops use config pointers.
+
+        ScaleOp: output_scale[i] = input[i] * 3
+        AddOp: output_add[i] = output_scale[i] + bias[i]
+
+        Tests that config pointers work correctly across ops with
+        barrier dependencies — AddOp must wait for ScaleOp to finish.
+        """
+        num_tiles = 4
+        input_data = torch.tensor([10, 20, 30, 40], dtype=torch.int32, device="cuda")
+        bias_data = torch.tensor([1, 2, 3, 4], dtype=torch.int32, device="cuda")
+        scale_output = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        add_output = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+
+        # ScaleOp config: [input_ptr, scale_output_ptr, scale=3]
+        scale_config = torch.zeros(5, dtype=torch.int32, device="cuda")
+        _pack_ptr(scale_config, 0, input_data.data_ptr())
+        _pack_ptr(scale_config, 2, scale_output.data_ptr())
+        scale_config[4] = 3
+
+        # AddOp config: [input_a_ptr (=scale_output), input_b_ptr (=bias), output_ptr]
+        add_config = torch.zeros(6, dtype=torch.int32, device="cuda")
+        _pack_ptr(add_config, 0, scale_output.data_ptr())
+        _pack_ptr(add_config, 2, bias_data.data_ptr())
+        _pack_ptr(add_config, 4, add_output.data_ptr())
+
+        # Use a ScaleOp subclass that declares OUTPUTS for dependency tracking
+        class ScaleOpProducer(ScaleOp):
+            INPUTS: ClassVar[List[str]] = []
+            OUTPUTS: ClassVar[List[str]] = ["scaled"]
+
+        ops = [
+            ScheduledOp(
+                ScaleOpProducer, tile_counts=(num_tiles,), config_data=scale_config,
+                dim_names={"batch": 0},
+            ),
+            ScheduledOp(
+                AddOp, tile_counts=(num_tiles,), config_data=add_config,
+                dim_names={"batch": 0},
+            ),
+        ]
+        kernel_config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=kernel_config)
+        kernel.run()
+
+        # ScaleOp: [10*3, 20*3, 30*3, 40*3] = [30, 60, 90, 120]
+        expected_scale = torch.tensor([30, 60, 90, 120], dtype=torch.int32, device="cuda")
+        assert torch.equal(scale_output, expected_scale), (
+            f"ScaleOp: got {scale_output.tolist()}, expected {expected_scale.tolist()}"
+        )
+
+        # AddOp: [30+1, 60+2, 90+3, 120+4] = [31, 62, 93, 124]
+        expected_add = torch.tensor([31, 62, 93, 124], dtype=torch.int32, device="cuda")
+        assert torch.equal(add_output, expected_add), (
+            f"AddOp: got {add_output.tolist()}, expected {expected_add.tolist()}"
+        )
+
+    def test_tensor_scale_op(self):
+        """TensorScaleOp uses cute.make_ptr/cute.make_tensor to access global memory.
+
+        Same logic as ScaleOp but through CuTe Tensor abstraction:
+        output[i] = input[i] * scale, using tensor indexing instead of raw PTX.
+        """
+        num_tiles = 8
+        input_data = torch.tensor(
+            [5, 10, 15, 20, 25, 30, 35, 40],
+            dtype=torch.int32, device="cuda",
+        )
+        output_data = torch.zeros(num_tiles, dtype=torch.int32, device="cuda")
+        scale = 4
+
+        # Same config layout as ScaleOp
+        config = torch.zeros(5, dtype=torch.int32, device="cuda")
+        _pack_ptr(config, 0, input_data.data_ptr())
+        _pack_ptr(config, 2, output_data.data_ptr())
+        config[4] = scale
+
+        ops = [ScheduledOp(TensorScaleOp, tile_counts=(num_tiles,), config_data=config)]
+        kernel_config = MegakernelConfig(num_sms=2)
+        kernel = Megakernel(ops, config=kernel_config)
+        kernel.run()
+
+        expected = torch.tensor(
+            [i * scale for i in [5, 10, 15, 20, 25, 30, 35, 40]],
+            dtype=torch.int32, device="cuda",
+        )
+        assert torch.equal(output_data, expected), (
+            f"TensorScaleOp mismatch: got {output_data.tolist()}, expected {expected.tolist()}"
+        )

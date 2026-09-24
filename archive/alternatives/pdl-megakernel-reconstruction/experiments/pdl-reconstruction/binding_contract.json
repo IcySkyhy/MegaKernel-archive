@@ -1,0 +1,13 @@
+{
+  "schema": "hazy-h100-binding-contract-v1",
+  "target": "H100 / sm_90a",
+  "direct_tk_common": {
+    "alias_four_pages": false,
+    "dynamic_shared_memory_bytes": 216504,
+    "matvec_input_pipeline_stages": 3,
+    "num_pages": 13,
+    "num_threads": 640
+  },
+  "issue_trigger_wait_for_load_arrival": false,
+  "arrival_trigger_wait_for_load_arrival": true
+}

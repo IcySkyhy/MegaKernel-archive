@@ -1,0 +1,168 @@
+/**
+Copyright (c) 2025 Huawei Technologies Co., Ltd.
+This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+CANN Open Software License Agreement Version 2.0 (the "License").
+Please refer to the License for details. You may not use this file except in compliance with the License.
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+See LICENSE in the root of the software repository for the full text of the License.
+*/
+
+#ifndef PTO_COMM_TGET_ASYNC_HPP
+#define PTO_COMM_TGET_ASYNC_HPP
+
+#include "pto/comm/async_common/TGetAsyncCommonDetail.hpp"
+#ifdef PTO_URMA_SUPPORTED
+#include "pto/comm/async/urma/urma_async_intrin.hpp"
+#endif
+#ifdef PTO_RDMA_SUPPORTED
+#include "pto/comm/async/rdma/rdma_async_intrin.hpp"
+#endif
+
+namespace pto {
+namespace comm {
+namespace detail {
+
+#ifdef PTO_URMA_SUPPORTED
+template <typename GlobalDstData, typename GlobalSrcData>
+PTO_INTERNAL AsyncEvent TGET_ASYNC_URMA_IMPL(
+    GlobalDstData& dstGlobalData, GlobalSrcData& srcGlobalData, const AsyncSession& session, uint32_t peer)
+{
+    (void)TGetAsyncCheckTensorCompatibility<GlobalDstData, GlobalSrcData>();
+
+    PTO_ASSERT(
+        TGetAsyncIsFlatContiguous1D(srcGlobalData),
+        "TGET_ASYNC URMA: src tensor must be flat contiguous 1D (packed layout, single logical line). "
+        "Multi-dimensional or non-contiguous tensors are not supported by URMA async path.");
+    PTO_ASSERT(
+        TGetAsyncIsFlatContiguous1D(dstGlobalData),
+        "TGET_ASYNC URMA: dst tensor must be flat contiguous 1D (packed layout, single logical line). "
+        "Multi-dimensional or non-contiguous tensors are not supported by URMA async path.");
+
+    const uint32_t srcElems = TGetAsyncGetTotalElemCount(srcGlobalData);
+    const uint32_t dstElems = TGetAsyncGetTotalElemCount(dstGlobalData);
+    PTO_ASSERT(dstElems >= srcElems, "TGET_ASYNC URMA: dst buffer too small for src data");
+
+    using T = typename GlobalSrcData::RawDType;
+    const uint64_t transferSize = static_cast<uint64_t>(srcElems) * sizeof(T);
+    PTO_ASSERT(
+        transferSize > 0 && transferSize <= urma::kUrmaMaxWqeTransferBytes,
+        "TGET_ASYNC URMA: transfer size must be in (0, 256MB] per single WQE");
+
+    const urma::detail::UrmaPostResult result = urma::__urma_get_async(
+        reinterpret_cast<__gm__ uint8_t*>(dstGlobalData.data()),
+        reinterpret_cast<__gm__ uint8_t*>(srcGlobalData.data()), transferSize, session, peer);
+    return AsyncEvent(result.handle, DmaEngine::URMA, result.targetCqe);
+}
+
+template <typename GlobalDstData, typename GlobalSrcData>
+PTO_INTERNAL AsyncEvent
+TGET_ASYNC_URMA_IMPL(GlobalDstData& dstGlobalData, GlobalSrcData& srcGlobalData, const AsyncSession& session)
+{
+    return TGET_ASYNC_URMA_IMPL(dstGlobalData, srcGlobalData, session, session.destRankId);
+}
+#endif
+
+#ifdef PTO_RDMA_SUPPORTED
+// RDMA GET: async remote read. dst is local, src is remote.
+template <typename GlobalDstData, typename GlobalSrcData>
+PTO_INTERNAL AsyncEvent TGET_ASYNC_RDMA_IMPL(
+    GlobalDstData& dstGlobalData, GlobalSrcData& srcGlobalData, const AsyncSession& session, uint32_t peer)
+{
+    (void)TGetAsyncCheckTensorCompatibility<GlobalDstData, GlobalSrcData>();
+
+    PTO_ASSERT(
+        TGetAsyncIsFlatContiguous1D(srcGlobalData),
+        "TGET_ASYNC RDMA: src tensor must be flat contiguous 1D (packed layout, single logical line).");
+    PTO_ASSERT(
+        TGetAsyncIsFlatContiguous1D(dstGlobalData),
+        "TGET_ASYNC RDMA: dst tensor must be flat contiguous 1D (packed layout, single logical line).");
+
+    const uint32_t srcElems = TGetAsyncGetTotalElemCount(srcGlobalData);
+    const uint32_t dstElems = TGetAsyncGetTotalElemCount(dstGlobalData);
+    PTO_ASSERT(dstElems >= srcElems, "TGET_ASYNC RDMA: dst buffer too small for src data");
+
+    using T = typename GlobalSrcData::RawDType;
+    const uint64_t transferSize = static_cast<uint64_t>(srcElems) * sizeof(T);
+    if (transferSize == 0) {
+        return AsyncEvent(0, DmaEngine::RDMA);
+    }
+
+    const uint64_t eventHandle = rdma::Read(
+        session, reinterpret_cast<__gm__ uint8_t*>(dstGlobalData.data()),
+        reinterpret_cast<__gm__ uint8_t*>(srcGlobalData.data()), transferSize, peer);
+    return AsyncEvent(eventHandle, DmaEngine::RDMA);
+}
+
+template <typename GlobalDstData, typename GlobalSrcData>
+PTO_INTERNAL AsyncEvent
+TGET_ASYNC_RDMA_IMPL(GlobalDstData& dstGlobalData, GlobalSrcData& srcGlobalData, const AsyncSession& session)
+{
+    return TGET_ASYNC_RDMA_IMPL(dstGlobalData, srcGlobalData, session, session.destRankId);
+}
+#endif
+
+} // namespace detail
+
+// ============================================================================
+// Main TGET_ASYNC_IMPL with DmaEngine template parameter
+// A5: SDMA, URMA, and RDMA engines are supported
+// ============================================================================
+
+template <DmaEngine engine = DmaEngine::SDMA, typename GlobalDstData, typename GlobalSrcData>
+PTO_INTERNAL AsyncEvent
+TGET_ASYNC_IMPL(GlobalDstData& dstGlobalData, GlobalSrcData& srcGlobalData, const AsyncSession& session)
+{
+    if constexpr (engine == DmaEngine::SDMA) {
+        return detail::TGET_ASYNC_SDMA_IMPL(dstGlobalData, srcGlobalData, session);
+    } else if constexpr (engine == DmaEngine::URMA) {
+#ifdef PTO_URMA_SUPPORTED
+        return detail::TGET_ASYNC_URMA_IMPL(dstGlobalData, srcGlobalData, session);
+#else
+        static_assert(engine != DmaEngine::URMA, "TGET_ASYNC: URMA engine requires NPU_ARCH 3510");
+        return AsyncEvent(0, engine);
+#endif
+    } else if constexpr (engine == DmaEngine::RDMA) {
+#ifdef PTO_RDMA_SUPPORTED
+        return detail::TGET_ASYNC_RDMA_IMPL(dstGlobalData, srcGlobalData, session);
+#else
+        static_assert(engine != DmaEngine::RDMA, "TGET_ASYNC: RDMA support is not enabled for this build");
+        return AsyncEvent(0, engine);
+#endif
+    } else {
+        PTO_ASSERT(false, "TGET_ASYNC: unsupported engine");
+        return AsyncEvent(0, engine);
+    }
+}
+
+// peer overload: URMA and RDMA use peer for queue/memory selection; SDMA ignores peer.
+template <DmaEngine engine = DmaEngine::SDMA, typename GlobalDstData, typename GlobalSrcData>
+PTO_INTERNAL AsyncEvent
+TGET_ASYNC_IMPL(GlobalDstData& dstGlobalData, GlobalSrcData& srcGlobalData, const AsyncSession& session, uint32_t peer)
+{
+    if constexpr (engine == DmaEngine::SDMA) {
+        return detail::TGET_ASYNC_SDMA_IMPL(dstGlobalData, srcGlobalData, session);
+    } else if constexpr (engine == DmaEngine::URMA) {
+#ifdef PTO_URMA_SUPPORTED
+        return detail::TGET_ASYNC_URMA_IMPL(dstGlobalData, srcGlobalData, session, peer);
+#else
+        static_assert(engine != DmaEngine::URMA, "TGET_ASYNC: URMA engine requires NPU_ARCH 3510");
+        return AsyncEvent(0, engine);
+#endif
+    } else if constexpr (engine == DmaEngine::RDMA) {
+#ifdef PTO_RDMA_SUPPORTED
+        return detail::TGET_ASYNC_RDMA_IMPL(dstGlobalData, srcGlobalData, session, peer);
+#else
+        static_assert(engine != DmaEngine::RDMA, "TGET_ASYNC: RDMA support is not enabled for this build");
+        return AsyncEvent(0, engine);
+#endif
+    } else {
+        PTO_ASSERT(false, "TGET_ASYNC: unsupported engine");
+        return AsyncEvent(0, engine);
+    }
+}
+
+} // namespace comm
+} // namespace pto
+
+#endif // PTO_COMM_TGET_ASYNC_HPP

@@ -1,0 +1,47 @@
+[package]
+name = "ringkernel-python"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "Python bindings for RingKernel GPU-native persistent actor framework"
+readme = "README.md"
+keywords = ["gpu", "cuda", "actor", "python", "bindings"]
+categories = ["api-bindings", "science", "concurrency"]
+
+[lib]
+name = "_ringkernel"
+crate-type = ["cdylib"]
+
+[dependencies]
+# PyO3 for Python bindings
+pyo3 = { version = "0.24", features = ["extension-module", "abi3-py38"] }
+pyo3-async-runtimes = { version = "0.24", features = ["tokio-runtime"] }
+
+# Async runtime
+tokio = { version = "1.48", features = ["rt-multi-thread", "sync", "time"] }
+
+# Core RingKernel crates
+ringkernel-core = { path = "../ringkernel-core" }
+ringkernel-cpu = { path = "../ringkernel-cpu" }
+ringkernel-cuda = { path = "../ringkernel-cuda", optional = true }
+
+# NumPy interop
+numpy = { version = "0.24", optional = true }
+
+# Error handling
+thiserror = "2.0"
+
+[features]
+default = []
+cuda = ["ringkernel-cuda", "ringkernel-cuda/cuda"]
+cuda-profiling = ["cuda", "ringkernel-cuda/profiling"]
+numpy = ["dep:numpy"]
+benchmark = ["ringkernel-core/benchmark"]
+enterprise = ["ringkernel-core/enterprise"]
+
+[package.metadata.maturin]
+python-source = "python"

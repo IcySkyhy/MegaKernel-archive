@@ -1,0 +1,39 @@
+# pypto.index\_add
+
+## 产品支持情况
+
+<!-- npu="950" id1 -->
+- Ascend 950PR/Ascend 950DT：支持
+<!-- end id1 -->
+<!-- npu="A3" id2 -->
+- Atlas A3 训练系列产品/Atlas A3 推理系列产品：支持
+<!-- end id2 -->
+<!-- npu="910b" id3 -->
+- Atlas A2 训练系列产品/Atlas A2 推理系列产品：支持
+<!-- end id3 -->
+
+## 功能说明
+
+pypto.index_add_的non-inplace版本，可参考[pypto.index_add_](pypto-index_add_.md)。
+
+## 函数原型
+
+```python
+index_add(input: Tensor, dim: int, index: Tensor, source: Tensor, *, alpha: Union[int, float] = 1) -> Tensor
+```
+
+## 参数说明
+
+请参考[pypto.index_add_](pypto-index_add_.md)的参数说明。
+
+## 返回值说明
+
+请参考[pypto.index_add_](pypto-index_add_.md)的返回值说明。
+
+## 约束说明
+
+1. 请参考[pypto.index_add_](pypto-index_add_.md)的约束说明。
+
+## 调用示例
+
+请参考[pypto.index_add_](pypto-index_add_.md)的调用示例。

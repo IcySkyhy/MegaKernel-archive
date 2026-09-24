@@ -1,0 +1,32 @@
+[package]
+name = "ringkernel-montecarlo"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "GPU-accelerated Monte Carlo primitives for RingKernel (Philox RNG, variance reduction)"
+readme = "README.md"
+keywords = ["gpu", "monte-carlo", "variance-reduction", "cuda", "simulation"]
+categories = ["science", "simulation", "mathematics"]
+
+[dependencies]
+ringkernel-core = { workspace = true }
+bytemuck = { workspace = true }
+rand = "0.8"
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+# CUDA support (optional)
+cudarc = { version = "0.19.3", optional = true, features = ["cuda-version-from-build-system"] }
+
+[dev-dependencies]
+rand_xoshiro = "0.6"
+criterion = { workspace = true }
+tokio = { workspace = true, features = ["test-util", "macros", "rt-multi-thread"] }
+
+[features]
+default = []
+cuda = ["cudarc"]

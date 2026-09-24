@@ -1,0 +1,182 @@
+# Qwen3-TTS Ultra-Low Latency Server
+
+Real-time TTS streaming server built on [Qwen3-TTS-12Hz-1.7B-CustomVoice](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice) with fused CUDA megakernels, prefix KV caching, and eager pipelined text encoding.
+
+## Performance
+
+| GPU | Server PCM | Server codec | Stress test | Config |
+|-----|-----------|-------------|-------------|--------|
+| **RTX 5090** (sm_120) | **11ms** p50 | **4ms** p50 | — | MK predictor, CUDA graph talker |
+| **H100 SXM** (sm_90) | **16ms** p50 | **5ms** p50 | **500/500**, 0 errors, +1MB drift | MK predictor, CUDA graph talker |
+| **A100 SXM** (sm_80) | ~25ms p50 | ~16ms p50 | — | CUDA graph only (auto-detected) |
+
+**Server TTFP** = time from request receipt to first audio chunk fully conditioned on real text, voice, language, and instruct. Text encoding (TTH) runs eagerly on a background CUDA stream, pipelined with KV restore, synced **before** first yield.
+
+**Client TTFP** = server TTFP + network round-trip. Depends on datacenter distance to client (~60ms for EU-RO-1 from France, ~15ms estimated for EU-NL-1).
+
+### TTFP breakdown (measured)
+
+```
+RTX 5090:
+  Server codec (4ms):  [TTH overlap] [sample 0.3ms] [MK predictor 3ms]
+  Server PCM (11ms):   [above] + [vocoder ~7ms]
+
+H100 SXM:
+  Server codec (5ms):  [TTH overlap] [sample 0.3ms] [MK predictor 4ms]
+  Server PCM (16ms):   [above] + [vocoder ~11ms]
+```
+
+Predictor megakernel active (5-layer, 15 codebook steps). Talker uses CUDA graph (talker megakernel deadlocks on datacenter GPUs; disabled for stability). TTH runs eagerly on background CUDA stream, synced before first yield.
+
+> **GPU auto-detection:** The server detects sm_arch at startup. Below sm_90 (A100, etc.), megakernels are auto-disabled with CUDA graph fallback. Warmup includes a 30s deadlock watchdog. Runtime frame timeout (10s) auto-disables megakernels after 3 failures. External liveness probe in start.sh kills hung processes.
+
+| Feature | Details |
+|---------|---------|
+| Voices | 6 (Vivian, Serena, Dylan, Eric, Ryan, Aiden) |
+| Languages | 10 (French, English, Chinese, Japanese, Korean, German, Russian, Portuguese, Spanish, Italian) |
+| Tones | 8 built-in presets + **any custom free-text instruct** (built async on first use, cached) |
+| Pre-cached combos | **480** (6 voices x 10 languages x 8 tones), zero-cost switching |
+| Voice cloning | Via lazy-loaded Base model, cached after first call |
+| TTFP stability | Constant 1→45 words. H100: srv 5.0ms p50, CV=6.2%, drift +0.0ms over 500 req |
+
+## Architecture
+
+```
+Request → [input validation] → [TTFP timer start]
+  → generate_cached_codec:
+      [TTH on background CUDA stream] ─── overlaps with ───▶
+      [KV cache lookup + restore] → [sample from cached logits]
+      → [TTH sync] → [megakernel predictor 15 steps]
+      → yield first codec frame (text-conditioned)
+  → generate_cached_streaming (PCM only):
+      [speech_tokenizer.decode] → yield first PCM chunk
+  → [async frame loop with run_in_executor + wait_for timeout]
+```
+
+### Megakernel predictor
+
+Replaces ~70 CUDA kernel launches per predict step with **one persistent kernel**. 5-layer transformer (HIDDEN=1024), 15 sequential steps for 15 codebook tokens (groups 1-15; group 0 comes from the talker). Pre-projected codec embeddings eliminate 14/15 projection ops. Host-side barrier reset (`cudaMemsetAsync`) before each launch prevents stale `barrier_sense` race.
+
+### Three-layer deadlock defense
+
+| Layer | Mechanism | Detects in |
+|-------|-----------|-----------|
+| Async timeout | `asyncio.wait_for(run_in_executor(next(gen)), 10s)` | <10s |
+| Watchdog thread | Monitors `last_frame_time`, calls `os._exit(1)` | <15s |
+| Liveness probe | start.sh pings `/health`, `kill -9` after 30s | <30s |
+
+### Other optimizations
+
+- **Prefix KV cache**: 480 voice/language/tone combos pre-computed at startup, skips ~50ms prefill per request. Custom instruct strings trigger an async background build on a dedicated CUDA stream (zero TTFP penalty, cached after first request).
+- **Eager pipelined text encoding**: `_compute_tth()` runs on a background CUDA stream **before** the first yield, overlapping with KV restore and first token sampling. Synced before first frame to guarantee text-conditioned output. LRU-cached (200 entries).
+- **Fast cold start**: Single-process setup merges pre-flight, model download, and kernel compile (parallel threads). FAST_START mode caches 12 combos instead of 480 on first boot (~20s server load vs ~90s). Missing combos built on-the-fly on first request.
+- **Vocoder warmup**: Speech tokenizer decode warmed with varied tokens at startup (cold penalty ~10ms).
+- **Codec raw mode**: 32 bytes per frame for client-side decode scenarios (4ms server TTFP).
+
+## Quick start
+
+### 1. Configure
+
+```bash
+cp .env.example .env
+# Edit .env with your RunPod API key
+```
+
+### 2. Deploy
+
+```bash
+pip install websockets
+export $(cat .env | xargs)
+python deploy/launch.py
+```
+
+### 3. Benchmark
+
+```bash
+python deploy/benchmark_ws.py ws://IP:PORT/ws/tts
+python deploy/stress_test.py ws://IP:PORT/ws/tts http://IP:PORT
+```
+
+### 4. Stop
+
+```bash
+python deploy/launch.py --stop
+```
+
+## WebSocket protocol
+
+Connect to `ws://IP:PORT/ws/tts`. If `TTS_API_KEY` is set, send auth first:
+
+```json
+{"auth": "your-api-key"}
+```
+
+TTS request:
+
+```json
+{
+  "input": "Bonjour, comment puis-je vous aider ?",
+  "voice": "Vivian",
+  "language": "French",
+  "instruct": "Voix douce et rassurante",
+  "chunk_size": 1
+}
+```
+
+Server responds with binary frames (16-bit PCM at 24kHz), then a final JSON:
+
+```json
+{"done": true, "ttfp_ms": 11.2, "total_ms": 1450, "chunks": 85}
+```
+
+For codec raw mode, add `"codec": true` to the request.
+
+### Voice cloning
+
+```json
+{
+  "input": "Text to speak in the cloned voice",
+  "language": "French",
+  "ref_audio": "<base64-encoded WAV>",
+  "ref_text": "Transcript of the reference audio",
+  "clone_id": "my-voice"
+}
+```
+
+### Modes
+
+| Mode | `codec` | First frame | Server TTFP (RTX 5090) |
+|------|---------|-------------|----------------------|
+| PCM audio | `false` (default) | 16-bit PCM at 24kHz | **11ms** |
+| Codec raw | `true` | 16 int16 codec tokens (32 bytes) | **4ms** |
+
+## Files
+
+| File | Description |
+|------|-------------|
+| `deploy/runpod_server.py` | FastAPI + WebSocket handler |
+| `deploy/server/engine.py` | `TTSEngine`: model, megakernels, caches, generation |
+| `deploy/server/monitoring.py` | `ServerMonitor`: metrics, watchdog, auto-fallback |
+| `deploy/launch.py` | One-click RunPod deployment (GPU priority: RTX 5090 > H100 PCIe > H100 SXM > H200 > B200) |
+| `deploy/start.sh` | Supervised startup: pre-flight, restart loop, liveness probe, git pull on restart |
+| `deploy/benchmark_ws.py` | TTFP benchmark (PCM + codec raw + multi-tone) |
+| `deploy/robust_client.py` | Production client with hedging + local cache |
+| `deploy/stress_test.py` | Stability + memory drift test |
+| `deploy/generate_samples.py` | Generate audio samples via running server |
+| `csrc/kernel.cu` | **Predictor megakernel** — fused 5-layer transformer |
+| `csrc/kernel_talker.cu` | **Talker megakernel** — fused 28-layer transformer (disabled in prod, deadlocks on datacenter GPUs) |
+| `csrc/torch_bindings.cpp` | PyTorch C++ bindings for CUDA kernels |
+| `deploy/industrial/` | Build scripts, weight loading, INT8 patch |
+
+## Requirements
+
+**Client**: Python 3.10+, `websockets>=13.0`
+
+**Server** (auto-installed on RunPod):
+- Docker image: `runpod/pytorch:2.8.0-py3.11-cuda12.8.1-cudnn-devel-ubuntu22.04`
+- `faster-qwen3-tts`, `qwen-tts`, `soundfile`, `ninja`, `websockets`
+- GPU: RTX 5090 (sm_120, best value), H100/H200/B200 (sm_90+, megakernel), A100 (sm_80, CUDA graph fallback), RTX 4090/L40S (sm_89, CUDA graph)
+
+## License
+
+MIT

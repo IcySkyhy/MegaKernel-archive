@@ -1,0 +1,1375 @@
+###############################################################################
+# Copyright (c) 2025, Advanced Micro Devices, Inc. All rights reserved.
+#
+# See LICENSE for license information.
+###############################################################################
+
+import pytest
+import torch
+
+from primus_turbo.pytorch.core.backend import BackendType, GlobalBackendManager
+from primus_turbo.pytorch.core.low_precision import (
+    MXFP8_BLOCK_SIZE,
+    Float8QuantConfig,
+    Format,
+    ScaleDtype,
+    ScalingGranularity,
+    ScalingRecipe,
+    check_mxfp8_support,
+    float8_e4m3,
+    float8_e5m2,
+)
+from primus_turbo.pytorch.core.quantized_tensor import QuantizedTensor
+from primus_turbo.pytorch.core.utils import get_device_compute_capability
+from primus_turbo.pytorch.ops import grouped_gemm_fp8
+from tests.pytorch.ref.gemm_ref import (
+    generate_grouped_gemm_group_lens,
+    grouped_gemm_ref,
+)
+from tests.pytorch.test_utils import compute_snr
+
+torch.manual_seed(42)
+
+# Common test parameters
+B_VALUES = [1, 2, 3, 8, 16, 32]
+M_VALUES = [128, 256, 512, 1024, 2048]
+NK_VALUES = [
+    (2048, 1536),
+    (2048, 1408),
+    (1408, 2048),
+    (2816, 2048),
+    (3072, 5120),
+    (5120, 1536),
+    (4096, 7168),
+    (7168, 2048),
+]
+ORI_DTYPE_VALUES = [torch.bfloat16, torch.float16]
+FORMAT_VALUES = [Format.E4M3, Format.E5M2]
+TRANS_B_VALUES = [True, False]
+BALANCE_VALUES = [False]
+
+
+def _check_hit_int32_limit(B, M, N, K):
+    a_elems = B * M * K
+    b_elems = B * N * K
+    out_elems = B * M * N
+    return max(a_elems, out_elems, b_elems) >= 2**31
+
+
+def _run_grouped_gemm_fp8_test(
+    B: int,
+    M: int,
+    N: int,
+    K: int,
+    ori_dtype: torch.dtype,
+    format: Format,
+    granularity: ScalingGranularity,
+    trans_b: bool,
+    balance: bool,
+    block_size: int | None = None,
+    backend: BackendType | None = None,
+    auto_tune: bool = False,
+    cuda_graph: bool = False,
+):
+    """Common test logic for grouped_gemm_fp8 with different scaling granularities."""
+    seed = 42
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    # Skip redundant test: auto_tune is ignored when backend is explicitly specified
+    if backend is not None and auto_tune:
+        pytest.skip("auto_tune is ignored when backend is explicitly specified")
+
+    # Skip invalid granularity/block_size combinations
+    if granularity == ScalingGranularity.BLOCKWISE and block_size is None:
+        pytest.skip("BLOCKWISE granularity requires block_size to be set.")
+    if granularity != ScalingGranularity.BLOCKWISE and block_size is not None:
+        pytest.skip("Only BLOCKWISE granularity supports block_size.")
+    if _check_hit_int32_limit(B, M, N, K):
+        pytest.skip("Shape hits int32 indexing limit (numel >= 2**31).")
+
+    # Set backend and auto_tune config
+    GlobalBackendManager.set_grouped_gemm_backend(backend)
+    GlobalBackendManager.set_auto_tune(auto_tune)
+
+    device = "cuda:0"
+
+    group_lens = generate_grouped_gemm_group_lens(B, M, balance=balance).to(device)
+    print(
+        f"\nB={B}, M={M}, N={N}, K={K}, ori_dtype={ori_dtype}, format={format}, "
+        f"granularity={granularity}, block_size={block_size}, trans_b={trans_b}, "
+        f"balance={balance}, backend={backend}, auto_tune={auto_tune}, cuda_graph={cuda_graph}"
+    )
+
+    b_shape = (B, N, K) if trans_b else (B, K, N)
+
+    a = torch.randn((B * M, K), dtype=ori_dtype, device=device, requires_grad=True)
+    b = torch.randn(b_shape, dtype=ori_dtype, device=device, requires_grad=True)
+    a_ref = a.detach().clone().requires_grad_(True)
+    b_ref = b.detach().clone().requires_grad_(True)
+    torch.cuda.synchronize()
+
+    # Ref
+    out_ref = grouped_gemm_ref(a_ref, b_ref, group_lens, trans_b)
+    grad_out = torch.randn_like(out_ref)
+    out_ref.backward(grad_out)
+    torch.cuda.synchronize()
+
+    # Turbo — MX_BLOCKWISE requires E8M0 scale_dtype (others default to FP32).
+    if granularity == ScalingGranularity.MX_BLOCKWISE:
+        if block_size is None:
+            block_size = 32
+        config = Float8QuantConfig(
+            format=format, granularity=granularity, block_size=block_size, scale_dtype=ScaleDtype.E8M0
+        )
+    else:
+        config = Float8QuantConfig(format=format, granularity=granularity, block_size=block_size)
+
+    if cuda_graph:
+        # CUDA graph mode: warmup -> capture -> replay
+        # Warmup is REQUIRED to JIT compile Triton kernels before graph capture
+        # (CUDA graphs cannot capture kernel compilation)
+        out_warmup = grouped_gemm_fp8(a, b, group_lens, trans_b=trans_b, config=config)
+        out_warmup.backward(grad_out)
+        del out_warmup
+
+        a.grad.zero_()
+        b.grad.zero_()
+        torch.cuda.synchronize()
+
+        # Capture the CUDA graph
+        g = torch.cuda.CUDAGraph()
+        with torch.cuda.graph(g):
+            out = grouped_gemm_fp8(a, b, group_lens, trans_b=trans_b, config=config)
+            out.backward(grad_out)
+
+        # Replay the graph
+        g.replay()
+        torch.cuda.synchronize()
+        del g
+    else:
+        # Normal mode: direct execution
+        out = grouped_gemm_fp8(a, b, group_lens, trans_b=trans_b, config=config)
+        out.backward(grad_out)
+
+    # Check Shape
+    assert out.shape == out_ref.shape
+    assert a.grad.shape == a_ref.grad.shape
+    assert b.grad.shape == b_ref.grad.shape
+
+    # Check Results
+    snr_threshold = 25 if format == Format.E4M3 else 20
+
+    out_snr = compute_snr(out_ref, out)
+    print(f"Out-SNR: {out_snr:.2f} dB")
+    assert out_snr > snr_threshold, "out_snr too low"
+
+    a_grad_snr = compute_snr(a_ref.grad, a.grad)
+    print(f"AGrad-SNR: {a_grad_snr:.2f} dB")
+    assert a_grad_snr > snr_threshold, "a_grad_snr too low"
+
+    b_grad_snr = compute_snr(b_ref.grad, b.grad)
+    print(f"BGrad-SNR: {b_grad_snr:.2f} dB")
+    assert b_grad_snr > snr_threshold, "b_grad_snr too low"
+
+    # Reset config and caches
+    GlobalBackendManager.reset()
+
+
+def _run_grouped_gemm_fp8_deterministic_test(
+    B: int,
+    M: int,
+    N: int,
+    K: int,
+    ori_dtype: torch.dtype,
+    format: Format,
+    granularity: ScalingGranularity,
+    trans_b: bool,
+    balance: bool,
+    backend: BackendType,
+    block_size: int | None = None,
+    repeats: int = 10,
+):
+    """Determinism + correctness check for grouped_gemm_fp8 on a selected set of configs."""
+    seed = 42
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    # Skip invalid granularity/block_size combinations
+    if granularity == ScalingGranularity.BLOCKWISE and block_size is None:
+        pytest.skip("BLOCKWISE granularity requires block_size to be set.")
+    if (
+        granularity != ScalingGranularity.BLOCKWISE
+        and granularity != ScalingGranularity.MX_BLOCKWISE
+        and block_size is not None
+    ):
+        pytest.skip("Only BLOCKWISE / MX_BLOCKWISE granularity supports block_size.")
+    if _check_hit_int32_limit(B, M, N, K):
+        pytest.skip("Shape hits int32 indexing limit (numel >= 2**31).")
+
+    if not torch.cuda.is_available():
+        pytest.skip("CUDA not available")
+
+    # gfx942: hipBLASLt path can hang/flake when M <= 512 (known issue).
+    if (
+        get_device_compute_capability() == (9, 4)
+        and M <= 512
+        and backend is BackendType.HIPBLASLT
+        and granularity == ScalingGranularity.TENSORWISE
+    ):
+        pytest.skip("gfx942: hipBLASLt path can hang/flake when M <= 512 (deterministic)")
+
+    # Deterministic suite: fixed backend / no autotune.
+    GlobalBackendManager.set_grouped_gemm_backend(backend)
+    GlobalBackendManager.set_auto_tune(False)
+
+    device = "cuda:0"
+    group_lens = generate_grouped_gemm_group_lens(B, M, balance=balance).to(device)
+    print(
+        f"\n[deterministic] B={B}, M={M}, N={N}, K={K}, ori_dtype={ori_dtype}, format={format}, "
+        f"granularity={granularity}, block_size={block_size}, trans_b={trans_b}, balance={balance}, backend={backend}"
+    )
+
+    b_shape = (B, N, K) if trans_b else (B, K, N)
+    a0 = torch.randn((B * M, K), dtype=ori_dtype, device=device)
+    b0 = torch.randn(b_shape, dtype=ori_dtype, device=device)
+    a0 = a0 / a0.abs().max()
+    b0 = b0 / b0.abs().max()
+
+    # Reference (correctness)
+    a_ref = a0.detach().clone().requires_grad_(True)
+    b_ref = b0.detach().clone().requires_grad_(True)
+    out_ref = grouped_gemm_ref(a_ref, b_ref, group_lens, trans_b)
+    grad_out = torch.randn_like(out_ref)
+    out_ref.backward(grad_out)
+    torch.cuda.synchronize()
+
+    # MX_BLOCKWISE requires E8M0 scale dtype; others use FP32 (default).
+    if granularity == ScalingGranularity.MX_BLOCKWISE:
+        config = Float8QuantConfig(
+            format=format, granularity=granularity, block_size=block_size, scale_dtype=ScaleDtype.E8M0
+        )
+    else:
+        config = Float8QuantConfig(format=format, granularity=granularity, block_size=block_size)
+
+    def _run_once():
+        # Prevent buffer-alias race across pytest cases: the caching allocator
+        # can hand a fresh tensor the same physical GPU memory still being
+        # written by a pending op from a previous test case.  Force full sync
+        # + cache release so each _run_once gets clean memory.
+        torch.cuda.synchronize()
+        torch.cuda.empty_cache()
+        a = a0.detach().clone().requires_grad_(True)
+        b = b0.detach().clone().requires_grad_(True)
+        out = grouped_gemm_fp8(a, b, group_lens, trans_b=trans_b, config=config)
+        out.backward(grad_out)
+        return out.detach(), a.grad.detach(), b.grad.detach()
+
+    outs = []
+    for _ in range(repeats):
+        outs.append(_run_once())
+        torch.cuda.synchronize()
+
+    out0, da0, db0 = outs[0]
+    for i in range(1, repeats):
+        out_i, da_i, db_i = outs[i]
+        torch.testing.assert_close(out0, out_i, rtol=0, atol=0)
+        torch.testing.assert_close(da0, da_i, rtol=0, atol=0)
+        torch.testing.assert_close(db0, db_i, rtol=0, atol=0)
+
+    # Correctness (SNR thresholds consistent with existing FP8 tests)
+    snr_threshold = 25 if format == Format.E4M3 else 20
+    out_snr = compute_snr(out_ref, out0)
+    a_grad_snr = compute_snr(a_ref.grad, da0)
+    b_grad_snr = compute_snr(b_ref.grad, db0)
+    print(
+        f"deterministic grouped fp8: Out-SNR={out_snr:.2f} dB, AGrad-SNR={a_grad_snr:.2f} dB, BGrad-SNR={b_grad_snr:.2f} dB"
+    )
+    assert out_snr > snr_threshold, "out_snr too low"
+    assert a_grad_snr > snr_threshold, "a_grad_snr too low"
+    assert b_grad_snr > snr_threshold, "b_grad_snr too low"
+
+    GlobalBackendManager.reset()
+
+
+# Keep deterministic coverage smaller than the full sweep; deterministic tests only run with --deterministic-only.
+_DET_B_VALUES = [1, 8]
+_DET_M_VALUES = [256, 1024]
+_DET_NK_VALUES = [(2048, 1536), (4096, 7168)]
+
+
+@pytest.mark.parametrize("B", _DET_B_VALUES)
+@pytest.mark.parametrize("M", _DET_M_VALUES)
+@pytest.mark.parametrize("NK", _DET_NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES)
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", BALANCE_VALUES)
+@pytest.mark.parametrize(
+    "backend", [BackendType.CK, BackendType.HIPBLASLT, BackendType.TRITON, BackendType.FLYDSL]
+)
+@pytest.mark.deterministic
+def test_grouped_gemm_fp8_tensorwise_deterministic(B, M, NK, ori_dtype, format, trans_b, balance, backend):
+    if backend == BackendType.FLYDSL and get_device_compute_capability() < (9, 5):
+        pytest.skip("FlyDSL fp8 grouped GEMM is gfx950-only")
+    N, K = NK
+    _run_grouped_gemm_fp8_deterministic_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.TENSORWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        block_size=None,
+        repeats=10,
+    )
+
+
+@pytest.mark.parametrize("B", _DET_B_VALUES)
+@pytest.mark.parametrize("M", _DET_M_VALUES)
+@pytest.mark.parametrize("NK", _DET_NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES)
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", BALANCE_VALUES)
+@pytest.mark.parametrize("backend", [BackendType.CK, BackendType.TRITON])
+@pytest.mark.deterministic
+def test_grouped_gemm_fp8_rowwise_deterministic(B, M, NK, ori_dtype, format, trans_b, balance, backend):
+    N, K = NK
+    _run_grouped_gemm_fp8_deterministic_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.ROWWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        block_size=None,
+        repeats=10,
+    )
+
+
+@pytest.mark.parametrize("B", _DET_B_VALUES)
+@pytest.mark.parametrize("M", _DET_M_VALUES)
+@pytest.mark.parametrize("NK", _DET_NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES)
+@pytest.mark.parametrize("block_size", [128])
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", BALANCE_VALUES)
+@pytest.mark.parametrize("backend", [BackendType.TRITON])
+@pytest.mark.deterministic
+def test_grouped_gemm_fp8_blockwise_deterministic(
+    B, M, NK, ori_dtype, format, block_size, trans_b, balance, backend
+):
+    N, K = NK
+    _run_grouped_gemm_fp8_deterministic_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.BLOCKWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        block_size=block_size,
+        repeats=10,
+    )
+
+
+# MX_BLOCKWISE deterministic — triton + flydsl backends; only runs on gfx950.
+# Limited to trans_b=True: the TT-layout path routes through a Python-level
+# transpose+pad layer whose downstream allocator non-determinism is out of
+# scope for the kernel determinism test.
+@pytest.mark.parametrize("B", _DET_B_VALUES)
+@pytest.mark.parametrize("M", _DET_M_VALUES)
+@pytest.mark.parametrize("NK", _DET_NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES)
+@pytest.mark.parametrize("trans_b", [True])
+@pytest.mark.parametrize("balance", [True, False])
+@pytest.mark.parametrize("backend", [BackendType.TRITON, BackendType.FLYDSL], ids=["TRITON", "FLYDSL"])
+@pytest.mark.deterministic
+def test_grouped_gemm_fp8_mx_blockwise_deterministic(B, M, NK, ori_dtype, format, trans_b, balance, backend):
+    mxfp8_supported, reason = check_mxfp8_support()
+    if not mxfp8_supported:
+        pytest.skip(reason)
+    N, K = NK
+    _run_grouped_gemm_fp8_deterministic_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.MX_BLOCKWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        block_size=32,
+        repeats=10,
+    )
+
+
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES + [Format.HYBRID])
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", BALANCE_VALUES)
+@pytest.mark.parametrize(
+    "backend", [None, BackendType.CK, BackendType.HIPBLASLT, BackendType.TRITON, BackendType.FLYDSL]
+)
+@pytest.mark.parametrize("auto_tune", [False, True])
+def test_grouped_gemm_fp8_tensorwise(B, M, NK, ori_dtype, format, trans_b, balance, backend, auto_tune):
+
+    if backend == BackendType.FLYDSL and get_device_compute_capability() < (9, 5):
+        pytest.skip("FlyDSL fp8 grouped GEMM is gfx950-only")
+    # TODO(xiaobochen-amd): On gfx942, the hipBLASLt path can hang/flake when M <= 512.
+    # This has been observed under pytest; root cause not yet identified. MI355 works normally.
+    # Skip also when auto_tune=True because the tuner may select hipBLASLt.
+    if (
+        get_device_compute_capability() == (9, 4)
+        and M <= 512
+        and (backend is BackendType.HIPBLASLT or auto_tune is True)
+    ):
+        pytest.skip("gfx942: hipBLASLt path can hang/flake when M <= 512")
+
+    N, K = NK
+    _run_grouped_gemm_fp8_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.TENSORWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        auto_tune=auto_tune,
+    )
+
+
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES)
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", [False])
+@pytest.mark.parametrize("backend", [BackendType.CK, BackendType.TRITON])
+@pytest.mark.parametrize("auto_tune", [False])
+def test_grouped_gemm_fp8_rowwise(B, M, NK, ori_dtype, format, trans_b, balance, backend, auto_tune):
+    N, K = NK
+    _run_grouped_gemm_fp8_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.ROWWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        auto_tune=auto_tune,
+    )
+
+
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES)
+@pytest.mark.parametrize("block_size", [128])
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", BALANCE_VALUES)
+@pytest.mark.parametrize("backend", [None, BackendType.TRITON])
+@pytest.mark.parametrize("auto_tune", [False, True])
+def test_grouped_gemm_fp8_blockwise(
+    B, M, NK, ori_dtype, format, block_size, trans_b, balance, backend, auto_tune
+):
+    N, K = NK
+    _run_grouped_gemm_fp8_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.BLOCKWISE,
+        trans_b=trans_b,
+        balance=balance,
+        block_size=block_size,
+        backend=backend,
+        auto_tune=auto_tune,
+    )
+
+
+# MX_BLOCKWISE triton backend coverage mirrors tensorwise's full parameter
+# sweep, including HYBRID: the MX kernels take per-operand fp8 formats via
+# tl.dot_scaled, so HYBRID (e4m3 weights, e5m2 grad_out) works in dgrad/wgrad.
+#
+# Constraint handled by the wrapper (`FP8GroupedGemmMXFunc`), not the test:
+#   - balance=False (per-group M_g not multiple of 128): a / grad_out are
+#     zero-padded along the M axis so wgrad sees 128-aligned per-group sizes.
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES + [Format.HYBRID])
+@pytest.mark.parametrize("trans_b", [True])
+@pytest.mark.parametrize("balance", BALANCE_VALUES)
+@pytest.mark.parametrize("backend", [BackendType.TRITON, BackendType.FLYDSL], ids=["TRITON", "FLYDSL"])
+def test_grouped_gemm_fp8_mx_blockwise(B, M, NK, ori_dtype, format, trans_b, balance, backend):
+    """MXFP8 grouped GEMM fwd + dgrad + wgrad."""
+    N, K = NK
+    mxfp8_supported, reason = check_mxfp8_support()
+    if not mxfp8_supported:
+        pytest.skip(reason)
+    _run_grouped_gemm_fp8_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.MX_BLOCKWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        auto_tune=False,
+    )
+
+
+def _get_fp8_dtype(fmt: Format, is_fwd: bool):
+    if fmt == Format.E4M3:
+        return float8_e4m3
+    if fmt == Format.E5M2:
+        return float8_e5m2
+    if fmt == Format.HYBRID:
+        return float8_e4m3 if is_fwd else float8_e5m2
+    raise ValueError(f"Unsupported format: {fmt}")
+
+
+def _run_grouped_gemm_fp8_quantized_tensor_test(
+    B: int,
+    M: int,
+    N: int,
+    K: int,
+    ori_dtype: torch.dtype,
+    format: Format,
+    granularity: ScalingGranularity,
+    trans_b: bool,
+    balance: bool,
+    backend: BackendType | None = None,
+    auto_tune: bool = False,
+):
+    """Shared helper: externally quantize a (as a grouped QuantizedTensor)
+    and b (as a regular QuantizedTensor), pass them into grouped_gemm_fp8,
+    and validate forward/backward SNR vs a bf16/fp16 ref.
+    """
+    seed = 42
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    # Skip redundant test: auto_tune is ignored when backend is explicitly specified
+    if backend is not None and auto_tune:
+        pytest.skip("auto_tune is ignored when backend is explicitly specified")
+
+    if _check_hit_int32_limit(B, M, N, K):
+        pytest.skip("Shape hits int32 indexing limit (numel >= 2**31).")
+
+    assert granularity in (
+        ScalingGranularity.TENSORWISE,
+        ScalingGranularity.ROWWISE,
+        ScalingGranularity.MX_BLOCKWISE,
+    ), "Grouped QuantizedTensor only supports TENSORWISE, ROWWISE and MX_BLOCKWISE"
+
+    GlobalBackendManager.set_grouped_gemm_backend(backend)
+    GlobalBackendManager.set_auto_tune(auto_tune)
+
+    device = "cuda:0"
+    group_lens = generate_grouped_gemm_group_lens(B, M, balance=balance).to(device)
+    print(
+        f"\n[QT-{granularity.name}] B={B}, M={M}, N={N}, K={K}, ori_dtype={ori_dtype}, "
+        f"format={format}, trans_b={trans_b}, balance={balance}, backend={backend}, "
+        f"auto_tune={auto_tune}"
+    )
+
+    b_shape = (B, N, K) if trans_b else (B, K, N)
+    a = torch.randn((B * M, K), dtype=ori_dtype, device=device, requires_grad=True)
+    b = torch.randn(b_shape, dtype=ori_dtype, device=device, requires_grad=True)
+    a_ref = a.detach().clone().requires_grad_(True)
+    b_ref = b.detach().clone().requires_grad_(True)
+    torch.cuda.synchronize()
+
+    # Externally construct quantized tensors.
+    fwd_dtype = _get_fp8_dtype(format, is_fwd=True)
+
+    block_size = None
+    a_scaling_recipe = None
+    b_scaling_recipe = None
+    if granularity == ScalingGranularity.MX_BLOCKWISE:
+        block_size = MXFP8_BLOCK_SIZE
+        a_scaling_recipe = ScalingRecipe()
+        b_scaling_recipe = ScalingRecipe(use_2d_block=True)
+
+    qt_a = QuantizedTensor.quantize(
+        a,
+        fwd_dtype,
+        granularity,
+        scaling_recipe=a_scaling_recipe,
+        block_size=block_size,
+        group_lens=group_lens,
+        axis=-1,
+    )
+
+    qt_b = QuantizedTensor.quantize(
+        b,
+        fwd_dtype,
+        granularity,
+        scaling_recipe=b_scaling_recipe,
+        block_size=block_size,
+        axis=-1 if trans_b else -2,
+    )
+
+    # Reference
+    out_ref = grouped_gemm_ref(a_ref, b_ref, group_lens, trans_b)
+    grad_out = torch.randn_like(out_ref)
+    out_ref.backward(grad_out)
+    torch.cuda.synchronize()
+
+    config = Float8QuantConfig(
+        format=format,
+        granularity=granularity,
+        block_size=block_size,
+        scale_dtype=ScaleDtype.E8M0 if granularity == ScalingGranularity.MX_BLOCKWISE else ScaleDtype.FP32,
+    )
+    out = grouped_gemm_fp8(qt_a, qt_b, group_lens, trans_b=trans_b, config=config)
+    out.backward(grad_out)
+    torch.cuda.synchronize()
+
+    # Check Shape
+    assert out.shape == out_ref.shape
+    assert qt_a.grad is not None and qt_a.grad.shape == a.shape
+    assert qt_b.grad is not None and qt_b.grad.shape == b.shape
+
+    # Check Results
+    snr_threshold = 25 if format == Format.E4M3 else 20
+
+    out_snr = compute_snr(out_ref, out)
+    a_grad_snr = compute_snr(a_ref.grad, qt_a.grad)
+    b_grad_snr = compute_snr(b_ref.grad, qt_b.grad)
+    print(
+        f"[QT-{granularity.name}] Out-SNR={out_snr:.2f} dB, "
+        f"AGrad-SNR={a_grad_snr:.2f} dB, BGrad-SNR={b_grad_snr:.2f} dB"
+    )
+    assert out_snr > snr_threshold, f"out_snr={out_snr:.2f} too low"
+    assert a_grad_snr > snr_threshold, f"a_grad_snr={a_grad_snr:.2f} too low"
+    assert b_grad_snr > snr_threshold, f"b_grad_snr={b_grad_snr:.2f} too low"
+
+    # Reset config and caches
+    GlobalBackendManager.reset()
+
+
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES + [Format.HYBRID])
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", BALANCE_VALUES)
+@pytest.mark.parametrize(
+    "backend", [None, BackendType.CK, BackendType.HIPBLASLT, BackendType.TRITON, BackendType.FLYDSL]
+)
+@pytest.mark.parametrize("auto_tune", [False, True])
+def test_grouped_gemm_fp8_tensorwise_quantized_tensor(
+    B, M, NK, ori_dtype, format, trans_b, balance, backend, auto_tune
+):
+    """TENSORWISE grouped_gemm with pre-quantized grouped/regular QuantizedTensor inputs."""
+    if backend == BackendType.FLYDSL and get_device_compute_capability() < (9, 5):
+        pytest.skip("FlyDSL fp8 grouped GEMM is gfx950-only")
+
+    # TODO(xiaobochen-amd): On gfx942, the hipBLASLt path can hang/flake when M <= 512.
+    # This has been observed under pytest; root cause not yet identified. MI355 works normally.
+    # Skip also when auto_tune=True because the tuner may select hipBLASLt.
+    if (
+        get_device_compute_capability() == (9, 4)
+        and M <= 512
+        and (backend is BackendType.HIPBLASLT or auto_tune is True)
+    ):
+        pytest.skip("gfx942: hipBLASLt path can hang/flake when M <= 512")
+
+    N, K = NK
+    _run_grouped_gemm_fp8_quantized_tensor_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.TENSORWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        auto_tune=auto_tune,
+    )
+
+
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES)
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", [False])
+@pytest.mark.parametrize("backend", [BackendType.CK, BackendType.TRITON])
+@pytest.mark.parametrize("auto_tune", [False])
+def test_grouped_gemm_fp8_rowwise_quantized_tensor(
+    B, M, NK, ori_dtype, format, trans_b, balance, backend, auto_tune
+):
+    """ROWWISE grouped_gemm with pre-quantized grouped/regular QuantizedTensor inputs"""
+    N, K = NK
+    _run_grouped_gemm_fp8_quantized_tensor_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.ROWWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        auto_tune=auto_tune,
+    )
+
+
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES + [Format.HYBRID])
+@pytest.mark.parametrize(
+    "trans_b",
+    [
+        True,
+    ],
+)
+@pytest.mark.parametrize("balance", BALANCE_VALUES)
+@pytest.mark.parametrize("backend", [None, BackendType.TRITON, BackendType.FLYDSL])
+@pytest.mark.parametrize("auto_tune", [False, True])
+def test_grouped_gemm_fp8_mx_blockwise_quantized_tensor(
+    B, M, NK, ori_dtype, format, trans_b, balance, backend, auto_tune
+):
+    """MX_BLOCKWISE grouped_gemm with pre-quantized grouped/regular QuantizedTensor inputs."""
+    mxfp8_supported, reason = check_mxfp8_support()
+    if not mxfp8_supported:
+        pytest.skip(reason)
+
+    N, K = NK
+    _run_grouped_gemm_fp8_quantized_tensor_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.MX_BLOCKWISE,
+        trans_b=trans_b,
+        balance=balance,
+        backend=backend,
+        auto_tune=auto_tune,
+    )
+
+
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES)
+@pytest.mark.parametrize("block_size", [128])
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", BALANCE_VALUES)
+@pytest.mark.parametrize("backend", [None, BackendType.TRITON])
+@pytest.mark.parametrize("auto_tune", [False, True])
+def test_grouped_gemm_fp8_blockwise_weight_quantized_tensor(
+    B, M, NK, ori_dtype, format, block_size, trans_b, balance, backend, auto_tune
+):
+    """BLOCKWISE grouped_gemm with a pre-quantized 2D-block weight (``b``); ``a`` raw.
+
+    NOTE: Grouped BLOCKWISE only supports the weight side as a QuantizedTensor: the
+    activation ``a`` must stay a raw tensor. So ``a`` is kept high-precision and
+    only ``b`` is externally quantized.
+    """
+    N, K = NK
+    seed = 42
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    # Skip redundant test: auto_tune is ignored when backend is explicitly specified
+    if backend is not None and auto_tune:
+        pytest.skip("auto_tune is ignored when backend is explicitly specified")
+
+    if _check_hit_int32_limit(B, M, N, K):
+        pytest.skip("Shape hits int32 indexing limit (numel >= 2**31).")
+
+    GlobalBackendManager.set_grouped_gemm_backend(backend)
+    GlobalBackendManager.set_auto_tune(auto_tune)
+
+    device = "cuda:0"
+    group_lens = generate_grouped_gemm_group_lens(B, M, balance=balance).to(device)
+    print(
+        f"\n[QT-BLOCKWISE-weight] B={B}, M={M}, N={N}, K={K}, ori_dtype={ori_dtype}, "
+        f"format={format}, block_size={block_size}, trans_b={trans_b}, balance={balance}, "
+        f"backend={backend}, auto_tune={auto_tune}"
+    )
+
+    b_shape = (B, N, K) if trans_b else (B, K, N)
+    a = torch.randn((B * M, K), dtype=ori_dtype, device=device, requires_grad=True)
+    b = torch.randn(b_shape, dtype=ori_dtype, device=device, requires_grad=True)
+    a_ref = a.detach().clone().requires_grad_(True)
+    b_ref = b.detach().clone().requires_grad_(True)
+    torch.cuda.synchronize()
+
+    # Externally quantize only the weight as a 2D-block QuantizedTensor.
+    fwd_dtype = _get_fp8_dtype(format, is_fwd=True)
+    b_scaling_recipe = ScalingRecipe(use_2d_block=True)
+    qt_b = QuantizedTensor.quantize(
+        b,
+        fwd_dtype,
+        ScalingGranularity.BLOCKWISE,
+        axis=-1 if trans_b else -2,
+        block_size=block_size,
+        scaling_recipe=b_scaling_recipe,
+    )
+
+    # Reference
+    out_ref = grouped_gemm_ref(a_ref, b_ref, group_lens, trans_b)
+    grad_out = torch.randn_like(out_ref)
+    out_ref.backward(grad_out)
+    torch.cuda.synchronize()
+
+    config = Float8QuantConfig(format=format, granularity=ScalingGranularity.BLOCKWISE, block_size=block_size)
+    out = grouped_gemm_fp8(a, qt_b, group_lens, trans_b=trans_b, config=config)
+    out.backward(grad_out)
+    torch.cuda.synchronize()
+
+    # Check Shape
+    assert out.shape == out_ref.shape
+    assert a.grad is not None and a.grad.shape == a_ref.grad.shape
+    assert qt_b.grad is not None and qt_b.grad.shape == b.shape
+
+    # Check Results
+    snr_threshold = 25 if format == Format.E4M3 else 20
+
+    out_snr = compute_snr(out_ref, out)
+    a_grad_snr = compute_snr(a_ref.grad, a.grad)
+    b_grad_snr = compute_snr(b_ref.grad, qt_b.grad)
+    print(
+        f"[QT-BLOCKWISE-weight] Out-SNR={out_snr:.2f} dB, "
+        f"AGrad-SNR={a_grad_snr:.2f} dB, BGrad-SNR={b_grad_snr:.2f} dB"
+    )
+    assert out_snr > snr_threshold, f"out_snr={out_snr:.2f} too low"
+    assert a_grad_snr > snr_threshold, f"a_grad_snr={a_grad_snr:.2f} too low"
+    assert b_grad_snr > snr_threshold, f"b_grad_snr={b_grad_snr:.2f} too low"
+
+    # Reset config and caches
+    GlobalBackendManager.reset()
+
+
+def _test_grouped_gemm_fp8_hipgraph_test(
+    B: int,
+    M: int,
+    N: int,
+    K: int,
+    ori_dtype: torch.dtype,
+    format: Format,
+    granularity: ScalingGranularity,
+    trans_b: bool,
+    balance: bool,
+    block_size: int | None = None,
+):
+    """Common test logic for grouped_gemm_fp8 hipgraph with different scaling granularities."""
+    # Skip invalid granularity/block_size combinations
+    if granularity == ScalingGranularity.BLOCKWISE and block_size is None:
+        pytest.skip("BLOCKWISE granularity requires block_size to be set.")
+    if granularity != ScalingGranularity.BLOCKWISE and block_size is not None:
+        pytest.skip("Only BLOCKWISE granularity supports block_size.")
+
+    seed = 33
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    device = "cuda:0"
+
+    group_lens = generate_grouped_gemm_group_lens(B, M, balance=balance).to(device)
+    print(
+        f"\nB={B}, M={M}, N={N}, K={K}, ori_dtype={ori_dtype}, format={format}, "
+        f"granularity={granularity}, block_size={block_size}, trans_b={trans_b}, "
+        f"balance={balance}"
+    )
+
+    b_shape = (B, N, K) if trans_b else (B, K, N)
+
+    a = torch.randn((B * M, K), dtype=ori_dtype, device=device, requires_grad=True)
+    b = torch.randn(b_shape, dtype=ori_dtype, device=device, requires_grad=True)
+    a_ref = a.detach().clone().requires_grad_(True)
+    b_ref = b.detach().clone().requires_grad_(True)
+    torch.cuda.synchronize()
+
+    # Ref for group_lens
+    out_ref = grouped_gemm_ref(a_ref, b_ref, group_lens, trans_b)
+    grad_out = torch.randn_like(out_ref)
+    out_ref.backward(grad_out)
+    torch.cuda.synchronize()
+
+    # Generate group_lens2 with different seed (same total M, different distribution)
+    seed += 1
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    group_lens2 = generate_grouped_gemm_group_lens(B, M, balance=balance).to(device)
+
+    # Ref for group_lens2
+    a_ref2 = a.detach().clone().requires_grad_(True)
+    b_ref2 = b.detach().clone().requires_grad_(True)
+    out_ref2 = grouped_gemm_ref(a_ref2, b_ref2, group_lens2, trans_b)
+    out_ref2.backward(grad_out)
+    torch.cuda.synchronize()
+
+    # Turbo
+    config = Float8QuantConfig(format=format, granularity=granularity, block_size=block_size)
+
+    # Warmup both group_lens to compile all kernels
+    out_warmup = grouped_gemm_fp8(a, b, group_lens, trans_b=trans_b, config=config)
+    out_warmup.backward(grad_out)
+    out_warmup2 = grouped_gemm_fp8(a, b, group_lens2, trans_b=trans_b, config=config)
+    out_warmup2.backward(grad_out)
+    del out_warmup, out_warmup2
+
+    a.grad.zero_()
+    b.grad.zero_()
+    torch.cuda.synchronize()
+
+    # Capture the CUDA graph with ONE grouped_gemm_fp8 operation
+    g = torch.cuda.CUDAGraph()
+    with torch.cuda.graph(g):
+        out = grouped_gemm_fp8(a, b, group_lens, trans_b=trans_b, config=config)
+        out.backward(grad_out)
+
+    # first run
+    g.replay()
+    torch.cuda.synchronize()
+
+    snr_threshold = 25 if format == Format.E4M3 else 20
+
+    # Verify out with group_lens
+    out_snr = compute_snr(out_ref, out)
+    print(f"[group_lens] Out-SNR: {out_snr:.2f} dB")
+    assert out_snr > snr_threshold, "out_snr too low"
+
+    a_grad_snr = compute_snr(a_ref.grad, a.grad)
+    print(f"[group_lens] AGrad-SNR: {a_grad_snr:.2f} dB")
+    assert a_grad_snr > snr_threshold, "a_grad_snr too low"
+
+    b_grad_snr = compute_snr(b_ref.grad, b.grad)
+    print(f"[group_lens] BGrad-SNR: {b_grad_snr:.2f} dB")
+    assert b_grad_snr > snr_threshold, "b_grad_snr too low"
+
+    group_lens.copy_(group_lens2)  # In-place update
+
+    # Reset gradients for second replay
+    a.grad.zero_()
+    b.grad.zero_()
+
+    # second run, replay the same graph with updated group_lens
+    g.replay()
+    torch.cuda.synchronize()
+
+    # Verify out with group_lens2
+    out2_snr = compute_snr(out_ref2, out)
+    print(f"[group_lens2] Out-SNR: {out2_snr:.2f} dB")
+    assert out2_snr > snr_threshold, "out2_snr too low"
+
+    a_grad_snr2 = compute_snr(a_ref2.grad, a.grad)
+    print(f"[group_lens2] AGrad-SNR: {a_grad_snr2:.2f} dB")
+    assert a_grad_snr2 > snr_threshold, "a_grad_snr2 too low"
+
+    b_grad_snr2 = compute_snr(b_ref2.grad, b.grad)
+    print(f"[group_lens2] BGrad-SNR: {b_grad_snr2:.2f} dB")
+    assert b_grad_snr2 > snr_threshold, "b_grad_snr2 too low"
+
+    del g
+    torch.cuda.synchronize()
+
+    # Reset config and caches
+    GlobalBackendManager.reset()
+
+
+# NOTE: HIPGraph tests are temporarily skipped due to hipgraph issue.
+# These tests require a PyTorch version upgrade to work properly with HIPGraph.
+@pytest.mark.skip(reason="Requires PyTorch version upgrade for HIPGraph support")
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES + [Format.HYBRID])
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", [False])
+def test_grouped_gemm_fp8_tensorwise_hipgraph(B, M, NK, ori_dtype, format, trans_b, balance):
+    N, K = NK
+    _test_grouped_gemm_fp8_hipgraph_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.TENSORWISE,
+        trans_b=trans_b,
+        balance=balance,
+    )
+
+
+@pytest.mark.skip(reason="Requires PyTorch version upgrade for HIPGraph support")
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES + [Format.HYBRID])
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", [False])
+def test_grouped_gemm_fp8_rowwise_hipgraph(B, M, NK, ori_dtype, format, trans_b, balance):
+    N, K = NK
+    _test_grouped_gemm_fp8_hipgraph_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.ROWWISE,
+        trans_b=trans_b,
+        balance=balance,
+    )
+
+
+@pytest.mark.skip(reason="Requires PyTorch version upgrade for HIPGraph support")
+@pytest.mark.parametrize("B", B_VALUES)
+@pytest.mark.parametrize("M", M_VALUES)
+@pytest.mark.parametrize("NK", NK_VALUES)
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("format", FORMAT_VALUES)
+@pytest.mark.parametrize("block_size", [128])
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize("balance", [False])
+def test_grouped_gemm_fp8_blockwise_hipgraph(B, M, NK, ori_dtype, format, block_size, trans_b, balance):
+    N, K = NK
+    _test_grouped_gemm_fp8_hipgraph_test(
+        B=B,
+        M=M,
+        N=N,
+        K=K,
+        ori_dtype=ori_dtype,
+        format=format,
+        granularity=ScalingGranularity.BLOCKWISE,
+        trans_b=trans_b,
+        balance=balance,
+        block_size=block_size,
+    )
+
+
+# Test case for group_lens containing zeros (MoE scenario where some experts receive no tokens)
+# This matches the actual bug scenario from primus_turbo_ut.py:
+#   E=8, in_features=2048, out_features=8192, group_lens=[8192, 8192, 0, 0, 0, 0, 0, 0]
+def test_grouped_gemm_fp8_blockwise_zero_group_lens():
+    """
+    Test block-wise scaling FP8 group GEMM with group_lens containing zeros.
+
+    This reproduces the crash that occurs in MoE scenarios where some experts
+    receive no tokens during routing.
+
+    Bug: backward pass crashes with illegal memory access when group_lens contains 0.
+    """
+    device = "cuda:0"
+    ori_dtype = torch.bfloat16
+
+    # Match the actual bug scenario
+    E = 8  # Number of experts
+    K = 2048  # in_features
+    N = 8192  # out_features
+
+    # MoE routing: only first 2 experts receive tokens, rest get 0
+    group_lens_list = [8192, 8192, 0, 0, 0, 0, 0, 0]
+    group_lens = torch.tensor(group_lens_list, dtype=torch.int64, device=device)
+    total_m = group_lens.sum().item()  # 16384
+
+    print(f"\ngroup_lens={group_lens_list}, total_M={total_m}, N={N}, K={K}")
+
+    B = E
+    b_shape = (B, N, K)  # trans_b=True
+
+    a = torch.randn((total_m, K), dtype=ori_dtype, device=device, requires_grad=True)
+    b = torch.randn(b_shape, dtype=ori_dtype, device=device, requires_grad=True)
+    a_ref = a.detach().clone().requires_grad_(True)
+    b_ref = b.detach().clone().requires_grad_(True)
+    torch.cuda.synchronize()
+
+    # Ref
+    out_ref = grouped_gemm_ref(a_ref, b_ref, group_lens, trans_b=True)
+    grad_out = torch.randn_like(out_ref)
+    out_ref.backward(grad_out)
+    torch.cuda.synchronize()
+
+    # Turbo with BLOCKWISE scaling
+    config = Float8QuantConfig(format=Format.E4M3, granularity=ScalingGranularity.BLOCKWISE, block_size=128)
+    out = grouped_gemm_fp8(a, b, group_lens, trans_b=True, config=config)
+    out.backward(grad_out)  # This crashes without the fix
+
+    # Check Shape
+    assert out.shape == out_ref.shape
+    assert a.grad.shape == a_ref.grad.shape
+    assert b.grad.shape == b_ref.grad.shape
+
+    # Check Results
+    snr_threshold = 25
+
+    out_snr = compute_snr(out_ref, out)
+    print(f"Out-SNR: {out_snr:.2f} dB")
+    assert out_snr > snr_threshold, "out_snr too low"
+
+    a_grad_snr = compute_snr(a_ref.grad, a.grad)
+    print(f"AGrad-SNR: {a_grad_snr:.2f} dB")
+    assert a_grad_snr > snr_threshold, "a_grad_snr too low"
+
+    b_grad_snr = compute_snr(b_ref.grad, b.grad)
+    print(f"BGrad-SNR: {b_grad_snr:.2f} dB")
+    assert b_grad_snr > snr_threshold, "b_grad_snr too low"
+
+
+def _poison_alloc_pool(shape, dtype, device, sentinel, n=24):
+    """Fill and free caching-allocator blocks of ``shape`` with ``sentinel`` so a
+    subsequent same-shape allocation reuses a dirty (non-zero) block instead of a
+    fresh, driver-zeroed page. Lets us detect output regions the kernel never wrote."""
+    blocks = [torch.full(shape, sentinel, dtype=dtype, device=device) for _ in range(n)]
+    for x in blocks:
+        x.add_(0.0)
+    del blocks
+
+
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("trans_b", TRANS_B_VALUES)
+@pytest.mark.parametrize(
+    "backend", [BackendType.CK, BackendType.HIPBLASLT, BackendType.TRITON, BackendType.FLYDSL]
+)
+def test_grouped_gemm_fp8_padded_tail_zeroed(ori_dtype, trans_b, backend):
+    """Over-allocated output tail [sum(group_lens):M_total] must be zeroed, not left as
+    caching-allocator garbage."""
+    if not torch.cuda.is_available():
+        pytest.skip("CUDA not available")
+    if backend == BackendType.FLYDSL and get_device_compute_capability() < (9, 5):
+        pytest.skip("FlyDSL fp8 grouped GEMM is gfx950-only")
+
+    torch.manual_seed(42)
+    device = "cuda:0"
+    G, K, N = 8, 2048, 2880
+    group_lens = torch.tensor([4096, 0, 3072, 0, 0, 5120, 0, 0], dtype=torch.int64, device=device)
+    S = int(group_lens.sum())
+    PAD = 224
+    M_total = S + PAD  # simulate FP8-padded activation rows
+    sentinel = 12288.0  # exactly representable in bf16 and fp16
+    print(f"\nori_dtype={ori_dtype}, trans_b={trans_b}, backend={backend}, S={S}, M_total={M_total}")
+
+    GlobalBackendManager.set_grouped_gemm_backend(backend)
+    config = Float8QuantConfig(format=Format.E4M3, granularity=ScalingGranularity.TENSORWISE)
+
+    b_shape = (G, N, K) if trans_b else (G, K, N)
+    a = torch.randn((M_total, K), dtype=ori_dtype, device=device)
+    b = torch.randn(b_shape, dtype=ori_dtype, device=device)
+
+    # Warm up (JIT/autotune), then poison the pool so any unwritten padding rows
+    # surface the sentinel instead of a fresh zeroed page.
+    grouped_gemm_fp8(a, b, group_lens, trans_b=trans_b, config=config)
+    torch.cuda.synchronize()
+    _poison_alloc_pool((M_total, N), ori_dtype, device, sentinel)
+
+    out = grouped_gemm_fp8(a, b, group_lens, trans_b=trans_b, config=config)
+    torch.cuda.synchronize()
+
+    pad_tail = out[S:M_total]
+    assert torch.isfinite(pad_tail).all(), f"{backend.name}: padding tail non-finite"
+    torch.testing.assert_close(
+        pad_tail,
+        torch.zeros_like(pad_tail),
+        rtol=0.0,
+        atol=0.0,
+        msg=f"{backend.name}: padding tail [{S}:{M_total}] must be zeroed",
+    )
+
+    GlobalBackendManager.reset()
+
+
+def _run_grouped_gemm_fp8_fused_grad_accum_test(
+    B, M, N, K, ori_dtype, granularity, trans_b, backend, main_grad_dtype=torch.float32
+):
+    """``fuse_bgrad_accum_pattern`` must leave ``main_grad`` holding previous + wgrad.
+
+    The fused path hands the weight's ``main_grad`` to the wgrad GEMM as a beta=1
+    accumulate target instead of returning a gradient for autograd to add on top, so
+    the check is that the buffer moved by exactly the wgrad the ordinary path produces.
+
+    ``main_grad_dtype`` is fp32 as Megatron allocates it; FlyDSL's accumulate epilogue
+    writes 16-bit only, so its coverage passes the weight's own dtype instead.
+    """
+    seed = 42
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    if granularity == ScalingGranularity.MX_BLOCKWISE:
+        supported, reason = check_mxfp8_support()
+        if not supported:
+            pytest.skip(reason)
+
+    if backend == BackendType.HIPBLASLT and granularity != ScalingGranularity.TENSORWISE:
+        pytest.skip("The hipBLASLt grouped GEMM only scales per tensor")
+
+    device = "cuda:0"
+    print(
+        f"\nB={B}, M={M}, N={N}, K={K}, ori_dtype={ori_dtype}, granularity={granularity}, "
+        f"trans_b={trans_b}, backend={backend}"
+    )
+
+    # A pinned backend exercises that backend's beta=1 accumulate epilogue; ``None``
+    # leaves the dispatcher to resolve one, which is how training actually runs.
+    GlobalBackendManager.set_grouped_gemm_backend(backend)
+    GlobalBackendManager.set_auto_tune(False)
+
+    if granularity == ScalingGranularity.BLOCKWISE:
+        config = Float8QuantConfig(format=Format.E4M3, granularity=granularity, block_size=128)
+    elif granularity == ScalingGranularity.MX_BLOCKWISE:
+        config = Float8QuantConfig(
+            format=Format.E4M3,
+            granularity=granularity,
+            block_size=MXFP8_BLOCK_SIZE,
+            scale_dtype=ScaleDtype.E8M0,
+        )
+    else:
+        config = Float8QuantConfig(format=Format.E4M3, granularity=granularity)
+
+    group_lens = generate_grouped_gemm_group_lens(B, M, balance=False).to(device)
+    b_shape = (B, N, K) if trans_b else (B, K, N)
+
+    a = torch.randn((B * M, K), dtype=ori_dtype, device=device, requires_grad=True)
+    b = torch.randn(b_shape, dtype=ori_dtype, device=device, requires_grad=True)
+    grad_out = torch.randn((B * M, N), dtype=ori_dtype, device=device)
+    a_fused = a.detach().clone().requires_grad_(True)
+    b_fused = b.detach().clone().requires_grad_(True)
+    torch.cuda.synchronize()
+
+    # Baseline: ordinary autograd, b.grad holds the weight gradient.
+    out = grouped_gemm_fp8(a, b, group_lens, trans_b=trans_b, config=config)
+    out.backward(grad_out)
+    torch.cuda.synchronize()
+
+    # Fused: the wgrad is accumulated into a pre-seeded main_grad buffer.
+    previous = torch.randn(b_fused.shape, dtype=main_grad_dtype, device=device)
+    b_fused.main_grad = previous.clone()
+    b_fused.grad_added_to_main_grad = False
+
+    out_fused = grouped_gemm_fp8(
+        a_fused,
+        b_fused,
+        group_lens,
+        trans_b=trans_b,
+        config=config,
+        fuse_bgrad_accum_pattern="megatron",
+    )
+    out_fused.backward(grad_out)
+    torch.cuda.synchronize()
+
+    # The forward is untouched, and the weight is flagged so the training framework's
+    # own accumulation step stands down. Following Megatron, backward still hands back
+    # a dummy tensor rather than None (it keeps the DDP hooks on the main thread), so
+    # what matters is the flag plus the dummy matching the weight's shape and dtype --
+    # a dtype mismatch would make autograd allocate and cast a full-size copy.
+    torch.testing.assert_close(out_fused, out)
+    assert b_fused.grad_added_to_main_grad is True, "weight must be flagged during forward"
+    assert b_fused.grad.shape == b_fused.shape, "dummy wgrad must keep the weight's shape"
+    assert b_fused.grad.dtype == b_fused.dtype, "dummy wgrad must keep the weight's dtype"
+
+    snr_threshold = 25
+
+    a_grad_snr = compute_snr(a.grad, a_fused.grad)
+    print(f"AGrad-SNR: {a_grad_snr:.2f} dB")
+    assert a_grad_snr > snr_threshold, "a_grad_snr too low"
+
+    # The baseline rounds the wgrad to ori_dtype before autograd stores it while the
+    # fused path carries the fp32 accumulator all the way into main_grad, so the two
+    # differ by that rounding -- compare by SNR rather than exactly.
+    accumulated = b_fused.main_grad.float() - previous.float()
+    b_grad_snr = compute_snr(b.grad.float(), accumulated)
+    print(f"BGrad-SNR: {b_grad_snr:.2f} dB")
+    assert b_grad_snr > snr_threshold, "b_grad_snr too low"
+
+    GlobalBackendManager.reset()
+
+
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("trans_b", [True, False])
+@pytest.mark.parametrize("backend", [None, BackendType.TRITON, BackendType.HIPBLASLT, BackendType.FLYDSL])
+def test_grouped_gemm_fp8_tensorwise_fused_grad_accum(ori_dtype, trans_b, backend):
+    if backend == BackendType.FLYDSL and get_device_compute_capability() < (9, 5):
+        pytest.skip("FlyDSL fp8 grouped GEMM is gfx950-only")
+    # FlyDSL's accumulate epilogue stores 16-bit, so it only takes a main_grad matching
+    # the weight; the others take the fp32 one Megatron allocates by default.
+    main_grad_dtype = ori_dtype if backend == BackendType.FLYDSL else torch.float32
+    _run_grouped_gemm_fp8_fused_grad_accum_test(
+        B=4,
+        M=256,
+        N=512,
+        K=256,
+        ori_dtype=ori_dtype,
+        granularity=ScalingGranularity.TENSORWISE,
+        trans_b=trans_b,
+        backend=backend,
+        main_grad_dtype=main_grad_dtype,
+    )
+
+
+@pytest.mark.parametrize("ori_dtype", ORI_DTYPE_VALUES)
+@pytest.mark.parametrize("backend", [None, BackendType.TRITON, BackendType.FLYDSL])
+def test_grouped_gemm_fp8_mx_fused_grad_accum(ori_dtype, backend):
+    """MXFP8 grouped GEMM is NT-only, so trans_b is fixed rather than swept."""
+    if backend == BackendType.FLYDSL and get_device_compute_capability() < (9, 5):
+        pytest.skip("FlyDSL MXFP8 grouped GEMM is gfx950-only")
+    main_grad_dtype = ori_dtype if backend == BackendType.FLYDSL else torch.float32
+    _run_grouped_gemm_fp8_fused_grad_accum_test(
+        B=4,
+        M=256,
+        N=512,
+        K=256,
+        ori_dtype=ori_dtype,
+        granularity=ScalingGranularity.MX_BLOCKWISE,
+        trans_b=True,
+        backend=backend,
+        main_grad_dtype=main_grad_dtype,
+    )

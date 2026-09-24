@@ -1,0 +1,190 @@
+/**
+Copyright (c) 2025 Huawei Technologies Co., Ltd.
+This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+CANN Open Software License Agreement Version 2.0 (the "License").
+Please refer to the License for details. You may not use this file except in compliance with the License.
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+See LICENSE in the root of the software repository for the full text of the License.
+*/
+
+#include "test_common.h"
+#include "acl/acl.h"
+#include <gtest/gtest.h>
+
+using namespace std;
+using namespace PtoTestCommon;
+
+class TREMTest : public testing::Test {
+protected:
+    void SetUp() override {}
+    void TearDown() override {}
+};
+
+std::string GetGoldenDir()
+{
+    const testing::TestInfo* testInfo = testing::UnitTest::GetInstance()->current_test_info();
+    const std::string caseName = testInfo->name();
+    std::string suiteName = testInfo->test_suite_name();
+    std::string fullPath = "../" + suiteName + "." + caseName;
+    return fullPath;
+}
+
+template <typename T, int kTRows_, int kTCols_, int vRows, int vCols, bool isHalf, bool highPrecision = false>
+void LaunchTRem(T* out, T* src0, T* src1, void* stream);
+
+template <typename T, int tileH, int tileW, int vRows, int vCols>
+void LaunchTRemInplace(T* out, T* src1, void* stream);
+
+template <typename T, int kTRows_, int kTCols_, int vRows, int vCols, bool isHalf, bool highPrecision = false>
+void test_trem()
+{
+    size_t fileSize = kTRows_ * kTCols_ * sizeof(T);
+
+    aclInit(nullptr);
+    aclrtSetDevice(0);
+    aclrtStream stream;
+    aclrtCreateStream(&stream);
+
+    T *dstHost, *src0Host, *src1Host;
+    T *dstDevice, *src0Device, *src1Device;
+
+    aclrtMallocHost((void**)(&dstHost), fileSize);
+    aclrtMallocHost((void**)(&src0Host), fileSize);
+    aclrtMallocHost((void**)(&src1Host), fileSize);
+
+    aclrtMalloc((void**)&dstDevice, fileSize, ACL_MEM_MALLOC_HUGE_FIRST);
+    aclrtMalloc((void**)&src0Device, fileSize, ACL_MEM_MALLOC_HUGE_FIRST);
+    aclrtMalloc((void**)&src1Device, fileSize, ACL_MEM_MALLOC_HUGE_FIRST);
+    aclrtMemset(dstDevice, fileSize, 0, fileSize);
+
+    ReadFile(GetGoldenDir() + "/input1.bin", fileSize, src0Host, fileSize);
+    ReadFile(GetGoldenDir() + "/input2.bin", fileSize, src1Host, fileSize);
+
+    aclrtMemcpy(src0Device, fileSize, src0Host, fileSize, ACL_MEMCPY_HOST_TO_DEVICE);
+    aclrtMemcpy(src1Device, fileSize, src1Host, fileSize, ACL_MEMCPY_HOST_TO_DEVICE);
+    LaunchTRem<T, kTRows_, kTCols_, vRows, vCols, isHalf, highPrecision>(dstDevice, src0Device, src1Device, stream);
+
+    aclrtSynchronizeStream(stream);
+    aclrtMemcpy(dstHost, fileSize, dstDevice, fileSize, ACL_MEMCPY_DEVICE_TO_HOST);
+
+    WriteFile(GetGoldenDir() + "/output.bin", dstHost, fileSize);
+
+    aclrtFree(dstDevice);
+    aclrtFree(src0Device);
+    aclrtFree(src1Device);
+
+    aclrtFreeHost(dstHost);
+    aclrtFreeHost(src0Host);
+    aclrtFreeHost(src1Host);
+    aclrtDestroyStream(stream);
+    aclrtResetDevice(0);
+    aclFinalize();
+
+    std::vector<T> golden(fileSize / sizeof(T));
+    std::vector<T> devFinal(fileSize / sizeof(T));
+    ReadFile(GetGoldenDir() + "/golden.bin", fileSize, golden.data(), fileSize);
+    ReadFile(GetGoldenDir() + "/output.bin", fileSize, devFinal.data(), fileSize);
+
+    float eps = 0.0005f;
+    if constexpr (std::is_same_v<T, float>) {
+        eps = 0.00005f;
+    }
+    eps = highPrecision ? 0.0000001f : eps;
+    bool ret;
+    if constexpr (std::is_same_v<T, int64_t> || std::is_same_v<T, uint64_t>) {
+        ret = ResultCmpExact(golden, devFinal.data());
+    } else {
+        ret = ResultCmp<T>(golden, devFinal, eps);
+    }
+
+    EXPECT_TRUE(ret);
+}
+
+template <typename T, int tileH, int tileW, int vRows, int vCols>
+void test_trem_inplace()
+{
+    size_t fileSize = tileH * tileW * sizeof(T);
+
+    aclInit(nullptr);
+    aclrtSetDevice(0);
+    aclrtStream stream;
+    aclrtCreateStream(&stream);
+
+    T *dstHost, *src1Host;
+    T *dstDevice, *src1Device;
+
+    aclrtMallocHost((void**)(&dstHost), fileSize);
+    aclrtMallocHost((void**)(&src1Host), fileSize);
+
+    aclrtMalloc((void**)&dstDevice, fileSize, ACL_MEM_MALLOC_HUGE_FIRST);
+    aclrtMalloc((void**)&src1Device, fileSize, ACL_MEM_MALLOC_HUGE_FIRST);
+
+    ReadFile(GetGoldenDir() + "/input1.bin", fileSize, dstHost, fileSize);
+    ReadFile(GetGoldenDir() + "/input2.bin", fileSize, src1Host, fileSize);
+
+    aclrtMemcpy(dstDevice, fileSize, dstHost, fileSize, ACL_MEMCPY_HOST_TO_DEVICE);
+    aclrtMemcpy(src1Device, fileSize, src1Host, fileSize, ACL_MEMCPY_HOST_TO_DEVICE);
+    LaunchTRemInplace<T, tileH, tileW, vRows, vCols>(dstDevice, src1Device, stream);
+
+    aclrtSynchronizeStream(stream);
+    aclrtMemcpy(dstHost, fileSize, dstDevice, fileSize, ACL_MEMCPY_DEVICE_TO_HOST);
+
+    WriteFile(GetGoldenDir() + "/output.bin", dstHost, fileSize);
+
+    aclrtFree(dstDevice);
+    aclrtFree(src1Device);
+
+    aclrtFreeHost(dstHost);
+    aclrtFreeHost(src1Host);
+    aclrtDestroyStream(stream);
+    aclrtResetDevice(0);
+    aclFinalize();
+
+    std::vector<T> golden(fileSize / sizeof(T));
+    std::vector<T> devFinal(fileSize / sizeof(T));
+    ReadFile(GetGoldenDir() + "/golden.bin", fileSize, golden.data(), fileSize);
+    ReadFile(GetGoldenDir() + "/output.bin", fileSize, devFinal.data(), fileSize);
+
+    bool ret;
+    if constexpr (std::is_same_v<T, int64_t> || std::is_same_v<T, uint64_t>) {
+        ret = ResultCmpExact(golden, devFinal.data());
+    } else {
+        ret = ResultCmp<T>(golden, devFinal, 0.001f);
+    }
+
+    EXPECT_TRUE(ret);
+}
+
+TEST_F(TREMTest, case1) { test_trem<uint16_t, 64, 64, 64, 64, false>(); }
+
+TEST_F(TREMTest, case2) { test_trem<uint16_t, 64, 64, 63, 63, false>(); }
+
+TEST_F(TREMTest, case4) { test_trem<uint16_t, 2048, 16, 2048, 16, false>(); }
+
+TEST_F(TREMTest, case5) { test_trem<float, 32, 32, 32, 32, false, true>(); }
+
+TEST_F(TREMTest, case6) { test_trem<uint32_t, 8, 8, 8, 8, false>(); }
+
+TEST_F(TREMTest, case7) { test_trem<aclFloat16, 32, 32, 31, 31, true>(); }
+
+TEST_F(TREMTest, case8) { test_trem<int16_t, 16, 16, 16, 16, false>(); }
+
+TEST_F(TREMTest, case9) { test_trem<int32_t, 8, 8, 8, 8, false>(); }
+
+TEST_F(TREMTest, case10) { test_trem<float, 64, 64, 64, 64, false, true>(); }
+
+TEST_F(TREMTest, case11) { test_trem<float, 128, 128, 96, 96, false, true>(); }
+
+TEST_F(TREMTest, case12) { test_trem<float, 128, 128, 96, 97, false, true>(); }
+TEST_F(TREMTest, case_int64_4x16) { test_trem<int64_t, 4, 16, 4, 16, false>(); }
+TEST_F(TREMTest, case_uint64_4x16) { test_trem<uint64_t, 4, 16, 4, 16, false>(); }
+TEST_F(TREMTest, case_int64_4x64) { test_trem<int64_t, 4, 64, 4, 64, false>(); }
+TEST_F(TREMTest, case_uint64_4x64) { test_trem<uint64_t, 4, 64, 4, 64, false>(); }
+TEST_F(TREMTest, case_int64_32x32) { test_trem<int64_t, 32, 32, 32, 32, false>(); }
+TEST_F(TREMTest, case_uint64_32x32) { test_trem<uint64_t, 32, 32, 32, 32, false>(); }
+TEST_F(TREMTest, case_int64_4x32_inplace) { test_trem_inplace<int64_t, 4, 32, 4, 32>(); }
+TEST_F(TREMTest, case_uint64_4x32_inplace) { test_trem_inplace<uint64_t, 4, 32, 4, 32>(); }
+TEST_F(TREMTest, case_int64_1x1024_inplace) { test_trem_inplace<int64_t, 1, 1024, 1, 1024>(); }
+TEST_F(TREMTest, case_int64_1x2048_2045_inplace) { test_trem_inplace<int64_t, 1, 2048, 1, 2045>(); }
+TEST_F(TREMTest, case_int64_4x64_40_inplace) { test_trem_inplace<int64_t, 4, 64, 4, 40>(); }

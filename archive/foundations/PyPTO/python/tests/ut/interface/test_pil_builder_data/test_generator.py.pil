@@ -1,0 +1,2398 @@
+#!/usr/bin/env python3
+# coding: utf-8
+# Copyright (c) 2026 CANN community contributors.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+from .test_pil_builder_utils import Expr
+from .test_pil_builder_utils import PILTestCase
+
+class ListCompTest(PILTestCase):
+
+    def test_listcomp_simple(self):
+
+        def _pil_11():
+            _pil_1 = Expr.int
+            _pil_2 = _pil_1(0)
+            _pil_3 = Expr.int
+            _pil_4 = _pil_3(1)
+            _pil_5 = Expr.int
+            _pil_6 = _pil_5(2)
+            _pil_0 = [_pil_2, _pil_4, _pil_6]
+            for _pil_7 in _pil_0:
+                var_x = _pil_7
+                _pil_8 = Expr.str
+                _pil_9 = _pil_8(var_x)
+                _pil_10 = (yield _pil_9)
+        _pil_12 = _pil_11()
+        _pil_13 = [*_pil_12]
+        _var_l = _pil_13
+        _pil_14 = self.assertEqual
+        _pil_15 = Expr.trace
+        _pil_17 = ('int', 0)
+        _pil_18 = ('int', 1)
+        _pil_19 = ('int', 2)
+        _pil_20 = ('str', 0)
+        _pil_21 = ('str', 1)
+        _pil_22 = ('str', 2)
+        _pil_16 = [_pil_17, _pil_18, _pil_19, _pil_20, _pil_21, _pil_22]
+        _pil_23 = _pil_14(_pil_15, _pil_16)
+        _pil_24 = self.assertEqual
+        _pil_25 = self.get_var
+        _pil_26 = locals()
+        _pil_27 = _pil_25(_pil_26)
+        _pil_28 = {}
+        _pil_29 = _pil_24(_pil_27, _pil_28)
+
+    def test_listcomp_one_if(self):
+
+        def _pil_43():
+            _pil_31 = Expr.int
+            _pil_32 = _pil_31(0)
+            _pil_33 = Expr.int
+            _pil_34 = _pil_33(1)
+            _pil_35 = Expr.int
+            _pil_36 = _pil_35(2)
+            _pil_30 = [_pil_32, _pil_34, _pil_36]
+            for _pil_37 in _pil_30:
+                var_x = _pil_37
+                _pil_41 = Expr.true
+                _pil_42 = _pil_41(var_x)
+                if _pil_42:
+                    _pil_38 = Expr.str
+                    _pil_39 = _pil_38(var_x)
+                    _pil_40 = (yield _pil_39)
+        _pil_44 = _pil_43()
+        _pil_45 = [*_pil_44]
+        _var_l = _pil_45
+        _pil_46 = self.assertEqual
+        _pil_47 = Expr.trace
+        _pil_49 = ('int', 0)
+        _pil_50 = ('int', 1)
+        _pil_51 = ('int', 2)
+        _pil_52 = ('true', 0)
+        _pil_53 = ('str', 0)
+        _pil_54 = ('true', 1)
+        _pil_55 = ('str', 1)
+        _pil_56 = ('true', 2)
+        _pil_57 = ('str', 2)
+        _pil_48 = [_pil_49, _pil_50, _pil_51, _pil_52, _pil_53, _pil_54, _pil_55, _pil_56, _pil_57]
+        _pil_58 = _pil_46(_pil_47, _pil_48)
+        _pil_59 = self.assertEqual
+        _pil_60 = self.get_var
+        _pil_61 = locals()
+        _pil_62 = _pil_60(_pil_61)
+        _pil_63 = {}
+        _pil_64 = _pil_59(_pil_62, _pil_63)
+
+    def test_listcomp_two_ifs(self):
+
+        def _pil_79():
+            _pil_66 = Expr.int
+            _pil_67 = _pil_66(0)
+            _pil_68 = Expr.int
+            _pil_69 = _pil_68(1)
+            _pil_70 = Expr.int
+            _pil_71 = _pil_70(2)
+            _pil_65 = [_pil_67, _pil_69, _pil_71]
+            for _pil_72 in _pil_65:
+                var_x = _pil_72
+                _pil_77 = Expr.true
+                _pil_78 = _pil_77(var_x)
+                if _pil_78:
+                    _pil_76 = var_x != 2
+                    if _pil_76:
+                        _pil_73 = Expr.str
+                        _pil_74 = _pil_73(var_x)
+                        _pil_75 = (yield _pil_74)
+        _pil_80 = _pil_79()
+        _pil_81 = [*_pil_80]
+        _var_l = _pil_81
+        _pil_82 = self.assertEqual
+        _pil_83 = Expr.trace
+        _pil_85 = ('int', 0)
+        _pil_86 = ('int', 1)
+        _pil_87 = ('int', 2)
+        _pil_88 = ('true', 0)
+        _pil_89 = ('str', 0)
+        _pil_90 = ('true', 1)
+        _pil_91 = ('str', 1)
+        _pil_92 = ('true', 2)
+        _pil_84 = [_pil_85, _pil_86, _pil_87, _pil_88, _pil_89, _pil_90, _pil_91, _pil_92]
+        _pil_93 = _pil_82(_pil_83, _pil_84)
+        _pil_94 = self.assertEqual
+        _pil_95 = self.get_var
+        _pil_96 = locals()
+        _pil_97 = _pil_95(_pil_96)
+        _pil_98 = {}
+        _pil_99 = _pil_94(_pil_97, _pil_98)
+
+    def test_listcomp_if_boolop(self):
+
+        def _pil_116():
+            _pil_101 = Expr.int
+            _pil_102 = _pil_101(0)
+            _pil_103 = Expr.int
+            _pil_104 = _pil_103(1)
+            _pil_105 = Expr.int
+            _pil_106 = _pil_105(2)
+            _pil_100 = [_pil_102, _pil_104, _pil_106]
+            for _pil_107 in _pil_100:
+                var_x = _pil_107
+                _pil_112 = Expr.true
+                _pil_113 = _pil_112(0)
+                if _pil_113:
+                    _pil_114 = Expr.true
+                    _pil_115 = _pil_114(var_x)
+                    _pil_111 = _pil_115
+                else:
+                    _pil_111 = _pil_113
+                if _pil_111:
+                    _pil_108 = Expr.str
+                    _pil_109 = _pil_108(var_x)
+                    _pil_110 = (yield _pil_109)
+        _pil_117 = _pil_116()
+        _pil_118 = [*_pil_117]
+        _var_l = _pil_118
+        _pil_119 = self.assertEqual
+        _pil_120 = Expr.trace
+        _pil_122 = ('int', 0)
+        _pil_123 = ('int', 1)
+        _pil_124 = ('int', 2)
+        _pil_125 = ('true', 0)
+        _pil_126 = ('true', 0)
+        _pil_127 = ('str', 0)
+        _pil_128 = ('true', 0)
+        _pil_129 = ('true', 1)
+        _pil_130 = ('str', 1)
+        _pil_131 = ('true', 0)
+        _pil_132 = ('true', 2)
+        _pil_133 = ('str', 2)
+        _pil_121 = [_pil_122, _pil_123, _pil_124, _pil_125, _pil_126, _pil_127, _pil_128, _pil_129, _pil_130, _pil_131, _pil_132, _pil_133]
+        _pil_134 = _pil_119(_pil_120, _pil_121)
+        _pil_135 = self.assertEqual
+        _pil_136 = self.get_var
+        _pil_137 = locals()
+        _pil_138 = _pil_136(_pil_137)
+        _pil_139 = {}
+        _pil_140 = _pil_135(_pil_138, _pil_139)
+
+    def test_listcomp_if_ifexp(self):
+
+        def _pil_157():
+            _pil_142 = Expr.int
+            _pil_143 = _pil_142(0)
+            _pil_144 = Expr.int
+            _pil_145 = _pil_144(1)
+            _pil_141 = [_pil_143, _pil_145]
+            for _pil_146 in _pil_141:
+                var_x = _pil_146
+                _pil_150 = Expr.true
+                _pil_151 = _pil_150(0)
+                if _pil_151:
+                    _pil_152 = Expr.true
+                    _pil_153 = _pil_152(var_x)
+                    _pil_156 = _pil_153
+                else:
+                    _pil_154 = Expr.false
+                    _pil_155 = _pil_154(var_x)
+                    _pil_156 = _pil_155
+                if _pil_156:
+                    _pil_147 = Expr.str
+                    _pil_148 = _pil_147(var_x)
+                    _pil_149 = (yield _pil_148)
+        _pil_158 = _pil_157()
+        _pil_159 = [*_pil_158]
+        _var_l = _pil_159
+        _pil_160 = self.assertEqual
+        _pil_161 = Expr.trace
+        _pil_163 = ('int', 0)
+        _pil_164 = ('int', 1)
+        _pil_165 = ('true', 0)
+        _pil_166 = ('true', 0)
+        _pil_167 = ('str', 0)
+        _pil_168 = ('true', 0)
+        _pil_169 = ('true', 1)
+        _pil_170 = ('str', 1)
+        _pil_162 = [_pil_163, _pil_164, _pil_165, _pil_166, _pil_167, _pil_168, _pil_169, _pil_170]
+        _pil_171 = _pil_160(_pil_161, _pil_162)
+        _pil_172 = self.assertEqual
+        _pil_173 = self.get_var
+        _pil_174 = locals()
+        _pil_175 = _pil_173(_pil_174)
+        _pil_176 = {}
+        _pil_177 = _pil_172(_pil_175, _pil_176)
+
+    def test_listcomp_target_tuple(self):
+
+        def _pil_195():
+            _pil_180 = Expr.int
+            _pil_181 = _pil_180(0)
+            _pil_182 = Expr.int
+            _pil_183 = _pil_182(1)
+            _pil_179 = (_pil_181, _pil_183)
+            _pil_185 = Expr.int
+            _pil_186 = _pil_185(2)
+            _pil_187 = Expr.int
+            _pil_188 = _pil_187(3)
+            _pil_184 = (_pil_186, _pil_188)
+            _pil_178 = [_pil_179, _pil_184]
+            for _pil_189 in _pil_178:
+                _pil_190, _pil_191 = _pil_189
+                var_a = _pil_190
+                var_b = _pil_191
+                _pil_192 = Expr.str
+                _pil_193 = _pil_192(var_a)
+                _pil_194 = (yield _pil_193)
+        _pil_196 = _pil_195()
+        _pil_197 = [*_pil_196]
+        _var_l = _pil_197
+        _pil_198 = self.assertEqual
+        _pil_199 = Expr.trace
+        _pil_201 = ('int', 0)
+        _pil_202 = ('int', 1)
+        _pil_203 = ('int', 2)
+        _pil_204 = ('int', 3)
+        _pil_205 = ('str', 0)
+        _pil_206 = ('str', 2)
+        _pil_200 = [_pil_201, _pil_202, _pil_203, _pil_204, _pil_205, _pil_206]
+        _pil_207 = _pil_198(_pil_199, _pil_200)
+        _pil_208 = self.assertEqual
+        _pil_209 = self.get_var
+        _pil_210 = locals()
+        _pil_211 = _pil_209(_pil_210)
+        _pil_212 = {}
+        _pil_213 = _pil_208(_pil_211, _pil_212)
+
+    def test_listcomp_target_list(self):
+
+        def _pil_231():
+            _pil_216 = Expr.int
+            _pil_217 = _pil_216(0)
+            _pil_218 = Expr.int
+            _pil_219 = _pil_218(1)
+            _pil_215 = [_pil_217, _pil_219]
+            _pil_221 = Expr.int
+            _pil_222 = _pil_221(2)
+            _pil_223 = Expr.int
+            _pil_224 = _pil_223(3)
+            _pil_220 = [_pil_222, _pil_224]
+            _pil_214 = [_pil_215, _pil_220]
+            for _pil_225 in _pil_214:
+                _pil_226, _pil_227 = _pil_225
+                var_a = _pil_226
+                var_b = _pil_227
+                _pil_228 = Expr.str
+                _pil_229 = _pil_228(var_a)
+                _pil_230 = (yield _pil_229)
+        _pil_232 = _pil_231()
+        _pil_233 = [*_pil_232]
+        _var_l = _pil_233
+        _pil_234 = self.assertEqual
+        _pil_235 = Expr.trace
+        _pil_237 = ('int', 0)
+        _pil_238 = ('int', 1)
+        _pil_239 = ('int', 2)
+        _pil_240 = ('int', 3)
+        _pil_241 = ('str', 0)
+        _pil_242 = ('str', 2)
+        _pil_236 = [_pil_237, _pil_238, _pil_239, _pil_240, _pil_241, _pil_242]
+        _pil_243 = _pil_234(_pil_235, _pil_236)
+        _pil_244 = self.assertEqual
+        _pil_245 = self.get_var
+        _pil_246 = locals()
+        _pil_247 = _pil_245(_pil_246)
+        _pil_248 = {}
+        _pil_249 = _pil_244(_pil_247, _pil_248)
+
+    def test_listcomp_target_attr(self):
+        _pil_250 = Expr(0)
+        var_obj = _pil_250
+        var_obj.val = None
+
+        def _pil_261():
+            _pil_252 = Expr.int
+            _pil_253 = _pil_252(0)
+            _pil_254 = Expr.int
+            _pil_255 = _pil_254(1)
+            _pil_251 = [_pil_253, _pil_255]
+            for _pil_256 in _pil_251:
+                var_obj.val = _pil_256
+                _pil_257 = Expr.str
+                _pil_258 = var_obj.val
+                _pil_259 = _pil_257(_pil_258)
+                _pil_260 = (yield _pil_259)
+        _pil_262 = _pil_261()
+        _pil_263 = [*_pil_262]
+        _var_l = _pil_263
+        _pil_264 = self.assertEqual
+        _pil_265 = Expr.trace
+        _pil_267 = ('init', 0)
+        _pil_268 = ('setattr', 0, 'val', None)
+        _pil_269 = ('int', 0)
+        _pil_270 = ('int', 1)
+        _pil_271 = ('setattr', 0, 'val', 0)
+        _pil_272 = ('getattr', 0, 'val')
+        _pil_273 = ('str', 0)
+        _pil_274 = ('setattr', 0, 'val', 1)
+        _pil_275 = ('getattr', 0, 'val')
+        _pil_276 = ('str', 1)
+        _pil_266 = [_pil_267, _pil_268, _pil_269, _pil_270, _pil_271, _pil_272, _pil_273, _pil_274, _pil_275, _pil_276]
+        _pil_277 = _pil_264(_pil_265, _pil_266)
+        _pil_278 = self.assertEqual
+        _pil_279 = self.get_var
+        _pil_280 = locals()
+        _pil_281 = _pil_279(_pil_280)
+        _pil_282 = {}
+        _pil_283 = {'val': 1}
+        _pil_284 = Expr(0, _pil_282, _pil_283)
+        _pil_285 = {'var_obj': _pil_284}
+        _pil_286 = _pil_278(_pil_281, _pil_285)
+
+    def test_listcomp_target_subscript(self):
+        _pil_287 = Expr(0)
+        var_arr = _pil_287
+        var_arr[0] = None
+
+        def _pil_298():
+            _pil_289 = Expr.int
+            _pil_290 = _pil_289(0)
+            _pil_291 = Expr.int
+            _pil_292 = _pil_291(1)
+            _pil_288 = [_pil_290, _pil_292]
+            for _pil_293 in _pil_288:
+                var_arr[0] = _pil_293
+                _pil_294 = Expr.str
+                _pil_295 = var_arr[0]
+                _pil_296 = _pil_294(_pil_295)
+                _pil_297 = (yield _pil_296)
+        _pil_299 = _pil_298()
+        _pil_300 = [*_pil_299]
+        _var_l = _pil_300
+        _pil_301 = self.assertEqual
+        _pil_302 = Expr.trace
+        _pil_304 = ('init', 0)
+        _pil_305 = ('setitem', 0, 0, None)
+        _pil_306 = ('int', 0)
+        _pil_307 = ('int', 1)
+        _pil_308 = ('setitem', 0, 0, 0)
+        _pil_309 = ('getitem', 0, 0)
+        _pil_310 = ('str', 0)
+        _pil_311 = ('setitem', 0, 0, 1)
+        _pil_312 = ('getitem', 0, 0)
+        _pil_313 = ('str', 1)
+        _pil_303 = [_pil_304, _pil_305, _pil_306, _pil_307, _pil_308, _pil_309, _pil_310, _pil_311, _pil_312, _pil_313]
+        _pil_314 = _pil_301(_pil_302, _pil_303)
+        _pil_315 = self.assertEqual
+        _pil_316 = self.get_var
+        _pil_317 = locals()
+        _pil_318 = _pil_316(_pil_317)
+        _pil_319 = {0: 1}
+        _pil_320 = {}
+        _pil_321 = Expr(0, _pil_319, _pil_320)
+        _pil_322 = {'var_arr': _pil_321}
+        _pil_323 = _pil_315(_pil_318, _pil_322)
+
+    def test_listcomp_two_fors(self):
+
+        def _pil_339():
+            _pil_325 = Expr.int
+            _pil_326 = _pil_325(0)
+            _pil_327 = Expr.int
+            _pil_328 = _pil_327(1)
+            _pil_324 = [_pil_326, _pil_328]
+            for _pil_329 in _pil_324:
+                var_x = _pil_329
+                _pil_331 = Expr.int
+                _pil_332 = _pil_331(2)
+                _pil_333 = Expr.int
+                _pil_334 = _pil_333(3)
+                _pil_330 = [_pil_332, _pil_334]
+                for _pil_335 in _pil_330:
+                    var_y = _pil_335
+                    _pil_336 = Expr.str
+                    _pil_337 = _pil_336(var_x)
+                    _pil_338 = (yield _pil_337)
+        _pil_340 = _pil_339()
+        _pil_341 = [*_pil_340]
+        _var_l = _pil_341
+        _pil_342 = self.assertEqual
+        _pil_343 = Expr.trace
+        _pil_345 = ('int', 0)
+        _pil_346 = ('int', 1)
+        _pil_347 = ('int', 2)
+        _pil_348 = ('int', 3)
+        _pil_349 = ('str', 0)
+        _pil_350 = ('str', 0)
+        _pil_351 = ('int', 2)
+        _pil_352 = ('int', 3)
+        _pil_353 = ('str', 1)
+        _pil_354 = ('str', 1)
+        _pil_344 = [_pil_345, _pil_346, _pil_347, _pil_348, _pil_349, _pil_350, _pil_351, _pil_352, _pil_353, _pil_354]
+        _pil_355 = _pil_342(_pil_343, _pil_344)
+        _pil_356 = self.assertEqual
+        _pil_357 = self.get_var
+        _pil_358 = locals()
+        _pil_359 = _pil_357(_pil_358)
+        _pil_360 = {}
+        _pil_361 = _pil_356(_pil_359, _pil_360)
+
+    def test_listcomp_two_fors_with_if(self):
+
+        def _pil_381():
+            _pil_363 = Expr.int
+            _pil_364 = _pil_363(0)
+            _pil_365 = Expr.int
+            _pil_366 = _pil_365(1)
+            _pil_362 = [_pil_364, _pil_366]
+            for _pil_367 in _pil_362:
+                var_x = _pil_367
+                _pil_379 = Expr.true
+                _pil_380 = _pil_379(var_x)
+                if _pil_380:
+                    _pil_369 = Expr.int
+                    _pil_370 = _pil_369(2)
+                    _pil_371 = Expr.int
+                    _pil_372 = _pil_371(3)
+                    _pil_368 = [_pil_370, _pil_372]
+                    for _pil_373 in _pil_368:
+                        var_y = _pil_373
+                        _pil_377 = Expr.true
+                        _pil_378 = _pil_377(var_y)
+                        if _pil_378:
+                            _pil_374 = Expr.str
+                            _pil_375 = _pil_374(var_x)
+                            _pil_376 = (yield _pil_375)
+        _pil_382 = _pil_381()
+        _pil_383 = [*_pil_382]
+        _var_l = _pil_383
+        _pil_384 = self.assertEqual
+        _pil_385 = Expr.trace
+        _pil_387 = ('int', 0)
+        _pil_388 = ('int', 1)
+        _pil_389 = ('true', 0)
+        _pil_390 = ('int', 2)
+        _pil_391 = ('int', 3)
+        _pil_392 = ('true', 2)
+        _pil_393 = ('str', 0)
+        _pil_394 = ('true', 3)
+        _pil_395 = ('str', 0)
+        _pil_396 = ('true', 1)
+        _pil_397 = ('int', 2)
+        _pil_398 = ('int', 3)
+        _pil_399 = ('true', 2)
+        _pil_400 = ('str', 1)
+        _pil_401 = ('true', 3)
+        _pil_402 = ('str', 1)
+        _pil_386 = [_pil_387, _pil_388, _pil_389, _pil_390, _pil_391, _pil_392, _pil_393, _pil_394, _pil_395, _pil_396, _pil_397, _pil_398, _pil_399, _pil_400, _pil_401, _pil_402]
+        _pil_403 = _pil_384(_pil_385, _pil_386)
+        _pil_404 = self.assertEqual
+        _pil_405 = self.get_var
+        _pil_406 = locals()
+        _pil_407 = _pil_405(_pil_406)
+        _pil_408 = {}
+        _pil_409 = _pil_404(_pil_407, _pil_408)
+
+    def test_listcomp_three_fors(self):
+
+        def _pil_431():
+            _pil_411 = Expr.int
+            _pil_412 = _pil_411(0)
+            _pil_413 = Expr.int
+            _pil_414 = _pil_413(1)
+            _pil_410 = [_pil_412, _pil_414]
+            for _pil_415 in _pil_410:
+                var_x = _pil_415
+                _pil_417 = Expr.int
+                _pil_418 = _pil_417(0)
+                _pil_419 = Expr.int
+                _pil_420 = _pil_419(1)
+                _pil_416 = [_pil_418, _pil_420]
+                for _pil_421 in _pil_416:
+                    var_y = _pil_421
+                    _pil_423 = Expr.int
+                    _pil_424 = _pil_423(0)
+                    _pil_425 = Expr.int
+                    _pil_426 = _pil_425(1)
+                    _pil_422 = [_pil_424, _pil_426]
+                    for _pil_427 in _pil_422:
+                        var_z = _pil_427
+                        _pil_428 = Expr.str
+                        _pil_429 = _pil_428(var_x)
+                        _pil_430 = (yield _pil_429)
+        _pil_432 = _pil_431()
+        _pil_433 = [*_pil_432]
+        _var_l = _pil_433
+        _pil_434 = self.assertEqual
+        _pil_435 = Expr.trace
+        _pil_437 = ('int', 0)
+        _pil_438 = ('int', 1)
+        _pil_439 = ('int', 0)
+        _pil_440 = ('int', 1)
+        _pil_441 = ('int', 0)
+        _pil_442 = ('int', 1)
+        _pil_443 = ('str', 0)
+        _pil_444 = ('str', 0)
+        _pil_445 = ('int', 0)
+        _pil_446 = ('int', 1)
+        _pil_447 = ('str', 0)
+        _pil_448 = ('str', 0)
+        _pil_449 = ('int', 0)
+        _pil_450 = ('int', 1)
+        _pil_451 = ('int', 0)
+        _pil_452 = ('int', 1)
+        _pil_453 = ('str', 1)
+        _pil_454 = ('str', 1)
+        _pil_455 = ('int', 0)
+        _pil_456 = ('int', 1)
+        _pil_457 = ('str', 1)
+        _pil_458 = ('str', 1)
+        _pil_436 = [_pil_437, _pil_438, _pil_439, _pil_440, _pil_441, _pil_442, _pil_443, _pil_444, _pil_445, _pil_446, _pil_447, _pil_448, _pil_449, _pil_450, _pil_451, _pil_452, _pil_453, _pil_454, _pil_455, _pil_456, _pil_457, _pil_458]
+        _pil_459 = _pil_434(_pil_435, _pil_436)
+        _pil_460 = self.assertEqual
+        _pil_461 = self.get_var
+        _pil_462 = locals()
+        _pil_463 = _pil_461(_pil_462)
+        _pil_464 = {}
+        _pil_465 = _pil_460(_pil_463, _pil_464)
+
+class SetCompTest(PILTestCase):
+
+    def test_setcomp_simple(self):
+
+        def _pil_477():
+            _pil_467 = Expr.int
+            _pil_468 = _pil_467(0)
+            _pil_469 = Expr.int
+            _pil_470 = _pil_469(1)
+            _pil_471 = Expr.int
+            _pil_472 = _pil_471(2)
+            _pil_466 = [_pil_468, _pil_470, _pil_472]
+            for _pil_473 in _pil_466:
+                var_x = _pil_473
+                _pil_474 = Expr.str
+                _pil_475 = _pil_474(var_x)
+                _pil_476 = (yield _pil_475)
+        _pil_478 = _pil_477()
+        _pil_479 = {*_pil_478}
+        _var_s = _pil_479
+        _pil_480 = self.assertEqual
+        _pil_481 = Expr.trace
+        _pil_483 = ('int', 0)
+        _pil_484 = ('int', 1)
+        _pil_485 = ('int', 2)
+        _pil_486 = ('str', 0)
+        _pil_487 = ('str', 1)
+        _pil_488 = ('str', 2)
+        _pil_482 = [_pil_483, _pil_484, _pil_485, _pil_486, _pil_487, _pil_488]
+        _pil_489 = _pil_480(_pil_481, _pil_482)
+        _pil_490 = self.assertEqual
+        _pil_491 = self.get_var
+        _pil_492 = locals()
+        _pil_493 = _pil_491(_pil_492)
+        _pil_494 = {}
+        _pil_495 = _pil_490(_pil_493, _pil_494)
+
+    def test_setcomp_one_if(self):
+
+        def _pil_509():
+            _pil_497 = Expr.int
+            _pil_498 = _pil_497(0)
+            _pil_499 = Expr.int
+            _pil_500 = _pil_499(1)
+            _pil_501 = Expr.int
+            _pil_502 = _pil_501(2)
+            _pil_496 = [_pil_498, _pil_500, _pil_502]
+            for _pil_503 in _pil_496:
+                var_x = _pil_503
+                _pil_507 = Expr.true
+                _pil_508 = _pil_507(var_x)
+                if _pil_508:
+                    _pil_504 = Expr.str
+                    _pil_505 = _pil_504(var_x)
+                    _pil_506 = (yield _pil_505)
+        _pil_510 = _pil_509()
+        _pil_511 = {*_pil_510}
+        _var_s = _pil_511
+        _pil_512 = self.assertEqual
+        _pil_513 = Expr.trace
+        _pil_515 = ('int', 0)
+        _pil_516 = ('int', 1)
+        _pil_517 = ('int', 2)
+        _pil_518 = ('true', 0)
+        _pil_519 = ('str', 0)
+        _pil_520 = ('true', 1)
+        _pil_521 = ('str', 1)
+        _pil_522 = ('true', 2)
+        _pil_523 = ('str', 2)
+        _pil_514 = [_pil_515, _pil_516, _pil_517, _pil_518, _pil_519, _pil_520, _pil_521, _pil_522, _pil_523]
+        _pil_524 = _pil_512(_pil_513, _pil_514)
+        _pil_525 = self.assertEqual
+        _pil_526 = self.get_var
+        _pil_527 = locals()
+        _pil_528 = _pil_526(_pil_527)
+        _pil_529 = {}
+        _pil_530 = _pil_525(_pil_528, _pil_529)
+
+    def test_setcomp_if_boolop(self):
+
+        def _pil_545():
+            _pil_532 = Expr.int
+            _pil_533 = _pil_532(0)
+            _pil_534 = Expr.int
+            _pil_535 = _pil_534(1)
+            _pil_531 = [_pil_533, _pil_535]
+            for _pil_536 in _pil_531:
+                var_x = _pil_536
+                _pil_541 = Expr.true
+                _pil_542 = _pil_541(0)
+                if _pil_542:
+                    _pil_543 = Expr.true
+                    _pil_544 = _pil_543(var_x)
+                    _pil_540 = _pil_544
+                else:
+                    _pil_540 = _pil_542
+                if _pil_540:
+                    _pil_537 = Expr.str
+                    _pil_538 = _pil_537(var_x)
+                    _pil_539 = (yield _pil_538)
+        _pil_546 = _pil_545()
+        _pil_547 = {*_pil_546}
+        _var_s = _pil_547
+        _pil_548 = self.assertEqual
+        _pil_549 = Expr.trace
+        _pil_551 = ('int', 0)
+        _pil_552 = ('int', 1)
+        _pil_553 = ('true', 0)
+        _pil_554 = ('true', 0)
+        _pil_555 = ('str', 0)
+        _pil_556 = ('true', 0)
+        _pil_557 = ('true', 1)
+        _pil_558 = ('str', 1)
+        _pil_550 = [_pil_551, _pil_552, _pil_553, _pil_554, _pil_555, _pil_556, _pil_557, _pil_558]
+        _pil_559 = _pil_548(_pil_549, _pil_550)
+        _pil_560 = self.assertEqual
+        _pil_561 = self.get_var
+        _pil_562 = locals()
+        _pil_563 = _pil_561(_pil_562)
+        _pil_564 = {}
+        _pil_565 = _pil_560(_pil_563, _pil_564)
+
+    def test_setcomp_if_ifexp(self):
+
+        def _pil_582():
+            _pil_567 = Expr.int
+            _pil_568 = _pil_567(0)
+            _pil_569 = Expr.int
+            _pil_570 = _pil_569(1)
+            _pil_566 = [_pil_568, _pil_570]
+            for _pil_571 in _pil_566:
+                var_x = _pil_571
+                _pil_575 = Expr.true
+                _pil_576 = _pil_575(0)
+                if _pil_576:
+                    _pil_577 = Expr.true
+                    _pil_578 = _pil_577(var_x)
+                    _pil_581 = _pil_578
+                else:
+                    _pil_579 = Expr.false
+                    _pil_580 = _pil_579(var_x)
+                    _pil_581 = _pil_580
+                if _pil_581:
+                    _pil_572 = Expr.str
+                    _pil_573 = _pil_572(var_x)
+                    _pil_574 = (yield _pil_573)
+        _pil_583 = _pil_582()
+        _pil_584 = {*_pil_583}
+        _var_s = _pil_584
+        _pil_585 = self.assertEqual
+        _pil_586 = Expr.trace
+        _pil_588 = ('int', 0)
+        _pil_589 = ('int', 1)
+        _pil_590 = ('true', 0)
+        _pil_591 = ('true', 0)
+        _pil_592 = ('str', 0)
+        _pil_593 = ('true', 0)
+        _pil_594 = ('true', 1)
+        _pil_595 = ('str', 1)
+        _pil_587 = [_pil_588, _pil_589, _pil_590, _pil_591, _pil_592, _pil_593, _pil_594, _pil_595]
+        _pil_596 = _pil_585(_pil_586, _pil_587)
+        _pil_597 = self.assertEqual
+        _pil_598 = self.get_var
+        _pil_599 = locals()
+        _pil_600 = _pil_598(_pil_599)
+        _pil_601 = {}
+        _pil_602 = _pil_597(_pil_600, _pil_601)
+
+    def test_setcomp_target_tuple(self):
+
+        def _pil_620():
+            _pil_605 = Expr.int
+            _pil_606 = _pil_605(0)
+            _pil_607 = Expr.int
+            _pil_608 = _pil_607(1)
+            _pil_604 = (_pil_606, _pil_608)
+            _pil_610 = Expr.int
+            _pil_611 = _pil_610(2)
+            _pil_612 = Expr.int
+            _pil_613 = _pil_612(3)
+            _pil_609 = (_pil_611, _pil_613)
+            _pil_603 = [_pil_604, _pil_609]
+            for _pil_614 in _pil_603:
+                _pil_615, _pil_616 = _pil_614
+                var_a = _pil_615
+                var_b = _pil_616
+                _pil_617 = Expr.str
+                _pil_618 = _pil_617(var_a)
+                _pil_619 = (yield _pil_618)
+        _pil_621 = _pil_620()
+        _pil_622 = {*_pil_621}
+        _var_s = _pil_622
+        _pil_623 = self.assertEqual
+        _pil_624 = Expr.trace
+        _pil_626 = ('int', 0)
+        _pil_627 = ('int', 1)
+        _pil_628 = ('int', 2)
+        _pil_629 = ('int', 3)
+        _pil_630 = ('str', 0)
+        _pil_631 = ('str', 2)
+        _pil_625 = [_pil_626, _pil_627, _pil_628, _pil_629, _pil_630, _pil_631]
+        _pil_632 = _pil_623(_pil_624, _pil_625)
+        _pil_633 = self.assertEqual
+        _pil_634 = self.get_var
+        _pil_635 = locals()
+        _pil_636 = _pil_634(_pil_635)
+        _pil_637 = {}
+        _pil_638 = _pil_633(_pil_636, _pil_637)
+
+    def test_setcomp_target_list(self):
+
+        def _pil_656():
+            _pil_641 = Expr.int
+            _pil_642 = _pil_641(0)
+            _pil_643 = Expr.int
+            _pil_644 = _pil_643(1)
+            _pil_640 = [_pil_642, _pil_644]
+            _pil_646 = Expr.int
+            _pil_647 = _pil_646(2)
+            _pil_648 = Expr.int
+            _pil_649 = _pil_648(3)
+            _pil_645 = [_pil_647, _pil_649]
+            _pil_639 = [_pil_640, _pil_645]
+            for _pil_650 in _pil_639:
+                _pil_651, _pil_652 = _pil_650
+                var_a = _pil_651
+                var_b = _pil_652
+                _pil_653 = Expr.str
+                _pil_654 = _pil_653(var_a)
+                _pil_655 = (yield _pil_654)
+        _pil_657 = _pil_656()
+        _pil_658 = {*_pil_657}
+        _var_s = _pil_658
+        _pil_659 = self.assertEqual
+        _pil_660 = Expr.trace
+        _pil_662 = ('int', 0)
+        _pil_663 = ('int', 1)
+        _pil_664 = ('int', 2)
+        _pil_665 = ('int', 3)
+        _pil_666 = ('str', 0)
+        _pil_667 = ('str', 2)
+        _pil_661 = [_pil_662, _pil_663, _pil_664, _pil_665, _pil_666, _pil_667]
+        _pil_668 = _pil_659(_pil_660, _pil_661)
+        _pil_669 = self.assertEqual
+        _pil_670 = self.get_var
+        _pil_671 = locals()
+        _pil_672 = _pil_670(_pil_671)
+        _pil_673 = {}
+        _pil_674 = _pil_669(_pil_672, _pil_673)
+
+    def test_setcomp_target_attr(self):
+        _pil_675 = Expr(0)
+        var_obj = _pil_675
+        var_obj.val = None
+
+        def _pil_686():
+            _pil_677 = Expr.int
+            _pil_678 = _pil_677(0)
+            _pil_679 = Expr.int
+            _pil_680 = _pil_679(1)
+            _pil_676 = [_pil_678, _pil_680]
+            for _pil_681 in _pil_676:
+                var_obj.val = _pil_681
+                _pil_682 = Expr.str
+                _pil_683 = var_obj.val
+                _pil_684 = _pil_682(_pil_683)
+                _pil_685 = (yield _pil_684)
+        _pil_687 = _pil_686()
+        _pil_688 = {*_pil_687}
+        _var_s = _pil_688
+        _pil_689 = self.assertEqual
+        _pil_690 = Expr.trace
+        _pil_692 = ('init', 0)
+        _pil_693 = ('setattr', 0, 'val', None)
+        _pil_694 = ('int', 0)
+        _pil_695 = ('int', 1)
+        _pil_696 = ('setattr', 0, 'val', 0)
+        _pil_697 = ('getattr', 0, 'val')
+        _pil_698 = ('str', 0)
+        _pil_699 = ('setattr', 0, 'val', 1)
+        _pil_700 = ('getattr', 0, 'val')
+        _pil_701 = ('str', 1)
+        _pil_691 = [_pil_692, _pil_693, _pil_694, _pil_695, _pil_696, _pil_697, _pil_698, _pil_699, _pil_700, _pil_701]
+        _pil_702 = _pil_689(_pil_690, _pil_691)
+        _pil_703 = self.assertEqual
+        _pil_704 = self.get_var
+        _pil_705 = locals()
+        _pil_706 = _pil_704(_pil_705)
+        _pil_707 = {}
+        _pil_708 = {'val': 1}
+        _pil_709 = Expr(0, _pil_707, _pil_708)
+        _pil_710 = {'var_obj': _pil_709}
+        _pil_711 = _pil_703(_pil_706, _pil_710)
+
+    def test_setcomp_target_subscript(self):
+        _pil_712 = Expr(0)
+        var_arr = _pil_712
+        var_arr[0] = None
+
+        def _pil_723():
+            _pil_714 = Expr.int
+            _pil_715 = _pil_714(0)
+            _pil_716 = Expr.int
+            _pil_717 = _pil_716(1)
+            _pil_713 = [_pil_715, _pil_717]
+            for _pil_718 in _pil_713:
+                var_arr[0] = _pil_718
+                _pil_719 = Expr.str
+                _pil_720 = var_arr[0]
+                _pil_721 = _pil_719(_pil_720)
+                _pil_722 = (yield _pil_721)
+        _pil_724 = _pil_723()
+        _pil_725 = {*_pil_724}
+        _var_s = _pil_725
+        _pil_726 = self.assertEqual
+        _pil_727 = Expr.trace
+        _pil_729 = ('init', 0)
+        _pil_730 = ('setitem', 0, 0, None)
+        _pil_731 = ('int', 0)
+        _pil_732 = ('int', 1)
+        _pil_733 = ('setitem', 0, 0, 0)
+        _pil_734 = ('getitem', 0, 0)
+        _pil_735 = ('str', 0)
+        _pil_736 = ('setitem', 0, 0, 1)
+        _pil_737 = ('getitem', 0, 0)
+        _pil_738 = ('str', 1)
+        _pil_728 = [_pil_729, _pil_730, _pil_731, _pil_732, _pil_733, _pil_734, _pil_735, _pil_736, _pil_737, _pil_738]
+        _pil_739 = _pil_726(_pil_727, _pil_728)
+        _pil_740 = self.assertEqual
+        _pil_741 = self.get_var
+        _pil_742 = locals()
+        _pil_743 = _pil_741(_pil_742)
+        _pil_744 = {0: 1}
+        _pil_745 = {}
+        _pil_746 = Expr(0, _pil_744, _pil_745)
+        _pil_747 = {'var_arr': _pil_746}
+        _pil_748 = _pil_740(_pil_743, _pil_747)
+
+    def test_setcomp_two_fors(self):
+
+        def _pil_764():
+            _pil_750 = Expr.int
+            _pil_751 = _pil_750(0)
+            _pil_752 = Expr.int
+            _pil_753 = _pil_752(1)
+            _pil_749 = [_pil_751, _pil_753]
+            for _pil_754 in _pil_749:
+                var_x = _pil_754
+                _pil_756 = Expr.int
+                _pil_757 = _pil_756(2)
+                _pil_758 = Expr.int
+                _pil_759 = _pil_758(3)
+                _pil_755 = [_pil_757, _pil_759]
+                for _pil_760 in _pil_755:
+                    var_y = _pil_760
+                    _pil_761 = Expr.str
+                    _pil_762 = _pil_761(var_x)
+                    _pil_763 = (yield _pil_762)
+        _pil_765 = _pil_764()
+        _pil_766 = {*_pil_765}
+        _var_s = _pil_766
+        _pil_767 = self.assertEqual
+        _pil_768 = Expr.trace
+        _pil_770 = ('int', 0)
+        _pil_771 = ('int', 1)
+        _pil_772 = ('int', 2)
+        _pil_773 = ('int', 3)
+        _pil_774 = ('str', 0)
+        _pil_775 = ('str', 0)
+        _pil_776 = ('int', 2)
+        _pil_777 = ('int', 3)
+        _pil_778 = ('str', 1)
+        _pil_779 = ('str', 1)
+        _pil_769 = [_pil_770, _pil_771, _pil_772, _pil_773, _pil_774, _pil_775, _pil_776, _pil_777, _pil_778, _pil_779]
+        _pil_780 = _pil_767(_pil_768, _pil_769)
+        _pil_781 = self.assertEqual
+        _pil_782 = self.get_var
+        _pil_783 = locals()
+        _pil_784 = _pil_782(_pil_783)
+        _pil_785 = {}
+        _pil_786 = _pil_781(_pil_784, _pil_785)
+
+    def test_setcomp_three_fors(self):
+
+        def _pil_808():
+            _pil_788 = Expr.int
+            _pil_789 = _pil_788(0)
+            _pil_790 = Expr.int
+            _pil_791 = _pil_790(1)
+            _pil_787 = [_pil_789, _pil_791]
+            for _pil_792 in _pil_787:
+                var_x = _pil_792
+                _pil_794 = Expr.int
+                _pil_795 = _pil_794(0)
+                _pil_796 = Expr.int
+                _pil_797 = _pil_796(1)
+                _pil_793 = [_pil_795, _pil_797]
+                for _pil_798 in _pil_793:
+                    var_y = _pil_798
+                    _pil_800 = Expr.int
+                    _pil_801 = _pil_800(0)
+                    _pil_802 = Expr.int
+                    _pil_803 = _pil_802(1)
+                    _pil_799 = [_pil_801, _pil_803]
+                    for _pil_804 in _pil_799:
+                        var_z = _pil_804
+                        _pil_805 = Expr.str
+                        _pil_806 = _pil_805(var_x)
+                        _pil_807 = (yield _pil_806)
+        _pil_809 = _pil_808()
+        _pil_810 = {*_pil_809}
+        _var_s = _pil_810
+        _pil_811 = self.assertEqual
+        _pil_812 = Expr.trace
+        _pil_814 = ('int', 0)
+        _pil_815 = ('int', 1)
+        _pil_816 = ('int', 0)
+        _pil_817 = ('int', 1)
+        _pil_818 = ('int', 0)
+        _pil_819 = ('int', 1)
+        _pil_820 = ('str', 0)
+        _pil_821 = ('str', 0)
+        _pil_822 = ('int', 0)
+        _pil_823 = ('int', 1)
+        _pil_824 = ('str', 0)
+        _pil_825 = ('str', 0)
+        _pil_826 = ('int', 0)
+        _pil_827 = ('int', 1)
+        _pil_828 = ('int', 0)
+        _pil_829 = ('int', 1)
+        _pil_830 = ('str', 1)
+        _pil_831 = ('str', 1)
+        _pil_832 = ('int', 0)
+        _pil_833 = ('int', 1)
+        _pil_834 = ('str', 1)
+        _pil_835 = ('str', 1)
+        _pil_813 = [_pil_814, _pil_815, _pil_816, _pil_817, _pil_818, _pil_819, _pil_820, _pil_821, _pil_822, _pil_823, _pil_824, _pil_825, _pil_826, _pil_827, _pil_828, _pil_829, _pil_830, _pil_831, _pil_832, _pil_833, _pil_834, _pil_835]
+        _pil_836 = _pil_811(_pil_812, _pil_813)
+        _pil_837 = self.assertEqual
+        _pil_838 = self.get_var
+        _pil_839 = locals()
+        _pil_840 = _pil_838(_pil_839)
+        _pil_841 = {}
+        _pil_842 = _pil_837(_pil_840, _pil_841)
+
+class DictCompTest(PILTestCase):
+
+    def test_dictcomp_simple(self):
+
+        def _pil_855():
+            _pil_844 = Expr.int
+            _pil_845 = _pil_844(0)
+            _pil_846 = Expr.int
+            _pil_847 = _pil_846(1)
+            _pil_843 = [_pil_845, _pil_847]
+            for _pil_848 in _pil_843:
+                var_x = _pil_848
+                _pil_850 = Expr.int
+                _pil_851 = _pil_850(var_x)
+                _pil_852 = Expr.str
+                _pil_853 = _pil_852(var_x)
+                _pil_849 = (_pil_851, _pil_853)
+                _pil_854 = (yield _pil_849)
+        _pil_856 = _pil_855()
+        _pil_857 = dict(_pil_856)
+        _var_d = _pil_857
+        _pil_858 = self.assertEqual
+        _pil_859 = Expr.trace
+        _pil_861 = ('int', 0)
+        _pil_862 = ('int', 1)
+        _pil_863 = ('int', 0)
+        _pil_864 = ('str', 0)
+        _pil_865 = ('int', 1)
+        _pil_866 = ('str', 1)
+        _pil_860 = [_pil_861, _pil_862, _pil_863, _pil_864, _pil_865, _pil_866]
+        _pil_867 = _pil_858(_pil_859, _pil_860)
+        _pil_868 = self.assertEqual
+        _pil_869 = self.get_var
+        _pil_870 = locals()
+        _pil_871 = _pil_869(_pil_870)
+        _pil_872 = {}
+        _pil_873 = _pil_868(_pil_871, _pil_872)
+
+    def test_dictcomp_one_if(self):
+
+        def _pil_888():
+            _pil_875 = Expr.int
+            _pil_876 = _pil_875(0)
+            _pil_877 = Expr.int
+            _pil_878 = _pil_877(1)
+            _pil_874 = [_pil_876, _pil_878]
+            for _pil_879 in _pil_874:
+                var_x = _pil_879
+                _pil_886 = Expr.true
+                _pil_887 = _pil_886(var_x)
+                if _pil_887:
+                    _pil_881 = Expr.int
+                    _pil_882 = _pil_881(var_x)
+                    _pil_883 = Expr.str
+                    _pil_884 = _pil_883(var_x)
+                    _pil_880 = (_pil_882, _pil_884)
+                    _pil_885 = (yield _pil_880)
+        _pil_889 = _pil_888()
+        _pil_890 = dict(_pil_889)
+        _var_d = _pil_890
+        _pil_891 = self.assertEqual
+        _pil_892 = Expr.trace
+        _pil_894 = ('int', 0)
+        _pil_895 = ('int', 1)
+        _pil_896 = ('true', 0)
+        _pil_897 = ('int', 0)
+        _pil_898 = ('str', 0)
+        _pil_899 = ('true', 1)
+        _pil_900 = ('int', 1)
+        _pil_901 = ('str', 1)
+        _pil_893 = [_pil_894, _pil_895, _pil_896, _pil_897, _pil_898, _pil_899, _pil_900, _pil_901]
+        _pil_902 = _pil_891(_pil_892, _pil_893)
+        _pil_903 = self.assertEqual
+        _pil_904 = self.get_var
+        _pil_905 = locals()
+        _pil_906 = _pil_904(_pil_905)
+        _pil_907 = {}
+        _pil_908 = _pil_903(_pil_906, _pil_907)
+
+    def test_dictcomp_if_boolop(self):
+
+        def _pil_926():
+            _pil_910 = Expr.int
+            _pil_911 = _pil_910(0)
+            _pil_912 = Expr.int
+            _pil_913 = _pil_912(1)
+            _pil_909 = [_pil_911, _pil_913]
+            for _pil_914 in _pil_909:
+                var_x = _pil_914
+                _pil_922 = Expr.true
+                _pil_923 = _pil_922(0)
+                if _pil_923:
+                    _pil_924 = Expr.true
+                    _pil_925 = _pil_924(var_x)
+                    _pil_921 = _pil_925
+                else:
+                    _pil_921 = _pil_923
+                if _pil_921:
+                    _pil_916 = Expr.int
+                    _pil_917 = _pil_916(var_x)
+                    _pil_918 = Expr.str
+                    _pil_919 = _pil_918(var_x)
+                    _pil_915 = (_pil_917, _pil_919)
+                    _pil_920 = (yield _pil_915)
+        _pil_927 = _pil_926()
+        _pil_928 = dict(_pil_927)
+        _var_d = _pil_928
+        _pil_929 = self.assertEqual
+        _pil_930 = Expr.trace
+        _pil_932 = ('int', 0)
+        _pil_933 = ('int', 1)
+        _pil_934 = ('true', 0)
+        _pil_935 = ('true', 0)
+        _pil_936 = ('int', 0)
+        _pil_937 = ('str', 0)
+        _pil_938 = ('true', 0)
+        _pil_939 = ('true', 1)
+        _pil_940 = ('int', 1)
+        _pil_941 = ('str', 1)
+        _pil_931 = [_pil_932, _pil_933, _pil_934, _pil_935, _pil_936, _pil_937, _pil_938, _pil_939, _pil_940, _pil_941]
+        _pil_942 = _pil_929(_pil_930, _pil_931)
+        _pil_943 = self.assertEqual
+        _pil_944 = self.get_var
+        _pil_945 = locals()
+        _pil_946 = _pil_944(_pil_945)
+        _pil_947 = {}
+        _pil_948 = _pil_943(_pil_946, _pil_947)
+
+    def test_dictcomp_if_ifexp(self):
+
+        def _pil_968():
+            _pil_950 = Expr.int
+            _pil_951 = _pil_950(0)
+            _pil_952 = Expr.int
+            _pil_953 = _pil_952(1)
+            _pil_949 = [_pil_951, _pil_953]
+            for _pil_954 in _pil_949:
+                var_x = _pil_954
+                _pil_961 = Expr.true
+                _pil_962 = _pil_961(0)
+                if _pil_962:
+                    _pil_963 = Expr.true
+                    _pil_964 = _pil_963(var_x)
+                    _pil_967 = _pil_964
+                else:
+                    _pil_965 = Expr.false
+                    _pil_966 = _pil_965(var_x)
+                    _pil_967 = _pil_966
+                if _pil_967:
+                    _pil_956 = Expr.int
+                    _pil_957 = _pil_956(var_x)
+                    _pil_958 = Expr.str
+                    _pil_959 = _pil_958(var_x)
+                    _pil_955 = (_pil_957, _pil_959)
+                    _pil_960 = (yield _pil_955)
+        _pil_969 = _pil_968()
+        _pil_970 = dict(_pil_969)
+        _var_d = _pil_970
+        _pil_971 = self.assertEqual
+        _pil_972 = Expr.trace
+        _pil_974 = ('int', 0)
+        _pil_975 = ('int', 1)
+        _pil_976 = ('true', 0)
+        _pil_977 = ('true', 0)
+        _pil_978 = ('int', 0)
+        _pil_979 = ('str', 0)
+        _pil_980 = ('true', 0)
+        _pil_981 = ('true', 1)
+        _pil_982 = ('int', 1)
+        _pil_983 = ('str', 1)
+        _pil_973 = [_pil_974, _pil_975, _pil_976, _pil_977, _pil_978, _pil_979, _pil_980, _pil_981, _pil_982, _pil_983]
+        _pil_984 = _pil_971(_pil_972, _pil_973)
+        _pil_985 = self.assertEqual
+        _pil_986 = self.get_var
+        _pil_987 = locals()
+        _pil_988 = _pil_986(_pil_987)
+        _pil_989 = {}
+        _pil_990 = _pil_985(_pil_988, _pil_989)
+
+    def test_dictcomp_target_tuple(self):
+
+        def _pil_1011():
+            _pil_993 = Expr.int
+            _pil_994 = _pil_993(0)
+            _pil_995 = Expr.int
+            _pil_996 = _pil_995(1)
+            _pil_992 = (_pil_994, _pil_996)
+            _pil_998 = Expr.int
+            _pil_999 = _pil_998(2)
+            _pil_1000 = Expr.int
+            _pil_1001 = _pil_1000(3)
+            _pil_997 = (_pil_999, _pil_1001)
+            _pil_991 = [_pil_992, _pil_997]
+            for _pil_1002 in _pil_991:
+                _pil_1003, _pil_1004 = _pil_1002
+                var_a = _pil_1003
+                var_b = _pil_1004
+                _pil_1006 = Expr.int
+                _pil_1007 = _pil_1006(var_a)
+                _pil_1008 = Expr.str
+                _pil_1009 = _pil_1008(var_b)
+                _pil_1005 = (_pil_1007, _pil_1009)
+                _pil_1010 = (yield _pil_1005)
+        _pil_1012 = _pil_1011()
+        _pil_1013 = dict(_pil_1012)
+        _var_d = _pil_1013
+        _pil_1014 = self.assertEqual
+        _pil_1015 = Expr.trace
+        _pil_1017 = ('int', 0)
+        _pil_1018 = ('int', 1)
+        _pil_1019 = ('int', 2)
+        _pil_1020 = ('int', 3)
+        _pil_1021 = ('int', 0)
+        _pil_1022 = ('str', 1)
+        _pil_1023 = ('int', 2)
+        _pil_1024 = ('str', 3)
+        _pil_1016 = [_pil_1017, _pil_1018, _pil_1019, _pil_1020, _pil_1021, _pil_1022, _pil_1023, _pil_1024]
+        _pil_1025 = _pil_1014(_pil_1015, _pil_1016)
+        _pil_1026 = self.assertEqual
+        _pil_1027 = self.get_var
+        _pil_1028 = locals()
+        _pil_1029 = _pil_1027(_pil_1028)
+        _pil_1030 = {}
+        _pil_1031 = _pil_1026(_pil_1029, _pil_1030)
+
+    def test_dictcomp_target_list(self):
+
+        def _pil_1052():
+            _pil_1034 = Expr.int
+            _pil_1035 = _pil_1034(0)
+            _pil_1036 = Expr.int
+            _pil_1037 = _pil_1036(1)
+            _pil_1033 = [_pil_1035, _pil_1037]
+            _pil_1039 = Expr.int
+            _pil_1040 = _pil_1039(2)
+            _pil_1041 = Expr.int
+            _pil_1042 = _pil_1041(3)
+            _pil_1038 = [_pil_1040, _pil_1042]
+            _pil_1032 = [_pil_1033, _pil_1038]
+            for _pil_1043 in _pil_1032:
+                _pil_1044, _pil_1045 = _pil_1043
+                var_a = _pil_1044
+                var_b = _pil_1045
+                _pil_1047 = Expr.int
+                _pil_1048 = _pil_1047(var_a)
+                _pil_1049 = Expr.str
+                _pil_1050 = _pil_1049(var_b)
+                _pil_1046 = (_pil_1048, _pil_1050)
+                _pil_1051 = (yield _pil_1046)
+        _pil_1053 = _pil_1052()
+        _pil_1054 = dict(_pil_1053)
+        _var_d = _pil_1054
+        _pil_1055 = self.assertEqual
+        _pil_1056 = Expr.trace
+        _pil_1058 = ('int', 0)
+        _pil_1059 = ('int', 1)
+        _pil_1060 = ('int', 2)
+        _pil_1061 = ('int', 3)
+        _pil_1062 = ('int', 0)
+        _pil_1063 = ('str', 1)
+        _pil_1064 = ('int', 2)
+        _pil_1065 = ('str', 3)
+        _pil_1057 = [_pil_1058, _pil_1059, _pil_1060, _pil_1061, _pil_1062, _pil_1063, _pil_1064, _pil_1065]
+        _pil_1066 = _pil_1055(_pil_1056, _pil_1057)
+        _pil_1067 = self.assertEqual
+        _pil_1068 = self.get_var
+        _pil_1069 = locals()
+        _pil_1070 = _pil_1068(_pil_1069)
+        _pil_1071 = {}
+        _pil_1072 = _pil_1067(_pil_1070, _pil_1071)
+
+    def test_dictcomp_target_attr(self):
+        _pil_1073 = Expr(0)
+        var_obj = _pil_1073
+        var_obj.val = None
+
+        def _pil_1088():
+            _pil_1075 = Expr.int
+            _pil_1076 = _pil_1075(0)
+            _pil_1077 = Expr.int
+            _pil_1078 = _pil_1077(1)
+            _pil_1074 = [_pil_1076, _pil_1078]
+            for _pil_1079 in _pil_1074:
+                var_obj.val = _pil_1079
+                _pil_1081 = Expr.int
+                _pil_1082 = var_obj.val
+                _pil_1083 = _pil_1081(_pil_1082)
+                _pil_1084 = Expr.str
+                _pil_1085 = var_obj.val
+                _pil_1086 = _pil_1084(_pil_1085)
+                _pil_1080 = (_pil_1083, _pil_1086)
+                _pil_1087 = (yield _pil_1080)
+        _pil_1089 = _pil_1088()
+        _pil_1090 = dict(_pil_1089)
+        _var_d = _pil_1090
+        _pil_1091 = self.assertEqual
+        _pil_1092 = Expr.trace
+        _pil_1094 = ('init', 0)
+        _pil_1095 = ('setattr', 0, 'val', None)
+        _pil_1096 = ('int', 0)
+        _pil_1097 = ('int', 1)
+        _pil_1098 = ('setattr', 0, 'val', 0)
+        _pil_1099 = ('getattr', 0, 'val')
+        _pil_1100 = ('int', 0)
+        _pil_1101 = ('getattr', 0, 'val')
+        _pil_1102 = ('str', 0)
+        _pil_1103 = ('setattr', 0, 'val', 1)
+        _pil_1104 = ('getattr', 0, 'val')
+        _pil_1105 = ('int', 1)
+        _pil_1106 = ('getattr', 0, 'val')
+        _pil_1107 = ('str', 1)
+        _pil_1093 = [_pil_1094, _pil_1095, _pil_1096, _pil_1097, _pil_1098, _pil_1099, _pil_1100, _pil_1101, _pil_1102, _pil_1103, _pil_1104, _pil_1105, _pil_1106, _pil_1107]
+        _pil_1108 = _pil_1091(_pil_1092, _pil_1093)
+        _pil_1109 = self.assertEqual
+        _pil_1110 = self.get_var
+        _pil_1111 = locals()
+        _pil_1112 = _pil_1110(_pil_1111)
+        _pil_1113 = {}
+        _pil_1114 = {'val': 1}
+        _pil_1115 = Expr(0, _pil_1113, _pil_1114)
+        _pil_1116 = {'var_obj': _pil_1115}
+        _pil_1117 = _pil_1109(_pil_1112, _pil_1116)
+
+    def test_dictcomp_target_subscript(self):
+        _pil_1118 = Expr(0)
+        var_arr = _pil_1118
+        var_arr[0] = None
+
+        def _pil_1133():
+            _pil_1120 = Expr.int
+            _pil_1121 = _pil_1120(0)
+            _pil_1122 = Expr.int
+            _pil_1123 = _pil_1122(1)
+            _pil_1119 = [_pil_1121, _pil_1123]
+            for _pil_1124 in _pil_1119:
+                var_arr[0] = _pil_1124
+                _pil_1126 = Expr.int
+                _pil_1127 = var_arr[0]
+                _pil_1128 = _pil_1126(_pil_1127)
+                _pil_1129 = Expr.str
+                _pil_1130 = var_arr[0]
+                _pil_1131 = _pil_1129(_pil_1130)
+                _pil_1125 = (_pil_1128, _pil_1131)
+                _pil_1132 = (yield _pil_1125)
+        _pil_1134 = _pil_1133()
+        _pil_1135 = dict(_pil_1134)
+        _var_d = _pil_1135
+        _pil_1136 = self.assertEqual
+        _pil_1137 = Expr.trace
+        _pil_1139 = ('init', 0)
+        _pil_1140 = ('setitem', 0, 0, None)
+        _pil_1141 = ('int', 0)
+        _pil_1142 = ('int', 1)
+        _pil_1143 = ('setitem', 0, 0, 0)
+        _pil_1144 = ('getitem', 0, 0)
+        _pil_1145 = ('int', 0)
+        _pil_1146 = ('getitem', 0, 0)
+        _pil_1147 = ('str', 0)
+        _pil_1148 = ('setitem', 0, 0, 1)
+        _pil_1149 = ('getitem', 0, 0)
+        _pil_1150 = ('int', 1)
+        _pil_1151 = ('getitem', 0, 0)
+        _pil_1152 = ('str', 1)
+        _pil_1138 = [_pil_1139, _pil_1140, _pil_1141, _pil_1142, _pil_1143, _pil_1144, _pil_1145, _pil_1146, _pil_1147, _pil_1148, _pil_1149, _pil_1150, _pil_1151, _pil_1152]
+        _pil_1153 = _pil_1136(_pil_1137, _pil_1138)
+        _pil_1154 = self.assertEqual
+        _pil_1155 = self.get_var
+        _pil_1156 = locals()
+        _pil_1157 = _pil_1155(_pil_1156)
+        _pil_1158 = {0: 1}
+        _pil_1159 = {}
+        _pil_1160 = Expr(0, _pil_1158, _pil_1159)
+        _pil_1161 = {'var_arr': _pil_1160}
+        _pil_1162 = _pil_1154(_pil_1157, _pil_1161)
+
+    def test_dictcomp_two_fors(self):
+
+        def _pil_1181():
+            _pil_1164 = Expr.int
+            _pil_1165 = _pil_1164(0)
+            _pil_1166 = Expr.int
+            _pil_1167 = _pil_1166(1)
+            _pil_1163 = [_pil_1165, _pil_1167]
+            for _pil_1168 in _pil_1163:
+                var_x = _pil_1168
+                _pil_1170 = Expr.int
+                _pil_1171 = _pil_1170(2)
+                _pil_1172 = Expr.int
+                _pil_1173 = _pil_1172(3)
+                _pil_1169 = [_pil_1171, _pil_1173]
+                for _pil_1174 in _pil_1169:
+                    var_y = _pil_1174
+                    _pil_1176 = Expr.int
+                    _pil_1177 = _pil_1176(var_x)
+                    _pil_1178 = Expr.str
+                    _pil_1179 = _pil_1178(var_y)
+                    _pil_1175 = (_pil_1177, _pil_1179)
+                    _pil_1180 = (yield _pil_1175)
+        _pil_1182 = _pil_1181()
+        _pil_1183 = dict(_pil_1182)
+        _var_d = _pil_1183
+        _pil_1184 = self.assertEqual
+        _pil_1185 = Expr.trace
+        _pil_1187 = ('int', 0)
+        _pil_1188 = ('int', 1)
+        _pil_1189 = ('int', 2)
+        _pil_1190 = ('int', 3)
+        _pil_1191 = ('int', 0)
+        _pil_1192 = ('str', 2)
+        _pil_1193 = ('int', 0)
+        _pil_1194 = ('str', 3)
+        _pil_1195 = ('int', 2)
+        _pil_1196 = ('int', 3)
+        _pil_1197 = ('int', 1)
+        _pil_1198 = ('str', 2)
+        _pil_1199 = ('int', 1)
+        _pil_1200 = ('str', 3)
+        _pil_1186 = [_pil_1187, _pil_1188, _pil_1189, _pil_1190, _pil_1191, _pil_1192, _pil_1193, _pil_1194, _pil_1195, _pil_1196, _pil_1197, _pil_1198, _pil_1199, _pil_1200]
+        _pil_1201 = _pil_1184(_pil_1185, _pil_1186)
+        _pil_1202 = self.assertEqual
+        _pil_1203 = self.get_var
+        _pil_1204 = locals()
+        _pil_1205 = _pil_1203(_pil_1204)
+        _pil_1206 = {}
+        _pil_1207 = _pil_1202(_pil_1205, _pil_1206)
+
+    def test_dictcomp_three_fors(self):
+
+        def _pil_1232():
+            _pil_1209 = Expr.int
+            _pil_1210 = _pil_1209(0)
+            _pil_1211 = Expr.int
+            _pil_1212 = _pil_1211(1)
+            _pil_1208 = [_pil_1210, _pil_1212]
+            for _pil_1213 in _pil_1208:
+                var_x = _pil_1213
+                _pil_1215 = Expr.int
+                _pil_1216 = _pil_1215(0)
+                _pil_1217 = Expr.int
+                _pil_1218 = _pil_1217(1)
+                _pil_1214 = [_pil_1216, _pil_1218]
+                for _pil_1219 in _pil_1214:
+                    var_y = _pil_1219
+                    _pil_1221 = Expr.int
+                    _pil_1222 = _pil_1221(0)
+                    _pil_1223 = Expr.int
+                    _pil_1224 = _pil_1223(1)
+                    _pil_1220 = [_pil_1222, _pil_1224]
+                    for _pil_1225 in _pil_1220:
+                        var_z = _pil_1225
+                        _pil_1227 = Expr.int
+                        _pil_1228 = _pil_1227(var_x)
+                        _pil_1229 = Expr.str
+                        _pil_1230 = _pil_1229(var_z)
+                        _pil_1226 = (_pil_1228, _pil_1230)
+                        _pil_1231 = (yield _pil_1226)
+        _pil_1233 = _pil_1232()
+        _pil_1234 = dict(_pil_1233)
+        _var_d = _pil_1234
+        _pil_1235 = self.assertEqual
+        _pil_1236 = Expr.trace
+        _pil_1238 = ('int', 0)
+        _pil_1239 = ('int', 1)
+        _pil_1240 = ('int', 0)
+        _pil_1241 = ('int', 1)
+        _pil_1242 = ('int', 0)
+        _pil_1243 = ('int', 1)
+        _pil_1244 = ('int', 0)
+        _pil_1245 = ('str', 0)
+        _pil_1246 = ('int', 0)
+        _pil_1247 = ('str', 1)
+        _pil_1248 = ('int', 0)
+        _pil_1249 = ('int', 1)
+        _pil_1250 = ('int', 0)
+        _pil_1251 = ('str', 0)
+        _pil_1252 = ('int', 0)
+        _pil_1253 = ('str', 1)
+        _pil_1254 = ('int', 0)
+        _pil_1255 = ('int', 1)
+        _pil_1256 = ('int', 0)
+        _pil_1257 = ('int', 1)
+        _pil_1258 = ('int', 1)
+        _pil_1259 = ('str', 0)
+        _pil_1260 = ('int', 1)
+        _pil_1261 = ('str', 1)
+        _pil_1262 = ('int', 0)
+        _pil_1263 = ('int', 1)
+        _pil_1264 = ('int', 1)
+        _pil_1265 = ('str', 0)
+        _pil_1266 = ('int', 1)
+        _pil_1267 = ('str', 1)
+        _pil_1237 = [_pil_1238, _pil_1239, _pil_1240, _pil_1241, _pil_1242, _pil_1243, _pil_1244, _pil_1245, _pil_1246, _pil_1247, _pil_1248, _pil_1249, _pil_1250, _pil_1251, _pil_1252, _pil_1253, _pil_1254, _pil_1255, _pil_1256, _pil_1257, _pil_1258, _pil_1259, _pil_1260, _pil_1261, _pil_1262, _pil_1263, _pil_1264, _pil_1265, _pil_1266, _pil_1267]
+        _pil_1268 = _pil_1235(_pil_1236, _pil_1237)
+        _pil_1269 = self.assertEqual
+        _pil_1270 = self.get_var
+        _pil_1271 = locals()
+        _pil_1272 = _pil_1270(_pil_1271)
+        _pil_1273 = {}
+        _pil_1274 = _pil_1269(_pil_1272, _pil_1273)
+
+class GeneratorExpTest(PILTestCase):
+
+    def test_genexp_simple(self):
+
+        def _pil_1286():
+            _pil_1276 = Expr.int
+            _pil_1277 = _pil_1276(0)
+            _pil_1278 = Expr.int
+            _pil_1279 = _pil_1278(1)
+            _pil_1280 = Expr.int
+            _pil_1281 = _pil_1280(2)
+            _pil_1275 = [_pil_1277, _pil_1279, _pil_1281]
+            for _pil_1282 in _pil_1275:
+                var_x = _pil_1282
+                _pil_1283 = Expr.str
+                _pil_1284 = _pil_1283(var_x)
+                _pil_1285 = (yield _pil_1284)
+        _pil_1287 = _pil_1286()
+        g = _pil_1287
+        _pil_1288 = list(g)
+        _var_l = _pil_1288
+        _pil_1289 = self.assertEqual
+        _pil_1290 = Expr.trace
+        _pil_1292 = ('int', 0)
+        _pil_1293 = ('int', 1)
+        _pil_1294 = ('int', 2)
+        _pil_1295 = ('str', 0)
+        _pil_1296 = ('str', 1)
+        _pil_1297 = ('str', 2)
+        _pil_1291 = [_pil_1292, _pil_1293, _pil_1294, _pil_1295, _pil_1296, _pil_1297]
+        _pil_1298 = _pil_1289(_pil_1290, _pil_1291)
+        _pil_1299 = self.assertEqual
+        _pil_1300 = self.get_var
+        _pil_1301 = locals()
+        _pil_1302 = _pil_1300(_pil_1301)
+        _pil_1303 = {}
+        _pil_1304 = _pil_1299(_pil_1302, _pil_1303)
+
+    def test_genexp_one_if(self):
+
+        def _pil_1318():
+            _pil_1306 = Expr.int
+            _pil_1307 = _pil_1306(0)
+            _pil_1308 = Expr.int
+            _pil_1309 = _pil_1308(1)
+            _pil_1310 = Expr.int
+            _pil_1311 = _pil_1310(2)
+            _pil_1305 = [_pil_1307, _pil_1309, _pil_1311]
+            for _pil_1312 in _pil_1305:
+                var_x = _pil_1312
+                _pil_1316 = Expr.true
+                _pil_1317 = _pil_1316(var_x)
+                if _pil_1317:
+                    _pil_1313 = Expr.str
+                    _pil_1314 = _pil_1313(var_x)
+                    _pil_1315 = (yield _pil_1314)
+        _pil_1319 = _pil_1318()
+        g = _pil_1319
+        _pil_1320 = list(g)
+        _var_l = _pil_1320
+        _pil_1321 = self.assertEqual
+        _pil_1322 = Expr.trace
+        _pil_1324 = ('int', 0)
+        _pil_1325 = ('int', 1)
+        _pil_1326 = ('int', 2)
+        _pil_1327 = ('true', 0)
+        _pil_1328 = ('str', 0)
+        _pil_1329 = ('true', 1)
+        _pil_1330 = ('str', 1)
+        _pil_1331 = ('true', 2)
+        _pil_1332 = ('str', 2)
+        _pil_1323 = [_pil_1324, _pil_1325, _pil_1326, _pil_1327, _pil_1328, _pil_1329, _pil_1330, _pil_1331, _pil_1332]
+        _pil_1333 = _pil_1321(_pil_1322, _pil_1323)
+        _pil_1334 = self.assertEqual
+        _pil_1335 = self.get_var
+        _pil_1336 = locals()
+        _pil_1337 = _pil_1335(_pil_1336)
+        _pil_1338 = {}
+        _pil_1339 = _pil_1334(_pil_1337, _pil_1338)
+
+    def test_genexp_if_boolop(self):
+
+        def _pil_1354():
+            _pil_1341 = Expr.int
+            _pil_1342 = _pil_1341(0)
+            _pil_1343 = Expr.int
+            _pil_1344 = _pil_1343(1)
+            _pil_1340 = [_pil_1342, _pil_1344]
+            for _pil_1345 in _pil_1340:
+                var_x = _pil_1345
+                _pil_1350 = Expr.true
+                _pil_1351 = _pil_1350(0)
+                if _pil_1351:
+                    _pil_1352 = Expr.true
+                    _pil_1353 = _pil_1352(var_x)
+                    _pil_1349 = _pil_1353
+                else:
+                    _pil_1349 = _pil_1351
+                if _pil_1349:
+                    _pil_1346 = Expr.str
+                    _pil_1347 = _pil_1346(var_x)
+                    _pil_1348 = (yield _pil_1347)
+        _pil_1355 = _pil_1354()
+        g = _pil_1355
+        _pil_1356 = list(g)
+        _var_l = _pil_1356
+        _pil_1357 = self.assertEqual
+        _pil_1358 = Expr.trace
+        _pil_1360 = ('int', 0)
+        _pil_1361 = ('int', 1)
+        _pil_1362 = ('true', 0)
+        _pil_1363 = ('true', 0)
+        _pil_1364 = ('str', 0)
+        _pil_1365 = ('true', 0)
+        _pil_1366 = ('true', 1)
+        _pil_1367 = ('str', 1)
+        _pil_1359 = [_pil_1360, _pil_1361, _pil_1362, _pil_1363, _pil_1364, _pil_1365, _pil_1366, _pil_1367]
+        _pil_1368 = _pil_1357(_pil_1358, _pil_1359)
+        _pil_1369 = self.assertEqual
+        _pil_1370 = self.get_var
+        _pil_1371 = locals()
+        _pil_1372 = _pil_1370(_pil_1371)
+        _pil_1373 = {}
+        _pil_1374 = _pil_1369(_pil_1372, _pil_1373)
+
+    def test_genexp_if_ifexp(self):
+
+        def _pil_1391():
+            _pil_1376 = Expr.int
+            _pil_1377 = _pil_1376(0)
+            _pil_1378 = Expr.int
+            _pil_1379 = _pil_1378(1)
+            _pil_1375 = [_pil_1377, _pil_1379]
+            for _pil_1380 in _pil_1375:
+                var_x = _pil_1380
+                _pil_1384 = Expr.true
+                _pil_1385 = _pil_1384(0)
+                if _pil_1385:
+                    _pil_1386 = Expr.true
+                    _pil_1387 = _pil_1386(var_x)
+                    _pil_1390 = _pil_1387
+                else:
+                    _pil_1388 = Expr.false
+                    _pil_1389 = _pil_1388(var_x)
+                    _pil_1390 = _pil_1389
+                if _pil_1390:
+                    _pil_1381 = Expr.str
+                    _pil_1382 = _pil_1381(var_x)
+                    _pil_1383 = (yield _pil_1382)
+        _pil_1392 = _pil_1391()
+        g = _pil_1392
+        _pil_1393 = list(g)
+        _var_l = _pil_1393
+        _pil_1394 = self.assertEqual
+        _pil_1395 = Expr.trace
+        _pil_1397 = ('int', 0)
+        _pil_1398 = ('int', 1)
+        _pil_1399 = ('true', 0)
+        _pil_1400 = ('true', 0)
+        _pil_1401 = ('str', 0)
+        _pil_1402 = ('true', 0)
+        _pil_1403 = ('true', 1)
+        _pil_1404 = ('str', 1)
+        _pil_1396 = [_pil_1397, _pil_1398, _pil_1399, _pil_1400, _pil_1401, _pil_1402, _pil_1403, _pil_1404]
+        _pil_1405 = _pil_1394(_pil_1395, _pil_1396)
+        _pil_1406 = self.assertEqual
+        _pil_1407 = self.get_var
+        _pil_1408 = locals()
+        _pil_1409 = _pil_1407(_pil_1408)
+        _pil_1410 = {}
+        _pil_1411 = _pil_1406(_pil_1409, _pil_1410)
+
+    def test_genexp_target_tuple(self):
+
+        def _pil_1429():
+            _pil_1414 = Expr.int
+            _pil_1415 = _pil_1414(0)
+            _pil_1416 = Expr.int
+            _pil_1417 = _pil_1416(1)
+            _pil_1413 = (_pil_1415, _pil_1417)
+            _pil_1419 = Expr.int
+            _pil_1420 = _pil_1419(2)
+            _pil_1421 = Expr.int
+            _pil_1422 = _pil_1421(3)
+            _pil_1418 = (_pil_1420, _pil_1422)
+            _pil_1412 = [_pil_1413, _pil_1418]
+            for _pil_1423 in _pil_1412:
+                _pil_1424, _pil_1425 = _pil_1423
+                var_a = _pil_1424
+                var_b = _pil_1425
+                _pil_1426 = Expr.str
+                _pil_1427 = _pil_1426(var_a)
+                _pil_1428 = (yield _pil_1427)
+        _pil_1430 = _pil_1429()
+        g = _pil_1430
+        _pil_1431 = list(g)
+        _var_l = _pil_1431
+        _pil_1432 = self.assertEqual
+        _pil_1433 = Expr.trace
+        _pil_1435 = ('int', 0)
+        _pil_1436 = ('int', 1)
+        _pil_1437 = ('int', 2)
+        _pil_1438 = ('int', 3)
+        _pil_1439 = ('str', 0)
+        _pil_1440 = ('str', 2)
+        _pil_1434 = [_pil_1435, _pil_1436, _pil_1437, _pil_1438, _pil_1439, _pil_1440]
+        _pil_1441 = _pil_1432(_pil_1433, _pil_1434)
+        _pil_1442 = self.assertEqual
+        _pil_1443 = self.get_var
+        _pil_1444 = locals()
+        _pil_1445 = _pil_1443(_pil_1444)
+        _pil_1446 = {}
+        _pil_1447 = _pil_1442(_pil_1445, _pil_1446)
+
+    def test_genexp_target_list(self):
+
+        def _pil_1465():
+            _pil_1450 = Expr.int
+            _pil_1451 = _pil_1450(0)
+            _pil_1452 = Expr.int
+            _pil_1453 = _pil_1452(1)
+            _pil_1449 = [_pil_1451, _pil_1453]
+            _pil_1455 = Expr.int
+            _pil_1456 = _pil_1455(2)
+            _pil_1457 = Expr.int
+            _pil_1458 = _pil_1457(3)
+            _pil_1454 = [_pil_1456, _pil_1458]
+            _pil_1448 = [_pil_1449, _pil_1454]
+            for _pil_1459 in _pil_1448:
+                _pil_1460, _pil_1461 = _pil_1459
+                var_a = _pil_1460
+                var_b = _pil_1461
+                _pil_1462 = Expr.str
+                _pil_1463 = _pil_1462(var_a)
+                _pil_1464 = (yield _pil_1463)
+        _pil_1466 = _pil_1465()
+        g = _pil_1466
+        _pil_1467 = list(g)
+        _var_l = _pil_1467
+        _pil_1468 = self.assertEqual
+        _pil_1469 = Expr.trace
+        _pil_1471 = ('int', 0)
+        _pil_1472 = ('int', 1)
+        _pil_1473 = ('int', 2)
+        _pil_1474 = ('int', 3)
+        _pil_1475 = ('str', 0)
+        _pil_1476 = ('str', 2)
+        _pil_1470 = [_pil_1471, _pil_1472, _pil_1473, _pil_1474, _pil_1475, _pil_1476]
+        _pil_1477 = _pil_1468(_pil_1469, _pil_1470)
+        _pil_1478 = self.assertEqual
+        _pil_1479 = self.get_var
+        _pil_1480 = locals()
+        _pil_1481 = _pil_1479(_pil_1480)
+        _pil_1482 = {}
+        _pil_1483 = _pil_1478(_pil_1481, _pil_1482)
+
+    def test_genexp_target_attr(self):
+        _pil_1484 = Expr(0)
+        var_obj = _pil_1484
+        var_obj.val = None
+
+        def _pil_1495():
+            _pil_1486 = Expr.int
+            _pil_1487 = _pil_1486(0)
+            _pil_1488 = Expr.int
+            _pil_1489 = _pil_1488(1)
+            _pil_1485 = [_pil_1487, _pil_1489]
+            for _pil_1490 in _pil_1485:
+                var_obj.val = _pil_1490
+                _pil_1491 = Expr.str
+                _pil_1492 = var_obj.val
+                _pil_1493 = _pil_1491(_pil_1492)
+                _pil_1494 = (yield _pil_1493)
+        _pil_1496 = _pil_1495()
+        g = _pil_1496
+        _pil_1497 = list(g)
+        _var_l = _pil_1497
+        _pil_1498 = self.assertEqual
+        _pil_1499 = Expr.trace
+        _pil_1501 = ('init', 0)
+        _pil_1502 = ('setattr', 0, 'val', None)
+        _pil_1503 = ('int', 0)
+        _pil_1504 = ('int', 1)
+        _pil_1505 = ('setattr', 0, 'val', 0)
+        _pil_1506 = ('getattr', 0, 'val')
+        _pil_1507 = ('str', 0)
+        _pil_1508 = ('setattr', 0, 'val', 1)
+        _pil_1509 = ('getattr', 0, 'val')
+        _pil_1510 = ('str', 1)
+        _pil_1500 = [_pil_1501, _pil_1502, _pil_1503, _pil_1504, _pil_1505, _pil_1506, _pil_1507, _pil_1508, _pil_1509, _pil_1510]
+        _pil_1511 = _pil_1498(_pil_1499, _pil_1500)
+        _pil_1512 = self.assertEqual
+        _pil_1513 = self.get_var
+        _pil_1514 = locals()
+        _pil_1515 = _pil_1513(_pil_1514)
+        _pil_1516 = {}
+        _pil_1517 = {'val': 1}
+        _pil_1518 = Expr(0, _pil_1516, _pil_1517)
+        _pil_1519 = {'var_obj': _pil_1518}
+        _pil_1520 = _pil_1512(_pil_1515, _pil_1519)
+
+    def test_genexp_target_subscript(self):
+        _pil_1521 = Expr(0)
+        var_arr = _pil_1521
+        var_arr[0] = None
+
+        def _pil_1532():
+            _pil_1523 = Expr.int
+            _pil_1524 = _pil_1523(0)
+            _pil_1525 = Expr.int
+            _pil_1526 = _pil_1525(1)
+            _pil_1522 = [_pil_1524, _pil_1526]
+            for _pil_1527 in _pil_1522:
+                var_arr[0] = _pil_1527
+                _pil_1528 = Expr.str
+                _pil_1529 = var_arr[0]
+                _pil_1530 = _pil_1528(_pil_1529)
+                _pil_1531 = (yield _pil_1530)
+        _pil_1533 = _pil_1532()
+        g = _pil_1533
+        _pil_1534 = list(g)
+        _var_l = _pil_1534
+        _pil_1535 = self.assertEqual
+        _pil_1536 = Expr.trace
+        _pil_1538 = ('init', 0)
+        _pil_1539 = ('setitem', 0, 0, None)
+        _pil_1540 = ('int', 0)
+        _pil_1541 = ('int', 1)
+        _pil_1542 = ('setitem', 0, 0, 0)
+        _pil_1543 = ('getitem', 0, 0)
+        _pil_1544 = ('str', 0)
+        _pil_1545 = ('setitem', 0, 0, 1)
+        _pil_1546 = ('getitem', 0, 0)
+        _pil_1547 = ('str', 1)
+        _pil_1537 = [_pil_1538, _pil_1539, _pil_1540, _pil_1541, _pil_1542, _pil_1543, _pil_1544, _pil_1545, _pil_1546, _pil_1547]
+        _pil_1548 = _pil_1535(_pil_1536, _pil_1537)
+        _pil_1549 = self.assertEqual
+        _pil_1550 = self.get_var
+        _pil_1551 = locals()
+        _pil_1552 = _pil_1550(_pil_1551)
+        _pil_1553 = {0: 1}
+        _pil_1554 = {}
+        _pil_1555 = Expr(0, _pil_1553, _pil_1554)
+        _pil_1556 = {'var_arr': _pil_1555}
+        _pil_1557 = _pil_1549(_pil_1552, _pil_1556)
+
+    def test_genexp_two_fors(self):
+
+        def _pil_1573():
+            _pil_1559 = Expr.int
+            _pil_1560 = _pil_1559(0)
+            _pil_1561 = Expr.int
+            _pil_1562 = _pil_1561(1)
+            _pil_1558 = [_pil_1560, _pil_1562]
+            for _pil_1563 in _pil_1558:
+                var_x = _pil_1563
+                _pil_1565 = Expr.int
+                _pil_1566 = _pil_1565(2)
+                _pil_1567 = Expr.int
+                _pil_1568 = _pil_1567(3)
+                _pil_1564 = [_pil_1566, _pil_1568]
+                for _pil_1569 in _pil_1564:
+                    var_y = _pil_1569
+                    _pil_1570 = Expr.str
+                    _pil_1571 = _pil_1570(var_x)
+                    _pil_1572 = (yield _pil_1571)
+        _pil_1574 = _pil_1573()
+        g = _pil_1574
+        _pil_1575 = list(g)
+        _var_l = _pil_1575
+        _pil_1576 = self.assertEqual
+        _pil_1577 = Expr.trace
+        _pil_1579 = ('int', 0)
+        _pil_1580 = ('int', 1)
+        _pil_1581 = ('int', 2)
+        _pil_1582 = ('int', 3)
+        _pil_1583 = ('str', 0)
+        _pil_1584 = ('str', 0)
+        _pil_1585 = ('int', 2)
+        _pil_1586 = ('int', 3)
+        _pil_1587 = ('str', 1)
+        _pil_1588 = ('str', 1)
+        _pil_1578 = [_pil_1579, _pil_1580, _pil_1581, _pil_1582, _pil_1583, _pil_1584, _pil_1585, _pil_1586, _pil_1587, _pil_1588]
+        _pil_1589 = _pil_1576(_pil_1577, _pil_1578)
+        _pil_1590 = self.assertEqual
+        _pil_1591 = self.get_var
+        _pil_1592 = locals()
+        _pil_1593 = _pil_1591(_pil_1592)
+        _pil_1594 = {}
+        _pil_1595 = _pil_1590(_pil_1593, _pil_1594)
+
+    def test_genexp_three_fors(self):
+
+        def _pil_1617():
+            _pil_1597 = Expr.int
+            _pil_1598 = _pil_1597(0)
+            _pil_1599 = Expr.int
+            _pil_1600 = _pil_1599(1)
+            _pil_1596 = [_pil_1598, _pil_1600]
+            for _pil_1601 in _pil_1596:
+                var_x = _pil_1601
+                _pil_1603 = Expr.int
+                _pil_1604 = _pil_1603(0)
+                _pil_1605 = Expr.int
+                _pil_1606 = _pil_1605(1)
+                _pil_1602 = [_pil_1604, _pil_1606]
+                for _pil_1607 in _pil_1602:
+                    var_y = _pil_1607
+                    _pil_1609 = Expr.int
+                    _pil_1610 = _pil_1609(0)
+                    _pil_1611 = Expr.int
+                    _pil_1612 = _pil_1611(1)
+                    _pil_1608 = [_pil_1610, _pil_1612]
+                    for _pil_1613 in _pil_1608:
+                        var_z = _pil_1613
+                        _pil_1614 = Expr.str
+                        _pil_1615 = _pil_1614(var_x)
+                        _pil_1616 = (yield _pil_1615)
+        _pil_1618 = _pil_1617()
+        g = _pil_1618
+        _pil_1619 = list(g)
+        _var_l = _pil_1619
+        _pil_1620 = self.assertEqual
+        _pil_1621 = Expr.trace
+        _pil_1623 = ('int', 0)
+        _pil_1624 = ('int', 1)
+        _pil_1625 = ('int', 0)
+        _pil_1626 = ('int', 1)
+        _pil_1627 = ('int', 0)
+        _pil_1628 = ('int', 1)
+        _pil_1629 = ('str', 0)
+        _pil_1630 = ('str', 0)
+        _pil_1631 = ('int', 0)
+        _pil_1632 = ('int', 1)
+        _pil_1633 = ('str', 0)
+        _pil_1634 = ('str', 0)
+        _pil_1635 = ('int', 0)
+        _pil_1636 = ('int', 1)
+        _pil_1637 = ('int', 0)
+        _pil_1638 = ('int', 1)
+        _pil_1639 = ('str', 1)
+        _pil_1640 = ('str', 1)
+        _pil_1641 = ('int', 0)
+        _pil_1642 = ('int', 1)
+        _pil_1643 = ('str', 1)
+        _pil_1644 = ('str', 1)
+        _pil_1622 = [_pil_1623, _pil_1624, _pil_1625, _pil_1626, _pil_1627, _pil_1628, _pil_1629, _pil_1630, _pil_1631, _pil_1632, _pil_1633, _pil_1634, _pil_1635, _pil_1636, _pil_1637, _pil_1638, _pil_1639, _pil_1640, _pil_1641, _pil_1642, _pil_1643, _pil_1644]
+        _pil_1645 = _pil_1620(_pil_1621, _pil_1622)
+        _pil_1646 = self.assertEqual
+        _pil_1647 = self.get_var
+        _pil_1648 = locals()
+        _pil_1649 = _pil_1647(_pil_1648)
+        _pil_1650 = {}
+        _pil_1651 = _pil_1646(_pil_1649, _pil_1650)
+
+class YieldTest(PILTestCase):
+
+    def test_yield_bare(self):
+
+        def gen():
+            _pil_1652 = (yield)
+        _pil_1653 = gen()
+        _pil_1654 = list(_pil_1653)
+        _var_l = _pil_1654
+        _pil_1655 = self.assertEqual
+        _pil_1656 = Expr.trace
+        _pil_1657 = []
+        _pil_1658 = _pil_1655(_pil_1656, _pil_1657)
+        _pil_1659 = self.assertEqual
+        _pil_1660 = self.get_var
+        _pil_1661 = locals()
+        _pil_1662 = _pil_1660(_pil_1661)
+        _pil_1663 = {}
+        _pil_1664 = _pil_1659(_pil_1662, _pil_1663)
+
+    def test_yield_name(self):
+
+        def gen():
+            _pil_1665 = Expr.int
+            _pil_1666 = _pil_1665(0)
+            var_x = _pil_1666
+            _pil_1667 = (yield var_x)
+        _pil_1668 = gen()
+        _pil_1669 = list(_pil_1668)
+        var_l = _pil_1669
+        _pil_1670 = Expr.str
+        _pil_1671 = var_l[0]
+        _pil_1672 = _pil_1670(_pil_1671)
+        _pil_1673 = self.assertEqual
+        _pil_1674 = Expr.trace
+        _pil_1676 = ('int', 0)
+        _pil_1677 = ('str', 0)
+        _pil_1675 = [_pil_1676, _pil_1677]
+        _pil_1678 = _pil_1673(_pil_1674, _pil_1675)
+        _pil_1679 = self.assertEqual
+        _pil_1680 = self.get_var
+        _pil_1681 = locals()
+        _pil_1682 = _pil_1680(_pil_1681)
+        _pil_1683 = [0]
+        _pil_1684 = {'var_l': _pil_1683}
+        _pil_1685 = _pil_1679(_pil_1682, _pil_1684)
+
+    def test_yield_call_expr(self):
+
+        def gen():
+            _pil_1687 = Expr.int
+            _pil_1688 = _pil_1687(0)
+            _pil_1686 = (yield _pil_1688)
+        _pil_1689 = gen()
+        _pil_1690 = list(_pil_1689)
+        var_l = _pil_1690
+        _pil_1691 = Expr.str
+        _pil_1692 = var_l[0]
+        _pil_1693 = _pil_1691(_pil_1692)
+        _pil_1694 = self.assertEqual
+        _pil_1695 = Expr.trace
+        _pil_1697 = ('int', 0)
+        _pil_1698 = ('str', 0)
+        _pil_1696 = [_pil_1697, _pil_1698]
+        _pil_1699 = _pil_1694(_pil_1695, _pil_1696)
+        _pil_1700 = self.assertEqual
+        _pil_1701 = self.get_var
+        _pil_1702 = locals()
+        _pil_1703 = _pil_1701(_pil_1702)
+        _pil_1704 = [0]
+        _pil_1705 = {'var_l': _pil_1704}
+        _pil_1706 = _pil_1700(_pil_1703, _pil_1705)
+
+    def test_yield_constant(self):
+
+        def gen():
+            _pil_1707 = (yield 42)
+        _pil_1708 = gen()
+        _pil_1709 = list(_pil_1708)
+        var_l = _pil_1709
+        _pil_1710 = Expr.str
+        _pil_1711 = var_l[0]
+        _pil_1712 = _pil_1710(_pil_1711)
+        _pil_1713 = self.assertEqual
+        _pil_1714 = Expr.trace
+        _pil_1716 = ('str', 42)
+        _pil_1715 = [_pil_1716]
+        _pil_1717 = _pil_1713(_pil_1714, _pil_1715)
+        _pil_1718 = self.assertEqual
+        _pil_1719 = self.get_var
+        _pil_1720 = locals()
+        _pil_1721 = _pil_1719(_pil_1720)
+        _pil_1722 = [42]
+        _pil_1723 = {'var_l': _pil_1722}
+        _pil_1724 = _pil_1718(_pil_1721, _pil_1723)
+
+    def test_yield_binop(self):
+
+        def gen():
+            _pil_1726 = Expr.int
+            _pil_1727 = _pil_1726(0)
+            _pil_1728 = Expr.int
+            _pil_1729 = _pil_1728(1)
+            _pil_1730 = _pil_1727 + _pil_1729
+            _pil_1725 = (yield _pil_1730)
+        _pil_1731 = gen()
+        _pil_1732 = list(_pil_1731)
+        var_l = _pil_1732
+        _pil_1733 = Expr.str
+        _pil_1734 = var_l[0]
+        _pil_1735 = _pil_1733(_pil_1734)
+        _pil_1736 = self.assertEqual
+        _pil_1737 = Expr.trace
+        _pil_1739 = ('int', 0)
+        _pil_1740 = ('int', 1)
+        _pil_1741 = ('str', 1)
+        _pil_1738 = [_pil_1739, _pil_1740, _pil_1741]
+        _pil_1742 = _pil_1736(_pil_1737, _pil_1738)
+        _pil_1743 = self.assertEqual
+        _pil_1744 = self.get_var
+        _pil_1745 = locals()
+        _pil_1746 = _pil_1744(_pil_1745)
+        _pil_1747 = [1]
+        _pil_1748 = {'var_l': _pil_1747}
+        _pil_1749 = _pil_1743(_pil_1746, _pil_1748)
+
+    def test_yield_attr(self):
+
+        def gen():
+            _pil_1750 = Expr(0)
+            var_obj = _pil_1750
+            _pil_1751 = Expr.int
+            _pil_1752 = _pil_1751(99)
+            var_obj.val = _pil_1752
+            _pil_1754 = var_obj.val
+            _pil_1753 = (yield _pil_1754)
+        _pil_1755 = gen()
+        _pil_1756 = list(_pil_1755)
+        var_l = _pil_1756
+        _pil_1757 = Expr.str
+        _pil_1758 = var_l[0]
+        _pil_1759 = _pil_1757(_pil_1758)
+        _pil_1760 = self.assertEqual
+        _pil_1761 = Expr.trace
+        _pil_1763 = ('init', 0)
+        _pil_1764 = ('int', 99)
+        _pil_1765 = ('setattr', 0, 'val', 99)
+        _pil_1766 = ('getattr', 0, 'val')
+        _pil_1767 = ('str', 99)
+        _pil_1762 = [_pil_1763, _pil_1764, _pil_1765, _pil_1766, _pil_1767]
+        _pil_1768 = _pil_1760(_pil_1761, _pil_1762)
+        _pil_1769 = self.assertEqual
+        _pil_1770 = self.get_var
+        _pil_1771 = locals()
+        _pil_1772 = _pil_1770(_pil_1771)
+        _pil_1773 = [99]
+        _pil_1774 = {'var_l': _pil_1773}
+        _pil_1775 = _pil_1769(_pil_1772, _pil_1774)
+
+    def test_yield_subscript(self):
+
+        def gen():
+            _pil_1777 = Expr.int
+            _pil_1778 = _pil_1777(0)
+            _pil_1779 = Expr.int
+            _pil_1780 = _pil_1779(1)
+            _pil_1776 = [_pil_1778, _pil_1780]
+            var_arr = _pil_1776
+            _pil_1782 = var_arr[0]
+            _pil_1781 = (yield _pil_1782)
+        _pil_1783 = gen()
+        _pil_1784 = list(_pil_1783)
+        var_l = _pil_1784
+        _pil_1785 = Expr.str
+        _pil_1786 = var_l[0]
+        _pil_1787 = _pil_1785(_pil_1786)
+        _pil_1788 = self.assertEqual
+        _pil_1789 = Expr.trace
+        _pil_1791 = ('int', 0)
+        _pil_1792 = ('int', 1)
+        _pil_1793 = ('str', 0)
+        _pil_1790 = [_pil_1791, _pil_1792, _pil_1793]
+        _pil_1794 = _pil_1788(_pil_1789, _pil_1790)
+        _pil_1795 = self.assertEqual
+        _pil_1796 = self.get_var
+        _pil_1797 = locals()
+        _pil_1798 = _pil_1796(_pil_1797)
+        _pil_1799 = [0]
+        _pil_1800 = {'var_l': _pil_1799}
+        _pil_1801 = _pil_1795(_pil_1798, _pil_1800)
+
+    def test_yield_multiple(self):
+
+        def gen():
+            _pil_1803 = Expr.int
+            _pil_1804 = _pil_1803(0)
+            _pil_1802 = (yield _pil_1804)
+            _pil_1806 = Expr.int
+            _pil_1807 = _pil_1806(1)
+            _pil_1805 = (yield _pil_1807)
+            _pil_1809 = Expr.int
+            _pil_1810 = _pil_1809(2)
+            _pil_1808 = (yield _pil_1810)
+        _pil_1811 = gen()
+        _pil_1812 = list(_pil_1811)
+        var_l = _pil_1812
+        _pil_1813 = Expr.str
+        _pil_1814 = var_l[0]
+        _pil_1815 = _pil_1813(_pil_1814)
+        _pil_1816 = Expr.str
+        _pil_1817 = var_l[1]
+        _pil_1818 = _pil_1816(_pil_1817)
+        _pil_1819 = Expr.str
+        _pil_1820 = var_l[2]
+        _pil_1821 = _pil_1819(_pil_1820)
+        _pil_1822 = self.assertEqual
+        _pil_1823 = Expr.trace
+        _pil_1825 = ('int', 0)
+        _pil_1826 = ('int', 1)
+        _pil_1827 = ('int', 2)
+        _pil_1828 = ('str', 0)
+        _pil_1829 = ('str', 1)
+        _pil_1830 = ('str', 2)
+        _pil_1824 = [_pil_1825, _pil_1826, _pil_1827, _pil_1828, _pil_1829, _pil_1830]
+        _pil_1831 = _pil_1822(_pil_1823, _pil_1824)
+        _pil_1832 = self.assertEqual
+        _pil_1833 = self.get_var
+        _pil_1834 = locals()
+        _pil_1835 = _pil_1833(_pil_1834)
+        _pil_1836 = [0, 1, 2]
+        _pil_1837 = {'var_l': _pil_1836}
+        _pil_1838 = _pil_1832(_pil_1835, _pil_1837)
+
+    def test_yield_in_if(self):
+
+        def gen(flag):
+            if flag:
+                _pil_1840 = Expr.int
+                _pil_1841 = _pil_1840(0)
+                _pil_1839 = (yield _pil_1841)
+            else:
+                _pil_1843 = Expr.int
+                _pil_1844 = _pil_1843(1)
+                _pil_1842 = (yield _pil_1844)
+        _pil_1845 = Expr.true
+        _pil_1846 = _pil_1845(0)
+        _pil_1847 = gen(_pil_1846)
+        _pil_1848 = list(_pil_1847)
+        var_l0 = _pil_1848
+        _pil_1849 = Expr.str
+        _pil_1850 = var_l0[0]
+        _pil_1851 = _pil_1849(_pil_1850)
+        _pil_1852 = Expr.false
+        _pil_1853 = _pil_1852(1)
+        _pil_1854 = gen(_pil_1853)
+        _pil_1855 = list(_pil_1854)
+        var_l1 = _pil_1855
+        _pil_1856 = Expr.str
+        _pil_1857 = var_l1[0]
+        _pil_1858 = _pil_1856(_pil_1857)
+        _pil_1859 = self.assertEqual
+        _pil_1860 = Expr.trace
+        _pil_1862 = ('true', 0)
+        _pil_1863 = ('int', 0)
+        _pil_1864 = ('str', 0)
+        _pil_1865 = ('false', 1)
+        _pil_1866 = ('int', 1)
+        _pil_1867 = ('str', 1)
+        _pil_1861 = [_pil_1862, _pil_1863, _pil_1864, _pil_1865, _pil_1866, _pil_1867]
+        _pil_1868 = _pil_1859(_pil_1860, _pil_1861)
+        _pil_1869 = self.assertEqual
+        _pil_1870 = self.get_var
+        _pil_1871 = locals()
+        _pil_1872 = _pil_1870(_pil_1871)
+        _pil_1873 = [0]
+        _pil_1874 = [1]
+        _pil_1875 = {'var_l0': _pil_1873, 'var_l1': _pil_1874}
+        _pil_1876 = _pil_1869(_pil_1872, _pil_1875)
+
+    def test_yield_in_for(self):
+
+        def gen():
+            _pil_1878 = Expr.int
+            _pil_1879 = _pil_1878(0)
+            _pil_1880 = Expr.int
+            _pil_1881 = _pil_1880(1)
+            _pil_1882 = Expr.int
+            _pil_1883 = _pil_1882(2)
+            _pil_1877 = [_pil_1879, _pil_1881, _pil_1883]
+            for _pil_1884 in _pil_1877:
+                var_x = _pil_1884
+                _pil_1885 = (yield var_x)
+        _pil_1886 = gen()
+        _pil_1887 = list(_pil_1886)
+        var_l = _pil_1887
+        _pil_1888 = Expr.str
+        _pil_1889 = var_l[0]
+        _pil_1890 = _pil_1888(_pil_1889)
+        _pil_1891 = Expr.str
+        _pil_1892 = var_l[1]
+        _pil_1893 = _pil_1891(_pil_1892)
+        _pil_1894 = Expr.str
+        _pil_1895 = var_l[2]
+        _pil_1896 = _pil_1894(_pil_1895)
+        _pil_1897 = self.assertEqual
+        _pil_1898 = Expr.trace
+        _pil_1900 = ('int', 0)
+        _pil_1901 = ('int', 1)
+        _pil_1902 = ('int', 2)
+        _pil_1903 = ('str', 0)
+        _pil_1904 = ('str', 1)
+        _pil_1905 = ('str', 2)
+        _pil_1899 = [_pil_1900, _pil_1901, _pil_1902, _pil_1903, _pil_1904, _pil_1905]
+        _pil_1906 = _pil_1897(_pil_1898, _pil_1899)
+        _pil_1907 = self.assertEqual
+        _pil_1908 = self.get_var
+        _pil_1909 = locals()
+        _pil_1910 = _pil_1908(_pil_1909)
+        _pil_1911 = [0, 1, 2]
+        _pil_1912 = {'var_l': _pil_1911}
+        _pil_1913 = _pil_1907(_pil_1910, _pil_1912)
+
+    def test_yield_from_name(self):
+
+        def inner():
+            _pil_1915 = Expr.int
+            _pil_1916 = _pil_1915(0)
+            _pil_1914 = (yield _pil_1916)
+            _pil_1918 = Expr.int
+            _pil_1919 = _pil_1918(1)
+            _pil_1917 = (yield _pil_1919)
+
+        def gen():
+            _pil_1920 = inner()
+            var_g = _pil_1920
+            _pil_1921 = (yield from var_g)
+        _pil_1922 = gen()
+        _pil_1923 = list(_pil_1922)
+        var_l = _pil_1923
+        _pil_1924 = Expr.str
+        _pil_1925 = var_l[0]
+        _pil_1926 = _pil_1924(_pil_1925)
+        _pil_1927 = Expr.str
+        _pil_1928 = var_l[1]
+        _pil_1929 = _pil_1927(_pil_1928)
+        _pil_1930 = self.assertEqual
+        _pil_1931 = Expr.trace
+        _pil_1933 = ('int', 0)
+        _pil_1934 = ('int', 1)
+        _pil_1935 = ('str', 0)
+        _pil_1936 = ('str', 1)
+        _pil_1932 = [_pil_1933, _pil_1934, _pil_1935, _pil_1936]
+        _pil_1937 = _pil_1930(_pil_1931, _pil_1932)
+        _pil_1938 = self.assertEqual
+        _pil_1939 = self.get_var
+        _pil_1940 = locals()
+        _pil_1941 = _pil_1939(_pil_1940)
+        _pil_1942 = [0, 1]
+        _pil_1943 = {'var_l': _pil_1942}
+        _pil_1944 = _pil_1938(_pil_1941, _pil_1943)
+
+    def test_yield_from_call(self):
+
+        def inner():
+            _pil_1946 = Expr.int
+            _pil_1947 = _pil_1946(0)
+            _pil_1945 = (yield _pil_1947)
+            _pil_1949 = Expr.int
+            _pil_1950 = _pil_1949(1)
+            _pil_1948 = (yield _pil_1950)
+
+        def gen():
+            _pil_1951 = inner()
+            _pil_1952 = (yield from _pil_1951)
+        _pil_1953 = gen()
+        _pil_1954 = list(_pil_1953)
+        var_l = _pil_1954
+        _pil_1955 = Expr.str
+        _pil_1956 = var_l[0]
+        _pil_1957 = _pil_1955(_pil_1956)
+        _pil_1958 = Expr.str
+        _pil_1959 = var_l[1]
+        _pil_1960 = _pil_1958(_pil_1959)
+        _pil_1961 = self.assertEqual
+        _pil_1962 = Expr.trace
+        _pil_1964 = ('int', 0)
+        _pil_1965 = ('int', 1)
+        _pil_1966 = ('str', 0)
+        _pil_1967 = ('str', 1)
+        _pil_1963 = [_pil_1964, _pil_1965, _pil_1966, _pil_1967]
+        _pil_1968 = _pil_1961(_pil_1962, _pil_1963)
+        _pil_1969 = self.assertEqual
+        _pil_1970 = self.get_var
+        _pil_1971 = locals()
+        _pil_1972 = _pil_1970(_pil_1971)
+        _pil_1973 = [0, 1]
+        _pil_1974 = {'var_l': _pil_1973}
+        _pil_1975 = _pil_1969(_pil_1972, _pil_1974)
+
+    def test_yield_send_value(self):
+
+        def gen():
+            _pil_1977 = Expr.int
+            _pil_1978 = _pil_1977(0)
+            _pil_1976 = (yield _pil_1978)
+            var_sent = _pil_1976
+            _pil_1979 = Expr.str
+            _pil_1980 = _pil_1979(var_sent)
+        _pil_1981 = gen()
+        g = _pil_1981
+        _pil_1982 = next(g)
+        try:
+            _pil_1983 = g.send
+            _pil_1984 = Expr.int
+            _pil_1985 = _pil_1984(1)
+            _pil_1986 = _pil_1983(_pil_1985)
+        except Exception as _pil_1987:
+            _pil_1988 = isinstance(_pil_1987, StopIteration)
+            if _pil_1988:
+                pass
+            else:
+                raise
+        _pil_1989 = self.assertEqual
+        _pil_1990 = Expr.trace
+        _pil_1992 = ('int', 0)
+        _pil_1993 = ('int', 1)
+        _pil_1994 = ('str', 1)
+        _pil_1991 = [_pil_1992, _pil_1993, _pil_1994]
+        _pil_1995 = _pil_1989(_pil_1990, _pil_1991)
+        _pil_1996 = self.assertEqual
+        _pil_1997 = self.get_var
+        _pil_1998 = locals()
+        _pil_1999 = _pil_1997(_pil_1998)
+        _pil_2000 = {}
+        _pil_2001 = _pil_1996(_pil_1999, _pil_2000)

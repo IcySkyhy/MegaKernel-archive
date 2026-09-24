@@ -1,0 +1,17 @@
+local/
+.venv/
+__pycache__/
+*.egg-info/
+
+*.so
+*.so.d
+*.i
+*.ii
+*.gpu
+*.ptx
+*.cubin
+*.fatbin
+.build-config
+
+# Local benchmark output. Curated summaries live under experiments/.
+artifacts/local/

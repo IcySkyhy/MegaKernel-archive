@@ -1,0 +1,1691 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Compare_redline_iter_2_fp16_235_475_ge_bool_no_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        235,
+                        475
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        235,
+                        475
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                7,
+                236
+            ],
+            "tile_shape": [
+                10,
+                80
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp16",
+                "compare_op": "ge",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "Compare_redline_iter_2_fp32_84_86_lt_bool_no_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        84,
+                        86
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        84,
+                        86
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                3,
+                28
+            ],
+            "tile_shape": [
+                5,
+                456
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_dtype": "fp32",
+                "compare_op": "lt",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "Compare_redline_iter_2_fp16_236_55_lt_bit_no_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        236,
+                        56
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        236,
+                        7
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                108,
+                24
+            ],
+            "tile_shape": [
+                18,
+                128
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_dtype": "fp16",
+                "compare_op": "lt",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "Compare_redline_iter_2_fp32_416_510_ne_bit_no_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        416,
+                        512
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        416,
+                        64
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                76,
+                16
+            ],
+            "tile_shape": [
+                560,
+                16
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "ne",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "Compare_redline_iter_2_fp32_166_473_lt_bool_x_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        166,
+                        473
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        166,
+                        473
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                60,
+                165
+            ],
+            "tile_shape": [
+                336,
+                48
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp32",
+                "compare_op": "lt",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "Compare_redline_iter_2_fp16_85_22_ge_bool_y_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        85,
+                        22
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        85,
+                        22
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                2,
+                3
+            ],
+            "tile_shape": [
+                80,
+                128
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp16",
+                "compare_op": "ge",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "Compare_redline_iter_2_fp32_89_48_gt_bool_y_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        89,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        89,
+                        48
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                19,
+                10
+            ],
+            "tile_shape": [
+                19,
+                128
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "gt",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "Compare_redline_iter_2_fp16_30_142_eq_bit_y_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        30,
+                        144
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        30,
+                        18
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                7,
+                16
+            ],
+            "tile_shape": [
+                7,
+                112
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp16",
+                "compare_op": "eq",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "Compare_redline_iter_2_fp32_27_123_le_bit_y_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        27,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        27,
+                        16
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                3,
+                24
+            ],
+            "tile_shape": [
+                501,
+                24
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_dtype": "fp32",
+                "compare_op": "le",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "Compare_redline_iter_2_fp16_6_55_51_ne_bool_no_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        6,
+                        55,
+                        51
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        6,
+                        55,
+                        51
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                2,
+                5,
+                19
+            ],
+            "tile_shape": [
+                1,
+                384,
+                80
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp16",
+                "compare_op": "ne",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "Compare_redline_iter_2_fp32_479_100_7_gt_bool_no_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        479,
+                        100,
+                        7
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        479,
+                        100,
+                        7
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                164,
+                12,
+                2
+            ],
+            "tile_shape": [
+                9,
+                8,
+                128
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "gt",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "Compare_redline_iter_2_fp16_97_15_77_lt_bit_no_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        97,
+                        15,
+                        80
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        97,
+                        15,
+                        10
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                40,
+                5,
+                8
+            ],
+            "tile_shape": [
+                151,
+                7,
+                16
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp16",
+                "compare_op": "lt",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "Compare_redline_iter_2_fp32_309_441_373_gt_bit_no_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        309,
+                        441,
+                        376
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        309,
+                        441,
+                        47
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                142,
+                163,
+                16
+            ],
+            "tile_shape": [
+                4,
+                88,
+                16
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "gt",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "Compare_redline_iter_2_fp32_23_79_72_ge_bool_x_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        23,
+                        79,
+                        72
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        23,
+                        79,
+                        72
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                11,
+                8,
+                21
+            ],
+            "tile_shape": [
+                64,
+                29,
+                8
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "ge",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "Compare_redline_iter_2_fp32_14_106_91_le_bit_x_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        14,
+                        106,
+                        96
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        14,
+                        106,
+                        12
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                2,
+                19,
+                8
+            ],
+            "tile_shape": [
+                229,
+                8,
+                8
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "le",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 14
+        },
+        {
+            "case_index": 15,
+            "case_name": "Compare_redline_iter_2_fp16_80_81_88_eq_bool_y_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        80,
+                        81,
+                        88
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        80,
+                        81,
+                        88
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                11,
+                7,
+                35
+            ],
+            "tile_shape": [
+                7,
+                74,
+                32
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp16",
+                "compare_op": "eq",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 15
+        },
+        {
+            "case_index": 16,
+            "case_name": "Compare_redline_iter_2_fp32_16_49_65_ge_bool_y_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        49,
+                        65
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16,
+                        49,
+                        65
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                2,
+                8,
+                21
+            ],
+            "tile_shape": [
+                18,
+                4,
+                56
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_dtype": "fp32",
+                "compare_op": "ge",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 16
+        },
+        {
+            "case_index": 17,
+            "case_name": "Compare_redline_iter_2_fp16_50_20_26_eq_bit_y_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        50,
+                        20,
+                        32
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        50,
+                        20,
+                        4
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                10,
+                9,
+                24
+            ],
+            "tile_shape": [
+                3,
+                421,
+                16
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_dtype": "fp16",
+                "compare_op": "eq",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 17
+        },
+        {
+            "case_index": 18,
+            "case_name": "Compare_redline_iter_2_fp32_16_79_84_le_bit_y_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        79,
+                        88
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16,
+                        79,
+                        11
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                7,
+                27,
+                16
+            ],
+            "tile_shape": [
+                10,
+                11,
+                48
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp32",
+                "compare_op": "le",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 18
+        },
+        {
+            "case_index": 19,
+            "case_name": "Compare_redline_iter_2_fp16_10_18_57_28_gt_bool_no_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        18,
+                        57,
+                        28
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        10,
+                        18,
+                        57,
+                        28
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                27,
+                1
+            ],
+            "tile_shape": [
+                4,
+                6,
+                2,
+                112
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp16",
+                "compare_op": "gt",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 19
+        },
+        {
+            "case_index": 20,
+            "case_name": "Compare_redline_iter_2_fp16_72_12_99_ne_bool_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        72,
+                        12,
+                        99
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        72,
+                        12,
+                        99
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                36,
+                4,
+                41
+            ],
+            "tile_shape": [
+                124,
+                14,
+                16
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp16",
+                "compare_op": "ne",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 20
+        },
+        {
+            "case_index": 21,
+            "case_name": "Compare_redline_iter_2_fp32_107_254_124_le_bool_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        107,
+                        254,
+                        124
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        107,
+                        254,
+                        124
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                7,
+                110,
+                45
+            ],
+            "tile_shape": [
+                3,
+                49,
+                8
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "le",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 21
+        },
+        {
+            "case_index": 22,
+            "case_name": "Compare_redline_iter_2_fp16_37_33_70_eq_bit_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        37,
+                        33,
+                        72
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        37,
+                        33,
+                        9
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                10,
+                10,
+                4
+            ],
+            "tile_shape": [
+                5,
+                383,
+                16
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp16",
+                "compare_op": "eq",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 22
+        },
+        {
+            "case_index": 23,
+            "case_name": "Compare_redline_iter_2_fp32_30_74_112_le_bit_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        30,
+                        74,
+                        112
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        30,
+                        74,
+                        14
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                12,
+                31,
+                4
+            ],
+            "tile_shape": [
+                3,
+                526,
+                8
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "le",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 23
+        },
+        {
+            "case_index": 24,
+            "case_name": "Compare_redline_iter_2_fp16_108_32_119_93_le_bool_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        108,
+                        32,
+                        119,
+                        93
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        108,
+                        32,
+                        119,
+                        93
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                30,
+                11,
+                32,
+                9
+            ],
+            "tile_shape": [
+                1,
+                4,
+                416,
+                16
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_dtype": "fp16",
+                "compare_op": "le",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 24
+        },
+        {
+            "case_index": 25,
+            "case_name": "Compare_redline_iter_2_fp32_2_105_107_128_gt_bool_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2,
+                        105,
+                        107,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2,
+                        105,
+                        107,
+                        128
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                1,
+                12,
+                45,
+                20
+            ],
+            "tile_shape": [
+                7,
+                2,
+                20,
+                24
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "gt",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 25
+        },
+        {
+            "case_index": 26,
+            "case_name": "Compare_redline_iter_2_fp32_96_99_102_76_lt_bit_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        96,
+                        99,
+                        102,
+                        80
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        96,
+                        99,
+                        102,
+                        10
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                41,
+                17,
+                23,
+                8
+            ],
+            "tile_shape": [
+                84,
+                17,
+                1,
+                8
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_dtype": "fp32",
+                "compare_op": "lt",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 26
+        },
+        {
+            "case_index": 27,
+            "case_name": "Compare_redline_iter_2_fp32_105_22_29_97_le_bool_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        105,
+                        22,
+                        29,
+                        97
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        105,
+                        22,
+                        29,
+                        97
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                25,
+                2,
+                8,
+                41
+            ],
+            "tile_shape": [
+                1,
+                396,
+                2,
+                16
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "le",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 27
+        },
+        {
+            "case_index": 28,
+            "case_name": "Compare_redline_iter_2_fp32_47_128_68_73_lt_bit_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        47,
+                        128,
+                        68,
+                        80
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        47,
+                        128,
+                        68,
+                        10
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                14,
+                20,
+                31,
+                3
+            ],
+            "tile_shape": [
+                8,
+                82,
+                1,
+                8
+            ],
+            "params": {
+                "scalar": -10,
+                "scalar_dtype": "fp32",
+                "compare_op": "lt",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 28
+        },
+        {
+            "case_index": 29,
+            "case_name": "Compare_redline_iter_2_fp16_112_28_55_32_ne_bool_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        112,
+                        28,
+                        55,
+                        32
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        112,
+                        28,
+                        55,
+                        32
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                42,
+                6,
+                1,
+                14
+            ],
+            "tile_shape": [
+                25,
+                2,
+                1,
+                528
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_dtype": "fp16",
+                "compare_op": "ne",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 29
+        },
+        {
+            "case_index": 30,
+            "case_name": "Compare_redline_iter_2_fp32_69_76_61_11_gt_bool_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        69,
+                        76,
+                        61,
+                        11
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        69,
+                        76,
+                        61,
+                        11
+                    ],
+                    "dtype": "bool",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                4,
+                25,
+                3
+            ],
+            "tile_shape": [
+                1,
+                30,
+                1,
+                376
+            ],
+            "params": {
+                "scalar": 10,
+                "scalar_dtype": "fp32",
+                "compare_op": "gt",
+                "mode": "bool",
+                "func_id": -1
+            },
+            "index": 30
+        },
+        {
+            "case_index": 31,
+            "case_name": "Compare_redline_iter_2_fp16_107_227_64_165_le_bit_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        107,
+                        227,
+                        64,
+                        168
+                    ],
+                    "dtype": "fp16",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        107,
+                        227,
+                        64,
+                        21
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                26,
+                53,
+                5,
+                8
+            ],
+            "tile_shape": [
+                6,
+                249,
+                1,
+                16
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp16",
+                "compare_op": "le",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 31
+        },
+        {
+            "case_index": 32,
+            "case_name": "Compare_redline_iter_2_fp32_129_108_76_174_ne_bit_dense_dense",
+            "operation": "Cmps",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        129,
+                        108,
+                        76,
+                        176
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        129,
+                        108,
+                        76,
+                        22
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                20,
+                21,
+                8
+            ],
+            "tile_shape": [
+                24,
+                1,
+                3,
+                16
+            ],
+            "params": {
+                "scalar": 0,
+                "scalar_dtype": "fp32",
+                "compare_op": "ne",
+                "mode": "bit",
+                "func_id": -1
+            },
+            "index": 32
+        }
+    ]
+}

@@ -1,0 +1,29 @@
+{
+    "single_input_configs": [
+        {
+            "batch_size": 128
+        }
+    ],
+    "single_init_configs": [
+        {
+            "hidden_size": 256,
+            "num_groups": 8,
+            "eps": 1e-05,
+            "negative_slope": 0.01
+        }
+    ],
+    "single_shared_configs": [
+        {
+            "input_size": 512
+        }
+    ],
+    "multi_input_configs": [
+        {}
+    ],
+    "multi_init_configs": [
+        {}
+    ],
+    "multi_shared_configs": [
+        {}
+    ]
+}

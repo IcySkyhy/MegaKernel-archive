@@ -1,0 +1,102 @@
+# vf.reduce_max
+
+## 产品支持情况
+
+<!-- npu="950" id1 -->
+- Ascend 950PR/Ascend 950DT：支持
+<!-- end id1 -->
+<!-- npu="A3" id2 -->
+- Atlas A3 训练系列产品/Atlas A3 推理系列产品：不支持
+<!-- end id2 -->
+<!-- npu="910b" id3 -->
+- Atlas A2 训练系列产品/Atlas A2 推理系列产品：不支持
+<!-- end id3 -->
+
+## 功能说明
+
+reg_tensor最大值归约：将源寄存器`src`中的所有有效元素（`preg`选中的元素）求最大值，结果写入目标寄存器的第一个元素`dst[0]`，第一个最大值所在索引写入`dst[1]`，其余元素置零。
+
+归约求最大值的计算过程及索引保存方式如下图所示：
+
+**图1** reduce_max归约索引示意图
+
+![reg_reduce_index示意图](../../../../figures/reg_reduce_index.jpg)
+
+## 函数原型
+
+```python
+reduce_max(src, preg, datablock: bool = False, merge_mode: Optional[MergeMode] = None)
+```
+
+## 参数说明
+
+| 参数 | 输入/输出 | 说明 |
+|---|---|---|
+| `src` | 输入 | 源reg_tensor，源操作数`src`与目的操作数`dst`的数据类型保持一致。支持的数据类型为：DT_INT16、DT_UINT16、DT_FP16、DT_INT32、DT_UINT32、DT_FP32。 |
+| `preg` | 输入 | mask_tensor。当所有元素均不参与计算时（mask为空），将该数据类型的最小值写入`dst[0]`。 |
+| `datablock` | 输入 | 可选，决定接口工作模式，`True`时按datablock粒度归约（对应`vcgmax`指令），默认`False`。当`datablock=True`时，启用datablock粒度归约，每个datablock独立归约：32位宽（DT_INT32、DT_UINT32、DT_FP32）类型每16个元素为一个datablock，16位宽（DT_INT16、DT_UINT16、DT_FP16）类型每32个元素为一个datablock，各datablock分别求最大值并将结果写入各自datablock的第一个元素。 |
+| `merge_mode` | 输入 | 可选，对应[MergeMode](../types/MergeMode.md)类型。<br>- `pl.MergeMode.ZEROING`（默认），`preg`未筛选的元素在`dst`中置0。<br>- `pl.MergeMode.MERGING`当前不支持。 |
+
+## 约束说明
+
+- `datablock=True`时，支持的数据类型为：DT_INT16、DT_UINT16、DT_FP16、DT_INT32、DT_UINT32、DT_FP32。
+
+## 返回值说明
+
+返回`dst`目标reg_tensor，支持的数据类型和`src`中的说明一致，归约结果写入第一个元素`dst[0]`，索引写入`dst[1]`。
+
+- 当存在多个最大值时，将第一个最大值的索引保存在`dst[1]`中。
+
+- 如果输入数据存在nan，将该数据类型的nan写入`dst[0]`，并将第一个nan的索引保存在`dst[1]`中。
+
+- `max(-0, +0) = +0`。
+
+## 调用示例
+
+```python
+import os
+import pypto_pro.language as pl
+import torch
+import torch_npu
+
+@pl.vector_function
+def example_vf(src_tile, dst_tile):
+    preg_all = vf.create_mask(pattern=pl.MaskPattern.ALL, dtype=pl.DT_FP32)
+    src0 = vf.load_align(src_tile, 0)
+    max0 = vf.reduce_max(src0, preg_all)
+    vf.store_align(dst_tile, max0, preg_all)
+
+@pl.jit()
+def example_kernel(
+    a: pl.Tensor[[pl.DYNAMIC, pl.DYNAMIC], pl.DT_FP32],
+    out: pl.Tensor[[pl.DYNAMIC, pl.DYNAMIC], pl.DT_FP32],
+):
+    tf = pl.TileType(shape=[1, 64], dtype=pl.DT_FP32, target_memory=pl.MemorySpace.Vec)
+    in_a_grp = pl.make_tile_group(type=tf, addrs=0x0, mutex_ids=[0])
+    in_a = in_a_grp.current()
+    t_out_grp = pl.make_tile_group(type=tf, addrs=0x100, mutex_ids=[1])
+    t_out = t_out_grp.current()
+    with pl.section_vector():
+        pl.load(in_a, a, [0, 0])
+        pl.system.sync_src(set_pipe=pl.PipeType.MTE2, wait_pipe=pl.PipeType.V, event_id=0)
+        pl.system.sync_dst(set_pipe=pl.PipeType.MTE2, wait_pipe=pl.PipeType.V, event_id=0)
+        example_vf(in_a, t_out)
+        pl.system.sync_src(set_pipe=pl.PipeType.V, wait_pipe=pl.PipeType.MTE3, event_id=1)
+        pl.system.sync_dst(set_pipe=pl.PipeType.V, wait_pipe=pl.PipeType.MTE3, event_id=1)
+        pl.store(out, t_out, [0, 0])
+
+def test_example():
+    device_id = int(os.environ.get("TILE_FWK_DEVICE_ID", 0))
+    device = f"npu:{device_id}"
+    core_nums = 1
+    torch.npu.set_device(device)
+    a = torch.randn([1, 64], device=device, dtype=torch.float32)
+    out = torch.empty([1, 64], device=device, dtype=torch.float32)
+    example_kernel[None, core_nums](a, out)
+    torch.npu.synchronize()
+    torch.testing.assert_close(out[0, 0], torch.max(a), rtol=1e-5, atol=1e-5)
+
+if __name__ == "__main__":
+    test_example()
+    print("PASSED")
+```

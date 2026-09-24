@@ -1,0 +1,4 @@
+function foo incast(v0_logical_tensor %x@0 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16])) outcast() #type(Opaque) #entry(false) {
+    v0_logical_tensor %$1@2 #dtype(float) #shape([32, 2]) #offset([0, 0]) #dynvalidshape([32, 2]), v0_logical_tensor %$0@1 #dtype(int32_t) #shape([32, 2]) #offset([0, 0]) #dynvalidshape([32, 2]), token %$1_w, token %$0_w, token %x_r = !10000 TOPK(%x@0) token();
+    return %x@0;
+}

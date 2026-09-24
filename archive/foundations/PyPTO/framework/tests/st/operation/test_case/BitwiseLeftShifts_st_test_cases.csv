@@ -1,0 +1,9 @@
+case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,scalar,scalar_type
+BitwiseLeftShifts_test_0,"[3072, 384]",int16,ND,"[-1, 1]","[3072, 384]",int16,ND,"[128, 128]","[32, 32]",1,int16
+BitwiseLeftShifts_test_1,"[2048, 48]",int16,ND,"[-1, 1]","[2048, 48]",int16,ND,"[128, 128]","[32, 32]",1,int16
+BitwiseLeftShifts_test_2,"[48, 64, 128, 32]",int16,ND,"[-1, 1]","[48, 64, 128, 32]",int16,ND,"[48, 64, 32, 1]","[16, 16, 16, 8]",5,int16
+BitwiseLeftShifts_test_3,"[3072, 0]",int16,ND,"[-1, 1]","[3072, 0]",int16,ND,"[128, 128]","[32, 32]",5,int16
+BitwiseLeftShifts_test_4,"[0, 384]",int16,ND,"[-1, 1]","[0, 384]",int16,ND,"[128, 128]","[32, 32]",6,int16
+BitwiseLeftShifts_test_5,"[3072, 384]",int16,ND,"[-1, 1]","[3072, 384]",int16,ND,"[128, 128]","[32, 32]",6,int16
+BitwiseLeftShifts_test_6,"[98304, 384]",int16,ND,"[-1, 1]","[98304, 384]",int16,ND,"[6144, 96]","[128, 32]",7,int16
+BitwiseLeftShifts_test_7,"[64, 36864]",int16,ND,"[-1, 1]","[64, 36864]",int16,ND,"[32, 1024]","[32, 128]",7,int16

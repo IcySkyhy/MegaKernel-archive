@@ -1,0 +1,27 @@
+{
+    "single_input_configs": [
+        {
+            "batch_size": 128
+        }
+    ],
+    "single_init_configs": [
+        {
+            "out_features": 128,
+            "scaling_factor": 0.5
+        }
+    ],
+    "single_shared_configs": [
+        {
+            "in_features": 64
+        }
+    ],
+    "multi_input_configs": [
+        {}
+    ],
+    "multi_init_configs": [
+        {}
+    ],
+    "multi_shared_configs": [
+        {}
+    ]
+}

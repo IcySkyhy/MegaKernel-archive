@@ -1,0 +1,64 @@
+{
+  "schema": "hazy-p32-fixed-correctness-contract-v2",
+  "position": 32,
+  "fixed_input_token": 1000,
+  "fixed_input_rationale": "Token 1000 defines the v2 release envelope and is distinct from historical token-17 artifacts; independent atomic-reduction replay token equality is diagnostic rather than assumed.",
+  "model_safetensors_sha256": "1ff795ff6a07e6a68085d206fb84417da2f083f68391c2843cd2b8ac6df8538f",
+  "persistent_replay_tensor_error_limits": {
+    "hidden": {
+      "max_abs_diff": 0.7,
+      "mean_abs_diff": 0.1
+    },
+    "k": {
+      "max_abs_diff": 1.3,
+      "mean_abs_diff": 0.1
+    },
+    "logits": {
+      "max_abs_diff": 4.0,
+      "mean_abs_diff": 0.6
+    },
+    "v": {
+      "max_abs_diff": 0.6,
+      "mean_abs_diff": 0.05
+    }
+  },
+  "eager_graph_tensor_error_limits": {
+    "hidden": {
+      "max_abs_diff": 0.25,
+      "mean_abs_diff": 0.03
+    },
+    "k": {
+      "max_abs_diff": 0.75,
+      "mean_abs_diff": 0.04
+    },
+    "logits": {
+      "max_abs_diff": 2.5,
+      "mean_abs_diff": 0.35
+    },
+    "v": {
+      "max_abs_diff": 0.3,
+      "mean_abs_diff": 0.015
+    }
+  },
+  "required_checks": [
+    "eager_vs_graph_tensor_envelope",
+    "graph_matches_eager_token",
+    "graph_edge_rewrite"
+  ],
+  "diagnostic_only": [
+    "elementwise_allclose_rtol_atol",
+    "eager_graph_bit_exact",
+    "eager_vs_persistent_tensor_envelope",
+    "graph_vs_persistent_tensor_envelope",
+    "graph_matches_persistent_replay_token",
+    "persistent_initial_vs_replay_token"
+  ],
+  "diagnostic_rationale": {
+    "elementwise_allclose_rtol_atol": "A single rtol/atol pair is less specific than the versioned per-tensor max/mean envelopes.",
+    "eager_graph_bit_exact": "BF16 atomic-add reduction order can differ between eager and CUDA Graph launches even when dependencies and output tokens are correct.",
+    "eager_vs_persistent_tensor_envelope": "The split eager path and persistent VM use different atomic schedules; their versioned envelope is recorded as cross-implementation evidence rather than a dependency gate.",
+    "graph_vs_persistent_tensor_envelope": "The PDL graph and persistent VM use different atomic schedules; their versioned envelope is recorded as cross-implementation evidence rather than a dependency gate.",
+    "graph_matches_persistent_replay_token": "The graph and independent persistent replay each contain atomic reductions; their argmax equality is recorded but not used as the dependency oracle.",
+    "persistent_initial_vs_replay_token": "Independent persistent atomic replays can diverge near a low-margin argmax; their tensor differences and token equality are recorded as cross-implementation diagnostics rather than dependency gates."
+  }
+}

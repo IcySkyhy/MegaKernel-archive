@@ -1,0 +1,697 @@
+# 💡 Primus-Turbo Example
+
+This page shows usage of **Primus-Turbo**.
+
+## Table of Contents
+
+- [1. Operators](#1-operators)
+  - [1.1 Gemm](#11-gemm)
+  - [1.2 Attention](#12-attention)
+  - [1.3 Grouped Gemm](#13-grouped-gemm)
+  - [1.4 Mega MoE](#14-mega-moe)
+- [2. Modules](#2-modules)
+  - [2.1 Linear](#21-linear)
+- [3. Low-Precision](#3-low-precision)
+  - [3.1 Quantization Config](#31-quantization-config)
+  - [3.2 FP8 GEMM](#32-fp8-gemm)
+  - [3.3 FP8 GroupedGEMM](#33-fp8-groupedgemm)
+  - [3.4 MXFP8 GEMM](#34-mxfp8-gemm)
+  - [3.5 MXFP4 GEMM](#35-mxfp4-gemm)
+- [4. DeepEP](#4-deepep)
+- [5. Backend and AutoTune](#5-backend-and-autotune)
+  - [5.1 Backend Selection](#51-backend-selection)
+  - [5.2 AutoTune](#52-autotune)
+  - [5.3 Environment Variables](#53-environment-variables)
+
+
+## 1. Operators
+
+### 1.1 Gemm
+```python
+import torch
+import primus_turbo.pytorch as turbo
+
+device = "cuda:0"
+dtype = torch.bfloat16
+M = 128
+N = 256
+K = 512
+
+# a [M, K]
+a = torch.randn((M, K), dtype=dtype, device=device)
+# b [K, N]
+b = torch.randn((K, N), dtype=dtype, device=device)
+# c [M, N]
+c = turbo.ops.gemm(a, b, trans_a=False, trans_b=False, out_dtype=dtype)
+
+print(c)
+print(c.shape)
+```
+
+### 1.2 Attention
+
++ Simple Attention
+```python
+import torch
+import primus_turbo.pytorch as turbo
+
+device = "cuda:0"
+dtype = torch.bfloat16
+
+B = 4
+S = 4096
+H = 32
+D = 128
+
+q = torch.randn((B, S, H, D), dtype=dtype, device=device)
+k = torch.randn((B, S, H, D), dtype=dtype, device=device)
+v = torch.randn((B, S, H, D), dtype=dtype, device=device)
+softmax_scale = q.shape[-1] ** (-0.5)
+
+o = turbo.ops.flash_attn_func(q, k, v, softmax_scale=softmax_scale, causal=True)
+
+print(o)
+print(o.shape)
+```
+
++ Attention with CP
+```python
+import os
+import torch
+import primus_turbo.pytorch as turbo
+
+from torch.distributed.device_mesh import init_device_mesh
+
+dtype = torch.bfloat16
+
+world_size = int(os.environ["WORLD_SIZE"])
+local_rank = int(os.environ.get("LOCAL_RANK", 0))
+
+torch.cuda.set_device(local_rank)
+device = torch.device("cuda", local_rank)
+
+ulysses_degree = 4
+ring_degree = 2
+device_mesh = init_device_mesh(
+    "cuda",
+    (ring_degree, ulysses_degree),
+    mesh_dim_names=("ring", "ulysses"))
+
+B = 4
+S = 4096
+H = 256
+D = 128
+
+q = torch.randn((B, S, H, D), dtype=dtype, device=device)
+k = torch.randn((B, S, H, D), dtype=dtype, device=device)
+v = torch.randn((B, S, H, D), dtype=dtype, device=device)
+softmax_scale = q.shape[-1] ** (-0.5)
+
+o = turbo.ops.flash_attn_usp_func(q,
+        k,
+        v,
+        softmax_scale=softmax_scale,
+        ulysses_group=device_mesh["ulysses"].get_group(),
+        ring_group=device_mesh["ring"].get_group())
+
+torch.distributed.destroy_process_group()
+# run with torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 --master_addr=127.0.0.1 --master_port=12355 this_code.py
+```
+
+
+### 1.3 Grouped Gemm
+```python
+import torch
+import primus_turbo.pytorch as turbo
+
+device = "cuda:0"
+dtype = torch.bfloat16
+
+G = 4
+M = 128  # 128=32+16+48+32
+N = 256
+K = 512
+
+group_lens = torch.tensor([32, 16, 48, 32], dtype=torch.long, device=device)
+a = torch.randn(M, K, device=device, dtype=dtype)
+b = torch.randn(G, K, N, device=device, dtype=dtype)
+c = turbo.ops.grouped_gemm(a, b, group_lens, trans_b=False)
+
+print(c)
+print(c.shape) # [128, 256]
+```
+
+### 1.4 Mega MoE
+
+`fused_mega_moe` is an EP intra-node MoE op that fuses communication with the grouped GEMM
+(`dispatch_grouped_gemm` + `grouped_gemm_combine`). It is a single autograd op; the per-shape
+communication buffer is allocated once and cached internally. See
+[README_Mega_MoE](./README_Mega_MoE.md) for the design and performance.
+
+> **Hardware requirements:** `gfx950` (not supported on `gfx1250`), intra-node expert parallelism
+> (one rank per GPU).
+
+```python
+import torch
+import torch.distributed as dist
+
+from primus_turbo.flydsl.mega.symm_buffer import get_symm_buffer_for_mega_moe
+from primus_turbo.pytorch.ops.moe.fused_mega_moe import fused_mega_moe
+
+# --- distributed setup (one rank per GPU, intra-node EP) ---
+dist.init_process_group("nccl")
+rank, world = dist.get_rank(), dist.get_world_size()
+torch.cuda.set_device(rank)
+group = dist.new_group(list(range(world)))
+
+# --- MoE shape ---
+H = 7168          # hidden size (hidden % 512 == 0)
+I = 2048          # intermediate size
+E = 256           # total experts (must be divisible by world)
+K = 8             # top-k
+T = 4096          # max tokens per rank
+epr = E // world  # experts per rank
+
+# Allocate the comm buffer ONCE for this shape; it is cached and reused.
+get_symm_buffer_for_mega_moe(
+    group,
+    num_experts=E,
+    num_max_tokens_per_rank=T,
+    num_topk=K,
+    hidden=H,
+    intermediate_hidden=I,
+)
+
+# --- per-rank weights: this rank owns experts [rank*epr, (rank+1)*epr) ---
+# w1: [epr, 2*I, H], w2: [epr, H, I]  (NT layout)
+w1 = torch.randn(epr, 2 * I, H, device="cuda", dtype=torch.bfloat16, requires_grad=True)
+w2 = torch.randn(epr, H, I,   device="cuda", dtype=torch.bfloat16, requires_grad=True)
+
+# --- inputs ---
+x = torch.randn(T, H, device="cuda", dtype=torch.bfloat16, requires_grad=True)
+topk_idx = torch.randint(0, E, (T, K), device="cuda", dtype=torch.int64)   # global expert ids
+topk_w   = torch.rand(T, K, device="cuda", dtype=torch.float32)            # routing weights
+
+# --- fused forward + backward ---
+y = fused_mega_moe(group, x, topk_idx, topk_w, w1, w2)   # [T, H]
+y.sum().backward()                                        # grads for x, w1, w2, topk_w
+# run with torchrun --nproc_per_node=8 --nnodes=1 this_code.py
+```
+
+Input contract:
+
+| Argument | Shape / dtype | Notes |
+| --- | --- | --- |
+| `x` | `[T, H]` bf16, CUDA | `H % 512 == 0` (hidden*2 must be 1024B-aligned) |
+| `topk_idx` | `[T, K]` int (cast to int64) | global expert ids in `[0, num_experts)`|
+| `topk_weights` | `[T, K]` fp32 | routing weights, applied in the top-k reduce |
+| `w1` | `[E/world, 2*I, H]` bf16 | this rank's expert slice, NT layout |
+| `w2` | `[E/world, H, I]` bf16 | this rank's expert slice, NT layout |
+| `group` | `ProcessGroup` | intra-node EP group |
+
+
+## 2. Modules
+
+### 2.1 Linear
+```python
+import torch
+import primus_turbo.pytorch as turbo
+
+device = "cuda:0"
+dtype = torch.bfloat16
+
+in_features = 512
+out_features = 256
+bias = True
+
+input = torch.randn(128, in_features, device=device, dtype=dtype)
+model = turbo.modules.Linear(
+    in_features, out_features, bias=bias, device=device, dtype=dtype
+)
+
+# If you want to use torch.compile.
+model = torch.compile(model, fullgraph=True, mode="max-autotune")
+
+output = model(input)
+
+print(model)
+print(output)
+print(output.shape)
+```
+
+## 3. Low-Precision
+
+This section introduces the **FP8 and FP4 quantization configs** and usage of **FP8 GEMM**, **FP8 GroupedGEMM**, **MXFP8 GEMM**, and **MXFP4 GEMM** in Primus-Turbo.
+
+> **Hardware requirements:**
+> - **FP8** (TENSORWISE / ROWWISE / BLOCKWISE): `gfx942` or higher.
+> - **MXFP8** (`MX_BLOCKWISE` granularity for `Float8QuantConfig`): `gfx950` or higher.
+> - **MXFP4** (`Float4QuantConfig`): `gfx950` or higher.
+
+### 3.1 Quantization Config
+
+FP8 (including **MXFP8**) quantization is configured through `Float8QuantConfig`:
+
+- **format**
+  - `Format.E4M3` (default)
+  - `Format.E5M2`
+  - `Format.HYBRID` (backward calculation of dgrad is e5m2 other is e4m3.)
+- **granularity**
+  - `ScalingGranularity.TENSORWISE` (default)
+  - `ScalingGranularity.ROWWISE`
+  - `ScalingGranularity.BLOCKWISE`
+  - `ScalingGranularity.MX_BLOCKWISE` &nbsp;— selects **MXFP8** (requires `block_size=32`, `scale_dtype=ScaleDtype.E8M0`)
+- **scale dtype**
+  - `ScaleDtype.FP32` (default)
+  - `ScaleDtype.E8M0` (required for MXFP8)
+- **block_size**
+  - Specifies the size of each block when using `BLOCKWISE` or `MX_BLOCKWISE` granularity.
+  - This parameter must be explicitly specified in BLOCKWISE and MX_BLOCKWISE mode; otherwise, an error will be raised.
+  - For `MX_BLOCKWISE`, only `block_size=32` is supported.
+
+FP4 (i.e. **MXFP4**) quantization is configured through `Float4QuantConfig`:
+
+- **format**
+  - `Format.E2M1_X2` (default, two FP4 values packed per byte)
+- **granularity**
+  - `ScalingGranularity.MX_BLOCKWISE` (default, the only supported granularity for FP4)
+- **scale dtype**
+  - `ScaleDtype.E8M0` (default)
+- **block_size**
+  - Specifies the size of each block when using `MX_BLOCKWISE` granularity. Only `block_size=32` is supported.
+
+### 3.2 FP8 GEMM
+
+Computation flow:
+
+`FP16/BF16 → Quantize → FP8 → GEMM(FP8 × FP8) → FP16/BF16`
+
+Example:
+
+```python
+import torch
+import primus_turbo.pytorch as turbo
+from primus_turbo.pytorch.core.low_precision import (
+    Float8QuantConfig,
+    Format,
+    ScalingGranularity,
+)
+
+device = "cuda:0"
+dtype = torch.bfloat16
+
+M, N, K = 128, 256, 512
+# a [M, K]
+a = torch.randn((M, K), dtype=dtype, device=device)
+# b [N, K]
+b = torch.randn((N, K), dtype=dtype, device=device)
+
+# Set quant config through Float8QuantConfig class.
+fp8_cfg = Float8QuantConfig(
+    format=Format.E4M3,
+    granularity=ScalingGranularity.TENSORWISE,  # or ROWWISE
+)
+
+c = turbo.ops.gemm_fp8(a, b, trans_a=False, trans_b=True, out_dtype=dtype, config=fp8_cfg)
+print(c)
+print(c.shape) # [128, 256]
+```
+
+The same `gemm_fp8` entry point also supports `BLOCKWISE` granularity. Just swap the
+`Float8QuantConfig` and keep the rest of the call site unchanged:
+
+```python
+# BLOCKWISE FP8: per-block FP32 scale, block_size must be set explicitly.
+fp8_cfg = Float8QuantConfig(
+    format=Format.E4M3,
+    granularity=ScalingGranularity.BLOCKWISE,
+    block_size=128,
+)
+c = turbo.ops.gemm_fp8(a, b, trans_a=False, trans_b=True, out_dtype=dtype, config=fp8_cfg)
+```
+
+For `MX_BLOCKWISE` (MXFP8), see [3.4 MXFP8 GEMM](#34-mxfp8-gemm).
+
+### 3.3 FP8 GroupedGEMM
+
+Grouped GEMM supports multiple sub-matrices with different row sizes in a single call. The workflow is below:
+
+`FP16/BF16 -> Quantize -> FP8 -> GroupedGEMM(FP8 × FP8) -> FP16/BF16`
+
+Example:
+
+```python
+import torch
+import primus_turbo.pytorch as turbo
+from primus_turbo.pytorch.core.low_precision import (
+    Float8QuantConfig,
+    Format,
+    ScalingGranularity,
+)
+
+device = "cuda:0"
+dtype = torch.bfloat16
+
+# 4 groups, total rows M = 128
+G, M, N, K = 4, 128, 256, 512
+group_lens = torch.tensor([32, 16, 48, 32], device=device)
+
+a = torch.randn(M, K, device=device, dtype=dtype)
+b = torch.randn(G, N, K, device=device, dtype=dtype)  # shape [G, N, K] if trans_b=True
+
+fp8_cfg = Float8QuantConfig(
+    format=Format.E4M3,
+    granularity=ScalingGranularity.TENSORWISE,  # or ROWWISE
+)
+
+c = turbo.ops.grouped_gemm_fp8(a, b, group_lens, trans_b=True, config=fp8_cfg)
+print(c)
+print(c.shape)  # [128, 256]
+```
+
+### 3.4 MXFP8 GEMM
+
+MXFP8 uses the **MX block-wise** scaling recipe defined by the OCP Microscaling spec: each
+contiguous block of 32 elements (`block_size=32`) shares a single E8M0 scale, and the data
+elements are stored in FP8 (E4M3 / E5M2). Compared with TENSORWISE / ROWWISE FP8, MXFP8
+preserves more dynamic range per block while keeping the same 8-bit footprint, which usually
+gives better accuracy on long-tail activations.
+
+> **Note:** MXFP8 GEMM requires **gfx950 or higher**, and `M`, `N`, `K` must be multiples of 16.
+> The internal kernel runs in **NT** layout, so call it with `trans_a=False, trans_b=True`.
+
+Computation flow:
+
+`FP16/BF16 → Quantize (block=32, E8M0 scale) → MXFP8 → GEMM(MXFP8 × MXFP8) → FP16/BF16`
+
+Example:
+
+```python
+import torch
+import primus_turbo.pytorch as turbo
+from primus_turbo.pytorch.core.low_precision import (
+    Float8QuantConfig,
+    Format,
+    ScaleDtype,
+    ScalingGranularity,
+)
+
+device = "cuda:0"
+dtype = torch.bfloat16
+
+# M, N, K must be multiples of 16 for MX_BLOCKWISE.
+M, N, K = 128, 256, 512
+# a [M, K]
+a = torch.randn((M, K), dtype=dtype, device=device)
+# b [N, K]  (NT layout: trans_b=True)
+b = torch.randn((N, K), dtype=dtype, device=device)
+
+# Set quant config through Float8QuantConfig with MX_BLOCKWISE granularity.
+# block_size must be 32 and scale_dtype must be E8M0 for MXFP8.
+mxfp8_cfg = Float8QuantConfig(
+    format=Format.E4M3,                          # or Format.E5M2 / Format.HYBRID
+    granularity=ScalingGranularity.MX_BLOCKWISE,
+    block_size=32,
+    scale_dtype=ScaleDtype.E8M0,
+)
+
+# MXFP8 kernel runs in NT layout, so trans_b=True is required.
+c = turbo.ops.gemm_fp8(a, b, trans_a=False, trans_b=True, out_dtype=dtype, config=mxfp8_cfg)
+print(c)
+print(c.shape)  # [128, 256]
+```
+
+### 3.5 MXFP4 GEMM
+
+MXFP4 GEMM stores data in FP4 (`E2M1_X2`, two FP4 values packed per byte) with an E8M0 scale
+per 32-element block, and additionally applies recipe tricks such as **2D block quantization**
+and **random Hadamard transform (RHT)** to recover accuracy at 4-bit precision.
+Reference: https://arxiv.org/pdf/2509.25149
+
+> **Note:** MXFP4 GEMM requires **gfx950 or higher**.
+
+Computation flow:
+
+`FP16/BF16 → Quantize (block=32, E8M0 scale, RHT/2D-block) → MXFP4 → GEMM(MXFP4 × MXFP4) → FP16/BF16`
+
+Example:
+
+```python
+import torch
+import primus_turbo.pytorch as turbo
+from primus_turbo.pytorch.core.low_precision import (
+    Float4QuantConfig,
+    Format,
+    ScaleDtype,
+    ScalingGranularity,
+)
+
+device = "cuda:0"
+dtype = torch.bfloat16
+
+M, N, K = 128, 256, 512
+# a [M, K]
+a = torch.randn((M, K), dtype=dtype, device=device)
+# b [N, K]  (NT layout: trans_b=True)
+b = torch.randn((N, K), dtype=dtype, device=device)
+
+# Set quant config through Float4QuantConfig class.
+# Currently only MX_BLOCKWISE granularity with E2M1_X2 + E8M0 scale is supported.
+mxfp4_cfg = Float4QuantConfig(
+    format=Format.E2M1_X2,
+    granularity=ScalingGranularity.MX_BLOCKWISE,
+    block_size=32,
+    scale_dtype=ScaleDtype.E8M0,
+)
+
+c = turbo.ops.gemm_fp4(a, b, trans_a=False, trans_b=True, out_dtype=dtype, config=mxfp4_cfg)
+print(c)
+print(c.shape)  # [128, 256]
+```
+
+## 4. DeepEP
+
+We added some new params for DeepEP buffer and dispatch. The normal kernels can be used in model training as the below example code shows:
+
+```python
+import torch
+import torch.distributed as dist
+from typing import List, Tuple, Optional, Union
+
+from primus_turbo.pytorch.deep_ep import Buffer, EventOverlap
+
+# Communication buffer (will allocate at runtime)
+_buffer: Optional[Buffer] = None
+
+# Set the number of SMs to use
+# NOTES: this is a static variable
+Buffer.set_num_sms(24)
+
+
+# You may call this function at the framework initialization
+def get_buffer(group: dist.ProcessGroup,
+               hidden_bytes: int) -> Buffer:
+    global _buffer
+
+    # NOTES: you may also replace `get_*_config` with your auto-tuned results via all the tests
+    num_nvl_bytes, num_rdma_bytes = 0, 0
+    for config in (Buffer.get_dispatch_config(group.size()), Buffer.get_combine_config(group.size())):
+        num_nvl_bytes = max(config.get_nvl_buffer_size_hint(hidden_bytes, group.size()), num_nvl_bytes)
+        num_rdma_bytes = max(config.get_rdma_buffer_size_hint(hidden_bytes, group.size()), num_rdma_bytes)
+
+    # Allocate a buffer if not existed or not enough buffer size.
+    # Set ``PRIMUS_TURBO_EP_FORCE_CURRENT_STREAM=1`` to force dispatch/combine kernels
+    # onto the caller's current CUDA stream (default ``0``).
+    if _buffer is None or _buffer.group != group or _buffer.num_nvl_bytes < num_nvl_bytes or _buffer.num_rdma_bytes < num_rdma_bytes:
+        _buffer = Buffer(group, num_nvl_bytes, num_rdma_bytes)
+    return _buffer
+
+
+def get_hidden_bytes(x: torch.Tensor) -> int:
+    t = x[0] if isinstance(x, tuple) else x
+    return t.size(1) * max(t.element_size(), 2)
+
+
+def dispatch_forward(x: Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]],
+                     topk_idx: torch.Tensor, topk_weights: torch.Tensor,
+                     num_experts: int, previous_event: Optional[EventOverlap] = None,
+                     num_recv_tokens_per_expert_as_cuda: bool=False,) -> \
+        Tuple[Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]], torch.Tensor, torch.Tensor, List, Tuple, EventOverlap]:
+    # NOTES: an optional `previous_event` means a CUDA event captured that you want to make it as a dependency
+    # of the dispatch kernel, it may be useful with communication-computation overlap. For more information, please
+    # refer to the docs of `Buffer.dispatch`
+    global _buffer
+
+    # Calculate layout before actual dispatch
+    num_tokens_per_rank, num_tokens_per_rdma_rank, num_tokens_per_expert, is_token_in_rank, previous_event = \
+        _buffer.get_dispatch_layout(topk_idx, num_experts,
+                                    previous_event=previous_event, async_finish=True,
+                                    allocate_on_comm_stream=previous_event is not None)
+    # Do MoE dispatch
+    # NOTES: the CPU will wait for GPU's signal to arrive, so this is not compatible with CUDA graph
+    # Unless you specify `num_worst_tokens`, but this flag is for intranode only
+    # For more advanced usages, please refer to the docs of the `dispatch` function
+    recv_x, recv_topk_idx, recv_topk_weights, num_recv_tokens_per_expert_list, handle, event = \
+        _buffer.dispatch(x, topk_idx=topk_idx, topk_weights=topk_weights,
+                         num_tokens_per_rank=num_tokens_per_rank, num_tokens_per_rdma_rank=num_tokens_per_rdma_rank,
+                         is_token_in_rank=is_token_in_rank, num_tokens_per_expert=num_tokens_per_expert,
+                         previous_event=previous_event, async_finish=True,
+                         allocate_on_comm_stream=True,
+                         num_recv_tokens_per_expert_as_cuda=num_recv_tokens_per_expert_as_cuda,)
+    # For event management, please refer to the docs of the `EventOverlap` class
+    return recv_x, recv_topk_idx, recv_topk_weights, num_recv_tokens_per_expert_list, handle, event
+
+
+def dispatch_backward(grad_recv_x: torch.Tensor, grad_recv_topk_weights: torch.Tensor, handle: Tuple) -> \
+        Tuple[torch.Tensor, torch.Tensor, EventOverlap]:
+    global _buffer
+
+    # The backward process of MoE dispatch is actually a combine
+    # For more advanced usages, please refer to the docs of the `combine` function
+    combined_grad_x, combined_grad_recv_topk_weights, event = \
+        _buffer.combine(grad_recv_x, handle, topk_weights=grad_recv_topk_weights, async_finish=True)
+
+    # For event management, please refer to the docs of the `EventOverlap` class
+    return combined_grad_x, combined_grad_recv_topk_weights, event
+
+
+def combine_forward(x: torch.Tensor, handle: Tuple, previous_event: Optional[EventOverlap] = None) -> \
+        Tuple[torch.Tensor, EventOverlap]:
+    global _buffer
+
+    # Do MoE combine
+    # For more advanced usages, please refer to the docs of the `combine` function
+    combined_x, _, event = _buffer.combine(x, handle, async_finish=True, previous_event=previous_event,
+                                           allocate_on_comm_stream=previous_event is not None)
+
+    # For event management, please refer to the docs of the `EventOverlap` class
+    return combined_x, event
+
+
+def combine_backward(grad_combined_x: Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]],
+                     handle: Tuple, previous_event: Optional[EventOverlap] = None) -> \
+        Tuple[Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]], EventOverlap]:
+    global _buffer
+
+    # The backward process of MoE combine is actually a dispatch
+    # For more advanced usages, please refer to the docs of the `dispatch` function
+    grad_x, _, _, _, _, event = _buffer.dispatch(grad_combined_x, handle=handle, async_finish=True,
+                                                 previous_event=previous_event,
+                                                 allocate_on_comm_stream=previous_event is not None)
+
+    # For event management, please refer to the docs of the `EventOverlap` class
+    return grad_x, event
+```
+
+## 5. Backend and AutoTune
+
+Some Primus-Turbo operators provide multiple backends. You can force a backend (for reproducibility/debugging) or enable AutoTune to pick the fastest backend for your shapes on the current GPU.
+
+Priority (high to low):
+
+1. Code settings (`GlobalBackendManager.set_*_backend(...)`)
+2. Environment variables (`PRIMUS_TURBO_*_BACKEND`)
+3. AutoTune (`PRIMUS_TURBO_AUTO_TUNE=1`, or `PRIMUS_TURBO_*_BACKEND=autotune` for a single operator)
+4. Operator defaults
+5. Fallback: try all registered backends
+
+### 5.1 Backend Selection
+
+You can set backends in code via `GlobalBackendManager`.
+
+```python
+import torch
+import primus_turbo.pytorch as turbo
+from primus_turbo.pytorch.core.backend import BackendType, GlobalBackendManager
+from primus_turbo.pytorch.core.low_precision import (
+    Float8QuantConfig,
+    Format,
+    ScalingGranularity,
+)
+
+device = "cuda:0"
+dtype = torch.bfloat16
+
+# Set GEMM backend to CK
+GlobalBackendManager.set_gemm_backend(BackendType.CK)
+
+M, N, K = 128, 256, 512
+a = torch.randn((M, K), dtype=dtype, device=device)
+b = torch.randn((N, K), dtype=dtype, device=device)  # [N, K] when trans_b=True
+
+fp8_cfg = Float8QuantConfig(
+    format=Format.E4M3,
+    granularity=ScalingGranularity.TENSORWISE,
+)
+
+out = turbo.ops.gemm_fp8(a, b, trans_a=False, trans_b=True, out_dtype=dtype, config=fp8_cfg)
+print(out.shape)
+
+# Unset GEMM backend
+GlobalBackendManager.set_gemm_backend(None)
+```
+
+### 5.2 AutoTune
+
+AutoTune profiles compatible backends on the first call (per input "key", usually shape/dtype/layout) and caches the fastest choice. This is useful for stable shapes, but may add overhead if shapes change frequently.
+
+NOTE: AutoTune is skipped during CUDA graph capture.
+
+```python
+import torch
+import primus_turbo.pytorch as turbo
+from primus_turbo.pytorch.core.backend import GlobalBackendManager
+
+GlobalBackendManager.set_auto_tune(True)  # or set PRIMUS_TURBO_AUTO_TUNE=1
+
+# First call may be slower due to profiling; later calls hit the cache.
+# Use fixed shapes for best results.
+device = "cuda:0"
+dtype = torch.bfloat16
+G, M, N, K = 4, 128, 256, 512
+group_lens = torch.tensor([32, 16, 48, 32], dtype=torch.long, device=device)
+a = torch.randn(M, K, device=device, dtype=dtype)
+b = torch.randn(G, K, N, device=device, dtype=dtype)
+out = turbo.ops.grouped_gemm(a, b, group_lens, trans_b=False)
+print(out.shape)
+
+# Clear backend settings + all AutoTune caches.
+GlobalBackendManager.reset()
+```
+
+`set_auto_tune(True)` turns AutoTune on for every operator. To auto-tune a single
+operator (or a single precision of it) while leaving everything else alone, pass
+`auto_tune=True` instead of naming a backend:
+
+```python
+from primus_turbo.pytorch.core.backend import GlobalBackendManager, PrecisionType
+
+# AutoTune FP8 GEMM only; other precisions keep their defaults.
+GlobalBackendManager.set_gemm_backend(auto_tune=True, precision=PrecisionType.FP8)
+```
+
+NOTE: a backend and `auto_tune=True` are mutually exclusive. MoE dispatch/combine
+does not support AutoTune at all.
+
+### 5.3 Environment Variables
+
+You can also control backend selection and AutoTune via environment variables:
+
+```bash
+export PRIMUS_TURBO_AUTO_TUNE=1
+export PRIMUS_TURBO_GEMM_BACKEND=HIPBLASLT
+export PRIMUS_TURBO_GROUPED_GEMM_BACKEND=CK
+export PRIMUS_TURBO_MOE_DISPATCH_COMBINE_BACKEND=DEEP_EP
+```
+
+`PRIMUS_TURBO_*_BACKEND` also accepts `autotune` as a backend name, which enables
+AutoTune for that operator alone instead of the whole library. It composes with
+the per-precision syntax:
+
+```bash
+# AutoTune GEMM at every precision.
+export PRIMUS_TURBO_GEMM_BACKEND=autotune
+
+# AutoTune FP8 Grouped GEMM only; every other precision uses CK.
+export PRIMUS_TURBO_GROUPED_GEMM_BACKEND=fp8:autotune,other:ck
+```

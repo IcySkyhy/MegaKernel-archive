@@ -1,0 +1,2 @@
+operation,case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,batch_size,seq_len,num_heads,kv_lora_rank,value_head_dim,output_hidden_size,world_size
+AllGatherAttnPostReduceScatter,AllGatherAttnPostReduceScatter_test_1,"[,]","bfloat16","ND","[,]","[,]","bfloat16","ND","[]","[]",64,1,32,256,128,128,4

@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-label="TROWEXPANDMAX Mode 2 tile operation diagram">
+<defs>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#2563EB"/></marker>
+  <marker id="axisArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#64748b"/></marker>
+</defs>
+<style>
+svg { font-family: Arial, Helvetica, sans-serif; }
+.title { font-size: 30px; font-weight: 700; fill: #0f172a; }
+.subtitle { font-size: 14px; fill: #334155; }
+.meta { font-size: 12px; fill: #64748b; }
+.frame { fill: white; }
+.panel { fill: #E8F0FE; stroke: #e2e8f0; stroke-width: 1.5; rx: 14; }
+.tileLabel { font-size: 14px; font-weight: 700; fill: #0f172a; }
+.tileBorder { fill: none; stroke: #475569; stroke-width: 1.5; }
+.cell { fill: #ffffff; stroke: #94a3b8; stroke-width: 1; }
+.cellMasked { fill: #e2e8f0; }
+.cellHL { stroke-width: 2; }
+.cellText { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 10px; fill: #0f172a; }
+.arrow { stroke-width: 1.5; fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.axisLine { stroke: #64748b; stroke-width: 1.5; fill: none; }
+.axisText { font-size: 10px; fill: #64748b; font-weight: 700; }
+.opCircle { fill: #ffffff; stroke-width: 2; }
+.opRect { fill: #ffffff; stroke-width: 2; }
+.opText { font-size: 10px; font-weight: 800; fill: #0f172a; }
+.procBox { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; rx: 12; }
+.procTitle { font-size: 14px; font-weight: 700; fill: #0f172a; }
+.procText { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 12px; fill: #0f172a; }
+.smallLabel { font-size: 12px; fill: #334155; }
+.scalarBox { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+.scalarValue { font-size: 16px; font-weight: 700; }
+.validBox { fill: none; stroke-width: 2; stroke-dasharray: 6 4; }
+.expandCell { fill: #DBEAFE; stroke: #3B82F6; stroke-width: 1; }
+.expandHL { stroke-width: 2; }
+</style>
+<rect x="0" y="0" width="1200" height="720" class="frame" />
+<rect x="24" y="24" width="1152" height="672" class="panel" />
+<text x="40" y="46" class="title">TROWEXPANDMAX (Mode 2)</text>
+<text x="40" y="72" class="subtitle">Row-wise broadcast max: src1 provides a 32-byte block per row (RowMajor layout).</text>
+<text x="40" y="92" class="meta">Template: reduce_expand | Mode 2: src1 is RowMajor, 32B per row, vlds+BLK broadcast</text>
+<text x="1160" y="92" class="meta" text-anchor="end">Legend: outline=example; dashed=valid; shaded=masked; blue=32B expand block; r down / c right</text>
+<line x1="36" y1="104" x2="1164" y2="104" stroke="#e2e8f0" stroke-width="1.5" />
+
+<!-- src0 tile: 5 cols x 5 rows (4x4 valid) -->
+<text x="460" y="168" class="tileLabel" text-anchor="middle">src0 (Rv × Cv)</text>
+<rect x="405" y="178" width="110" height="110" class="tileBorder" />
+<rect x="405" y="178" width="22" height="22" class="cell" />
+<rect x="427" y="178" width="22" height="22" class="cell" />
+<rect x="449" y="178" width="22" height="22" class="cell" />
+<rect x="471" y="178" width="22" height="22" class="cell" />
+<rect x="493" y="178" width="22" height="22" class="cell cellMasked" />
+<rect x="405" y="200" width="22" height="22" class="cell" />
+<rect x="427" y="200" width="22" height="22" class="cell" />
+<rect x="449" y="200" width="22" height="22" class="cell cellHL" stroke="#2563EB" />
+<rect x="471" y="200" width="22" height="22" class="cell" />
+<rect x="493" y="200" width="22" height="22" class="cell cellMasked" />
+<rect x="405" y="222" width="22" height="22" class="cell" />
+<rect x="427" y="222" width="22" height="22" class="cell" />
+<rect x="449" y="222" width="22" height="22" class="cell" />
+<rect x="471" y="222" width="22" height="22" class="cell" />
+<rect x="493" y="222" width="22" height="22" class="cell cellMasked" />
+<rect x="405" y="244" width="22" height="22" class="cell" />
+<rect x="427" y="244" width="22" height="22" class="cell" />
+<rect x="449" y="244" width="22" height="22" class="cell" />
+<rect x="471" y="244" width="22" height="22" class="cell" />
+<rect x="493" y="244" width="22" height="22" class="cell cellMasked" />
+<rect x="405" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="427" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="449" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="471" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="493" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="405" y="178" width="88" height="88" class="validBox" stroke="#2563EB" />
+<text x="409" y="262" class="axisText">Rv</text>
+<text x="489" y="190" class="axisText" text-anchor="end">Cv</text>
+<path d="M 415 188 L 449 188" class="axisLine" marker-end="url(#axisArrow)" />
+<path d="M 415 188 L 415 222" class="axisLine" marker-end="url(#axisArrow)" />
+<text x="453" y="192" class="axisText">c</text>
+<text x="413" y="226" class="axisText" text-anchor="end">r</text>
+
+<!-- src1 tile: 8 cols x 5 rows (8x4 valid, representing 32B per row for float) -->
+<text x="672" y="168" class="tileLabel" text-anchor="middle">src1 (Rv × 32B/sizeof(T))</text>
+<text x="672" y="156" class="smallLabel" text-anchor="middle">RowMajor</text>
+<rect x="584" y="178" width="176" height="110" class="tileBorder" />
+<!-- Row 0 -->
+<rect x="584" y="178" width="22" height="22" class="expandCell" />
+<rect x="606" y="178" width="22" height="22" class="expandCell" />
+<rect x="628" y="178" width="22" height="22" class="expandCell" />
+<rect x="650" y="178" width="22" height="22" class="expandCell" />
+<rect x="672" y="178" width="22" height="22" class="expandCell" />
+<rect x="694" y="178" width="22" height="22" class="expandCell" />
+<rect x="716" y="178" width="22" height="22" class="expandCell" />
+<rect x="738" y="178" width="22" height="22" class="expandCell" />
+<!-- Row 1 (highlighted) -->
+<rect x="584" y="200" width="22" height="22" class="expandCell expandHL" stroke="#2563EB" />
+<rect x="606" y="200" width="22" height="22" class="expandCell expandHL" stroke="#2563EB" />
+<rect x="628" y="200" width="22" height="22" class="expandCell expandHL" stroke="#2563EB" />
+<rect x="650" y="200" width="22" height="22" class="expandCell expandHL" stroke="#2563EB" />
+<rect x="672" y="200" width="22" height="22" class="expandCell expandHL" stroke="#2563EB" />
+<rect x="694" y="200" width="22" height="22" class="expandCell expandHL" stroke="#2563EB" />
+<rect x="716" y="200" width="22" height="22" class="expandCell expandHL" stroke="#2563EB" />
+<rect x="738" y="200" width="22" height="22" class="expandCell expandHL" stroke="#2563EB" />
+<!-- Row 2 -->
+<rect x="584" y="222" width="22" height="22" class="expandCell" />
+<rect x="606" y="222" width="22" height="22" class="expandCell" />
+<rect x="628" y="222" width="22" height="22" class="expandCell" />
+<rect x="650" y="222" width="22" height="22" class="expandCell" />
+<rect x="672" y="222" width="22" height="22" class="expandCell" />
+<rect x="694" y="222" width="22" height="22" class="expandCell" />
+<rect x="716" y="222" width="22" height="22" class="expandCell" />
+<rect x="738" y="222" width="22" height="22" class="expandCell" />
+<!-- Row 3 -->
+<rect x="584" y="244" width="22" height="22" class="expandCell" />
+<rect x="606" y="244" width="22" height="22" class="expandCell" />
+<rect x="628" y="244" width="22" height="22" class="expandCell" />
+<rect x="650" y="244" width="22" height="22" class="expandCell" />
+<rect x="672" y="244" width="22" height="22" class="expandCell" />
+<rect x="694" y="244" width="22" height="22" class="expandCell" />
+<rect x="716" y="244" width="22" height="22" class="expandCell" />
+<rect x="738" y="244" width="22" height="22" class="expandCell" />
+<!-- Row 4 (masked) -->
+<rect x="584" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="606" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="628" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="650" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="672" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="694" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="716" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="738" y="266" width="22" height="22" class="cell cellMasked" />
+<rect x="584" y="178" width="176" height="88" class="validBox" stroke="#2563EB" />
+<text x="588" y="262" class="axisText">Rv</text>
+<text x="754" y="190" class="axisText" text-anchor="end">32B</text>
+<path d="M 594 188 L 662 188" class="axisLine" marker-end="url(#axisArrow)" />
+<path d="M 594 188 L 594 222" class="axisLine" marker-end="url(#axisArrow)" />
+<text x="666" y="192" class="axisText">c</text>
+<text x="592" y="226" class="axisText" text-anchor="end">r</text>
+
+<!-- Broadcast arrow annotation -->
+<text x="600" y="140" class="subtitle" text-anchor="middle" fill="#2563EB">dst[r,c] = max(src0[r,c], broadcast(src1[r, 0..32B-1]))</text>
+
+<!-- Operator circle -->
+<circle cx="500" cy="324" r="22" class="opCircle" stroke="#2563EB" />
+<rect x="483" y="307" width="34" height="34" rx="6" class="opRect" stroke="#2563EB" />
+<text x="500" y="319.0" class="opText" font-size="7px" text-anchor="middle">TROWEX</text>
+<text x="500" y="327.0" class="opText" font-size="7px" text-anchor="middle">PANDMA</text>
+<text x="500" y="335.0" class="opText" font-size="7px" text-anchor="middle">X</text>
+
+<!-- Dataflow arrows -->
+<path d="M 449 300 L 449 324 L 479 324" class="arrow" stroke="#2563EB" marker-end="url(#arrow)" />
+<path d="M 672 300 L 672 324 L 522 324" class="arrow" stroke="#2563EB" marker-end="url(#arrow)" />
+<path d="M 500 346 L 500 361" class="arrow" stroke="#2563EB" marker-end="url(#arrow)" />
+
+<!-- dst tile: 5 cols x 5 rows (4x4 valid) -->
+<text x="500" y="350" class="tileLabel" text-anchor="middle">dst (Rv × Cv)</text>
+<rect x="445" y="360" width="110" height="110" class="tileBorder" />
+<rect x="445" y="360" width="22" height="22" class="cell" />
+<rect x="467" y="360" width="22" height="22" class="cell" />
+<rect x="489" y="360" width="22" height="22" class="cell" />
+<rect x="511" y="360" width="22" height="22" class="cell" />
+<rect x="533" y="360" width="22" height="22" class="cell cellMasked" />
+<rect x="445" y="382" width="22" height="22" class="cell" />
+<rect x="467" y="382" width="22" height="22" class="cell" />
+<rect x="489" y="382" width="22" height="22" class="cell cellHL" stroke="#2563EB" />
+<rect x="511" y="382" width="22" height="22" class="cell" />
+<rect x="533" y="382" width="22" height="22" class="cell cellMasked" />
+<rect x="445" y="404" width="22" height="22" class="cell" />
+<rect x="467" y="404" width="22" height="22" class="cell" />
+<rect x="489" y="404" width="22" height="22" class="cell" />
+<rect x="511" y="404" width="22" height="22" class="cell" />
+<rect x="533" y="404" width="22" height="22" class="cell cellMasked" />
+<rect x="445" y="426" width="22" height="22" class="cell" />
+<rect x="467" y="426" width="22" height="22" class="cell" />
+<rect x="489" y="426" width="22" height="22" class="cell" />
+<rect x="511" y="426" width="22" height="22" class="cell" />
+<rect x="533" y="426" width="22" height="22" class="cell cellMasked" />
+<rect x="445" y="448" width="22" height="22" class="cell cellMasked" />
+<rect x="467" y="448" width="22" height="22" class="cell cellMasked" />
+<rect x="489" y="448" width="22" height="22" class="cell cellMasked" />
+<rect x="511" y="448" width="22" height="22" class="cell cellMasked" />
+<rect x="533" y="448" width="22" height="22" class="cell cellMasked" />
+<rect x="445" y="360" width="88" height="88" class="validBox" stroke="#2563EB" />
+<text x="449" y="444" class="axisText">Rv</text>
+<text x="529" y="372" class="axisText" text-anchor="end">Cv</text>
+<path d="M 455 370 L 489 370" class="axisLine" marker-end="url(#axisArrow)" />
+<path d="M 455 370 L 455 404" class="axisLine" marker-end="url(#axisArrow)" />
+<text x="493" y="374" class="axisText">c</text>
+<text x="453" y="408" class="axisText" text-anchor="end">r</text>
+
+<!-- Procedure box -->
+<rect x="40" y="502" width="1120" height="194" class="procBox" />
+<text x="56" y="528" class="procTitle">Procedure (conceptual — Mode 2)</text>
+<text x="56" y="554" class="procText" xml:space="preserve">
+  <tspan x="56" dy="0">for r in 0..Rv-1:</tspan>
+  <tspan x="56" dy="16">  block32 = src1[r, 0 .. 32B/sizeof(T)-1]   // RowMajor, 32 bytes per row</tspan>
+  <tspan x="56" dy="16">  for c in 0..Cv-1:</tspan>
+  <tspan x="56" dy="16">    dst[r,c] = max(src0[r,c], broadcast_block(block32, c))</tspan>
+</text>
+<text x="56" y="644" class="smallLabel">broadcast_block: the 32B block is loaded via vlds (BLK mode) and naturally</text>
+<text x="56" y="660" class="smallLabel">repeats within each vector repeat stride, providing row-wise broadcast.</text>
+<text x="56" y="680" class="meta">Note: semantics apply to the valid region unless stated otherwise.</text>
+</svg>

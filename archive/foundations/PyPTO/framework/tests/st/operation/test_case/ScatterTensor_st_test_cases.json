@@ -1,0 +1,2694 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "ScatterNonInplace_test_0",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        2,
+                        9
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "ScatterNonInplace_test_1",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        3,
+                        7
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        3,
+                        9
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                10
+            ],
+            "tile_shape": [
+                2,
+                16
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "ScatterNonInplace_test_2",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        4,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        4,
+                        9
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                4,
+                8
+            ],
+            "tile_shape": [
+                4,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "ScatterNonInplace_test_3",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        4,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        4,
+                        9
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                4,
+                8
+            ],
+            "tile_shape": [
+                4,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "ScatterNonInplace_test_4",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        4,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        4,
+                        9
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                4,
+                8
+            ],
+            "tile_shape": [
+                4,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "multiply",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "ScatterNonInplace_test_5",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10,
+                        15
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        2,
+                        10,
+                        10
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        4,
+                        11,
+                        13
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10,
+                        15
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                6,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "ScatterNonInplace_test_6",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10,
+                        15
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        2,
+                        10,
+                        10
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        4,
+                        11,
+                        13
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10,
+                        15
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                10,
+                8
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "ScatterNonInplace_test_7",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10,
+                        15,
+                        26
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        2,
+                        10,
+                        10,
+                        26
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        4,
+                        11,
+                        13,
+                        28
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10,
+                        15,
+                        26
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                10,
+                8,
+                3
+            ],
+            "tile_shape": [
+                3,
+                10,
+                4,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "ScatterNonInplace_test_8",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        2,
+                        9
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "ScatterNonInplace_test_9",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        2,
+                        9
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "ScatterNonInplace_test_10",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                90,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "ScatterNonInplace_test_11",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                90,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "ScatterNonInplace_test_12",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                90,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "multiply",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "ScatterNonInplace_test_13",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                90,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "ScatterNonInplace_test_14",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 14
+        },
+        {
+            "case_index": 15,
+            "case_name": "ScatterNonInplace_test_15",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "multiply",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 15
+        },
+        {
+            "case_index": 16,
+            "case_name": "ScatterNonInplace_test_16",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 16
+        },
+        {
+            "case_index": 17,
+            "case_name": "ScatterNonInplace_test_17",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 17
+        },
+        {
+            "case_index": 18,
+            "case_name": "ScatterNonInplace_test_18",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "multiply",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 18
+        },
+        {
+            "case_index": 19,
+            "case_name": "ScatterNonInplace_test_19",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 19
+        },
+        {
+            "case_index": 20,
+            "case_name": "ScatterNonInplace_test_20",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 20
+        },
+        {
+            "case_index": 21,
+            "case_name": "ScatterNonInplace_test_21",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "multiply",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 21
+        },
+        {
+            "case_index": 22,
+            "case_name": "ScatterNonInplace_test_22",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 22
+        },
+        {
+            "case_index": 23,
+            "case_name": "ScatterNonInplace_test_23",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 23
+        },
+        {
+            "case_index": 24,
+            "case_name": "ScatterNonInplace_test_24",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "multiply",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 24
+        },
+        {
+            "case_index": 25,
+            "case_name": "ScatterNonInplace_test_25",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 25
+        },
+        {
+            "case_index": 26,
+            "case_name": "ScatterNonInplace_test_26",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 26
+        },
+        {
+            "case_index": 27,
+            "case_name": "ScatterNonInplace_test_27",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1471,
+                        94
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 170
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1488,
+                        116
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1628,
+                        170
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                294,
+                170
+            ],
+            "tile_shape": [
+                45,
+                176
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "multiply",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 27
+        },
+        {
+            "case_index": 28,
+            "case_name": "ScatterNonInplace_test_28",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        110,
+                        349
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        109,
+                        89
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 349
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        173,
+                        89
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        110,
+                        349
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                54,
+                349
+            ],
+            "tile_shape": [
+                33,
+                352
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 28
+        },
+        {
+            "case_index": 29,
+            "case_name": "ScatterNonInplace_test_29",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        763,
+                        365,
+                        642
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        761,
+                        257,
+                        427
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 365
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        853,
+                        258,
+                        443
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        763,
+                        365,
+                        642
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                365,
+                336
+            ],
+            "tile_shape": [
+                2,
+                365,
+                16
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 29
+        },
+        {
+            "case_index": 30,
+            "case_name": "ScatterNonInplace_test_30",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2886,
+                        90
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1588,
+                        201
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 90
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1607,
+                        207
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2886,
+                        90
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1587,
+                201
+            ],
+            "tile_shape": [
+                49,
+                208
+            ],
+            "params": {
+                "axis": 1,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 30
+        },
+        {
+            "case_index": 31,
+            "case_name": "ScatterNonInplace_test_31",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        2,
+                        9
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 31
+        },
+        {
+            "case_index": 32,
+            "case_name": "ScatterNonInplace_test_32",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        2,
+                        9
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "add",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 32
+        },
+        {
+            "case_index": 33,
+            "case_name": "ScatterNonInplace_test_33",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "int16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        2,
+                        9
+                    ],
+                    "dtype": "int16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "int16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "multiply",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 33
+        },
+        {
+            "case_index": 34,
+            "case_name": "ScatterNonInplace_test_34",
+            "operation": "ScatterTensor",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 3
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        2,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3,
+                        10
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                3,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "reduce": "",
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 34
+        }
+    ]
+}

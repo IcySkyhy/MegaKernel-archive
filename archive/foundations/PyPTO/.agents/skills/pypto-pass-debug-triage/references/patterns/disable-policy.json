@@ -1,0 +1,89 @@
+{
+  "diagnostic_action_policy": {
+    "rule": "Before suggesting that a pass be disabled for isolation, check whether the pass is required, structural/dependency-sensitive, or optional. Never suggest disabling a required or structural pass. For unknown passes, do not suggest disabling unless the user or current code/config proves it is safe.",
+    "config_api_caveat": "The current Python PassConfigKey only exposes KEY_DUMP_GRAPH. Do not invent pypto.PassConfigKey.KEY_DISABLE_PASS / KEY_HEALTH_CHECK examples. If a non-dump pass config is needed, say to use tile_fwk_config.json or the project-supported config path.",
+    "required_passes": [
+      {
+        "identifier": "OoOSchedule",
+        "aliases": [
+          "OoOScheduler",
+          "OOO schedule",
+          "OoO schedule"
+        ],
+        "reason": "Required scheduling pass. Downstream sync, VF tuning, copyout resolve, and codegen rely on its scheduled op order, memory ranges, spill output, and checker invariants.",
+        "allowed_debug_actions": [
+          "Enable dump_graph/print_graph around OoOSchedule.",
+          "Enable health_check and inspect Block_Graph_Health_Report.json.",
+          "Enable pre_check/post_check or schedule_ooo_checker.",
+          "Compare graph dumps before and after OoOSchedule without disabling the pass.",
+          "Dump schedInfoMap_, localBufferMap_, tensorOccupyMap, issueQueues, allocIssueQueue, and generated spill ops."
+        ],
+        "forbidden_suggestions": [
+          "Disable OoOSchedule to see whether the issue disappears.",
+          "Turn off OoOScheduler as a workaround.",
+          "Bypass OoO schedule in a normal PVC2_OOO pipeline."
+        ]
+      }
+    ],
+    "structural_or_dependency_sensitive_passes": [
+      "ExpandFunction",
+      "AssignMemoryType",
+      "GraphPartition",
+      "GenerateMoveOp",
+      "PreGraphProcess",
+      "InferDynShape",
+      "SubgraphToFunction",
+      "InferParamIndex",
+      "SrcDstBufferMerge",
+      "AddAlloc",
+      "RemoveAlloc",
+      "CopyOutResolve",
+      "InsertSync",
+      "CodegenPreproc"
+    ],
+    "optional_optimization_passes": [
+      {
+        "identifier": "CommonOperationEliminate",
+        "aliases": [
+          "COE",
+          "Common Operation Elimination"
+        ],
+        "reason": "Optimization pass that removes equivalent operations. It can be temporarily disabled in a local isolation run to check whether an elimination introduced a graph/precision regression.",
+        "allowed_debug_actions": [
+          "Temporarily set disable_pass only for CommonOperationEliminate in a local repro.",
+          "Compare graph dumps before and after COE.",
+          "If disabling COE changes the symptom, inspect skipped opcode guards and deleted operations rather than keeping COE disabled as the final fix."
+        ]
+      }
+    ],
+    "feature_flag_alternatives": [
+      {
+        "feature": "VF tuning",
+        "prefer": "pass.enable_vf=false or vf_options",
+        "instead_of": "disabling TuneTileOpSeqForVF / TuneSyncForVF as a pass"
+      },
+      {
+        "feature": "ReduceCopy auto-mix",
+        "prefer": "pass.auto_mix_partition=0",
+        "instead_of": "disabling ReduceCopyMerge as a pass"
+      },
+      {
+        "feature": "CopyOut coalescing",
+        "prefer": "pass.copyout_resolve_coalescing=0",
+        "instead_of": "disabling CopyOutResolve as a pass"
+      },
+      {
+        "feature": "OoO scheduling mode",
+        "prefer": "pass.ooo_sched_mode such as HLF/GAPMIN, when supported",
+        "instead_of": "disabling OoOSchedule"
+      }
+    ],
+    "safe_alternatives_when_required_pass_is_suspect": [
+      "Enable pass dump/checker/health report for the required pass.",
+      "Compare pre-pass and post-pass graph invariants.",
+      "Use a smaller repro graph that still runs the required pass.",
+      "Prefer feature flags over pass disable when the code exposes a narrower switch.",
+      "Temporarily disable only optional upstream/downstream optimization passes whose policy allows it."
+    ]
+  }
+}

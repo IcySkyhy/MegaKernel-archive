@@ -1,0 +1,34 @@
+{
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "peak_gbs": 1008.0,
+  "sms": 128,
+  "model": "allenai/OLMoE-1B-7B-0924-Instruct",
+  "arch": {"hidden": 2048, "layers": 16, "heads": 16, "kv_heads": 16, "head_dim": 128,
+           "experts": 64, "top_k": 8, "intermediate_per_expert": 1024, "qk_norm": true,
+           "norm_topk_prob": false, "tied_embeddings": false, "total_params": "6.9B", "active_params": "1.3B"},
+  "dtype": "bfloat16",
+  "config": {"context": 512, "decode_tokens": 128, "batch": 1},
+  "active_weights_gb_per_step": 2.36,
+  "ladder_ms_per_token": {
+    "eager_hf": 19.528,
+    "vllm_0_11_0": 3.698,
+    "fused_moe_megakernel_graph": 3.283,
+    "active_memory_floor": 2.339
+  },
+  "ladder_tok_s": {
+    "eager_hf": 51,
+    "vllm_0_11_0": 270,
+    "fused_moe_megakernel_graph": 305,
+    "active_memory_floor": 431
+  },
+  "notes": {
+    "fused_vs_vllm": 0.888,
+    "fused_vs_floor": 1.40,
+    "fused_vs_eager": 5.95,
+    "key_insight": "at batch-1 decode only top-8 of 64 experts are read per layer, so the memory floor is the ACTIVE weights (~1.3B, 2.36 GB) not the 6.9B total. floor = 2.339 ms.",
+    "fused_recipe": "reuses the dense Part-1 kernels (rmsnorm+QKV GEMV, split-K flash-decode, o-proj GEMV) plus MoE-specific kernels: QK-norm+RoPE+cache-write fused, router GEMV, indirect-indexed expert SwiGLU (grid top_k x I-tiles, gathers gate_up_proj[e] by GPU-tensor id), gated expert-down+residual combine. whole step CUDA-graph-captured; data-dependent expert ids live in a static GPU tensor overwritten each step, so routing changes token-to-token but the launch stays shape-stable. torch glue = 2 QK-norm scale reductions + router softmax/topk per layer.",
+    "verified": "argmax-identical to hand-rolled torch oracle (itself 12/12 vs HF) over 12 real greedy-decode steps.",
+    "vllm_env": "vllm==0.11.0 on torch 2.8.0+cu128, transformers 4.57.1",
+    "result": "beat vLLM 3.698 -> 3.283 (1.13x faster, 305 vs 270 tok/s), 1.40x the 2.339ms active floor. same playbook as the dense megakernel, now sparse."
+  }
+}

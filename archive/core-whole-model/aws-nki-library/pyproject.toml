@@ -1,0 +1,128 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nki_library"
+dynamic = ["version", "entry-points"]
+description = "NeuronKernelInterfaceLibrary"
+readme = "README.md"
+requires-python = ">=3.12"
+keywords = ["NKI", "Neuron", "Kernels", "High-Performance", "Hardware", "AWS", "Amazon"]
+license = "Apache-2.0"
+dependencies = [
+    "neuronx-cc>=2.26",
+    "nki>=0.5.0",
+]
+
+
+[project.optional-dependencies]
+test = [
+    "numpy",
+    "ml-dtypes",
+    "pandas",
+    "torch",
+    "aws-embedded-metrics",
+    "boto3",
+    "fabric2",
+    "filelock",
+    "plotext",
+    "pytest",
+    "pytest-cov",
+    "pytest-xdist",
+    "pytest-metadata",
+    "pytest-html",
+    "ruff==0.14.13",
+    "ty==0.0.51",
+    "pre-commit",
+    "debugpy",
+    "pytest-cov",
+    "allpairspy",
+    "pytest-timeout"
+]
+
+[tool.setuptools]
+zip-safe = true
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "nkilib_src.nkilib.version.__version__"}
+
+[tool.setuptools.package-data]
+nkilib_src = ["py.typed"]
+
+[tool.ty.environment]
+python-version = "3.12"
+# ty (unlike the test harness) does not read PYTHONPATH or the runtime sys.path.
+# These paths let it resolve first-party helpers imported by tests via runtime
+# sys.path.insert (scripts/, build-tools/bin/) and the compiler wheels installed
+# into the workspace wheelhouse. The interpreter itself is supplied via --python
+# by build-tools/bin/run_ty.sh.
+extra-paths = ["scripts", "build-tools/bin", "wheelhouse/lib/python3.12/site-packages"]
+
+[tool.ty.rules]
+# Only entries that differ from the checker's default severity are listed. Every
+# correctness rule already defaults to error, so a regression in one fails the
+# build with no entry here -- including rules added by future releases. Advisory
+# rules default to warning and do not fail the build unless listed.
+
+# Advisory by default: attribute access on a package where a submodule of the
+# same name exists resolves differently depending on import order, so it is
+# worth failing on. This is the only rule whose severity is raised.
+"possibly-missing-submodule" = "error"
+
+# Ignored: dominated by third-party stub limitations that are not expected to
+# be fixed, so the few genuine signals they carry are not worth the noise.
+# Re-evaluate only if the upstream stubs change.
+"invalid-type-form" = "ignore"              # nearly all from an array type used as an annotation, a kernel idiom the stub rejects
+"too-many-positional-arguments" = "ignore"  # nearly all from stubs that declare dynamic signatures as taking no arguments
+"invalid-return-type" = "ignore"            # all from stubs
+
+[tool.mypy]
+check_untyped_defs = true
+show_error_codes = true
+pretty = true
+ignore_missing_imports = true
+
+[tool.flake8]
+ignore = [
+    "E203",
+    "W503",
+    "E501",
+]
+max-line-length = 120
+
+[tool.ruff]
+indent-width = 4
+line-length = 120
+extend-exclude = ["*model_config.py", "configuration/", "skills"]
+
+[tool.ruff.format]
+quote-style = "preserve"
+indent-style = "space"
+docstring-code-format = false
+
+[tool.ruff.lint]
+# Enable linting rules
+select = [
+    "S101",  # assert detection
+    "I",     # isort (import sorting)
+    "F401",  # unused imports
+    "F821",  # undefined names
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["I", "F401"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"test/**/*.py" = ["S101"]
+"**/test_*.py" = ["S101"]
+# neurotile uses `assert` for trace-time validation. These are intentional.
+"src/nkilib_src/nkilib/experimental/neurotile/**" = ["S101"]
+# sparse_attention_indexer numpy torch references use `assert`. The kernel
+# files use kernel_assert instead.
+"src/nkilib_src/nkilib/experimental/sparse_attention_indexer/*_torch.py" = ["S101"]

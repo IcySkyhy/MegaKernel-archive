@@ -1,0 +1,74 @@
+{
+    "configurations": [
+    {
+        "name": "ops_cast_test",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/build/ark/ops_cast_test",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${fileDirname}",
+        "environment": [
+            {
+                "name": "ARK_ROOT",
+                "value": "${workspaceFolder}/build"
+            },
+            {
+                "name": "ARK_LOG_LEVEL",
+                "value": "DEBUG"
+            }
+        ],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            },
+            {
+                "description": "Set Disassembly Flavor to Intel",
+                "text": "-gdb-set disassembly-flavor intel",
+                "ignoreFailures": true
+            }
+        ]
+    },
+    {
+        "name": "Python: generator",
+        "type": "python",
+        "request": "launch",
+        "program": "${workspaceFolder}/examples/llama/generator.py",
+        "console": "integratedTerminal",
+        "args": [
+            "--ckpt_dir=/mnt/llama/llama-2-13b-chat",
+            "--tok_path=/mnt/llama/tokenizer.model",
+            "--params_path=/mnt/llama/llama-2-13b-chat/params.json",
+            "--ngpu=2"
+        ],
+        "env": {
+            "MSCCLPP_DEBUG": "WARN",
+            "MSCCLPP_DEBUG_SUBSYS": "ALL",
+            "ARK_LOG_LEVEL": "INFO"
+        },
+        "justMyCode": false,
+    },
+    {
+        "name": "Python: model tester",
+        "type": "python",
+        "request": "launch",
+        "program": "${workspaceFolder}/examples/llama/model_test.py",
+        "console": "integratedTerminal",
+        "args": [
+            "--ckpt_dir=/mnt/llama/llama-2-13b-chat",
+            "--ngpu=2"
+        ],
+        "env": {
+            "MSCCLPP_DEBUG": "WARN",
+            "MSCCLPP_DEBUG_SUBSYS": "ALL",
+            "ARK_LOG_LEVEL": "INFO",
+            "ARK_DISABLE_GRAPH_OPT": "1"
+        },
+        "justMyCode": false,
+    }
+    ]
+}

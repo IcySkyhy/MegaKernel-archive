@@ -1,0 +1,23 @@
+name: Task|任务跟踪
+description: 用于跟踪项目计划性工作（开发、重构、测试、环境搭建等），请使用此模板。
+title: "[Task|任务跟踪]: "
+labels: ["task"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Welcome to submit task tracking issues and collaborate with team members.
+  - type: textarea
+    attributes:
+      label: 任务描述
+      description: 请详细描述任务背景、目的及核心诉求（如：适配XX版本，完成XX模块代码重构）
+      placeholder: 请输入任务描述
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 任务目标
+      description: 请明确可量化、可验收的任务目标（如：完成XX接口开发+单元测试，覆盖率≥80%）
+      placeholder: 1. 完成XX功能开发；2. 编写XX测试用例；3. 更新XX文档
+    validations:
+      required: true

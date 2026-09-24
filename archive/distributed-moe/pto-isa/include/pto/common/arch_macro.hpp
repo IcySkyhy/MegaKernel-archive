@@ -1,0 +1,46 @@
+/**
+Copyright (c) 2026 Huawei Technologies Co., Ltd.
+This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+CANN Open Software License Agreement Version 2.0 (the "License").
+Please refer to the License for details. You may not use this file except in compliance with the License.
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+See LICENSE in the root of the software repository for the full text of the License.
+*/
+// Defines architecture feature macros shared by host and device builds.
+#ifndef ARCH_MACRO_HPP
+#define ARCH_MACRO_HPP
+
+#if defined(__CPU_SIM) && !defined(__DAV_CUBE__) && !defined(__DAV_VEC__)
+#define __DAV_CUBE__
+#define __DAV_VEC__
+#endif
+
+#if __NPU_ARCH__ == 2201
+#define PTO_NPU_ARCH_A2A3
+#elif (__NPU_ARCH__ == 3101) || (__NPU_ARCH__ == 3510)
+#define PTO_NPU_ARCH_A5
+#if __NPU_ARCH__ == 3510
+#define PTO_URMA_SUPPORTED
+#endif
+#elif __NPU_ARCH__ == 3113
+#define PTO_COMM_NOT_SUPPORTED
+#define PTO_NPU_ARCH_KIRIN9030
+#elif __NPU_ARCH__ == 3003
+#define PTO_COMM_NOT_SUPPORTED
+#define PTO_NPU_ARCH_KIRINX90
+#elif __NPU_ARCH__ == 5101
+#define PTO_COMM_NOT_SUPPORTED
+#define PTO_NPU_ARCH_KIRINDEV0000
+#elif __NPU_ARCH__ == 9201
+#define PTO_COMM_NOT_SUPPORTED
+#define PTO_NPU_ARCH_A6
+#endif
+
+#if defined(PTO_NPU_ARCH_KIRIN9030) || defined(PTO_NPU_ARCH_KIRINX90) || defined(PTO_NPU_ARCH_KIRINDEV0000)
+#define __tf__
+#define __in__
+#define __out__
+#define __cce_get_tile_ptr
+#endif
+#endif // ARCH_MACRO_HPP

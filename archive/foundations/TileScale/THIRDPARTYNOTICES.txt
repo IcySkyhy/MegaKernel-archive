@@ -1,0 +1,344 @@
+TileScale Third-Party Notices
+=============================
+
+TileScale includes and derives from third-party software. TileScale's root
+license terms do not replace the licenses identified below. Copyright notices,
+license texts, and upstream NOTICE files remain in force for the corresponding
+material.
+
+Package builders must include this file and the referenced license and NOTICE
+files in every source or binary artifact that contains the corresponding
+material. File-level notices are authoritative if they differ from this
+summary.
+
+
+Bundled repositories and headers
+--------------------------------
+
+Apache TVM / TileLang TVM fork
+  Source: https://github.com/TileLang/tvm
+  Upstream: https://github.com/apache/tvm
+  License: Apache License 2.0
+  Copyright: 2019-2023 The Apache Software Foundation and contributors
+  Material: 3rdparty/tvm, compiled TVM objects, and selected TVM sources,
+            Python modules, and headers included in TileScale packages
+  License: 3rdparty/tvm/LICENSE
+  Notice: 3rdparty/tvm/NOTICE
+  Additional licenses: 3rdparty/tvm/licenses/
+
+  TVM carries additional third-party material. Preserve the following license
+  files whenever the related TVM source or compiled code is distributed:
+
+    - 3rdparty/tvm/licenses/LICENSE.blockingconcurrentqueue.txt
+    - 3rdparty/tvm/licenses/LICENSE.builtin_fp16.txt
+    - 3rdparty/tvm/licenses/LICENSE.concurrentqueue.txt
+    - 3rdparty/tvm/licenses/LICENSE.cutlass.txt
+    - 3rdparty/tvm/licenses/LICENSE.cutlass_fpA_intB_gemm.txt
+    - 3rdparty/tvm/licenses/LICENSE.l2_cache_flush.txt
+    - 3rdparty/tvm/licenses/LICENSE.libflash_attn.txt
+    - 3rdparty/tvm/licenses/LICENSE.rang.txt
+    - 3rdparty/tvm/licenses/LICENSE.tensorrt_llm.txt
+    - 3rdparty/tvm/licenses/LICENSE.vllm.txt
+
+Apache TVM FFI
+  Source: https://github.com/apache/tvm-ffi
+  License: Apache License 2.0
+  Copyright: 2024-present The Apache Software Foundation
+  Material: TVM FFI source used through the TVM submodule and the separately
+            installed apache-tvm-ffi runtime dependency
+  License: 3rdparty/tvm/3rdparty/tvm-ffi/LICENSE
+  Notice: 3rdparty/tvm/3rdparty/tvm-ffi/NOTICE
+
+  Nested TVM FFI material includes:
+
+    - DLPack, Apache License 2.0:
+      3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/dlpack/LICENSE
+    - libbacktrace, BSD-style license:
+      3rdparty/tvm/3rdparty/tvm-ffi/3rdparty/libbacktrace/LICENSE
+
+NVIDIA CUTLASS
+  Source: https://github.com/NVIDIA/cutlass
+  License: BSD 3-Clause
+  Copyright: 2017-2025 NVIDIA CORPORATION & AFFILIATES
+  Material: CUTLASS headers and tools under 3rdparty/cutlass, including
+            selected headers and tools included in TileScale packages
+  License: 3rdparty/cutlass/LICENSE.txt
+
+  CUTLASS directories covered by a separate NVIDIA EULA, including
+  python/CuTeDSL, and the generated CUTLASS documentation that describes those
+  components are not part of the TileScale package manifests. If package
+  contents are expanded to include those directories, their EULA must be
+  reviewed and distributed as required by the corresponding CUTLASS terms.
+
+ROCm Composable Kernel
+  Source: https://github.com/ROCm/composable_kernel
+  License: MIT
+  Copyright: 2018-2025 Advanced Micro Devices, Inc. and contributors
+  Material: headers and library sources under 3rdparty/composable_kernel,
+            including selected files included in TileScale packages
+  License: 3rdparty/composable_kernel/LICENSE
+
+ROCm HIP and HSA headers
+  Source: https://github.com/ROCm/HIP
+          https://github.com/ROCm/ROCR-Runtime
+  Licenses: MIT and University of Illinois/NCSA Open Source License
+  Copyright: Advanced Micro Devices, Inc. and contributors
+  Material: build-time headers under 3rdparty/hip-headers/include
+  Notices: license notices are retained in each vendored header; the NCSA
+           terms are reproduced in 3rdparty/hip-headers/include/hsa/hsa.h
+
+Khronos OpenCL Headers
+  Source: https://github.com/KhronosGroup/OpenCL-Headers
+  License: Apache License 2.0
+  Material: 3rdparty/tvm/3rdparty/OpenCL-Headers
+  License: 3rdparty/tvm/3rdparty/OpenCL-Headers/LICENSE
+
+TVM CUTLASS fpA/intB GEMM integration
+  Source: https://github.com/tlc-pack/cutlass_fpA_intB_gemm
+  License: Apache License 2.0
+  Material: 3rdparty/tvm/3rdparty/cutlass_fpA_intB_gemm
+  License: 3rdparty/tvm/3rdparty/cutlass_fpA_intB_gemm/LICENSE
+
+FlashAttention C++ library
+  Source: https://github.com/tlc-pack/libflash_attn
+  Upstream: https://github.com/Dao-AILab/flash-attention
+  License: BSD 3-Clause
+  Copyright: 2022 the respective contributors
+  Material: 3rdparty/tvm/3rdparty/libflash_attn and compiled TVM code derived
+            from that material
+  License: 3rdparty/tvm/3rdparty/libflash_attn/LICENSE
+
+
+Embedded and derived source files
+---------------------------------
+
+half - IEEE 754 half-precision library
+  Source: https://half.sourceforge.net/
+  License: MIT
+  Copyright: 2012-2025 Christian Rau
+  Material and license notice: src/tl_templates/cpp/half.hpp
+
+NVIDIA FasterTransformer bfloat16 helpers
+  Source: https://github.com/NVIDIA/FasterTransformer
+  Version referenced by the source files: v5.2.1
+  License: Apache License 2.0
+  Copyright: 2019-2022 NVIDIA CORPORATION
+  Material and license notices:
+
+    - src/tl_templates/cuda/cuda_bf16_wrapper.h
+    - src/tl_templates/cuda/cuda_bf16_fallbacks.cuh
+
+NVIDIA NVRTC standard-library compatibility definitions
+  License: Apache License 2.0
+  Copyright: 2025 NVIDIA CORPORATION & AFFILIATES
+  Material and license notice: src/tl_templates/cuda/nvrtc_std.h
+
+FlashInfer-derived JIT environment helper
+  Source: https://github.com/flashinfer-ai/flashinfer
+  License: Apache License 2.0
+  Material and license notice: tilelang/jit/env.py
+
+Apache TVM and MLC-derived scheduling and quantization helpers
+  Sources: https://github.com/apache/tvm
+           https://github.com/mlc-ai/mlc-llm
+  License: Apache License 2.0
+  Material and license notices:
+
+    - tilelang/carver/common_schedules.py
+    - tilelang/quantize/quantization.py
+
+Microsoft LOP3 quantization helper
+  License: MIT
+  Copyright: Microsoft Corporation
+  Material and license notice: tilelang/quantize/lop3.py
+
+PyTorch-derived testing, environment, and sparse helpers
+  Source: https://github.com/pytorch/pytorch
+  License: BSD-style PyTorch license
+  Copyright: PyTorch, Caffe2, and their respective contributors
+  Material modified for TileScale:
+
+    - tilelang/utils/tensor.py
+    - tilelang/utils/sparse.py
+    - tilelang/env.py
+
+  Reference only: tilelang/layout/gemm_sp.py uses PyTorch's sparse metadata
+  layout as a specification reference.
+  License: 3rdparty/tvm/3rdparty/tvm-ffi/licenses/LICENSE.pytorch.txt
+  Notice: 3rdparty/tvm/3rdparty/tvm-ffi/licenses/NOTICE.pytorch.txt
+
+DeepGEMM-derived benchmark and Blackwell schedule helpers
+  Source: https://github.com/deepseek-ai/DeepGEMM
+  License: MIT
+  Copyright: 2025 DeepSeek
+  Material modified for TileScale:
+
+    - tilelang/profiler/bench.py
+    - examples/deepseek_v4/fp8_fp4_gemm_1d1d_sm100.py
+
+  License: LICENSES/DeepGEMM.txt
+
+BitBLAS and Microsoft BitNet integration
+  Source: https://github.com/microsoft/BitBLAS
+          https://github.com/microsoft/BitNet
+  License: MIT
+  Copyright: Microsoft Corporation
+  Material copied or modified for TileScale:
+
+    - tilelang/common/transform_kind.py
+    - examples/bitnet-1.58b/
+
+  The BitNet directory also contains the separately attributed Transformers,
+  1bitLLM, and vLLM material listed below.
+  License: LICENSES/BitBLAS.txt
+
+1bitLLM BitNet model utilities
+  Source: https://huggingface.co/1bitLLM/bitnet_b1_58-3B
+  License declared by the source repository: MIT
+  Material modified for the TileScale integration:
+
+    - examples/bitnet-1.58b/eval_ppl.py
+    - examples/bitnet-1.58b/eval_utils.py
+    - examples/bitnet-1.58b/utils_quant.py
+
+  The original TileLang integration was committed on 2025-04-16. It did not
+  record the exact model-repository revision; this limitation and the source
+  repository's license declaration are preserved in the accompanying file.
+  License and provenance: LICENSES/1bitLLM-BitNet.txt
+
+Hugging Face Transformers and EleutherAI model/tokenizer helpers
+  Source: https://github.com/huggingface/transformers
+  License: Apache License 2.0
+  Copyright: 2018-present The Hugging Face team; 2022 EleutherAI and the
+             Hugging Face team
+  Material modified for TileScale:
+
+    - examples/bitnet-1.58b/configuration_bitnet.py
+    - examples/bitnet-1.58b/modeling_bitnet.py
+    - examples/bitnet-1.58b/tokenization_bitnet.py
+
+  License text: 3rdparty/tvm/LICENSE
+
+vLLM test utilities
+  Source: https://github.com/vllm-project/vllm/tree/v0.5.5
+  License: Apache License 2.0
+  Material modified for TileScale from vLLM v0.5.5:
+
+    - examples/bitnet-1.58b/vllm_workspace/conftest.py
+    - examples/bitnet-1.58b/vllm_workspace/utils.py
+
+  License: 3rdparty/tvm/licenses/LICENSE.vllm.txt
+
+Triton FP4-to-BF16 twiddling
+  Source: https://github.com/triton-lang/triton
+  License: MIT
+  Copyright: 2018-2020 Philippe Tillet; 2020-2022 OpenAI
+  Material adapted for TileScale:
+
+    - tilelang/quantize/mxfp.py
+    - tilelang/contrib/cutedsl/quantize.py
+
+  License: LICENSES/Triton.txt
+
+Flash Linear Attention-derived examples
+  Source: https://github.com/fla-org/flash-linear-attention
+  License: MIT
+  Copyright: 2023-2026 Songlin Yang, Yu Zhang, Zhiyuan Li
+  Material copied or modified for TileScale:
+
+    - examples/deepseek_v32/utils.py
+    - examples/dsa_sparse_finetune/index.py
+    - examples/kda/FLA_KDA/
+
+  TileScale ports under examples/gdn/ and examples/kda/ also use FLA kernels
+  and algorithms as their reference implementation.
+  License: LICENSES/Flash-Linear-Attention.txt
+
+Microsoft MInference sparse-attention example
+  Source: https://github.com/microsoft/MInference
+  License: MIT
+  Copyright: Microsoft Corporation
+  Material modified for TileScale:
+
+    - examples/minference/example_vertical_slash_sparse_attn.py
+    - examples/minference/ops/kernels.cpp
+    - examples/minference/ops/vertical_slash_index.cu
+
+  License: LICENSES/MInference.txt
+
+OpenAI gpt-oss attention-sink helpers
+  Source: https://github.com/openai/gpt-oss
+  License: Apache License 2.0
+  Copyright: OpenAI
+  Material modified for TileScale:
+
+    - examples/attention_sink/example_mha_sink_fwd_bhsd.py
+    - examples/attention_sink/example_mha_sink_bwd_bhsd.py
+    - examples/attention_sink/example_gqa_sink_bwd_bhsd.py
+
+  License text: 3rdparty/tvm/LICENSE
+
+SGLang FP8 cast example
+  Source: https://github.com/sgl-project/sglang/pull/2575
+  License: Apache License 2.0
+  Copyright: 2023-2024 SGLang Team
+  Material modified for TileScale:
+
+    - examples/cast/example_triton_cast_to_fp8.py
+
+  License text: 3rdparty/tvm/LICENSE
+
+FlashMLA benchmark drivers
+  Source: https://github.com/deepseek-ai/FlashMLA
+  License: MIT
+  Copyright: 2025 DeepSeek
+  Material modified for TileScale:
+
+    - examples/deepseek_mla/benchmark_mla.py
+    - examples/deepseek_mla/amd/benchmark_mla_decode_amd_triton.py
+    - examples/deepseek_mla/amd/benchmark_mla_decode_amd_aiter.py
+
+  License: LICENSES/FlashMLA.txt
+
+FlashAttention and MLCommons BERT padding helper
+  Sources: https://github.com/Dao-AILab/flash-attention
+           https://github.com/mlcommons/training_results_v1.1
+  Licenses: BSD 3-Clause and Apache License 2.0
+  Copyright: 2022 FlashAttention contributors; MLCommons and NVIDIA
+  Material modified for TileScale:
+
+    - examples/flash_attention/bert_padding.py
+
+  Licenses: 3rdparty/tvm/3rdparty/libflash_attn/LICENSE
+            3rdparty/tvm/LICENSE
+
+AMD Matrix Instruction Calculator-generated layouts
+  Source: https://github.com/ROCm/amd_matrix_instruction_calculator
+  License: MIT
+  Copyright: 2022-2024 Advanced Micro Devices, Inc.
+  Generated and adapted material: src/layout/gemm_layouts.cc
+  License: LICENSES/AMD-Matrix-Instruction-Calculator.txt
+
+Additional Apache TVM-derived files
+  Source: https://github.com/apache/tvm
+  License: Apache License 2.0
+  Material modified for TileScale includes:
+
+    - tilelang/contrib/nvcc.py
+    - tilelang/contrib/hipcc.py
+    - tilelang/language/ast/
+    - tilelang/language/parser/
+    - Apache-headered files under src/backend/, src/cuda/, src/transform/,
+      testing/python/arith/, and testing/python/transform/
+
+  License: 3rdparty/tvm/LICENSE
+  Notice: 3rdparty/tvm/NOTICE
+
+
+External package dependencies
+-----------------------------
+
+Python and system dependencies installed separately by package managers are
+not relicensed by TileScale. Their own package metadata and license files
+govern their use and redistribution. See pyproject.toml and requirements*.txt
+for the dependency declarations used by each build and test configuration.

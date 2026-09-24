@@ -1,0 +1,19 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+sections/*.aux
+
+# Editor swap files
+*.swp
+*.swo
+.DS_Store
+
+# Built PDF — git-ignored during drafting; re-track manually at release tags.
+main.pdf

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C# Library / Code — TensorSharp Wiki</title>
+  <meta name="description" content="Embed TensorSharp from source in your .NET application: project references, ModelBase.Create, a correct prefill/decode loop, and SamplingConfig.">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem('ts-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.classList.toggle('dark',t==='dark');}catch(e){}</script>
+  <script defer src="assets/search-index.js"></script>
+  <script defer src="assets/app.js"></script>
+</head>
+<body data-page="code-api">
+<a class="skip" href="#content">Skip to content</a>
+<main class="content" id="content">
+  <div class="breadcrumb"><a href="index.html">Home</a> › C# Library / Code</div>
+  <h1>Using TensorSharp from C#</h1>
+  <p class="lede">TensorSharp is a real .NET library, not just an executable. Reference its projects from a source checkout and drive inference directly from your own code when you do not want an HTTP hop.</p>
+
+  <h2 id="packages">Project and package boundaries</h2>
+  <p>The repository is split along publishable package boundaries. The names below are project/package IDs, but the current Runtime/Models/Backends/CLI/Server packages are <strong>not available on NuGet.org</strong>.</p>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Package</th><th>Namespace</th><th>Responsibility</th></tr></thead>
+    <tbody>
+      <tr><td><code>TensorSharp.Core</code></td><td><code>TensorSharp</code></td><td>Tensor primitives, ops, allocators, storage, device abstraction.</td></tr>
+      <tr><td><code>TensorSharp.Runtime</code></td><td><code>TensorSharp.Runtime</code></td><td>GGUF parsing, tokenizers, prompt rendering, sampling, paged KV cache, continuous-batching scheduler.</td></tr>
+      <tr><td><code>TensorSharp.Models</code></td><td><code>TensorSharp.Models</code></td><td><code>ModelBase</code>, architecture implementations, multimodal encoders, batched/paged forward passes.</td></tr>
+      <tr><td><code>TensorSharp.Backends.GGML</code></td><td><code>TensorSharp.GGML</code></td><td>GGML-backed execution and native interop.</td></tr>
+      <tr><td><code>TensorSharp.Backends.Cuda</code></td><td><code>TensorSharp.Cuda</code></td><td>Direct CUDA allocator, storage, cuBLAS GEMM, PTX kernels, quantized CUDA ops.</td></tr>
+      <tr><td><code>TensorSharp.Backends.MLX</code></td><td><code>TensorSharp.MLX</code></td><td>Apple-Silicon MLX backend (mlx-c / Metal).</td></tr>
+      <tr><td><code>TensorSharp.Server</code></td><td><code>TensorSharp.Server</code></td><td>ASP.NET Core server, OpenAI/Ollama adapters, inference engine host, web UI.</td></tr>
+      <tr><td><code>TensorSharp.Cli</code></td><td><code>TensorSharp.Cli</code></td><td>Console host and debugging / batch tooling.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>For a typical embedding scenario, reference <code>TensorSharp.Models.csproj</code>; it already references Core, Runtime, and the backend projects. From a sibling application beside the TensorSharp checkout:</p>
+  <pre data-lang="bash"><code>dotnet add reference ../TensorSharp/TensorSharp.Models/TensorSharp.Models.csproj</code></pre>
+  <div class="callout warn"><div class="ic">📦</div><p>Do not use <code>dotnet add package TensorSharp.Models</code> yet: no current package with that ID is published on NuGet.org. Source builds compile native GGML/MLX by default; for managed-CPU development pass <code>-p:TensorSharpSkipGgmlNative=true -p:TensorSharpSkipMlxNative=true</code>, or build the native libraries described under <a href="backends.html#native-build">Backends</a>.</p></div>
+
+  <h2 id="quickstart">Minimal example — load, generate, decode</h2>
+  <p>Every model is loaded the same way: <code>ModelBase.Create()</code> reads the GGUF metadata and instantiates the right architecture. From there you tokenize, run forward passes, sample, and decode.</p>
+  <pre data-lang="csharp"><code>using System;
+using System.Collections.Generic;
+using System.Linq;
+using TensorSharp.Models;
+using TensorSharp.Runtime;
+
+// 1. Load any supported GGUF — the architecture is detected from metadata.
+//    Pick the BackendType your build supports: GgmlCuda, GgmlMetal, GgmlVulkan, or GgmlCpu.
+using var model = ModelBase.Create("gemma-4-E4B-it-Q8_0.gguf", BackendType.GgmlCuda);
+
+// 2. Configure sampling (defaults match Ollama: temp 0.8, top_k 40, top_p 0.9).
+var sampling = new SamplingConfig { Temperature = 0.7f, TopP = 0.9f, TopK = 40 };
+
+// 3. Tokenize the prompt.
+var tokens = model.Tokenizer
+    .Encode("Explain mixture-of-experts in one sentence.", addSpecial: true)
+    .ToList();
+var generated = new List&lt;int&gt;();
+
+// 4. Prefill the complete prompt once.
+float[] logits = model.Forward(tokens.ToArray());
+
+// 5. Decode one new token at a time. Forward() owns the KV-cache position,
+// so after prefill pass only the newly sampled token, not the full history.
+for (int step = 0; step &lt; 200; step++)
+{
+    int next = model.Sample(logits, sampling, generated); // applies penalties + sampling
+    if (model.Tokenizer.IsEos(next)) break;
+    generated.Add(next);
+    logits = model.Forward(new[] { next });
+}
+
+// 6. Detokenize the result.
+Console.WriteLine(model.Tokenizer.Decode(generated));</code></pre>
+  <p>For greedy/deterministic decoding, call <code>model.SampleGreedy(logits)</code> instead of <code>Sample</code>.</p>
+
+  <h3>Smoke-test variant</h3>
+  <p>A one-shot sanity check that loads a model, runs a single forward pass, and prints the top token:</p>
+  <pre data-lang="csharp"><code>using var model = ModelBase.Create(modelPath, backend);
+var tokenIds = model.Tokenizer.Encode("Hello", addSpecial: true);
+float[] logits = model.Forward(tokenIds.ToArray());
+
+int topToken = model.SampleGreedy(logits);
+Console.WriteLine($"vocab={model.Config.VocabSize}, tokens={tokenIds.Count}, topToken={topToken}");</code></pre>
+
+  <h2 id="diffusion">DiffusionGemma — text diffusion</h2>
+  <p>DiffusionGemma is a <strong>block text-diffusion</strong> model, not an autoregressive one. <code>ModelBase.Create()</code> still loads it (the GGUF architecture is <code>diffusion-gemma</code> / <code>diffusion_gemma</code>) and returns a <code>DiffusionGemmaModel</code>, but its <code>Forward(int[])</code> intentionally throws — generation runs through <code>DiffusionGemmaSampler</code>, which iteratively denoises fixed-length <em>canvas</em> blocks over a <code>[prompt | canvas]</code> sequence. See the <a href="models.html#table">DiffusionGemma model card</a> for the architecture.</p>
+  <pre data-lang="csharp"><code>using TensorSharp.Models;
+using TensorSharp.Models.DiffusionGemma;
+using TensorSharp.Runtime;
+
+// Load a diffusion-gemma GGUF — the architecture is auto-detected.
+using var model = (DiffusionGemmaModel)ModelBase.Create("diffusion-gemma.gguf", BackendType.GgmlCuda);
+
+// Render the prompt with the model's chat template, then tokenize.
+var messages = new List&lt;ChatMessage&gt; { new() { Role = "user", Content = "Write a haiku about winter." } };
+string rendered = PromptRenderer.Render(model.Config.ChatTemplate, messages,
+    addGenerationPrompt: true, architecture: model.Config.Architecture);
+int[] promptTokens = model.Tokenizer.Encode(rendered, addSpecial: true).ToArray();
+
+// Configure the EntropyBound denoising sampler.
+var p = new DiffusionEbParams
+{
+    MaxDenoisingSteps = 48,   // refinement steps per canvas block
+    Seed = 0,                 // deterministic
+    MaxBlocks = 1,            // block-autoregressive canvas blocks
+};
+
+var sampler = new DiffusionGemmaSampler(model);
+
+// Generate. The optional callback fires after every denoising step with
+// (blockIndex, step, totalSteps, previewTokens) — useful for a live UI.
+List&lt;int&gt; generated = sampler.Generate(promptTokens, p,
+    (block, step, total, preview) =&gt; Console.Write($"\rblock {block + 1} step {step + 1}/{total}   "));
+
+Console.WriteLine();
+Console.WriteLine(model.Tokenizer.Decode(generated));</code></pre>
+  <p>Key parameters on <code>DiffusionEbParams</code>: <code>MaxDenoisingSteps</code> (48), <code>TMin</code>/<code>TMax</code> temperature schedule (0.4 / 0.8), <code>EntropyBound</code> (0.1), <code>StabilityThreshold</code> / <code>ConfidenceThreshold</code> early-stop, <code>Seed</code>, and <code>MaxBlocks</code>. <code>model.CanvasLength</code> reports the per-block canvas size.</p>
+  <div class="callout note"><div class="ic">🌫️</div><p>On GPU backends the prompt K/V is cached once per block and reused across denoising steps; GGML backends default to a fused whole-model decode plus a fused lm-head tail. Tunables (<code>DIFFUSION_STEPS</code>, <code>DIFFUSION_NO_SC</code>, …) are in the <a href="advanced.html">Advanced</a> page.</p></div>
+
+  <h2 id="imageedit">Qwen-Image-Edit — image editing</h2>
+  <p>Qwen-Image-Edit takes a <strong>prompt + an input image</strong> and returns an edited image. The loaded <code>qwen_image</code> GGUF is only the MMDiT diffusion transformer; the model also pulls in two companion GGUFs resolved next to the DiT file (or via the <code>TS_QWEN_IMAGE_VAE</code> / <code>TS_QWEN_IMAGE_TE</code> / <code>TS_QWEN_IMAGE_MMPROJ</code> environment variables): the Qwen-Image VAE and the Qwen2.5-VL-7B text encoder. Like DiffusionGemma it is <em>not</em> an autoregressive text model — the autoregressive entry points throw and editing is driven through <code>EditImage()</code>.</p>
+  <pre data-lang="csharp"><code>using TensorSharp.Models;
+using TensorSharp.Models.QwenImage;
+using TensorSharp.Runtime;
+
+// Load the MMDiT GGUF (architecture = qwen_image). The VAE + Qwen2.5-VL
+// companions are resolved from the same directory (or the TS_QWEN_IMAGE_* env vars).
+using var model = (QwenImageModel)ModelBase.Create("qwen-image-edit-DiT-Q4_K_M.gguf", BackendType.GgmlCuda);
+
+// Load the input image (PNG/JPEG decoded to an RgbImage).
+RgbImage input = ImageIO.Load("input.png");
+
+var p = new QwenImageParams
+{
+    Steps = 30,               // FlowMatch-Euler denoising steps
+    CfgScale = 4.0f,          // true-CFG guidance; <= 1 disables the negative pass
+    NegativePrompt = " ",     // used only when CfgScale > 1
+    Seed = 0,
+    TargetArea = 1024 * 1024, // ~1 MP; aspect follows the input (dims snapped to /16)
+    // Width = 0, Height = 0, // pin an explicit output size to bypass the VRAM clamp
+};
+
+RgbImage output = model.EditImage("Make the sky a dramatic sunset.", input, p);
+ImageIO.SavePng("edited.png", output);
+Console.WriteLine($"Saved {output.Width}x{output.Height} edited image.");</code></pre>
+  <p>For a live UI, set <code>p.OnStep = (step, total, preview) =&gt; { … }</code> and <code>p.PreviewCount</code> to receive decoded RGB snapshots of the partially denoised latent on throttled steps. <code>RgbImage</code> exposes <code>Width</code>, <code>Height</code>, and a planar/interleaved <code>Pixels</code> buffer; <code>ImageIO</code> provides <code>Load</code>, <code>Decode(byte[])</code>, <code>EncodePng</code>, <code>SavePng</code>, and resize helpers.</p>
+  <div class="callout warn"><div class="ic">🖼️</div><p>Image editing is compute-heavy: each denoise step runs the full 60-block MMDiT (twice when CFG is on). Use a CUDA or Metal GGML backend for practical full-quality edits; the pipeline auto-clamps the target area to the device VRAM budget unless you pin <code>Width</code>/<code>Height</code>. See the <a href="models.html#table">model card</a> for the companion-GGUF layout.</p></div>
+
+  <h2 id="sampling">SamplingConfig</h2>
+  <p>The sampling knobs map one-to-one to the CLI flags and API options. Defaults match Ollama.</p>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>Temperature</code></td><td>float</td><td>0.8</td><td>Randomness; 0 = greedy/deterministic.</td></tr>
+      <tr><td><code>TopK</code></td><td>int</td><td>40</td><td>Limit to the top-K most probable tokens; 0 = disabled.</td></tr>
+      <tr><td><code>TopP</code></td><td>float</td><td>0.9</td><td>Nucleus sampling; 1.0 = disabled.</td></tr>
+      <tr><td><code>MinP</code></td><td>float</td><td>0</td><td>Minimum probability threshold relative to the max.</td></tr>
+      <tr><td><code>RepetitionPenalty</code></td><td>float</td><td>1.1</td><td>Multiplicative penalty; &gt;1 discourages repetition.</td></tr>
+      <tr><td><code>PresencePenalty</code></td><td>float</td><td>0</td><td>Additive penalty for tokens already present.</td></tr>
+      <tr><td><code>FrequencyPenalty</code></td><td>float</td><td>0</td><td>Additive penalty proportional to token frequency.</td></tr>
+      <tr><td><code>Seed</code></td><td>int</td><td>-1</td><td>Reproducible sampling; -1 = time-based.</td></tr>
+      <tr><td><code>StopSequences</code></td><td>List&lt;string&gt;</td><td>null</td><td>Stop when any of these strings is produced.</td></tr>
+      <tr><td><code>MaxTokens</code></td><td>int</td><td>0</td><td>Maximum tokens to generate; 0 = use the caller's default.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2 id="namespaces">Key types &amp; interfaces</h2>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Type</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><code>ModelBase</code></td><td>Abstract base for every architecture. <code>Create(path, backend)</code>, <code>Forward(int[])</code>, <code>Sample(...)</code>, <code>SampleGreedy(...)</code>, plus <code>Config</code> and <code>Tokenizer</code>.</td></tr>
+      <tr><td><code>BackendType</code></td><td>Enum: <code>Cpu</code>, <code>GgmlCpu</code>, <code>GgmlMetal</code>, <code>GgmlCuda</code>, <code>GgmlVulkan</code>, <code>Cuda</code>, <code>Mlx</code>.</td></tr>
+      <tr><td><code>SamplingConfig</code></td><td>Sampling configuration (table above).</td></tr>
+      <tr><td><code>ITokenizer</code></td><td><code>Encode(text, addSpecial)</code>, <code>Decode(ids)</code>, <code>IsEos(id)</code>, <code>EosTokenIds</code> (BPE &amp; SentencePiece implementations).</td></tr>
+      <tr><td><code>ModelConfig</code></td><td>Architecture metadata: <code>VocabSize</code>, context length, and more.</td></tr>
+      <tr><td><code>IBatchedPagedModel</code></td><td>Optional batched/paged forward (<code>ForwardBatch</code>) implemented by most architectures for continuous batching.</td></tr>
+      <tr><td><code>DiffusionGemmaModel</code> + <code>DiffusionGemmaSampler</code></td><td>Text-diffusion model and its EntropyBound denoising sampler (<code>Generate(promptTokens, DiffusionEbParams, …)</code>). <code>Forward()</code> is unsupported.</td></tr>
+      <tr><td><code>QwenImageModel</code> + <code>QwenImageParams</code></td><td>Qwen-Image-Edit image editor. <code>EditImage(prompt, RgbImage, QwenImageParams)</code> returns the modified <code>RgbImage</code>; <code>ImageIO</code> loads/saves PNG.</td></tr>
+      <tr><td><code>InferenceEngine</code></td><td>Worker-thread scheduler + paged block pool that powers the server's continuous batching (in <code>TensorSharp.Runtime.Scheduling</code>).</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Other runtime contracts worth knowing: <code>IModelArchitecture</code>, <code>IPromptRenderer</code>, <code>IOutputProtocolParser</code>, <code>IMultimodalInjector</code>, <code>IKvBlockCodec</code> (with the built-in <code>TurboQuantKvCodec</code>), and <code>IKVCachePolicy</code>.</p>
+
+  <div class="callout tip"><div class="ic">💡</div><p>For most applications the easiest integration is to run <a href="server.html">TensorSharp.Server</a> and call it over the <a href="http-api.html">OpenAI-compatible API</a> — you keep your app process clean and get continuous batching for free. Reach for the library API when you need in-process control or custom decoding.</p></div>
+
+  <div class="content-footer">
+    <a href="http-api.html">← HTTP API</a>
+    <a href="advanced.html">Next: Advanced Features →</a>
+  </div>
+</main>
+</body>
+</html>

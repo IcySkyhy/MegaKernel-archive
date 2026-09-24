@@ -1,0 +1,45 @@
+diff --git a/python/triton/compiler/code_generator.py b/python/triton/compiler/code_generator.py
+index c572f81e3..6a393b8d1 100644
+--- a/python/triton/compiler/code_generator.py
++++ b/python/triton/compiler/code_generator.py
+@@ -11,7 +11,7 @@ from types import ModuleType
+ from typing import Any, Callable, Dict, Optional, Tuple, Type, Union, Iterable, List
+
+ from .. import knobs, language
+-from .._C.libtriton import ir, gluon_ir
++from .._C.libtriton import ir, gluon_ir, distributed
+ from ..language import constexpr, str_to_ty, tensor, tuple as tl_tuple
+ from ..language.core import _unwrap_if_constexpr, base_value, base_type
+ # ideally we wouldn't need any runtime component
+@@ -300,7 +300,10 @@ class CodeGenerator(ast.NodeVisitor):
+             self.semantic = GluonSemantic(self.builder)
+         else:
+             from triton.language.semantic import TritonSemantic
+-            self.builder = ir.builder(context)
++            if distributed is not None:
++                self.builder = distributed.ir.DistributedOpBuilder(context)
++            else:
++                self.builder = ir.builder(context)
+             self.semantic = TritonSemantic(self.builder)
+
+         self.name_loc_as_prefix = None
+diff --git a/third_party/proton/Dialect/lib/ProtonGPUToLLVM/ProtonAMDGPUToLLVM/CMakeLists.txt b/third_party/proton/Dialect/lib/ProtonGPUToLLVM/ProtonAMDGPUToLLVM/CMakeLists.txt
+index 80b387ab2..6242c5f6d 100644
+--- a/third_party/proton/Dialect/lib/ProtonGPUToLLVM/ProtonAMDGPUToLLVM/CMakeLists.txt
++++ b/third_party/proton/Dialect/lib/ProtonGPUToLLVM/ProtonAMDGPUToLLVM/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-include_directories(${PROJECT_SOURCE_DIR}/third_party/amd/include)
++include_directories(${PROJECT_SOURCE_DIR}/3rdparty/triton-ascend/third_party/amd/include)
+
+ add_triton_library(ProtonAMDGPUToLLVM
+     TargetInfo.cpp
+diff --git a/third_party/proton/Dialect/lib/ProtonGPUToLLVM/ProtonNvidiaGPUToLLVM/CMakeLists.txt b/third_party/proton/Dialect/lib/ProtonGPUToLLVM/ProtonNvidiaGPUToLLVM/CMakeLists.txt
+index dc8ba1891..a0f3a9d3f 100644
+--- a/third_party/proton/Dialect/lib/ProtonGPUToLLVM/ProtonNvidiaGPUToLLVM/CMakeLists.txt
++++ b/third_party/proton/Dialect/lib/ProtonGPUToLLVM/ProtonNvidiaGPUToLLVM/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-include_directories(${PROJECT_SOURCE_DIR}/third_party/nvidia/include)
++include_directories(${PROJECT_SOURCE_DIR}/3rdparty/triton-ascend/third_party/nvidia/include)
+
+ add_triton_library(ProtonNVIDIAGPUToLLVM
+     TargetInfo.cpp

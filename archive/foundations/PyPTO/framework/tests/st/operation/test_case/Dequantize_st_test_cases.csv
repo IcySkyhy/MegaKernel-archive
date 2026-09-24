@@ -1,0 +1,107 @@
+case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,otype,axis,use_zero_points,param_input_dtype
+Dequantize_symmetric_int8_2d_basic,"[32, 64], [32]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[32, 64]",fp32,ND,"[32, 64]","[32, 64]",0,-1,false,1
+Dequantize_symmetric_int8_2d_tiled,"[128, 256], [128]","int8, fp32","ND, ND","[-120, 120], [0.0005, 0.005]","[128, 256]",fp32,ND,"[128, 256]","[32, 64]",0,-1,false,1
+Dequantize_asymmetric_int8_2d,"[64, 128], [64], [64]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [-10.0, 10.0]","[64, 128]",fp32,ND,"[64, 128]","[32, 64]",0,-1,true,1
+Dequantize_symmetric_int16_2d,"[64, 128], [64]","int16, fp32","ND, ND","[-30000, 30000], [0.00001, 0.0001]","[64, 128]",fp32,ND,"[64, 128]","[32, 64]",0,-1,false,2
+Dequantize_asymmetric_int16_2d,"[32, 64], [32], [32]","int16, fp32, fp32","ND, ND, ND","[-20000, 20000], [0.00001, 0.0001], [-100.0, 100.0]","[32, 64]",fp32,ND,"[32, 64]","[32, 64]",0,-1,true,2
+Dequantize_symmetric_int8_2d_axis2,"[64, 128], [128]","int8, fp32","ND, ND","[-110, 110], [0.001, 0.01]","[64, 128]",fp32,ND,"[64, 128]","[32, 64]",0,-2,false,1
+Dequantize_asymmetric_int8_2d_axis2,"[32, 64], [64], [64]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [-10.0, 10.0]","[32, 64]",fp32,ND,"[32, 64]","[32, 64]",0,-2,true,1
+Dequantize_symmetric_int8_3d,"[4, 32, 64], [4, 32]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[4, 32, 64]",fp32,ND,"[4, 32, 64]","[4, 32, 64]",0,-1,false,1
+Dequantize_asymmetric_int8_3d,"[2, 64, 128], [2, 64], [2, 64]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[2, 64, 128]",fp32,ND,"[2, 64, 128]","[2, 32, 64]",0,-1,true,1
+Dequantize_symmetric_int16_3d,"[4, 32, 64], [4, 32]","int16, fp32","ND, ND","[-25000, 25000], [0.00001, 0.0001]","[4, 32, 64]",fp32,ND,"[4, 32, 64]","[4, 32, 64]",0,-1,false,2
+Dequantize_symmetric_int8_4d,"[2, 2, 32, 64], [2, 2, 32]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[2, 2, 32, 64]",fp32,ND,"[2, 2, 32, 64]","[2, 2, 32, 64]",0,-1,false,1
+Dequantize_asymmetric_int8_4d,"[2, 2, 32, 64], [2, 2, 32], [2, 2, 32]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[2, 2, 32, 64]",fp32,ND,"[2, 2, 32, 64]","[2, 2, 32, 64]",0,-1,true,1
+Dequantize_asymmetric_int16_3d,"[2, 32, 64], [2, 32], [2, 32]","int16, fp32, fp32","ND, ND, ND","[-25000, 25000], [0.00001, 0.0001], [-100.0, 100.0]","[2, 32, 64]",fp32,ND,"[2, 32, 64]","[2, 16, 32]",0,-1,true,2
+Dequantize_symmetric_int16_4d,"[2, 2, 32, 64], [2, 2, 32]","int16, fp32","ND, ND","[-30000, 30000], [0.00001, 0.0001]","[2, 2, 32, 64]",fp32,ND,"[2, 2, 32, 64]","[2, 2, 16, 32]",0,-1,false,2
+Dequantize_asymmetric_int16_4d,"[2, 2, 16, 32], [2, 2, 16], [2, 2, 16]","int16, fp32, fp32","ND, ND, ND","[-20000, 20000], [0.00001, 0.0001], [-100.0, 100.0]","[2, 2, 16, 32]",fp32,ND,"[2, 2, 16, 32]","[2, 2, 16, 32]",0,-1,true,2
+Dequantize_symmetric_int8_2d_large,"[256, 512], [256]","int8, fp32","ND, ND","[-120, 120], [0.0005, 0.005]","[256, 512]",fp32,ND,"[256, 512]","[64, 64]",0,-1,false,1
+Dequantize_asymmetric_int8_2d_large,"[128, 256], [128], [128]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [-10.0, 10.0]","[128, 256]",fp32,ND,"[128, 256]","[32, 64]",0,-1,true,1
+Dequantize_symmetric_int8_2d_otype1,"[64, 128], [64]","int8, fp32","ND, ND","[-110, 110], [0.001, 0.01]","[64, 128]",fp32,ND,"[64, 128]","[32, 64]",1,-1,false,1
+Dequantize_asymmetric_int8_2d_otype1,"[32, 64], [32], [32]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[32, 64]",fp32,ND,"[32, 64]","[16, 32]",1,-1,true,1
+Dequantize_symmetric_int16_2d_otype1,"[32, 64], [32]","int16, fp32","ND, ND","[-30000, 30000], [0.00001, 0.0001]","[32, 64]",fp32,ND,"[32, 64]","[32, 32]",1,-1,false,2
+Dequantize_symmetric_int8_2d_view_diff,"[64, 128], [64]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[64, 128]",fp32,ND,"[128, 64]","[32, 64]",0,-1,false,1
+Dequantize_asymmetric_int8_2d_view_diff,"[32, 64], [32], [32]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[32, 64]",fp32,ND,"[64, 32]","[32, 32]",0,-1,true,1
+Dequantize_symmetric_int8_2d_small_scale,"[32, 64], [32]","int8, fp32","ND, ND","[-10, 10], [0.00001, 0.0001]","[32, 64]",fp32,ND,"[32, 64]","[32, 64]",0,-1,false,1
+Dequantize_asymmetric_int8_2d_large_zero,"[64, 128], [64], [64]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [50.0, 80.0]","[64, 128]",fp32,ND,"[64, 128]","[32, 64]",0,-1,true,1
+Dequantize_symmetric_int8_3d_axis2,"[2, 32, 64], [2, 64]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[2, 32, 64]",fp32,ND,"[2, 32, 64]","[2, 16, 32]",0,-2,false,1
+Dequantize_asymmetric_int8_3d_axis2,"[2, 32, 64], [2, 64], [2, 64]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[2, 32, 64]",fp32,ND,"[2, 32, 64]","[2, 16, 32]",0,-2,true,1
+Dequantize_symmetric_int16_3d_axis2,"[2, 32, 64], [2, 64]","int16, fp32","ND, ND","[-25000, 25000], [0.00001, 0.0001]","[2, 32, 64]",fp32,ND,"[2, 32, 64]","[2, 16, 32]",0,-2,false,2
+Dequantize_symmetric_int8_4d_axis2,"[2, 2, 32, 64], [2, 2, 64]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[2, 2, 32, 64]",fp32,ND,"[2, 2, 32, 64]","[2, 2, 16, 32]",0,-2,false,1
+Dequantize_asymmetric_int8_4d_axis2,"[2, 2, 32, 64], [2, 2, 64], [2, 2, 64]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[2, 2, 32, 64]",fp32,ND,"[2, 2, 32, 64]","[2, 2, 16, 32]",0,-2,true,1
+Dequantize_symmetric_int16_4d_axis2,"[2, 2, 32, 64], [2, 2, 64]","int16, fp32","ND, ND","[-30000, 30000], [0.00001, 0.0001]","[2, 2, 32, 64]",fp32,ND,"[2, 2, 32, 64]","[2, 2, 16, 32]",0,-2,false,2
+Dequantize_symmetric_int8_2d_axis2_otype1,"[64, 128], [128]","int8, fp32","ND, ND","[-110, 110], [0.001, 0.01]","[64, 128]",fp32,ND,"[64, 128]","[32, 64]",1,-2,false,1
+Dequantize_asymmetric_int8_2d_axis2_otype1,"[32, 64], [64], [64]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[32, 64]",fp32,ND,"[32, 64]","[16, 32]",1,-2,true,1
+Dequantize_symmetric_int8_2d_unaligned_small,"[3, 5], [3]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[3, 5]",fp32,ND,"[3, 5]","[3, 5]",0,-1,false,1
+Dequantize_asymmetric_int8_2d_unaligned_small,"[5, 7], [5], [5]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[5, 7]",fp32,ND,"[5, 7]","[5, 7]",0,-1,true,1
+Dequantize_symmetric_int16_2d_unaligned_small,"[7, 11], [7]","int16, fp32","ND, ND","[-25000, 25000], [0.00001, 0.0001]","[7, 11]",fp32,ND,"[7, 11]","[7, 11]",0,-1,false,2
+Dequantize_asymmetric_int16_2d_unaligned_small,"[3, 13], [3], [3]","int16, fp32, fp32","ND, ND, ND","[-20000, 20000], [0.00001, 0.0001], [-100.0, 100.0]","[3, 13]",fp32,ND,"[3, 13]","[3, 13]",0,-1,true,2
+Dequantize_symmetric_int8_2d_unaligned_axis2_small,"[5, 9], [9]","int8, fp32","ND, ND","[-110, 110], [0.001, 0.01]","[5, 9]",fp32,ND,"[5, 9]","[5, 9]",0,-2,false,1
+Dequantize_asymmetric_int8_2d_unaligned_axis2_small,"[7, 15], [15], [15]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [-10.0, 10.0]","[7, 15]",fp32,ND,"[7, 15]","[7, 15]",0,-2,true,1
+Dequantize_symmetric_int16_2d_unaligned_axis2_small,"[11, 17], [17]","int16, fp32","ND, ND","[-30000, 30000], [0.00001, 0.0001]","[11, 17]",fp32,ND,"[11, 17]","[11, 17]",0,-2,false,2
+Dequantize_asymmetric_int16_2d_unaligned_axis2_small,"[9, 13], [13], [13]","int16, fp32, fp32","ND, ND, ND","[-25000, 25000], [0.00001, 0.0001], [-100.0, 100.0]","[9, 13]",fp32,ND,"[9, 13]","[9, 13]",0,-2,true,2
+Dequantize_symmetric_int8_2d_unaligned_31,"[31, 31], [31]","int8, fp32","ND, ND","[-120, 120], [0.001, 0.01]","[31, 31]",fp32,ND,"[31, 31]","[31, 31]",0,-1,false,1
+Dequantize_asymmetric_int8_2d_unaligned_31,"[31, 33], [31], [31]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [-10.0, 10.0]","[31, 33]",fp32,ND,"[31, 33]","[31, 33]",0,-1,true,1
+Dequantize_symmetric_int16_2d_unaligned_31,"[33, 31], [33]","int16, fp32","ND, ND","[-28000, 28000], [0.00001, 0.0001]","[33, 31]",fp32,ND,"[33, 31]","[33, 31]",0,-1,false,2
+Dequantize_asymmetric_int16_2d_unaligned_31,"[35, 37], [35], [35]","int16, fp32, fp32","ND, ND, ND","[-22000, 22000], [0.00001, 0.0001], [-100.0, 100.0]","[35, 37]",fp32,ND,"[35, 37]","[35, 37]",0,-1,true,2
+Dequantize_symmetric_int8_2d_unaligned_axis2_31,"[27, 31], [31]","int8, fp32","ND, ND","[-115, 115], [0.001, 0.01]","[27, 31]",fp32,ND,"[27, 31]","[27, 31]",0,-2,false,1
+Dequantize_asymmetric_int8_2d_unaligned_axis2_31,"[29, 33], [33], [33]","int8, fp32, fp32","ND, ND, ND","[-95, 95], [0.001, 0.01], [-10.0, 10.0]","[29, 33]",fp32,ND,"[29, 33]","[29, 33]",0,-2,true,1
+Dequantize_symmetric_int16_2d_unaligned_axis2_31,"[31, 35], [35]","int16, fp32","ND, ND","[-29000, 29000], [0.00001, 0.0001]","[31, 35]",fp32,ND,"[31, 35]","[31, 35]",0,-2,false,2
+Dequantize_asymmetric_int16_2d_unaligned_axis2_31,"[33, 37], [37], [37]","int16, fp32, fp32","ND, ND, ND","[-24000, 24000], [0.00001, 0.0001], [-100.0, 100.0]","[33, 37]",fp32,ND,"[33, 37]","[33, 37]",0,-2,true,2
+Dequantize_symmetric_int8_2d_unaligned_mixed,"[32, 31], [32]","int8, fp32","ND, ND","[-110, 110], [0.001, 0.01]","[32, 31]",fp32,ND,"[32, 31]","[32, 31]",0,-1,false,1
+Dequantize_asymmetric_int8_2d_unaligned_mixed,"[64, 33], [64], [64]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [-10.0, 10.0]","[64, 33]",fp32,ND,"[64, 33]","[32, 33]",0,-1,true,1
+Dequantize_symmetric_int16_2d_unaligned_mixed,"[128, 27], [128]","int16, fp32","ND, ND","[-27000, 27000], [0.00001, 0.0001]","[128, 27]",fp32,ND,"[128, 27]","[64, 27]",0,-1,false,2
+Dequantize_asymmetric_int16_2d_unaligned_mixed,"[32, 29], [32], [32]","int16, fp32, fp32","ND, ND, ND","[-23000, 23000], [0.00001, 0.0001], [-100.0, 100.0]","[32, 29]",fp32,ND,"[32, 29]","[16, 29]",0,-1,true,2
+Dequantize_symmetric_int8_2d_unaligned_axis2_mixed,"[31, 64], [64]","int8, fp32","ND, ND","[-105, 105], [0.001, 0.01]","[31, 64]",fp32,ND,"[31, 64]","[31, 64]",0,-2,false,1
+Dequantize_asymmetric_int8_2d_unaligned_axis2_mixed,"[33, 128], [128], [128]","int8, fp32, fp32","ND, ND, ND","[-95, 95], [0.001, 0.01], [-10.0, 10.0]","[33, 128]",fp32,ND,"[33, 128]","[33, 64]",0,-2,true,1
+Dequantize_symmetric_int16_2d_unaligned_axis2_mixed,"[27, 32], [32]","int16, fp32","ND, ND","[-26000, 26000], [0.00001, 0.0001]","[27, 32]",fp32,ND,"[27, 32]","[27, 32]",0,-2,false,2
+Dequantize_asymmetric_int16_2d_unaligned_axis2_mixed,"[29, 64], [64], [64]","int16, fp32, fp32","ND, ND, ND","[-21000, 21000], [0.00001, 0.0001], [-100.0, 100.0]","[29, 64]",fp32,ND,"[29, 64]","[29, 32]",0,-2,true,2
+Dequantize_symmetric_int8_2d_unaligned_otype1,"[17, 21], [17]","int8, fp32","ND, ND","[-108, 108], [0.001, 0.01]","[17, 21]",fp32,ND,"[17, 21]","[17, 21]",1,-1,false,1
+Dequantize_asymmetric_int8_2d_unaligned_otype1,"[13, 19], [13], [13]","int8, fp32, fp32","ND, ND, ND","[-92, 92], [0.001, 0.01], [-10.0, 10.0]","[13, 19]",fp32,ND,"[13, 19]","[13, 19]",1,-1,true,1
+Dequantize_symmetric_int16_2d_unaligned_otype1,"[23, 31], [23]","int16, fp32","ND, ND","[-27500, 27500], [0.00001, 0.0001]","[23, 31]",fp32,ND,"[23, 31]","[23, 31]",1,-1,false,2
+Dequantize_asymmetric_int16_2d_unaligned_otype1,"[19, 29], [19], [19]","int16, fp32, fp32","ND, ND, ND","[-22500, 22500], [0.00001, 0.0001], [-100.0, 100.0]","[19, 29]",fp32,ND,"[19, 29]","[19, 29]",1,-1,true,2
+Dequantize_symmetric_int8_2d_unaligned_axis2_otype1,"[15, 17], [17]","int8, fp32","ND, ND","[-112, 112], [0.001, 0.01]","[15, 17]",fp32,ND,"[15, 17]","[15, 17]",1,-2,false,1
+Dequantize_asymmetric_int8_2d_unaligned_axis2_otype1,"[21, 23], [23], [23]","int8, fp32, fp32","ND, ND, ND","[-88, 88], [0.001, 0.01], [-10.0, 10.0]","[21, 23]",fp32,ND,"[21, 23]","[21, 23]",1,-2,true,1
+Dequantize_symmetric_int16_2d_unaligned_axis2_otype1,"[25, 31], [31]","int16, fp32","ND, ND","[-28500, 28500], [0.00001, 0.0001]","[25, 31]",fp32,ND,"[25, 31]","[25, 31]",1,-2,false,2
+Dequantize_asymmetric_int16_2d_unaligned_axis2_otype1,"[31, 37], [37], [37]","int16, fp32, fp32","ND, ND, ND","[-21500, 21500], [0.00001, 0.0001], [-100.0, 100.0]","[31, 37]",fp32,ND,"[31, 37]","[31, 37]",1,-2,true,2
+Dequantize_symmetric_int8_3d_unaligned_small,"[2, 3, 5], [2, 3]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[2, 3, 5]",fp32,ND,"[2, 3, 5]","[2, 3, 5]",0,-1,false,1
+Dequantize_asymmetric_int8_3d_unaligned_small,"[3, 5, 7], [3, 5], [3, 5]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[3, 5, 7]",fp32,ND,"[3, 5, 7]","[3, 5, 7]",0,-1,true,1
+Dequantize_symmetric_int16_3d_unaligned_small,"[2, 7, 11], [2, 7]","int16, fp32","ND, ND","[-25000, 25000], [0.00001, 0.0001]","[2, 7, 11]",fp32,ND,"[2, 7, 11]","[2, 7, 11]",0,-1,false,2
+Dequantize_asymmetric_int16_3d_unaligned_small,"[3, 5, 13], [3, 5], [3, 5]","int16, fp32, fp32","ND, ND, ND","[-20000, 20000], [0.00001, 0.0001], [-100.0, 100.0]","[3, 5, 13]",fp32,ND,"[3, 5, 13]","[3, 5, 13]",0,-1,true,2
+Dequantize_symmetric_int8_3d_unaligned_axis2_small,"[2, 5, 9], [2, 9]","int8, fp32","ND, ND","[-110, 110], [0.001, 0.01]","[2, 5, 9]",fp32,ND,"[2, 5, 9]","[2, 5, 9]",0,-2,false,1
+Dequantize_asymmetric_int8_3d_unaligned_axis2_small,"[3, 7, 15], [3, 15], [3, 15]","int8, fp32, fp32","ND, ND, ND","[-95, 95], [0.001, 0.01], [-10.0, 10.0]","[3, 7, 15]",fp32,ND,"[3, 7, 15]","[3, 7, 15]",0,-2,true,1
+Dequantize_symmetric_int16_3d_unaligned_axis2_small,"[2, 11, 17], [2, 17]","int16, fp32","ND, ND","[-30000, 30000], [0.00001, 0.0001]","[2, 11, 17]",fp32,ND,"[2, 11, 17]","[2, 11, 17]",0,-2,false,2
+Dequantize_asymmetric_int16_3d_unaligned_axis2_small,"[3, 9, 13], [3, 13], [3, 13]","int16, fp32, fp32","ND, ND, ND","[-24000, 24000], [0.00001, 0.0001], [-100.0, 100.0]","[3, 9, 13]",fp32,ND,"[3, 9, 13]","[3, 9, 13]",0,-2,true,2
+Dequantize_symmetric_int8_3d_unaligned_31,"[2, 31, 31], [2, 31]","int8, fp32","ND, ND","[-120, 120], [0.001, 0.01]","[2, 31, 31]",fp32,ND,"[2, 31, 31]","[2, 31, 31]",0,-1,false,1
+Dequantize_asymmetric_int8_3d_unaligned_31,"[2, 31, 33], [2, 31], [2, 31]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [-10.0, 10.0]","[2, 31, 33]",fp32,ND,"[2, 31, 33]","[2, 31, 33]",0,-1,true,1
+Dequantize_symmetric_int16_3d_unaligned_31,"[2, 33, 31], [2, 33]","int16, fp32","ND, ND","[-28000, 28000], [0.00001, 0.0001]","[2, 33, 31]",fp32,ND,"[2, 33, 31]","[2, 33, 31]",0,-1,false,2
+Dequantize_asymmetric_int16_3d_unaligned_31,"[2, 35, 37], [2, 35], [2, 35]","int16, fp32, fp32","ND, ND, ND","[-22000, 22000], [0.00001, 0.0001], [-100.0, 100.0]","[2, 35, 37]",fp32,ND,"[2, 35, 37]","[2, 35, 37]",0,-1,true,2
+Dequantize_symmetric_int8_3d_unaligned_axis2_31,"[2, 27, 31], [2, 31]","int8, fp32","ND, ND","[-115, 115], [0.001, 0.01]","[2, 27, 31]",fp32,ND,"[2, 27, 31]","[2, 27, 31]",0,-2,false,1
+Dequantize_asymmetric_int8_3d_unaligned_axis2_31,"[2, 29, 33], [2, 33], [2, 33]","int8, fp32, fp32","ND, ND, ND","[-92, 92], [0.001, 0.01], [-10.0, 10.0]","[2, 29, 33]",fp32,ND,"[2, 29, 33]","[2, 29, 33]",0,-2,true,1
+Dequantize_symmetric_int16_3d_unaligned_axis2_31,"[2, 31, 35], [2, 35]","int16, fp32","ND, ND","[-29000, 29000], [0.00001, 0.0001]","[2, 31, 35]",fp32,ND,"[2, 31, 35]","[2, 31, 35]",0,-2,false,2
+Dequantize_asymmetric_int16_3d_unaligned_axis2_31,"[2, 33, 37], [2, 37], [2, 37]","int16, fp32, fp32","ND, ND, ND","[-23000, 23000], [0.00001, 0.0001], [-100.0, 100.0]","[2, 33, 37]",fp32,ND,"[2, 33, 37]","[2, 33, 37]",0,-2,true,2
+Dequantize_symmetric_int8_4d_unaligned_small,"[2, 2, 3, 5], [2, 2, 3]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[2, 2, 3, 5]",fp32,ND,"[2, 2, 3, 5]","[2, 2, 3, 5]",0,-1,false,1
+Dequantize_asymmetric_int8_4d_unaligned_small,"[2, 2, 5, 7], [2, 2, 5], [2, 2, 5]","int8, fp32, fp32","ND, ND, ND","[-90, 90], [0.001, 0.01], [-10.0, 10.0]","[2, 2, 5, 7]",fp32,ND,"[2, 2, 5, 7]","[2, 2, 5, 7]",0,-1,true,1
+Dequantize_symmetric_int16_4d_unaligned_small,"[2, 2, 7, 11], [2, 2, 7]","int16, fp32","ND, ND","[-25000, 25000], [0.00001, 0.0001]","[2, 2, 7, 11]",fp32,ND,"[2, 2, 7, 11]","[2, 2, 7, 11]",0,-1,false,2
+Dequantize_asymmetric_int16_4d_unaligned_small,"[2, 2, 5, 13], [2, 2, 5], [2, 2, 5]","int16, fp32, fp32","ND, ND, ND","[-20000, 20000], [0.00001, 0.0001], [-100.0, 100.0]","[2, 2, 5, 13]",fp32,ND,"[2, 2, 5, 13]","[2, 2, 5, 13]",0,-1,true,2
+Dequantize_symmetric_int8_4d_unaligned_axis2_small,"[2, 2, 5, 9], [2, 2, 9]","int8, fp32","ND, ND","[-110, 110], [0.001, 0.01]","[2, 2, 5, 9]",fp32,ND,"[2, 2, 5, 9]","[2, 2, 5, 9]",0,-2,false,1
+Dequantize_asymmetric_int8_4d_unaligned_axis2_small,"[2, 2, 7, 15], [2, 2, 15], [2, 2, 15]","int8, fp32, fp32","ND, ND, ND","[-93, 93], [0.001, 0.01], [-10.0, 10.0]","[2, 2, 7, 15]",fp32,ND,"[2, 2, 7, 15]","[2, 2, 7, 15]",0,-2,true,1
+Dequantize_symmetric_int16_4d_unaligned_axis2_small,"[2, 2, 11, 17], [2, 2, 17]","int16, fp32","ND, ND","[-30000, 30000], [0.00001, 0.0001]","[2, 2, 11, 17]",fp32,ND,"[2, 2, 11, 17]","[2, 2, 11, 17]",0,-2,false,2
+Dequantize_asymmetric_int16_4d_unaligned_axis2_small,"[2, 2, 9, 13], [2, 2, 13], [2, 2, 13]","int16, fp32, fp32","ND, ND, ND","[-23500, 23500], [0.00001, 0.0001], [-100.0, 100.0]","[2, 2, 9, 13]",fp32,ND,"[2, 2, 9, 13]","[2, 2, 9, 13]",0,-2,true,2
+Dequantize_symmetric_int8_4d_unaligned_31,"[2, 2, 31, 31], [2, 2, 31]","int8, fp32","ND, ND","[-120, 120], [0.001, 0.01]","[2, 2, 31, 31]",fp32,ND,"[2, 2, 31, 31]","[2, 2, 31, 31]",0,-1,false,1
+Dequantize_asymmetric_int8_4d_unaligned_31,"[2, 2, 31, 33], [2, 2, 31], [2, 2, 31]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [-10.0, 10.0]","[2, 2, 31, 33]",fp32,ND,"[2, 2, 31, 33]","[2, 2, 31, 33]",0,-1,true,1
+Dequantize_symmetric_int16_4d_unaligned_31,"[2, 2, 33, 31], [2, 2, 33]","int16, fp32","ND, ND","[-28000, 28000], [0.00001, 0.0001]","[2, 2, 33, 31]",fp32,ND,"[2, 2, 33, 31]","[2, 2, 33, 31]",0,-1,false,2
+Dequantize_asymmetric_int16_4d_unaligned_31,"[2, 2, 35, 37], [2, 2, 35], [2, 2, 35]","int16, fp32, fp32","ND, ND, ND","[-22000, 22000], [0.00001, 0.0001], [-100.0, 100.0]","[2, 2, 35, 37]",fp32,ND,"[2, 2, 35, 37]","[2, 2, 35, 37]",0,-1,true,2
+Dequantize_symmetric_int8_4d_unaligned_axis2_31,"[2, 2, 27, 31], [2, 2, 31]","int8, fp32","ND, ND","[-115, 115], [0.001, 0.01]","[2, 2, 27, 31]",fp32,ND,"[2, 2, 27, 31]","[2, 2, 27, 31]",0,-2,false,1
+Dequantize_asymmetric_int8_4d_unaligned_axis2_31,"[2, 2, 29, 33], [2, 2, 33], [2, 2, 33]","int8, fp32, fp32","ND, ND, ND","[-91, 91], [0.001, 0.01], [-10.0, 10.0]","[2, 2, 29, 33]",fp32,ND,"[2, 2, 29, 33]","[2, 2, 29, 33]",0,-2,true,1
+Dequantize_symmetric_int16_4d_unaligned_axis2_31,"[2, 2, 31, 35], [2, 2, 35]","int16, fp32","ND, ND","[-29000, 29000], [0.00001, 0.0001]","[2, 2, 31, 35]",fp32,ND,"[2, 2, 31, 35]","[2, 2, 31, 35]",0,-2,false,2
+Dequantize_asymmetric_int16_4d_unaligned_axis2_31,"[2, 2, 33, 37], [2, 2, 37], [2, 2, 37]","int16, fp32, fp32","ND, ND, ND","[-22500, 22500], [0.00001, 0.0001], [-100.0, 100.0]","[2, 2, 33, 37]",fp32,ND,"[2, 2, 33, 37]","[2, 2, 33, 37]",0,-2,true,2
+Dequantize_symmetric_int8_2d_unaligned_prime,"[13, 17], [13]","int8, fp32","ND, ND","[-105, 105], [0.001, 0.01]","[13, 17]",fp32,ND,"[13, 17]","[13, 17]",0,-1,false,1
+Dequantize_asymmetric_int8_2d_unaligned_prime,"[17, 19], [17], [17]","int8, fp32, fp32","ND, ND, ND","[-95, 95], [0.001, 0.01], [-10.0, 10.0]","[17, 19]",fp32,ND,"[17, 19]","[17, 19]",0,-1,true,1
+Dequantize_symmetric_int16_2d_unaligned_prime,"[23, 29], [23]","int16, fp32","ND, ND","[-27000, 27000], [0.00001, 0.0001]","[23, 29]",fp32,ND,"[23, 29]","[23, 29]",0,-1,false,2
+Dequantize_asymmetric_int16_2d_unaligned_prime,"[19, 31], [19], [19]","int16, fp32, fp32","ND, ND, ND","[-20500, 20500], [0.00001, 0.0001], [-100.0, 100.0]","[19, 31]",fp32,ND,"[19, 31]","[19, 31]",0,-1,true,2
+Dequantize_symmetric_int8_2d_unaligned_axis2_prime,"[11, 23], [23]","int8, fp32","ND, ND","[-108, 108], [0.001, 0.01]","[11, 23]",fp32,ND,"[11, 23]","[11, 23]",0,-2,false,1
+Dequantize_asymmetric_int8_2d_unaligned_axis2_prime,"[13, 29], [29], [29]","int8, fp32, fp32","ND, ND, ND","[-97, 97], [0.001, 0.01], [-10.0, 10.0]","[13, 29]",fp32,ND,"[13, 29]","[13, 29]",0,-2,true,1
+Dequantize_symmetric_int16_2d_unaligned_axis2_prime,"[17, 31], [31]","int16, fp32","ND, ND","[-27250, 27250], [0.00001, 0.0001]","[17, 31]",fp32,ND,"[17, 31]","[17, 31]",0,-2,false,2
+Dequantize_asymmetric_int16_2d_unaligned_axis2_prime,"[23, 37], [37], [37]","int16, fp32, fp32","ND, ND, ND","[-21800, 21800], [0.00001, 0.0001], [-100.0, 100.0]","[23, 37]",fp32,ND,"[23, 37]","[23, 37]",0,-2,true,2
+Dequantize_symmetric_int8_1d_axis1,"[16], [1]","int8, fp32","ND, ND","[-100, 100], [0.001, 0.01]","[16]",fp32,ND,"[16]","[16]",0,-1,false,1
+Dequantize_asymmetric_int8_1d_axis1,"[16], [1], [1]","int8, fp32, fp32","ND, ND, ND","[-100, 100], [0.001, 0.01], [-10.0, 10.0]","[16]",fp32,ND,"[16]","[16]",0,-1,true,1

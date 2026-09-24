@@ -1,0 +1,115 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/ringkernel",
+    "crates/ringkernel-core",
+    "crates/ringkernel-derive",
+    "crates/ringkernel-cpu",
+    "crates/ringkernel-cuda",
+    "crates/ringkernel-codegen",
+    "crates/ringkernel-cuda-codegen",
+    "crates/ringkernel-ir",
+    "crates/ringkernel-ecosystem",
+    "crates/ringkernel-cli",
+    "crates/ringkernel-audio-fft",
+    "crates/ringkernel-wavesim",
+    "crates/ringkernel-txmon",
+    "crates/ringkernel-accnet",
+    "crates/ringkernel-procint",
+    "crates/ringkernel-montecarlo",
+    "crates/ringkernel-graph",
+    "crates/ringkernel-python",
+    "tutorials",
+]
+# Removed from v1.0.0 (scaffolded backends, not production-ready):
+# "crates/ringkernel-wgpu"        — WebGPU: no persistent kernel support
+# "crates/ringkernel-wgpu-codegen" — WGSL: 17 unimplemented intrinsics
+# "crates/ringkernel-metal"       — Metal: no persistent kernel support
+# "crates/ringkernel-wavesim3d"   — Hard dependency on wgpu for rendering
+
+[workspace.package]
+version = "1.1.0"
+edition = "2021"
+authors = ["Michael Ivertowski <mivertowski@outlook.com>"]
+license = "Apache-2.0"
+repository = "https://github.com/mivertowski/RustCompute"
+homepage = "https://github.com/mivertowski/RustCompute"
+documentation = "https://docs.rs/ringkernel"
+description = "GPU-native persistent actor model framework - Rust port of DotCompute Ring Kernel"
+keywords = ["gpu", "actor", "cuda", "persistent-kernel", "distributed"]
+categories = ["concurrency", "asynchronous", "hardware-support"]
+rust-version = "1.75"
+
+[workspace.dependencies]
+# Core dependencies
+tokio = { version = "1.48", features = ["full"] }
+async-trait = "0.1"
+thiserror = "2.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Serialization (zero-copy)
+rkyv = { version = "0.7", features = ["validation", "strict"] }
+zerocopy = { version = "0.7", features = ["derive"] }
+bytemuck = { version = "1.14", features = ["derive"] }
+
+# Synchronization & atomics
+crossbeam = "0.8"
+parking_lot = "0.12"
+atomic = "0.6"
+
+# GPU backends (optionality handled at crate level)
+cudarc = { version = "0.19.3", features = ["cuda-version-from-build-system"] }
+wgpu = "27.0"
+metal = "0.31"
+
+# Proc macro support
+syn = { version = "2.0", features = ["full", "extra-traits"] }
+quote = "1.0"
+proc-macro2 = "1.0"
+darling = "0.20"
+
+# Testing
+proptest = "1.4"
+criterion = { version = "0.5", features = ["html_reports"] }
+tempfile = "3.9"
+
+# Utilities
+uuid = { version = "1.6", features = ["v4", "fast-rng"] }
+inventory = "0.3"
+cfg-if = "1.0"
+pin-project-lite = "0.2"
+futures = "0.3"
+
+# Configuration file support
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+serde_yaml = "0.9"
+
+# Cloud storage / AWS (optional)
+aws-sdk-s3 = "1.68"
+aws-sdk-cloudwatchlogs = "1.64"
+aws-config = { version = "1.6", features = ["behavior-version-latest"] }
+bytes = "1.9"
+
+# Internal crates - version must match workspace version for publishing
+ringkernel = { version = "1.1.0", path = "crates/ringkernel" }
+ringkernel-core = { version = "1.1.0", path = "crates/ringkernel-core" }
+ringkernel-derive = { version = "1.1.0", path = "crates/ringkernel-derive" }
+ringkernel-cpu = { version = "1.1.0", path = "crates/ringkernel-cpu" }
+ringkernel-cuda = { version = "1.1.0", path = "crates/ringkernel-cuda" }
+ringkernel-codegen = { version = "1.1.0", path = "crates/ringkernel-codegen" }
+ringkernel-cuda-codegen = { version = "1.1.0", path = "crates/ringkernel-cuda-codegen" }
+ringkernel-ir = { version = "1.1.0", path = "crates/ringkernel-ir" }
+ringkernel-wavesim = { version = "1.1.0", path = "crates/ringkernel-wavesim" }
+ringkernel-ecosystem = { version = "1.1.0", path = "crates/ringkernel-ecosystem" }
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.bench]
+lto = true
+codegen-units = 1

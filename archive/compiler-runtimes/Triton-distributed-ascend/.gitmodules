@@ -1,0 +1,19 @@
+[submodule "3rdparty/rocshmem"]
+	path = 3rdparty/rocshmem
+	url = https://github.com/ROCm/rocSHMEM.git
+[submodule "3rdparty/triton"]
+	path = 3rdparty/triton
+	url = https://github.com/ByteDance-Seed/triton.git
+[submodule "3rdparty/mori"]
+	path = 3rdparty/mori
+	url = https://github.com/ROCm/mori.git
+	branch = jiahzhou/triton_dis_support
+[submodule "3rdparty/cutlass"]
+	path = 3rdparty/cutlass
+	url = https://github.com/NVIDIA/cutlass.git
+[submodule "3rdparty/triton-ascend"]
+	path = 3rdparty/triton-ascend
+	url = https://github.com/triton-lang/triton-ascend.git
+[submodule "3rdparty/shmem"]
+	path = 3rdparty/shmem
+	url = https://gitcode.com/cann/shmem.git

@@ -1,0 +1,22 @@
+name: Documentation|文档反馈
+description: 如果您需要反馈文档问题，请使用此模板。
+title: "[Documentation|文档反馈]: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sending an issue! Please fill in the following template to help quickly solve your problem.
+  - type: input
+    attributes:
+      label: 文档链接
+      description: Document Link
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 问题文档片段描述/截图
+      description: Problem Document Segment Description/Screenshot
+    validations:
+      required: true

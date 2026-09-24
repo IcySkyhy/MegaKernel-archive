@@ -1,0 +1,423 @@
+{
+  "schema_version": "0.1",
+  "counts": {
+    "repos": 20,
+    "evidence": 27,
+    "relations": 10,
+    "cards": 12
+  },
+  "by_kind": {
+    "boundary": [
+      "boundary-multi-kernel-alternatives",
+      "boundary-persistent-single-op"
+    ],
+    "case": [
+      "case-cross-hardware-substrates",
+      "case-deepgemm-lineage",
+      "case-whole-generation-boundaries"
+    ],
+    "decision": [
+      "decision-agent-schedule-ir",
+      "decision-megamoe-boundary",
+      "decision-multidie-topology",
+      "decision-static-vs-dynamic"
+    ],
+    "mechanism": [
+      "mechanism-role-specialized-megamoe",
+      "mechanism-static-instruction-stream",
+      "mechanism-task-event-runtime"
+    ]
+  },
+  "by_tag": {
+    "agent": [
+      "decision-agent-schedule-ir"
+    ],
+    "alternative": [
+      "boundary-multi-kernel-alternatives"
+    ],
+    "argmax": [
+      "case-whole-generation-boundaries"
+    ],
+    "ascend": [
+      "case-cross-hardware-substrates"
+    ],
+    "backend": [
+      "case-deepgemm-lineage"
+    ],
+    "boundary": [
+      "case-whole-generation-boundaries"
+    ],
+    "combine": [
+      "decision-megamoe-boundary"
+    ],
+    "compiler-agent-codesign": [
+      "decision-agent-schedule-ir"
+    ],
+    "continuous-batching": [
+      "mechanism-task-event-runtime"
+    ],
+    "cost-model": [
+      "decision-static-vs-dynamic"
+    ],
+    "cross-hardware": [
+      "case-cross-hardware-substrates"
+    ],
+    "cuda-graph": [
+      "boundary-multi-kernel-alternatives"
+    ],
+    "deepeggm": [
+      "case-deepgemm-lineage"
+    ],
+    "definition": [
+      "boundary-persistent-single-op",
+      "case-cross-hardware-substrates"
+    ],
+    "dispatch": [
+      "decision-megamoe-boundary"
+    ],
+    "distributed": [
+      "mechanism-role-specialized-megamoe"
+    ],
+    "dynamic": [
+      "mechanism-task-event-runtime"
+    ],
+    "false-positive": [
+      "boundary-persistent-single-op"
+    ],
+    "fixed-shape": [
+      "mechanism-static-instruction-stream"
+    ],
+    "fixed-vs-dynamic": [
+      "decision-static-vs-dynamic"
+    ],
+    "flashinfer": [
+      "case-deepgemm-lineage"
+    ],
+    "gfx950": [
+      "decision-multidie-topology"
+    ],
+    "instruction-replay": [
+      "mechanism-static-instruction-stream"
+    ],
+    "ir": [
+      "decision-agent-schedule-ir"
+    ],
+    "l2-locality": [
+      "decision-multidie-topology"
+    ],
+    "lineage": [
+      "case-deepgemm-lineage"
+    ],
+    "lm-head": [
+      "case-whole-generation-boundaries"
+    ],
+    "mi350": [
+      "decision-multidie-topology"
+    ],
+    "moe": [
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "nki": [
+      "case-cross-hardware-substrates"
+    ],
+    "paged-scratch": [
+      "mechanism-static-instruction-stream"
+    ],
+    "pallas": [
+      "case-cross-hardware-substrates"
+    ],
+    "pdl": [
+      "boundary-multi-kernel-alternatives"
+    ],
+    "persistent-gemm": [
+      "boundary-persistent-single-op"
+    ],
+    "port": [
+      "case-deepgemm-lineage"
+    ],
+    "qwen": [
+      "case-whole-generation-boundaries"
+    ],
+    "readiness": [
+      "mechanism-role-specialized-megamoe"
+    ],
+    "scheduler-choice": [
+      "decision-static-vs-dynamic"
+    ],
+    "scheduler-overhead": [
+      "mechanism-task-event-runtime"
+    ],
+    "search": [
+      "decision-agent-schedule-ir"
+    ],
+    "single-vs-multiple-kernel": [
+      "decision-megamoe-boundary"
+    ],
+    "static": [
+      "mechanism-static-instruction-stream"
+    ],
+    "streaming": [
+      "boundary-multi-kernel-alternatives"
+    ],
+    "task-graph": [
+      "mechanism-task-event-runtime"
+    ],
+    "tirx": [
+      "case-deepgemm-lineage"
+    ],
+    "topology": [
+      "decision-multidie-topology"
+    ],
+    "training": [
+      "mechanism-role-specialized-megamoe"
+    ],
+    "whole-generation": [
+      "case-whole-generation-boundaries"
+    ],
+    "xcd": [
+      "decision-multidie-topology"
+    ]
+  },
+  "by_hardware": {
+    "amd": [
+      "decision-agent-schedule-ir",
+      "decision-static-vs-dynamic",
+      "mechanism-task-event-runtime"
+    ],
+    "ascend-a5": [
+      "case-cross-hardware-substrates",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "gb200": [
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "gb300": [
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "gfx950": [
+      "decision-multidie-topology"
+    ],
+    "h100": [
+      "decision-megamoe-boundary"
+    ],
+    "inferentia": [
+      "case-cross-hardware-substrates"
+    ],
+    "multi-gpu": [
+      "mechanism-task-event-runtime"
+    ],
+    "multi-xcd": [
+      "decision-multidie-topology"
+    ],
+    "nvidia": [
+      "boundary-multi-kernel-alternatives",
+      "case-cross-hardware-substrates",
+      "case-whole-generation-boundaries",
+      "decision-agent-schedule-ir",
+      "decision-static-vs-dynamic",
+      "mechanism-static-instruction-stream",
+      "mechanism-task-event-runtime"
+    ],
+    "sm100": [
+      "case-deepgemm-lineage",
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "sm120": [
+      "case-whole-generation-boundaries"
+    ],
+    "tpu-v7": [
+      "case-cross-hardware-substrates",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "trainium": [
+      "case-cross-hardware-substrates"
+    ]
+  },
+  "by_mechanism": {
+    "compute-communication-overlap": [
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "cooperative-grid": [
+      "boundary-persistent-single-op",
+      "case-cross-hardware-substrates"
+    ],
+    "cuda-graph": [
+      "boundary-multi-kernel-alternatives"
+    ],
+    "dynamic-ready-queue": [
+      "decision-static-vs-dynamic",
+      "mechanism-task-event-runtime"
+    ],
+    "event-runtime": [
+      "decision-agent-schedule-ir",
+      "decision-multidie-topology",
+      "decision-static-vs-dynamic",
+      "mechanism-task-event-runtime"
+    ],
+    "formula-barrier": [
+      "mechanism-static-instruction-stream"
+    ],
+    "grid-barrier": [
+      "case-whole-generation-boundaries"
+    ],
+    "hierarchical-synchronization": [
+      "decision-multidie-topology"
+    ],
+    "monotonic-counter-dag": [
+      "decision-agent-schedule-ir"
+    ],
+    "multi-stream": [
+      "boundary-multi-kernel-alternatives",
+      "decision-megamoe-boundary"
+    ],
+    "paged-shared-memory": [
+      "mechanism-static-instruction-stream"
+    ],
+    "pdl": [
+      "boundary-multi-kernel-alternatives"
+    ],
+    "phase-interpreter": [
+      "case-whole-generation-boundaries"
+    ],
+    "readiness-signal": [
+      "boundary-multi-kernel-alternatives",
+      "case-cross-hardware-substrates",
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "role-specialized": [
+      "case-cross-hardware-substrates",
+      "case-deepgemm-lineage",
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe",
+      "mechanism-task-event-runtime"
+    ],
+    "static-instruction-stream": [
+      "decision-agent-schedule-ir",
+      "decision-static-vs-dynamic",
+      "mechanism-static-instruction-stream"
+    ],
+    "static-monolith": [
+      "case-whole-generation-boundaries"
+    ],
+    "symmetric-memory": [
+      "case-deepgemm-lineage",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "topology-aware-scheduling": [
+      "decision-multidie-topology"
+    ]
+  },
+  "by_scope": {
+    "adjacent": [
+      "boundary-multi-kernel-alternatives",
+      "boundary-persistent-single-op",
+      "decision-megamoe-boundary"
+    ],
+    "moe-pipeline": [
+      "case-cross-hardware-substrates",
+      "case-deepgemm-lineage",
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "operator-subgraph": [
+      "decision-static-vs-dynamic",
+      "mechanism-static-instruction-stream"
+    ],
+    "single-op": [
+      "boundary-persistent-single-op"
+    ],
+    "whole-forward": [
+      "case-cross-hardware-substrates",
+      "case-whole-generation-boundaries",
+      "mechanism-static-instruction-stream"
+    ],
+    "whole-generation": [
+      "case-whole-generation-boundaries"
+    ],
+    "whole-model-runtime": [
+      "decision-agent-schedule-ir",
+      "decision-multidie-topology",
+      "decision-static-vs-dynamic",
+      "mechanism-task-event-runtime"
+    ]
+  },
+  "by_repo": {
+    "repo-automegakernel": [
+      "decision-agent-schedule-ir",
+      "decision-static-vs-dynamic",
+      "mechanism-task-event-runtime"
+    ],
+    "repo-aws-nki": [
+      "case-cross-hardware-substrates"
+    ],
+    "repo-deepep": [
+      "boundary-persistent-single-op",
+      "decision-megamoe-boundary"
+    ],
+    "repo-deepgemm": [
+      "case-deepgemm-lineage",
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "repo-flashinfer": [
+      "case-deepgemm-lineage",
+      "decision-megamoe-boundary"
+    ],
+    "repo-fleet": [
+      "decision-multidie-topology"
+    ],
+    "repo-hazy-megakernels": [
+      "mechanism-static-instruction-stream"
+    ],
+    "repo-machete": [
+      "boundary-persistent-single-op",
+      "decision-agent-schedule-ir",
+      "decision-static-vs-dynamic",
+      "mechanism-static-instruction-stream"
+    ],
+    "repo-mirage": [
+      "decision-agent-schedule-ir",
+      "decision-multidie-topology",
+      "decision-static-vs-dynamic",
+      "mechanism-task-event-runtime"
+    ],
+    "repo-mixture-of-kittens": [
+      "mechanism-role-specialized-megamoe"
+    ],
+    "repo-model-as-kernel": [
+      "boundary-multi-kernel-alternatives",
+      "case-whole-generation-boundaries"
+    ],
+    "repo-pdl-reconstruction": [
+      "boundary-multi-kernel-alternatives"
+    ],
+    "repo-pto-megamoe": [
+      "case-cross-hardware-substrates",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "repo-qwen-megakernel": [
+      "case-whole-generation-boundaries"
+    ],
+    "repo-sglang-jax": [
+      "case-cross-hardware-substrates",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "repo-streamep": [
+      "boundary-multi-kernel-alternatives",
+      "decision-megamoe-boundary"
+    ],
+    "repo-teramoe": [
+      "decision-megamoe-boundary",
+      "mechanism-role-specialized-megamoe"
+    ],
+    "repo-triton-distributed": [
+      "decision-agent-schedule-ir"
+    ]
+  }
+}

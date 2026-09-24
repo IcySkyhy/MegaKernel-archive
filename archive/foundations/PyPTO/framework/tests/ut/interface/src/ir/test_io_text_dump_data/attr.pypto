@@ -1,0 +1,11 @@
+program #entry(attrs) {
+    function attrs incast(v0_logical_tensor %a@0 #dtype(int32_t) #shape([4, 8]) #offset([0, 0]), int32_t %b) outcast(int32_t) #type(Opaque) #entry(true) {
+        v0_logical_tensor %x@1 #dtype(float) #shape([16, 32]) #offset([0, 16]) = myop(%a@0, %b);
+        v0_logical_tensor %y@2 #dtype(float) #shape([16, 32]) #offset([0, 16]) #dynvalidshape([M, N]) = myop(%x@1, %b);
+        v0_logical_tensor %z@3 #dtype(bfloat16_t) #shape([16]) #offset([1]) #dynvalidshape([v0add(M, 2)]) #dynvalidoffset([N, v0mul(M, 2)]) = myop2(%y@2);
+        int32_t %t = myop3(%a@0) token() #axis(0) #mode(fast) #scale(1.5) #flag(true) #tags([a, b, c]) #exprs([%a@0]) #mix([1, %a@0]);
+        for %i inrange %b, 10, 1 iter { } #unroll(true) #factor(4) {
+            yield;
+        }
+    }
+}

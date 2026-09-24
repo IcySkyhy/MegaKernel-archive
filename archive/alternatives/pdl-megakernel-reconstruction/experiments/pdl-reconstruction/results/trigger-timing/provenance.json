@@ -1,0 +1,36 @@
+{
+  "date": "2026-08-04",
+  "host": "zkrh-58",
+  "gpu": "NVIDIA H100 80GB HBM3",
+  "container": "xinwei_mega_kernel",
+  "isolated_candidate_repo": "/workspace/Megakernels-p32d128-13page-blog-revalidation-20260804",
+  "python": "3.12.3",
+  "cuda_compiler": "13.1.115",
+  "build": {
+    "gpu_target": "H100",
+    "source_sha256": "4a387f31f5e892f28bad37ccd0001a279f58a0edfdd69b62230274a29d7345ff",
+    "module_sha256": "9df41dbda0536b291e3be0dc44021fc6204fd5edb97df2bfb697c5168824f855",
+    "raw_build_log_sha256": "f9055ad9a9a2e9aacae14cefbcea9a9414a6075aa75c1ea41be48f1a3ad36268",
+    "normalized_build_log_sha256": "cc2a0b4661f2af30c89863a6d3b232f025bf5aae2a07cafb61f3c70668393506"
+  },
+  "harness": {
+    "bench_sha256": "6d8f4d048e7337674b0265b178c77772958c052392871a59ae029d2a95e795e5",
+    "tested_runner_sha256": "7926eff0534db7d9d3ceeff90e270a5c52d8e62c8632d2f14acf3c7d7e59af2d",
+    "committed_runner_sha256": "1968157a545b74931a65744b6ccd5a28b3353c4bd98f8bfc7f8ba34d897f3359",
+    "command": "bash run_13page_trigger_formal.sh",
+    "position_start": 32,
+    "position_end": 158,
+    "warmup_per_position": 5,
+    "iterations_per_position": 30,
+    "fresh_processes_per_variant": 3,
+    "run_order": [
+      "arrival_trial1",
+      "issue_trial1",
+      "issue_trial2",
+      "arrival_trial2",
+      "arrival_trial3",
+      "issue_trial3"
+    ]
+  },
+  "preflight_sha256": "c2dc30dcd602480a3293af58ea124fc8c975a12112d16fc83ac92920942104a0"
+}

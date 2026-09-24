@@ -1,0 +1,1058 @@
+/**
+Copyright (c) 2025 Huawei Technologies Co., Ltd.
+This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+CANN Open Software License Agreement Version 2.0 (the "License").
+Please refer to the License for details. You may not use this file except in compliance with the License.
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+See LICENSE in the root of the software repository for the full text of the License.
+*/
+
+#ifndef TGATHER_HPP
+#define TGATHER_HPP
+
+#include <pto/common/constants.hpp>
+#include "common.hpp"
+#include "TBinOp.hpp"
+
+namespace pto {
+
+#if defined(PTO_NPU_ARCH_A5) || defined(PTO_NPU_ARCH_A6)
+template <typename T, typename I, unsigned DstCols, unsigned IdxCols>
+PTO_INTERNAL void Int64Gather(
+    __ubuf__ T* dst, __ubuf__ T* src, __ubuf__ I* index, unsigned validRows, unsigned validCols)
+{
+    static_assert(sizeof(I) == sizeof(uint32_t), "Int64Gather requires b32 indices");
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(T);
+    uint16_t repeatTimes = CeilDivision(validCols, elementsPerRepeat);
+    __VEC_SCOPE__
+    {
+        vector_u32 idx, wordIdx, highIdx, low, high;
+        uint16_t rows = validRows;
+        uint16_t fullRepeats = validCols / elementsPerRepeat;
+        uint32_t tailCols = validCols - fullRepeats * elementsPerRepeat;
+        uint32_t fullMaskCols = elementsPerRepeat;
+        MaskReg allMask = plt_b32(fullMaskCols, POST_UPDATE);
+        uint32_t tailMaskCols = tailCols;
+        MaskReg tailMask = Int64TailMask(tailMaskCols, allMask);
+        for (uint16_t row = 0; row < rows; ++row) {
+            for (uint16_t colRepeat = 0; colRepeat < fullRepeats; ++colRepeat) {
+                uint32_t colOffset = colRepeat * elementsPerRepeat;
+                vlds(idx, (__ubuf__ uint32_t*)index + row * IdxCols + colOffset, 0, NORM);
+                vadd(wordIdx, idx, idx, allMask, MODE_ZEROING);
+                vadds(highIdx, wordIdx, 1u, allMask, MODE_ZEROING);
+                vgather2(low, (__ubuf__ uint32_t*)src, wordIdx, allMask);
+                vgather2(high, (__ubuf__ uint32_t*)src, highIdx, allMask);
+                vsts(
+                    (vector_s32&)low, (vector_s32&)high, (__ubuf__ int32_t*)dst + (row * DstCols + colOffset) * 2, 0,
+                    INTLV_B32, allMask);
+            }
+            if (tailCols != 0) {
+                uint32_t colOffset = fullRepeats * elementsPerRepeat;
+                vlds(idx, (__ubuf__ uint32_t*)index + row * IdxCols + colOffset, 0, NORM);
+                vadd(wordIdx, idx, idx, tailMask, MODE_ZEROING);
+                vadds(highIdx, wordIdx, 1u, tailMask, MODE_ZEROING);
+                vgather2(low, (__ubuf__ uint32_t*)src, wordIdx, tailMask);
+                vgather2(high, (__ubuf__ uint32_t*)src, highIdx, tailMask);
+                vsts(
+                    (vector_s32&)low, (vector_s32&)high, (__ubuf__ int32_t*)dst + (row * DstCols + colOffset) * 2, 0,
+                    INTLV_B32, tailMask);
+            }
+        }
+    }
+}
+#else
+// Declaration-only stubs for kirin9030/kirinX90 (no 64-bit intrinsics).
+// See TBinOp.hpp for details.
+template <typename T, typename I, unsigned DstCols, unsigned IdxCols>
+PTO_INTERNAL void Int64Gather(
+    __ubuf__ T* dst, __ubuf__ T* src, __ubuf__ I* index, unsigned validRows, unsigned validCols);
+#endif
+
+template <typename DstTileData, typename Src0TileData, typename Src1TileData>
+PTO_INTERNAL void CheckValid()
+{
+    static_assert(
+        (sizeof(typename DstTileData::DType) == 1) || (sizeof(typename DstTileData::DType) == 2) ||
+            (sizeof(typename DstTileData::DType) == 4) || (sizeof(typename DstTileData::DType) == 8),
+        "Fix: TGATHER expect b8/b16/b32/b64");
+    static_assert(
+        (sizeof(typename Src1TileData::DType) == 2) || (sizeof(typename Src1TileData::DType) == 4),
+        "Fix: TGATHER expect b16/b32");
+    static_assert(
+        sizeof(typename DstTileData::DType) != 8 || sizeof(typename Src1TileData::DType) == 4,
+        "Fix: TGATHER expects b32 indices for b64 data");
+    static_assert(
+        (std::is_same<typename DstTileData::DType, typename Src0TileData::DType>::value),
+        "Fix: TGATHER expect same datatype for src and dst");
+}
+
+template <typename TileDataD, typename TileDataS0, typename TileDataS1>
+__tf__ AICORE void TGather_b32(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS0::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ src1, unsigned validCol, unsigned validRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS0::DType* src0Ptr = (__ubuf__ typename TileDataS0::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataS1::DType* src1Ptr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(src1);
+    unsigned elementsPerRepeat = CCE_VL / sizeof(typename TileDataS1::DType);
+    uint16_t innerLoopNum = CeilDivision(validCol, elementsPerRepeat);
+    __VEC_SCOPE__
+    {
+        RegTensor<typename TileDataS1::DType> index;
+        RegTensor<typename TileDataD::DType> v_output;
+        MaskReg preg;
+        for (uint16_t i = 0; i < (uint16_t)validRow; ++i) {
+            uint32_t sreg = (uint32_t)(validCol);
+            for (uint16_t j = 0; j < innerLoopNum; ++j) {
+                preg = CreatePredicate<typename TileDataS1::DType>(sreg);
+                vlds(index, src1Ptr, (i * TileDataS1::Cols + j * elementsPerRepeat), NORM);
+                vgather2(v_output, src0Ptr, (vector_u32&)index, preg);
+                vsts(v_output, dstPtr, (i * TileDataD::Cols + j * elementsPerRepeat), NORM_B32, preg);
+            }
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS0, typename TileDataS1>
+__tf__ AICORE void TGather_b16(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS0::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ src1, unsigned validCol, unsigned validRow)
+{
+    __ubuf__ typename TileDataS0::DType* src0Ptr = (__ubuf__ typename TileDataS0::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataS1::DType* src1Ptr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(src1);
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    uint16_t elementsPerRepeat = CCE_VL / sizeof(typename TileDataS1::DType);
+    uint16_t innerLoopNum = CeilDivision(validCol, elementsPerRepeat);
+    __VEC_SCOPE__
+    {
+        MaskReg preg;
+        RegTensor<typename TileDataS1::DType> index;
+        RegTensor<typename TileDataD::DType> v_output;
+        for (uint16_t i = 0; i < (uint16_t)validRow; ++i) {
+            uint32_t sreg = (uint32_t)(validCol);
+            for (uint16_t j = 0; j < innerLoopNum; ++j) {
+                preg = CreatePredicate<typename TileDataS1::DType>(sreg);
+                vlds(index, src1Ptr, (i * TileDataS1::Cols + j * elementsPerRepeat), NORM);
+                vgather2(v_output, src0Ptr, (vector_u16&)index, preg);
+                vsts(v_output, dstPtr, (i * TileDataD::Cols + j * elementsPerRepeat), NORM_B16, preg);
+            }
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS0, typename TileDataS1>
+__tf__ AICORE void TGather_b16_bc(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS0::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ src1, unsigned validCol, unsigned validRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS0::DType* src0Ptr = (__ubuf__ typename TileDataS0::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataS1::DType* src1Ptr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(src1);
+    uint16_t elementsPerRepeat = CCE_VL / sizeof(typename TileDataS1::DType);
+    uint16_t innerLoop = CeilDivision(validCol, elementsPerRepeat);
+    __VEC_SCOPE__
+    {
+        MaskReg preg;
+        RegTensor<typename TileDataS1::DType> index;
+        RegTensor<typename TileDataD::DType> v_output;
+        for (uint16_t i = 0; i < (uint16_t)validRow; ++i) {
+            uint32_t sreg = (uint32_t)(validCol);
+            for (uint16_t j = 0; j < innerLoop; ++j) {
+                preg = CreatePredicate<typename TileDataS1::DType>(sreg);
+                vlds(index, src1Ptr, (i * TileDataS1::Cols + j * elementsPerRepeat), NORM);
+                vgather2_bc(v_output, src0Ptr, (vector_u32&)index, preg);
+                vsts(v_output, dstPtr, (i * TileDataD::Cols + j * elementsPerRepeat), PK_B32, preg);
+            }
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS0, typename TileDataS1>
+__tf__ AICORE void TGather_b8(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS0::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ src1, unsigned validCol, unsigned validRow)
+{
+    __ubuf__ typename TileDataS0::DType* src0Ptr = (__ubuf__ typename TileDataS0::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataS1::DType* src1Ptr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(src1);
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    uint16_t elementsPerRepeat = CCE_VL / sizeof(typename TileDataS1::DType);
+    uint16_t LoopNum = CeilDivision(validCol, elementsPerRepeat);
+    __VEC_SCOPE__
+    {
+        MaskReg preg;
+        RegTensor<typename TileDataD::DType> v_output;
+        RegTensor<typename TileDataS1::DType> index;
+        for (uint16_t i = 0; i < (uint16_t)validRow; ++i) {
+            uint32_t sreg = (uint32_t)(validCol);
+            for (uint16_t j = 0; j < LoopNum; ++j) {
+                preg = CreatePredicate<typename TileDataS1::DType>(sreg);
+                vlds(index, src1Ptr, (i * TileDataS1::Cols + j * elementsPerRepeat), NORM);
+                vgather2(v_output, src0Ptr, (vector_u16&)index, preg);
+                vsts(v_output, dstPtr, (i * TileDataD::Cols + j * elementsPerRepeat), PK_B16, preg);
+            }
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS0, typename TileDataS1, typename TileDataTmp>
+PTO_INTERNAL void TGATHER_IMPL(TileDataD& dst, TileDataS0& src0, TileDataS1& src1, TileDataTmp& tmp)
+{
+    CheckValid<TileDataD, TileDataS0, TileDataS1>();
+
+    unsigned kValidCols = dst.GetValidCol();
+    unsigned kValidRows = dst.GetValidRow();
+
+    if constexpr (sizeof(typename TileDataS0::DType) == 8) {
+        using T = typename TileDataS0::DType;
+        using I = typename TileDataS1::DType;
+        Int64Gather<T, I, TileDataD::Cols, TileDataS1::Cols>(
+            (__ubuf__ T*)dst.data(), (__ubuf__ T*)src0.data(), (__ubuf__ I*)src1.data(), kValidRows, kValidCols);
+    } else if constexpr (sizeof(typename TileDataS0::DType) == 4) {
+        TGather_b32<TileDataD, TileDataS0, TileDataS1>(dst.data(), src0.data(), src1.data(), kValidCols, kValidRows);
+    } else if constexpr (sizeof(typename TileDataS0::DType) == 2 && sizeof(typename TileDataS1::DType) == 2) {
+        TGather_b16<TileDataD, TileDataS0, TileDataS1>(dst.data(), src0.data(), src1.data(), kValidCols, kValidRows);
+    } else if constexpr (sizeof(typename TileDataS0::DType) == 2 && sizeof(typename TileDataS1::DType) == 4) {
+        TGather_b16_bc<TileDataD, TileDataS0, TileDataS1>(dst.data(), src0.data(), src1.data(), kValidCols, kValidRows);
+    } else {
+        TGather_b8<TileDataD, TileDataS0, TileDataS1>(dst.data(), src0.data(), src1.data(), kValidCols, kValidRows);
+    }
+}
+
+template <typename T>
+PTO_INTERNAL void PIntlvWithType(MaskReg& dst0, MaskReg& dst1, MaskReg src0, MaskReg src1)
+{
+    if constexpr (sizeof(T) == sizeof(float)) {
+        pintlv_b32(dst0, dst1, src0, src1);
+    } else if constexpr (sizeof(T) == sizeof(half)) {
+        pintlv_b16(dst0, dst1, src0, src1);
+    } else if constexpr (sizeof(T) == sizeof(uint8_t)) {
+        pintlv_b8(dst0, dst1, src0, src1);
+    }
+}
+
+template <typename T, MaskPattern maskPattern>
+PTO_INTERNAL MaskReg GetMaskVal()
+{
+    MaskReg pg0;
+    MaskReg pg1;
+    MaskReg dstPg0;
+    MaskReg dstPg1;
+    if constexpr (maskPattern == MaskPattern::P0101) {
+        pg0 = PSetWithType<T>(PAT_ALL);
+        pg1 = PSetWithType<T>(PAT_ALLF);
+        PIntlvWithType<T>(dstPg0, dstPg1, pg0, pg1);
+    } else if constexpr (maskPattern == MaskPattern::P1010) {
+        pg0 = PSetWithType<T>(PAT_ALL);
+        pg1 = PSetWithType<T>(PAT_ALLF);
+        PIntlvWithType<T>(dstPg0, dstPg1, pg1, pg0);
+    } else if constexpr (maskPattern == MaskPattern::P0001) {
+        pg0 = PSetWithType<T>(PAT_ALL);
+        pg1 = PSetWithType<T>(PAT_ALLF);
+        PIntlvWithType<T>(dstPg0, dstPg1, pg0, pg1);
+        PIntlvWithType<T>(dstPg0, dstPg1, dstPg0, pg1);
+    } else if constexpr (maskPattern == MaskPattern::P0010) {
+        pg0 = PSetWithType<T>(PAT_ALL);
+        pg1 = PSetWithType<T>(PAT_ALLF);
+        PIntlvWithType<T>(dstPg0, dstPg1, pg0, pg1);
+        PIntlvWithType<T>(dstPg0, dstPg1, pg1, dstPg0);
+    } else if constexpr (maskPattern == MaskPattern::P0100) {
+        pg0 = PSetWithType<T>(PAT_ALL);
+        pg1 = PSetWithType<T>(PAT_ALLF);
+        PIntlvWithType<T>(dstPg0, dstPg1, pg1, pg0);
+        PIntlvWithType<T>(dstPg0, dstPg1, dstPg0, pg1);
+    } else if constexpr (maskPattern == MaskPattern::P1000) {
+        pg0 = PSetWithType<T>(PAT_ALL);
+        pg1 = PSetWithType<T>(PAT_ALLF);
+        PIntlvWithType<T>(dstPg0, dstPg1, pg1, pg0);
+        PIntlvWithType<T>(dstPg0, dstPg1, pg1, dstPg0);
+    } else if constexpr (maskPattern == MaskPattern::P1111) {
+        dstPg0 = PSetWithType<T>(PAT_ALL);
+    }
+    return dstPg0;
+}
+
+template <typename DstTileData, typename SrcTileData, MaskPattern maskPattern, auto gatherType = GatherAxis::GATHER_ROW>
+__tf__ AICORE void TGather(
+    typename DstTileData::TileDType __out__ dst, typename SrcTileData::TileDType __in__ src, unsigned validRow,
+    unsigned validCol)
+{
+    using T = typename DstTileData::DType;
+    constexpr unsigned srcStride = SrcTileData::RowStride;
+    constexpr unsigned dstStride = DstTileData::RowStride;
+    __ubuf__ typename DstTileData::DType* dstPtr = (__ubuf__ typename DstTileData::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename DstTileData::DType* srcPtr = (__ubuf__ typename DstTileData::DType*)__cce_get_tile_ptr(src);
+    constexpr uint16_t nElemPerVL = CCE_VL / sizeof(T);
+    uint16_t repeatTimes = CeilDivision(validCol, nElemPerVL);
+
+    __VEC_SCOPE__
+    {
+        RegTensor<T> srcReg;
+        MaskReg loadMask;
+        uint32_t maskValue = 0;
+        if constexpr (gatherType == GatherAxis::GATHER_COL) {
+            uint16_t stride = 0;
+            constexpr auto distValue =
+                std::integral_constant<::DistVST, static_cast<::DistVST>(GetDistVst<T, DistVST::DIST_NORM>())>();
+            for (uint16_t i = 0; i < (uint16_t)validRow; ++i) {
+                stride = GetStrideByMask<maskPattern, srcStride>(i);
+                maskValue = validCol;
+                for (uint16_t j = 0; j < repeatTimes; ++j) {
+                    loadMask = CreatePredicate<T>(maskValue);
+                    vlds(srcReg, srcPtr, stride + j * nElemPerVL, NORM);
+                    vsts(srcReg, dstPtr, i * dstStride + j * nElemPerVL, distValue, loadMask);
+                }
+            }
+        } else {
+            constexpr uint8_t SPR_AR_VALUE = 74;
+            constexpr auto sprValue = std::integral_constant<::Spr, static_cast<::Spr>(SPR_AR_VALUE)>();
+            sprclr(sprValue);
+
+            MaskReg dstPg0 = GetMaskVal<T, maskPattern>();
+            RegTensor<T> dstReg;
+            MaskReg executeMask;
+            UnalignReg ureg;
+
+            for (uint16_t i = 0; i < (uint16_t)validRow; ++i) {
+                maskValue = validCol;
+                for (uint16_t j = 0; j < repeatTimes; ++j) {
+                    loadMask = CreatePredicate<T>(maskValue);
+                    vlds(srcReg, srcPtr + i * srcStride, j * nElemPerVL, NORM);
+                    pand(executeMask, dstPg0, loadMask, loadMask);
+                    vsqz(dstReg, srcReg, executeMask, MODE_STORED);
+                    vstur(ureg, dstReg, dstPtr, POST_UPDATE);
+                }
+            }
+            vstar(ureg, dstPtr);
+        }
+    }
+}
+
+template <typename T, MaskPattern maskPattern, unsigned DstCols, unsigned SrcCols>
+PTO_INTERNAL void Int64GatherPattern(__ubuf__ T* dst, __ubuf__ T* src, unsigned validRows, unsigned validCols)
+{
+    constexpr unsigned times = GetTimesByMask<maskPattern>();
+    constexpr unsigned offset = Int64MaskPatternOffset<maskPattern>();
+    constexpr unsigned outputCols = DstCols / times;
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(T);
+    uint16_t outputValidCols = validCols / times;
+    uint16_t repeatTimes = CeilDivision(outputValidCols, elementsPerRepeat);
+    __VEC_SCOPE__
+    {
+        vector_u32 lane, elementIndex, lowIndex, highIndex, low, high;
+        vci((vector_s32&)lane, 0, INC_ORDER);
+        uint16_t rows = validRows;
+        for (uint16_t row = 0; row < rows; ++row) {
+            __ubuf__ uint32_t* rowSrc = (__ubuf__ uint32_t*)src + row * SrcCols * 2;
+            uint16_t fullRepeats = outputValidCols / elementsPerRepeat;
+            uint32_t tailCols = outputValidCols - fullRepeats * elementsPerRepeat;
+            uint32_t fullMaskCols = elementsPerRepeat;
+            MaskReg allMask = plt_b32(fullMaskCols, POST_UPDATE);
+            uint32_t tailMaskCols = tailCols;
+            MaskReg tailMask = Int64TailMask(tailMaskCols, allMask);
+            for (uint16_t colRepeat = 0; colRepeat < fullRepeats; ++colRepeat) {
+                uint32_t colOffset = colRepeat * elementsPerRepeat;
+                vadds(elementIndex, lane, colOffset, allMask, MODE_ZEROING);
+                vmuls(elementIndex, elementIndex, static_cast<uint32_t>(times), allMask, MODE_ZEROING);
+                vadds(elementIndex, elementIndex, static_cast<uint32_t>(offset), allMask, MODE_ZEROING);
+                vadd(lowIndex, elementIndex, elementIndex, allMask, MODE_ZEROING);
+                vadds(highIndex, lowIndex, 1u, allMask, MODE_ZEROING);
+                vgather2(low, rowSrc, lowIndex, allMask);
+                vgather2(high, rowSrc, highIndex, allMask);
+                vsts(
+                    (vector_s32&)low, (vector_s32&)high, (__ubuf__ int32_t*)dst + (row * outputCols + colOffset) * 2, 0,
+                    INTLV_B32, allMask);
+            }
+            if (tailCols != 0) {
+                uint32_t colOffset = fullRepeats * elementsPerRepeat;
+                vadds(elementIndex, lane, colOffset, tailMask, MODE_ZEROING);
+                vmuls(elementIndex, elementIndex, static_cast<uint32_t>(times), tailMask, MODE_ZEROING);
+                vadds(elementIndex, elementIndex, static_cast<uint32_t>(offset), tailMask, MODE_ZEROING);
+                vadd(lowIndex, elementIndex, elementIndex, tailMask, MODE_ZEROING);
+                vadds(highIndex, lowIndex, 1u, tailMask, MODE_ZEROING);
+                vgather2(low, rowSrc, lowIndex, tailMask);
+                vgather2(high, rowSrc, highIndex, tailMask);
+                vsts(
+                    (vector_s32&)low, (vector_s32&)high, (__ubuf__ int32_t*)dst + (row * outputCols + colOffset) * 2, 0,
+                    INTLV_B32, tailMask);
+            }
+        }
+    }
+}
+
+template <typename DstTileData, typename SrcTileData, MaskPattern maskPattern, auto gatherType = GatherAxis::GATHER_ROW>
+PTO_INTERNAL void TGATHER_IMPL(DstTileData& dst, SrcTileData& src)
+{
+    using T = typename SrcTileData::DType;
+    using U = typename DstTileData::DType;
+    static_assert(
+        std::is_same_v<T, int64_t> || std::is_same_v<T, uint64_t> || std::is_same_v<T, int8_t> ||
+            std::is_same_v<T, uint8_t> || std::is_same_v<T, int16_t> || std::is_same_v<T, uint16_t> ||
+            std::is_same_v<T, int32_t> || std::is_same_v<T, uint32_t> || std::is_same_v<T, half> ||
+            std::is_same_v<T, bfloat16_t> || std::is_same_v<T, float> || std::is_same_v<T, float8_e4m3_t> ||
+            std::is_same_v<T, float8_e5m2_t> || std::is_same_v<T, hifloat8_t>,
+        "Fix: TGATHER Src data type must be int8_t/uint8_t/int16_t/uint16_t/int32_t/uint32_t/"
+        "half/bfloat16_t/float/float8_e4m3_t/float8_e5m2_t/hifloat8_t.");
+    static_assert(
+        std::is_same_v<U, int64_t> || std::is_same_v<U, uint64_t> || std::is_same_v<U, int8_t> ||
+            std::is_same_v<U, uint8_t> || std::is_same_v<U, int16_t> || std::is_same_v<U, uint16_t> ||
+            std::is_same_v<U, int32_t> || std::is_same_v<U, uint32_t> || std::is_same_v<U, half> ||
+            std::is_same_v<U, bfloat16_t> || std::is_same_v<U, float> || std::is_same_v<U, float8_e4m3_t> ||
+            std::is_same_v<U, float8_e5m2_t> || std::is_same_v<U, hifloat8_t>,
+        "Fix: TGATHER Dst data type must be int8_t/uint8_t/int16_t/uint16_t/int32_t/uint32_t/"
+        "half/bfloat16_t/float/float8_e4m3_t/float8_e5m2_t/hifloat8_t.");
+    static_assert((sizeof(U) == sizeof(T)), "Fix: TGATHER expect same type size for dst and src");
+    static_assert(
+        (DstTileData::Loc == TileType::Vec) && (SrcTileData::Loc == TileType::Vec), "Fix: TGATHER expect vec TileType");
+    static_assert((DstTileData::isRowMajor && SrcTileData::isRowMajor), "Fix: TGATHER expect row major");
+    unsigned rows = src.GetValidRow();
+    unsigned cols = src.GetValidCol();
+    if constexpr (std::is_same_v<T, int64_t> || std::is_same_v<T, uint64_t>) {
+        static_assert(gatherType == GatherAxis::GATHER_ROW, "TGATHER B64 pattern currently supports row gather.");
+        Int64GatherPattern<T, maskPattern, DstTileData::Cols, SrcTileData::Cols>(
+            (__ubuf__ T*)dst.data(), (__ubuf__ T*)src.data(), rows, cols);
+    } else {
+        TGather<DstTileData, SrcTileData, maskPattern, gatherType>(dst.data(), src.data(), rows, cols);
+    }
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_float_gt(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(typename TileDataS::DType);
+    uint16_t repeatTimes = CeilDivision(srcValidCol, elementsPerRepeat);
+    unsigned srcRowStride = TileDataS::RowStride;
+    unsigned dstRowStride = TileDataD::RowStride;
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_align align_index;
+        vector_s32 add_offset;
+        vector_s32 index;
+        vci(index, offset, INC_ORDER);
+        sprclr(SPR_AR);
+        vbr(add_offset, 0x00000040);
+        MaskReg preg;
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            uint32_t cols = (uint32_t)(srcValidCol);
+            typename TileDataS1::DType k_scalar1 = *(kvaluePtr + i);
+            for (uint16_t j = 0; j < repeatTimes; ++j) {
+                RegTensor<typename TileDataS::DType> score;
+                vector_s32 score_s32;
+                vlds(score, src0Ptr, (i * TileDataS::Cols + j * elementsPerRepeat), NORM);
+                // f32->s32
+                vcvt(score_s32, score, preg_b32, ROUND_R, RS_DISABLE);
+
+                preg = CreatePredicate<typename TileDataS::DType>(cols);
+
+                vector_bool pout_ge;
+                vector_s32 sqz_index_out;
+                vcmps_gt(pout_ge, (vector_u32)score_s32, k_scalar1, preg);
+                vsqz(sqz_index_out, index, pout_ge, MODE_STORED);
+                vstur(align_index, (vector_u32)sqz_index_out, (__ubuf__ uint32_t*)dstPtr, POST_UPDATE);
+                vadd(index, index, add_offset, preg_b32, MODE_ZEROING);
+            }
+            vstar(align_index, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + TileDataD::Cols;
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_float_eq(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+
+    using T = typename TileDataD::DType;
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(typename TileDataS::DType);
+    uint16_t repeatTimes = CeilDivision(srcValidCol, elementsPerRepeat);
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_align align_index;
+        vector_s32 index;
+        vci(index, offset, INC_ORDER);
+        vector_s32 add_offset;
+        MaskReg preg;
+        vbr(add_offset, 0x00000040);
+        sprclr(SPR_AR);
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            uint32_t cols1 = (uint32_t)(srcValidCol);
+            typename TileDataS1::DType k_scalar1 = *(kvaluePtr + i);
+            for (uint16_t j = 0; j < repeatTimes; ++j) {
+                vector_s32 score_s32;
+                RegTensor<typename TileDataS::DType> score;
+                vlds(score, src0Ptr, (i * TileDataS::Cols + j * elementsPerRepeat), NORM);
+                vcvt(score_s32, score, preg_b32, ROUND_R, RS_DISABLE);
+
+                uint32_t count = (cols1 > elementsPerRepeat) ? elementsPerRepeat : cols1;
+                preg = CreatePredicate<typename TileDataS::DType>(count);
+
+                vector_bool pout_eq;
+                vector_s32 sqz_index_out;
+                vcmps_eq(pout_eq, (vector_u32)score_s32, k_scalar1, preg);
+                vsqz(sqz_index_out, index, pout_eq, MODE_STORED);
+                vadd(index, index, add_offset, preg_b32, MODE_ZEROING);
+                vstur(align_index, (vector_u32)sqz_index_out, (__ubuf__ uint32_t*)dstPtr, POST_UPDATE);
+                cols1 -= elementsPerRepeat;
+            }
+            vstar(align_index, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + TileDataD::Cols;
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_b32_gt(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(typename TileDataS::DType);
+    uint16_t repeatTimes = CeilDivision(srcValidCol, elementsPerRepeat);
+    unsigned srcRowStride = TileDataS::RowStride;
+    unsigned dstRowStride = TileDataD::RowStride;
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_s32 add_offset;
+        vector_align align_index1;
+        vector_s32 index1;
+        MaskReg preg;
+        vci(index1, offset, INC_ORDER);
+        sprclr(SPR_AR);
+        vbr(add_offset, 0x00000040);
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            uint32_t cols = (uint32_t)(srcValidCol);
+            typename TileDataS1::DType k_scalar = *(kvaluePtr + i);
+            for (uint16_t j = 0; j < repeatTimes; ++j) {
+                RegTensor<typename TileDataS::DType> score;
+                vlds(score, src0Ptr, (i * TileDataS::Cols + j * elementsPerRepeat), NORM);
+
+                preg = CreatePredicate<typename TileDataS::DType>(cols);
+
+                vector_bool pout_ge;
+                vector_s32 sqz_index_out;
+                vcmps_gt(pout_ge, (vector_u32)score, k_scalar, preg);
+                vsqz(sqz_index_out, index1, pout_ge, MODE_STORED);
+                vstur(align_index1, (vector_u32)sqz_index_out, (__ubuf__ uint32_t*)dstPtr, POST_UPDATE);
+                vadd(index1, index1, add_offset, preg_b32, MODE_ZEROING);
+            }
+            vstar(align_index1, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + TileDataD::Cols;
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_b32_eq(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+
+    using T = typename TileDataD::DType;
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(typename TileDataS::DType);
+    uint16_t repeatTimes = CeilDivision(srcValidCol, elementsPerRepeat);
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_align align_index2;
+        vector_s32 index2;
+        vci(index2, offset, INC_ORDER);
+        vector_s32 add_offset;
+        vbr(add_offset, 0x00000040);
+        sprclr(SPR_AR);
+        MaskReg preg;
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            uint32_t cols = (uint32_t)(srcValidCol);
+            typename TileDataS1::DType k_scalar = *(kvaluePtr + i);
+            for (uint16_t j = 0; j < repeatTimes; ++j) {
+                RegTensor<typename TileDataS::DType> score;
+                vlds(score, src0Ptr, (i * TileDataS::Cols + j * elementsPerRepeat), NORM);
+
+                preg = CreatePredicate<typename TileDataS::DType>(cols);
+
+                vector_bool pout_eq;
+                vector_s32 sqz_index_out;
+                vcmps_eq(pout_eq, (vector_u32)score, k_scalar, preg);
+                vsqz(sqz_index_out, index2, pout_eq, MODE_STORED);
+                vadd(index2, index2, add_offset, preg_b32, MODE_ZEROING);
+                vstur(align_index2, (vector_u32)sqz_index_out, (__ubuf__ uint32_t*)dstPtr, POST_UPDATE);
+            }
+            vstar(align_index2, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + TileDataD::Cols;
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_b16_gt(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+
+    unsigned dstStride = TileDataD::Cols;
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(typename TileDataD::DType);
+    uint16_t repeatTimes = CeilDivision(srcValidCol, elementsPerRepeat);
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_bool preg_b16 = pset_b16(PAT_ALL);
+        vector_s32 add_offset;
+        vector_align align_index;
+        vector_u32 mask_k;
+        vector_s32 index;
+
+        vci(index, offset, INC_ORDER);
+        vbr(add_offset, 0x00000040);
+        sprclr(SPR_AR);
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            typename TileDataS1::DType k_scalar = *(kvaluePtr + i);
+            float k_value_f32 = (float)k_scalar;
+            vbr(mask_k, k_value_f32);
+            for (uint16_t j = 0; j < repeatTimes; ++j) {
+                vector_u16 score;
+                vlds(score, (__ubuf__ uint16_t*)src0Ptr, (i * TileDataS::Cols + j * elementsPerRepeat), UNPK_B16);
+
+                vector_bool pout_ge;
+                vector_s32 sqz_index_out;
+                vcmp_gt(pout_ge, (vector_u32)score, mask_k, preg_b32);
+                vsqz(sqz_index_out, index, pout_ge, MODE_STORED);
+                vstur(align_index, (vector_u32)sqz_index_out, (__ubuf__ uint32_t*)dstPtr, POST_UPDATE);
+                vadd(index, index, add_offset, preg_b32, MODE_ZEROING);
+            }
+            vstar(align_index, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + dstStride;
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_b16_eq(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(typename TileDataD::DType);
+    uint16_t repeatTimes = CeilDivision(srcValidCol, elementsPerRepeat);
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_bool preg_b16 = pset_b16(PAT_ALL);
+        vector_align align_index;
+        vector_u32 mask_k;
+
+        vector_s32 index;
+        vci(index, offset, INC_ORDER);
+        vector_s32 idx_offset;
+        vbr(idx_offset, 0x00000040);
+        sprclr(SPR_AR);
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            typename TileDataS1::DType k_scalar = *(kvaluePtr + i);
+            float k_value_f32 = (float)k_scalar;
+            vbr(mask_k, k_value_f32);
+
+            for (uint16_t j = 0; j < repeatTimes; ++j) {
+                vector_u16 score;
+                vlds(score, (__ubuf__ uint16_t*)src0Ptr, (i * TileDataS::Cols + j * elementsPerRepeat), UNPK_B16);
+
+                vector_bool pout_eq;
+                vector_s32 sqz_index_out;
+                vcmp_eq(pout_eq, (vector_u32)score, mask_k, preg_b32);
+                vsqz(sqz_index_out, index, pout_eq, MODE_STORED);
+                vstur(align_index, (vector_u32)sqz_index_out, (__ubuf__ uint32_t*)dstPtr, POST_UPDATE);
+                vadd(index, index, idx_offset, preg_b32, MODE_ZEROING);
+            }
+            vstar(align_index, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + TileDataD::Cols;
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_half_gt(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(typename TileDataD::DType);
+    uint16_t repeatTimes = CeilDivision(srcValidCol, elementsPerRepeat);
+    unsigned srcRowStride = TileDataS::RowStride;
+    unsigned dstRowStride = TileDataD::RowStride;
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_bool preg_b16 = pset_b16(PAT_ALL);
+        vector_align align_index;
+        vector_f32 mask_k;
+        vector_s32 index;
+        vector_s16 mask_k_b16;
+
+        vci(index, offset, INC_ORDER);
+        vector_s32 index_offset;
+        vbr(index_offset, 0x00000040);
+        sprclr(SPR_AR);
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            typename TileDataS1::DType k_scalar = *(kvaluePtr + i);
+            vbr(mask_k_b16, k_scalar);
+            vcvt(mask_k, mask_k_b16, preg_b16, PART_EVEN);
+
+            for (uint16_t j = 0; j < repeatTimes; ++j) {
+                vector_f16 score;
+                vector_f32 score_f32;
+                vlds(score, (__ubuf__ half*)src0Ptr, (i * TileDataS::Cols + j * elementsPerRepeat), UNPK_B16);
+                vcvt(score_f32, score, preg_b16, PART_EVEN);
+
+                vector_bool pout_ge;
+                vector_s32 sqz_index_out;
+
+                vcmp_gt(pout_ge, score_f32, mask_k, preg_b32);
+                vsqz(sqz_index_out, index, pout_ge, MODE_STORED);
+
+                vstur(align_index, (vector_u32)sqz_index_out, (__ubuf__ uint32_t*)dstPtr, POST_UPDATE);
+                vadd(index, index, index_offset, preg_b32, MODE_ZEROING);
+            }
+            vstar(align_index, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + TileDataD::Cols;
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_half_eq(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+
+    unsigned TShape1 = TileDataD::Cols;
+    using T = typename TileDataD::DType;
+    constexpr unsigned elementsPerRepeat = CCE_VL / sizeof(typename TileDataD::DType);
+    uint16_t repeatTimes = CeilDivision(srcValidCol, elementsPerRepeat);
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_bool preg_b32_half = pset_b32(PAT_H);
+        vector_bool preg_b16 = pset_b16(PAT_ALL);
+        vector_s32 add_offset;
+        vector_align align_index;
+        vector_f32 mask_k;
+        vector_s16 mask_k_b16;
+
+        vector_s32 index;
+        vci(index, offset, INC_ORDER);
+        vbr(add_offset, 0x00000040);
+        sprclr(SPR_AR);
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            typename TileDataS1::DType k_scalar = *(kvaluePtr + i);
+            vbr(mask_k_b16, k_scalar);
+            vcvt(mask_k, mask_k_b16, preg_b16, PART_EVEN);
+
+            for (uint16_t j = 0; j < repeatTimes; ++j) {
+                vector_f16 score;
+                vlds(score, (__ubuf__ half*)src0Ptr, (i * TileDataS::Cols + j * elementsPerRepeat), UNPK_B16);
+                vector_f32 score_f32;
+                vcvt(score_f32, score, preg_b16, PART_EVEN);
+
+                vector_bool pout_eq;
+                vector_s32 sqz_index_out;
+
+                vcmp_eq(pout_eq, score_f32, mask_k, preg_b32);
+                vsqz(sqz_index_out, index, pout_eq, MODE_STORED);
+
+                vstur(align_index, (vector_u32)sqz_index_out, (__ubuf__ uint32_t*)dstPtr, POST_UPDATE);
+                vadd(index, index, add_offset, preg_b32, MODE_ZEROING);
+            }
+            vstar(align_index, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + TShape1;
+        }
+    }
+}
+
+PTO_INTERNAL void cmpGtSqzStore(
+    RegTensor<uint32_t> score_u32, vector_u32 mask_k, vector_bool preg_b32, vector_s32& index, vector_s32 add_offset,
+    vector_align& align_index, __ubuf__ uint32_t* dstPtr)
+{
+    vector_bool pout_ge;
+    vector_s32 sqz_index_out;
+    vcmp_gt(pout_ge, (vector_u32)score_u32, mask_k, preg_b32);
+    vsqz(sqz_index_out, index, pout_ge, MODE_STORED);
+    vstur(align_index, (vector_u32)sqz_index_out, dstPtr, POST_UPDATE);
+    vadd(index, index, add_offset, preg_b32, MODE_ZEROING);
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_b8_gt(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+
+    constexpr unsigned srcElementsPerRepeat = CCE_VL / sizeof(uint16_t);
+    uint16_t repeatTimes = CeilDivision(srcValidCol, srcElementsPerRepeat);
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_bool preg_b8 = pset_b8(PAT_ALL);
+        vector_s32 add_offset;
+        vector_align align_index;
+        vector_u32 mask_k;
+        vector_s32 index;
+
+        vci(index, offset, INC_ORDER);
+        vbr(add_offset, 0x00000040);
+        sprclr(SPR_AR);
+
+        RegTensor<uint8_t> v_zero;
+        vdup(v_zero, 0, preg_b8, MODE_ZEROING);
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            typename TileDataS1::DType k_scalar = *(kvaluePtr + i);
+            float k_value_f32 = (float)(int32_t)k_scalar;
+            vbr(mask_k, k_value_f32);
+            for (uint16_t j = 0; j < repeatTimes; ++j) {
+                RegTensor<uint8_t> v_input_0;
+                vlds(v_input_0, (__ubuf__ uint8_t*)src0Ptr, (i * TileDataS::Cols + j * srcElementsPerRepeat), UNPK_B8);
+
+                RegTensor<uint8_t> v_input_1, v_input_2;
+                vintlv(v_input_1, v_input_2, v_input_0, v_zero);
+
+                RegTensor<uint32_t> score_u32_0, score_u32_1;
+                vcvt(score_u32_0, v_input_1, preg_b8, PART_P0);
+                vcvt(score_u32_1, v_input_2, preg_b8, PART_P0);
+
+                cmpGtSqzStore(
+                    score_u32_0, mask_k, preg_b32, index, add_offset, align_index, (__ubuf__ uint32_t*)dstPtr);
+
+                cmpGtSqzStore(
+                    score_u32_1, mask_k, preg_b32, index, add_offset, align_index, (__ubuf__ uint32_t*)dstPtr);
+            }
+            vstar(align_index, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + TileDataD::Cols;
+        }
+    }
+}
+
+PTO_INTERNAL void cmpEqSqzStore(
+    RegTensor<uint32_t> score_u32, vector_u32 mask_k, vector_bool preg_b32, vector_s32& index, vector_s32 add_offset,
+    vector_align& align_index, __ubuf__ uint32_t* dstPtr)
+{
+    vector_bool pout_eq;
+    vector_s32 sqz_index_out;
+    vcmp_eq(pout_eq, (vector_u32)score_u32, mask_k, preg_b32);
+    vsqz(sqz_index_out, index, pout_eq, MODE_STORED);
+    vstur(align_index, (vector_u32)sqz_index_out, dstPtr, POST_UPDATE);
+    vadd(index, index, add_offset, preg_b32, MODE_ZEROING);
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+__tf__ AICORE void TGather_b8_eq(
+    typename TileDataD::TileDType __out__ dst, typename TileDataS::TileDType __in__ src0,
+    typename TileDataS1::TileDType __in__ k_value, uint32_t offset, typename TileDataC::TileDType __in__ cdst,
+    unsigned srcValidCol, unsigned srcValidRow, unsigned dstValidCol, unsigned dstValidRow)
+{
+    __ubuf__ typename TileDataD::DType* dstPtr = (__ubuf__ typename TileDataD::DType*)__cce_get_tile_ptr(dst);
+    __ubuf__ typename TileDataS::DType* src0Ptr = (__ubuf__ typename TileDataS::DType*)__cce_get_tile_ptr(src0);
+    __ubuf__ typename TileDataC::DType* cdstPtr = (__ubuf__ typename TileDataC::DType*)__cce_get_tile_ptr(cdst);
+    __ubuf__ typename TileDataS1::DType* kvaluePtr = (__ubuf__ typename TileDataS1::DType*)__cce_get_tile_ptr(k_value);
+
+    constexpr unsigned srcElementsPerRepeat = CCE_VL / sizeof(uint16_t);
+    uint16_t repeatTimes2 = CeilDivision(srcValidCol, srcElementsPerRepeat);
+
+    __VEC_SCOPE__
+    {
+        vector_bool preg_b8 = pset_b8(PAT_ALL);
+        vector_bool preg_b32 = pset_b32(PAT_ALL);
+        vector_s32 add_offset;
+        vector_align align_index;
+        vector_s32 index;
+        vector_u32 mask_k;
+
+        vci(index, offset, INC_ORDER);
+        vbr(add_offset, 0x00000040);
+        sprclr(SPR_AR);
+
+        RegTensor<uint8_t> v_zero;
+        vdup(v_zero, 0, preg_b8, MODE_ZEROING);
+
+        for (uint16_t i = 0; i < (uint16_t)srcValidRow; ++i) {
+            typename TileDataS1::DType k_scalar2 = *(kvaluePtr + i);
+            float k_value_f32 = (float)(int32_t)k_scalar2;
+            vbr(mask_k, k_value_f32);
+            for (uint16_t j = 0; j < repeatTimes2; ++j) {
+                RegTensor<uint8_t> v_input_0;
+                vlds(v_input_0, (__ubuf__ uint8_t*)src0Ptr, (i * TileDataS::Cols + j * srcElementsPerRepeat), UNPK_B8);
+
+                RegTensor<uint8_t> v_input1, v_input2;
+                vintlv(v_input1, v_input2, v_input_0, v_zero);
+
+                RegTensor<uint32_t> score_u32_0, score_u32_1;
+                vcvt(score_u32_0, v_input1, preg_b8, PART_P0);
+                vcvt(score_u32_1, v_input2, preg_b8, PART_P0);
+
+                cmpEqSqzStore(
+                    score_u32_0, mask_k, preg_b32, index, add_offset, align_index, (__ubuf__ uint32_t*)dstPtr);
+
+                cmpEqSqzStore(
+                    score_u32_1, mask_k, preg_b32, index, add_offset, align_index, (__ubuf__ uint32_t*)dstPtr);
+            }
+            vstar(align_index, (__ubuf__ uint32_t*)dstPtr);
+            sprsts(SPR_AR, cdstPtr, i * sizeof(typename TileDataC::DType));
+            sprclr(SPR_AR);
+            dstPtr = dstPtr + TileDataD::Cols;
+        }
+    }
+}
+
+template <typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, CmpMode cmpMode>
+AICORE void TGather_cmp(
+    typename TileDataD::TileDType dst, typename TileDataS::TileDType src0, typename TileDataC::TileDType cdst,
+    typename TileDataS1::TileDType k_value, uint32_t offset, unsigned srcValidCol, unsigned srcValidRow,
+    unsigned dstValidCol, unsigned dstValidRow)
+{
+    if constexpr (sizeof(typename TileDataS::DType) == 1 && cmpMode == CmpMode::GT) {
+        TGather_b8_gt<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    } else if constexpr (sizeof(typename TileDataS::DType) == 1 && cmpMode == CmpMode::EQ) {
+        TGather_b8_eq<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    } else if constexpr (std::is_same_v<typename TileDataS::DType, float> && cmpMode == CmpMode::GT) {
+        TGather_float_gt<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    } else if constexpr (std::is_same_v<typename TileDataS::DType, float> && cmpMode == CmpMode::EQ) {
+        TGather_float_eq<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    } else if constexpr (sizeof(typename TileDataS::DType) == 4 && cmpMode == CmpMode::GT) {
+        TGather_b32_gt<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    } else if constexpr (sizeof(typename TileDataS::DType) == 4 && cmpMode == CmpMode::EQ) {
+        TGather_b32_eq<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    } else if constexpr (std::is_same_v<typename TileDataS::DType, half> && cmpMode == CmpMode::GT) {
+        TGather_half_gt<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    } else if constexpr (std::is_same_v<typename TileDataS::DType, half> && cmpMode == CmpMode::EQ) {
+        TGather_half_eq<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    } else if constexpr (std::is_same_v<typename TileDataS::DType, int16_t> && cmpMode == CmpMode::GT) {
+        TGather_b16_gt<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    } else {
+        TGather_b16_eq<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+            dst, src0, k_value, offset, cdst, srcValidCol, srcValidRow, dstValidCol, dstValidRow);
+    }
+}
+
+template <
+    typename TileDataD, typename TileDataS, typename TileDataS1, typename TileDataC, typename TileDataTmp,
+    CmpMode cmpMode>
+PTO_INTERNAL void TGATHER_IMPL(
+    TileDataD& dst, TileDataS& src0, TileDataS1& k_value, TileDataC& cdst, TileDataTmp& tmp, uint32_t offset)
+{
+    static_assert(
+        std::is_same_v<typename TileDataD::DType, uint32_t> || std::is_same_v<typename TileDataD::DType, int32_t>,
+        "Fix: TGATHER Dst data type must be int32_t/uint32_t.");
+    static_assert(
+        std::is_same_v<typename TileDataS::DType, float> || std::is_same_v<typename TileDataS::DType, uint32_t> ||
+            std::is_same_v<typename TileDataS::DType, int32_t> || std::is_same_v<typename TileDataS::DType, uint16_t> ||
+            std::is_same_v<typename TileDataS::DType, int16_t> || std::is_same_v<typename TileDataS::DType, half> ||
+            std::is_same_v<typename TileDataS::DType, int8_t> || std::is_same_v<typename TileDataS::DType, uint8_t>,
+        "Fix: TGATHER Src data type must be int8_t/uint8_t/int16_t/uint16_t/int32_t/uint32_t/half/float.");
+    static_assert((cmpMode == CmpMode::GT || cmpMode == CmpMode::EQ), "Fix: TGATHER only support GT or EQ mode");
+    static_assert(
+        (std::is_same_v<typename TileDataS1::DType, uint16_t> || std::is_same_v<typename TileDataS1::DType, uint32_t>),
+        "Fix: TGATHER k_value tile must be uint16_t/uint32_t");
+
+    unsigned sValidCols = src0.GetValidCol();
+    unsigned sValidRows = src0.GetValidRow();
+    unsigned dValidCols = dst.GetValidCol();
+    unsigned dValidRows = dst.GetValidRow();
+
+    TGather_cmp<TileDataD, TileDataS, TileDataS1, TileDataC, cmpMode>(
+        dst.data(), src0.data(), cdst.data(), k_value.data(), offset, sValidCols, sValidRows, dValidCols, dValidRows);
+}
+
+} // namespace pto
+#endif

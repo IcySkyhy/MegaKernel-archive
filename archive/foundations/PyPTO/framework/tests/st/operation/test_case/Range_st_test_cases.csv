@@ -1,0 +1,11 @@
+case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,start,end,step,view_shape,tile_shape,func_id
+Range_redline_iter_3_1_int32_int32_int32_-204_807_247_dense,"[1],[1],[1]","int32,int32,int32","ND,ND,ND","[0,0],[0,0],[0,0]",[5],int32,ND,-204,807,247,[1],[8],0
+Range_redline_iter_3_1_int32_int32_fp32_-2000_3680_174_dense,"[1],[1],[1]","int32,int32,fp32","ND,ND,ND","[0,0],[0,0],[0,0]",[33],fp32,ND,-2000,3680,174.5386,[8],[32],0
+Range_redline_iter_3_1_fp32_int32_fp32_-1504_850_385_dense,"[1],[1],[1]","fp32,int32,fp32","ND,ND,ND","[0,0],[0,0],[0,0]",[7],fp32,ND,-1504.029164,850,385.6353,[1],[8],0
+Range_redline_iter_3_1_fp32_fp32_fp32_-1139_2344_146_dense,"[1],[1],[1]","fp32,fp32,fp32","ND,ND,ND","[0,0],[0,0],[0,0]",[24],fp32,ND,-1139.170945,2344.509421,146.1223,[12],[8],0
+Range_redline_iter_3_2_int32_int32_int32_-204_807_247_dense,"[1],[1],[1]","int32,int32,int32","ND,ND,ND","[0,0],[0,0],[0,0]",[42],int32,ND,1386,-956,-57,[21],[16],0
+Range_redline_iter_3_2_int32_fp32_int32_3312_87_-189_dense,"[1],[1],[1]","int32,fp32,int32","ND,ND,ND","[0,0],[0,0],[0,0]",[18],fp32,ND,3312,87.46105087,-189,[1],[8],0
+Range_redline_iter_3_2_fp32_fp32_fp32_2147483653_-1406_-399_dense,"[1],[1],[1]","fp32,fp32,fp32","ND,ND,ND","[0,0],[0,0],[0,0]",[5379233],fp32,ND,2147483653,-1406.38026,-399.218,[67978],[13656],0
+Range_redline_iter_3_2_fp32_fp32_int64_2147483655_-1280_-315_dense,"[1],[1],[1]","fp32,fp32,int64","ND,ND,ND","[0,0],[0,0],[0,0]",[6817413],fp32,ND,2147483655,-1280.11208,-315,[578340],[7312],0
+Range_redline_iter_3_1_int32_int32_fp16_-204_807_247_dense,"[1],[1],[1]","int32,int32,fp16","ND,ND,ND","[0,0],[0,0],[0,0]",[5],fp16,ND,-204,807,247,[1],[8],0
+Range_redline_iter_3_1_int32_int32_bf16_-2000_3680_174_dense,"[1],[1],[1]","int32,int32,bf16","ND,ND,ND","[0,0],[0,0],[0,0]",[33],bf16,ND,-2000,3680,174.5386,[8],[32],0

@@ -1,0 +1,16 @@
+pre-commit==4.5.1
+ruff==0.15.12
+clang-format==20.1.6
+build
+ninja
+expecttest
+pytest
+pytest-xdist
+pytest-timeout
+pytest-cov
+coverage[toml]
+setuptools==69.5.1
+setuptools_scm[toml]>=8
+wheel
+pyyaml
+twine

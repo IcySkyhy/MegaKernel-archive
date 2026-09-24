@@ -1,0 +1,509 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.1.0",
+  "meta": {
+    "title": "PyPTO Skill Reviewer Rules",
+    "description": "Single source of truth for all 52 review rules across 10 dimensions",
+    "sources": [
+      { "id": "A1", "title": "Anthropic Docs: Claude Code Skills", "url": "https://docs.anthropic.com/en/docs/claude-code/skills" },
+      { "id": "A2", "title": "Anthropic Docs: Subagents", "url": "https://docs.anthropic.com/en/docs/claude-code/subagents" },
+      { "id": "A3", "title": "Anthropic Blog: Complete Guide to Building Skills", "url": "https://claude.com/blog/complete-guide-to-building-skills-for-claude" },
+      { "id": "A4", "title": "Anthropic Docs: Claude Code Tutorials", "url": "https://docs.anthropic.com/en/docs/claude-code/tutorials" },
+      { "id": "A5", "title": "The Complete Guide to Building Skills (PDF)", "url": "https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf" }
+    ]
+  },
+  "dimensions": {
+    "D1": { "name": "Frontmatter 元数据", "weight": 25 },
+    "D2": { "name": "简洁性与效率", "weight": 15 },
+    "D3": { "name": "文件结构与导航", "weight": 5 },
+    "D4": { "name": "语言与表达", "weight": 10 },
+    "D5": { "name": "精确性与可执行性", "weight": 10 },
+    "D6": { "name": "工作流完整性", "weight": 10 },
+    "D7": { "name": "模式与最佳实践", "weight": 5 },
+    "D8": { "name": "反模式检测", "weight": 10 },
+    "D9": { "name": "脚本与代码质量", "weight": 5 },
+    "D10": { "name": "知识库一致性", "weight": 5 }
+  },
+  "severity_deductions": {
+    "S0": 20,
+    "S1": 10,
+    "S2": 5,
+    "S3": 2
+  },
+  "known_frontmatter_fields": [
+    "name", "description", "license", "compatibility", "metadata"
+  ],
+  "standard_subdirectories": [
+    "references", "scripts", "templates", "assets", "examples"
+  ],
+  "rules": [
+    {
+      "id": "R01",
+      "severity": "S0",
+      "type": "static",
+      "dimension": "D1",
+      "rule": "SKILL.md 必须以由 `---` 分隔的 frontmatter 块开头",
+      "source": ["A1"],
+      "check_strategy": "Parse first line for `---` and find matching closing `---` on its own line"
+    },
+    {
+      "id": "R02",
+      "severity": "S0",
+      "type": "static",
+      "dimension": "D1",
+      "rule": "`name` 字段必须存在、非空、为 kebab-case 且长度 ≤64 字符",
+      "source": ["A1"],
+      "check_strategy": "Parse frontmatter, validate with regex ^[a-z0-9]+(-[a-z0-9]+)*$, strip quotes, check length"
+    },
+    {
+      "id": "R03",
+      "severity": "S0",
+      "type": "static",
+      "dimension": "D1",
+      "rule": "`description` 字段必须存在且长度 ≥20 字符",
+      "source": ["A1"],
+      "check_strategy": "Extract description supporting multiline syntax (> and |), check length after trimming"
+    },
+    {
+      "id": "R04",
+      "severity": "S1",
+      "type": "static",
+      "dimension": "D1",
+      "rule": "`name` 值应与 skill 目录名一致",
+      "source": ["A1"],
+      "check_strategy": "Compare name field with basename(skill_dir), case-insensitive"
+    },
+    {
+      "id": "R05",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D1",
+      "rule": "`description` 不应超过 1024 字符",
+      "source": ["A1"],
+      "check_strategy": "Count characters after multiline merge"
+    },
+    {
+      "id": "R06",
+      "severity": "S3",
+      "type": "static",
+      "dimension": "D1",
+      "rule": "frontmatter 应仅包含已知字段（name, description, license, compatibility, metadata）",
+      "source": ["A1"],
+      "check_strategy": "Compare all keys against known_frontmatter_fields whitelist"
+    },
+    {
+      "id": "R07",
+      "severity": "S1",
+      "type": "semantic",
+      "dimension": "D1",
+      "rule": "`description` 必须同时回答“做什么”和“何时使用”",
+      "source": ["A1", "A3"],
+      "check_strategy": "Semantic analysis of description content for purpose and trigger conditions"
+    },
+    {
+      "id": "R08",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D1",
+      "rule": "`description` 应包含用户自然会说出的触发短语",
+      "source": ["A3", "A5"],
+      "check_strategy": "Check for natural language phrases that match user intent patterns"
+    },
+    {
+      "id": "R09",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D1",
+      "rule": "`description` 应以结果为导向，而不是功能罗列",
+      "source": ["A3"],
+      "check_strategy": "Evaluate whether description focuses on outcomes vs listing capabilities"
+    },
+    {
+      "id": "R10",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D1",
+      "rule": "若存在 `allowed-tools`，其格式必须正确；布尔字段必须为合法取值",
+      "source": ["A1"],
+      "check_strategy": "Check only when field exists: allowed-tools as comma-separated list, booleans as true/false"
+    },
+    {
+      "id": "R11",
+      "severity": "S1",
+      "type": "static",
+      "dimension": "D2",
+      "rule": "SKILL.md 不得超过 600 行",
+      "source": ["A1"],
+      "check_strategy": "Count total lines including frontmatter, threshold=600"
+    },
+    {
+      "id": "R12",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D2",
+      "rule": "SKILL.md 正文不得超过 6000 词",
+      "source": ["A3"],
+      "check_strategy": "Count words in body (after frontmatter) using whitespace splitting, threshold=6000"
+    },
+    {
+      "id": "R13",
+      "severity": "S1",
+      "type": "static",
+      "dimension": "D2",
+      "rule": "不得包含 TODO/FIXME/HACK 占位符（代码块内除外）",
+      "source": ["A3"],
+      "check_strategy": "Line-by-line scan tracking code block open/close state, skip content inside code blocks"
+    },
+    {
+      "id": "R14",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D2",
+      "rule": "各章节之间不得存在冗余重复内容",
+      "source": ["A3"],
+      "check_strategy": "Semantic analysis for repeated instructions or duplicated paragraphs across sections"
+    },
+    {
+      "id": "R15",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D3",
+      "rule": "skill 目录名必须为 kebab-case 且长度 ≤64 字符",
+      "source": ["A1"],
+      "check_strategy": "Validate basename with regex ^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    {
+      "id": "R16",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D3",
+      "rule": "大型内容块（>100 行参考材料）应放在 references/ 中",
+      "source": ["A1"],
+      "check_strategy": "Count non-code-block text segments length, flag if >100 lines of quoted/reference material inline"
+    },
+    {
+      "id": "R17",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D3",
+      "rule": "引用路径应使用相对路径",
+      "source": ["A1"],
+      "check_strategy": "Extract Markdown link targets, exclude URLs and code block content, check for absolute paths"
+    },
+    {
+      "id": "R18",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D3",
+      "rule": "被引用的文件路径必须真实存在",
+      "source": ["A1"],
+      "check_strategy": "Resolve relative paths from skill directory, exclude URLs and anchor-only refs (#)"
+    },
+    {
+      "id": "R19",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D3",
+      "rule": "SKILL.md 应说明每个被引用文件的用途和加载时机",
+      "source": ["A1", "A3"],
+      "check_strategy": "Check that each referenced file has accompanying context about why and when it is loaded"
+    },
+    {
+      "id": "R20",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D4",
+      "rule": "指令必须使用祈使语气，而非被动建议式表达",
+      "source": ["A3", "A5"],
+      "check_strategy": "Scan for passive voice patterns and convert to imperative form suggestions"
+    },
+    {
+      "id": "R21",
+      "severity": "S3",
+      "type": "semantic",
+      "dimension": "D4",
+      "rule": "避免使用含糊措辞（如 'consider'、'you might'、'perhaps'）",
+      "source": ["A3", "A5"],
+      "check_strategy": "Scan for hedging words and suggest definitive alternatives"
+    },
+    {
+      "id": "R22",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D4",
+      "rule": "代码块必须正确闭合",
+      "source": ["A1"],
+      "check_strategy": "Track ``` open/close pairs, support language-annotated fences"
+    },
+    {
+      "id": "R23",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D4",
+      "rule": "指令应解释“为什么”，而不仅是“做什么”",
+      "source": ["A3"],
+      "check_strategy": "Check for instructions that lack rationale or justification"
+    },
+    {
+      "id": "R24",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D5",
+      "rule": "每个步骤都应具备可验证的成功标准",
+      "source": ["A3", "A5"],
+      "check_strategy": "Check workflow steps for explicit success/completion indicators"
+    },
+    {
+      "id": "R25",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D5",
+      "rule": "命令和路径必须具体且可执行",
+      "source": ["A3"],
+      "check_strategy": "Check for placeholder commands or unresolved path variables"
+    },
+    {
+      "id": "R26",
+      "severity": "S1",
+      "type": "semantic",
+      "dimension": "D5",
+      "rule": "所有提及的操作都必须提供具体实现方法",
+      "source": ["A3"],
+      "check_strategy": "Identify action references without corresponding implementation details. Skill invocations (e.g., 'use xxx-skill to...') do not require parameter details as AI handles skill calls automatically."
+    },
+    {
+      "id": "R27",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D5",
+      "rule": "完成标准必须明确定义",
+      "source": ["A3", "A5"],
+      "check_strategy": "Check for explicit definition of what constitutes task completion"
+    },
+    {
+      "id": "R28",
+      "severity": "S1",
+      "type": "semantic",
+      "dimension": "D6",
+      "rule": "必须定义清晰的分步工作流",
+      "source": ["A1", "A3"],
+      "check_strategy": "Check for numbered/ordered steps or clear sequential workflow"
+    },
+    {
+      "id": "R29",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D6",
+      "rule": "工作流步骤之间必须顺畅衔接",
+      "source": ["A3"],
+      "check_strategy": "Check that outputs of one step connect to inputs of the next"
+    },
+    {
+      "id": "R30",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D6",
+      "rule": "必须包含错误处理或失败恢复说明",
+      "source": ["A3"],
+      "check_strategy": "Check for error/failure/fallback handling in workflow"
+    },
+    {
+      "id": "R31",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D6",
+      "rule": "条件分支必须清晰描述每条路径",
+      "source": ["A3"],
+      "check_strategy": "Check if/else/when conditions have all branches specified"
+    },
+    {
+      "id": "R32",
+      "severity": "S3",
+      "type": "semantic",
+      "dimension": "D7",
+      "rule": "应采用渐进披露模式（入口摘要 → 正文细节 → 参考深度）",
+      "source": ["A1", "A3"],
+      "check_strategy": "Check document structure for layered information architecture"
+    },
+    {
+      "id": "R33",
+      "severity": "S3",
+      "type": "semantic",
+      "dimension": "D7",
+      "rule": "验证逻辑应优先使用确定性脚本",
+      "source": ["A3"],
+      "check_strategy": "Check if verification tasks use scripts rather than relying solely on LLM judgment"
+    },
+    {
+      "id": "R34",
+      "severity": "S0",
+      "type": "static",
+      "dimension": "D8",
+      "rule": "不得嵌入密钥、凭据或敏感数据",
+      "source": ["A3"],
+      "check_strategy": "Scan with high-precision patterns: sk-[a-zA-Z0-9]{20,}, ghp_[a-zA-Z0-9]{36}, AKIA[0-9A-Z]{16}, -----BEGIN.*PRIVATE KEY-----, password\\s*[:=]\\s*['\"][^'\"]{8,}. Exclude code block examples"
+    },
+    {
+      "id": "R35",
+      "severity": "S1",
+      "type": "static",
+      "dimension": "D8",
+      "rule": "不得硬编码绝对路径（用户目录路径）",
+      "source": ["A3"],
+      "check_strategy": "Scan for /home/, /Users/, /root/ paths. Exclude /usr/bin/env, /dev/null, URLs, code block examples"
+    },
+    {
+      "id": "R36",
+      "severity": "S1",
+      "type": "static",
+      "dimension": "D8",
+      "rule": "不得在 SKILL.md 中内联大型数据块（>50 行）",
+      "source": ["A1", "A3"],
+      "check_strategy": "Check code block lengths, only flag JSON/YAML/XML/CSV blocks >50 lines"
+    },
+    {
+      "id": "R37",
+      "severity": "S1",
+      "type": "static",
+      "dimension": "D8",
+      "rule": "frontmatter 中不得包含 XML 标签",
+      "source": ["A1"],
+      "check_strategy": "Scan frontmatter region only for <[a-zA-Z] pattern"
+    },
+    {
+      "id": "R38",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D8",
+      "rule": "不得使用 Windows 风格路径",
+      "source": ["A3"],
+      "check_strategy": "Scan for C:\\ or D:\\ patterns, exclude code blocks"
+    },
+    {
+      "id": "R39",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D9",
+      "rule": "Python 脚本必须具有有效语法",
+      "source": ["A3"],
+      "check_strategy": "Use py_compile.compile() to check, report SyntaxError with line number"
+    },
+    {
+      "id": "R40",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D9",
+      "rule": "脚本必须包含 shebang 行",
+      "source": ["A3"],
+      "check_strategy": "Check first line for #! in .py/.sh/.bash files"
+    },
+    {
+      "id": "R41",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D9",
+      "rule": "脚本路径必须可移植",
+      "source": ["A3"],
+      "check_strategy": "Same absolute path scanning as R35 exclusion logic applied to script files"
+    },
+    {
+      "id": "R42",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D9",
+      "rule": "脚本应包含基础错误处理",
+      "source": ["A3"],
+      "check_strategy": "Check for try/except blocks, error reporting, and non-zero exit codes on failure"
+    },
+    {
+      "id": "R43",
+      "severity": "S3",
+      "type": "static",
+      "dimension": "D3",
+      "rule": "子目录结构应使用标准命名",
+      "source": ["A1"],
+      "check_strategy": "Compare subdirectory names against standard set: references, scripts, templates, assets, examples"
+    },
+    {
+      "id": "R44",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D1",
+      "rule": "`description` 不得包含如 `<xxx>` 的尖括号占位符",
+      "source": ["A1"],
+      "check_strategy": "Scan description field for <[a-zA-Z][^>]*> patterns that indicate unresolved placeholders"
+    },
+    {
+      "id": "R45",
+      "severity": "S2",
+      "type": "static",
+      "dimension": "D2",
+      "rule": "同一文件内不得有重复的章节标题",
+      "source": ["A3"],
+      "check_strategy": "Collect all Markdown headings (## and ###), flag exact duplicates with line numbers"
+    },
+    {
+      "id": "R46",
+      "severity": "S3",
+      "type": "semantic",
+      "dimension": "D4",
+      "rule": "代码块应带有语言标注，纯文本块除外",
+      "source": ["A3"],
+      "check_strategy": "For each code block, determine if content is code (Python, Bash, JSON, YAML, SQL, etc.) or plain text (URLs, simple examples, key-value pairs). Code blocks should have language identifier. Plain text blocks can skip."
+    },
+    {
+      "id": "R47",
+      "severity": "S2",
+      "type": "semantic",
+      "dimension": "D7",
+      "rule": "提供多个选项时，应给出默认推荐",
+      "source": ["A3"],
+      "check_strategy": "Identify sections offering choices/alternatives and check for a recommended default"
+    },
+    {
+      "id": "R48",
+      "severity": "S3",
+      "type": "semantic",
+      "dimension": "D1",
+      "rule": "description 应该 pushy 一些，避免在技能本应发挥作用的场景下却不使用",
+      "source": ["A3"],
+      "check_strategy": "Check if description expands trigger scope beyond explicit keywords. Look for phrases like 'whenever', 'including', 'or any related to'. PASS with expanding phrases, WARN with only explicit triggers."
+    },
+    {
+      "id": "R49",
+      "severity": "S1",
+      "type": "knowledge",
+      "dimension": "D10",
+      "rule": "skill 中的知识内容（references/ 和 SKILL.md）应与 docs/ 保持一致性，不得存在 P0 级别问题",
+      "source": ["A3"],
+      "check_strategy": "Check both references/ and knowledge-bearing content in SKILL.md (API/路径/术语). Verify no P0 issues found"
+    },
+    {
+      "id": "R50",
+      "severity": "S2",
+      "type": "knowledge",
+      "dimension": "D10",
+      "rule": "skill 中的路径应在正确的执行上下文中可访问",
+      "source": ["A1", "A3"],
+      "check_strategy": "Verify file paths in references/ and SKILL.md exist in correct execution context"
+    },
+    {
+      "id": "R51",
+      "severity": "S2",
+      "type": "knowledge",
+      "dimension": "D10",
+      "rule": "skill 中引用的 API 应存在于 docs/ 或官方示例中",
+      "source": ["A3"],
+      "check_strategy": "Search docs/ for APIs referenced in references/ and SKILL.md. Flag non-existent APIs"
+    },
+    {
+      "id": "R52",
+      "severity": "S2",
+      "type": "knowledge",
+      "dimension": "D10",
+      "rule": "skill 中的术语应与 docs/tutorials/appendix/glossary.md 保持一致",
+      "source": ["A3"],
+      "check_strategy": "Compare terminology in references/ and SKILL.md with docs glossary"
+    }
+  ]
+}

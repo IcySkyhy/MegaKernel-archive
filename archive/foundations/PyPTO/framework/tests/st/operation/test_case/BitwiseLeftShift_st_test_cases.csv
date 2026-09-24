@@ -1,0 +1,9 @@
+case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape
+BitwiseLeftShift_test_0,"[32, 32], [32, 32]","int16, int16","ND, ND","[-10, 10], [0, 7]","[32, 32]",int16,ND,"[10, 10]","[3, 3]"
+BitwiseLeftShift_test_1,"[16, 32, 32], [16, 32, 32]","int16, int16","ND, ND","[-10, 10], [0, 7]","[16, 32, 32]",int16,ND,"[4, 8, 8]","[2, 4, 4]"
+BitwiseLeftShift_test_2,"[16, 64, 32, 32], [16, 64, 32, 32]","int16, int16","ND, ND","[-10, 10], [0, 7]","[16, 64, 32, 32]",int16,ND,"[4, 16, 8, 8]","[2, 8, 4, 4]"
+BitwiseLeftShift_test_3,"[16, 64], [16, 1]","int16, int16","ND, ND","[-10, 10], [0, 7]","[16, 64]",int16,ND,"[4, 16]","[2, 8]"
+BitwiseLeftShift_test_4,"[16, 64, 32], [1, 64, 32]","int16, int16","ND, ND","[-10, 10], [0, 7]","[16, 64, 32]",int16,ND,"[4, 16, 8]","[2, 8, 4]"
+BitwiseLeftShift_test_5,"[16, 64, 32, 1], [16, 64, 32, 16]","int16, int16","ND, ND","[-10, 10], [0, 7]"," [16, 64, 32, 16]",int16,ND,"[4, 16, 8, 2]","[4, 16, 8, 2]"
+BitwiseLeftShift_test_6,"[32, 32], [32, 32]","int8, int8","ND, ND","[-10, 10], [0, 7]","[32, 32]",int8,ND,"[16, 16]","[16, 16]"
+BitwiseLeftShift_test_8,"[32, 32], [32, 32]","int32, int32","ND, ND","[-1000, 1000], [-1000, 1000]","[32, 32]",int32,ND,"[16, 16]","[16, 16]"

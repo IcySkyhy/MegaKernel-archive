@@ -1,0 +1,486 @@
+/**
+Copyright (c) 2025 Huawei Technologies Co., Ltd.
+This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+CANN Open Software License Agreement Version 2.0 (the "License").
+Please refer to the License for details. You may not use this file except in compliance with the License.
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+See LICENSE in the root of the software repository for the full text of the License.
+*/
+
+#ifndef PTO_COMM_ASYNC_SDMA_SDMA_WORKSPACE_MANAGER_HPP
+#define PTO_COMM_ASYNC_SDMA_SDMA_WORKSPACE_MANAGER_HPP
+
+// Host-only header — must NOT be included from device (bisheng -xcce) code.
+#if defined(__CCE_KT_TEST__)
+#error "sdma_workspace_manager.hpp is a host-only header and cannot be included in device code."
+#endif
+
+#include <cstdint>
+#include <cstddef>
+#include <iostream>
+#include <limits>
+#include <vector>
+
+#include <dlfcn.h>
+
+#include "acl/acl.h"
+#include "pto/comm/async_common/sdma_constants.hpp"
+
+#ifndef ACL_STREAM_DEVICE_USE_ONLY
+#define ACL_STREAM_DEVICE_USE_ONLY 0x00000020U
+#endif
+
+// aclnn tensor API (from aclnn/acl_meta.h, linked via libnnopbase).
+// Forward-declared to avoid pulling in aclnn headers that may conflict.
+struct aclTensor;
+struct aclOpExecutor;
+extern "C" aclTensor* aclCreateTensor(
+    const int64_t* viewDims, uint64_t viewDimsNum, aclDataType dataType, const int64_t* stride, int64_t offset,
+    aclFormat format, const int64_t* storageDims, uint64_t storageDimsNum, void* tensorData);
+extern "C" int32_t aclDestroyTensor(const aclTensor* tensor);
+
+namespace pto {
+namespace comm {
+namespace sdma {
+
+// ============================================================================
+// SdmaWorkspaceManager: Host-side SDMA workspace initialization.
+//
+// Mirrors the shmem SdmaTransportManager::OpenDevice() flow:
+//   1. Creates MC2 STARS streams via the runtime API
+//   2. Allocates device workspace memory
+//   3. Launches an AICPU STARS-query kernel to populate the workspace
+//      with hardware SQ addresses, register bases, and queue depths
+//
+// The resulting workspace pointer is passed to the AICORE kernel and
+// forwarded to comm::BuildAsyncSession() / BuildSdmaSession().
+// ============================================================================
+
+namespace detail {
+
+constexpr uint32_t kSdmaMaxChan = kSdmaMaxChannelGroups;
+
+struct HostStreamInfo {
+    uint64_t stream_;
+    uint64_t ctx_;
+    int32_t stream_id;
+    uint32_t sq_id;
+    uint32_t cq_id;
+    uint32_t logic_cq_id;
+    uint64_t cqe_addr;
+    int32_t dev_id;
+    uint8_t reserved[20];
+};
+static_assert(sizeof(HostStreamInfo) == 64, "HostStreamInfo must be 64 bytes");
+
+struct SdmaOpResInfo {
+    uint64_t size;
+    uint64_t streams_addr;
+    uint64_t workspace_addr;
+    uint8_t reserved[40];
+};
+static_assert(sizeof(SdmaOpResInfo) == 64, "SdmaOpResInfo must be 64 bytes");
+
+using RtStreamGetSqidFn = int32_t (*)(const void*, uint32_t*);
+using RtStreamGetCqidFn = int32_t (*)(const void*, uint32_t*, uint32_t*);
+using RtGetDeviceInfoFn = int32_t (*)(uint32_t, int32_t, int32_t, int64_t*);
+
+using AclnnStatus = int32_t;
+using AclnnGetWsSizeFn = AclnnStatus (*)(const ::aclTensor*, ::aclTensor*, uint64_t*, ::aclOpExecutor**);
+using AclnnExecFn = AclnnStatus (*)(void*, uint64_t, ::aclOpExecutor*, aclrtStream);
+
+} // namespace detail
+
+class SdmaWorkspaceManager {
+public:
+    SdmaWorkspaceManager() = default;
+    ~SdmaWorkspaceManager() { Finalize(); }
+
+    SdmaWorkspaceManager(const SdmaWorkspaceManager&) = delete;
+    SdmaWorkspaceManager& operator=(const SdmaWorkspaceManager&) = delete;
+
+    bool Init()
+    {
+        if (inited_)
+            return true;
+
+        if (!LoadDynamicSymbols())
+            return false;
+        if (!CreateStarsStreams(detail::kSdmaMaxChan))
+            return false;
+        if (!MallocWorkspace(kSdmaWorkspaceBytes))
+            return false;
+        if (!CopyOpResToDevice())
+            return false;
+        if (!LaunchAicpuKernel(reinterpret_cast<uint64_t>(opResDevicePtr_), opResInfo_.workspace_addr))
+            return false;
+
+        inited_ = true;
+        return true;
+    }
+
+    void Finalize()
+    {
+        if (streamsDevicePtr_) {
+            aclrtFree(streamsDevicePtr_);
+            streamsDevicePtr_ = nullptr;
+        }
+        if (opResDevicePtr_) {
+            aclrtFree(opResDevicePtr_);
+            opResDevicePtr_ = nullptr;
+        }
+        if (opResInfo_.workspace_addr) {
+            aclrtFree(reinterpret_cast<void*>(opResInfo_.workspace_addr));
+            opResInfo_.workspace_addr = 0;
+        }
+        for (auto& s : streams_) {
+            if (s.stream_) {
+                aclrtDestroyStream(reinterpret_cast<aclrtStream>(s.stream_));
+                s.stream_ = 0;
+            }
+        }
+        streams_.clear();
+        opResInfo_ = {};
+        CloseDynamicLibs();
+        inited_ = false;
+    }
+
+    void* GetWorkspaceAddr() const { return reinterpret_cast<void*>(opResInfo_.workspace_addr); }
+
+private:
+    bool inited_{false};
+    detail::SdmaOpResInfo opResInfo_{};
+    void* opResDevicePtr_{nullptr};
+    std::vector<detail::HostStreamInfo> streams_;
+    void* streamsDevicePtr_{nullptr};
+
+    void* rtHandle_{nullptr};
+    void* opapiHandle_{nullptr};
+
+    detail::RtStreamGetSqidFn pRtStreamGetSqid_{nullptr};
+    detail::RtStreamGetCqidFn pRtStreamGetCqid_{nullptr};
+    detail::RtGetDeviceInfoFn pRtGetDeviceInfo_{nullptr};
+    detail::AclnnGetWsSizeFn pAclnnGetWsSize_{nullptr};
+    detail::AclnnExecFn pAclnnExec_{nullptr};
+
+    bool LoadDynamicSymbols()
+    {
+        dlerror();
+
+        rtHandle_ = dlopen("libruntime.so", RTLD_NOW);
+        if (!rtHandle_) {
+            std::cerr << "[SDMA] dlopen libruntime.so failed: " << dlerror() << std::endl;
+            return false;
+        }
+
+        pRtStreamGetSqid_ = reinterpret_cast<detail::RtStreamGetSqidFn>(dlsym(rtHandle_, "rtStreamGetSqid"));
+        pRtStreamGetCqid_ = reinterpret_cast<detail::RtStreamGetCqidFn>(dlsym(rtHandle_, "rtStreamGetCqid"));
+        pRtGetDeviceInfo_ = reinterpret_cast<detail::RtGetDeviceInfoFn>(dlsym(rtHandle_, "rtGetDeviceInfo"));
+        if (!pRtStreamGetSqid_ || !pRtStreamGetCqid_ || !pRtGetDeviceInfo_) {
+            std::cerr << "[SDMA] Failed to resolve runtime symbols: " << dlerror() << std::endl;
+            return false;
+        }
+
+        opapiHandle_ = dlopen("libopapi.so", RTLD_NOW);
+        if (!opapiHandle_) {
+            std::cerr << "[SDMA] dlopen libopapi.so failed: " << dlerror() << std::endl;
+            return false;
+        }
+
+        pAclnnGetWsSize_ =
+            reinterpret_cast<detail::AclnnGetWsSizeFn>(dlsym(opapiHandle_, "aclnnShmemSdmaStarsQueryGetWorkspaceSize"));
+        pAclnnExec_ = reinterpret_cast<detail::AclnnExecFn>(dlsym(opapiHandle_, "aclnnShmemSdmaStarsQuery"));
+        if (!pAclnnGetWsSize_ || !pAclnnExec_) {
+            std::cerr << "[SDMA] Failed to resolve opapi symbols: " << dlerror() << std::endl;
+            return false;
+        }
+
+        return true;
+    }
+
+    void CloseDynamicLibs()
+    {
+        pRtStreamGetSqid_ = nullptr;
+        pRtStreamGetCqid_ = nullptr;
+        pRtGetDeviceInfo_ = nullptr;
+        pAclnnGetWsSize_ = nullptr;
+        pAclnnExec_ = nullptr;
+
+        if (opapiHandle_) {
+            dlclose(opapiHandle_);
+            opapiHandle_ = nullptr;
+        }
+        if (rtHandle_) {
+            dlclose(rtHandle_);
+            rtHandle_ = nullptr;
+        }
+    }
+
+    bool InitOneStarsStream(detail::HostStreamInfo& info, int32_t channelIdx, int32_t dieId)
+    {
+        info.stream_ = 0;
+
+        void* stream = nullptr;
+        if (aclrtCreateStreamWithConfig(reinterpret_cast<aclrtStream*>(&stream), 0, ACL_STREAM_DEVICE_USE_ONLY) != 0) {
+            std::cerr << "[SDMA] aclrtCreateStreamWithConfig channel " << channelIdx << " failed" << std::endl;
+            return false;
+        }
+        info.stream_ = reinterpret_cast<uint64_t>(stream);
+
+        int32_t streamId = 0;
+        if (aclrtStreamGetId(reinterpret_cast<aclrtStream>(stream), &streamId) != 0) {
+            std::cerr << "[SDMA] aclrtStreamGetId channel " << channelIdx << " failed" << std::endl;
+            return false;
+        }
+
+        uint32_t sqId = 0;
+        if (pRtStreamGetSqid_(stream, &sqId) != 0) {
+            std::cerr << "[SDMA] rtStreamGetSqid channel " << channelIdx << " failed" << std::endl;
+            return false;
+        }
+
+        uint32_t cqId = 0, logicCqId = 0;
+        if (pRtStreamGetCqid_(stream, &cqId, &logicCqId) != 0) {
+            std::cerr << "[SDMA] rtStreamGetCqid channel " << channelIdx << " failed" << std::endl;
+            return false;
+        }
+
+        void* ctx = nullptr;
+        if (aclrtGetCurrentContext(&ctx) != 0) {
+            std::cerr << "[SDMA] aclrtGetCurrentContext channel " << channelIdx << " failed" << std::endl;
+            return false;
+        }
+
+        info.ctx_ = reinterpret_cast<uint64_t>(ctx);
+        info.stream_id = streamId;
+        info.sq_id = sqId;
+        info.cq_id = cqId;
+        info.logic_cq_id = logicCqId;
+        info.dev_id = dieId;
+        return true;
+    }
+
+    bool CreateStarsStreams(int32_t channelNum)
+    {
+        int32_t deviceId = -1;
+        if (aclrtGetDevice(&deviceId) != 0) {
+            std::cerr << "[SDMA] aclrtGetDevice failed" << std::endl;
+            return false;
+        }
+
+        int64_t dieId = -1;
+        constexpr int32_t kInfoTypePhyDieId = 19;
+        if (pRtGetDeviceInfo_(static_cast<uint32_t>(deviceId), 0, kInfoTypePhyDieId, &dieId) != 0) {
+            std::cerr << "[SDMA] rtGetDeviceInfo (die_id) failed" << std::endl;
+            return false;
+        }
+
+        streams_.resize(channelNum);
+        for (int32_t i = 0; i < channelNum; ++i) {
+            if (!InitOneStarsStream(streams_[i], i, static_cast<int32_t>(dieId))) {
+                return false;
+            }
+        }
+
+        std::cerr << "[SDMA] Created " << channelNum << " STARS streams OK" << std::endl;
+        return true;
+    }
+
+    bool MallocWorkspace(size_t workspaceSize)
+    {
+        void* workspace = nullptr;
+        if (aclrtMalloc(&workspace, workspaceSize, ACL_MEM_MALLOC_HUGE_FIRST) != 0) {
+            std::cerr << "[SDMA] aclrtMalloc workspace failed" << std::endl;
+            return false;
+        }
+        if (aclrtMemset(workspace, workspaceSize, 0, workspaceSize) != 0) {
+            std::cerr << "[SDMA] aclrtMemset workspace failed" << std::endl;
+            aclrtFree(workspace);
+            return false;
+        }
+        opResInfo_.workspace_addr = reinterpret_cast<uint64_t>(workspace);
+        return true;
+    }
+
+    bool CopyOpResToDevice()
+    {
+        size_t streamsBytes = streams_.size() * sizeof(detail::HostStreamInfo);
+        if (aclrtMalloc(&streamsDevicePtr_, streamsBytes, ACL_MEM_MALLOC_HUGE_FIRST) != 0) {
+            std::cerr << "[SDMA] aclrtMalloc streams device failed" << std::endl;
+            return false;
+        }
+        if (aclrtMemcpy(streamsDevicePtr_, streamsBytes, streams_.data(), streamsBytes, ACL_MEMCPY_HOST_TO_DEVICE) !=
+            0) {
+            std::cerr << "[SDMA] CopyOpResToDevice streams memcpy failed" << std::endl;
+            return false;
+        }
+
+        opResInfo_.size = streams_.size();
+        opResInfo_.streams_addr = reinterpret_cast<uint64_t>(streamsDevicePtr_);
+
+        size_t opResSize = sizeof(opResInfo_);
+        if (aclrtMalloc(&opResDevicePtr_, opResSize, ACL_MEM_MALLOC_HUGE_FIRST) != 0) {
+            std::cerr << "[SDMA] aclrtMalloc opResDevice failed" << std::endl;
+            return false;
+        }
+        if (aclrtMemset(opResDevicePtr_, opResSize, 0, opResSize) != 0 ||
+            aclrtMemcpy(opResDevicePtr_, opResSize, &opResInfo_, opResSize, ACL_MEMCPY_HOST_TO_DEVICE) != 0) {
+            std::cerr << "[SDMA] CopyOpResToDevice opRes memset/memcpy failed" << std::endl;
+            return false;
+        }
+        return true;
+    }
+
+    struct TensorGuard {
+        void* deviceAddr{nullptr};
+        ::aclTensor* tensor{nullptr};
+        void Release()
+        {
+            if (tensor) {
+                ::aclDestroyTensor(tensor);
+                tensor = nullptr;
+            }
+            if (deviceAddr) {
+                aclrtFree(deviceAddr);
+                deviceAddr = nullptr;
+            }
+        }
+    };
+
+    bool CalculateElementCount(const std::vector<int64_t>& shape, uint64_t& elemCount)
+    {
+        if (shape.empty()) {
+            std::cerr << "[SDMA] CalculateElementCount empty shape" << std::endl;
+            return false;
+        }
+        elemCount = 1;
+        for (int64_t dim : shape) {
+            if (dim <= 0) {
+                std::cerr << "[SDMA] CalculateElementCount invalid dim: " << dim << std::endl;
+                return false;
+            }
+            const uint64_t uDim = static_cast<uint64_t>(dim);
+            if (elemCount > std::numeric_limits<uint64_t>::max() / uDim) {
+                std::cerr << "[SDMA] CalculateElementCount shape overflow" << std::endl;
+                return false;
+            }
+            elemCount *= uDim;
+        }
+        return true;
+    }
+
+    bool CreateAclTensor(const std::vector<uint64_t>& hostData, const std::vector<int64_t>& shape, TensorGuard& guard)
+    {
+        uint64_t elemCount = 0;
+        if (!CalculateElementCount(shape, elemCount)) {
+            return false;
+        }
+        if (elemCount != hostData.size()) {
+            std::cerr << "[SDMA] CreateAclTensor hostData size mismatch, elemCount=" << elemCount
+                      << ", hostData.size=" << hostData.size() << std::endl;
+            return false;
+        }
+        if (elemCount > std::numeric_limits<size_t>::max() / sizeof(uint64_t)) {
+            std::cerr << "[SDMA] CreateAclTensor totalBytes overflow" << std::endl;
+            return false;
+        }
+        size_t totalBytes = static_cast<size_t>(elemCount * sizeof(uint64_t));
+
+        if (aclrtMalloc(&guard.deviceAddr, totalBytes, ACL_MEM_MALLOC_HUGE_FIRST) != 0) {
+            std::cerr << "[SDMA] CreateAclTensor aclrtMalloc failed" << std::endl;
+            return false;
+        }
+        if (aclrtMemcpy(guard.deviceAddr, totalBytes, hostData.data(), totalBytes, ACL_MEMCPY_HOST_TO_DEVICE) != 0) {
+            std::cerr << "[SDMA] CreateAclTensor aclrtMemcpy failed" << std::endl;
+            guard.Release();
+            return false;
+        }
+
+        std::vector<int64_t> strides(shape.size(), 1);
+        for (int64_t i = static_cast<int64_t>(shape.size()) - 2; i >= 0; --i) {
+            strides[i] = shape[i + 1] * strides[i + 1];
+        }
+
+        guard.tensor = ::aclCreateTensor(
+            shape.data(), shape.size(), aclDataType::ACL_UINT64, strides.data(), 0, aclFormat::ACL_FORMAT_ND,
+            shape.data(), shape.size(), guard.deviceAddr);
+        if (!guard.tensor) {
+            std::cerr << "[SDMA] aclCreateTensor failed" << std::endl;
+            guard.Release();
+            return false;
+        }
+        return true;
+    }
+
+    bool ExecuteAicpuQuery(aclrtStream aicpuStream, uint64_t streamsAddr, uint64_t workspaceAddr)
+    {
+        TensorGuard inputGuard, outputGuard;
+        std::vector<int64_t> inShape = {2};
+        std::vector<int64_t> outShape = {1};
+        std::vector<uint64_t> inData = {streamsAddr, workspaceAddr};
+        std::vector<uint64_t> outData = {0};
+
+        if (!CreateAclTensor(inData, inShape, inputGuard))
+            return false;
+        if (!CreateAclTensor(outData, outShape, outputGuard))
+            return false;
+
+        uint64_t aclnnWsSize = 0;
+        aclOpExecutor* executor = nullptr;
+        if (pAclnnGetWsSize_(inputGuard.tensor, outputGuard.tensor, &aclnnWsSize, &executor) != 0) {
+            std::cerr << "[SDMA] aclnnShmemSdmaStarsQueryGetWorkspaceSize failed" << std::endl;
+            return false;
+        }
+
+        void* aclnnWs = nullptr;
+        if (aclnnWsSize > 0) {
+            if (aclrtMalloc(&aclnnWs, aclnnWsSize, ACL_MEM_MALLOC_HUGE_FIRST) != 0) {
+                std::cerr << "[SDMA] aclrtMalloc aclnn workspace failed" << std::endl;
+                return false;
+            }
+        }
+
+        bool ok = false;
+        if (pAclnnExec_(aclnnWs, aclnnWsSize, executor, aicpuStream) != 0) {
+            std::cerr << "[SDMA] aclnnShmemSdmaStarsQuery exec failed" << std::endl;
+        } else if (aclrtSynchronizeStream(aicpuStream) != 0) {
+            std::cerr << "[SDMA] aclrtSynchronizeStream (aicpu) failed" << std::endl;
+        } else {
+            ok = true;
+        }
+
+        if (aclnnWs)
+            aclrtFree(aclnnWs);
+        inputGuard.Release();
+        outputGuard.Release();
+        return ok;
+    }
+
+    bool LaunchAicpuKernel(uint64_t streamsAddr, uint64_t workspaceAddr)
+    {
+        aclrtStream aicpuStream = nullptr;
+        if (aclrtCreateStreamWithConfig(&aicpuStream, 0, ACL_STREAM_FAST_LAUNCH | ACL_STREAM_FAST_SYNC) != 0) {
+            std::cerr << "[SDMA] aclrtCreateStreamWithConfig (aicpu) failed" << std::endl;
+            return false;
+        }
+
+        aclrtStreamAttrValue value;
+        value.failureMode = 1;
+        aclrtSetStreamAttribute(aicpuStream, ACL_STREAM_ATTR_FAILURE_MODE, &value);
+
+        bool ok = ExecuteAicpuQuery(aicpuStream, streamsAddr, workspaceAddr);
+        aclrtDestroyStream(aicpuStream);
+
+        if (ok) {
+            std::cerr << "[SDMA] STARS query AICPU kernel completed OK" << std::endl;
+        }
+        return ok;
+    }
+};
+
+} // namespace sdma
+} // namespace comm
+} // namespace pto
+
+#endif // PTO_COMM_ASYNC_SDMA_SDMA_WORKSPACE_MANAGER_HPP

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>bin\</OutputPath>
+    <IsPackable>true</IsPackable>
+    <Nullable>disable</Nullable>
+    <Description>Model architecture implementations, multimodal encoders, and model execution helpers for TensorSharp.</Description>
+    <PackageTags>$(TensorSharpPackageTags);models;multimodal;architecture</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="InferenceWeb.Tests" />
+    <InternalsVisibleTo Include="QwenImageEditBench" />
+    <InternalsVisibleTo Include="CpuQuantBench" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TensorSharp.Core\TensorSharp.Core.csproj" />
+    <ProjectReference Include="..\TensorSharp.Runtime\TensorSharp.Runtime.csproj" />
+    <ProjectReference Include="..\TensorSharp.Backends.GGML\TensorSharp.Backends.GGML.csproj" />
+    <ProjectReference Include="..\TensorSharp.Backends.Cuda\TensorSharp.Backends.Cuda.csproj" />
+    <ProjectReference Include="..\TensorSharp.Backends.MLX\TensorSharp.Backends.MLX.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.14.0" />
+    <PackageReference Include="NLayer" Version="1.16.0" />
+    <PackageReference Include="NVorbis" Version="0.10.5" />
+    <PackageReference Include="OneWare.OpenCvSharp4.runtime.ubuntu.24.04-x64" Version="4.13.0.18" />
+    <PackageReference Include="OneWare.OpenCvSharp4.runtime.osx-arm64" Version="4.13.0.18" />
+    <PackageReference Include="OneWare.OpenCvSharp4.runtime.osx-x64" Version="4.13.0.18" />
+    <PackageReference Include="OneWare.OpenCvSharp4.runtime.win-x64" Version="4.13.0.18" />
+    <PackageReference Include="OpenCvSharp4" Version="4.13.0.20260330" />
+    <PackageReference Include="PdfPig" Version="0.1.8" />
+    <PackageReference Include="StbImageSharp" Version="2.30.15" />
+    <PackageReference Include="System.Numerics.Tensors" Version="10.0.7" />
+  </ItemGroup>
+</Project>

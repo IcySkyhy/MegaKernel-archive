@@ -1,0 +1,62 @@
+# -----------------------------------------------------------------------------------------------------------
+# Copyright (c) 2025 Huawei Technologies Co., Ltd.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+# cmake
+recursive-include cmake *.json
+recursive-include cmake *.py
+recursive-include cmake *.cmake
+recursive-include cmake *.cmake.in
+recursive-include cmake *.txt
+
+# framework
+include framework/CMakeLists.txt
+include framework/src/CMakeLists.txt
+recursive-include framework/include *.h
+recursive-include framework/src/utils *
+recursive-include framework/src/adapter *
+recursive-include framework/src/codegen *
+recursive-include framework/src/cost_model/simulation *
+recursive-include framework/src/cost_model/simulation_pv *
+include framework/src/cost_model/CMakeLists.txt
+recursive-include framework/src/interface *
+recursive-include framework/src/machine *
+recursive-include framework/src/passes *
+recursive-include framework/src/cann_host_runtime *
+recursive-include framework/src/platform *
+
+# python
+recursive-include python/pypto *.py
+recursive-include python/pypto *.pyi
+recursive-include python/pypto *.md
+recursive-include python/pypto_pro *.h
+recursive-include python/src *.cpp
+recursive-include python/src *.h
+include python/CMakeLists.txt
+include python/src/CMakeLists.txt
+include python/pypto/_which_cmake.py
+
+# others
+include build_ci.py
+include CMakeLists.txt
+include LICENSE
+include MANIFEST.in
+include pyproject.toml
+include README.md
+include setup.py
+include version.cmake
+include tools/profiling/draw_swim_lane.py
+include framework/src/cost_model/simulation/scripts/print_swim_lane.py
+include framework/src/cost_model/simulation/scripts/draw_comm_swim_lane_png.py
+include framework/src/cost_model/simulation/scripts/draw_pipe_swim_lane.py
+include tools/profiling/function_json_convert.py
+include tools/profiling/parse_pipe_time_trace.py
+include tools/scripts/machine_perf_trace.py
+include tools/scripts/extract_pass_log.py
+include tools/scripts/debug_aicore_error.py

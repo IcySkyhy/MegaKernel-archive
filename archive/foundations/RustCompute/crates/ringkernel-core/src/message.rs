@@ -1,0 +1,663 @@
+//! Message types and traits for kernel-to-kernel communication.
+//!
+//! This module defines the core message abstraction used for communication
+//! between GPU kernels and between host and device.
+
+use bytemuck::{Pod, Zeroable};
+use rkyv::{Archive, Deserialize, Serialize};
+use zerocopy::{AsBytes, FromBytes, FromZeroes};
+
+use crate::hlc::HlcTimestamp;
+use crate::k2k::audit_tag::AuditTag;
+use crate::k2k::tenant::TenantId;
+use crate::provenance::ProvenanceHeader;
+
+/// Unique message identifier.
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Hash,
+    Default,
+    AsBytes,
+    FromBytes,
+    FromZeroes,
+    Pod,
+    Zeroable,
+    Archive,
+    Serialize,
+    Deserialize,
+)]
+#[repr(C)]
+pub struct MessageId(pub u64);
+
+impl MessageId {
+    /// Create a new message ID.
+    pub const fn new(id: u64) -> Self {
+        Self(id)
+    }
+
+    /// Generate a new unique message ID.
+    pub fn generate() -> Self {
+        use std::sync::atomic::{AtomicU64, Ordering};
+        static COUNTER: AtomicU64 = AtomicU64::new(1);
+        Self(COUNTER.fetch_add(1, Ordering::Relaxed))
+    }
+
+    /// Get the inner value.
+    pub const fn inner(&self) -> u64 {
+        self.0
+    }
+}
+
+impl std::fmt::Display for MessageId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "msg:{:016x}", self.0)
+    }
+}
+
+/// Correlation ID for request-response patterns.
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Hash,
+    Default,
+    AsBytes,
+    FromBytes,
+    FromZeroes,
+    Pod,
+    Zeroable,
+    Archive,
+    Serialize,
+    Deserialize,
+)]
+#[repr(C)]
+pub struct CorrelationId(pub u64);
+
+impl CorrelationId {
+    /// Create a new correlation ID.
+    pub const fn new(id: u64) -> Self {
+        Self(id)
+    }
+
+    /// Generate a new unique correlation ID.
+    pub fn generate() -> Self {
+        Self(MessageId::generate().0)
+    }
+
+    /// No correlation (for fire-and-forget messages).
+    pub const fn none() -> Self {
+        Self(0)
+    }
+
+    /// Check if this is a valid correlation ID.
+    pub const fn is_some(&self) -> bool {
+        self.0 != 0
+    }
+}
+
+/// Message priority levels.
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Hash,
+    Default,
+    rkyv::Archive,
+    rkyv::Serialize,
+    rkyv::Deserialize,
+)]
+#[archive(compare(PartialEq))]
+#[repr(u8)]
+pub enum Priority {
+    /// Low priority (background tasks).
+    Low = 0,
+    /// Normal priority (default).
+    #[default]
+    Normal = 1,
+    /// High priority (important tasks).
+    High = 2,
+    /// Critical priority (system messages).
+    Critical = 3,
+}
+
+impl Priority {
+    /// Convert from u8.
+    pub const fn from_u8(value: u8) -> Self {
+        match value {
+            0 => Self::Low,
+            1 => Self::Normal,
+            2 => Self::High,
+            _ => Self::Critical,
+        }
+    }
+
+    /// Convert to u8.
+    pub const fn as_u8(self) -> u8 {
+        self as u8
+    }
+}
+
+/// Priority constants for convenient use.
+///
+/// # Example
+/// ```ignore
+/// use ringkernel::prelude::*;
+///
+/// let opts = LaunchOptions::default()
+///     .with_priority(priority::HIGH);
+/// ```
+pub mod priority {
+    /// Low priority (0) - background tasks.
+    pub const LOW: u8 = 0;
+    /// Normal priority (64) - default.
+    pub const NORMAL: u8 = 64;
+    /// High priority (128) - important tasks.
+    pub const HIGH: u8 = 128;
+    /// Critical priority (192) - system messages.
+    pub const CRITICAL: u8 = 192;
+}
+
+/// Fixed-size message header (256 bytes, cache-line aligned).
+///
+/// This header precedes the variable-length payload and provides
+/// all metadata needed for routing and processing.
+#[derive(Debug, Clone, Copy)]
+#[repr(C, align(64))]
+pub struct MessageHeader {
+    /// Magic number for validation (0xRINGKERN).
+    pub magic: u64,
+    /// Header version for compatibility.
+    pub version: u32,
+    /// Message flags.
+    pub flags: u32,
+    /// Unique message identifier.
+    pub message_id: MessageId,
+    /// Correlation ID for request-response.
+    pub correlation_id: CorrelationId,
+    /// Source kernel ID (0 for host).
+    pub source_kernel: u64,
+    /// Destination kernel ID (0 for host).
+    pub dest_kernel: u64,
+    /// Message type discriminator.
+    pub message_type: u64,
+    /// Priority level.
+    pub priority: u8,
+    /// Reserved for alignment.
+    pub _reserved1: [u8; 7],
+    /// Payload size in bytes.
+    pub payload_size: u64,
+    /// Checksum of payload (CRC32).
+    pub checksum: u32,
+    /// Reserved for alignment.
+    pub _reserved2: u32,
+    /// HLC timestamp when message was created.
+    pub timestamp: HlcTimestamp,
+    /// Deadline timestamp (0 = no deadline).
+    pub deadline: HlcTimestamp,
+    /// Reserved for future use (split for derive compatibility).
+    pub _reserved3a: [u8; 32],
+    /// Reserved for future use.
+    pub _reserved3b: [u8; 32],
+    /// Reserved for future use.
+    pub _reserved3c: [u8; 32],
+    /// Reserved for future use.
+    pub _reserved3d: [u8; 8],
+}
+
+impl MessageHeader {
+    /// Magic number for validation.
+    pub const MAGIC: u64 = 0x52494E474B45524E; // "RINGKERN"
+
+    /// Current header version.
+    pub const VERSION: u32 = 1;
+
+    /// Maximum payload size (64KB).
+    pub const MAX_PAYLOAD_SIZE: usize = 64 * 1024;
+
+    /// Convert header to bytes.
+    pub fn as_bytes(&self) -> &[u8] {
+        unsafe {
+            std::slice::from_raw_parts(
+                self as *const Self as *const u8,
+                std::mem::size_of::<Self>(),
+            )
+        }
+    }
+
+    /// Read header from bytes.
+    pub fn read_from(bytes: &[u8]) -> Option<Self> {
+        if bytes.len() < std::mem::size_of::<Self>() {
+            return None;
+        }
+        unsafe { Some(std::ptr::read_unaligned(bytes.as_ptr() as *const Self)) }
+    }
+
+    /// Create a new message header.
+    pub fn new(
+        message_type: u64,
+        source_kernel: u64,
+        dest_kernel: u64,
+        payload_size: usize,
+        timestamp: HlcTimestamp,
+    ) -> Self {
+        Self {
+            magic: Self::MAGIC,
+            version: Self::VERSION,
+            flags: 0,
+            message_id: MessageId::generate(),
+            correlation_id: CorrelationId::none(),
+            source_kernel,
+            dest_kernel,
+            message_type,
+            priority: Priority::Normal as u8,
+            _reserved1: [0; 7],
+            payload_size: payload_size as u64,
+            checksum: 0,
+            _reserved2: 0,
+            timestamp,
+            deadline: HlcTimestamp::zero(),
+            _reserved3a: [0; 32],
+            _reserved3b: [0; 32],
+            _reserved3c: [0; 32],
+            _reserved3d: [0; 8],
+        }
+    }
+
+    /// Validate the header.
+    pub fn validate(&self) -> bool {
+        self.magic == Self::MAGIC
+            && self.version <= Self::VERSION
+            && self.payload_size <= Self::MAX_PAYLOAD_SIZE as u64
+    }
+
+    /// Set correlation ID.
+    pub fn with_correlation(mut self, correlation_id: CorrelationId) -> Self {
+        self.correlation_id = correlation_id;
+        self
+    }
+
+    /// Set priority.
+    pub fn with_priority(mut self, priority: Priority) -> Self {
+        self.priority = priority as u8;
+        self
+    }
+
+    /// Set deadline.
+    pub fn with_deadline(mut self, deadline: HlcTimestamp) -> Self {
+        self.deadline = deadline;
+        self
+    }
+}
+
+impl Default for MessageHeader {
+    fn default() -> Self {
+        Self {
+            magic: Self::MAGIC,
+            version: Self::VERSION,
+            flags: 0,
+            message_id: MessageId::default(),
+            correlation_id: CorrelationId::none(),
+            source_kernel: 0,
+            dest_kernel: 0,
+            message_type: 0,
+            priority: Priority::Normal as u8,
+            _reserved1: [0; 7],
+            payload_size: 0,
+            checksum: 0,
+            _reserved2: 0,
+            timestamp: HlcTimestamp::zero(),
+            deadline: HlcTimestamp::zero(),
+            _reserved3a: [0; 32],
+            _reserved3b: [0; 32],
+            _reserved3c: [0; 32],
+            _reserved3d: [0; 8],
+        }
+    }
+}
+
+// Verify size at compile time
+const _: () = assert!(std::mem::size_of::<MessageHeader>() == 256);
+
+/// Trait for types that can be sent as kernel messages.
+///
+/// This trait is typically implemented via the `#[derive(RingMessage)]` macro.
+///
+/// # Example
+///
+/// ```ignore
+/// #[derive(RingMessage)]
+/// struct MyRequest {
+///     #[message(id)]
+///     id: MessageId,
+///     data: Vec<f32>,
+/// }
+/// ```
+pub trait RingMessage: Send + Sync + 'static {
+    /// Get the message type discriminator.
+    fn message_type() -> u64;
+
+    /// Get the message ID.
+    fn message_id(&self) -> MessageId;
+
+    /// Get the correlation ID (if any).
+    fn correlation_id(&self) -> CorrelationId {
+        CorrelationId::none()
+    }
+
+    /// Get the priority.
+    fn priority(&self) -> Priority {
+        Priority::Normal
+    }
+
+    /// Serialize the message to bytes.
+    fn serialize(&self) -> Vec<u8>;
+
+    /// Deserialize a message from bytes.
+    fn deserialize(bytes: &[u8]) -> crate::error::Result<Self>
+    where
+        Self: Sized;
+
+    /// Get the serialized size hint.
+    fn size_hint(&self) -> usize
+    where
+        Self: Sized,
+    {
+        std::mem::size_of::<Self>()
+    }
+}
+
+/// Envelope containing header and serialized payload.
+///
+/// The optional `provenance` slot carries PROV-O attribution metadata for
+/// NSAI reasoning chains (see [`crate::provenance`]). When `None`, the field
+/// is a single discriminant byte - zero cost for the common case. When
+/// populated, it adds a fixed-size [`ProvenanceHeader`] (see that type for
+/// size details).
+///
+/// The `tenant_id` field is the primary multi-tenant isolation key — it
+/// defaults to `0` (the unspecified tenant) which preserves single-tenant
+/// fast-path behavior and is free of HashMap lookups in the K2K broker.
+///
+/// The `audit_tag` field carries billable-unit attribution (org_id +
+/// engagement_id) and defaults to [`AuditTag::default`] (both fields zero).
+/// The K2K broker stamps the sender's tag into outgoing envelopes when the
+/// caller leaves this as the default.
+///
+/// Neither the `provenance`, `tenant_id`, nor `audit_tag` fields are included
+/// in the legacy [`MessageEnvelope::to_bytes`] / [`MessageEnvelope::from_bytes`]
+/// wire format, which is defined by `MessageHeader` + raw payload for
+/// backwards compatibility. These travel separately (e.g. as part of
+/// rkyv-encoded envelope transfer on GPU) or are reattached by the router.
+#[derive(Debug, Clone)]
+pub struct MessageEnvelope {
+    /// Message header.
+    pub header: MessageHeader,
+    /// Serialized payload.
+    pub payload: Vec<u8>,
+    /// Optional PROV-O attribution metadata. Defaults to `None`; only
+    /// populated when the message participates in an audited reasoning
+    /// chain (e.g. VynGraph NSAI pipelines).
+    pub provenance: Option<ProvenanceHeader>,
+    /// Multi-tenant isolation key. Defaults to `0` (unspecified tenant),
+    /// matching single-tenant deployments that never opt in to isolation.
+    pub tenant_id: TenantId,
+    /// Billable-unit attribution: `{org_id, engagement_id}`. Defaults to
+    /// `AuditTag::default()` (both fields zero). The K2K broker stamps the
+    /// sending kernel's tag into envelopes whose tag is still the default.
+    pub audit_tag: AuditTag,
+}
+
+impl MessageEnvelope {
+    /// Create a new envelope from a message.
+    pub fn new<M: RingMessage>(
+        message: &M,
+        source_kernel: u64,
+        dest_kernel: u64,
+        timestamp: HlcTimestamp,
+    ) -> Self {
+        let payload = message.serialize();
+        let header = MessageHeader::new(
+            M::message_type(),
+            source_kernel,
+            dest_kernel,
+            payload.len(),
+            timestamp,
+        )
+        .with_correlation(message.correlation_id())
+        .with_priority(message.priority());
+
+        Self {
+            header,
+            payload,
+            provenance: None,
+            tenant_id: 0,
+            audit_tag: AuditTag::unspecified(),
+        }
+    }
+
+    /// Get total size (header + payload).
+    pub fn total_size(&self) -> usize {
+        std::mem::size_of::<MessageHeader>() + self.payload.len()
+    }
+
+    /// Serialize to contiguous bytes.
+    ///
+    /// NOTE: the provenance metadata is intentionally *not* serialised here.
+    /// This method keeps the historical wire format unchanged; provenance is
+    /// transported out-of-band or via rkyv-encoded transfer.
+    pub fn to_bytes(&self) -> Vec<u8> {
+        let mut bytes = Vec::with_capacity(self.total_size());
+        bytes.extend_from_slice(self.header.as_bytes());
+        bytes.extend_from_slice(&self.payload);
+        bytes
+    }
+
+    /// Deserialize from bytes.
+    ///
+    /// Reconstructs an envelope with `provenance: None` and default
+    /// tenant/audit fields. Callers that need provenance must reattach it via
+    /// [`MessageEnvelope::with_provenance`]; callers that need tenant
+    /// attribution must stamp it via [`MessageEnvelope::with_tenant_id`] /
+    /// [`MessageEnvelope::with_audit_tag`].
+    pub fn from_bytes(bytes: &[u8]) -> crate::error::Result<Self> {
+        if bytes.len() < std::mem::size_of::<MessageHeader>() {
+            return Err(crate::error::RingKernelError::DeserializationError(
+                "buffer too small for header".to_string(),
+            ));
+        }
+
+        let header_bytes = &bytes[..std::mem::size_of::<MessageHeader>()];
+        let header = MessageHeader::read_from(header_bytes).ok_or_else(|| {
+            crate::error::RingKernelError::DeserializationError("invalid header".to_string())
+        })?;
+
+        if !header.validate() {
+            return Err(crate::error::RingKernelError::ValidationError(
+                "header validation failed".to_string(),
+            ));
+        }
+
+        let payload_start = std::mem::size_of::<MessageHeader>();
+        let payload_end = payload_start + header.payload_size as usize;
+
+        if bytes.len() < payload_end {
+            return Err(crate::error::RingKernelError::DeserializationError(
+                "buffer too small for payload".to_string(),
+            ));
+        }
+
+        let payload = bytes[payload_start..payload_end].to_vec();
+
+        Ok(Self {
+            header,
+            payload,
+            provenance: None,
+            tenant_id: 0,
+            audit_tag: AuditTag::unspecified(),
+        })
+    }
+
+    /// Create an empty envelope (for testing).
+    pub fn empty(source_kernel: u64, dest_kernel: u64, timestamp: HlcTimestamp) -> Self {
+        let header = MessageHeader::new(0, source_kernel, dest_kernel, 0, timestamp);
+        Self {
+            header,
+            payload: Vec::new(),
+            provenance: None,
+            tenant_id: 0,
+            audit_tag: AuditTag::unspecified(),
+        }
+    }
+
+    /// Attach a PROV-O provenance header (builder-style).
+    pub fn with_provenance(mut self, provenance: ProvenanceHeader) -> Self {
+        self.provenance = Some(provenance);
+        self
+    }
+
+    /// Strip provenance (builder-style). Useful when routing a message into
+    /// an untrusted tenant boundary where attribution must not leak.
+    pub fn without_provenance(mut self) -> Self {
+        self.provenance = None;
+        self
+    }
+
+    /// Stamp the envelope with a tenant ID (builder-style).
+    ///
+    /// In the two-tier tenancy model the tenant ID is the primary isolation
+    /// key; the K2K broker uses it to route the message into the correct
+    /// per-tenant sub-broker. Defaults to `0` (unspecified tenant).
+    #[inline]
+    pub fn with_tenant_id(mut self, tenant_id: TenantId) -> Self {
+        self.tenant_id = tenant_id;
+        self
+    }
+
+    /// Attach an audit tag (builder-style).
+    ///
+    /// The audit tag carries billable-unit attribution (`org_id +
+    /// engagement_id`). The K2K broker preserves this tag across delivery
+    /// so downstream cost accounting can attribute GPU-seconds back to the
+    /// specific engagement.
+    #[inline]
+    pub fn with_audit_tag(mut self, audit_tag: AuditTag) -> Self {
+        self.audit_tag = audit_tag;
+        self
+    }
+}
+
+impl Default for MessageEnvelope {
+    fn default() -> Self {
+        Self {
+            header: MessageHeader::default(),
+            payload: Vec::new(),
+            provenance: None,
+            tenant_id: 0,
+            audit_tag: AuditTag::unspecified(),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_message_id_generation() {
+        let id1 = MessageId::generate();
+        let id2 = MessageId::generate();
+        assert_ne!(id1, id2);
+    }
+
+    #[test]
+    fn test_header_validation() {
+        let header = MessageHeader::new(1, 0, 1, 100, HlcTimestamp::zero());
+        assert!(header.validate());
+
+        let mut invalid = header;
+        invalid.magic = 0;
+        assert!(!invalid.validate());
+    }
+
+    #[test]
+    fn test_header_size() {
+        assert_eq!(std::mem::size_of::<MessageHeader>(), 256);
+    }
+
+    #[test]
+    fn test_priority_conversion() {
+        assert_eq!(Priority::from_u8(0), Priority::Low);
+        assert_eq!(Priority::from_u8(1), Priority::Normal);
+        assert_eq!(Priority::from_u8(2), Priority::High);
+        assert_eq!(Priority::from_u8(3), Priority::Critical);
+        assert_eq!(Priority::from_u8(255), Priority::Critical);
+    }
+
+    #[test]
+    fn test_envelope_roundtrip() {
+        let header = MessageHeader::new(42, 0, 1, 8, HlcTimestamp::now(1));
+        let envelope = MessageEnvelope {
+            header,
+            payload: vec![1, 2, 3, 4, 5, 6, 7, 8],
+            provenance: None,
+            tenant_id: 0,
+            audit_tag: AuditTag::unspecified(),
+        };
+
+        let bytes = envelope.to_bytes();
+        let restored = MessageEnvelope::from_bytes(&bytes).unwrap();
+
+        assert_eq!(envelope.header.message_type, restored.header.message_type);
+        assert_eq!(envelope.payload, restored.payload);
+        // Provenance/tenant fields are intentionally not round-tripped through
+        // the legacy wire format; restored envelopes carry defaults until
+        // reattached.
+        assert!(restored.provenance.is_none());
+        assert_eq!(restored.tenant_id, 0);
+        assert!(restored.audit_tag.is_unspecified());
+    }
+
+    #[test]
+    fn test_envelope_with_tenant_and_audit_tag() {
+        let envelope = MessageEnvelope::empty(0, 1, HlcTimestamp::zero());
+        assert_eq!(envelope.tenant_id, 0);
+        assert!(envelope.audit_tag.is_unspecified());
+
+        let tagged = envelope
+            .with_tenant_id(42)
+            .with_audit_tag(AuditTag::new(99, 7));
+        assert_eq!(tagged.tenant_id, 42);
+        assert_eq!(tagged.audit_tag, AuditTag::new(99, 7));
+    }
+
+    #[test]
+    fn test_envelope_with_provenance() {
+        use crate::provenance::{ProvNodeType, ProvRelationKind, ProvenanceBuilder};
+
+        let hdr = ProvenanceBuilder::new(ProvNodeType::Entity, 0x42)
+            .with_relation(ProvRelationKind::WasAttributedTo, 0x7)
+            .build()
+            .unwrap();
+
+        let envelope = MessageEnvelope::empty(0, 1, HlcTimestamp::now(1)).with_provenance(hdr);
+        assert!(envelope.provenance.is_some());
+        assert_eq!(envelope.provenance.unwrap().node_id, 0x42);
+
+        let stripped = envelope.without_provenance();
+        assert!(stripped.provenance.is_none());
+    }
+
+    #[test]
+    fn test_envelope_default_has_no_provenance() {
+        let envelope = MessageEnvelope::empty(0, 1, HlcTimestamp::zero());
+        assert!(envelope.provenance.is_none());
+    }
+}

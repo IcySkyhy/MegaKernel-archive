@@ -1,0 +1,714 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Range_redline_iter_3_1_int32_int32_int32_-204_807_247_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1
+            ],
+            "tile_shape": [
+                8
+            ],
+            "params": {
+                "start": -204.0,
+                "end": 807.0,
+                "step": 247.0,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "Range_redline_iter_3_1_int32_int32_fp32_-2000_3680_174_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8
+            ],
+            "tile_shape": [
+                32
+            ],
+            "params": {
+                "start": -2000.0,
+                "end": 3680.0,
+                "step": 174.5386,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "Range_redline_iter_3_1_fp32_int32_fp32_-1504_850_385_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        7
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1
+            ],
+            "tile_shape": [
+                8
+            ],
+            "params": {
+                "start": -1504.029164,
+                "end": 850.0,
+                "step": 385.6353,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "Range_redline_iter_3_1_fp32_fp32_fp32_-1139_2344_146_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        24
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                12
+            ],
+            "tile_shape": [
+                8
+            ],
+            "params": {
+                "start": -1139.170945,
+                "end": 2344.509421,
+                "step": 146.1223,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "Range_redline_iter_3_2_int32_int32_int32_-204_807_247_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        42
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                21
+            ],
+            "tile_shape": [
+                16
+            ],
+            "params": {
+                "start": 1386.0,
+                "end": -956.0,
+                "step": -57.0,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "Range_redline_iter_3_2_int32_fp32_int32_3312_87_-189_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        18
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1
+            ],
+            "tile_shape": [
+                8
+            ],
+            "params": {
+                "start": 3312.0,
+                "end": 87.46105087,
+                "step": -189.0,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "Range_redline_iter_3_2_fp32_fp32_fp32_2147483653_-1406_-399_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5379233
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                67978
+            ],
+            "tile_shape": [
+                13656
+            ],
+            "params": {
+                "start": 2147483653.0,
+                "end": -1406.38026,
+                "step": -399.218,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "Range_redline_iter_3_2_fp32_fp32_int64_2147483655_-1280_-315_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        6817413
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                578340
+            ],
+            "tile_shape": [
+                7312
+            ],
+            "params": {
+                "start": 2147483655.0,
+                "end": -1280.11208,
+                "step": -315.0,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "Range_redline_iter_3_1_int32_int32_fp16_-204_807_247_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1
+            ],
+            "tile_shape": [
+                8
+            ],
+            "params": {
+                "start": -204.0,
+                "end": 807.0,
+                "step": 247.0,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "Range_redline_iter_3_1_int32_int32_bf16_-2000_3680_174_dense",
+            "operation": "Range",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                },
+                {
+                    "name": "input2",
+                    "shape": [
+                        1
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 0
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        33
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8
+            ],
+            "tile_shape": [
+                32
+            ],
+            "params": {
+                "start": -2000.0,
+                "end": 3680.0,
+                "step": 174.5386,
+                "on_board": true,
+                "func_id": 0
+            },
+            "index": 9
+        }
+    ]
+}

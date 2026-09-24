@@ -1,0 +1,4 @@
+case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,scalar,scalar_type
+CeilDivs_test_1,"[64, 128]",int32,ND,"[-10, 10]","[64, 128]",int32,ND,"[7, 43]","[192, 120]",1,int32
+CeilDivs_test_2,"[16, 128, 64]",int32,ND,"[-10, 10]","[16, 128, 64]",int32,ND,"[3, 4, 8]","[5, 142, 8]",10,int32
+CeilDivs_test_3,"[64, 1024, 16, 128]",int32,ND,"[-100, 100]","[64, 1024, 16, 128]",int32,ND,"[25, 477, 6, 7]","[16, 1, 169, 8]",3,int32

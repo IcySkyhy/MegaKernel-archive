@@ -1,0 +1,993 @@
+"""Streaming-MoE kernel Y (CuTeDSL, SM90, pool layout — fused scatter).
+
+Forward kernel Y of the streaming pipeline:
+  * Persistent CTAs pull tiles via the streaming scheduler's linear-claim
+    + warp-cooperative expert lookup. Kernel A retires before kernel Y
+    starts (same compute stream, FIFO-ordered), so the per-tile ready spin
+    is driven by ``pool_arrival_count`` / ``pool_arrival_target`` — the same
+    tensors kernel A already waited on. By the time Y runs every tile's
+    count == target, so the spin terminates immediately. No A→Y per-tile
+    signal is needed.
+  * For each claimed tile_id, the streaming scheduler derives `expert_id`
+    from a warp-cooperative ballot over `expert_pool_block_offset` and
+    computes `pid_m = tile_id - expert_pool_block_offset[expert_id]`.
+  * Standard varlen_m strided TMA load of
+    `postact_a[tile_id * tile_M : ..., :]` (the row offset
+    `cu_seqlens_m[expert_id] + pid_m * tile_m` lands at the right pool-major
+    row by construction).
+  * GEMM against `W2[expert_id]`, in-register weight multiply (broadcast along
+    N via the standard ColVecLoad path with `cu_seqlens_m`-aware varlen_m),
+    R2S into a kernel-Y-owned bf16 SMEM staging buffer, then per-warp
+    coalesced atomic-scatter from SMEM into `o[recv_token, :]` via packed
+    `red.global.add.bf16x2`.
+  * On per-tile end, lane 0 of each warp atomicSubs `k_local_remaining[r]`
+    for its rows; on hit-zero (the recv-token's last contribution landed),
+    release-stores `y_done_per_token[r] = combine_seq` so the combine
+    sender (on its own stream) can pick up `o[r]` for RDMA push.
+
+The atomic-scatter staging SMEM is owned by `AtomicScatterStore` (an EpiOp,
+declared here) — the framework's `sD` stays `None` (because `mD = None`).
+Routing the staging through SMEM gives every warp warp-uniform row selection,
+so the per-warp `red.global.add.bf16x2` is issued from convergent threads (no
+within-warp divergence around `red` — divergent branches around the atomic
+drop contributions non-deterministically). Owning the SMEM via the standard
+EpiOp `smem_struct_field` mechanism (mirrors `TileStore`, `RowVecLoad`,
+`ColVecLoad`, `ColVecReduce`) keeps the framework's `sD: Optional[cute.Tensor]`
+plumbing untouched.
+
+Streaming machinery is shared with kernel A:
+  * `StreamingTileScheduler` for linear-claim + per-tile count-vs-target spin.
+    Kernel Y plumbs the same ``pool_arrival_count`` / ``pool_arrival_target``
+    pair kernel A used; the spin terminates immediately because A has already
+    waited on it and the dispatch producers have hit target.
+  * Pool-layout `StreamingHandle` carries: `pool_recv_token`, `pool_topk_weight`,
+    `k_local_remaining`, `y_done_per_token`, `o`,
+    `expert_pool_block_offset` from `Buffer.dispatch`.
+
+Padding rows (pool_recv_token[s] == -1) and other masked lanes: PTX-level
+`@%p red.global.add.noftz.v4.bf16x2` predication skips the atomic at issue
+time, so caller allocates `o` with the natural shape `(T_recv, H)` — no
+trash row needed.
+"""
+
+from dataclasses import MISSING
+from typing import NamedTuple, Optional, Type
+
+import cuda.bindings.driver as cuda
+import cutlass
+import cutlass.cute as cute
+import quack.copy_utils as copy_utils
+import quack.utils as utils
+import torch
+from cutlass import Int32, Int64, const_expr
+from quack.cache import jit_cache
+from stream_ep.stream_moe import compile_config
+from quack.compile_utils import make_fake_tensor as fake_tensor
+from quack.cute_dsl_utils import (
+    ParamsBase,
+    get_device_capacity,
+    get_max_active_clusters,
+    mlir_namedtuple,
+    torch2cute_dtype_map,
+)
+from quack.epilogue.ops import ColVecLoad, EpiOp, EpiSmemBytes
+from quack.rounding import RoundingMode
+from quack.gemm_tvm_ffi_utils import compile_gemm_kernel
+from quack.varlen_utils import VarlenArguments
+
+from stream_ep.stream_moe.ptx_helpers import (
+    red_add_bf16x2_v4_pred,
+    st_release_gpu_global,
+    threadfence_gpu,
+)
+from stream_ep.stream_moe.streaming_gemm_base import (
+    StreamingGemmBase,
+    StreamingTileSchedulerOptions,
+)
+
+
+# ---------------------------------------------------------------------------
+# Bundled scatter param tensors. One field on EpilogueArguments carries all of
+# them so the auto-generated EpilogueParams stays clean.
+# ---------------------------------------------------------------------------
+@mlir_namedtuple
+class ScatterParams(NamedTuple):
+    mO: cute.Tensor  # [T_recv, H]  bf16  — atomic-scatter destination
+    pool_recv_token: cute.Tensor  # [TK_padded]        int32 — slot → r (-1 = padding)
+    k_local_remaining: cute.Tensor  # [T_recv]           int32 — kernel Y atomicSubs
+    y_done_per_token: (
+        cute.Tensor
+    )  # [T_recv]           int64 — Y → combine release stamp
+    tile_n_stripes_done: (
+        cute.Tensor
+    )  # [total_tiles]      int32 — per-tile_id N-stripe arrival counter
+    expert_pool_block_offset: (
+        cute.Tensor
+    )  # [E_local + 1]      int32 — pool-block prefix-sum (for tile_id reconstruct)
+    T_recv: Int32  # row count == mO.shape[0]
+    combine_seq: Int64  # value to release-store on hit-zero
+    num_pid_n: Int32  # N-stripe count per tile (= ceil(H / tile_N))
+
+
+# ---------------------------------------------------------------------------
+# AtomicScatterStore: an EpiOp that owns the bf16 staging SMEM + the per-tile
+# pool_recv_token SMEM area. Mirrors TileStore's smem_struct_field pattern but
+# nests two struct fields (staging + recv_token) into one sub-struct.
+# ---------------------------------------------------------------------------
+class AtomicScatterStore(EpiOp):
+    """Per-tile bf16 staging buffer + per-warp coalesced atomic-scatter into o[r, :].
+
+    Allocates two SMEM regions in one struct field `s_<name>`:
+      - `staging`: bf16 tensor of shape `(epi_tile_M, epi_tile_N, epi_stage)`,
+        a PLAIN row-major layout with the N stride padded to `SMEM_N_PAD`
+        bf16/row (NOT the WGMMA/TMA `Swizzle<2,4,3>` atom). The staging has no
+        TMA/WGMMA consumer (`mD=None`), so the swizzle was dead weight that
+        only induced a 3.6-way shared-LOAD bank conflict on the scatter read;
+        the un-swizzled + N-padded layout de-conflicts it. See `SMEM_N_PAD`.
+      - `recv_token`: int32 tensor of shape `(tile_M,)` — pool_recv_token slice
+        for this tile. Loaded once per tile in `begin()` from gmem.
+
+    The actual scatter logic lives in `StreamingScatterBase._scatter_store`
+    (called from each leaf's `epi_visit_subtile`). This op handles SMEM
+    allocation, per-tile recv_token load, and the per-tile end bookkeeping.
+    """
+
+    # Per-row N padding (in bf16 elements) for the un-swizzled staging tile.
+    # The dominant cost of the scatter epilogue was a 3.6-way shared-LOAD bank
+    # conflict on the staging SMEM. Root cause: the staging carried the
+    # WGMMA/TMA ``Swizzle<2,4,3>`` 64-byte swizzle, but the scatter read is a
+    # manual scalar/v4 bf16 gather the swizzle was never designed to
+    # de-conflict — and the staging has NO TMA/WGMMA consumer (``mD=None``), so
+    # the swizzle is dead weight. We replace it with a plain row-major layout
+    # whose N stride is padded from 32 to 34 bf16/row.
+    #
+    # Why 34 (and not 33): the bank-conflict fix only needs the row stride's
+    # 4-byte-WORD count to be coprime with the 16 shared-memory banks (so
+    # consecutive rows rotate onto different bank sets instead of aliasing).
+    # 34 bf16 = 68 bytes = 17 4-byte words, and gcd(17, 16) = 1 → rows rotate.
+    # 34 (even) ALSO keeps every row's base 4-byte aligned, which a 33 (odd)
+    # pad does not: the R2S store and the bf16x2-pair `recast_tensor(row,
+    # Int32)` read both require 32-bit alignment, and odd-`m` rows under a 33
+    # pad land at a 2-byte-only-aligned offset (`m*66` bytes). 34 satisfies
+    # both the de-conflict and the alignment constraint. The pad costs
+    # +512 bytes/stage; total epilogue SMEM stays within the 1-block/SM budget.
+    SMEM_N_PAD = 34
+
+    def __init__(self, name: str = "scatter"):
+        super().__init__(name)
+
+    # --- Param plumbing -----------------------------------------------------
+    def _layout_key(self):
+        return f"{self.name}_smem_layout_staged"
+
+    def _make_staging_layout(self, gemm):
+        """Plain (un-swizzled) row-major staging layout
+        ``(epi_tile_M, epi_tile_N, epi_stage)`` with the N stride padded to
+        ``SMEM_N_PAD`` bf16/row. Replaces the dead ``Swizzle<2,4,3>`` atom —
+        see ``SMEM_N_PAD`` for why padding (not swizzle) de-conflicts the
+        scalar scatter read."""
+        epi_tile_M = gemm.epi_tile[0]
+        epi_tile_N = gemm.epi_tile[1]
+        epi_stage = gemm.epi_stage
+        pad = self.SMEM_N_PAD
+        return cute.make_layout(
+            (epi_tile_M, epi_tile_N, epi_stage),
+            stride=(pad, 1, epi_tile_M * pad),
+        )
+
+    def param_fields(self):
+        return [(self.name, object, MISSING), (self._layout_key(), object, MISSING)]
+
+    def to_params(self, gemm, args):
+        scatter = getattr(args, self.name)
+        smem_layout_staged = self._make_staging_layout(gemm)
+        return {self.name: scatter, self._layout_key(): smem_layout_staged}
+
+    # --- SMEM allocation ----------------------------------------------------
+    def smem_bytes(self, arg, cta_tile_shape_mnk, epi_tile, warp_shape_mnk=None):
+        if arg is None:
+            return EpiSmemBytes()
+        # bf16 staging buffer is per-D-stage; recv_token + is_last_flag scratch
+        # are per-CTA-tile (unstaged). v0.4.1 EpiSmemBytes accounting separates
+        # the two so the framework can multiply d_stage by `epi_stage` at
+        # allocation time. v0.3.11 we conservatively allocated for 4 stages
+        # in one int return; the new structure expresses it directly.
+        #
+        # The staging is the un-swizzled, N-padded layout (see SMEM_N_PAD), so
+        # the per-stage byte count uses the PADDED row stride (epi_tile_M rows ×
+        # SMEM_N_PAD bf16/row), not the dense epi_tile element count. Reporting
+        # the padded size keeps `_compute_stages`'s SMEM budget accounting in
+        # sync with the actual `cute.cosize(staging_layout)` allocation.
+        epi_tile_M = epi_tile[0]
+        bf16_bytes_per_stage = epi_tile_M * self.SMEM_N_PAD * 2
+        return EpiSmemBytes(
+            d_stage=bf16_bytes_per_stage,
+            unstaged=cta_tile_shape_mnk[0] * 4 + 16,
+        )
+
+    def smem_struct_field(self, gemm, params):
+        layout_key = self._layout_key()
+        if not hasattr(params, layout_key):
+            return None
+        smem_layout_staged = getattr(params, layout_key)
+        bf16_size = cute.cosize(smem_layout_staged)
+        tile_M = gemm.cta_tile_shape_mnk[0]
+        scatter_dtype = getattr(params, self.name).mO.element_type
+
+        @cute.struct
+        class ScatterStorage:
+            staging: cute.struct.Align[
+                cute.struct.MemRange[scatter_dtype, bf16_size], gemm.buffer_align_bytes
+            ]
+            recv_token: cute.struct.Align[cute.struct.MemRange[Int32, tile_M], 16]
+            # `is_last_flag`: 1-int32 scratch slot for the last-N-stripe gate
+            # broadcast in `end()`. Thread 0 writes 0/1 here after its
+            # atomic_add on tile_n_stripes_done; an epilogue-scoped named
+            # barrier makes it visible to the other 127 epilogue threads,
+            # which then parallel-execute the per-row bookkeeping.
+            is_last_flag: cute.struct.Align[cute.struct.MemRange[Int32, 1], 4]
+
+        return (f"s_{self.name}", ScatterStorage)
+
+    def get_smem_tensor(self, gemm, params, storage_epi):
+        smem_layout_staged = getattr(params, self._layout_key())
+        s_struct = getattr(storage_epi, f"s_{self.name}")
+        # Un-swizzled plain layout (see SMEM_N_PAD): no `swizzle=` arg — the
+        # staging is a flat row-major padded MemRange, so the layout's strides
+        # alone resolve every (m, n, stage) address.
+        staging_t = s_struct.staging.get_tensor(smem_layout_staged)
+        recv_token_t = s_struct.recv_token.get_tensor(
+            cute.make_layout(gemm.cta_tile_shape_mnk[0])
+        )
+        is_last_t = s_struct.is_last_flag.get_tensor(cute.make_layout(1))
+        return (staging_t, recv_token_t, is_last_t)
+
+    # --- Device lifecycle ---------------------------------------------------
+    @cute.jit
+    def begin(self, gemm, param, smem_tensor, ctx):
+        """Once per tile: load pool_recv_token slice into SMEM via a tile_M-thread
+        synchronous gmem→smem copy. Also computes pool_start = cu_seqlens_m[batch_idx]
+        + pid_m * tile_M (the first pool slot for this tile).
+        """
+        if const_expr(param is None):
+            return None
+        staging_t, recv_token_t, is_last_t = smem_tensor
+        # pool_start = cu_seqlens_m[batch_idx] + pid_m * tile_M.
+        # cu_seqlens_m carries `expert_pool_block_offset * tile_m` (host-side build
+        # in the streaming_moe_y wrapper); for the streaming scheduler
+        # tile_coord_mnkl[0] = pid_m = tile_in_e and tile_coord_mnkl[3] = expert_id.
+        pool_start = (
+            ctx.varlen_manager.params.cu_seqlens_m[ctx.batch_idx]
+            + ctx.tile_coord_mnkl[0] * ctx.tile_M
+        )
+        # Load tile_M ints from pool_recv_token[pool_start : pool_start + tile_M]
+        # into recv_token_t. Each thread (tidx in [0, tile_M)) loads 1 int.
+        # Off-tile threads (tidx >= tile_M) skip — the per-row consumers below
+        # only read indices < tile_M.
+        if ctx.tidx < ctx.tile_M:
+            recv_token_t[ctx.tidx] = param.pool_recv_token[pool_start + ctx.tidx]
+        # The framework's epi_begin wraps async ops in a cp_async_wait + barrier
+        # if `needs_async_fence()` is True. We do a synchronous load above, so we
+        # rely on the surrounding epilogue_barrier (called by the consumer side)
+        # to make the load visible.
+        #
+        # Thread `tidx` and `tile_coord_mnkl` into the per-tile state: the
+        # scatter runs in the leaf `epi_visit_subtile` (the only per-subtile hook
+        # with the `tRS_rD` register fragment), which does NOT receive them as
+        # args. `tidx` slices the R2S copy; `tile_coord_mnkl[1]` gives the N
+        # origin. `end()` receives both as its own args, so it just ignores the
+        # two trailing state fields.
+        return (staging_t, recv_token_t, is_last_t, pool_start, ctx.tidx, ctx.tile_coord_mnkl)
+
+    def begin_loop(self, gemm, state, epi_coord):
+        # Thread `epi_coord` to the leaf's `epi_visit_subtile` (via
+        # `epi_loop_tensors["scatter"]`): the scatter needs it for the per-subtile
+        # (m, n) origins. The staging uses a single SMEM buffer (see
+        # `StreamingScatterBase._scatter_store`), so no rotating slot is computed.
+        return (*state, epi_coord)
+
+    def needs_async_fence(self):
+        return False
+
+    @cute.jit
+    def end(
+        self,
+        gemm,
+        param,
+        state,
+        epi_tile,
+        tiled_copy_t2r,
+        tiled_copy_r2s,
+        tile_coord_mnkl,
+        varlen_manager,
+        tidx,
+    ):
+        """Per-tile end: each row's atomic-scatter for THIS pid_n stripe has
+        landed; decrement the per-recv-token remaining counter and on hit-zero
+        release the per-token compute-done signal.
+
+        Multi-pid_n gating: a single tile_id is split across `num_pid_n` CTAs
+        (one per N-stripe). The per-row bookkeeping must fire ONCE PER TILE,
+        not once per N-stripe — so the LAST N-stripe to complete (atomic-add
+        on `tile_n_stripes_done[tile_id]` returning `num_pid_n - 1`) does the
+        decrement. Atomic-add provides acq_rel ordering, so the last CTA sees
+        all prior N-stripes' atomic-scatters.
+        """
+        if const_expr(param is None):
+            return
+        # `begin()` threaded tidx + tile_coord_mnkl for the leaf scatter; `end()`
+        # gets both as its own args, so ignore the two trailing state fields.
+        staging_t, recv_token_t, is_last_t, pool_start, _tidx, _tile_coord_mnkl = state
+
+        # Reconstruct tile_id from batch_idx + pid_m.
+        # tile_id = expert_pool_block_offset[batch_idx] + pid_m.
+        batch_idx = tile_coord_mnkl[3]
+        pid_m = tile_coord_mnkl[0]
+        tile_id = param.expert_pool_block_offset[batch_idx] + pid_m
+
+        warp_idx = cute.arch.make_warp_uniform(cute.arch.warp_idx())
+        lane_idx = cute.arch.lane_idx()
+        is_thread0 = (warp_idx == Int32(0)) & (lane_idx == Int32(0))
+
+        tile_M = const_expr(gemm.cta_tile_shape_mnk[0])
+        T_recv = param.T_recv
+        combine_seq = param.combine_seq
+        num_epi_threads = const_expr(gemm.num_epi_warps * 32)
+
+        # Thread 0 of the CTA does the per-tile gate atomic on
+        # tile_n_stripes_done. The CTA whose atomic returns `num_pid_n - 1`
+        # is the last N-stripe → it owns the per-row bookkeeping for this
+        # tile. Thread 0 stamps the gate result into is_last_t SMEM; an
+        # epilogue-scoped named barrier propagates it to the other 127
+        # epilogue threads, which then **parallel-execute** the per-row
+        # atomicSub + release-store (one thread per row) — replacing the
+        # old serialized 128-row chain on thread 0 that was the dominant
+        # cost of the kernel-Y epilogue (bisected: ~700 µs of structural
+        # tail).
+        if is_thread0:
+            stripes_ptr = utils.elem_pointer(param.tile_n_stripes_done, (tile_id,))
+            prev_stripes = cute.arch.atomic_add(stripes_ptr, Int32(1))
+            is_last_stripe = prev_stripes == (param.num_pid_n - Int32(1))
+            if is_last_stripe:
+                # Make all atomic-scatters from all N-stripes visible at GPU
+                # scope before the per-token release-stores below. The
+                # threadfence is followed by the SMEM-stamp + named barrier,
+                # so all 128 epilogue threads observe its effect before
+                # issuing their release-stores. ``.gpu`` scope is sufficient
+                # because the consumer (combine_main_kernel) runs on the
+                # SAME GPU on a different CUDA stream — no PCIe / NVLink
+                # writer is involved in this gate.
+                threadfence_gpu()
+            is_last_t[0] = Int32(1) if is_last_stripe else Int32(0)
+
+        # Epilogue-scoped named barrier (id=8 — outside NamedBarrierGemm's
+        # 1..7 range). Synchronizes all `num_epi_threads` epilogue threads
+        # of the CTA so they observe thread 0's stamp + threadfence above.
+        cute.arch.barrier(barrier_id=8, number_of_threads=num_epi_threads)
+
+        is_last = is_last_t[0]
+        if is_last == Int32(1) and tidx < Int32(tile_M):
+            r = recv_token_t[tidx]
+            if r >= Int32(0) and r < T_recv:
+                rem_ptr = utils.elem_pointer(param.k_local_remaining, (r,))
+                prev = cute.arch.atomic_add(rem_ptr, Int32(-1))
+                if prev == Int32(1):
+                    done_ptr = utils.elem_pointer(param.y_done_per_token, (r,))
+                    # ``.gpu`` scope is sufficient: kernel_y (compute stream)
+                    # and combine_main_kernel (communicate stream) run on the
+                    # same GPU, so L2 coherence handles cross-stream
+                    # visibility. ``membar.gl`` is meaningfully cheaper than
+                    # ``membar.sys`` on a per-token gate.
+                    st_release_gpu_global(done_ptr, combine_seq)
+
+
+# Kernel Y reuses kernel A's StreamingTileSchedulerOptions verbatim — both
+# kernels are driven by the same dispatch handoff signals
+# (``pool_arrival_count`` / ``pool_arrival_target``). Y just inherits the
+# at-target state A left behind via same-stream FIFO.
+
+
+# ---------------------------------------------------------------------------
+# Shared streaming atomic-scatter base for the Y-family kernels (fwd kernel Y
+# and kernel A bwd). Holds the scatter store seam + aux no-ops + RN pin; leaves
+# add only their own _epi_ops / EpilogueArguments / epi_visit_subtile.
+# ---------------------------------------------------------------------------
+class StreamingScatterBase(StreamingGemmBase):
+    """Shared epilogue machinery for the streaming atomic-scatter kernels.
+
+    The Y-family writes its output via an all-epi-warps coalesced
+    ``red.global.add.v4.bf16x2`` atomic-scatter into a per-recv-token gmem
+    tensor, not the default single-TMA-warp staged store. A native aux-output
+    ``TileStore`` can't express a multi-warp scatter, so the store is done in
+    the leaf ``epi_visit_subtile`` (the only per-subtile hook with the
+    ``tRS_rD`` register fragment) via the shared ``_scatter_store`` helper. With
+    ``mD=None`` the op registers no tile-store, so quack's driver store block
+    runs empty and balances the TMA store pipeline itself — the Y-family never
+    touches the pipeline.
+
+    Holds the parts common to both leaves:
+      - ``epi_to_underlying_arguments`` — pins ``rounding_mode = RN`` (the
+        scatter store bypasses the framework's SR store path) and builds params
+        from the leaf's ``_epi_ops``.
+      - ``_scatter_plain_r2s_copy`` — the plain (non-StMatrix) R2S copy for the
+        un-swizzled padded staging.
+      - ``_scatter_store`` — R2S into the AtomicScatterStore staging, then the
+        all-epi-warps coalesced predicated v4 atomic-scatter. Called from each
+        leaf's ``epi_visit_subtile``.
+
+    ``epi_setup_aux_out`` / ``epi_convert_aux_out`` are inherited (no override):
+    ``AtomicScatterStore.is_tile_store()`` is False, so the mixin yields an
+    empty ``store_ctxs`` and never runs an aux store/convert.
+
+    Leaves (``StreamingMoeY``, ``StreamingMoeABwd``) supply ``_epi_ops`` (with
+    the shared ``AtomicScatterStore``), their ``EpilogueArguments``, and
+    ``epi_visit_subtile``. Scheduler hooks + the ``__call__`` shim come from
+    ``StreamingGemmBase``.
+    """
+
+    _epi_param_bases = (ParamsBase,)
+
+    def epi_to_underlying_arguments(self, args, *, loc=None, ip=None):
+        # v0.4.1 GemmBase.epilogue reads `self.rounding_mode` to decide
+        # whether to take the stochastic-rounding store path. The streaming-MoE
+        # pipeline does not use SR (atomic-scatter handles the output store
+        # path directly, bypassing the framework's R2S → SMEM → TMA path that
+        # consumes SR seeds). Pin to RN so the const_expr branch in GemmBase
+        # resolves to the non-SR path at compile time.
+        self.rounding_mode = RoundingMode.RN
+        return self.EpilogueParams(**self._epi_ops_to_params_dict(args))
+
+    def _scatter_plain_r2s_copy(self, dtype):
+        """Build a PLAIN (non-StMatrix) register→SMEM tiled copy for the
+        atomic-scatter staging.
+
+        Reuses the MMA-derived `tiled_copy_C_atom` (so the thread→(M,N)
+        coordinate map matches the framework's `tRS_rD` register tensor
+        exactly) but swaps the StMatrix value atom for a `CopyUniversalOp`
+        (`num_bits_per_copy=32` → 2 bf16/store along the contiguous N axis).
+        StMatrix can't be used here: its hardware-fixed transposed lane→address
+        pattern assumes the WGMMA/TMA swizzle, which the un-swizzled padded
+        staging (see `AtomicScatterStore.SMEM_N_PAD`) no longer carries.
+
+        Constexpr — folded at trace time, no runtime cost.
+        """
+        tiled_copy_C_atom = self.epilog_smem_copy_atom(self.tiled_mma)
+        plain_atom = cute.make_copy_atom(
+            cute.nvgpu.CopyUniversalOp(), dtype, num_bits_per_copy=32
+        )
+        return cute.make_tiled_copy_S(plain_atom, tiled_copy_C_atom)
+
+    # `epi_setup_aux_out` / `epi_convert_aux_out` are no longer overridden:
+    # `AtomicScatterStore.is_tile_store()` is False (inherited), so the mixin's
+    # default `epi_setup_aux_out` yields no store_ctxs and never calls a convert.
+    # The scatter goes straight to gmem from `_scatter_store` below; with
+    # `mD=None` the driver's store block runs empty and balances the TMA store
+    # pipeline itself (its own producer_acquire/commit over `len(store_ctxs)=0`).
+
+    @cute.jit
+    def _scatter_store(self, params, epi_loop_tensors, tRS_rD):
+        """Per-subtile R2S → bf16 SMEM → per-warp coalesced atomic-scatter into o.
+
+        Called from the leaf ``epi_visit_subtile`` (the only per-subtile hook
+        with the ``tRS_rD`` register fragment). The (optionally weight-scaled)
+        accumulator is R2S'd into the ``AtomicScatterStore`` staging, then
+        scattered by all epi warps straight into ``mO[recv_token, :]``.
+
+        Unlike the old ``epi_subtile_store`` fork hook, this does NOT touch the
+        TMA store pipeline: with ``mD=None`` the driver's store block runs with
+        an empty ``store_ctxs`` and does the ``producer_acquire``/``commit``
+        balance itself, so the manual "gotcha #6" balancing is gone.
+        """
+        scatter = params.scatter
+        (
+            staging_t,
+            recv_token_t,
+            _is_last_t,
+            _pool_start,
+            tidx,
+            tile_coord_mnkl,
+            epi_coord,
+        ) = epi_loop_tensors["scatter"]
+
+        # 2. R2S: register acc → staging SMEM.
+        #
+        # The framework's `tiled_copy_r2s` is an StMatrix atom
+        # (`sm90_get_smem_store_op` → `StMatrix8x8x16bOp`) whose hardware-fixed
+        # transposed 8x8 lane→address pattern is matched to the WGMMA/TMA
+        # swizzle. Our staging is now an un-swizzled, N-padded plain layout
+        # (see `AtomicScatterStore.SMEM_N_PAD`), so StMatrix would scatter the
+        # registers to the wrong physical addresses. Build a PLAIN R2S tiled
+        # copy with the SAME thread→(M,N) coordinate map (the MMA-derived
+        # `tiled_copy_C_atom`) but a `CopyUniversalOp` value atom: `partition_D`
+        # over the plain staging then resolves each register to its correct
+        # row-major padded address via the layout strides alone. The plain
+        # copy's per-thread value layout is element-for-element identical to
+        # the StMatrix `tRS_rD` layout (same 8 (M,N) coords in the same order),
+        # so `retile=True` re-tiles `tRS_rD` losslessly.
+        plain_r2s = self._scatter_plain_r2s_copy(staging_t.element_type)
+        thr_copy_r2s = plain_r2s.get_slice(tidx)
+        tRS_sScatter = thr_copy_r2s.partition_D(staging_t)
+        # Single staging buffer. The R2S and the scatter for a subtile are
+        # serialized by the barrier below, and consecutive subtiles are
+        # separated by the driver store block's barriers, so buffer 0 is
+        # WAR-safe every subtile. (The old `(num_prev_subtiles + epi_idx) %
+        # epi_stage` rotation gave no cross-subtile overlap here — the barrier
+        # already serialized R2S→scatter — and `epi_idx`/`num_prev_subtiles`
+        # are not visible to this hook. Revisit only if the perf pass wants it.)
+        epi_buffer = 0
+        copy_utils.cvt_copy(
+            plain_r2s,
+            tRS_rD,
+            tRS_sScatter[None, None, None, epi_buffer],
+            retile=True,
+        )
+
+        # 3. Sync to make staging visible to all warps.
+        cute.arch.fence_view_async_shared()
+        self.epilogue_barrier.arrive_and_wait()
+
+        # 4. Per-warp coalesced atomic-scatter from staging.
+        # staging_t shape: (epi_tile_M, epi_tile_N, epi_stage), n_major.
+        # epi_coord = (epi_m, epi_n) within the cta-tile's (tile_M / epi_tile_M,
+        # tile_N / epi_tile_N) grid of subtiles.
+        epi_tile_M = const_expr(self.epi_tile[0])
+        epi_tile_N = const_expr(self.epi_tile[1])
+        cta_tile_N = const_expr(self.cta_tile_shape_mnk[1])
+
+        n_origin = tile_coord_mnkl[1] * Int32(cta_tile_N) + epi_coord[1] * Int32(
+            epi_tile_N
+        )
+        m_subtile_origin = epi_coord[0] * Int32(epi_tile_M)
+
+        # Vector-packed bf16x2 atomic-add. Each `red.global.add.v4.bf16x2`
+        # writes 8 bf16 (16 bytes).
+        #
+        # The naive partition (32 lanes co-cover ONE row's `epi_tile_N`
+        # bf16) wastes lanes whenever `epi_tile_N // 8 < 32`. At our
+        # default `epi_tile_N=32` only 4 lanes/row carry useful work; the
+        # other 28 issuing zero-mask v4 atomics turns into 4× wasted HBM
+        # bandwidth (each masked lane still does a 16-byte read-modify-write
+        # of zeros). Verified empirically: naive-mask v4 made kernel Y 45%
+        # slower than the scalar bf16x2 path.
+        #
+        # Fix: flatten `(row, v4_chunk)` into a single per-warp work index.
+        # Each lane handles one `(m_in_subtile, v4_chunk)` pair per inner
+        # iter — distributing work across rows so all 32 lanes are busy.
+        # At our defaults (`epi_tile_M=128, num_epi_warps=4, epi_tile_N=32`):
+        #   rows_per_warp = 32, v4_chunks_per_row = 4
+        #   work_per_warp = 128 = 4 * 32  (no remainder; all lanes effective)
+        # Total atomics issued per warp drops from 32*32=1024 (16 effective
+        # + 16 masked per row × 32 rows) to 32*4=128 v4 atomics, *all
+        # effective*. 8× reduction in atomic ops vs scalar; same total bytes.
+        v4_chunks_per_row = const_expr((epi_tile_N + 7) // 8)
+        # Per-warp work units = rows_per_warp * v4_chunks_per_row. Inner
+        # iters loop over `ceil(work_per_warp / 32)`. Lanes whose work_idx
+        # exceeds `work_per_warp` are masked (rare; only when work doesn't
+        # divide evenly into 32-lane groups).
+        # Computed below after rows_per_warp is known.
+
+        # Per-stage staging view. The staging is now an un-swizzled, N-padded
+        # plain row-major layout (see `AtomicScatterStore.SMEM_N_PAD`), so within
+        # a row the N axis is stride-1 contiguous and bf16x2 pairs ARE adjacent.
+        # We can therefore recast a single row to Int32 and read whole bf16x2
+        # pairs directly — no per-element scalar loads + `pack_bf16x2`. Each v4
+        # chunk = 8 bf16 = 4 int32, so the read is 4 shared-load requests
+        # instead of 8 (and the recast is now valid, unlike on the old swizzled
+        # staging where it would NOT preserve pair-adjacency).
+        stage_view = staging_t[None, None, epi_buffer]  # (epi_tile_M, epi_tile_N)
+
+        warp_idx = cute.arch.make_warp_uniform(cute.arch.warp_idx())
+        lane_idx = cute.arch.lane_idx()
+        num_epi_warps = const_expr(self.num_epi_warps)
+        rows_per_warp = const_expr((epi_tile_M + num_epi_warps - 1) // num_epi_warps)
+        work_per_warp = const_expr(rows_per_warp * v4_chunks_per_row)
+        work_iters_per_warp = const_expr((work_per_warp + 32 - 1) // 32)
+
+        T_recv = scatter.T_recv
+
+        for w in cutlass.range_constexpr(work_iters_per_warp):
+            work_idx = Int32(w) * Int32(32) + Int32(lane_idx)
+            work_in_range = work_idx < Int32(work_per_warp)
+            work_safe = work_idx if work_in_range else Int32(0)
+            # Decompose: row offset within warp's slab and v4-chunk within row.
+            # constexpr divisor folds to shift+and at compile time when
+            # v4_chunks_per_row is a power of 2.
+            # NOTE: this lane→(row,chunk) mapping is load-bearing for GLOBAL-WRITE
+            # coalescing (4 lanes write one recv-token row's contiguous chunks).
+            # Reassigning lanes to spread across rows (tried) does NOT reduce the
+            # shared-load bank conflict — that's inherent to the staging swizzle,
+            # not the decomposition — and it hurts global-write coalescing. Fix
+            # the bank conflict in the staging LAYOUT (un-swizzle/pad), not here.
+            m_off = work_safe // Int32(v4_chunks_per_row)
+            v4_chunk = work_safe % Int32(v4_chunks_per_row)
+            m_in_subtile = Int32(warp_idx) * Int32(rows_per_warp) + m_off
+            row_in_range = (m_in_subtile < Int32(epi_tile_M)) & work_in_range
+            m_safe = m_in_subtile if row_in_range else Int32(0)
+            m_local_in_tile = m_subtile_origin + m_safe
+            r_raw = recv_token_t[m_local_in_tile]
+            # Padding rows (r_raw == -1), out-of-range warp rows, and
+            # work_idx-out-of-range lanes all collapse into one predicate.
+            # PTX-level @%p on the v4 atomic skips the instruction entirely
+            # at issue time — no HBM op, no atomic side-effect — so the
+            # address can be any clamped in-bounds pointer.
+            atomic_pred = (r_raw >= Int32(0)) & (r_raw < T_recv) & row_in_range
+            r_safe = r_raw if atomic_pred else Int32(0)
+
+            # 8 adjacent bf16 starting at bf16-idx (v4_chunk * 8) = 4 int32.
+            # Recast THIS ROW (stride-1 contiguous in N on the un-swizzled
+            # padded staging) to Int32: bf16 pair [2k, 2k+1] → int32 k. The v4
+            # chunk's 8 bf16 = int32 [4*v4_chunk .. 4*v4_chunk+3].
+            bf16_base = v4_chunk * Int32(8)
+            stage_row_i32 = cute.recast_tensor(stage_view[m_safe, None], Int32)
+            i32_base = v4_chunk * Int32(4)
+            p0 = stage_row_i32[i32_base + Int32(0)]
+            p1 = stage_row_i32[i32_base + Int32(1)]
+            p2 = stage_row_i32[i32_base + Int32(2)]
+            p3 = stage_row_i32[i32_base + Int32(3)]
+            # v4 needs 16-byte alignment (8 bf16). bf16_base is multiple
+            # of 8 by construction; n_origin is multiple of epi_tile_N
+            # (≥ 8 by config); together address is 16-byte aligned.
+            n_global = n_origin + bf16_base
+            o_row = scatter.mO[r_safe, None]
+            o_row_as_i32 = cute.recast_tensor(o_row, Int32)
+            target_ptr = utils.elem_pointer(o_row_as_i32, (n_global // Int32(2),))
+            red_add_bf16x2_v4_pred(target_ptr, p0, p1, p2, p3, Int32(atomic_pred))
+
+        # 5. WAR barrier: order all warps' scatter READS of the staging before
+        # the next subtile's R2S overwrites buffer 0. (No producer_commit — the
+        # driver store block owns the TMA pipeline balance now that mD=None.)
+        cute.arch.fence_view_async_shared()
+        self.epilogue_barrier.arrive_and_wait()
+
+
+# ---------------------------------------------------------------------------
+# Streaming kernel Y leaf: the gated GEMM's activated output scattered per recv
+# token, with a per-recv-token weight multiply. Adds the weight to the shared
+# scatter base.
+# ---------------------------------------------------------------------------
+class StreamingMoeY(StreamingScatterBase):
+    """Streaming-MoE kernel Y: streaming GEMM + fused atomic-scatter epilogue,
+    with a per-row (per-recv-token) weight multiply on the accumulator.
+
+    _epi_ops:
+      - ColVecLoad("mColVecBroadcast"): per-row weight broadcast along N.
+        Caller passes pool_topk_weight as args.mColVecBroadcast; varlen_m mode
+        with cu_seqlens_m = expert_pool_block_offset * tile_m offsets correctly
+        to pool_start = expert_pool_block_offset[batch_idx] * tile_m + pid_m * tile_m.
+      - AtomicScatterStore("scatter"): the shared scatter store op (bf16 staging
+        SMEM + per-tile pool_recv_token area; end-of-tile bookkeeping fires
+        y_done_per_token[r] on hit-zero).
+
+    Everything else — the scatter store seam, aux no-ops, RN pin, scheduler
+    hooks, __call__ — comes from StreamingScatterBase / StreamingGemmBase.
+    """
+
+    _epi_ops = (ColVecLoad("mColVecBroadcast"), AtomicScatterStore("scatter"))
+
+    @mlir_namedtuple
+    class EpilogueArguments(NamedTuple):
+        scatter: ScatterParams
+        mColVecBroadcast: Optional[cute.Tensor] = None
+
+    @cute.jit
+    def epi_visit_subtile(self, params, epi_loop_tensors, tRS_rD, tRS_rC=None):
+        """In-register per-row weight multiply on the MMA accumulator subtile.
+
+        ColVecLoad's begin_loop has already populated `mColVecBroadcast` as a
+        register tensor with the same per-thread layout as `tRS_rD`, with the
+        per-row weight broadcast along N. So `tRS_rD[i] *= weight[i]` works
+        element-wise. (Replaces the additive bias path of GemmDefaultEpiMixin.)
+
+        Then the shared scatter store consumes the weighted `tRS_rD` (this is
+        the only per-subtile hook with the register fragment). Returns `()`:
+        the driver does `store_frags = (...) + <this>`, which must be a tuple.
+        """
+        tDrColVec = epi_loop_tensors["mColVecBroadcast"]
+        if const_expr(tDrColVec is not None):
+            for i in cutlass.range(cute.size(tRS_rD), unroll_full=True):
+                tRS_rD[i] *= tDrColVec[i]
+        self._scatter_store(params, epi_loop_tensors, tRS_rD)
+        return ()
+
+
+# ---------------------------------------------------------------------------
+# JIT compile factory.
+# ---------------------------------------------------------------------------
+@jit_cache
+def _compile_streaming_moe_y(
+    a_dtype: Type[cutlass.Numeric],
+    b_dtype: Type[cutlass.Numeric],
+    o_dtype: Type[cutlass.Numeric],
+    tile_m: int,
+    tile_n: int,
+    cluster_m: int,
+    cluster_n: int,
+    device_capacity,
+):
+    assert device_capacity[0] == 9, "Streaming MoE kernel Y is SM90-only"
+
+    I_sym = cute.sym_int()
+    H_sym = cute.sym_int()
+    E_sym = cute.sym_int()
+    TK_padded_sym = cute.sym_int()
+    Trecv_sym = cute.sym_int()
+    total_tiles_sym = cute.sym_int()
+    cu_seqlens_len_sym = cute.sym_int()  # = E_local + 1
+
+    # A: postact_a flat (TK_padded, I), k-major (I contiguous).
+    mA = fake_tensor(a_dtype, (TK_padded_sym, I_sym), leading_dim=1, divisibility=8)
+    # B: W2 in its NATURAL batch-first storage (E_local, H, I), I-contiguous.
+    # quack main takes batched operands batch-first (l, ...) and rotates them
+    # to kernel order at trace time, so we pass W2 as-is (no host permute).
+    # This forward GEMM wants k-major B (n=H, k=I); the natural storage is
+    # already (l, n, k)=(E, H, I), so the default rotate (l,n,k)→(n,k,l)=(H,I,E)
+    # lands I-contiguous k-major B — no b_transposed. leading_dim=2 = I.
+    mB = fake_tensor(b_dtype, (E_sym, H_sym, I_sym), leading_dim=2, divisibility=8)
+    # No D / C — streaming kernel Y outputs via predicated atomic-scatter
+    # into o[T_recv, H] (no trash row).
+    mD = None
+    mC = None
+
+    # Scatter destination: (T_recv, H), n-major.
+    mO = fake_tensor(o_dtype, (Trecv_sym, H_sym), leading_dim=1, divisibility=8)
+    pool_recv_token = fake_tensor(
+        cutlass.Int32, (TK_padded_sym,), leading_dim=0, divisibility=1
+    )
+    k_local_remaining = fake_tensor(
+        cutlass.Int32, (cute.sym_int(),), leading_dim=0, divisibility=1
+    )
+    y_done_per_token = fake_tensor(
+        cutlass.Int64, (cute.sym_int(),), leading_dim=0, divisibility=1
+    )
+
+    tile_n_stripes_done = fake_tensor(
+        cutlass.Int32, (total_tiles_sym,), leading_dim=0, divisibility=1
+    )
+    expert_pool_block_offset_scatter = fake_tensor(
+        cutlass.Int32, (cu_seqlens_len_sym,), leading_dim=0, divisibility=1
+    )
+    scatter = ScatterParams(
+        mO=mO,
+        pool_recv_token=pool_recv_token,
+        k_local_remaining=k_local_remaining,
+        y_done_per_token=y_done_per_token,
+        tile_n_stripes_done=tile_n_stripes_done,
+        expert_pool_block_offset=expert_pool_block_offset_scatter,
+        T_recv=Int32(0),
+        combine_seq=Int64(0),
+        num_pid_n=Int32(0),
+    )
+
+    # ColVecLoad's per-row weight broadcast (varlen_m). Shape (TK_padded,) fp32.
+    pool_topk_weight = fake_tensor(
+        cutlass.Float32, (TK_padded_sym,), leading_dim=0, divisibility=1
+    )
+
+    # cu_seqlens_m drives the standard varlen_m m-offset for both A's pool read
+    # and ColVecLoad's per-row weight slice. Length E_local + 1.
+    mCuSeqlensM = fake_tensor(
+        cutlass.Int32, (cu_seqlens_len_sym,), leading_dim=0, divisibility=1
+    )
+
+    consumer_head = fake_tensor(cutlass.Int32, (cute.sym_int(),), divisibility=1)
+    pool_arrival_count = fake_tensor(cutlass.Int32, (total_tiles_sym,), divisibility=1)
+    pool_arrival_target = fake_tensor(cutlass.Int32, (total_tiles_sym,), divisibility=1)
+    expert_pool_block_offset = fake_tensor(
+        cutlass.Int32, (cu_seqlens_len_sym,), divisibility=1
+    )
+
+    started_flag_fake = fake_tensor(cutlass.Int32, (cute.sym_int(),), divisibility=1)
+
+    scheduler_args = StreamingTileSchedulerOptions(
+        max_active_clusters=Int32(0),
+        consumer_head=consumer_head,
+        pool_arrival_count=pool_arrival_count,
+        pool_arrival_target=pool_arrival_target,
+        expert_pool_block_offset=expert_pool_block_offset,
+        total_tiles=Int32(0),
+        started_flag=started_flag_fake,
+    )
+
+    epi_args = StreamingMoeY.EpilogueArguments(
+        scatter=scatter, mColVecBroadcast=pool_topk_weight
+    )
+
+    varlen_args = VarlenArguments(mCuSeqlensM=mCuSeqlensM, mCuSeqlensK=None, mAIdx=None)
+
+    return compile_gemm_kernel(
+        StreamingMoeY,
+        a_dtype,
+        (tile_m, tile_n),
+        (cluster_m, cluster_n, 1),
+        pingpong=False,
+        persistent=True,
+        gather_A=False,
+        is_dynamic_persistent=False,
+        device_capacity=device_capacity,
+        mA=mA,
+        mB=mB,
+        mD=mD,
+        mC=mC,
+        epi_args=epi_args,
+        scheduler_args=scheduler_args,
+        varlen_args=varlen_args,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Host wrapper.
+# ---------------------------------------------------------------------------
+def streaming_moe_y(
+    postact_a: torch.Tensor,  # (total_tiles, tile_m, I) bf16
+    W2: torch.Tensor,  # (E_local, H, I) bf16 — k-major per expert
+    o: torch.Tensor,  # (T_recv, H) bf16 — atomic-scatter destination
+    pool_recv_token: torch.Tensor,  # (TK_padded,) int32
+    pool_topk_weight: torch.Tensor,  # (TK_padded,) float32
+    k_local_remaining: torch.Tensor,  # (T_recv,) int32
+    y_done_per_token: torch.Tensor,  # (T_recv,) int64
+    expert_pool_block_offset: torch.Tensor,  # (E_local + 1,) int32
+    pool_arrival_count: torch.Tensor,  # (total_tiles,) int32 — dispatch's per-tile release-add destination (already at-target by the time Y runs)
+    pool_arrival_target: torch.Tensor,  # (total_tiles,) int32 — per-tile firing target (set by dispatch metadata)
+    combine_seq: int,
+    *,
+    started_flag: torch.Tensor | None = None,  # (1,) int32 buffer-owned cross-stream launch-gate flag; first CTA bumps it. None → allocate throwaway (tests / standalone harnesses).
+    tile_m: int = 128,
+    tile_n: int = 128,
+    cluster_m: int = 1,
+    cluster_n: int = 1,
+    num_sms: int | None = None,
+) -> None:
+    """Launch streaming-MoE kernel Y (fused atomic-scatter) on the caller's
+    current CUDA stream.
+
+    ``num_sms`` caps the persistent-grid CTA count to the given value. When
+    ``None`` (default) the kernel fills the GPU.
+
+    Kernel Y must run on the same compute stream as kernel A (it depends on
+    A's `postact_a` writes via same-stream FIFO). The orchestrator records a
+    ``torch.cuda.Event`` between the A and Y launches so the combine stream
+    can wait on Y having started before its own launch — that gate replaces
+    the older device-side ``kernel_y_started`` sentinel.
+
+    Caller is responsible for:
+      - allocating ``o`` with shape ``(T_recv, H)``, zero-initialized, on
+        the same stream this function is called from. Padding rows and
+        other masked lanes are handled via PTX-level predicated atomic-add
+        (no trash row needed).
+      - allocating ``k_local_remaining`` with the K_local count for each
+        recv-token (StreamEP's ``Buffer.dispatch`` sets this in Pass B's per-pool-slot block).
+      - allocating ``y_done_per_token`` zero-initialized.
+      - passing the same ``pool_arrival_count`` / ``pool_arrival_target`` that
+        kernel A's scheduler waited on. By the time kernel Y issues its first
+        instruction on the compute stream, A has fully retired and every
+        tile's count == target, so the scheduler's per-tile ready spin
+        terminates immediately. The scheduler still reads the pair to keep
+        a single canonical handoff protocol across A and Y.
+    """
+    assert postact_a.is_cuda and W2.is_cuda and o.is_cuda
+    assert postact_a.dim() == 3
+    assert W2.dim() == 3
+    assert o.dim() == 2
+    total_tiles, postact_tile_m, I = postact_a.shape
+    assert postact_tile_m == tile_m
+    T_recv, H = o.shape
+    E_local = W2.shape[0]
+    assert W2.shape == (E_local, H, I), (
+        f"W2 must be (E_local, H, I); got {tuple(W2.shape)}, expected "
+        f"{(E_local, H, I)}"
+    )
+    # tile_n MUST divide the output N dim (= H). Non-divisible tile_n produces
+    # partial-tile stores that silently corrupt adjacent memory in the
+    # atomic-scatter epilogue.
+    assert H % tile_n == 0, (
+        f"tile_n ({tile_n}) must divide H ({H}); H % tile_n = {H % tile_n}"
+    )
+    assert pool_recv_token.shape == (total_tiles * tile_m,)
+    assert pool_recv_token.dtype == torch.int32
+    assert pool_topk_weight.shape == (total_tiles * tile_m,)
+    assert pool_topk_weight.dtype == torch.float32
+    assert k_local_remaining.shape == (T_recv,)
+    assert k_local_remaining.dtype == torch.int32
+    assert y_done_per_token.shape == (T_recv,)
+    assert y_done_per_token.dtype == torch.int64
+    assert expert_pool_block_offset.shape == (E_local + 1,)
+    assert pool_arrival_count.shape == (total_tiles,)
+    assert pool_arrival_count.dtype == torch.int32
+    assert pool_arrival_target.shape == (total_tiles,)
+    assert pool_arrival_target.dtype == torch.int32
+
+    # Caller passes W2 as (E_local, H, I) k-major contiguous. quack main takes
+    # batched B batch-first, so we pass W2 as-is — no host permute. The
+    # natural storage is already (l, n, k) = (E, H, I), so the kernel's default
+    # rotate gives k-major kernel-order B (H, I, E) — no b_transposed.
+    assert W2.stride(-1) == 1, "W2[e] must be I-contiguous (caller passes (E_local, H, I) k-major)"
+    assert W2.shape == (E_local, H, I)
+
+    # Flatten postact_a's leading two dims.
+    postact_flat = postact_a.view(total_tiles * tile_m, I)
+
+    # cu_seqlens_m = expert_pool_block_offset * tile_m drives both:
+    #   (a) varlen_m m-offset for postact_a tile reads (kernel mainloop)
+    #   (b) ColVecLoad's per-row weight slice via cute.domain_offset
+    cu_seqlens_m = (expert_pool_block_offset.to(torch.int32) * tile_m).contiguous()
+
+    device_capacity = get_device_capacity(postact_a.device)
+    assert device_capacity[0] == 9, "Streaming MoE kernel Y is SM90-only"
+
+    a_dtype = torch2cute_dtype_map[postact_a.dtype]
+    b_dtype = torch2cute_dtype_map[W2.dtype]
+    o_dtype = torch2cute_dtype_map[o.dtype]
+
+    compiled_fn = _compile_streaming_moe_y(
+        a_dtype=a_dtype,
+        b_dtype=b_dtype,
+        o_dtype=o_dtype,
+        tile_m=tile_m,
+        tile_n=tile_n,
+        cluster_m=cluster_m,
+        cluster_n=cluster_n,
+        device_capacity=device_capacity,
+    )
+
+    if compile_config.COMPILE_ONLY:
+        return
+
+    max_active_clusters = get_max_active_clusters(cluster_m * cluster_n)
+    if num_sms is not None:
+        max_active_clusters = min(
+            max_active_clusters, num_sms // (cluster_m * cluster_n)
+        )
+
+    # Internal scheduler counter — allocate on the calling stream so the
+    # zero-init is naturally ordered with kernel Y's atomic claims.
+    consumer_head = torch.zeros(1, dtype=torch.int32, device=postact_a.device)
+
+    # tile_n_stripes_done gates per-tile bookkeeping when num_pid_n > 1: the
+    # CTA whose atomic-add returns `num_pid_n - 1` is the last N-stripe and
+    # does the per-row decrement + compute_done release.
+    num_pid_n = (H + tile_n - 1) // tile_n
+    tile_n_stripes_done = torch.zeros(
+        total_tiles, dtype=torch.int32, device=postact_a.device
+    )
+
+    scatter = ScatterParams(
+        mO=o,
+        pool_recv_token=pool_recv_token,
+        k_local_remaining=k_local_remaining,
+        y_done_per_token=y_done_per_token,
+        tile_n_stripes_done=tile_n_stripes_done,
+        expert_pool_block_offset=expert_pool_block_offset,
+        T_recv=Int32(T_recv),
+        combine_seq=Int64(combine_seq),
+        num_pid_n=Int32(num_pid_n),
+    )
+    epi_args = StreamingMoeY.EpilogueArguments(
+        scatter=scatter, mColVecBroadcast=pool_topk_weight
+    )
+    if started_flag is None:
+        started_flag = torch.zeros(1, dtype=torch.int32, device=postact_a.device)
+    assert started_flag.shape == (1,) and started_flag.dtype == torch.int32
+    scheduler_args = StreamingTileSchedulerOptions(
+        max_active_clusters=Int32(max_active_clusters),
+        consumer_head=consumer_head,
+        pool_arrival_count=pool_arrival_count,
+        pool_arrival_target=pool_arrival_target,
+        expert_pool_block_offset=expert_pool_block_offset,
+        total_tiles=Int32(total_tiles),
+        started_flag=started_flag,
+    )
+    varlen_args = VarlenArguments(
+        mCuSeqlensM=cu_seqlens_m, mCuSeqlensK=None, mAIdx=None
+    )
+
+    # Trailing (None, None) = mSFA / mSFB (main's unified TMA scale-factor
+    # slots, always None for plain bf16); main takes no host stream arg.
+    compiled_fn(
+        postact_flat, W2, None, None, epi_args, scheduler_args, varlen_args, None, None
+    )
+
+
+# Tests for kernel Y reuse ``kernel_a.fire_tiles_with_delay`` against the
+# shared ``pool_arrival_count`` / ``pool_arrival_target`` tensors. In
+# production both kernels run on a single compute stream; the FIFO ordering
+# guarantees Y sees A's results without any per-tile A→Y signal.

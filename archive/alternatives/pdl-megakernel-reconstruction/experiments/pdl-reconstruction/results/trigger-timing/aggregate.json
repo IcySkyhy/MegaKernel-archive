@@ -1,0 +1,40 @@
+{
+  "arrival_mean_us": 835.8843887415458,
+  "arrival_sample_stdev_us": 0.49998006052620925,
+  "issue_mean_us": 801.8522196867334,
+  "issue_sample_stdev_us": 0.45563942333128654,
+  "paired_savings_mean_us": 34.03216905481236,
+  "paired_savings_sample_stdev_us": 0.06601722105196642,
+  "paired_savings_us": [
+    34.10318329578308,
+    34.0206620730753,
+    33.97266179557869
+  ],
+  "relative_reduction_percent": 4.071396656426258,
+  "trial_means_us": {
+    "arrival": [
+      836.4133550895481,
+      835.4195907829314,
+      835.8202203521579
+    ],
+    "issue": [
+      802.310171793765,
+      801.3989287098561,
+      801.8475585565792
+    ]
+  },
+  "validation": {
+    "fresh_processes": 6,
+    "graph_vs_eager_checks_passed": 18,
+    "graph_vs_eager_checks_total": 18,
+    "rewritten_pdl_edges_per_process": 79,
+    "stderr_files_nonempty": 0
+  },
+  "resource_identity": {
+    "alias_four_pages": false,
+    "dynamic_shared_memory_bytes": 216504,
+    "matvec_input_pipeline_stages": 3,
+    "num_pages": 13,
+    "num_threads": 640
+  }
+}

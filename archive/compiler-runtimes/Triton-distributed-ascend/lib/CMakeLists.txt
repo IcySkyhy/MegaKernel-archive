@@ -1,0 +1,5 @@
+add_subdirectory(Conversion)
+add_subdirectory(Dialect)
+if(TRITON_USE_ASCEND)
+add_subdirectory(Template)
+endif()

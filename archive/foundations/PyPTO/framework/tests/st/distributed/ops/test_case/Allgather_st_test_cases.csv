@@ -1,0 +1,2 @@
+operation,case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,world_size
+AllGather,AllGather_test_1,"[128, 256]","int32","ND","[-10, 10]","[512, 256]","int32","ND","[32, 73]","[16, 32]",4

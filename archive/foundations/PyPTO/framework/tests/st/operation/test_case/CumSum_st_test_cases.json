@@ -1,0 +1,1381 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "CumSum_test_0",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 30000000,
+                        "max": 30000020
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                1
+            ],
+            "tile_shape": [
+                1,
+                1
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "CumSum_test_1",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 30000000,
+                        "max": 30000010
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2
+            ],
+            "tile_shape": [
+                2,
+                2
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "CumSum_test_2",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2
+            ],
+            "tile_shape": [
+                2,
+                1
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "CumSum_test_3",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2
+            ],
+            "tile_shape": [
+                2,
+                2
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "CumSum_test_4",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2
+            ],
+            "tile_shape": [
+                3,
+                4
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "CumSum_test_5",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2
+            ],
+            "tile_shape": [
+                2,
+                6
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "CumSum_test_6",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                2
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "CumSum_test_7",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                2
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "CumSum_test_8",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                2
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "CumSum_test_9",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                2
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "CumSum_test_10",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                2
+            ],
+            "tile_shape": [
+                3,
+                4,
+                2
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "CumSum_test_11",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                2
+            ],
+            "tile_shape": [
+                2,
+                6,
+                2
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "CumSum_test_12",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "int16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 30000,
+                        "max": 30010
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "CumSum_test_13",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "int16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -30010,
+                        "max": -30000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "CumSum_test_14",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 14
+        },
+        {
+            "case_index": 15,
+            "case_name": "CumSum_test_15",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 15
+        },
+        {
+            "case_index": 16,
+            "case_name": "CumSum_test_16",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 16
+        },
+        {
+            "case_index": 17,
+            "case_name": "CumSum_test_17",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 17
+        },
+        {
+            "case_index": 18,
+            "case_name": "CumSum_test_18",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 18
+        },
+        {
+            "case_index": 19,
+            "case_name": "CumSum_test_19",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 19
+        },
+        {
+            "case_index": 20,
+            "case_name": "CumSum_test_20",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                7
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 20
+        },
+        {
+            "case_index": 21,
+            "case_name": "CumSum_test_21",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                3,
+                2
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 21
+        },
+        {
+            "case_index": 22,
+            "case_name": "CumSum_test_22",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": -1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 22
+        },
+        {
+            "case_index": 23,
+            "case_name": "CumSum_test_23",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4,
+                        8,
+                        10,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                4,
+                2,
+                4
+            ],
+            "tile_shape": [
+                1,
+                1,
+                2,
+                2
+            ],
+            "params": {
+                "axis": -2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 23
+        },
+        {
+            "case_index": 24,
+            "case_name": "CumSum_test_24",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        13
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        13
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                13
+            ],
+            "tile_shape": [
+                13
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 24
+        },
+        {
+            "case_index": 25,
+            "case_name": "CumSum_test_25",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        5623
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5623
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                5623
+            ],
+            "tile_shape": [
+                5623
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 25
+        },
+        {
+            "case_index": 26,
+            "case_name": "CumSum_test_26",
+            "operation": "CumSum",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        4657
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        4657
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                4657
+            ],
+            "tile_shape": [
+                4657
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 26
+        }
+    ]
+}

@@ -1,0 +1,931 @@
+###############################################################################
+# Copyright (c) 2025, Advanced Micro Devices, Inc. All rights reserved.
+#
+# See LICENSE for license information.
+###############################################################################
+
+import math
+import os
+
+import pytest
+import torch
+
+from primus_turbo.pytorch.core.backend import (
+    BackendType,
+    GlobalBackendManager,
+    PrecisionType,
+)
+from primus_turbo.pytorch.core.utils import is_gfx950
+from primus_turbo.pytorch.kernels.attention.attention_triton_impl import (
+    F8_FWD_MAX,
+    attention_triton_backward_impl,
+    attention_triton_forward_impl,
+)
+from primus_turbo.pytorch.kernels.attention.sparse_mla_impl import (
+    SparseMlaBwdDispatcher,
+    SparseMlaFwdDispatcher,
+)
+from primus_turbo.pytorch.ops import flash_attn_fp8_func, flash_attn_func, sparse_mla_func
+from primus_turbo.pytorch.ops.attention.attention_utils import (
+    _infer_qkv_format,
+    block_scaling_node,
+)
+from primus_turbo.triton.attention.sparse_mla import (
+    sparse_mla_bwd_triton,
+    sparse_mla_fwd_triton,
+)
+from tests.pytorch.ref.attention_ref import (
+    AttnConfig,
+    attention_vanilla_forward_pytorch_ref_impl,
+    attention_with_sink_ref_impl,
+)
+from tests.pytorch.test_utils import compute_snr, pinned_backend_takes
+
+test_cases = [
+    AttnConfig(seqlen_q=1024, seqlen_kv=1024, num_head_q=32, num_head_kv=32, head_dim_qk=128, head_dim_v=128),
+    AttnConfig(seqlen_q=1024, seqlen_kv=1024, num_head_q=64, num_head_kv=8, head_dim_qk=128, head_dim_v=128),
+    AttnConfig(seqlen_q=1024, seqlen_kv=1024, num_head_q=32, num_head_kv=8, head_dim_qk=128, head_dim_v=128),
+    AttnConfig(seqlen_q=1024, seqlen_kv=1024, num_head_q=28, num_head_kv=4, head_dim_qk=128, head_dim_v=128),
+    AttnConfig(seqlen_q=1024, seqlen_kv=1024, num_head_q=16, num_head_kv=16, head_dim_qk=192, head_dim_v=128),
+    AttnConfig(
+        seqlen_q=1024, seqlen_kv=1024, num_head_q=128, num_head_kv=128, head_dim_qk=192, head_dim_v=128
+    ),
+    AttnConfig(seqlen_q=1024, seqlen_kv=1024, num_head_q=48, num_head_kv=8, head_dim_qk=128, head_dim_v=128),
+    # begin regression tests for https://ontrack-internal.amd.com/browse/SWDEV-548136
+    AttnConfig(
+        seqlen_q=4096 + 64, seqlen_kv=4096 + 64, num_head_q=2, num_head_kv=1, head_dim_qk=32, head_dim_v=32
+    ),
+    AttnConfig(seqlen_q=2048, seqlen_kv=2048, num_head_q=64, num_head_kv=8, head_dim_qk=128, head_dim_v=128),
+    # end regression tests for https://ontrack-internal.amd.com/browse/SWDEV-548136
+    AttnConfig(seqlen_q=512, seqlen_kv=512, num_head_q=40, num_head_kv=40, head_dim_qk=192, head_dim_v=128),
+    # head_dim 64, and a query chunk against a longer kv context: the rest of the table is
+    # square at head_dim 128/192, so neither the 64-wide kernels nor the bottom-right causal
+    # offset a rectangular shape carries would be reached otherwise.
+    AttnConfig(seqlen_q=1024, seqlen_kv=1024, num_head_q=64, num_head_kv=8, head_dim_qk=64, head_dim_v=64),
+    AttnConfig(seqlen_q=512, seqlen_kv=2048, num_head_q=64, num_head_kv=8, head_dim_qk=128, head_dim_v=128),
+]
+
+
+@pytest.mark.parametrize("batch", [1, 2, 3, 4])
+@pytest.mark.parametrize("dtype", [torch.bfloat16, torch.float16])
+@pytest.mark.parametrize("config", test_cases)
+@pytest.mark.parametrize("causal", [True, False])
+@pytest.mark.parametrize("enable_sink", [False, True])
+@pytest.mark.parametrize("window_size_left", [-1, 32, 64, 128])
+@pytest.mark.parametrize("qkv_format", ["bshd", "sbhd", "bhsd"])
+@pytest.mark.parametrize("is_v3_atomic_fp32", [False, True])
+# None is whatever resolves; the rest pin one backend so its own path stays covered.
+# HIPKITTENS takes a narrow slice of this table -- bf16, causal, sbhd, head dim 64/128, no
+# sink -- and pinned_backend_takes asserts it refuses the rest rather than letting another
+# backend answer for it.
+@pytest.mark.parametrize("backend", [None, BackendType.FLYDSL, BackendType.HIPKITTENS])
+def test_attention_16bit(
+    batch, dtype, config, causal, enable_sink, window_size_left, qkv_format, is_v3_atomic_fp32, backend
+):
+    os.environ["PRIMUS_TURBO_ATTN_V3_ATOMIC_FP32"] = "1" if is_v3_atomic_fp32 else "0"
+
+    device = "cuda"
+    seqlen_q, seqlen_kv, num_head_q, num_head_kv, head_dim_qk, head_dim_v = (
+        config.seqlen_q,
+        config.seqlen_kv,
+        config.num_head_q,
+        config.num_head_kv,
+        config.head_dim_qk,
+        config.head_dim_v,
+    )
+
+    # Sliding window coverage only applies when sink attention is enabled.
+    if not enable_sink and window_size_left != -1:
+        pytest.skip("window_size_left only applies when sink is enabled")
+
+    # Sink attention constraints / runtime control (skip early to avoid big allocations).
+    if enable_sink:
+        # Triton kernel limitation for sink: requires same qk/v head dim and head dim > 32
+        if head_dim_qk != head_dim_v or head_dim_qk < 32:
+            pytest.skip("Sink attention requires head_dim_qk == head_dim_v and head_dim >= 32")
+        if window_size_left != -1 and not causal:
+            pytest.skip("sink sliding window coverage only applies to causal attention")
+
+    torch.manual_seed(42)
+    torch.cuda.manual_seed_all(42)
+    window_size = (window_size_left, -1) if enable_sink and window_size_left != -1 else (-1, -1)
+
+    print(
+        f"\nDType={dtype}, B={batch}, SeqQ={seqlen_q}, SeqKV={seqlen_kv}, NHQ={num_head_q}, NHKV={num_head_kv}, "
+        f"HDQK={head_dim_qk}, HDV={head_dim_v}, Causal={causal}, Sink={enable_sink}, WindowLeft={window_size_left}, Format={qkv_format}"
+    )
+
+    if qkv_format == "sbhd":
+        q_layout = (seqlen_q, batch, num_head_q, head_dim_qk)
+        k_layout = (seqlen_kv, batch, num_head_kv, head_dim_qk)
+        v_layout = (seqlen_kv, batch, num_head_kv, head_dim_v)
+        o_layout = (seqlen_q, batch, num_head_q, head_dim_v)
+    elif qkv_format == "bhsd":
+        q_layout = (batch, num_head_q, seqlen_q, head_dim_qk)
+        k_layout = (batch, num_head_kv, seqlen_kv, head_dim_qk)
+        v_layout = (batch, num_head_kv, seqlen_kv, head_dim_v)
+        o_layout = (batch, num_head_q, seqlen_q, head_dim_v)
+    elif qkv_format == "bshd":
+        q_layout = (batch, seqlen_q, num_head_q, head_dim_qk)
+        k_layout = (batch, seqlen_kv, num_head_kv, head_dim_qk)
+        v_layout = (batch, seqlen_kv, num_head_kv, head_dim_v)
+        o_layout = (batch, seqlen_q, num_head_q, head_dim_v)
+    else:
+        raise AssertionError(f"Unsupported qkv format: {qkv_format}")
+
+    query = torch.randn(q_layout, device=device, dtype=dtype, requires_grad=True)
+    key = torch.randn(k_layout, device=device, dtype=dtype, requires_grad=True)
+    value = torch.randn(v_layout, device=device, dtype=dtype, requires_grad=True)
+    grad_out = torch.randn(o_layout, device=device, dtype=dtype)
+    query_ref = query.clone().detach().requires_grad_()
+    key_ref = key.clone().detach().requires_grad_()
+    value_ref = value.clone().detach().requires_grad_()
+    grad_out_ref = grad_out.clone().detach()
+
+    query_orig, key_orig, value_orig = query, key, value
+
+    if qkv_format == "sbhd":
+        query = query.permute(1, 0, 2, 3)
+        key = key.permute(1, 0, 2, 3)
+        value = value.permute(1, 0, 2, 3)
+        grad_out = grad_out.permute(1, 0, 2, 3)
+    elif qkv_format == "bhsd":
+        query = query.transpose(1, 2)
+        key = key.transpose(1, 2)
+        value = value.transpose(1, 2)
+        grad_out = grad_out.transpose(1, 2)
+
+    sm_scale = head_dim_qk ** (-0.5)
+
+    sink = None
+    sink_ref = None
+    if enable_sink:
+        sink = torch.randn((num_head_q,), device=device, dtype=torch.float32, requires_grad=True)
+
+    # Ahead of the reference, which is the expensive part and pointless for a combo the
+    # pinned backend does not implement (that case is covered by the refusal assert inside).
+    if not pinned_backend_takes(
+        backend,
+        q=query,
+        k=key,
+        v=value,
+        dropout_p=0.0,
+        softmax_scale=sm_scale,
+        causal=causal,
+        window_size=window_size,
+        bias=None,
+        alibi_slopes=None,
+        sink=sink,
+        qkv_format=_infer_qkv_format(query, key, value),
+    ):
+        return
+
+    if enable_sink:
+        sink_ref = sink.clone().detach().requires_grad_()
+        o_ref = attention_with_sink_ref_impl(
+            query_ref,
+            key_ref,
+            value_ref,
+            sink_ref,
+            sm_scale,
+            causal,
+            window_size=window_size,
+            qkv_format=qkv_format,
+        )
+    else:
+        o_ref = attention_vanilla_forward_pytorch_ref_impl(
+            query_ref, key_ref, value_ref, sm_scale, causal, qkv_format
+        )
+
+    o_ref.backward(grad_out_ref)
+    GlobalBackendManager.set_attn_backend(backend, PrecisionType.BF16_FP16_FP32)
+    try:
+        o = flash_attn_func(
+            query,
+            key,
+            value,
+            dropout_p=0.0,
+            softmax_scale=sm_scale,
+            causal=causal,
+            window_size=window_size,
+            bias=None,
+            alibi_slopes=None,
+            deterministic=False,
+            return_lse=False,
+            return_attn_probs=False,
+            sink=sink,
+        )
+    finally:
+        GlobalBackendManager.set_attn_backend(None, PrecisionType.BF16_FP16_FP32)
+    o.backward(grad_out)
+
+    torch.cuda.synchronize()
+
+    if qkv_format == "sbhd":
+        o_ref_cmp = o_ref.permute(1, 0, 2, 3).contiguous()
+    elif qkv_format == "bhsd":
+        o_ref_cmp = o_ref.transpose(1, 2).contiguous()
+    else:
+        o_ref_cmp = o_ref
+    out_snr = compute_snr(o_ref_cmp, o)
+    query_grad_snr = compute_snr(query_ref.grad, query_orig.grad)
+    key_grad_snr = compute_snr(key_ref.grad, key_orig.grad)
+    value_grad_snr = compute_snr(value_ref.grad, value_orig.grad)
+    sink_grad_snr = compute_snr(sink_ref.grad, sink.grad) if enable_sink else None
+    msg = f"out={out_snr:.2f}, dq={query_grad_snr:.2f}, dk={key_grad_snr:.2f}, dv={value_grad_snr:.2f}"
+    if enable_sink:
+        msg += f", dsink={sink_grad_snr:.2f}"
+    print(msg)
+
+    assert out_snr > 40, f"out_snr too low: {out_snr}"
+    assert query_grad_snr > 40, f"query_grad_snr too low: {query_grad_snr}"
+    assert key_grad_snr > 40, f"key_grad_snr too low: {key_grad_snr}"
+    assert value_grad_snr > 40, f"value_grad_snr too low: {value_grad_snr}"
+    # SNR threshold for sink grad is 5e-2, reference from aiter: https://github.com/ROCm/aiter/blob/c71075ceda2788004f1a6e02608e114137dee856/op_tests/triton_tests/attention/test_mha_with_sink.py#L151-L157
+    if sink_grad_snr is not None:
+        torch.testing.assert_close(
+            sink.grad,
+            sink_ref.grad,
+            atol=5e-2,
+            rtol=5e-2,
+            msg=lambda msg: f"sink_grad mismatch (snr={sink_grad_snr:.2f})\n\n{msg}\n",
+        )
+
+
+@pytest.mark.parametrize("batch", [1, 2, 3, 4])
+@pytest.mark.parametrize("dtype", [torch.bfloat16, torch.float16])
+@pytest.mark.parametrize("config", test_cases)
+@pytest.mark.parametrize("causal", [True, False])
+@pytest.mark.parametrize("backend", [None, BackendType.FLYDSL, BackendType.HIPKITTENS])
+@pytest.mark.skip(reason="Temporarily disabled due to external dependency issues.")
+@pytest.mark.deterministic
+def test_attention_16bit_deterministic(batch, dtype, config, causal, backend):
+    device = "cuda"
+    seqlen_q, seqlen_kv, num_head_q, num_head_kv, head_dim_qk, head_dim_v = (
+        config.seqlen_q,
+        config.seqlen_kv,
+        config.num_head_q,
+        config.num_head_kv,
+        config.head_dim_qk,
+        config.head_dim_v,
+    )
+
+    # NOTE: For `head_dim_qk != head_dim_v` (e.g. 192/128), this deterministic
+    # test currently fails; skip temporarily to keep CI green.
+    if head_dim_qk != head_dim_v:
+        pytest.skip("deterministic test currently fails when head_dim_qk != head_dim_v; skip temporarily")
+
+    torch.manual_seed(42)
+    torch.cuda.manual_seed_all(42)
+
+    print(
+        f"\n[deterministic] DType={dtype}, B={batch}, SeqQ={seqlen_q}, SeqKV={seqlen_kv}, "
+        f"NHQ={num_head_q}, NHKV={num_head_kv}, HDQK={head_dim_qk}, HDV={head_dim_v}, Causal={causal}"
+    )
+
+    q_layout = (batch, seqlen_q, num_head_q, head_dim_qk)
+    k_layout = (batch, seqlen_kv, num_head_kv, head_dim_qk)
+    v_layout = (batch, seqlen_kv, num_head_kv, head_dim_v)
+    o_layout = (batch, seqlen_q, num_head_q, head_dim_v)
+
+    q0 = torch.randn(q_layout, device=device, dtype=dtype)
+    k0 = torch.randn(k_layout, device=device, dtype=dtype)
+    v0 = torch.randn(v_layout, device=device, dtype=dtype)
+    grad_out = torch.randn(o_layout, device=device, dtype=dtype)
+
+    sm_scale = head_dim_qk ** (-0.5)
+
+    # Ahead of the reference, which is the expensive part and pointless for a combo the
+    # pinned backend does not implement (that case is covered by the refusal assert inside).
+    if not pinned_backend_takes(
+        backend,
+        q=q0,
+        k=k0,
+        v=v0,
+        dropout_p=0.0,
+        softmax_scale=sm_scale,
+        causal=causal,
+        window_size=(-1, -1),
+        bias=None,
+        alibi_slopes=None,
+        sink=None,
+        qkv_format="bshd",
+    ):
+        return
+
+    # Correctness check against reference implementation
+    q_ref = q0.clone().detach().requires_grad_()
+    k_ref = k0.clone().detach().requires_grad_()
+    v_ref = v0.clone().detach().requires_grad_()
+    o_ref = attention_vanilla_forward_pytorch_ref_impl(q_ref, k_ref, v_ref, sm_scale, causal)
+    o_ref.backward(grad_out)
+
+    def _run_once():
+        q = q0.clone().detach().requires_grad_()
+        k = k0.clone().detach().requires_grad_()
+        v = v0.clone().detach().requires_grad_()
+
+        o = flash_attn_func(
+            q,
+            k,
+            v,
+            dropout_p=0.0,
+            softmax_scale=sm_scale,
+            causal=causal,
+            window_size=(-1, -1),
+            bias=None,
+            alibi_slopes=None,
+            deterministic=True,
+            return_lse=False,
+            return_attn_probs=False,
+            sink=None,
+        )
+        o.backward(grad_out)
+        return (
+            o.detach(),
+            q.grad.detach(),
+            k.grad.detach(),
+            v.grad.detach(),
+        )
+
+    # Determinism check (bitwise identical across multiple runs).
+    repeats = 10
+    outs = []
+    GlobalBackendManager.set_attn_backend(backend, PrecisionType.BF16_FP16_FP32)
+    try:
+        for _ in range(repeats):
+            outs.append(_run_once())
+            torch.cuda.synchronize()
+    finally:
+        GlobalBackendManager.set_attn_backend(None, PrecisionType.BF16_FP16_FP32)
+
+    o1, dq1, dk1, dv1 = outs[0]
+    for i in range(1, repeats):
+        o_i, dq_i, dk_i, dv_i = outs[i]
+        torch.testing.assert_close(o1, o_i, rtol=0, atol=0)
+        torch.testing.assert_close(dq1, dq_i, rtol=0, atol=0)
+        torch.testing.assert_close(dk1, dk_i, rtol=0, atol=0)
+        torch.testing.assert_close(dv1, dv_i, rtol=0, atol=0)
+
+    # Correctness check (close to reference)
+    out_snr = compute_snr(o_ref, o1)
+    query_grad_snr = compute_snr(q_ref.grad, dq1)
+    key_grad_snr = compute_snr(k_ref.grad, dk1)
+    value_grad_snr = compute_snr(v_ref.grad, dv1)
+    print(
+        f"deterministic: out={out_snr:.2f}, dq={query_grad_snr:.2f}, dk={key_grad_snr:.2f}, dv={value_grad_snr:.2f}"
+    )
+    assert out_snr > 40, f"out_snr too low: {out_snr}"
+    assert query_grad_snr > 40, f"query_grad_snr too low: {query_grad_snr}"
+    assert key_grad_snr > 40, f"key_grad_snr too low: {key_grad_snr}"
+    assert value_grad_snr > 40, f"value_grad_snr too low: {value_grad_snr}"
+
+
+@pytest.mark.parametrize("batch", [4])
+@pytest.mark.parametrize("dtype", [torch.bfloat16, torch.float16])
+@pytest.mark.parametrize("config", test_cases)
+@pytest.mark.parametrize("causal", [True, False])
+def test_attention_fp8(batch, dtype, config, causal):
+    device = "cuda"
+    seqlen_q, seqlen_kv, num_head_q, num_head_kv, head_dim_qk, head_dim_v = (
+        config.seqlen_q,
+        config.seqlen_kv,
+        config.num_head_q,
+        config.num_head_kv,
+        config.head_dim_qk,
+        config.head_dim_v,
+    )
+
+    print(
+        f"\nDType={dtype}, B={batch}, SeqQ={seqlen_q}, SeqKV={seqlen_kv}, NHQ={num_head_q}, NHKV={num_head_kv}, HDQK={head_dim_qk}, HDV={head_dim_v}, Causal={causal}"
+    )
+
+    q_layout = (batch, seqlen_q, num_head_q, head_dim_qk)
+    k_layout = (batch, seqlen_kv, num_head_kv, head_dim_qk)
+    v_layout = (batch, seqlen_kv, num_head_kv, head_dim_v)
+    o_layout = (batch, seqlen_q, num_head_q, head_dim_v)
+
+    query = torch.randn(q_layout, device=device, dtype=dtype, requires_grad=True)
+    key = torch.randn(k_layout, device=device, dtype=dtype, requires_grad=True)
+    value = torch.randn(v_layout, device=device, dtype=dtype, requires_grad=True)
+    grad_out = torch.randn(o_layout, device=device, dtype=dtype)
+    query_ref = query.clone().detach().requires_grad_()
+    key_ref = key.clone().detach().requires_grad_()
+    value_ref = value.clone().detach().requires_grad_()
+
+    sm_scale = query.shape[-1] ** (-0.5)
+    o_ref = attention_vanilla_forward_pytorch_ref_impl(query_ref, key_ref, value_ref, sm_scale, causal)
+    o_ref.backward(grad_out)
+    o = flash_attn_fp8_func(
+        query,
+        key,
+        value,
+        dropout_p=0.0,
+        softmax_scale=sm_scale,
+        causal=causal,
+        window_size=(-1, -1),
+        bias=None,
+        alibi_slopes=None,
+        deterministic=False,
+        return_lse=False,
+        return_attn_probs=False,
+    )
+    o.backward(grad_out)
+    torch.cuda.synchronize()
+
+    out_snr = compute_snr(o_ref, o)
+    query_grad_snr = compute_snr(query_ref.grad, query.grad)
+    key_grad_snr = compute_snr(key_ref.grad, key.grad)
+    value_grad_snr = compute_snr(value_ref.grad, value.grad)
+    print(f"{out_snr:.2f}", f"{query_grad_snr:.2f}", f"{key_grad_snr:.2f}", f"{value_grad_snr:.2f}")
+    assert out_snr > 20, "out_snr too low"
+    assert query_grad_snr > 20, "query_grad_snr too low"
+    assert key_grad_snr > 20, "key_grad_snr too low"
+    assert value_grad_snr > 20, "value_grad_snr too low"
+
+
+@pytest.mark.parametrize("batch", [4])
+@pytest.mark.parametrize("config", test_cases)
+@pytest.mark.parametrize("causal", [True, False])
+def test_attention_fp8_with_sparse_do(batch, config, causal):
+    # regression test for https://ontrack-internal.amd.com/browse/SWDEV-548136
+    device = "cuda"
+    torch.manual_seed(1234)
+
+    dtype = torch.bfloat16
+    seqlen_q, seqlen_kv, num_head_q, num_head_kv, head_dim_qk, head_dim_v = (
+        config.seqlen_q,
+        config.seqlen_kv,
+        config.num_head_q,
+        config.num_head_kv,
+        config.head_dim_qk,
+        config.head_dim_v,
+    )
+    q_shape = (batch, seqlen_q, num_head_q, head_dim_qk)
+    k_shape = (batch, seqlen_kv, num_head_kv, head_dim_qk)
+    v_shape = (batch, seqlen_kv, num_head_kv, head_dim_v)
+    do_shape = (batch, seqlen_q, num_head_q, head_dim_v)
+
+    do = torch.randn(do_shape, device=device, dtype=dtype) * 1e-3
+    do_mask_0 = (torch.randn(do_shape[:-2], device=device, dtype=dtype) > 0.9).unsqueeze(-1).unsqueeze(-1)
+    do_mask_1 = (torch.randn(do_shape[:-1], device=device, dtype=dtype) > 0.9).unsqueeze(-1)
+    do = do * do_mask_0 * do_mask_1
+
+    q = torch.randn(q_shape, device=device, dtype=dtype)
+    k = torch.randn(k_shape, device=device, dtype=dtype)
+    v = torch.randn(v_shape, device=device, dtype=dtype)
+
+    sm_scale = q.shape[-1] ** -0.5
+
+    q_fp8, q_descale = block_scaling_node(q, True)
+    k_fp8, k_descale = block_scaling_node(k, True)
+    v_fp8, v_descale = block_scaling_node(v, True)
+
+    o, softmax_lse, _ = attention_triton_forward_impl(
+        q_fp8,
+        k_fp8,
+        v_fp8,
+        F8_FWD_MAX,
+        q_descale,
+        k_descale,
+        v_descale,
+        0,
+        sm_scale,
+        causal,
+        -1,
+        -1,
+        None,
+        None,
+        False,
+        True,
+    )
+
+    dq, dk, dv = attention_triton_backward_impl(
+        do,
+        q,
+        k,
+        v,
+        o,
+        torch.scalar_tensor(1.0, device=device),
+        torch.scalar_tensor(1.0, device=device),
+        torch.scalar_tensor(1.0, device=device),
+        1.0,
+        softmax_lse,
+        None,
+        None,
+        None,
+        None,
+        None,
+        q_fp8.shape[1],
+        k_fp8.shape[1],
+        sm_scale,
+        causal,
+        -1,
+        -1,
+        None,
+        False,
+    )
+
+    dq_fp8, dk_fp8, dv_fp8 = attention_triton_backward_impl(
+        do,
+        q_fp8,
+        k_fp8,
+        v_fp8,
+        o,
+        q_descale,
+        k_descale,
+        v_descale,
+        F8_FWD_MAX,
+        softmax_lse,
+        None,
+        None,
+        None,
+        None,
+        None,
+        q_fp8.shape[1],
+        k_fp8.shape[1],
+        sm_scale,
+        causal,
+        -1,
+        -1,
+        None,
+        True,
+    )
+
+    dq_snr = compute_snr(dq, dq_fp8)
+    dk_snr = compute_snr(dk, dk_fp8)
+    dv_snr = compute_snr(dv, dv_fp8)
+    print(f"dq_snr: {dq_snr}, dk_snr: {dk_snr}, dv_snr: {dv_snr}")
+    assert dq_snr > 15, "query_grad_snr too low"
+    assert dk_snr > 15, "key_grad_snr too low"
+    assert dv_snr > 15, "value_grad_snr too low"
+
+
+@pytest.mark.parametrize("qkv_format", ["bshd", "sbhd", "bhsd"])
+def test_attention_fake_kernel_strides(qkv_format):
+    """Verify that torch.compile sees correct output strides for every qkv_format.
+
+    The fake (meta) kernel must produce output tensors whose strides match the
+    eager kernel so that torch.compile's shape/stride propagation is correct.
+    """
+    device = "cuda"
+    dtype = torch.bfloat16
+    batch, seq_q, seq_kv, num_heads, head_dim = 2, 32, 32, 4, 64
+
+    if qkv_format == "sbhd":
+        q = torch.randn(seq_q, batch, num_heads, head_dim, device=device, dtype=dtype).permute(1, 0, 2, 3)
+        k = torch.randn(seq_kv, batch, num_heads, head_dim, device=device, dtype=dtype).permute(1, 0, 2, 3)
+        v = torch.randn(seq_kv, batch, num_heads, head_dim, device=device, dtype=dtype).permute(1, 0, 2, 3)
+    elif qkv_format == "bhsd":
+        q = torch.randn(batch, num_heads, seq_q, head_dim, device=device, dtype=dtype).transpose(1, 2)
+        k = torch.randn(batch, num_heads, seq_kv, head_dim, device=device, dtype=dtype).transpose(1, 2)
+        v = torch.randn(batch, num_heads, seq_kv, head_dim, device=device, dtype=dtype).transpose(1, 2)
+    else:
+        q = torch.randn(batch, seq_q, num_heads, head_dim, device=device, dtype=dtype)
+        k = torch.randn(batch, seq_kv, num_heads, head_dim, device=device, dtype=dtype)
+        v = torch.randn(batch, seq_kv, num_heads, head_dim, device=device, dtype=dtype)
+
+    out_eager = flash_attn_func(q, k, v, causal=True)
+    eager_strides = out_eager.stride()
+
+    torch._dynamo.reset()
+
+    @torch.compile(fullgraph=True)
+    def fn(q, k, v):
+        return flash_attn_func(q, k, v, causal=True)
+
+    out_compiled = fn(q, k, v)
+
+    assert out_compiled.stride() == eager_strides, (
+        f"Stride mismatch for qkv_format={qkv_format}: "
+        f"compiled={out_compiled.stride()}, eager={eager_strides}"
+    )
+    assert out_compiled.shape == out_eager.shape
+
+
+# ============================================================================
+# DeepSeek-V4 single-latent sparse-MLA attention (flydsl, gfx950/MI355X).
+# ============================================================================
+
+# Fixed dims: kv_lora_rank (single latent, K == V) + rope pad; SWA local window.
+SPARSE_MLA_ROPE_DIM = 64
+SPARSE_MLA_HEAD_DIM = 512
+SPARSE_MLA_SWA_WINDOW = 128
+# (variant -> num_heads, index-topk cap). cr spans pure-SWA / random-pool / deterministic-pool (HCA).
+SPARSE_MLA_VARIANTS = {"flash": (64, 512), "pro": (128, 1024)}
+
+
+def _sparse_mla_topk(variant, cr, seqlen):
+    if cr == 0:
+        return 0, 0, SPARSE_MLA_SWA_WINDOW
+    if cr == 4:
+        pool = max(seqlen // 4, 1)
+        topk_pool = min(SPARSE_MLA_VARIANTS[variant][1], pool)
+        return pool, topk_pool, SPARSE_MLA_SWA_WINDOW + topk_pool
+    pool = max(seqlen // cr, 1)
+    return pool, 0, SPARSE_MLA_SWA_WINDOW + pool
+
+
+def _build_sparse_mla(cr, num_heads, seqlen, pool, topk_pool, seed=0):
+    """DSV4 sparse-MLA inputs: single-latent kv, per-token top-k (SWA band + optional pool),
+    zero-padded rope cols, random sink / grad_out."""
+    gen = torch.Generator(device="cuda").manual_seed(seed)
+    dev, dt, d, w = "cuda", torch.bfloat16, SPARSE_MLA_HEAD_DIM, SPARSE_MLA_SWA_WINDOW
+    latent = torch.randn(seqlen, d, generator=gen, device=dev, dtype=dt)
+    q = torch.randn(seqlen, num_heads, d, generator=gen, device=dev, dtype=dt)
+    q = torch.cat([q, torch.zeros(seqlen, num_heads, SPARSE_MLA_ROPE_DIM, device=dev, dtype=dt)], -1)
+    sink = torch.randn(num_heads, generator=gen, device=dev, dtype=torch.float32) * 0.1
+    grad_out = torch.randn(seqlen, num_heads, d, generator=gen, device=dev, dtype=dt)
+
+    tok = torch.arange(seqlen, device=dev).view(seqlen, 1)
+    win = tok - w + 1 + torch.arange(w, device=dev).view(1, w)
+    win = torch.where(win >= 0, win, torch.full_like(win, -1))
+    if cr == 0:
+        kv = latent.unsqueeze(1)
+        topk = win
+    else:
+        p = torch.randn(pool, d, generator=gen, device=dev, dtype=dt)
+        kv = torch.cat([latent, p], 0).unsqueeze(1)
+        if cr == 4:
+            pool_topk = seqlen + torch.randint(0, pool, (seqlen, topk_pool), generator=gen, device=dev)
+        else:
+            ps = torch.arange(pool, device=dev).view(1, pool)
+            pool_topk = torch.where(
+                ((ps + 1) * cr - 1) <= tok, seqlen + ps, torch.full_like(ps.expand(seqlen, pool), -1)
+            )
+        topk = torch.cat([win, pool_topk], 1)
+    pad = ((topk.shape[1] + 63) // 64) * 64 - topk.shape[1]
+    if pad > 0:
+        topk = torch.cat([topk, torch.full((seqlen, pad), -1, device=dev, dtype=topk.dtype)], 1)
+    kv = torch.cat([kv, torch.zeros(kv.shape[0], 1, SPARSE_MLA_ROPE_DIM, device=dev, dtype=dt)], -1)
+    return q.contiguous(), kv.contiguous(), topk.to(torch.int32).contiguous(), sink, grad_out
+
+
+@pytest.mark.skipif(
+    not (torch.cuda.is_available() and is_gfx950()), reason="sparse-MLA (flydsl) is gfx950-only"
+)
+@pytest.mark.parametrize("seqlen", [512, 1024, 2048])
+@pytest.mark.parametrize("variant", ["flash", "pro"])
+@pytest.mark.parametrize("cr", [0, 4, 128])
+@pytest.mark.parametrize("backend", [None, BackendType.FLYDSL, BackendType.TRITON])
+@pytest.mark.parametrize("auto_tune", [False, True])
+def test_sparse_mla_op(variant, cr, seqlen, backend, auto_tune):
+    """Public multi-backend training op ``sparse_mla_func``, against the triton kernels called
+    directly as oracle. Covers the pure-SWA (cr=0), random-pool (cr=4) and
+    deterministic-pool/HCA (cr=128) paths; seqlen=512 also exercises the cr=4 small-seq
+    dkv-dispatch guard."""
+    # Skip redundant test: auto_tune is ignored when backend is explicitly specified
+    if backend is not None and auto_tune:
+        pytest.skip("auto_tune is ignored when backend is explicitly specified")
+
+    d = SPARSE_MLA_HEAD_DIM
+    num_heads = SPARSE_MLA_VARIANTS[variant][0]
+    pool, topk_pool, _ = _sparse_mla_topk(variant, cr, seqlen)
+    scale = 1.0 / math.sqrt(d)
+    q, kv, topk_idx, sink, grad_out = _build_sparse_mla(cr, num_heads, seqlen, pool, topk_pool)
+
+    # Oracle: the triton kernels called directly, outside the op.
+    out_ref, lse_ref = sparse_mla_fwd_triton(q, kv, topk_idx, attn_sink=sink, kv_lora_rank=d, scale=scale)
+    dq_ref, dkv_ref, dsink_ref = sparse_mla_bwd_triton(
+        q, kv, out_ref, grad_out, topk_idx, lse_ref, attn_sink=sink, kv_lora_rank=d, scale=scale
+    )
+    # Pinned TRITON is the oracle's own kernels; FLYDSL is a separate bf16 implementation.
+    snr_floor = 60.0 if backend == BackendType.TRITON else 40.0
+
+    GlobalBackendManager.set_sparse_attn_backend(backend, PrecisionType.BF16_FP16_FP32)
+    GlobalBackendManager.set_auto_tune(auto_tune)
+
+    def _run_op():
+        qg = q.clone().requires_grad_(True)
+        kvg = kv.clone().requires_grad_(True)
+        sg = sink.clone().requires_grad_(True)
+        o = sparse_mla_func(qg, kvg, topk_idx, attn_sink=sg, kv_lora_rank=d, scale=scale)
+        o.backward(grad_out)
+        return o, qg.grad, kvg.grad, sg.grad
+
+    try:
+        out, dq, dkv, dsink = _run_op()
+        assert torch.isfinite(out).all(), "op forward produced non-finite values"
+        assert compute_snr(out_ref, out) > snr_floor, f"op fwd SNR <= {snr_floor}"
+        assert compute_snr(dq_ref, dq) > snr_floor, f"op dq SNR <= {snr_floor}"
+        assert compute_snr(dkv_ref, dkv) > snr_floor, f"op dkv SNR <= {snr_floor}"
+        assert compute_snr(dsink_ref, dsink) > snr_floor, f"op dsink SNR <= {snr_floor}"
+
+        # Determinism: one WG owns each output tile (no float atomics), so a re-run is bit-exact.
+        out2, dq2, dkv2, dsink2 = _run_op()
+        assert torch.equal(out, out2), "op forward is not deterministic"
+        assert torch.equal(dq, dq2), "op dq is not deterministic"
+        assert torch.equal(dkv, dkv2), "op dkv is not deterministic"
+        assert torch.equal(dsink, dsink2), "op dsink is not deterministic"
+
+        # Each pass owns a dispatcher, so auto-tune has to leave a winner in both tune caches.
+        if auto_tune:
+            assert len(SparseMlaFwdDispatcher._cache) == 1, "forward was not auto-tuned"
+            assert len(SparseMlaBwdDispatcher._cache) == 1, "backward was not auto-tuned"
+    finally:
+        GlobalBackendManager.reset()
+
+
+# =============================================================================
+# HipKittens attention (gfx950). The shape families the kernels were tuned against.
+#
+# The backend axis above already crosses HipKittens with the shared table, which is what
+# covers its eligibility and its refusals. What that table does not have is the two shape
+# families these kernels were measured on, so they live here: the rectangular/windowed meta
+# configs, and the head structures real pretrains run at.
+# =============================================================================
+
+hipkittens_only = pytest.mark.skipif(
+    not (torch.cuda.is_available() and is_gfx950()),
+    reason="HipKittens attention is gfx950-only",
+)
+
+# (Hq, Hkv, Sq, Skv, window_left), each run full-causal and windowed. Run at 1/8 the measured
+# sequence lengths: the fp32 reference materialises a whole [B, Hq, Sq, Skv] score matrix,
+# which at the real lengths cannot share a device with anything else. The head structure, the
+# rectangular ratios and the window are what this set covers, and all three survive the
+# scale-down.
+_HK_META = [
+    (128, 16, 2048, 16384, 2048),
+    (128, 16, 4096, 16384, 2048),
+    (128, 16, 8192, 16384, 2048),
+    (128, 16, 16384, 16384, 2048),
+    (48, 6, 4096, 4096, 2047),
+    (48, 6, 4096, 8192, 2047),
+    (48, 6, 4096, 12288, 2047),
+    (48, 6, 4096, 16384, 2047),
+    (64, 8, 1024, 1024, 2047),
+    (64, 8, 1024, 16384, 2047),
+]
+_HK_META_SCALE = 8
+
+_HK_META_CASES = []
+for _hq, _hkv, _sq, _skv, _w in _HK_META:
+    _sq_s, _skv_s = _sq // _HK_META_SCALE, _skv // _HK_META_SCALE
+    _HK_META_CASES.append((_hq, _hkv, _sq_s, _skv_s, -1))
+    _HK_META_CASES.append((_hq, _hkv, _sq_s, _skv_s, max(1, _w // _HK_META_SCALE)))
+
+# (Hq, Hkv) of eleven real pretrain configs, deduplicated to eight -- an average over this set
+# is meant to become an accept metric, and a set that measures one shape twice silently gives
+# it double weight. All head dim 128; gpt-oss is excluded as head dim 64, which the meta set
+# above already covers.
+_HK_MODEL_HEADS = [
+    (40, 8),  # llama4_17B128E, llama4_17B16E
+    (48, 8),  # minimax_m2.5
+    (64, 4),  # qwen3_235B_A22B
+    (32, 4),  # qwen3_30B_A3B
+    (32, 8),  # lfm2_8B_A1B, mixtral_8x7B_v0.1
+    (16, 16),  # deepseek_v2_lite (MHA)
+    (64, 8),  # grok2
+    (48, 8),  # grok1, mixtral_8x22B_v0.1
+]
+_HK_MODEL_SEQLEN = 1024
+
+
+def _hk_ref(q, k, v, window_left, scale):
+    """fp32 reference over SBHD tensors, bottom-right aligned.
+
+    Not attention_vanilla_forward_pytorch_ref_impl: that takes the op's [b, s, h, d] view,
+    and these kernels are driven directly here in their own layout.
+    """
+    Sq, _, Hq, _ = q.shape
+    Skv, _, Hkv, _ = k.shape
+    g = Hq // Hkv
+    qf = q.float().permute(1, 2, 0, 3)
+    kf = k.float().permute(1, 2, 0, 3).repeat_interleave(g, 1)
+    vf = v.float().permute(1, 2, 0, 3).repeat_interleave(g, 1)
+    s = (qf @ kf.transpose(-1, -2)) * scale
+    off = Skv - Sq
+    qi = torch.arange(Sq, device=q.device)[:, None]
+    ki = torch.arange(Skv, device=q.device)[None, :]
+    keep = ki <= qi + off
+    if window_left >= 0:
+        keep &= ki >= qi + off - window_left
+    p = torch.softmax(s.masked_fill(~keep, float("-inf")), dim=-1)
+    return (p @ vf).permute(2, 0, 1, 3)
+
+
+def _run_hk_case(Sq, Skv, B, Hq, Hkv, D, window_left, bar=40.0):
+    from primus_turbo.hipkittens.attention import (
+        hipkittens_attn_backward,
+        hipkittens_attn_forward,
+    )
+
+    torch.manual_seed(0)
+    scale = D**-0.5
+
+    def mk(s, h):
+        return torch.randn(s, B, h, D, device="cuda", dtype=torch.bfloat16) * 0.5
+
+    q, k, v = mk(Sq, Hq), mk(Skv, Hkv), mk(Skv, Hkv)
+    out, lse = hipkittens_attn_forward(q, k, v, scale, True, (window_left, 0))
+    assert out.shape == q.shape
+    assert lse.shape == (B, Hq, 1, Sq)
+    assert compute_snr(_hk_ref(q, k, v, window_left, scale), out) > bar, "forward SNR too low"
+
+    dout = torch.randn_like(out)
+    dq, dk, dv = hipkittens_attn_backward(dout, q, k, v, out, lse, scale, True, (window_left, 0))
+    assert (dq.shape, dk.shape, dv.shape) == (q.shape, k.shape, v.shape)
+
+    qd, kd, vd = (t.detach().clone().float().requires_grad_(True) for t in (q, k, v))
+    _hk_ref(qd, kd, vd, window_left, scale).backward(dout.float())
+    for name, ref_g, got in (("dq", qd.grad, dq), ("dk", kd.grad, dk), ("dv", vd.grad, dv)):
+        assert compute_snr(ref_g, got) > bar, f"{name} SNR too low"
+
+
+@hipkittens_only
+@pytest.mark.parametrize("Hq, Hkv, Sq, Skv, window_left", _HK_META_CASES, ids=str)
+def test_attention_hipkittens_meta_shapes(Hq, Hkv, Sq, Skv, window_left):
+    """Rectangular Sq < Skv, GQA, full-causal and sliding-window, head dim 64."""
+    _run_hk_case(Sq, Skv, 1, Hq, Hkv, 64, window_left)
+
+
+@hipkittens_only
+@pytest.mark.parametrize("batch", [1, 2, 4])
+@pytest.mark.parametrize("heads", _HK_MODEL_HEADS, ids=lambda h: f"H{h[0]}x{h[1]}")
+def test_attention_hipkittens_model_shapes(heads, batch):
+    """Head dim 128, square, full causal -- the head structures real pretrains run at, over
+    the batches the benchmark sweeps. Small batches change the grid and hence which CTAs are
+    masked at the causal boundary, so this is not redundant with the head sweep."""
+    Hq, Hkv = heads
+    _run_hk_case(_HK_MODEL_SEQLEN, _HK_MODEL_SEQLEN, batch, Hq, Hkv, 128, -1)
+
+
+@hipkittens_only
+def test_attention_hipkittens_deterministic():
+    """Same inputs must give bit-identical results across launches, forward and backward.
+
+    Constructive rather than hopeful: one workgroup owns each output tile, there are no float
+    atomics, and the split-K partials are folded in a fixed band order.
+    """
+    from primus_turbo.hipkittens.attention import (
+        hipkittens_attn_backward,
+        hipkittens_attn_forward,
+    )
+
+    D, S, B, Hq, Hkv = 128, 1024, 2, 32, 4
+    torch.manual_seed(0)
+    scale = D**-0.5
+    q = torch.randn(S, B, Hq, D, device="cuda", dtype=torch.bfloat16)
+    k = torch.randn(S, B, Hkv, D, device="cuda", dtype=torch.bfloat16)
+    v = torch.randn(S, B, Hkv, D, device="cuda", dtype=torch.bfloat16)
+
+    o1, l1 = hipkittens_attn_forward(q, k, v, scale, True, (-1, 0))
+    o2, l2 = hipkittens_attn_forward(q, k, v, scale, True, (-1, 0))
+    assert torch.equal(o1, o2) and torch.equal(l1, l2), "forward is not run-to-run deterministic"
+
+    do = torch.randn_like(o1)
+    g1 = hipkittens_attn_backward(do, q, k, v, o1, l1, scale, True, (-1, 0))
+    g2 = hipkittens_attn_backward(do, q, k, v, o1, l1, scale, True, (-1, 0))
+    for name, a, b in zip(("dq", "dk", "dv"), g1, g2):
+        assert torch.equal(a, b), f"{name} is not run-to-run deterministic"
+
+
+@hipkittens_only
+@pytest.mark.parametrize(
+    "case, needle",
+    [
+        ("fp16", "bf16"),
+        ("non_causal", "causal"),
+        ("sink", "sink"),
+        ("right_window", "left window"),
+        ("head_dim", "head dim"),
+        ("sq_gt_skv", "Sq > Skv"),
+        ("varlen", "varlen"),
+        ("non_contiguous", "contiguous"),
+    ],
+)
+def test_attention_hipkittens_envelope(case, needle):
+    """Everything outside the envelope must be refused with a reason, not computed wrongly.
+
+    These kernels read out of bounds or leave output unwritten rather than failing, so the
+    checks are load-bearing. Two are worth naming: fp16 would be reinterpreted bit-for-bit
+    because the kernels declare gl<bf16, ...>, and Sq > Skv leaves the leading Sq - Skv query
+    rows -- which attend to no key at all -- unwritten by the forward.
+    """
+    from primus_turbo.hipkittens.attention import hipkittens_attn_supported
+
+    dtype = torch.float16 if case == "fp16" else torch.bfloat16
+    D = 32 if case == "head_dim" else 64
+    Sq, Skv = (256, 128) if case == "sq_gt_skv" else (128, 128)
+    kw = dict(causal=True, window_size=(-1, -1))
+
+    if case == "varlen":
+        t = torch.randn(1024, 8, D, device="cuda", dtype=dtype)  # THD packing is 3-D
+        q = k = v = t
+    else:
+        q = torch.randn(Sq, 1, 8, D, device="cuda", dtype=dtype)
+        k = v = torch.randn(Skv, 1, 8, D, device="cuda", dtype=dtype)
+
+    if case == "non_causal":
+        kw["causal"] = False
+    elif case == "sink":
+        kw["sink"] = torch.zeros(8, device="cuda", dtype=torch.float32)
+    elif case == "right_window":
+        kw["window_size"] = (64, 64)
+    elif case == "non_contiguous":
+        q = torch.randn(Sq, 2, 8, D, device="cuda", dtype=dtype).transpose(0, 1)
+        k = v = torch.randn(Skv, 2, 8, D, device="cuda", dtype=dtype)
+
+    ok, why = hipkittens_attn_supported(q, k, v, **kw)
+    assert not ok and needle in why, f"expected a refusal mentioning {needle!r}, got {ok} / {why!r}"

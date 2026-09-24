@@ -1,0 +1,33 @@
+{
+    "single_input_configs": [
+        {
+            "batch_size": 16,
+            "height": 128,
+            "width": 128
+        }
+    ],
+    "single_init_configs": [
+        {
+            "out_channels": 64,
+            "stride": 1,
+            "padding": 0,
+            "output_padding": 0,
+            "groups": 1,
+            "bias": false
+        }
+    ],
+    "single_shared_configs": [
+        {
+            "in_channels": 32
+        }
+    ],
+    "multi_input_configs": [
+        {}
+    ],
+    "multi_init_configs": [
+        {}
+    ],
+    "multi_shared_configs": [
+        {}
+    ]
+}

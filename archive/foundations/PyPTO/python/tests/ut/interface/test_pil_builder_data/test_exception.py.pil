@@ -1,0 +1,1168 @@
+#!/usr/bin/env python3
+# coding: utf-8
+# Copyright (c) 2026 CANN community contributors.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+from .test_pil_builder_utils import Expr
+from .test_pil_builder_utils import PILTestCase
+
+class RaiseTest(PILTestCase):
+
+    def test_raise_bare(self):
+        try:
+            _pil_0 = Expr.TypeA
+            _pil_1 = _pil_0(0)
+            raise _pil_1
+        except Exception as _pil_2:
+            _pil_8 = Expr.TypeA
+            _pil_9 = isinstance(_pil_2, _pil_8)
+            if _pil_9:
+                try:
+                    raise
+                except Exception as _pil_3:
+                    _pil_6 = Expr.TypeA
+                    _pil_7 = isinstance(_pil_3, _pil_6)
+                    if _pil_7:
+                        _pil_4 = Expr.str
+                        _pil_5 = _pil_4(1)
+                    else:
+                        raise
+            else:
+                raise
+        _pil_10 = self.assertEqual
+        _pil_11 = Expr.trace
+        _pil_13 = ('error', 0)
+        _pil_14 = ('str', 1)
+        _pil_12 = [_pil_13, _pil_14]
+        _pil_15 = _pil_10(_pil_11, _pil_12)
+        _pil_16 = self.assertEqual
+        _pil_17 = self.get_var
+        _pil_18 = locals()
+        _pil_19 = _pil_17(_pil_18)
+        _pil_20 = {}
+        _pil_21 = _pil_16(_pil_19, _pil_20)
+
+    def test_raise_bare_simple(self):
+        try:
+            try:
+                _pil_22 = Expr.TypeA
+                _pil_23 = _pil_22(0)
+                raise _pil_23
+            except Exception as _pil_24:
+                _pil_25 = Expr.TypeA
+                _pil_26 = isinstance(_pil_24, _pil_25)
+                if _pil_26:
+                    raise
+                else:
+                    raise
+        except Exception as _pil_27:
+            _pil_31 = Expr.TypeA
+            _pil_32 = isinstance(_pil_27, _pil_31)
+            if _pil_32:
+                e = _pil_27
+                _pil_28 = Expr.int
+                _pil_29 = e.value
+                _pil_30 = _pil_28(_pil_29)
+                del e
+            else:
+                raise
+        _pil_33 = self.assertEqual
+        _pil_34 = Expr.trace
+        _pil_36 = ('error', 0)
+        _pil_37 = ('int', 0)
+        _pil_35 = [_pil_36, _pil_37]
+        _pil_38 = _pil_33(_pil_34, _pil_35)
+        _pil_39 = self.assertEqual
+        _pil_40 = self.get_var
+        _pil_41 = locals()
+        _pil_42 = _pil_40(_pil_41)
+        _pil_43 = {}
+        _pil_44 = _pil_39(_pil_42, _pil_43)
+
+    def test_raise_name(self):
+        try:
+            _pil_45 = Expr.TypeA
+            _pil_46 = _pil_45(0)
+            exc = _pil_46
+            raise exc
+        except Exception as _pil_47:
+            _pil_51 = Expr.TypeA
+            _pil_52 = isinstance(_pil_47, _pil_51)
+            if _pil_52:
+                e = _pil_47
+                _pil_48 = Expr.int
+                _pil_49 = e.value
+                _pil_50 = _pil_48(_pil_49)
+                del e
+            else:
+                raise
+        _pil_53 = self.assertEqual
+        _pil_54 = Expr.trace
+        _pil_56 = ('error', 0)
+        _pil_57 = ('int', 0)
+        _pil_55 = [_pil_56, _pil_57]
+        _pil_58 = _pil_53(_pil_54, _pil_55)
+        _pil_59 = self.assertEqual
+        _pil_60 = self.get_var
+        _pil_61 = locals()
+        _pil_62 = _pil_60(_pil_61)
+        _pil_63 = {}
+        _pil_64 = _pil_59(_pil_62, _pil_63)
+
+    def test_raise_attribute(self):
+        _pil_65 = Expr(0)
+        var_obj = _pil_65
+        _pil_66 = Expr.TypeB
+        _pil_67 = _pil_66(1)
+        var_obj.val = _pil_67
+        try:
+            _pil_68 = var_obj.val
+            raise _pil_68
+        except Exception as _pil_69:
+            _pil_73 = Expr.TypeB
+            _pil_74 = isinstance(_pil_69, _pil_73)
+            if _pil_74:
+                e = _pil_69
+                _pil_70 = Expr.int
+                _pil_71 = e.value
+                _pil_72 = _pil_70(_pil_71)
+                del e
+            else:
+                raise
+        _pil_75 = self.assertEqual
+        _pil_76 = Expr.trace
+        _pil_77 = list(_pil_76)
+        _pil_79 = ('init', 0)
+        _pil_80 = ('error', 1)
+        _pil_82 = Expr.TypeB
+        _pil_83 = _pil_82(1)
+        _pil_81 = ('setattr', 0, 'val', _pil_83)
+        _pil_84 = ('getattr', 0, 'val')
+        _pil_85 = ('int', 1)
+        _pil_78 = [_pil_79, _pil_80, _pil_81, _pil_84, _pil_85]
+        _pil_86 = _pil_75(_pil_77, _pil_78)
+        _pil_87 = self.assertEqual
+        _pil_88 = self.get_var
+        _pil_89 = locals()
+        _pil_90 = _pil_88(_pil_89)
+        _pil_91 = {}
+        _pil_92 = Expr.TypeB
+        _pil_93 = _pil_92(1)
+        _pil_94 = {'val': _pil_93}
+        _pil_95 = Expr(0, _pil_91, _pil_94)
+        _pil_96 = {'var_obj': _pil_95}
+        _pil_97 = _pil_87(_pil_90, _pil_96)
+
+    def test_raise_subscript(self):
+        _pil_98 = Expr(0)
+        var_obj = _pil_98
+        _pil_99 = Expr.TypeC
+        _pil_100 = _pil_99(2)
+        _pil_101 = Expr.str
+        _pil_102 = _pil_101(1)
+        var_obj[_pil_102] = _pil_100
+        try:
+            _pil_103 = Expr.str
+            _pil_104 = _pil_103(1)
+            _pil_105 = var_obj[_pil_104]
+            raise _pil_105
+        except Exception as _pil_106:
+            _pil_110 = Expr.TypeC
+            _pil_111 = isinstance(_pil_106, _pil_110)
+            if _pil_111:
+                e = _pil_106
+                _pil_107 = Expr.int
+                _pil_108 = e.value
+                _pil_109 = _pil_107(_pil_108)
+                del e
+            else:
+                raise
+        _pil_112 = self.assertEqual
+        _pil_113 = Expr.trace
+        _pil_114 = list(_pil_113)
+        _pil_116 = ('init', 0)
+        _pil_117 = ('error', 2)
+        _pil_118 = ('str', 1)
+        _pil_120 = Expr.TypeC
+        _pil_121 = _pil_120(2)
+        _pil_119 = ('setitem', 0, 'str(1)', _pil_121)
+        _pil_122 = ('str', 1)
+        _pil_123 = ('getitem', 0, 'str(1)')
+        _pil_124 = ('int', 2)
+        _pil_115 = [_pil_116, _pil_117, _pil_118, _pil_119, _pil_122, _pil_123, _pil_124]
+        _pil_125 = _pil_112(_pil_114, _pil_115)
+        _pil_126 = self.assertEqual
+        _pil_127 = self.get_var
+        _pil_128 = locals()
+        _pil_129 = _pil_127(_pil_128)
+        _pil_130 = Expr.TypeC
+        _pil_131 = _pil_130(2)
+        _pil_132 = {'str(1)': _pil_131}
+        _pil_133 = {}
+        _pil_134 = Expr(0, _pil_132, _pil_133)
+        _pil_135 = {'var_obj': _pil_134}
+        _pil_136 = _pil_126(_pil_129, _pil_135)
+
+    def test_raise_ifexp_true(self):
+        try:
+            _pil_137 = Expr.true
+            _pil_138 = _pil_137(1)
+            if _pil_138:
+                _pil_139 = Expr.TypeA
+                _pil_140 = _pil_139(0)
+                _pil_143 = _pil_140
+            else:
+                _pil_141 = Expr.TypeB
+                _pil_142 = _pil_141(2)
+                _pil_143 = _pil_142
+            raise _pil_143
+        except Exception as _pil_144:
+            _pil_148 = Expr.TypeA
+            _pil_149 = isinstance(_pil_144, _pil_148)
+            if _pil_149:
+                e = _pil_144
+                _pil_145 = Expr.int
+                _pil_146 = e.value
+                _pil_147 = _pil_145(_pil_146)
+                del e
+            else:
+                raise
+        _pil_150 = self.assertEqual
+        _pil_151 = Expr.trace
+        _pil_153 = ('true', 1)
+        _pil_154 = ('error', 0)
+        _pil_155 = ('int', 0)
+        _pil_152 = [_pil_153, _pil_154, _pil_155]
+        _pil_156 = _pil_150(_pil_151, _pil_152)
+        _pil_157 = self.assertEqual
+        _pil_158 = self.get_var
+        _pil_159 = locals()
+        _pil_160 = _pil_158(_pil_159)
+        _pil_161 = {}
+        _pil_162 = _pil_157(_pil_160, _pil_161)
+
+    def test_raise_ifexp_false(self):
+        try:
+            _pil_163 = Expr.false
+            _pil_164 = _pil_163(1)
+            if _pil_164:
+                _pil_165 = Expr.TypeA
+                _pil_166 = _pil_165(0)
+                _pil_169 = _pil_166
+            else:
+                _pil_167 = Expr.TypeB
+                _pil_168 = _pil_167(2)
+                _pil_169 = _pil_168
+            raise _pil_169
+        except Exception as _pil_170:
+            _pil_174 = Expr.TypeB
+            _pil_175 = isinstance(_pil_170, _pil_174)
+            if _pil_175:
+                e = _pil_170
+                _pil_171 = Expr.int
+                _pil_172 = e.value
+                _pil_173 = _pil_171(_pil_172)
+                del e
+            else:
+                raise
+        _pil_176 = self.assertEqual
+        _pil_177 = Expr.trace
+        _pil_179 = ('false', 1)
+        _pil_180 = ('error', 2)
+        _pil_181 = ('int', 2)
+        _pil_178 = [_pil_179, _pil_180, _pil_181]
+        _pil_182 = _pil_176(_pil_177, _pil_178)
+        _pil_183 = self.assertEqual
+        _pil_184 = self.get_var
+        _pil_185 = locals()
+        _pil_186 = _pil_184(_pil_185)
+        _pil_187 = {}
+        _pil_188 = _pil_183(_pil_186, _pil_187)
+
+    def test_raise_from_name(self):
+        try:
+            _pil_189 = Expr.TypeA
+            _pil_190 = _pil_189(0)
+            cause = _pil_190
+            _pil_191 = Expr.TypeB
+            _pil_192 = _pil_191(1)
+            raise _pil_192 from cause
+        except Exception as _pil_193:
+            _pil_197 = Expr.TypeB
+            _pil_198 = isinstance(_pil_193, _pil_197)
+            if _pil_198:
+                e = _pil_193
+                _pil_194 = Expr.int
+                _pil_195 = e.value
+                _pil_196 = _pil_194(_pil_195)
+                del e
+            else:
+                raise
+        _pil_199 = self.assertEqual
+        _pil_200 = Expr.trace
+        _pil_202 = ('error', 0)
+        _pil_203 = ('error', 1)
+        _pil_204 = ('int', 1)
+        _pil_201 = [_pil_202, _pil_203, _pil_204]
+        _pil_205 = _pil_199(_pil_200, _pil_201)
+        _pil_206 = self.assertEqual
+        _pil_207 = self.get_var
+        _pil_208 = locals()
+        _pil_209 = _pil_207(_pil_208)
+        _pil_210 = {}
+        _pil_211 = _pil_206(_pil_209, _pil_210)
+
+    def test_raise_from_attribute(self):
+        _pil_212 = Expr(0)
+        var_obj = _pil_212
+        _pil_213 = Expr.TypeA
+        _pil_214 = _pil_213(1)
+        var_obj.val = _pil_214
+        try:
+            _pil_215 = Expr.TypeB
+            _pil_216 = _pil_215(2)
+            _pil_217 = var_obj.val
+            raise _pil_216 from _pil_217
+        except Exception as _pil_218:
+            _pil_222 = Expr.TypeB
+            _pil_223 = isinstance(_pil_218, _pil_222)
+            if _pil_223:
+                e = _pil_218
+                _pil_219 = Expr.int
+                _pil_220 = e.value
+                _pil_221 = _pil_219(_pil_220)
+                del e
+            else:
+                raise
+        _pil_224 = self.assertEqual
+        _pil_225 = Expr.trace
+        _pil_226 = list(_pil_225)
+        _pil_228 = ('init', 0)
+        _pil_229 = ('error', 1)
+        _pil_231 = Expr.TypeA
+        _pil_232 = _pil_231(1)
+        _pil_230 = ('setattr', 0, 'val', _pil_232)
+        _pil_233 = ('error', 2)
+        _pil_234 = ('getattr', 0, 'val')
+        _pil_235 = ('int', 2)
+        _pil_227 = [_pil_228, _pil_229, _pil_230, _pil_233, _pil_234, _pil_235]
+        _pil_236 = _pil_224(_pil_226, _pil_227)
+        _pil_237 = self.assertEqual
+        _pil_238 = self.get_var
+        _pil_239 = locals()
+        _pil_240 = _pil_238(_pil_239)
+        _pil_241 = {}
+        _pil_242 = Expr.TypeA
+        _pil_243 = _pil_242(1)
+        _pil_244 = {'val': _pil_243}
+        _pil_245 = Expr(0, _pil_241, _pil_244)
+        _pil_246 = {'var_obj': _pil_245}
+        _pil_247 = _pil_237(_pil_240, _pil_246)
+
+    def test_raise_attribute_from_subscript(self):
+        _pil_248 = Expr(0)
+        var_obj = _pil_248
+        _pil_249 = Expr.TypeB
+        _pil_250 = _pil_249(1)
+        var_obj.val = _pil_250
+        _pil_251 = Expr.TypeA
+        _pil_252 = _pil_251(3)
+        _pil_253 = Expr.str
+        _pil_254 = _pil_253(2)
+        var_obj[_pil_254] = _pil_252
+        try:
+            _pil_255 = var_obj.val
+            _pil_256 = Expr.str
+            _pil_257 = _pil_256(2)
+            _pil_258 = var_obj[_pil_257]
+            raise _pil_255 from _pil_258
+        except Exception as _pil_259:
+            _pil_263 = Expr.TypeB
+            _pil_264 = isinstance(_pil_259, _pil_263)
+            if _pil_264:
+                e = _pil_259
+                _pil_260 = Expr.int
+                _pil_261 = e.value
+                _pil_262 = _pil_260(_pil_261)
+                del e
+            else:
+                raise
+        _pil_265 = self.assertEqual
+        _pil_266 = Expr.trace
+        _pil_267 = list(_pil_266)
+        _pil_269 = ('init', 0)
+        _pil_270 = ('error', 1)
+        _pil_272 = Expr.TypeB
+        _pil_273 = _pil_272(1)
+        _pil_271 = ('setattr', 0, 'val', _pil_273)
+        _pil_274 = ('error', 3)
+        _pil_275 = ('str', 2)
+        _pil_277 = Expr.TypeA
+        _pil_278 = _pil_277(3)
+        _pil_276 = ('setitem', 0, 'str(2)', _pil_278)
+        _pil_279 = ('getattr', 0, 'val')
+        _pil_280 = ('str', 2)
+        _pil_281 = ('getitem', 0, 'str(2)')
+        _pil_282 = ('int', 1)
+        _pil_268 = [_pil_269, _pil_270, _pil_271, _pil_274, _pil_275, _pil_276, _pil_279, _pil_280, _pil_281, _pil_282]
+        _pil_283 = _pil_265(_pil_267, _pil_268)
+        _pil_284 = self.assertEqual
+        _pil_285 = self.get_var
+        _pil_286 = locals()
+        _pil_287 = _pil_285(_pil_286)
+        _pil_288 = Expr.TypeA
+        _pil_289 = _pil_288(3)
+        _pil_290 = {'str(2)': _pil_289}
+        _pil_291 = Expr.TypeB
+        _pil_292 = _pil_291(1)
+        _pil_293 = {'val': _pil_292}
+        _pil_294 = Expr(0, _pil_290, _pil_293)
+        _pil_295 = {'var_obj': _pil_294}
+        _pil_296 = _pil_284(_pil_287, _pil_295)
+
+class TryTest(PILTestCase):
+
+    def test_try_single_typed_no_binding(self):
+        try:
+            _pil_297 = Expr.TypeA
+            _pil_298 = _pil_297(0)
+            raise _pil_298
+        except Exception as _pil_299:
+            _pil_302 = Expr.TypeA
+            _pil_303 = isinstance(_pil_299, _pil_302)
+            if _pil_303:
+                _pil_300 = Expr.str
+                _pil_301 = _pil_300(1)
+            else:
+                raise
+        _pil_304 = self.assertEqual
+        _pil_305 = Expr.trace
+        _pil_307 = ('error', 0)
+        _pil_308 = ('str', 1)
+        _pil_306 = [_pil_307, _pil_308]
+        _pil_309 = _pil_304(_pil_305, _pil_306)
+        _pil_310 = self.assertEqual
+        _pil_311 = self.get_var
+        _pil_312 = locals()
+        _pil_313 = _pil_311(_pil_312)
+        _pil_314 = {}
+        _pil_315 = _pil_310(_pil_313, _pil_314)
+
+    def test_try_single_typed_with_binding(self):
+        try:
+            _pil_316 = Expr.TypeA
+            _pil_317 = _pil_316(0)
+            raise _pil_317
+        except Exception as _pil_318:
+            _pil_322 = Expr.TypeA
+            _pil_323 = isinstance(_pil_318, _pil_322)
+            if _pil_323:
+                e = _pil_318
+                _pil_319 = Expr.str
+                _pil_320 = e.value
+                _pil_321 = _pil_319(_pil_320)
+                del e
+            else:
+                raise
+        _pil_324 = self.assertEqual
+        _pil_325 = Expr.trace
+        _pil_327 = ('error', 0)
+        _pil_328 = ('str', 0)
+        _pil_326 = [_pil_327, _pil_328]
+        _pil_329 = _pil_324(_pil_325, _pil_326)
+        _pil_330 = self.assertEqual
+        _pil_331 = self.get_var
+        _pil_332 = locals()
+        _pil_333 = _pil_331(_pil_332)
+        _pil_334 = {}
+        _pil_335 = _pil_330(_pil_333, _pil_334)
+
+    def test_try_multi_handler_typea(self):
+        try:
+            _pil_336 = Expr.TypeA
+            _pil_337 = _pil_336(0)
+            raise _pil_337
+        except Exception as _pil_338:
+            _pil_349 = Expr.TypeA
+            _pil_350 = isinstance(_pil_338, _pil_349)
+            if _pil_350:
+                _pil_347 = Expr.str
+                _pil_348 = _pil_347(10)
+            else:
+                _pil_345 = Expr.TypeB
+                _pil_346 = isinstance(_pil_338, _pil_345)
+                if _pil_346:
+                    _pil_343 = Expr.str
+                    _pil_344 = _pil_343(20)
+                else:
+                    _pil_341 = Expr.TypeC
+                    _pil_342 = isinstance(_pil_338, _pil_341)
+                    if _pil_342:
+                        _pil_339 = Expr.str
+                        _pil_340 = _pil_339(30)
+                    else:
+                        raise
+        _pil_351 = self.assertEqual
+        _pil_352 = Expr.trace
+        _pil_354 = ('error', 0)
+        _pil_355 = ('str', 10)
+        _pil_353 = [_pil_354, _pil_355]
+        _pil_356 = _pil_351(_pil_352, _pil_353)
+        _pil_357 = self.assertEqual
+        _pil_358 = self.get_var
+        _pil_359 = locals()
+        _pil_360 = _pil_358(_pil_359)
+        _pil_361 = {}
+        _pil_362 = _pil_357(_pil_360, _pil_361)
+
+    def test_try_multi_handler_typeb(self):
+        try:
+            _pil_363 = Expr.TypeB
+            _pil_364 = _pil_363(0)
+            raise _pil_364
+        except Exception as _pil_365:
+            _pil_376 = Expr.TypeA
+            _pil_377 = isinstance(_pil_365, _pil_376)
+            if _pil_377:
+                _pil_374 = Expr.str
+                _pil_375 = _pil_374(10)
+            else:
+                _pil_372 = Expr.TypeB
+                _pil_373 = isinstance(_pil_365, _pil_372)
+                if _pil_373:
+                    _pil_370 = Expr.str
+                    _pil_371 = _pil_370(20)
+                else:
+                    _pil_368 = Expr.TypeC
+                    _pil_369 = isinstance(_pil_365, _pil_368)
+                    if _pil_369:
+                        _pil_366 = Expr.str
+                        _pil_367 = _pil_366(30)
+                    else:
+                        raise
+        _pil_378 = self.assertEqual
+        _pil_379 = Expr.trace
+        _pil_381 = ('error', 0)
+        _pil_382 = ('str', 20)
+        _pil_380 = [_pil_381, _pil_382]
+        _pil_383 = _pil_378(_pil_379, _pil_380)
+        _pil_384 = self.assertEqual
+        _pil_385 = self.get_var
+        _pil_386 = locals()
+        _pil_387 = _pil_385(_pil_386)
+        _pil_388 = {}
+        _pil_389 = _pil_384(_pil_387, _pil_388)
+
+    def test_try_multi_handler_typec(self):
+        try:
+            _pil_390 = Expr.TypeC
+            _pil_391 = _pil_390(0)
+            raise _pil_391
+        except Exception as _pil_392:
+            _pil_403 = Expr.TypeA
+            _pil_404 = isinstance(_pil_392, _pil_403)
+            if _pil_404:
+                _pil_401 = Expr.str
+                _pil_402 = _pil_401(10)
+            else:
+                _pil_399 = Expr.TypeB
+                _pil_400 = isinstance(_pil_392, _pil_399)
+                if _pil_400:
+                    _pil_397 = Expr.str
+                    _pil_398 = _pil_397(20)
+                else:
+                    _pil_395 = Expr.TypeC
+                    _pil_396 = isinstance(_pil_392, _pil_395)
+                    if _pil_396:
+                        _pil_393 = Expr.str
+                        _pil_394 = _pil_393(30)
+                    else:
+                        raise
+        _pil_405 = self.assertEqual
+        _pil_406 = Expr.trace
+        _pil_408 = ('error', 0)
+        _pil_409 = ('str', 30)
+        _pil_407 = [_pil_408, _pil_409]
+        _pil_410 = _pil_405(_pil_406, _pil_407)
+        _pil_411 = self.assertEqual
+        _pil_412 = self.get_var
+        _pil_413 = locals()
+        _pil_414 = _pil_412(_pil_413)
+        _pil_415 = {}
+        _pil_416 = _pil_411(_pil_414, _pil_415)
+
+    def test_try_bare_except(self):
+        try:
+            _pil_417 = Expr.TypeA
+            _pil_418 = _pil_417(0)
+            raise _pil_418
+        except Exception as _pil_419:
+            _pil_425 = Expr.TypeB
+            _pil_426 = isinstance(_pil_419, _pil_425)
+            if _pil_426:
+                _pil_423 = Expr.str
+                _pil_424 = _pil_423(10)
+            else:
+                _pil_422 = isinstance(_pil_419, Exception)
+                if _pil_422:
+                    _pil_420 = Expr.str
+                    _pil_421 = _pil_420(20)
+                else:
+                    raise
+        _pil_427 = self.assertEqual
+        _pil_428 = Expr.trace
+        _pil_430 = ('error', 0)
+        _pil_431 = ('str', 20)
+        _pil_429 = [_pil_430, _pil_431]
+        _pil_432 = _pil_427(_pil_428, _pil_429)
+        _pil_433 = self.assertEqual
+        _pil_434 = self.get_var
+        _pil_435 = locals()
+        _pil_436 = _pil_434(_pil_435)
+        _pil_437 = {}
+        _pil_438 = _pil_433(_pil_436, _pil_437)
+
+    def test_try_else_no_exception(self):
+        try:
+            _pil_439 = Expr.str
+            _pil_440 = _pil_439(0)
+        except Exception as _pil_441:
+            _pil_444 = Expr.TypeA
+            _pil_445 = isinstance(_pil_441, _pil_444)
+            if _pil_445:
+                _pil_442 = Expr.str
+                _pil_443 = _pil_442(10)
+            else:
+                raise
+        else:
+            _pil_446 = Expr.str
+            _pil_447 = _pil_446(20)
+        _pil_448 = self.assertEqual
+        _pil_449 = Expr.trace
+        _pil_451 = ('str', 0)
+        _pil_452 = ('str', 20)
+        _pil_450 = [_pil_451, _pil_452]
+        _pil_453 = _pil_448(_pil_449, _pil_450)
+        _pil_454 = self.assertEqual
+        _pil_455 = self.get_var
+        _pil_456 = locals()
+        _pil_457 = _pil_455(_pil_456)
+        _pil_458 = {}
+        _pil_459 = _pil_454(_pil_457, _pil_458)
+
+    def test_try_else_with_exception(self):
+        try:
+            _pil_460 = Expr.true
+            _pil_461 = _pil_460(0)
+            if _pil_461:
+                _pil_462 = Expr.TypeA
+                _pil_463 = _pil_462(1)
+                raise _pil_463
+        except Exception as _pil_464:
+            _pil_467 = Expr.TypeA
+            _pil_468 = isinstance(_pil_464, _pil_467)
+            if _pil_468:
+                _pil_465 = Expr.str
+                _pil_466 = _pil_465(10)
+            else:
+                raise
+        else:
+            _pil_469 = Expr.str
+            _pil_470 = _pil_469(20)
+        _pil_471 = self.assertEqual
+        _pil_472 = Expr.trace
+        _pil_474 = ('true', 0)
+        _pil_475 = ('error', 1)
+        _pil_476 = ('str', 10)
+        _pil_473 = [_pil_474, _pil_475, _pil_476]
+        _pil_477 = _pil_471(_pil_472, _pil_473)
+        _pil_478 = self.assertEqual
+        _pil_479 = self.get_var
+        _pil_480 = locals()
+        _pil_481 = _pil_479(_pil_480)
+        _pil_482 = {}
+        _pil_483 = _pil_478(_pil_481, _pil_482)
+
+    def test_try_finally_no_exception(self):
+        try:
+            _pil_484 = Expr.str
+            _pil_485 = _pil_484(0)
+        except Exception as _pil_486:
+            raise
+        finally:
+            _pil_487 = Expr.str
+            _pil_488 = _pil_487(1)
+        _pil_489 = self.assertEqual
+        _pil_490 = Expr.trace
+        _pil_492 = ('str', 0)
+        _pil_493 = ('str', 1)
+        _pil_491 = [_pil_492, _pil_493]
+        _pil_494 = _pil_489(_pil_490, _pil_491)
+        _pil_495 = self.assertEqual
+        _pil_496 = self.get_var
+        _pil_497 = locals()
+        _pil_498 = _pil_496(_pil_497)
+        _pil_499 = {}
+        _pil_500 = _pil_495(_pil_498, _pil_499)
+
+    def test_try_finally_with_exception(self):
+        try:
+            _pil_501 = Expr.TypeA
+            _pil_502 = _pil_501(0)
+            raise _pil_502
+        except Exception as _pil_503:
+            _pil_506 = Expr.TypeA
+            _pil_507 = isinstance(_pil_503, _pil_506)
+            if _pil_507:
+                _pil_504 = Expr.str
+                _pil_505 = _pil_504(10)
+            else:
+                raise
+        finally:
+            _pil_508 = Expr.str
+            _pil_509 = _pil_508(20)
+        _pil_510 = self.assertEqual
+        _pil_511 = Expr.trace
+        _pil_513 = ('error', 0)
+        _pil_514 = ('str', 10)
+        _pil_515 = ('str', 20)
+        _pil_512 = [_pil_513, _pil_514, _pil_515]
+        _pil_516 = _pil_510(_pil_511, _pil_512)
+        _pil_517 = self.assertEqual
+        _pil_518 = self.get_var
+        _pil_519 = locals()
+        _pil_520 = _pil_518(_pil_519)
+        _pil_521 = {}
+        _pil_522 = _pil_517(_pil_520, _pil_521)
+
+    def test_try_combined_no_exception(self):
+        try:
+            _pil_523 = Expr.str
+            _pil_524 = _pil_523(0)
+        except Exception as _pil_525:
+            _pil_534 = Expr.TypeA
+            _pil_535 = isinstance(_pil_525, _pil_534)
+            if _pil_535:
+                e = _pil_525
+                _pil_531 = Expr.int
+                _pil_532 = e.value
+                _pil_533 = _pil_531(_pil_532)
+                del e
+            else:
+                _pil_529 = Expr.TypeB
+                _pil_530 = isinstance(_pil_525, _pil_529)
+                if _pil_530:
+                    e = _pil_525
+                    _pil_526 = Expr.str
+                    _pil_527 = e.value
+                    _pil_528 = _pil_526(_pil_527)
+                    del e
+                else:
+                    raise
+        else:
+            _pil_536 = Expr.str
+            _pil_537 = _pil_536(30)
+        finally:
+            _pil_538 = Expr.str
+            _pil_539 = _pil_538(40)
+        _pil_540 = self.assertEqual
+        _pil_541 = Expr.trace
+        _pil_543 = ('str', 0)
+        _pil_544 = ('str', 30)
+        _pil_545 = ('str', 40)
+        _pil_542 = [_pil_543, _pil_544, _pil_545]
+        _pil_546 = _pil_540(_pil_541, _pil_542)
+        _pil_547 = self.assertEqual
+        _pil_548 = self.get_var
+        _pil_549 = locals()
+        _pil_550 = _pil_548(_pil_549)
+        _pil_551 = {}
+        _pil_552 = _pil_547(_pil_550, _pil_551)
+
+    def test_try_combined_typea(self):
+        try:
+            _pil_553 = Expr.true
+            _pil_554 = _pil_553(0)
+            if _pil_554:
+                _pil_555 = Expr.TypeA
+                _pil_556 = _pil_555(1)
+                raise _pil_556
+        except Exception as _pil_557:
+            _pil_566 = Expr.TypeA
+            _pil_567 = isinstance(_pil_557, _pil_566)
+            if _pil_567:
+                e = _pil_557
+                _pil_563 = Expr.int
+                _pil_564 = e.value
+                _pil_565 = _pil_563(_pil_564)
+                del e
+            else:
+                _pil_561 = Expr.TypeB
+                _pil_562 = isinstance(_pil_557, _pil_561)
+                if _pil_562:
+                    e = _pil_557
+                    _pil_558 = Expr.str
+                    _pil_559 = e.value
+                    _pil_560 = _pil_558(_pil_559)
+                    del e
+                else:
+                    raise
+        else:
+            _pil_568 = Expr.str
+            _pil_569 = _pil_568(30)
+        finally:
+            _pil_570 = Expr.str
+            _pil_571 = _pil_570(40)
+        _pil_572 = self.assertEqual
+        _pil_573 = Expr.trace
+        _pil_575 = ('true', 0)
+        _pil_576 = ('error', 1)
+        _pil_577 = ('int', 1)
+        _pil_578 = ('str', 40)
+        _pil_574 = [_pil_575, _pil_576, _pil_577, _pil_578]
+        _pil_579 = _pil_572(_pil_573, _pil_574)
+        _pil_580 = self.assertEqual
+        _pil_581 = self.get_var
+        _pil_582 = locals()
+        _pil_583 = _pil_581(_pil_582)
+        _pil_584 = {}
+        _pil_585 = _pil_580(_pil_583, _pil_584)
+
+    def test_try_combined_typeb(self):
+        try:
+            _pil_586 = Expr.true
+            _pil_587 = _pil_586(0)
+            if _pil_587:
+                _pil_588 = Expr.TypeB
+                _pil_589 = _pil_588(1)
+                raise _pil_589
+        except Exception as _pil_590:
+            _pil_599 = Expr.TypeA
+            _pil_600 = isinstance(_pil_590, _pil_599)
+            if _pil_600:
+                e = _pil_590
+                _pil_596 = Expr.int
+                _pil_597 = e.value
+                _pil_598 = _pil_596(_pil_597)
+                del e
+            else:
+                _pil_594 = Expr.TypeB
+                _pil_595 = isinstance(_pil_590, _pil_594)
+                if _pil_595:
+                    e = _pil_590
+                    _pil_591 = Expr.str
+                    _pil_592 = e.value
+                    _pil_593 = _pil_591(_pil_592)
+                    del e
+                else:
+                    raise
+        else:
+            _pil_601 = Expr.str
+            _pil_602 = _pil_601(30)
+        finally:
+            _pil_603 = Expr.str
+            _pil_604 = _pil_603(40)
+        _pil_605 = self.assertEqual
+        _pil_606 = Expr.trace
+        _pil_608 = ('true', 0)
+        _pil_609 = ('error', 1)
+        _pil_610 = ('str', 1)
+        _pil_611 = ('str', 40)
+        _pil_607 = [_pil_608, _pil_609, _pil_610, _pil_611]
+        _pil_612 = _pil_605(_pil_606, _pil_607)
+        _pil_613 = self.assertEqual
+        _pil_614 = self.get_var
+        _pil_615 = locals()
+        _pil_616 = _pil_614(_pil_615)
+        _pil_617 = {}
+        _pil_618 = _pil_613(_pil_616, _pil_617)
+
+    def test_try_nested(self):
+        try:
+            try:
+                _pil_619 = Expr.TypeA
+                _pil_620 = _pil_619(0)
+                raise _pil_620
+            except Exception as _pil_621:
+                _pil_624 = Expr.TypeB
+                _pil_625 = isinstance(_pil_621, _pil_624)
+                if _pil_625:
+                    _pil_622 = Expr.str
+                    _pil_623 = _pil_622(10)
+                else:
+                    raise
+        except Exception as _pil_626:
+            _pil_630 = Expr.TypeA
+            _pil_631 = isinstance(_pil_626, _pil_630)
+            if _pil_631:
+                e = _pil_626
+                _pil_627 = Expr.int
+                _pil_628 = e.value
+                _pil_629 = _pil_627(_pil_628)
+                del e
+            else:
+                raise
+        _pil_632 = self.assertEqual
+        _pil_633 = Expr.trace
+        _pil_635 = ('error', 0)
+        _pil_636 = ('int', 0)
+        _pil_634 = [_pil_635, _pil_636]
+        _pil_637 = _pil_632(_pil_633, _pil_634)
+        _pil_638 = self.assertEqual
+        _pil_639 = self.get_var
+        _pil_640 = locals()
+        _pil_641 = _pil_639(_pil_640)
+        _pil_642 = {}
+        _pil_643 = _pil_638(_pil_641, _pil_642)
+
+class AssertTest(PILTestCase):
+
+    def test_assert_pass_subscript(self):
+        _pil_644 = Expr(0)
+        var_obj = _pil_644
+        _pil_645 = Expr.true
+        _pil_646 = _pil_645(2)
+        _pil_647 = Expr.str
+        _pil_648 = _pil_647(1)
+        var_obj[_pil_648] = _pil_646
+        if __debug__:
+            _pil_649 = Expr.str
+            _pil_650 = _pil_649(1)
+            _pil_651 = var_obj[_pil_650]
+            _pil_652 = not _pil_651
+            if _pil_652:
+                assert _pil_651
+        _pil_653 = self.assertEqual
+        _pil_654 = Expr.trace
+        _pil_656 = ('init', 0)
+        _pil_657 = ('true', 2)
+        _pil_658 = ('str', 1)
+        _pil_659 = ('setitem', 0, 'str(1)', True)
+        _pil_660 = ('str', 1)
+        _pil_661 = ('getitem', 0, 'str(1)')
+        _pil_655 = [_pil_656, _pil_657, _pil_658, _pil_659, _pil_660, _pil_661]
+        _pil_662 = _pil_653(_pil_654, _pil_655)
+        _pil_663 = self.assertEqual
+        _pil_664 = self.get_var
+        _pil_665 = locals()
+        _pil_666 = _pil_664(_pil_665)
+        _pil_667 = {'str(1)': True}
+        _pil_668 = {}
+        _pil_669 = Expr(0, _pil_667, _pil_668)
+        _pil_670 = {'var_obj': _pil_669}
+        _pil_671 = _pil_663(_pil_666, _pil_670)
+
+    def test_assert_pass_subscript_msg_call(self):
+        _pil_672 = Expr(0)
+        var_obj = _pil_672
+        _pil_673 = Expr.true
+        _pil_674 = _pil_673(2)
+        _pil_675 = Expr.str
+        _pil_676 = _pil_675(1)
+        var_obj[_pil_676] = _pil_674
+        if __debug__:
+            _pil_677 = Expr.str
+            _pil_678 = _pil_677(1)
+            _pil_679 = var_obj[_pil_678]
+            _pil_680 = not _pil_679
+            if _pil_680:
+                _pil_681 = Expr.str
+                _pil_682 = _pil_681(3)
+                assert _pil_679, _pil_682
+        _pil_683 = self.assertEqual
+        _pil_684 = Expr.trace
+        _pil_686 = ('init', 0)
+        _pil_687 = ('true', 2)
+        _pil_688 = ('str', 1)
+        _pil_689 = ('setitem', 0, 'str(1)', True)
+        _pil_690 = ('str', 1)
+        _pil_691 = ('getitem', 0, 'str(1)')
+        _pil_685 = [_pil_686, _pil_687, _pil_688, _pil_689, _pil_690, _pil_691]
+        _pil_692 = _pil_683(_pil_684, _pil_685)
+        _pil_693 = self.assertEqual
+        _pil_694 = self.get_var
+        _pil_695 = locals()
+        _pil_696 = _pil_694(_pil_695)
+        _pil_697 = {'str(1)': True}
+        _pil_698 = {}
+        _pil_699 = Expr(0, _pil_697, _pil_698)
+        _pil_700 = {'var_obj': _pil_699}
+        _pil_701 = _pil_693(_pil_696, _pil_700)
+
+    def test_assert_pass_subscript_msg_name(self):
+        var_msg = 'assertion failed'
+        _pil_702 = Expr(0)
+        var_obj = _pil_702
+        _pil_703 = Expr.true
+        _pil_704 = _pil_703(2)
+        _pil_705 = Expr.str
+        _pil_706 = _pil_705(1)
+        var_obj[_pil_706] = _pil_704
+        if __debug__:
+            _pil_707 = Expr.str
+            _pil_708 = _pil_707(1)
+            _pil_709 = var_obj[_pil_708]
+            _pil_710 = not _pil_709
+            if _pil_710:
+                assert _pil_709, var_msg
+        _pil_711 = self.assertEqual
+        _pil_712 = Expr.trace
+        _pil_714 = ('init', 0)
+        _pil_715 = ('true', 2)
+        _pil_716 = ('str', 1)
+        _pil_717 = ('setitem', 0, 'str(1)', True)
+        _pil_718 = ('str', 1)
+        _pil_719 = ('getitem', 0, 'str(1)')
+        _pil_713 = [_pil_714, _pil_715, _pil_716, _pil_717, _pil_718, _pil_719]
+        _pil_720 = _pil_711(_pil_712, _pil_713)
+        _pil_721 = self.assertEqual
+        _pil_722 = self.get_var
+        _pil_723 = locals()
+        _pil_724 = _pil_722(_pil_723)
+        _pil_725 = {'str(1)': True}
+        _pil_726 = {}
+        _pil_727 = Expr(0, _pil_725, _pil_726)
+        _pil_728 = {'var_msg': 'assertion failed', 'var_obj': _pil_727}
+        _pil_729 = _pil_721(_pil_724, _pil_728)
+
+    def test_assert_fail_subscript_no_msg(self):
+        _pil_730 = Expr(0)
+        var_obj = _pil_730
+        _pil_731 = Expr.false
+        _pil_732 = _pil_731(2)
+        _pil_733 = Expr.str
+        _pil_734 = _pil_733(1)
+        var_obj[_pil_734] = _pil_732
+        try:
+            if __debug__:
+                _pil_735 = Expr.str
+                _pil_736 = _pil_735(1)
+                _pil_737 = var_obj[_pil_736]
+                _pil_738 = not _pil_737
+                if _pil_738:
+                    assert _pil_737
+        except Exception as _pil_739:
+            _pil_742 = isinstance(_pil_739, AssertionError)
+            if _pil_742:
+                _pil_740 = Expr.str
+                _pil_741 = _pil_740(3)
+            else:
+                raise
+        _pil_743 = self.assertEqual
+        _pil_744 = Expr.trace
+        _pil_746 = ('init', 0)
+        _pil_747 = ('false', 2)
+        _pil_748 = ('str', 1)
+        _pil_749 = ('setitem', 0, 'str(1)', False)
+        _pil_750 = ('str', 1)
+        _pil_751 = ('getitem', 0, 'str(1)')
+        _pil_752 = ('str', 3)
+        _pil_745 = [_pil_746, _pil_747, _pil_748, _pil_749, _pil_750, _pil_751, _pil_752]
+        _pil_753 = _pil_743(_pil_744, _pil_745)
+        _pil_754 = self.assertEqual
+        _pil_755 = self.get_var
+        _pil_756 = locals()
+        _pil_757 = _pil_755(_pil_756)
+        _pil_758 = {'str(1)': False}
+        _pil_759 = {}
+        _pil_760 = Expr(0, _pil_758, _pil_759)
+        _pil_761 = {'var_obj': _pil_760}
+        _pil_762 = _pil_754(_pil_757, _pil_761)
+
+    def test_assert_fail_subscript_msg_call(self):
+        _pil_763 = Expr(0)
+        var_obj = _pil_763
+        _pil_764 = Expr.false
+        _pil_765 = _pil_764(2)
+        _pil_766 = Expr.str
+        _pil_767 = _pil_766(1)
+        var_obj[_pil_767] = _pil_765
+        try:
+            if __debug__:
+                _pil_768 = Expr.str
+                _pil_769 = _pil_768(1)
+                _pil_770 = var_obj[_pil_769]
+                _pil_771 = not _pil_770
+                if _pil_771:
+                    _pil_772 = Expr.str
+                    _pil_773 = _pil_772(3)
+                    assert _pil_770, _pil_773
+        except Exception as _pil_774:
+            _pil_777 = isinstance(_pil_774, AssertionError)
+            if _pil_777:
+                _pil_775 = Expr.str
+                _pil_776 = _pil_775(4)
+            else:
+                raise
+        _pil_778 = self.assertEqual
+        _pil_779 = Expr.trace
+        _pil_781 = ('init', 0)
+        _pil_782 = ('false', 2)
+        _pil_783 = ('str', 1)
+        _pil_784 = ('setitem', 0, 'str(1)', False)
+        _pil_785 = ('str', 1)
+        _pil_786 = ('getitem', 0, 'str(1)')
+        _pil_787 = ('str', 3)
+        _pil_788 = ('str', 4)
+        _pil_780 = [_pil_781, _pil_782, _pil_783, _pil_784, _pil_785, _pil_786, _pil_787, _pil_788]
+        _pil_789 = _pil_778(_pil_779, _pil_780)
+        _pil_790 = self.assertEqual
+        _pil_791 = self.get_var
+        _pil_792 = locals()
+        _pil_793 = _pil_791(_pil_792)
+        _pil_794 = {'str(1)': False}
+        _pil_795 = {}
+        _pil_796 = Expr(0, _pil_794, _pil_795)
+        _pil_797 = {'var_obj': _pil_796}
+        _pil_798 = _pil_790(_pil_793, _pil_797)
+
+    def test_assert_fail_subscript_msg_name(self):
+        var_msg = 'assertion failed'
+        _pil_799 = Expr(0)
+        var_obj = _pil_799
+        _pil_800 = Expr.false
+        _pil_801 = _pil_800(2)
+        _pil_802 = Expr.str
+        _pil_803 = _pil_802(1)
+        var_obj[_pil_803] = _pil_801
+        try:
+            if __debug__:
+                _pil_804 = Expr.str
+                _pil_805 = _pil_804(1)
+                _pil_806 = var_obj[_pil_805]
+                _pil_807 = not _pil_806
+                if _pil_807:
+                    assert _pil_806, var_msg
+        except Exception as _pil_808:
+            _pil_811 = isinstance(_pil_808, AssertionError)
+            if _pil_811:
+                _pil_809 = Expr.str
+                _pil_810 = _pil_809(3)
+            else:
+                raise
+        _pil_812 = self.assertEqual
+        _pil_813 = Expr.trace
+        _pil_815 = ('init', 0)
+        _pil_816 = ('false', 2)
+        _pil_817 = ('str', 1)
+        _pil_818 = ('setitem', 0, 'str(1)', False)
+        _pil_819 = ('str', 1)
+        _pil_820 = ('getitem', 0, 'str(1)')
+        _pil_821 = ('str', 3)
+        _pil_814 = [_pil_815, _pil_816, _pil_817, _pil_818, _pil_819, _pil_820, _pil_821]
+        _pil_822 = _pil_812(_pil_813, _pil_814)
+        _pil_823 = self.assertEqual
+        _pil_824 = self.get_var
+        _pil_825 = locals()
+        _pil_826 = _pil_824(_pil_825)
+        _pil_827 = {'str(1)': False}
+        _pil_828 = {}
+        _pil_829 = Expr(0, _pil_827, _pil_828)
+        _pil_830 = {'var_msg': 'assertion failed', 'var_obj': _pil_829}
+        _pil_831 = _pil_823(_pil_826, _pil_830)

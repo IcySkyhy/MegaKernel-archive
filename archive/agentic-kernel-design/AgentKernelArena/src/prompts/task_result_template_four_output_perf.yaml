@@ -1,0 +1,47 @@
+# Legacy four-output schema retained for task-config compatibility.
+# Agents must not write task_result.yaml; the centralized evaluator writes the standard schema.
+
+task_name: "<tasks/...>"               # Full task path from tasks/ directory
+
+pass_compilation: false                # true if compilation succeeded
+compilation_error_message: null        # Fill with compiler error if failed
+
+pass_correctness: false                # true if correctness tests passed
+correctness_error_message: null        # Fill with test failure detail if failed
+
+Perf1:
+  execution_time_base_value: 0.275724                          # From ORIGINAL code before optimization
+  execution_time_optimized_value: 0.150000                     # After optimization
+  execution_time_improvement_ratio: 1.84                       # base_value / optimized_value
+  mean_bandwidth_base_value: 489.944         # Bandwidth from ORIGINAL code
+  mean_bandwidth_optimized_value: 650.000    # Bandwidth AFTER optimization
+  mean_bandwidth_improvement_ratio: 1.33     # base_value / optimized_value
+
+Perf2:
+  execution_time_base_value: 0.275724                          # From ORIGINAL code before optimization
+  execution_time_optimized_value: 0.150000                     # After optimization
+  execution_time_improvement_ratio: 1.84                       # base_value / optimized_value
+  mean_bandwidth_base_value: 489.944         # Bandwidth from ORIGINAL code
+  mean_bandwidth_optimized_value: 650.000    # Bandwidth AFTER optimization
+  mean_bandwidth_improvement_ratio: 1.33     # base_value / optimized_value
+
+Perf3:
+  execution_time_base_value: 0.275724                          # From ORIGINAL code before optimization
+  execution_time_optimized_value: 0.150000                     # After optimization
+  execution_time_improvement_ratio: 1.84                       # base_value / optimized_value
+  mean_bandwidth_base_value: 489.944         # Bandwidth from ORIGINAL code
+  mean_bandwidth_optimized_value: 650.000    # Bandwidth AFTER optimization
+  mean_bandwidth_improvement_ratio: 1.33  
+
+Perf4:
+  execution_time_base_value: 0.275724                          # From ORIGINAL code before optimization
+  execution_time_optimized_value: 0.150000                     # After optimization
+  execution_time_improvement_ratio: 1.84                       # base_value / optimized_value
+  mean_bandwidth_base_value: 489.944         # Bandwidth from ORIGINAL code
+  mean_bandwidth_optimized_value: 650.000    # Bandwidth AFTER optimization
+  mean_bandwidth_improvement_ratio: 1.33 
+
+speedup_ratio: 0.0                              # Average of execution_time_improvement_ratio
+
+optimization_summary: |
+  Briefly describe key optimizations and their impact.

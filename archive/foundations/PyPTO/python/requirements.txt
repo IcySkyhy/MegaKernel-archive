@@ -1,0 +1,27 @@
+# 基础编译, 如 pip install . / -e .
+setuptools>=70.3.0
+pybind11>=2.13.6
+
+# build_ci.py
+pip>=22.1
+build>=1.0.3
+packaging
+
+# UTest/STest 依赖 pytest 相关包
+pytest
+pytest-forked
+pytest-xdist
+pytest-cov
+setproctitle
+psutil
+
+# pypto 依赖
+PyYAML
+
+# 绘制泳道图
+matplotlib
+pandas
+plotly
+
+# 精度工具pass间数据对比脚本
+tabulate

@@ -1,0 +1,732 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "Muls_test_0",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        512
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        512
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 0.000195313,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 1,
+            "case_name": "Muls_test_1",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 2,
+            "case_name": "Muls_test_2",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2048,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2048,
+                        48
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                64
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 3,
+            "case_name": "Muls_test_3",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3075,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3075,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 4,
+            "case_name": "Muls_test_4",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                127
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 5,
+            "case_name": "Muls_test_5",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        6144,
+                        64,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        6144,
+                        64,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                64,
+                64,
+                64
+            ],
+            "tile_shape": [
+                32,
+                32,
+                32
+            ],
+            "params": {
+                "scalar": 0.041666667,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 6,
+            "case_name": "Muls_test_6",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        128,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16,
+                        16,
+                        128,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                16,
+                16,
+                16,
+                16
+            ],
+            "tile_shape": [
+                8,
+                8,
+                8,
+                8
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 7,
+            "case_name": "Muls_test_7",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 8,
+            "case_name": "Muls_test_8",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3072,
+                        384
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 9,
+            "case_name": "Muls_test_9",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        3075,
+                        0
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        3075,
+                        0
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 10,
+            "case_name": "Muls_test_10",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                16,
+                16
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 11,
+            "case_name": "Muls_test_11",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                16,
+                16
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 12,
+            "case_name": "Muls_test_12",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                64,
+                64
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 13,
+            "case_name": "Muls_test_13",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        512
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -100,
+                        "max": 100
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16,
+                        512
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                2,
+                117
+            ],
+            "tile_shape": [
+                590,
+                16
+            ],
+            "params": {
+                "scalar": 0.044194,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 14,
+            "case_name": "Muls_test_14",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2048,
+                        1,
+                        127
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2048,
+                        1,
+                        127
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                638,
+                2,
+                59
+            ],
+            "tile_shape": [
+                3,
+                83,
+                56
+            ],
+            "params": {
+                "scalar": 0.41667,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        },
+        {
+            "case_index": 15,
+            "case_name": "Muls_test_15",
+            "operation": "Muls",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        127,
+                        128,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    },
+                    "format": "ND"
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16,
+                        127,
+                        128,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND"
+                }
+            ],
+            "view_shape": [
+                7,
+                54,
+                6,
+                14
+            ],
+            "tile_shape": [
+                6,
+                12,
+                20,
+                8
+            ],
+            "params": {
+                "scalar": -1.0,
+                "scalar_type": "fp32",
+                "func_id": -1
+            }
+        }
+    ]
+}

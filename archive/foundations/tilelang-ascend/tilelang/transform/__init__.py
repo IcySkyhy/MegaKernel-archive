@@ -1,0 +1,557 @@
+# Copyright (c) Tile-AI Corporation.
+# Licensed under the MIT License.
+"""Wrapping transformations."""
+# pylint: disable=invalid-name, unsupported-binary-operation
+
+from . import _ffi_api
+from .simplify import Simplify, simplify_prim_func  # noqa: F401
+from .pass_config import PassConfigKey  # noqa: F401
+from tilelang import tvm as tvm  # noqa: F401
+from tvm.ir.transform import PassContext  # noqa: F401
+from tvm.target import Target
+
+
+def HostProcesser():
+    """HostProcesser
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.HostLegalize()  # type: ignore
+
+
+def get_pass_context():
+    """Get the current pass context"""
+    return PassContext.current()
+
+
+def ClusterPlanning():
+    """ClusterPlanning
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.ClusterPlanning()  # type: ignore
+
+
+def PipelinePlanning():
+    """infer the fragment/shared memory layout
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.PipelinePlanning()  # type: ignore
+
+
+def LayoutInference():
+    """LayoutInference
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.LayoutInference()  # type: ignore
+
+
+def LowerTileOp():
+    """LowerTileOp
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.LowerTileOp()  # type: ignore
+
+
+def InjectSoftwarePipeline():
+    """InjectSoftwarePipeline
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.InjectSoftwarePipeline()  # type: ignore
+
+
+def FrontendLegalize():
+    """FrontendLegalize
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.FrontendLegalize()  # type: ignore
+
+
+def LowerHopperIntrin():
+    """LowerHopperIntrin
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.LowerHopperIntrin() if hasattr(_ffi_api, "LowerHopperIntrin") else lambda f: f  # type: ignore
+
+
+def WarpSpecializedPipeline():
+    """WarpSpecializedPipeline
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.WarpSpecializedPipeline()  # type: ignore
+
+
+def RewriteWgmmaSync():
+    """RewriteWgmmaSync
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.RewriteWgmmaSync()  # type: ignore
+
+
+def ThreadSync(storage_scope: str):
+    """Insert sync between parallel read/write of shared buffers.
+
+    Parameters
+    ----------
+    storage_scope: str
+        The target storage scope.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.ThreadSync(storage_scope)  # type: ignore
+
+
+def ThreadPartialSync(storage_scope: str):
+    """Insert partial sync.
+
+    Parameters
+    ----------
+    storage_scope: str
+        The target storage scope.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.ThreadPartialSync(storage_scope)  # type: ignore
+
+
+def IfStmtBinding():
+    """IfStmtBinding
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.IfStmtBinding()  # type: ignore
+
+
+def MergeIfStmt():
+    """MergeIfStmt
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.MergeIfStmt()  # type: ignore
+
+
+def MultiVersionBuffer():
+    """WarpSpecializedPipeline
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.MultiVersionBuffer()  # type: ignore
+
+
+def WarpSpecialized():
+    """WarpSpecializedPipeline
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.WarpSpecialized()  # type: ignore
+
+
+def InjectTmaBarrier():
+    """InjectTmaBarrier
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.InjectTmaBarrier()  # type: ignore
+
+
+def InjectFenceProxy():
+    """InjectFenceProxy
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.InjectFenceProxy()  # type: ignore
+
+
+def LegalizeVectorizedLoop():
+    """LegalizeLoopVectorize
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.LegalizeVectorizedLoop()  # type: ignore
+
+
+def LegalizeSafeMemoryAccess():
+    """LegalizeLoopVectorize
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.LegalizeSafeMemoryAccess()  # type: ignore
+
+
+def MakePackedAPI():
+    """MakePackedAPI
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.MakePackedAPI()  # type: ignore
+
+
+def AnnotateDeviceRegions():
+    """AnnotateDeviceRegions
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.AnnotateDeviceRegions()  # type: ignore
+
+
+def VectorizeLoop(enable_vectorize: bool = True):
+    """VectorizeLoop
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.VectorizeLoop(enable_vectorize)  # type: ignore
+
+
+def InjectPTXAsyncCopy():
+    """Rewrite global to shared memory copy on CUDA with asynchronous copy.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.InjectPTXAsyncCopy()  # type: ignore
+
+
+def LowerDeviceStorageAccessInfo():
+    """Lower attached storage access information on device.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+
+    Note
+    ----
+    Run this pass after all storage access analysis finish.
+    """
+    return _ffi_api.LowerDeviceStorageAccessInfo()  # type: ignore
+
+
+def LoopVectorizeDynamic():
+    """Try to vectorize loop with dynamic shape.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.LoopVectorizeDynamic()  # type: ignore
+
+
+def ConfigIndexBitwidth():
+    """Config index bitwidth.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.ConfigIndexBitwidth()  # type: ignore
+
+
+def FlattenBuffer():
+    """FlattenBuffer
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.FlattenBuffer()  # type: ignore
+
+
+def EliminateStorageSyncForMBarrier():
+    """EliminateStorageSyncForMBarrier"""
+    return _ffi_api.EliminateStorageSyncForMBarrier()  # type: ignore
+
+
+def MergeSharedMemoryAllocations():
+    """MergeSharedMemoryAllocations
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.MergeSharedMemoryAllocations()  # type: ignore
+
+
+def AscendMemoryPlanning():
+    """Memory planning for Ascend NPU
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.AscendMemoryPlanning()  # type: ignore
+
+
+def AscendSyncInsert(target: Target, platform: str):
+    """Auto insert sync for Ascend.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.AscendSyncInsert(target, platform)  # type: ignore
+
+
+def AscendSyncInsertVS(target: Target, platform: str):
+    """As a supplement to AscendSyncInsert, auto insert sync for Ascend (V→V, S↔Others).
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.AscendSyncInsertVS(target, platform)  # type: ignore
+
+
+def CombineCV():
+    """CombineCV
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.CombineCV()  # type: ignore
+
+
+def CrossCorePipeline():
+    """CrossCorePipeline
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    """
+    return _ffi_api.CrossCorePipeline()  # type: ignore
+
+
+def AscendLowerParallelToVector():
+    """Lower parallel loops to vector instructions for Ascend.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.AscendLowerParallelToVector()  # type: ignore
+
+
+def AscendVidReduction():
+    """Reduction Vid for Ascend.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.AscendVidReduction()  # type: ignore
+
+
+def AscendWorkspaceReduction():
+    """Reduction Workspace for Ascend.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.AscendWorkspaceReduction()  # type: ignore
+
+
+def AscendTailMaskPropagation(rewrite_reduce: bool = True):
+    """Propagate UB tail valid-regions and rewrite vector ops to tail-aware
+    variants for the Ascend backend.
+
+    Parameters
+    ----------
+    rewrite_reduce : bool
+        Whether allow-listed reduce ops may be rewritten to tail_reduce.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.AscendTailMaskPropagation(rewrite_reduce)  # type: ignore
+
+
+def AscendInferBufferScope():
+    """Infer Buffer Scope for Ascend.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.InferAllocScope()  # type: ignore
+
+
+def CollectBufferShapes():
+    """Infer Buffer Scope for Ascend.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.CollectBufferShapes()  # type: ignore
+
+
+def BufferShapeCollector():
+    """Collect Buffer Shape for Ascend.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.BufferShapeCollector()  # type: ignore
+
+
+def Flatten2DBuffer():
+    """flatten buffer shape to 2D.
+
+    Converts buffer dimensions as follows:
+    - 1D [M] -> 2D [1, M]
+    - 2D [N, M] -> 2D [N, M] (unchanged)
+    - ND [D1, D2, ..., Dn] -> 2D [D1*D2*...*Dn-1, Dn]
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.Flatten2DBuffer()  # type: ignore
+
+
+def AscendStorageRewrite(is_npu: bool = False):
+    """StorageRewrite for Ascend.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.AscendStorageRewrite(is_npu)  # type: ignore
+
+
+def AscendLowerOpaqueBlock():
+    """LowerOpaqueBlock for Ascend.
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.AscendLowerOpaqueBlock()  # type: ignore
+
+
+def InjectTmpBuffer(target: Target):
+    """InjectTmpBuffer for Ascend
+
+    Returns
+    -------
+    fpass : tvm.transform.Pass
+        The result pass
+    ----
+    """
+    return _ffi_api.InjectTmpBuffer(target)  # type: ignore

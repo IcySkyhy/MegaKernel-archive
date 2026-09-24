@@ -1,0 +1,24 @@
+# runtime requirements
+Cython
+numpy>=1.23.5
+tqdm>=4.62.3
+typing_extensions>=4.10.0
+cloudpickle
+ml_dtypes
+psutil
+torch
+pybind11
+pytest
+pytest-xdist
+pytest-forked
+pytest-cov>=4.0
+coverage>=7.0
+pandas
+matplotlib
+PyYAML
+decorator 
+absl-py 
+attrs 
+scipy 
+tornado
+torch-npu

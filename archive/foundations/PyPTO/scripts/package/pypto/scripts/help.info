@@ -1,0 +1,14 @@
+  --version                         Query the package version
+  --run | --full | --devel          Install run | full | devel mode
+    --docker-root=<docker root fs directory>    Specify the path of docker root
+    --install-path=<path>           Install product to specific dir path
+    --install-for-all               Install for all user
+    --pylocal                       Install python packages to install dir path
+  --uninstall                       Uninstall product
+    --docker-root=<docker root fs directory>    Specify the path of docker root
+    --install-path=<path>           Uninstall product to specific dir path
+  --upgrade                         Upgrade product immediately
+    --docker-root=<docker root fs directory>    Specify the path of docker root
+    --install-path=<path>           Install product to specific dir path
+    --install-for-all               Install for all user
+    --pylocal                       Install python packages to install dir path

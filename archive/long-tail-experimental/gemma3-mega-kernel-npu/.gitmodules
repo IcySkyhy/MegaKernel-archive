@@ -1,0 +1,22 @@
+[submodule "SubModules/ggml"]
+	path = SubModules/ggml
+	url = https://github.com/ggml-org/ggml
+[submodule "SubModules/json"]
+	path = SubModules/json
+	url = https://github.com/nlohmann/json
+[submodule "SubModules/safetensors-cpp"]
+	path = SubModules/safetensors-cpp
+	url = https://github.com/syoyo/safetensors-cpp
+[submodule "SubModules/tokenizers-cpp"]
+	path = SubModules/tokenizers-cpp
+	url = https://github.com/mlc-ai/tokenizers-cpp
+[submodule "SubModules/transformers"]
+	path = SubModules/transformers
+	url = https://github.com/huggingface/transformers
+[submodule "mlir-aie"]
+	path = mlir-aie
+	url = https://github.com/Xilinx/mlir-aie
+[submodule "Template"]
+	path = Template
+	url = https://github.com/joeldushouyu/Template
+	branch = gemma3-mega-kernel-branch

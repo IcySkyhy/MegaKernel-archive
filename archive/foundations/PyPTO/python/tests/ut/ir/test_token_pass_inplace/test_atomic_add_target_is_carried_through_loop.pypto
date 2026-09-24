@@ -1,0 +1,9 @@
+function foo incast(v0_logical_tensor %target@0 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), v0_logical_tensor %source@1 #dtype(float) #shape([8, 16]) #offset([0, 0]) #dynvalidshape([8, 16]), v0_logical_tensor %out@2 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16])) outcast() #type(Opaque) #entry(false) {
+    v0_logical_tensor %target_3@0 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %target_3_w_for = for %loop_idx_5 inrange 0, 2, 1 iter { v0_logical_tensor %target_1@0 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]) = %target@0; token %target_3_w_for_iter = %None; } #parallel(false) #submit_before_loop(false) #_loop_conds(Unsupported) #_config_scope(Unsupported) #unroll_times(1) {
+        v0_logical_tensor %target_1@0 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %target_1_w = !10004 ATOMIC_RMW(%source@1) token() #toOffset(Unsupported);
+        continue %target_1@0, %target_1_w;
+    }
+    v0_logical_tensor %$1@4 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]) = !10005 ADDS(%target_3@0) token(%target_3_w_for);
+    v0_logical_tensor %out_1@2 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]) = !10006 ASSEMBLE(%$1@4) token() #toOffset(Unsupported);
+    return %target_3@0, %source@1, %out_1@2;
+}

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dsv2mk"
+version = "1.0.0"
+description = "DeepSeek-V2-236B decode as a single persistent CuTe-DSL megakernel on 8x B200"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.7",
+    "nvidia-cutlass-dsl>=4.5.2",
+    "transformers>=4.50",
+    "safetensors",
+    "accelerate",
+]
+
+[project.urls]
+Homepage = "https://github.com/SwayamInSync/DSV2-236B-MegaKernel"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dsv2mk*"]
+namespaces = false

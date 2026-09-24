@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1",
+  "card_kinds": ["mechanism", "decision", "case", "boundary"],
+  "claim_kinds": ["launch-boundary", "mechanism", "dependency", "worker-role", "memory", "communication", "test", "performance", "boundary"],
+  "confidence": ["code-confirmed", "test-confirmed", "source-reported", "cross-repo-derived", "not-established"],
+  "technical_classes": ["strict-megakernel", "near-whole-model", "operator-or-subgraph", "adjacent-infrastructure", "non-megakernel"],
+  "open_status": ["A-OSS", "B-OSS", "C-PARTIAL", "S-SOURCE", "D-BOUNDARY"],
+  "paradigms": ["static-monolith", "instruction-interpreter", "task-event-runtime", "role-specialized", "multi-kernel-alternative"],
+  "execution_scopes": ["whole-generation", "whole-forward", "whole-model-runtime", "layer", "moe-pipeline", "operator-subgraph", "single-op", "adjacent"],
+  "mechanisms": ["static-instruction-stream", "phase-interpreter", "formula-barrier", "monotonic-counter-dag", "dynamic-ready-queue", "event-runtime", "scoreboard", "paged-shared-memory", "role-specialized", "readiness-signal", "hierarchical-synchronization", "topology-aware-scheduling", "symmetric-memory", "compute-communication-overlap", "cooperative-grid", "grid-barrier", "pdl", "cuda-graph", "multi-stream"],
+  "aliases": {
+    "megakernel": ["mega kernel", "大核", "超级核"],
+    "persistent": ["常驻", "resident", "persistent launch"],
+    "dynamic-ready-queue": ["ready queue", "readiness queue", "动态就绪队列"],
+    "task-event-runtime": ["task graph", "event graph", "任务图", "事件图"],
+    "static-instruction-stream": ["instruction replay", "指令流", "静态回放"],
+    "role-specialized": ["worker roles", "角色分工", "通信计算分工"],
+    "hierarchical-synchronization": ["分层同步", "local counter", "局部计数器"],
+    "topology-aware-scheduling": ["XCD-aware", "chiplet scheduling", "拓扑感知"],
+    "whole-generation": ["token loop", "generation loop", "完整生成循环"],
+    "moe-pipeline": ["MegaMoE", "dispatch compute combine", "MoE pipeline"],
+    "sm100": ["B200", "Blackwell"],
+    "sm103": ["B300", "GB300"],
+    "gfx950": ["MI350", "MI355X"],
+    "multi-kernel-alternative": ["PDL", "CUDA Graph", "multiple persistent kernels", "多核替代"]
+  }
+}

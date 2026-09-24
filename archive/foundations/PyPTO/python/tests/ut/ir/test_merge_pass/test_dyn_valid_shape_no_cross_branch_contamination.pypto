@@ -1,0 +1,17 @@
+function foo_no_cross incast(v0_logical_tensor %x@0 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]), v0_logical_tensor %z@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32])) outcast() #type(Opaque) #entry(false) {
+    v0_logical_tensor %z_5@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = for %loop_idx_20 inrange 0, 2, 1 iter { v0_logical_tensor %z_1@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = %z@1; } #parallel(false) #submit_before_loop(false) #_loop_conds(Unsupported) #_config_scope(Unsupported) #unroll_times(1) {
+        v0_logical_tensor %z_7@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = if v0eq(loop_idx_20, 0) then {
+            v0_logical_tensor %View_x@2 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]) = !10000 VIEW(%x@0) token() #fromOffset(Unsupported) #toValidShape(Unsupported);
+            v0_logical_tensor %View_View_x_4@3 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([v0min(n, m), 16]) = !10003 VIEW(%View_x@2) token() #fromOffset(Unsupported) #toValidShape(Unsupported);
+            v0_logical_tensor %z_3@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = !10004 ASSEMBLE(%View_View_x_4@3) token() #toOffset(Unsupported);
+            yield %z_3@1;
+        } else {
+            v0_logical_tensor %View_x_4@2 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]) = !10007 VIEW(%x@0) token() #fromOffset(Unsupported) #toValidShape(Unsupported);
+            v0_logical_tensor %View_View_x_6@3 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([v0min(n, 16), 16]) = !10008 VIEW(%View_x_4@2) token() #fromOffset(Unsupported) #toValidShape(Unsupported);
+            v0_logical_tensor %z_9@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = !10009 ASSEMBLE(%View_View_x_6@3) token() #toOffset(Unsupported);
+            yield %z_9@1;
+        }
+        continue %z_7@1;
+    }
+    return %x@0, %z_5@1;
+}

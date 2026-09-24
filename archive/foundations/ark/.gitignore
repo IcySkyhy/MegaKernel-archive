@@ -1,0 +1,17 @@
+# Build temp files
+build/
+**/build/
+
+# VS Code
+.settings/
+
+# Python
+_pycache__/
+**/__pycache__/
+ *.pyc
+**/*.pyc
+*.pyo
+**/*.pyo
+
+# PyTest
+.pytest_cache/

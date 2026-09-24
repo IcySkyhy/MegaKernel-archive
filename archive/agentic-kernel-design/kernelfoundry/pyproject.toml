@@ -1,0 +1,118 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kernelfoundry"
+dynamic = ["version"]
+description = "A Python package for kernel testing"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [
+    {name = "KernelFoundry Team"}
+]
+dependencies = [
+    "numpy>=1.26",
+    "pytest",
+    "pytest-dependency",
+    "ninja",
+]
+
+[project.optional-dependencies]
+ui = [
+    "nicegui<=3.6.0",
+    "pandas",
+    "pygraphviz",
+    "sqlalchemy",
+    "fastapi",
+    "networkx"
+]
+algo = [
+    "autoroot",
+    "modal",
+    "openai",
+    "boto3",
+    "packaging",
+    "hydra-core",
+    "pydra_config",
+    "tqdm",
+    "einops",
+    "scipy",
+    "clang==20.1.5",
+    "pybind11",
+    "openvino", # for baseline times (torch.compile)
+    "pyopencl",
+    "authlib",
+    "paramiko",
+    "ittapi",
+    "beautifulsoup4",
+    "uvicorn",
+    "celery[msgpack]",
+    "python-multipart",
+    "requests",
+    "sqlalchemy",
+    "psycopg2-binary",
+    "cmake",
+    "omegaconf"
+]
+dev = [
+    "black >= 26, < 27",
+    "python-semantic-release",
+]
+docs = [
+    "sphinx >= 7.0",
+    "shibuya", # sphinx theme
+    "sphinx-copybutton",
+]
+mcp = [
+    "fastmcp",
+    "httpx",
+    "pyyaml",
+    "omegaconf"
+]
+all = [ "kernelfoundry[ui,algo,dev,docs,mcp]" ]
+
+[project.urls]
+Homepage = "https://github.com/isl-org/kernelfoundry"
+Repository = "https://github.com/isl-org/kernelfoundry"
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["templates*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "kernelfoundry.__version__"}
+
+[tool.black]
+line-length = 120
+
+[tool.semantic_release]
+version_variables = ["kernelfoundry/__init__.py:__version__"]
+build_command = "pip install build && python -m build"
+allow_zero_version = true
+branch = "main"
+upload_to_vcs_release = true
+upload_to_repository = false
+commit_message = "chore(release): {version} [skip ci]"
+
+[tool.semantic_release.changelog]
+exclude_commit_patterns = []
+
+[tool.semantic_release.changelog.default_templates]
+changelog_file = "CHANGELOG.md"
+
+[tool.semantic_release.branches.main]
+match = "(main|master)"
+prerelease = false
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["build", "chore", "ci", "docs", "feat", "fix", "perf", "style", "refactor", "test"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
+
+[tool.semantic_release.remote]
+type = "github"
+token = { env = "GH_TOKEN" }
+ignore_token_for_push = true

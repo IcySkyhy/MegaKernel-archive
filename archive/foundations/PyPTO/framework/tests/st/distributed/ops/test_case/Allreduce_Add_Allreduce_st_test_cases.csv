@@ -1,0 +1,2 @@
+operation,case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,world_size
+AllReduceAddAllReduce,AllReduceAddAllReduce_test_1,"[4096, 8192]","bfloat16","ND","[,]","[4096, 8192]","bfloat16","ND","[128, 256]","[4096, 8192]",4

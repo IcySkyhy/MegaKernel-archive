@@ -1,0 +1,180 @@
+# vf.unpack
+
+## 产品支持情况
+
+<!-- npu="950" id1 -->
+- Ascend 950PR/Ascend 950DT：支持
+<!-- end id1 -->
+<!-- npu="A3" id2 -->
+- Atlas A3 训练系列产品/Atlas A3 推理系列产品：不支持
+<!-- end id2 -->
+<!-- npu="910b" id3 -->
+- Atlas A2 训练系列产品/Atlas A2 推理系列产品：不支持
+<!-- end id3 -->
+
+## 功能说明
+
+该指令会在后端根据`src`参数类型自动支持两种模式：
+
+**reg_tensor输入**：对于无符号整型，将源操作数`src`中低半部分或高半部分的元素以高位填0扩充位宽的方式写入目的操作数`dst`。对于有符号整型，将源操作数`src`中低半部分或高半部分的元素以保持符号位扩充位宽的方式写入`dst`。用于将窄类型数据展开为宽类型数据。示意图如下图所示：
+
+**图1** reg_tensor输入unpack示意图
+
+![reg_tensor输入unpack示意图](../../../../figures/unpack_diagram.jpg)
+
+**mask_tensor输入**：根据`part`选取的模式，将源操作数`src`的低半部分或者高半部分，展开到目的操作数`dst`。示意图如下图所示：
+
+**图1** mask_tensor输入unpack示意图
+
+![mask_tensor输入unpack示意图](../../../../figures/mask_unpack_diagram.jpg)
+
+## 函数原型
+
+```python
+unpack(src, dtype: Optional[DType] = None, part: Optional[PackPart] = None) -> dst
+```
+
+## 参数说明
+
+| 参数 | 输入/输出 | 说明 |
+|---|---|---|
+| `src` | 输入 | 源操作数，reg_tensor或者mask_tensor类型。reg_tensor时数据类型为展开前的窄类型，mask_tensor时数据类型不变。 |
+| `part` | 输入 | 用于控制读取src的低半部分还是高半部分，对应[PackPart](../types/PackPart.md)类型。<br>- `pl.PackPart.LOWER`：低位模式，读取src的低半部分。<br>- `pl.PackPart.UPPER`：高位模式，读取src的高半部分。<br>默认`pl.PackPart.LOWER`。双寄存器模式只支持`pl.PackPart.LOWER`模式。 |
+| `dtype` | 输入 | 数据类型。<br>- reg_tensor模式必选，指定目标reg_tensor的数据类型（如`pl.DT_UINT16`、`pl.DT_UINT32`等）。需要必须的原因在于将窄类型展开为宽类型（如DT_UINT8→DT_UINT16），目标reg_tensor的数据类型与源reg_tensor不同，无法从源操作数推断，因此必须通过`dtype`参数显式指定目标数据类型。<br>- mask_tensor模式保持寄存器类型，可省略。 |
+
+## 约束说明
+
+- 数据类型约束：
+
+  - **reg_tensor输入**
+
+    源操作数和目的操作数的数据类型对应表
+
+    | dst | src |
+    |---|---|
+    | DT_INT16 | DT_INT8 |
+    | DT_UINT16 | DT_UINT8 |
+    | DT_INT32 | DT_INT16 |
+    | DT_UINT32 | DT_UINT16 |
+    | DT_INT64 | DT_INT32 |
+    | DT_UINT64 | DT_UINT32 |
+
+  - **mask_tensor输入**
+
+    无约束
+
+## 返回值说明
+
+返回`dst`目的操作数，reg_tensor或者mask_tensor类型。reg_tensor时数据类型为展开后的宽类型，mask_tensor时数据类型不变，支持的数据类型请参见[约束说明](#约束说明)。
+
+## 调用示例
+
+### reg_tensor调用示例
+
+```python
+import os
+import pypto_pro.language as pl
+import torch
+import torch_npu
+
+@pl.vector_function
+def example_vf(src_tile, dst_tile):
+    preg = vf.create_mask(pattern=pl.MaskPattern.ALL, dtype=pl.DT_UINT16)
+    src = vf.load_align(src_tile, 0)
+    dst = vf.unpack(src, part=pl.PackPart.LOWER, dtype=pl.DT_UINT16)
+    vf.store_align(dst_tile, dst, preg)
+
+@pl.jit()
+def example_kernel(
+    a: pl.Tensor[[pl.DYNAMIC, pl.DYNAMIC], pl.DT_UINT8],
+    out: pl.Tensor[[pl.DYNAMIC, pl.DYNAMIC], pl.DT_UINT16],
+):
+    tf_src = pl.TileType(shape=[1, 256], dtype=pl.DT_UINT8, target_memory=pl.MemorySpace.Vec)
+    tf_dst = pl.TileType(shape=[1, 128], dtype=pl.DT_UINT16, target_memory=pl.MemorySpace.Vec)
+    in_a_grp = pl.make_tile_group(type=tf_src, addrs=0x0, mutex_ids=[0])
+    in_a = in_a_grp.current()
+    t_out_grp = pl.make_tile_group(type=tf_dst, addrs=0x100, mutex_ids=[1])
+    t_out = t_out_grp.current()
+    with pl.section_vector():
+        pl.load(in_a, a, [0, 0])
+        pl.system.sync_src(set_pipe=pl.PipeType.MTE2, wait_pipe=pl.PipeType.V, event_id=0)
+        pl.system.sync_dst(set_pipe=pl.PipeType.MTE2, wait_pipe=pl.PipeType.V, event_id=0)
+        example_vf(in_a, t_out)
+        pl.system.sync_src(set_pipe=pl.PipeType.V, wait_pipe=pl.PipeType.MTE3, event_id=1)
+        pl.system.sync_dst(set_pipe=pl.PipeType.V, wait_pipe=pl.PipeType.MTE3, event_id=1)
+        pl.store(out, t_out, [0, 0])
+
+def test_example():
+    device_id = int(os.environ.get("TILE_FWK_DEVICE_ID", 0))
+    device = f"npu:{device_id}"
+    core_nums = 1
+    torch.npu.set_device(device)
+    a = torch.randint(0, 256, [1, 256], device=device, dtype=torch.uint8)
+    out = torch.empty([1, 128], device=device, dtype=torch.int16)
+    example_kernel[None, core_nums](a, out)
+    torch.npu.synchronize()
+    assert out.dtype == torch.int16
+
+if __name__ == "__main__":
+    test_example()
+    print("PASSED")
+```
+
+### mask_tensor调用示例
+
+当源操作数为mask_tensor时，`vf.unpack`将掩码的低半部分或高半部分展开（每bit展开为2bit，高位置零）。mask_tensor变体与reg_tensor变体共用`part=`参数指定模式。
+
+```python
+import os
+import pypto_pro.language as pl
+import torch
+import torch_npu
+
+@pl.vector_function
+def example_vf(src_tile, dst_tile):
+    preg = vf.create_mask(pattern=pl.MaskPattern.ALL, dtype=pl.DT_FP32)
+    reg = vf.load_align(src_tile, 0)
+    # 生成比较掩码：reg >= 0的位置为1
+    mask_a = vf.ge(reg, 0.0, preg)
+    # pack后unpack为roundtrip，掩码恢复原值
+    preg_packed = vf.pack(mask_a, part=pl.PackPart.LOWER)
+    preg_unpacked = vf.unpack(preg_packed, part=pl.PackPart.LOWER)
+    # 使用恢复后的掩码做abs：reg >= 0处取abs（即自身），否则置零
+    reg_dst = vf.abs(reg, preg_unpacked)
+    vf.store_align(dst_tile, reg_dst, preg)
+
+@pl.jit()
+def example_kernel(
+    a: pl.Tensor[[pl.DYNAMIC, pl.DYNAMIC], pl.DT_FP32],
+    out: pl.Tensor[[pl.DYNAMIC, pl.DYNAMIC], pl.DT_FP32],
+):
+    tf = pl.TileType(shape=[1, 64], dtype=pl.DT_FP32, target_memory=pl.MemorySpace.Vec)
+    in_a_grp = pl.make_tile_group(type=tf, addrs=0x0, mutex_ids=[0])
+    in_a = in_a_grp.current()
+    t_out_grp = pl.make_tile_group(type=tf, addrs=0x100, mutex_ids=[1])
+    t_out = t_out_grp.current()
+    with pl.section_vector():
+        pl.load(in_a, a, [0, 0])
+        pl.system.sync_src(set_pipe=pl.PipeType.MTE2, wait_pipe=pl.PipeType.V, event_id=0)
+        pl.system.sync_dst(set_pipe=pl.PipeType.MTE2, wait_pipe=pl.PipeType.V, event_id=0)
+        example_vf(in_a, t_out)
+        pl.system.sync_src(set_pipe=pl.PipeType.V, wait_pipe=pl.PipeType.MTE3, event_id=1)
+        pl.system.sync_dst(set_pipe=pl.PipeType.V, wait_pipe=pl.PipeType.MTE3, event_id=1)
+        pl.store(out, t_out, [0, 0])
+
+def test_example():
+    device_id = int(os.environ.get("TILE_FWK_DEVICE_ID", 0))
+    device = f"npu:{device_id}"
+    core_nums = 1
+    torch.npu.set_device(device)
+    a = torch.randn([1, 64], device=device, dtype=torch.float32)
+    out = torch.empty([1, 64], device=device, dtype=torch.float32)
+    example_kernel[None, core_nums](a, out)
+    torch.npu.synchronize()
+    expected = torch.where(a >= 0, a, torch.zeros_like(a))
+    torch.testing.assert_close(out, expected, rtol=1e-5, atol=1e-5)
+
+if __name__ == "__main__":
+    test_example()
+    print("PASSED")
+```

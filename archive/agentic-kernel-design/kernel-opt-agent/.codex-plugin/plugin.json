@@ -1,0 +1,44 @@
+{
+  "name": "kernel-opt-agent",
+  "version": "0.1.0",
+  "description": "GPU kernel knowledge-base, benchmarking, profiling, and optimization-loop skills for Codex.",
+  "author": {
+    "name": "fmh66",
+    "url": "https://github.com/fmh66"
+  },
+  "homepage": "https://github.com/fmh66/kernel-opt-agent",
+  "repository": "https://github.com/fmh66/kernel-opt-agent",
+  "license": "MIT",
+  "keywords": [
+    "cuda",
+    "triton",
+    "cutlass",
+    "gpu",
+    "kernel",
+    "benchmark",
+    "profiling",
+    "optimization"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Kernel Opt Agent",
+    "shortDescription": "GPU kernel KBS retrieval, benchmarking, NCU profiling, and optimization-loop workflows.",
+    "longDescription": "Installs kernel-KBS, kernel-benchmark, kernel-profile, and kernel-loop: a corpus-backed GPU kernel knowledge base, PyTorch-reference benchmarking for CUDA/CUTLASS/CuTe DSL/Triton kernels, local correctness and Nsight Compute profiling, plus an iterative bottleneck-driven optimization loop that chains profiling, KBS-guided hypotheses, one-change kernel iterations, and final reporting.",
+    "developerName": "fmh66",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/fmh66/kernel-opt-agent",
+    "defaultPrompt": [
+      "Search kernel-KBS for Blackwell NVFP4 GEMM patterns.",
+      "Benchmark this Triton kernel against a PyTorch reference.",
+      "Profile this Triton kernel and classify its bottleneck.",
+      "Find source-backed CUDA optimization ideas for this kernel.",
+      "Run an iterative optimization loop for this kernel with NCU evidence and a final report."
+    ],
+    "brandColor": "#2563EB"
+  }
+}

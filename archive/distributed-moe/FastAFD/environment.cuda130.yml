@@ -1,0 +1,54 @@
+name: minisgl-cuda130
+channels:
+  - conda-forge
+  - nvidia
+
+# This environment installs the external runtime/build dependencies for
+# mini-sglang-calib on CUDA 13.0. It does not install the local repo itself.
+#
+# After creating the env, install the local package manually:
+#   pip install -e .
+#
+# Notes:
+# - torch is installed from the official cu130 wheel index because that path
+#   is currently more reliable on linux-aarch64 than conda PyTorch packages.
+# - flashinfer-python is installed with pip because it is not available from
+#   the conda channels we use here.
+# - pyproject.toml intentionally keeps the core dependency list empty for this
+#   conda-first workflow. This environment file is the source of truth for the
+#   runtime package set.
+
+dependencies:
+  - python=3.12
+  - pip>=25
+  - cxx-compiler
+  - cmake>=3.22
+  - ninja
+  - pybind11>=2.13
+  - setuptools>=75
+  - wheel
+  - cuda-toolkit=13.0.*
+  - cuda-cudart=13.0.*
+  - cuda-nvcc=13.0.*
+  - fastapi
+  - uvicorn
+  - pyzmq
+  - msgpack-python
+  - pydantic>=2
+  - transformers=4.57.3
+  - huggingface_hub
+  - apache-tvm-ffi=0.1.9
+  - accelerate
+  - modelscope
+  - prompt_toolkit
+  - openai
+  - pip:
+      - --extra-index-url https://download.pytorch.org/whl/cu130
+      - ray==2.54.0
+      - torch==2.10.0+cu130
+      # Keep torch's pinned NCCL during env creation so pip's resolver
+      # succeeds. For DeepEP V2 / AFD runs, force-upgrade NCCL after creating
+      # the env; see README.md.
+      - nvidia-nccl-cu13==2.28.9
+      - flashinfer-python==0.6.6
+      - triton==3.6.0

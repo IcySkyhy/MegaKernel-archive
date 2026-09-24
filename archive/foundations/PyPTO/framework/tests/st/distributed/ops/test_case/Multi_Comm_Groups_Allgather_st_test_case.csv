@@ -1,0 +1,2 @@
+operation,case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,world_size
+MultiCommGroupsOp,AllGather_test_1,"[8, 16]","int32","ND","[-10, 10]","[16, 16]","int32","ND","[8, 16]","[8, 16]",4

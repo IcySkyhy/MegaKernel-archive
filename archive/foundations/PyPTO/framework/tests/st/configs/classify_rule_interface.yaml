@@ -1,0 +1,49 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+# 说明:
+#   本文件用于 Tests 用例分类分组定义
+# 格式:
+#   tests_type        [required]   --- 任务类型, 当前支持 [stest, utest]
+#     group_name      [required]   --- 任务分组, 如 operator, operation, interface, codegen, operation_moe 等
+#       write_list    [optional]   --- 任务分组下的白名单, 即修改文件若仅涉及对应白名单路径, 则本任务不需执行
+#       cases         [required]   --- 测试用例, 对应 GTestFilter
+
+stest:
+  interface_assemble:
+    cases:
+      - AssembleTest.test_seq_in_assemble
+      - AssembleTest.test_parallel_in_assemble
+      - AssembleTest.test_seq_in_assemble_and_overwrite_between_assemble
+      - AssembleTest.test_parallel_in_assemble_and_overwrite_between_assemble
+      - AssembleTest.test_overwrite_in_assemble_and_parallel_between_assemble
+      - AssembleTest.test_process_after_assemble
+      - AssembleTest.test_loop_after_loop_0
+      - AssembleTest.test_loop_after_loop_1
+      - AssembleTest.test_loop_after_loop_2
+      - AssembleTest.test_loop_after_loop_3
+      - AssembleTest.test_override_between_assemble
+      - AssembleTest.test_mix_assemble_0
+      - AssembleTest.test_mix_assemble_1
+      - AssembleTest.test_assemble_to_inner_tensor_0
+      - AssembleTest.test_assemble_to_inner_tensor_1
+      - AssembleTest.test_assemble_to_inner_tensor_2
+      - AssembleTest.test_assemble_to_inner_tensor_3
+      - AssembleTest.test_mix_assemble_with_tiling
+      - AssembleTest.test_inner_assemble_with_concat
+      - AssembleTest.test_inner_assemble_fp32
+      - AssembleTest.test_inner_assemble_by_framework_fp32
+      - AssembleTest.test_inner_assemble_multi_line_fp32
+      - AssembleTest.test_inner_assemble_multi_view_fp32
+      - AssembleTest.test_inner_assemble_multi_view_fp16
+      - AssembleTest.test_inner_assemble_multi_view_bf16
+
+  interface_view:
+    cases:
+      - ViewTest.test_inner_view_fp32

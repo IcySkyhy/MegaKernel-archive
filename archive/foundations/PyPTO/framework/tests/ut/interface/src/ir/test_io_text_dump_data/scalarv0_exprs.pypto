@@ -1,0 +1,10 @@
+program #entry(scalarv0_exprs) {
+    function scalarv0_exprs incast(int32_t %a) outcast(int64_t) #type(Opaque) #entry(true) {
+        int64_t %x = v0add(M, 2);
+        int64_t %y = v0mul(v0add(M, 2), N);
+        int64_t %z = v0neg(M);
+        int64_t %w = v0max(M, N, 4);
+        int64_t %v = v0call(RUNTIME_foo, N, 3);
+        return %a;
+    }
+}

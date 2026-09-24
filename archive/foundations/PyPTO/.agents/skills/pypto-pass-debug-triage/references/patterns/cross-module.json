@@ -1,0 +1,282 @@
+{
+  "cross_module_triage": [
+    {
+      "pattern_id": "C001",
+      "category": "cross_module_triage",
+      "category_cn": "跨模块定界：spill/内存/同步",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "symptom_keywords": [
+        "spill",
+        "L0C",
+        "L1",
+        "copyOut",
+        "copyIn",
+        "dtype",
+        "MTE",
+        "out of range",
+        "sync",
+        "event"
+      ],
+      "likely_modules": [
+        "pass",
+        "machine"
+      ],
+      "priority": "先查 pass 的 spill/AssignMemoryType/OoOScheduler，再查 machine 的同步/地址/launch",
+      "pass_files_to_check": [
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp",
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp",
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/ooo_scheduler.cpp"
+      ],
+      "non_pass_files_to_check": [
+        "framework/src/machine/runtime/*",
+        "framework/src/machine/launch/*"
+      ],
+      "example_commits": [
+        "9b89dbd8",
+        "3e379fa0",
+        "090e0042"
+      ],
+      "verification_hints": [
+        "确认报错堆栈是否停在 pass 文件还是 machine 文件",
+        "检查 MTE/同步事件是否由 machine 层触发",
+        "对比 pass 推断的 dtype/地址与 machine 实际分配的内存"
+      ]
+    },
+    {
+      "pattern_id": "C002",
+      "category": "cross_module_triage",
+      "category_cn": "跨模块定界：reshape/view/validshape",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "symptom_keywords": [
+        "reshape",
+        "view",
+        "assemble",
+        "validshape",
+        "shape",
+        "infer",
+        "dynamic shape"
+      ],
+      "likely_modules": [
+        "pass",
+        "operation",
+        "frontend"
+      ],
+      "priority": "先查 pass 的视图合并与 shape 推导，再查 operation 的 op 约束，最后查 frontend 的输入 shape",
+      "pass_files_to_check": [
+        "framework/src/passes/tile_graph_pass/graph_partition/supernode_graph_builder.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp",
+        "framework/src/passes/pass_utils/view_reshape_assemble_reorder_utils.cpp"
+      ],
+      "non_pass_files_to_check": [
+        "framework/src/interface/operation/*",
+        "python/pypto/frontend/*"
+      ],
+      "example_commits": [
+        "6d0f7055",
+        "09ac5e3d",
+        "336914aa"
+      ],
+      "verification_hints": [
+        "dump pass 前后的 shape/validshape",
+        "检查 operation 注册表中该 op 的 shape 推导函数",
+        "确认 frontend 传入的原始 shape 是否正确"
+      ]
+    },
+    {
+      "pattern_id": "C003",
+      "category": "cross_module_triage",
+      "category_cn": "跨模块定界：具体算子报错",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "symptom_keywords": [
+        "matmul",
+        "conv",
+        "transdata",
+        "relu",
+        "gather",
+        "where",
+        "index_add",
+        "precision"
+      ],
+      "likely_modules": [
+        "operation",
+        "operator",
+        "pass"
+      ],
+      "priority": "先查 operation/operator 的算子实现与约束，再查 pass 是否错误处理该 op",
+      "pass_files_to_check": [
+        "framework/src/passes/block_graph_pass/*",
+        "framework/src/passes/tensor_graph_pass/*"
+      ],
+      "non_pass_files_to_check": [
+        "framework/src/interface/operation/*",
+        "models/*/ops/*"
+      ],
+      "example_commits": [
+        "783e0135",
+        "5ebaf0e9",
+        "2da4be3f"
+      ],
+      "verification_hints": [
+        "在 pass 报错处确认当前 op 的 opcode",
+        "检查 operation 模块中该 op 的 dtype/shape/format 支持列表",
+        "确认 pass 没有遗漏该 op 的特判分支"
+      ]
+    },
+    {
+      "pattern_id": "C004",
+      "category": "cross_module_triage",
+      "category_cn": "跨模块定界：运行时/launch/内存池",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "symptom_keywords": [
+        "runtime",
+        "launch",
+        "rtMalloc",
+        "workspace",
+        "memory pool",
+        "slab",
+        "timeout",
+        "aicore"
+      ],
+      "likely_modules": [
+        "machine",
+        "pass"
+      ],
+      "priority": "先查 machine 的内存分配、launch、同步，再查 pass 是否生成了不合理的图",
+      "pass_files_to_check": [
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp",
+        "framework/src/passes/block_graph_pass/schedule_ooo/*"
+      ],
+      "non_pass_files_to_check": [
+        "framework/src/machine/memory/*",
+        "framework/src/machine/runtime/*",
+        "framework/src/machine/launch/*"
+      ],
+      "example_commits": [
+        "afef4fb5",
+        "aba27b8a",
+        "503cf23a"
+      ],
+      "verification_hints": [
+        "检查 workspace 大小与分配日志",
+        "确认 aicore 错误码和 machine 的 dump 信息",
+        "检查 pass 是否产生异常大的 tensor 或过多的同步"
+      ]
+    },
+    {
+      "pattern_id": "C005",
+      "category": "cross_module_triage",
+      "category_cn": "跨模块定界：IR/前端/Interpreter",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "symptom_keywords": [
+        "IR",
+        "token",
+        "dce",
+        "interpreter",
+        "frontend",
+        "jit",
+        "symbolic",
+        "scalar"
+      ],
+      "likely_modules": [
+        "ir",
+        "interpreter",
+        "frontend",
+        "pass"
+      ],
+      "priority": "先查 ir/interpreter/frontend 的数据结构与接口，再查 pass 是否正确消费这些数据",
+      "pass_files_to_check": [
+        "framework/src/passes/tensor_graph_pass/expand_function.cpp",
+        "framework/src/passes/pass_mgr/*"
+      ],
+      "non_pass_files_to_check": [
+        "framework/src/interface/interpreter/*",
+        "framework/src/interface/ir/*",
+        "python/pypto/frontend/*"
+      ],
+      "example_commits": [
+        "8d260bdb",
+        "c932ab07",
+        "cdcb2dd6"
+      ],
+      "verification_hints": [
+        "检查 IR 中 tensor/attribute 的表示是否与 pass 预期一致",
+        "确认 interpreter 计算的 validshape/rawshape 是否正确",
+        "检查 frontend 是否传递了 pass 需要的属性"
+      ]
+    },
+    {
+      "pattern_id": "C006",
+      "category": "cross_module_triage",
+      "category_cn": "跨模块定界：分布式通信",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "symptom_keywords": [
+        "distributed",
+        "shmem",
+        "allreduce",
+        "collective",
+        "multi device"
+      ],
+      "likely_modules": [
+        "distributed",
+        "pass"
+      ],
+      "priority": "先查 distributed 的通信原语，再查 pass 对分布式 tensor 的处理",
+      "pass_files_to_check": [
+        "framework/src/passes/block_graph_pass/infer_param_index.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp"
+      ],
+      "non_pass_files_to_check": [
+        "framework/src/distributed/*"
+      ],
+      "example_commits": [
+        "c977b356",
+        "c5e6ee85"
+      ],
+      "verification_hints": [
+        "检查 shmem/allreduce 的 validshape 是否在 distributed 中定义",
+        "确认 pass 没有破坏分布式通信的 tensor 关系"
+      ]
+    },
+    {
+      "pattern_id": "C007",
+      "category": "cross_module_triage",
+      "category_cn": "跨模块定界：代码生成/tile",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "symptom_keywords": [
+        "codegen",
+        "tile",
+        "unroll",
+        "cce",
+        "kernel",
+        "fixpipe"
+      ],
+      "likely_modules": [
+        "codegen",
+        "pass"
+      ],
+      "priority": "先查 codegen 的 tile/kernel 生成，再查 pass 是否传递了错误的 tile shape 或 memory type",
+      "pass_files_to_check": [
+        "framework/src/passes/block_graph_pass/codegen_preproc.cpp",
+        "framework/src/passes/tile_graph_pass/*"
+      ],
+      "non_pass_files_to_check": [
+        "framework/src/codegen/*"
+      ],
+      "example_commits": [
+        "316f49a3",
+        "87fbfb07"
+      ],
+      "verification_hints": [
+        "检查 pass 输出的 tile shape 是否合法",
+        "确认 codegen 对特定 memory type/dtype 组合的支持"
+      ]
+    }
+  ]
+}

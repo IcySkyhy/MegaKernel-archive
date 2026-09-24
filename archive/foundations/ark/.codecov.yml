@@ -1,0 +1,29 @@
+codecov:
+  require_ci_to_pass: yes
+
+flag_management:
+  default_rules:
+    carryforward: true
+    paths:
+      - ark/
+      - python/ark/
+
+coverage:
+  status:
+    project:
+      default:
+        target: 85%
+        threshold: 1%
+
+ignore:
+  - "/usr/*"
+  - "/tmp/*"
+  - "*/build/*"
+  - "*/dist-packages/*"
+  - "*/third_party/*"
+  - "*/ark/*_test.*"
+  - "*/examples/*"
+  - "*/python/unittest/*"
+  - "*/ark/unittest/*"
+  - "*/ark/ops/ops_test_common.*"
+  - "*/ark/include/kernels/*"

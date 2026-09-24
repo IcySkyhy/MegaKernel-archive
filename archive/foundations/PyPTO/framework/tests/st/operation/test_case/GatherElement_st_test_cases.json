@@ -1,0 +1,3498 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "GatherElement_test_0",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "GatherElement_test_1",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "GatherElement_test_2",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "GatherElement_test_3",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "int16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "GatherElement_test_4",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                8
+            ],
+            "tile_shape": [
+                16,
+                8,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "GatherElement_test_5",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                16,
+                8
+            ],
+            "tile_shape": [
+                5,
+                16,
+                8
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "GatherElement_test_6",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                16
+            ],
+            "tile_shape": [
+                8,
+                9,
+                16
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "GatherElement_test_7",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                8,
+                8
+            ],
+            "tile_shape": [
+                16,
+                8,
+                8,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "GatherElement_test_8",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                16,
+                8,
+                8
+            ],
+            "tile_shape": [
+                5,
+                16,
+                8,
+                8
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "GatherElement_test_9",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                16,
+                8
+            ],
+            "tile_shape": [
+                8,
+                9,
+                16,
+                8
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "GatherElement_test_10",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                8,
+                16
+            ],
+            "tile_shape": [
+                8,
+                9,
+                13,
+                16
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "GatherElement_test_11",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        145,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        17,
+                        128
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 128
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        17,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                128
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "GatherElement_test_12",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        64,
+                        80
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        32,
+                        64
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 64
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                64,
+                40
+            ],
+            "tile_shape": [
+                64,
+                32
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "GatherElement_test_13",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "GatherElement_test_14",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 32
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                16,
+                32
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 14
+        },
+        {
+            "case_index": 15,
+            "case_name": "GatherElement_test_15",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        37
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        30,
+                        32
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 32
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        30,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                64,
+                64
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 15
+        },
+        {
+            "case_index": 16,
+            "case_name": "GatherElement_test_16",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        19,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        13,
+                        49
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 64
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        13,
+                        49
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                64
+            ],
+            "tile_shape": [
+                7,
+                64
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 16
+        },
+        {
+            "case_index": 17,
+            "case_name": "GatherElement_test_17",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2,
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        2,
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int64",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2,
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                2,
+                16,
+                8
+            ],
+            "tile_shape": [
+                2,
+                2,
+                9,
+                13,
+                8
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 17
+        },
+        {
+            "case_index": 18,
+            "case_name": "GatherElement_test_18",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 18
+        },
+        {
+            "case_index": 19,
+            "case_name": "GatherElement_test_19",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 19
+        },
+        {
+            "case_index": 20,
+            "case_name": "GatherElement_test_20",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                8
+            ],
+            "tile_shape": [
+                16,
+                8,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 20
+        },
+        {
+            "case_index": 21,
+            "case_name": "GatherElement_test_21",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                16,
+                8
+            ],
+            "tile_shape": [
+                5,
+                16,
+                8
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 21
+        },
+        {
+            "case_index": 22,
+            "case_name": "GatherElement_test_22",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                16
+            ],
+            "tile_shape": [
+                8,
+                9,
+                16
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 22
+        },
+        {
+            "case_index": 23,
+            "case_name": "GatherElement_test_23",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                16,
+                8,
+                8,
+                8
+            ],
+            "tile_shape": [
+                16,
+                8,
+                8,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 23
+        },
+        {
+            "case_index": 24,
+            "case_name": "GatherElement_test_24",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                16,
+                8,
+                8
+            ],
+            "tile_shape": [
+                5,
+                16,
+                8,
+                8
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 24
+        },
+        {
+            "case_index": 25,
+            "case_name": "GatherElement_test_25",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                16,
+                8
+            ],
+            "tile_shape": [
+                8,
+                9,
+                16,
+                8
+            ],
+            "params": {
+                "axis": 2,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 25
+        },
+        {
+            "case_index": 26,
+            "case_name": "GatherElement_test_26",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                8,
+                16
+            ],
+            "tile_shape": [
+                8,
+                9,
+                13,
+                16
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 26
+        },
+        {
+            "case_index": 27,
+            "case_name": "GatherElement_test_27",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        145,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        17,
+                        128
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 128
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        17,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                128,
+                128
+            ],
+            "tile_shape": [
+                32,
+                128
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 27
+        },
+        {
+            "case_index": 28,
+            "case_name": "GatherElement_test_28",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        64,
+                        80
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        32,
+                        64
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 64
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                64,
+                40
+            ],
+            "tile_shape": [
+                64,
+                32
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 28
+        },
+        {
+            "case_index": 29,
+            "case_name": "GatherElement_test_29",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 1
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        1
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                32,
+                32
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 29
+        },
+        {
+            "case_index": 30,
+            "case_name": "GatherElement_test_30",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 32
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        32,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                16,
+                32
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 30
+        },
+        {
+            "case_index": 31,
+            "case_name": "GatherElement_test_31",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        32,
+                        37
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        30,
+                        32
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 32
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        30,
+                        32
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                32,
+                32
+            ],
+            "tile_shape": [
+                64,
+                64
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 31
+        },
+        {
+            "case_index": 32,
+            "case_name": "GatherElement_test_32",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        19,
+                        64
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        13,
+                        49
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 64
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        13,
+                        49
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                7,
+                64
+            ],
+            "tile_shape": [
+                7,
+                64
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 32
+        },
+        {
+            "case_index": 33,
+            "case_name": "GatherElement_test_33",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2,
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        2,
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2,
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2,
+                2,
+                2,
+                16,
+                8
+            ],
+            "tile_shape": [
+                2,
+                2,
+                9,
+                13,
+                8
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 33
+        },
+        {
+            "case_index": 34,
+            "case_name": "GatherElement_test_34",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        15,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        15,
+                        9
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                15,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 34
+        },
+        {
+            "case_index": 35,
+            "case_name": "GatherElement_test_35",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        9,
+                        15
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        9,
+                        15
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                15
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 35
+        },
+        {
+            "case_index": 36,
+            "case_name": "GatherElement_test_36",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                16,
+                8
+            ],
+            "tile_shape": [
+                5,
+                16,
+                16
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 36
+        },
+        {
+            "case_index": 37,
+            "case_name": "GatherElement_test_37",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1,
+                        "max": 1
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        15
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        15
+                    ],
+                    "dtype": "bf16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                15
+            ],
+            "tile_shape": [
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 37
+        },
+        {
+            "case_index": 38,
+            "case_name": "GatherElement_test_38",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 38
+        },
+        {
+            "case_index": 39,
+            "case_name": "GatherElement_test_39",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 39
+        },
+        {
+            "case_index": 40,
+            "case_name": "GatherElement_test_40",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                16,
+                8
+            ],
+            "tile_shape": [
+                5,
+                16,
+                8
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 40
+        },
+        {
+            "case_index": 41,
+            "case_name": "GatherElement_test_41",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                8,
+                16
+            ],
+            "tile_shape": [
+                8,
+                9,
+                13,
+                16
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 41
+        },
+        {
+            "case_index": 42,
+            "case_name": "GatherElement_test_42",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 42
+        },
+        {
+            "case_index": 43,
+            "case_name": "GatherElement_test_43",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 43
+        },
+        {
+            "case_index": 44,
+            "case_name": "GatherElement_test_44",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                16,
+                8
+            ],
+            "tile_shape": [
+                5,
+                16,
+                8
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 44
+        },
+        {
+            "case_index": 45,
+            "case_name": "GatherElement_test_45",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "uint8",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                8,
+                16
+            ],
+            "tile_shape": [
+                8,
+                9,
+                13,
+                16
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 45
+        },
+        {
+            "case_index": 46,
+            "case_name": "GatherElement_test_46",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "uint16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "uint16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 46
+        },
+        {
+            "case_index": 47,
+            "case_name": "GatherElement_test_47",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "uint16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "uint16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 47
+        },
+        {
+            "case_index": 48,
+            "case_name": "GatherElement_test_48",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "uint16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "uint16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                16,
+                8
+            ],
+            "tile_shape": [
+                5,
+                16,
+                8
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 48
+        },
+        {
+            "case_index": 49,
+            "case_name": "GatherElement_test_49",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "uint16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "uint16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                8,
+                16
+            ],
+            "tile_shape": [
+                8,
+                9,
+                13,
+                16
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 49
+        },
+        {
+            "case_index": 50,
+            "case_name": "GatherElement_test_50",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "uint32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "uint32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                8
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 50
+        },
+        {
+            "case_index": 51,
+            "case_name": "GatherElement_test_51",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10
+                    ],
+                    "dtype": "uint32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 10
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        9
+                    ],
+                    "dtype": "uint32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10,
+                8
+            ],
+            "tile_shape": [
+                3,
+                16
+            ],
+            "params": {
+                "axis": 0,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 51
+        },
+        {
+            "case_index": 52,
+            "case_name": "GatherElement_test_52",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "uint32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "uint32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                16,
+                8
+            ],
+            "tile_shape": [
+                5,
+                16,
+                8
+            ],
+            "params": {
+                "axis": 1,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 52
+        },
+        {
+            "case_index": 53,
+            "case_name": "GatherElement_test_53",
+            "operation": "GatherElement",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        16,
+                        16,
+                        16
+                    ],
+                    "dtype": "uint32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                {
+                    "name": "input1",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": 0,
+                        "max": 16
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        8,
+                        8,
+                        8,
+                        8
+                    ],
+                    "dtype": "uint32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                8,
+                8,
+                16
+            ],
+            "tile_shape": [
+                8,
+                9,
+                13,
+                16
+            ],
+            "params": {
+                "axis": 3,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 53
+        }
+    ]
+}

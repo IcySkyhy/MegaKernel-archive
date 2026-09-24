@@ -1,0 +1,143 @@
+# TensorSharp.Server Integration Tests
+
+[English](README.md) | [中文](README_zh-cn.md)
+
+The test suites exercise TensorSharp.Server's current public compatibility surface:
+
+- Web UI SSE: `/api/chat`
+- Ollama chat compatibility: `/api/chat/ollama`
+- OpenAI Chat Completions compatibility: `/v1/chat/completions`
+
+The scripts auto-detect the loaded model architecture and skip thinking or tool-calling checks when the active model does not support those capabilities. They target autoregressive compatibility behavior; DiffusionGemma's Web UI whole-message `replace` preview frames are not covered until a dedicated diffusion suite is added.
+
+## Current Suite Status
+
+| Surface | Coverage |
+|---|---|
+| Web UI SSE | Session-scoped streaming, queue-status compatibility events, done event metrics, abort handling |
+| Ollama compatibility | Chat streaming/non-streaming, multi-turn history, thinking, tool-call request plumbing |
+| OpenAI compatibility | Chat Completions streaming/non-streaming, tool calls, structured outputs, validation errors |
+| Operational behavior | Continuous-batching concurrency, queue-status compatibility, mixed API handoff, architecture-aware skips |
+| DiffusionGemma | Not covered by the current compatibility scripts beyond generic endpoint shape; live denoising previews need a dedicated Web UI SSE test |
+
+## Quick Start
+
+1. From a checkout root, download the recommended public Gemma 4 E4B model and
+   start TensorSharp.Server on the verified native GGML fast path, using the
+   E4B Q8_0 family from the
+   [ggml-org repository](https://huggingface.co/ggml-org/gemma-4-E4B-it-GGUF).
+   This needs the .NET 10 SDK, Git, and Python (for the `hf` download CLI).
+   Copying and running the commands takes about 30 seconds; downloading the
+   7.48 GiB model and the first restore and native build take longer and depend
+   on the network connection and machine. This copy/paste block is for
+   Linux + NVIDIA; other backend choices follow it:
+
+```bash
+python -m pip install -U huggingface_hub
+hf download ggml-org/gemma-4-E4B-it-GGUF gemma-4-E4B-it-Q8_0.gguf --local-dir models
+TENSORSHARP_GGML_NATIVE_ENABLE_CUDA=ON dotnet build TensorSharp.slnx -c Release -p:TensorSharpSkipMlxNative=true
+dotnet TensorSharp.Server/bin/TensorSharp.Server.dll \
+  --model models/gemma-4-E4B-it-Q8_0.gguf --backend ggml_cuda --max-tokens 128
+```
+
+Use `ggml_cuda` on Windows/Linux with NVIDIA, `ggml_metal` on Apple Silicon,
+or `ggml_vulkan` on Windows/Linux with a Vulkan-capable AMD, Intel, or NVIDIA
+GPU. The verified statement is scoped to the E4B Q8_0 family/path; no exact
+public-file SHA is claimed as the benchmark input.
+
+The projector is optional for the text-only checks. Image, video, or audio
+checks require `mmproj-gemma-4-E4B-it-Q8_0.gguf` from the same repository and
+`--mmproj models/mmproj-gemma-4-E4B-it-Q8_0.gguf` on server startup.
+
+Use `--backend cuda` or `--backend ggml_cuda` on Windows/Linux NVIDIA machines, `--backend ggml_vulkan` on Windows/Linux AMD/Intel/NVIDIA GPUs (Vulkan-enabled native build), `--backend ggml_metal` or `--backend mlx` on macOS, or `--backend ggml_cpu` / `--backend cpu` for CPU runs.
+
+The server must always be started with `--model`; a model-less server cannot
+select a GGUF through `/api/models/load`. Multimodal test runs must also pass the
+projector explicitly with `--mmproj`.
+
+2. Run either suite:
+
+```bash
+cd TensorSharp.Server/testdata
+
+# Bash suite (requires curl + jq)
+bash test_multiturn.sh
+
+# Python suite (standard library only)
+python3 test_multiturn.py
+```
+
+## What The Suites Cover
+
+### Common coverage
+
+- Web UI multi-turn SSE streaming and done events
+- Ollama chat multi-turn behavior in streaming and non-streaming modes
+- OpenAI Chat Completions streaming and non-streaming behavior
+- OpenAI structured outputs with both `response_format: {"type":"json_object"}` and `response_format.json_schema`
+- Queue status endpoint shape
+- Error handling for missing required fields
+- Structured-output validation errors and documented request conflicts
+
+### Capability-gated coverage
+
+- Thinking-mode tests run only on architectures that currently support thinking in TensorSharp:
+  Gemma 4, Qwen 3, Qwen 3.5, GPT OSS, and Nemotron-H
+- Tool-calling tests run only on architectures that currently support tool calling in TensorSharp:
+  Gemma 4, Qwen 3, Qwen 3.5, and Nemotron-H
+- GPT OSS thinking is exercised, but GPT OSS tool-call checks are currently skipped by these scripts: the scripts' capability gate (`_detect_capabilities` in `test_multiturn.py`) still reports `tools=False` for `gptoss`, which is stale relative to the server — the Harmony output parser does support tool calling (commentary-channel `to=functions.NAME` calls), so skipped here does not mean unsupported.
+
+Unsupported architectures are reported as `SKIP`, not `FAIL`.
+
+### Bash-only operational checks
+
+- System-prompt persistence in the Web UI flow
+- Concurrent requests through the continuous-batching engine
+- Queue-status compatibility fields
+- Long-conversation stress test
+- Mixed Ollama/OpenAI handoff
+- Abort mid-generation and request cleanup
+- Ollama tool-call request plumbing
+
+### Python-specific compatibility checks
+
+- Architecture-aware OpenAI tool-call validation
+- Separate pass/fail/skip accounting with per-test payload dumps
+
+## Notes
+
+- The OpenAI coverage in this folder targets Chat Completions compatibility. OpenAI's newer Responses API is not the compatibility surface TensorSharp.Server currently emulates here.
+- Structured outputs follow the Chat Completions `response_format` contract. `json_schema` requests combined with `tools` or `think` are expected to return HTTP `400`.
+- The Ollama and OpenAI compatibility projects continue to evolve. These scripts are aligned with the server's current contract plus the current documented behavior around thinking, tool calling, and structured outputs.
+- DiffusionGemma can return final text through append-oriented compatibility endpoints, but only Web UI `/api/chat` exposes the live denoising `replace` frames.
+- The browser UI is at `http://localhost:5000/index.html`; `GET /` is the liveness endpoint.
+
+## Usage
+
+### Bash
+
+```bash
+bash test_multiturn.sh [model_name] [base_url]
+```
+
+Examples:
+
+```bash
+bash test_multiturn.sh
+bash test_multiturn.sh gemma-4-E4B-it-Q8_0.gguf
+bash test_multiturn.sh gemma-4-E4B-it-Q8_0.gguf http://host:5000
+```
+
+### Python
+
+```bash
+python3 test_multiturn.py [--model MODEL] [--url URL] [--max-tokens N]
+```
+
+Examples:
+
+```bash
+python3 test_multiturn.py
+python3 test_multiturn.py --model gemma-4-E4B-it-Q8_0.gguf
+python3 test_multiturn.py --max-tokens 120
+```

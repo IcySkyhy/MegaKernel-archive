@@ -1,0 +1,81 @@
+---
+name: 🐛 Bug report
+description: 如果您发现Bug，请在此提交问题。
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: >
+        #### 在提交问题之前，请通过[搜索现有和历史问题](https://gitcode.com/Ascend/torchair/issues)确保该问题尚未被提出并解决。
+  - type: textarea
+    attributes:
+      label: 您的环境信息
+      description: |
+        请提供以下信息
+      value: |
+        ```text
+        -- CANN 版本 (e.g., 5.x.x, 8.x.x):  
+        -- Pytorch/Torch_npu 版本 (e.g., v2.6.0, v2.9.0):
+        -- Python 版本 (e.g., Python3.9.x, Python3.11.x):
+        -- 操作系统版本 (e.g., Ubuntu 18.04, EulerOs 2.0):
+        ```
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 🐛 请描述bug
+      description: |
+        请清晰简明地描述Bug的具体情况。
+
+        若相关，请提供最小复现示例，以便我们通过运行代码重现错误。代码片段务必尽可能精简，请花时间删减无关代码，这能帮助我们高效调试。
+
+        我们将直接复制您的代码，并期望得到与您相同的结果：请避免使用外部数据，并包含相关导入语句等。
+        
+        
+        请粘贴或描述您实际观察到的结果（而非预期结果）。若出现错误，请完整粘贴包含异常完整回溯的错误信息。建议将错误信息包裹在 ```三引号代码块中。
+
+        请在示例中[开启python层日志](https://www.hiascend.com/document/detail/zh/Pytorch/710/modthirdparty/torchairuseguide/torchair_00008.html)
+
+        或者设置环境变量[开启c++层日志](https://www.hiascend.com/document/detail/zh/Pytorch/710/modthirdparty/torchairuseguide/torchair_00009.html)
+        
+        以启用详细日志，协助调试潜在问题。
+
+
+        若遇到崩溃或卡死问题，请检查日志文件并指出具体崩溃或卡死的函数。
+
+      placeholder: |
+        清晰简明地描述Bug的具体情况。
+
+        ```python
+        # 您的代码段，示例如下：
+        import torch
+        import torch_npu
+        import torchair as tng
+
+        class Model(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+        
+        def forward(self, x, y, z):
+            return torch.add(x, y*z)
+
+        model = Model()
+
+        config = CompilerConfig()
+        npu_backend = tng.get_npu_backend(compiler_config=config)
+        torch.compile(model, backend=npu_backend)
+        model = torch.compile(model, backend=npu_backend, dynamic=False)
+        in1 = torch.randn(4, 1).float().npu()
+        in2 = torch.randn(4, 4).float().npu()
+        in3 = torch.randn(4, 4).int().npu()
+        graph_result = model(in1, in2, in3)
+        print(graph_result)
+        ```  
+
+        ```
+        您收到的错误消息，包含完整的回溯信息。
+        ```
+    validations:
+      required: true

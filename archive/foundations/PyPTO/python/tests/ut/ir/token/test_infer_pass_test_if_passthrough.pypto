@@ -1,0 +1,14 @@
+function foo incast(v0_logical_tensor %x@0 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), v0_logical_tensor %aux@1 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), v0_logical_tensor %out@2 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), v0_logical_tensor %condition@3 #dtype(int32_t) #shape([-1]) #offset([0]) #dynvalidshape([v0call(RUNTIME_GetInputShapeDim, ARG_condition, 0)])) outcast() #type(Opaque) #entry(false) {
+    v0_logical_tensor %$0@4 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %$0_w = !10000 VEC_DUP() token();
+    v0_logical_tensor %aux_1@1 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), token %aux_1_w, token %$0_r = !10001 ASSEMBLE(%$0@4) token(%$0_w) #toOffset(Unsupported);
+    v0_logical_tensor %aux_5@1 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), v0_logical_tensor %inside@5 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %aux_5_w_if, token %inside_w_if = if v0lt(0, v0call(RUNTIME_GetInputShapeDim, ARG_condition, 0)) then {
+        v0_logical_tensor %$1@5 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %$1_w = !10002 VEC_DUP() token();
+        v0_logical_tensor %aux_3@1 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), token %aux_3_w, token %$1_r = !10003 ASSEMBLE(%$1@5) token(%$1_w, %aux_1_w) #toOffset(Unsupported);
+        yield %aux_3@1, %$1@5, %aux_3_w, %$1_w;
+    } else {
+        yield %aux_1@1, %None, %aux_1_w, %None;
+    }
+    v0_logical_tensor %$3@6 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), token %$3_w, token %aux_5_r, token %x_r = !10004 ADD(%aux_5@1, %x@0) token(%aux_5_w_if);
+    v0_logical_tensor %out_1@2 #dtype(float) #shape([32, 16]) #offset([0, 0]) #dynvalidshape([32, 16]), token %out_1_w, token %$3_r = !10005 ASSEMBLE(%$3@6) token(%$3_w) #toOffset(Unsupported);
+    return %x@0, %aux_5@1, %out_1@2, %condition@3;
+}

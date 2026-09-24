@@ -1,0 +1,10 @@
+program #entry(binops) {
+    function binops incast(int32_t %a) outcast(int32_t) #type(Opaque) #entry(true) {
+        int32_t %x = ((cast int64_t %a) add 1);
+        int32_t %y = ((cast int64_t %x) mul 2);
+        int32_t %z = (%y sub %x);
+        int32_t %w = (neg %z);
+        int32_t %v = (cast float %w);
+        return %v;
+    }
+}

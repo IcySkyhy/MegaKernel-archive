@@ -1,0 +1,116 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+[build-system]
+requires = [
+    "setuptools>=70.3.0",
+    "pybind11>=2.13.6",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pypto"
+version = "0.2.1"
+authors = [
+    { name = "PyPTO Team", email = "pto@cann.osinfra.cn" }
+]
+description = "A high-performance programming framework for tile-centric computing"
+readme = { file = "README.md", content-type = "text/markdown" }
+
+# 兼容 setuptools 70.3.0 写法，由setup.py填充 license/license-files, 此处不静态写 license/license-files
+dynamic = ["license"]
+
+requires-python = ">=3.7"
+dependencies = [
+]
+keywords = ["python", "pto", "tile", "tile-centric"]
+classifiers = [  # 分类器，PyPI 用于分类筛选 (必填多个合理分类)
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Compilers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+
+[project.urls]
+Homepage = "https://gitcode.com/cann/pypto"
+Repository = "https://gitcode.com/cann/pypto"
+"Bug Tracker" = "https://gitcode.com/cann/pypto/issues"
+
+
+[project.optional-dependencies]
+dev = [
+    "setuptools>=70.3.0",
+    "pybind11>=2.13.6",
+    "pip",
+    "build",
+    "packaging",
+    "pytest",
+    "pytest-forked",
+    "pytest-xdist",
+    "pytest-cov",
+]
+tests = [
+    "pytest",
+    "pytest-forked",
+    "pytest-xdist",
+    "pytest-cov",
+]
+
+[tool.setuptools]
+# 根包在 python 路径下
+package-dir = {"" = "python"}
+
+# 指明所有被检测的目录
+packages.find.where = ["python", ]
+packages.find.include = [
+    "pypto",
+    "pypto_pro",
+    "pypto_pro.*",
+    "pypto.op",
+    "pypto.include.tilefwk",
+    "pypto.lib",
+    "pypto.lib.configs",
+    "pypto.lib.include.mock",
+    "pypto.lib.include.tilefwk",
+    "pypto.lib.include.tileop",
+    "pypto.lib.include.tileop.arch32",
+    "pypto.lib.include.tileop.arch32.dynamic",
+    "pypto.lib.include.tileop.cube",
+    "pypto.lib.include.tileop.vector",
+    "pypto.lib.include.tileop.utils",
+    "pypto.lib.cmake.PTO_Framework",
+]
+
+# 保留 package-data，确保目录下的 .so/.h 等文件被包含
+include-package-data = true
+package-data = { "pypto" = ["lib/**/*", "include/**/*"], "pypto_pro" = ["include/*"] }
+zip-safe = false
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N"]
+
+# Vendored algorithm code keeps math-style names (T/D/L/B, torch.nn.functional as F, etc.).
+[tool.ruff.lint.per-file-ignores]
+"python/tests/ut/interpreter/_ops/**" = ["N803", "N806", "N812", "E741"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["common", "pypto"]
+force-sort-within-sections = true
+
+[tool.ruff.format]
+quote-style = "preserve"

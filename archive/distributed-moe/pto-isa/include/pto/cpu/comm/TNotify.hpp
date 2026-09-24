@@ -1,0 +1,51 @@
+/**
+Copyright (c) 2026 Huawei Technologies Co., Ltd.
+This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+CANN Open Software License Agreement Version 2.0 (the "License").
+Please refer to the License for details. You may not use this file except in compliance with the License.
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+See LICENSE in the root of the software repository for the full text of the License.
+*/
+
+#ifndef PTO_COMM_TNOTIFY_HPP
+#define PTO_COMM_TNOTIFY_HPP
+
+#include <atomic>
+#include <pto/common/pto_tile.hpp>
+#include <pto/comm/comm_types.hpp>
+#include "pto/cpu/tile_offsets.hpp"
+#include "pto/common/pto_instr.hpp"
+#include "pto/cpu/parallel.hpp"
+
+namespace pto {
+namespace comm {
+
+using NotifyOp = ::pto::comm::NotifyOp;
+
+template <typename GlobalSignalData>
+void TNotify_Impl(typename GlobalSignalData::DType* dstSignalData, int32_t value, NotifyOp op)
+{
+    using DType = typename GlobalSignalData::DType;
+    auto* atomicPtr = reinterpret_cast<std::atomic<DType>*>(dstSignalData);
+    switch (op) {
+        case NotifyOp::AtomicAdd:
+            atomicPtr->fetch_add(static_cast<DType>(value), std::memory_order_seq_cst);
+            break;
+        case NotifyOp::Set:
+            atomicPtr->store(static_cast<DType>(value), std::memory_order_seq_cst);
+            break;
+        default:
+            break;
+    }
+}
+
+template <typename GlobalSignalData>
+PTO_INTERNAL void TNOTIFY_IMPL(GlobalSignalData& dstSignalData, int32_t value, NotifyOp op)
+{
+    TNotify_Impl<GlobalSignalData>(dstSignalData.data(), value, op);
+}
+
+} // namespace comm
+} // namespace pto
+#endif

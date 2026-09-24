@@ -1,0 +1,30 @@
+{
+    "single_input_configs": [
+        {
+            "batch_size": 16,
+            "num_features": 64,
+            "sequence_length": 128
+        }
+    ],
+    "single_init_configs": [
+        {
+            "kernel_size": 4,
+            "stride": 2,
+            "padding": 2,
+            "dilation": 3,
+            "return_indices": false
+        }
+    ],
+    "single_shared_configs": [
+        {}
+    ],
+    "multi_input_configs": [
+        {}
+    ],
+    "multi_init_configs": [
+        {}
+    ],
+    "multi_shared_configs": [
+        {}
+    ]
+}

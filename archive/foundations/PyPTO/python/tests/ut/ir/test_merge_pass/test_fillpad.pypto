@@ -1,0 +1,23 @@
+function foo incast(v0_logical_tensor %a@0 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]), v0_logical_tensor %b@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32])) outcast() #type(Opaque) #entry(false) {
+    v0_logical_tensor %b_9@5 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = for %loop_idx_12 inrange 0, v0mul(v0div(v0sub(n, 0), 2), 2), 2 iter { v0_logical_tensor %b_1@1 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = %b@1; } #parallel(false) #submit_before_loop(false) #_loop_conds(Unsupported) #_config_scope(Unsupported) #unroll_times(2) {
+        v0_logical_tensor %b_7@5 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = if v0eq(v0add(loop_idx_12, 1), v0sub(n, 1)) then {
+            v0_logical_tensor %$3@4 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = !10002 VEC_DUP() token();
+            v0_logical_tensor %b_5@5 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = !10003 ADDS(%$3@4) token();
+            yield %b_5@5;
+        } else {
+            yield %b_1@1;
+        }
+        continue %b_7@5;
+    }
+    v0_logical_tensor %b_16@7 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = for %loop_idx_12_0 inrange v0mul(v0div(v0sub(n, 0), 2), 2), %n, 1 iter { v0_logical_tensor %b_11@5 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = %b_9@5; } #parallel(false) #submit_before_loop(false) #_loop_conds(Unsupported) #_config_scope(Unsupported) #unroll_times(1) {
+        v0_logical_tensor %b_14@7 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = if v0eq(loop_idx_12_0, v0sub(n, 1)) then {
+            v0_logical_tensor %$8@6 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = !10004 VEC_DUP() token();
+            v0_logical_tensor %b_12@7 #dtype(float) #shape([32, 32]) #offset([0, 0]) #dynvalidshape([32, 32]) = !10005 ADDS(%$8@6) token();
+            yield %b_12@7;
+        } else {
+            yield %b_11@5;
+        }
+        continue %b_14@7;
+    }
+    return %a@0, %b_16@7;
+}

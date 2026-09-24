@@ -1,0 +1,1424 @@
+{
+  "source_patterns": [
+    {
+      "pattern_id": "S001",
+      "category": "source_empty_container_deref",
+      "category_cn": "源码模式：空容器解引用",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "AssignMemoryType",
+        "SpillBuffer",
+        "OoOScheduler",
+        "SplitLargeFanoutTensor",
+        "ReduceCopy",
+        "TileGraphPass"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp",
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp",
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/ooo_scheduler.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp",
+        "framework/src/passes/tile_graph_pass/*"
+      ],
+      "phenomenon_keywords": [
+        "segmentation fault",
+        "coredump",
+        "nullptr",
+        "begin()",
+        "front()",
+        "[0]",
+        "empty"
+      ],
+      "code_anti_pattern": "Directly dereferencing .front(), .begin(), or [0] on GetProducers(), GetConsumers(), GetIOperands(), GetOOperands() without checking empty().",
+      "fix_pattern": "Add empty() check before accessing .front()/.begin()/[0]; use helper functions like GetFirstInputOutputIfOpcode that return nullptr on failure.",
+      "example_commits": [
+        "d08d676a"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Search for all occurrences of .front(), .begin(), [0] in the target pass.",
+        "Check whether the container can be empty in abnormal graph structures.",
+        "Add adversarial UT with isolated tensors or ops with no operands."
+      ]
+    },
+    {
+      "pattern_id": "S002",
+      "category": "source_single_pc_assumption",
+      "category_cn": "源码模式：多生产者/消费者只取第一个",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "AssignMemoryType",
+        "SplitLargeFanoutTensor",
+        "ReduceCopy",
+        "MixSubgraphSplit",
+        "TileGraphPass"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp",
+        "framework/src/passes/block_graph_pass/mix_subgraph_split/*",
+        "framework/src/passes/tile_graph_pass/*"
+      ],
+      "phenomenon_keywords": [
+        "multi producer",
+        "multi consumer",
+        "first consumer",
+        "first producer",
+        "*...begin()"
+      ],
+      "code_anti_pattern": "When a tensor has multiple producers or consumers, the code picks only the first element (often via *...begin()) and ignores the rest.",
+      "fix_pattern": "Either validate that there is exactly one producer/consumer and fail otherwise, or iterate over all producers/consumers and handle conflicts explicitly.",
+      "example_commits": [
+        "090e0042",
+        "fedab26e",
+        "513f875f"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check all places that call GetProducers()/GetConsumers() and dereference begin().",
+        "Construct cases where a tensor has 2+ producers or consumers.",
+        "Verify that the chosen element is deterministic and correct."
+      ]
+    },
+    {
+      "pattern_id": "S003",
+      "category": "source_cast_null_check",
+      "category_cn": "源码模式：类型转换未判空",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "AssignMemoryType",
+        "SplitLargeFanoutTensor",
+        "InsertOpForViewAssemble"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/insert_op_for_viewassemble.cpp"
+      ],
+      "phenomenon_keywords": [
+        "dynamic_cast",
+        "static_pointer_cast",
+        "AssembleOpAttribute",
+        "ViewOpAttribute",
+        "null pointer"
+      ],
+      "code_anti_pattern": "dynamic_cast<T*> or static_pointer_cast<T> result is dereferenced immediately without nullptr check.",
+      "fix_pattern": "Check the cast result before dereferencing; return FAILED or skip processing if the cast fails.",
+      "example_commits": [
+        "b65479d1"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Search for dynamic_cast and static_pointer_cast in the target file.",
+        "Check whether the result is validated before use.",
+        "Add UT where the attribute type does not match the expected subclass."
+      ]
+    },
+    {
+      "pattern_id": "S004",
+      "category": "source_view_op_incomplete",
+      "category_cn": "源码模式：视图类 OP 处理不完整",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "SupernodeGraphBuilder",
+        "ReduceCopy",
+        "SpillBuffer",
+        "MixSubgraphSplit",
+        "ExpandFunction",
+        "InferMemoryConflict"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_partition/supernode_graph_builder.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp",
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp",
+        "framework/src/passes/block_graph_pass/mix_subgraph_split/*",
+        "framework/src/passes/tensor_graph_pass/expand_function.cpp",
+        "framework/src/passes/tensor_graph_pass/infer_memory_conflict.cpp"
+      ],
+      "phenomenon_keywords": [
+        "OP_VIEW",
+        "OP_RESHAPE",
+        "OP_ASSEMBLE",
+        "view op",
+        "reshape op",
+        "assemble op"
+      ],
+      "code_anti_pattern": "A pass handles only a subset of view-like opcodes (e.g. only OP_VIEW and OP_ASSEMBLE, missing OP_RESHAPE), or treats them inconsistently.",
+      "fix_pattern": "Maintain a unified view/reshape/assemble opcode set and use shared predicates for scope/mergeability/memory-type decisions.",
+      "example_commits": [
+        "336914aa",
+        "09ac5e3d",
+        "6d0f7055"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "List all places that check GetOpcode() against view-like opcodes.",
+        "Check whether OP_RESHAPE / OP_VIEW_TYPE / OP_ASSEMBLE_SSA are covered consistently.",
+        "Add UT with reshape between view/assemble operations."
+      ]
+    },
+    {
+      "pattern_id": "S005",
+      "category": "source_memory_type_narrow",
+      "category_cn": "源码模式：内存类型推断边界过窄",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "AssignMemoryType",
+        "ReduceCopy",
+        "SplitLargeFanoutTensor",
+        "TileGraphPass"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp",
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp"
+      ],
+      "phenomenon_keywords": [
+        "memory type",
+        "DDR",
+        "L0C",
+        "L1",
+        "UB",
+        "fallback",
+        "MEM_DEVICE_DDR"
+      ],
+      "code_anti_pattern": "Memory-type logic only handles DDR and one or two on-chip types; other memory types are ignored or forced to DDR without evaluating alternatives.",
+      "fix_pattern": "Explicitly enumerate supported memory-type combinations; when requirements conflict, evaluate convert insertion before falling back to DDR.",
+      "example_commits": [
+        "a0d4151f",
+        "957571de",
+        "76d3acda"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check all predicates that compare memory type.",
+        "Verify that L0C/L1/UB/UB2L1 paths are handled explicitly.",
+        "Test cases where consumers require different memory types."
+      ]
+    },
+    {
+      "pattern_id": "S006",
+      "category": "source_integer_overflow",
+      "category_cn": "源码模式：整数溢出",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "AssignMemoryType",
+        "SplitLargeFanoutTensor",
+        "InferMemoryConflict",
+        "ReduceCopy"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp",
+        "framework/src/passes/tensor_graph_pass/infer_memory_conflict.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp"
+      ],
+      "phenomenon_keywords": [
+        "overflow",
+        "int64_t",
+        "stride",
+        "shape",
+        "multiply",
+        "GCD",
+        "LCM"
+      ],
+      "code_anti_pattern": "Multiplying shape/strides or accumulating sizes in int64_t without overflow checks; using int temporary for int64_t values.",
+      "fix_pattern": "Use checked multiplication (e.g. __builtin_mul_overflow) or saturate; keep intermediate variables in int64_t (not int).",
+      "example_commits": [
+        "6a262d5b"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Search for *= or repeated multiplication of shape elements.",
+        "Check temporary variable types in GCD/LCM helpers.",
+        "Add large-shape adversarial cases."
+      ]
+    },
+    {
+      "pattern_id": "S007",
+      "category": "source_hash_order_sensitive",
+      "category_cn": "源码模式：哈希/顺序敏感",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "ReduceCopy",
+        "SupernodeGraphBuilder",
+        "TileGraphPass",
+        "MixSubgraphSplit"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/supernode_graph_builder.cpp",
+        "framework/src/passes/tile_graph_pass/*",
+        "framework/src/passes/block_graph_pass/mix_subgraph_split/*"
+      ],
+      "phenomenon_keywords": [
+        "hash",
+        "order",
+        "deterministic",
+        "unordered_map",
+        "set",
+        "sort"
+      ],
+      "code_anti_pattern": "Hash value or iteration order depends on unordered container traversal, raw pointer values, or insertion order.",
+      "fix_pattern": "Sort operands/keys before hashing; use stable IDs (tensor magic, op magic) instead of pointers; use std::map for deterministic key ordering.",
+      "example_commits": [
+        "8a99ad83",
+        "82e880fc"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check whether hash combines values in container iteration order.",
+        "Run the same test multiple times and compare hashes.",
+        "Add cases with operands in different orders."
+      ]
+    },
+    {
+      "pattern_id": "S008",
+      "category": "source_magic_number",
+      "category_cn": "源码模式：硬编码常量/Magic Number",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "AssignMemoryType",
+        "ReduceCopy",
+        "SupernodeGraphBuilder",
+        "InferMemoryConflict",
+        "TileGraphPass"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/data_path/assign_memory_type.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/reduce_copy.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/supernode_graph_builder.cpp",
+        "framework/src/passes/tensor_graph_pass/infer_memory_conflict.cpp",
+        "framework/src/passes/tile_graph_pass/*"
+      ],
+      "phenomenon_keywords": [
+        "magic number",
+        "hard-coded",
+        "threshold",
+        "latency",
+        "UB_THRESHOLD",
+        "L1_THRESHOLD",
+        "DAV_3510"
+      ],
+      "code_anti_pattern": "Platform-specific thresholds, latencies, input indices, and op name strings are scattered as literals throughout the code.",
+      "fix_pattern": "Centralize constants in a platform/architecture configuration structure; derive values from metadata instead of hard-coded strings.",
+      "example_commits": [
+        "c6042765"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Search for numeric literals other than 0/1/-1 in the target pass.",
+        "Check whether platform constants are duplicated across files.",
+        "Test on a different platform or with changed thresholds."
+      ]
+    },
+    {
+      "pattern_id": "S009",
+      "category": "source_dynamic_shape_validshape",
+      "category_cn": "源码模式：动态 shape / validshape 处理不当",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "SplitLargeFanoutTensor",
+        "SpillBuffer",
+        "InferMemoryConflict",
+        "TileGraphPass"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp",
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp",
+        "framework/src/passes/tensor_graph_pass/infer_memory_conflict.cpp",
+        "framework/src/passes/tile_graph_pass/*"
+      ],
+      "phenomenon_keywords": [
+        "dynamic shape",
+        "validshape",
+        "dyn offset",
+        "SymbolicScalar",
+        "ConcreteValid"
+      ],
+      "code_anti_pattern": "Dynamic offsets or validshape are dropped, treated as 1, or cause early returns without carrying constraints to newly created tensors.",
+      "fix_pattern": "Propagate DynValidShape and dynOffset when creating split/spill/view tensors; reject dynamic cases explicitly if unsupported.",
+      "example_commits": [
+        "6d0f7055",
+        "3a7f8568"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Dump validshape before and after tensor creation.",
+        "Check whether new tensors preserve symbolic offset/shape.",
+        "Add dynamic-shape adversarial cases."
+      ]
+    },
+    {
+      "pattern_id": "S010",
+      "category": "source_statistic_underflow",
+      "category_cn": "源码模式：统计字段下溢/累加错误",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "SpillBuffer",
+        "OoOScheduler"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp",
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/ooo_scheduler.cpp"
+      ],
+      "phenomenon_keywords": [
+        "size_t",
+        "underflow",
+        "-=",
+        "+=",
+        "pcIdx",
+        "deleteRetiredOpSize"
+      ],
+      "code_anti_pattern": "Unsigned size_t subtraction where the subtrahend may exceed the minuend; statistic field overwritten instead of accumulated.",
+      "fix_pattern": "Use signed integers or check a >= b before a -= b; change assignments to compound assignments (+=) when accumulating.",
+      "example_commits": [
+        "3e379fa0"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Search for size_t -= and size_t += patterns.",
+        "Check whether the subtrahend can be larger than the minuend.",
+        "Trigger cleanup paths multiple times."
+      ]
+    },
+    {
+      "pattern_id": "S011",
+      "category": "source_unchecked_return",
+      "category_cn": "源码模式：返回值未检查",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "SpillBuffer",
+        "MixSubgraphSplit"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/schedule_ooo/post_schedule/spill_buffer.cpp",
+        "framework/src/passes/block_graph_pass/mix_subgraph_split/*"
+      ],
+      "phenomenon_keywords": [
+        "return value",
+        "SUCCESS",
+        "FAILED",
+        "offset=-1",
+        "continue"
+      ],
+      "code_anti_pattern": "A helper function returns a status or special sentinel (e.g. -1 for offset, FAILED for spill), but the caller ignores it and continues.",
+      "fix_pattern": "Check return values and propagate FAILED; do not silently continue when offset or other critical data is invalid.",
+      "example_commits": [
+        "b5d3611a"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Find all calls to functions that return Status/offset.",
+        "Check whether return values are used.",
+        "Add UT that triggers the failure path."
+      ]
+    },
+    {
+      "pattern_id": "S012",
+      "category": "source_boundary_range_inconsistent",
+      "category_cn": "源码模式：边界检查范围不一致",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "SupernodeGraphBuilder",
+        "SplitLargeFanoutTensor"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_partition/supernode_graph_builder.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp"
+      ],
+      "phenomenon_keywords": [
+        "boundary",
+        "range",
+        "index",
+        "size()",
+        "i >= size",
+        "i > size"
+      ],
+      "code_anti_pattern": "Different helper functions use inconsistent boundary checks (e.g. one uses i >= size, another uses i > size), causing off-by-one errors.",
+      "fix_pattern": "Unify boundary checks to the half-open interval [0, size); add unit tests for i == size boundary.",
+      "example_commits": [
+        "b8cca837"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Compare boundary checks across related helper functions.",
+        "Test the i == size case.",
+        "Check for off-by-one in loops and index checks."
+      ]
+    },
+    {
+      "pattern_id": "S013",
+      "category": "source_offset_remap_after_clone",
+      "category_cn": "源码模式：拆分/克隆后 offset/dynParam 未重映射",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "MixSubgraphSplit"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/mix_subgraph_split/*"
+      ],
+      "phenomenon_keywords": [
+        "clone",
+        "split",
+        "offset",
+        "dynParam",
+        "argList",
+        "call op"
+      ],
+      "code_anti_pattern": "After cloning or splitting a function/call op, the original operand offsets and dynamic parameter indices are reused without remapping to the new leaf function's inputs/outputs.",
+      "fix_pattern": "Rebuild argList and dynParam index mappings based on the new leaf function's operand layout.",
+      "example_commits": [
+        "b5d3611a"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check clone/split code that copies offset/dynParam attributes.",
+        "Verify that new operand indices match the copied attributes.",
+        "Add UT with call op splitting and dynamic parameters."
+      ]
+    },
+    {
+      "pattern_id": "S014",
+      "category": "source_pointer_ordered_container",
+      "category_cn": "源码模式：指针有序容器导致非确定性",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "InferMemoryConflict",
+        "SupernodeGraphBuilder"
+      ],
+      "files": [
+        "framework/src/passes/tensor_graph_pass/infer_memory_conflict.cpp",
+        "framework/src/passes/tile_graph_pass/graph_partition/supernode_graph_builder.cpp"
+      ],
+      "phenomenon_keywords": [
+        "std::set<Operation*>",
+        "unordered_map",
+        "pointer",
+        "deterministic",
+        "non-deterministic"
+      ],
+      "code_anti_pattern": "Sets or unordered maps keyed by raw pointers (Operation*, Tensor*) are iterated; iteration order depends on allocation addresses.",
+      "fix_pattern": "Use stable IDs (op magic, tensor magic) as keys, or explicitly sort containers before iteration.",
+      "example_commits": [
+        "8a99ad83"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check containers that use raw pointers as keys.",
+        "Run the same test multiple times and compare intermediate results.",
+        "Replace with stable ID-based ordering."
+      ]
+    },
+    {
+      "pattern_id": "S015",
+      "category": "source_inverted_logic",
+      "category_cn": "源码模式：命名与语义相反/逻辑倒置",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "LoopaxesProc",
+        "InferMemoryConflict",
+        "SplitLargeFanoutTensor"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/loopaxes_proc.cpp",
+        "framework/src/passes/tensor_graph_pass/infer_memory_conflict.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp"
+      ],
+      "phenomenon_keywords": [
+        "naming",
+        "inverted",
+        "overlap",
+        "no overlap",
+        "return true"
+      ],
+      "code_anti_pattern": "Function name says one thing but implementation returns the opposite; or a condition is negated incorrectly.",
+      "fix_pattern": "Rename the function to match semantics, or invert the return values/condition.",
+      "example_commits": [
+        "b8cca837"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Read the function body and compare with its name.",
+        "Check call sites to see what callers expect.",
+        "Add unit tests that exercise the literal meaning of the name."
+      ]
+    },
+    {
+      "pattern_id": "S016",
+      "category": "source_format_conflict_first_wins",
+      "category_cn": "源码模式：多消费者格式冲突只取第一个",
+      "severity": "medium",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "InferTensorFormat"
+      ],
+      "files": [
+        "framework/src/passes/tensor_graph_pass/infer_tensor_format.cpp"
+      ],
+      "phenomenon_keywords": [
+        "format",
+        "consumer",
+        "first consumer",
+        "ASSEMBLE",
+        "ResolveRequiredInputFormat"
+      ],
+      "code_anti_pattern": "When multiple ASSEMBLE consumers have incompatible input formats, the first one initializes the output format and later consumers silently reuse it.",
+      "fix_pattern": "Detect incompatible ASSEMBLE input formats and reject the graph or insert converts.",
+      "example_commits": [
+        "5edc4c44"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check format resolution logic for ASSEMBLE consumers.",
+        "Construct a tensor with two ASSEMBLE consumers requiring different formats.",
+        "Verify that the conflict is detected."
+      ]
+    },
+    {
+      "pattern_id": "S017",
+      "category": "source_consumer_relation_not_synced",
+      "category_cn": "源码模式：删除/替换 op 时 consumer 关系未同步",
+      "severity": "high",
+      "evidence_type": "historical_fix",
+      "pass_modules": [
+        "RemoveRedundantOp",
+        "RemoveRedundantReshape",
+        "SplitLargeFanoutTensor"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_optimization/remove_redundant_op.cpp",
+        "framework/src/passes/tensor_graph_pass/remove_redundant_reshape.cpp",
+        "framework/src/passes/tile_graph_pass/graph_optimization/split_large_fanout_tensor.cpp"
+      ],
+      "phenomenon_keywords": [
+        "remove",
+        "replace",
+        "consumer",
+        "ReplaceInput",
+        "iOperand"
+      ],
+      "code_anti_pattern": "When replacing an op's output tensor in consumers, the code modifies consumer input lists but does not update the tensor->consumer or op->producer relationships consistently.",
+      "fix_pattern": "Use a unified graph update API (e.g. ReplaceInput) that updates both directions of the relationship.",
+      "example_commits": [
+        "f5d8ca0d"
+      ],
+      "related_issues": [],
+      "verification_hints": [
+        "Check whether both producer and consumer lists are updated after replacement.",
+        "Verify graph invariants after the pass.",
+        "Add multi-consumer replacement cases."
+      ]
+    },
+    {
+      "category": "source_osp_empty_type_count",
+      "category_cn": "源码模式：OSP 空处理器类型向量解引用",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner",
+        "IsomorphicSubgraphScheduler"
+      ],
+      "files": [
+        "framework/src/passes/algorithms/osp/dag_divider/isomorphism_divider/isomorphic_subgraph_scheduler.h",
+        "framework/src/passes/tile_graph_pass/graph_partition/osp_partitioner.cpp"
+      ],
+      "phenomenon_keywords": [
+        "OSP",
+        "GraphPartition",
+        "min_element",
+        "typeCount",
+        "empty"
+      ],
+      "code_anti_pattern": "源码审计假设：在 typeCount.empty() 分支赋值后未返回，紧接着执行 *std::min_element(typeCount.begin(), typeCount.end())，对空向量解引用。",
+      "fix_pattern": "若源码核查证实该风险，建议：空分支后加 return 或统一用三元表达式；前置断言 !typeCount.empty()。",
+      "verification_hints": [
+        "构造空 typeCount 的 adversarial case",
+        "检查 DetermineEffectiveMinProcCount 所有分支"
+      ],
+      "pattern_id": "S018",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_osp_staleness_underflow",
+      "category_cn": "源码模式：OSP 通信代价 staleness 下溢",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner"
+      ],
+      "files": [
+        "framework/src/passes/algorithms/osp/bsp/model/cost/lazy_communication_cost.h"
+      ],
+      "phenomenon_keywords": [
+        "staleness",
+        "stepNeeded",
+        "underflow",
+        "send"
+      ],
+      "code_anti_pattern": "源码审计假设：只校验 stepNeeded[proc] < numberOfSupersteps，未校验 >= staleness，直接 stepNeeded[proc] - staleness 下溢。",
+      "fix_pattern": "若源码核查证实该风险，建议：条件改为 stepNeeded[proc] >= staleness && stepNeeded[proc] < numberOfSupersteps。",
+      "verification_hints": [
+        "构造 stepNeeded=0 且 staleness>=1 的图",
+        "检查无依赖全前置场景"
+      ],
+      "pattern_id": "S019",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_osp_dangling_vector_ref",
+      "category_cn": "源码模式：OSP 图适配器持有外部 vector 裸指针",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner"
+      ],
+      "files": [
+        "framework/src/passes/algorithms/osp/graph_implementations/adj_list_impl/dag_vector_adapter.h",
+        "framework/src/passes/tile_graph_pass/graph_partition/osp_partitioner.cpp"
+      ],
+      "phenomenon_keywords": [
+        "DagVectorAdapter",
+        "raw pointer",
+        "dangling",
+        "superNodeInfo"
+      ],
+      "code_anti_pattern": "源码审计假设：DagVectorAdapter::SetInOutNeighbors 把 in/outNeighbors 存为调用者 vector 的裸指针；superNodeInfo_ 重建后 OSP 图 dangling。",
+      "fix_pattern": "若源码核查证实该风险，建议：拷贝邻接表或改用 shared_ptr/索引引用；superNodeInfo_ 变更时重建图。",
+      "verification_hints": [
+        "在 ConstructDagCVMix 后重置 superNodeInfo_ 再访问图",
+        "检查 RunSarkar/RunMerkleBsp 的稳定性"
+      ],
+      "pattern_id": "S020",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_osp_weight_narrow_cast",
+      "category_cn": "源码模式：OSP 分区权重窄化转换溢出",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_partition/osp_partitioner.cpp"
+      ],
+      "phenomenon_keywords": [
+        "WorkType",
+        "int32_t",
+        "memWeight",
+        "memorySize"
+      ],
+      "code_anti_pattern": "源码审计假设：memorySize 或 cubeVecMemoryBound 被 static_cast<WorkType>(int32_t) 截断，大 tensor 权重变负。",
+      "fix_pattern": "若源码核查证实该风险，建议：中间值用 int64_t/size_t；截断处加 CHECK 或上限裁剪。",
+      "verification_hints": [
+        "构造 L1+UB 总和超过 INT32_MAX 的 case",
+        "检查 Sarkar/MerkleBsp 分区结果"
+      ],
+      "pattern_id": "S021",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_osp_merkle_collision",
+      "category_cn": "源码模式：Merkle 哈希碰撞导致误判同构",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner",
+        "IsomorphicSubgraphScheduler"
+      ],
+      "files": [
+        "framework/src/passes/algorithms/osp/dag_divider/isomorphism_divider/merkle_hash_computer.h",
+        "framework/src/passes/tile_graph_pass/graph_partition/osp_partitioner.cpp"
+      ],
+      "phenomenon_keywords": [
+        "Merkle",
+        "hash collision",
+        "isomorphic",
+        "orbit"
+      ],
+      "code_anti_pattern": "源码审计假设：AreIsomorphicByMerkleHash 仅必要条件，但 IsMergeViable 把它当唯一同构判定。",
+      "fix_pattern": "若源码核查证实该风险，建议：对候选同构子图加 canonical labeling 二次校验；或记录并复核 Merkle 冲突。",
+      "verification_hints": [
+        "构造结构不同但 Merkle hash 相同的子图",
+        "检查后续 CODEGEN_PREPROC 是否算子缺失"
+      ],
+      "pattern_id": "S022",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_osp_proc_accumulate_overflow",
+      "category_cn": "源码模式：BSP 处理器数量累加溢出",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner"
+      ],
+      "files": [
+        "framework/src/passes/algorithms/osp/bsp/model/bsp_architecture.h"
+      ],
+      "phenomenon_keywords": [
+        "accumulate",
+        "numberOfProcessors",
+        "UINT_MAX",
+        "overflow"
+      ],
+      "code_anti_pattern": "源码审计假设：std::accumulate(..., 0U) 求和，结果超过 UINT_MAX 回绕，后续 vector 分配不足却按大 offset 写入。",
+      "fix_pattern": "若源码核查证实该风险，建议：用 size_t 中间和；累加前检查 processorTypeCount[i] <= UINT_MAX - total。",
+      "verification_hints": [
+        "构造类型数量之和超过 UINT_MAX 的平台配置",
+        "检查 processorTypes_ 写入是否越界"
+      ],
+      "pattern_id": "S023",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_osp_compat_matrix_oob",
+      "category_cn": "源码模式：兼容矩阵维度不匹配访问",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner"
+      ],
+      "files": [
+        "framework/src/passes/algorithms/osp/bsp/model/bsp_instance.h",
+        "framework/src/passes/algorithms/osp/bsp/model/util/compatible_processor_range.h"
+      ],
+      "phenomenon_keywords": [
+        "compatibility matrix",
+        "numberOfTypes",
+        "IsCompatibleType"
+      ],
+      "code_anti_pattern": "源码审计假设：SetDiagonalCompatibilityMatrix 不校验 numberOfTypes>0；IsCompatibleType 直接用下标，不检查越界。",
+      "fix_pattern": "若源码核查证实该风险，建议：SetDiagonalCompatibilityMatrix 前置 CHECK_GT(numberOfTypes, 0)；IsCompatibleType 用 at() 或手动边界检查。",
+      "verification_hints": [
+        "构造 numberOfTypes==0 的异常架构",
+        "构造 DAG 类型数与架构类型数不一致的图"
+      ],
+      "pattern_id": "S024",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_osp_kl_move_oob",
+      "category_cn": "源码模式：KL 调度移动操作缺少边界校验",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner"
+      ],
+      "files": [
+        "framework/src/passes/algorithms/osp/bsp/scheduler/local_search/kernighan_lin/kl_active_schedule.h"
+      ],
+      "phenomenon_keywords": [
+        "KL",
+        "ApplyMove",
+        "toStep",
+        "toProc"
+      ],
+      "code_anti_pattern": "源码审计假设：ApplyMove 直接用 move.toStep_/toProc_ 索引多维数组，未校验小于 supersteps/处理器数。",
+      "fix_pattern": "若源码核查证实该风险，建议：入口用 CHECK 断言 step < NumSteps() 且 proc < NumProcs()。",
+      "verification_hints": [
+        "构造 GreedyMetaScheduler 给出异常初始解",
+        "检查 setSchedule_ 写崩后的传播"
+      ],
+      "pattern_id": "S025",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_pass_dump_null_subprogram",
+      "category_cn": "源码模式：Pass dump 子函数指针未判空",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "PassInterface"
+      ],
+      "files": [
+        "framework/src/passes/pass_interface/pass.cpp"
+      ],
+      "phenomenon_keywords": [
+        "DumpJsonFile",
+        "subProgram",
+        "PrintFunction",
+        "DumpFunctionJson"
+      ],
+      "code_anti_pattern": "源码审计假设：循环遍历 function.rootFunc_->programs_ 时只检查 rootFunc_，未检查 subProgram.second 是否为空。",
+      "fix_pattern": "若源码核查证实该风险，建议：循环内加 if (subProgram.second == nullptr) continue; 或前置断言。",
+      "verification_hints": [
+        "开启 dumpGraph/printGraph",
+        "构造 leaf function 为空的异常图"
+      ],
+      "pattern_id": "S026",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_passmgr_startidx_state_leak",
+      "category_cn": "源码模式：PassManager startIdx 跨策略污染",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "PassManager"
+      ],
+      "files": [
+        "framework/src/passes/pass_mgr/pass_manager.cpp",
+        "framework/src/passes/pass_mgr/pass_manager.h"
+      ],
+      "phenomenon_keywords": [
+        "startIdx",
+        "resume",
+        "strategy",
+        "RunPass"
+      ],
+      "code_anti_pattern": "源码审计假设：startIdx 是成员变量，GetResumePath 被某策略修改后，RunPass 执行另一策略会从中间 Pass 开始。",
+      "fix_pattern": "若源码核查证实该风险，建议：将 startIdx 改为 GetResumePath 的返回值；或在 RunPass 入口按 strategy 重置/校验。",
+      "verification_hints": [
+        "多策略流水线运行并触发 resume",
+        "确认是否跳过 InferTensorFormat/RemoveRedundantReshape"
+      ],
+      "pattern_id": "S027",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_osp_buildhash_empty_underflow",
+      "category_cn": "源码模式：BuildHashValues 反向循环在无算子时下溢",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_partition/osp_partitioner.cpp"
+      ],
+      "phenomenon_keywords": [
+        "BuildHashValues",
+        "numOps",
+        "int32_t",
+        "underflow"
+      ],
+      "code_anti_pattern": "源码审计假设：for (int32_t i = static_cast<int32_t>(numOps - 1); i >= 0; i--) 未前置检查 numOps>0，空图时 numOps-1 下溢。",
+      "fix_pattern": "若源码核查证实该风险，建议：前置 if (numOps == 0) return SUCCESS;。",
+      "verification_hints": [
+        "构造空函数或全合并后的图触发 MERKLEBSP"
+      ],
+      "pattern_id": "S028",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_osp_partition_map_mismatch",
+      "category_cn": "源码模式：UpdatePartitionResult 超点映射不一致",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OspPartitioner"
+      ],
+      "files": [
+        "framework/src/passes/tile_graph_pass/graph_partition/osp_partitioner.cpp"
+      ],
+      "phenomenon_keywords": [
+        "UpdatePartitionResult",
+        "vertexContractionMap",
+        "node2Op"
+      ],
+      "code_anti_pattern": "源码审计假设：假设 vertexContractionMap.size() == superNodeInfo_->node2Op_.size()，coarsening 输出不同步时越界。",
+      "fix_pattern": "若源码核查证实该风险，建议：用 std::min 限制范围，或显式 CHECK_EQ 两处 size。",
+      "verification_hints": [
+        "在 coarsening 后修改超点集合",
+        "检查 SetTotalSubGraphCount 写入的 subgraph_id"
+      ],
+      "pattern_id": "S029",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_tile_shape_param_order",
+      "category_cn": "源码模式：Cube Tile 参数顺序错位",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "SetHeuristicTileShapes"
+      ],
+      "files": [
+        "framework/src/passes/tensor_graph_pass/set_heuristic_tile_shapes.cpp"
+      ],
+      "phenomenon_keywords": [
+        "ShapeAndTypeSetting",
+        "shapeM",
+        "shapeN",
+        "shapeK",
+        "param order"
+      ],
+      "code_anti_pattern": "源码审计假设：调用 ShapeAndTypeSetting(&op, shapeM, shapeN, shapeK) 但签名为 (op, shapeM, shapeK, shapeN)，shapeK/N 被交换。",
+      "fix_pattern": "若源码核查证实该风险，建议：按签名传参，或改为返回结构体/命名参数。",
+      "verification_hints": [
+        "检查 UniqueTilesFilling/SetHeuristicCubeTiles 调用点",
+        "验证相同 MKN matmul 的 tile 分组"
+      ],
+      "pattern_id": "S030",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_log_only_div_zero",
+      "category_cn": "源码模式：仅打日志不阻断的除零路径",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "SetHeuristicTileShapes"
+      ],
+      "files": [
+        "framework/src/passes/tensor_graph_pass/set_heuristic_tile_shapes.cpp"
+      ],
+      "phenomenon_keywords": [
+        "typeSize",
+        "APASS_LOG_ERROR_F",
+        "divide by zero",
+        "TileSizeCalculation"
+      ],
+      "code_anti_pattern": "源码审计假设：检测到 typeSize==0 后只打日志，继续执行 / inputTypeSize。",
+      "fix_pattern": "若源码核查证实该风险，建议：日志后立即返回 FAILED/断言。",
+      "verification_hints": [
+        "构造 inputTypeSize==0 的 case",
+        "检查 SIGFPE 或非法 tile shape"
+      ],
+      "pattern_id": "S031",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_dynamic_dim_gcd_log2",
+      "category_cn": "源码模式：动态维 / -1 进入 gcd/log2 计算",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "SetHeuristicTileShapes"
+      ],
+      "files": [
+        "framework/src/passes/tensor_graph_pass/set_heuristic_tile_shapes.cpp"
+      ],
+      "phenomenon_keywords": [
+        "gcd",
+        "log2",
+        "-1",
+        "dynamic shape",
+        "TileShapeSetting"
+      ],
+      "code_anti_pattern": "源码审计假设：std::gcd(curTile, maxInputShape[...]) 和 std::log2(tileSize) 未处理 -1 或 <=0。",
+      "fix_pattern": "若源码核查证实该风险，建议：对 -1/<=0 提前 fallback 或报错。",
+      "verification_hints": [
+        "构造含 -1 的动态 shape case",
+        "检查 tile 计算是否崩溃"
+      ],
+      "pattern_id": "S032",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_recursive_no_visited",
+      "category_cn": "源码模式：递归/有环图无访问标记",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "LoopUnroll",
+        "SetHeuristicTileShapes"
+      ],
+      "files": [
+        "framework/src/passes/tensor_graph_pass/loop_unroll.cpp",
+        "framework/src/passes/tensor_graph_pass/set_heuristic_tile_shapes.cpp"
+      ],
+      "phenomenon_keywords": [
+        "recursive",
+        "cycle",
+        "visited",
+        "FindSlotDepend",
+        "FordBellman"
+      ],
+      "code_anti_pattern": "源码审计假设：沿 consumer 链递归无 visited；FordBellman 在环图中 depth 持续下降不收敛。",
+      "fix_pattern": "若源码核查证实该风险，建议：增加 visited 集合，或前置环检测。",
+      "verification_hints": [
+        "构造含环图",
+        "检查堆栈溢出或无限循环"
+      ],
+      "pattern_id": "S033",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_cross_pass_mutable_state",
+      "category_cn": "源码模式：跨 Pass 状态依赖与全局可变状态",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "InferTensorFormat",
+        "AutoCast",
+        "InferMemoryConflict"
+      ],
+      "files": [
+        "framework/src/passes/tensor_graph_pass/infer_tensor_format.cpp",
+        "framework/src/passes/tensor_graph_pass/auto_cast.cpp",
+        "framework/src/passes/tensor_graph_pass/infer_memory_conflict.cpp"
+      ],
+      "phenomenon_keywords": [
+        "TileShape::Current",
+        "global state",
+        "format conversion",
+        "CAST"
+      ],
+      "code_anti_pattern": "源码审计假设：ApplyTransDataVecTile 修改全局 TileShape::Current()；auto_cast 插入 CAST 改变 dtype，影响下游 raw size 判断。",
+      "fix_pattern": "若源码核查证实该风险，建议：TransData/CAST 后重新校验 tile shape 与 dtype 一致性；避免全局可变状态。",
+      "verification_hints": [
+        "format 转换后 dump tile shape",
+        "检查 infer_memory_conflict 是否误插/漏插 copy"
+      ],
+      "pattern_id": "S034",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_array_index_oob",
+      "category_cn": "源码模式：数组/Vector 越界索引",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "DynAttrToStatic",
+        "InferParamIndex",
+        "TuneSyncForVF",
+        "TuneTileOpSeqForVF"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/dyn_attr_to_static.cpp",
+        "framework/src/passes/block_graph_pass/infer_param_index.cpp",
+        "framework/src/passes/block_graph_pass/tune_sync_for_vf.cpp",
+        "framework/src/passes/block_graph_pass/tune_tileopseq_for_vf.cpp"
+      ],
+      "phenomenon_keywords": [
+        "argList",
+        "addr2ValidShapeSpecified",
+        "opList_",
+        "index out of range"
+      ],
+      "code_anti_pattern": "源码审计假设：argList[coaIndex]、addr2ValidShapeSpecified[...][dimIdx]、begin()+left-mergedSize+2 未校验下标；size_t 减法可能下溢。",
+      "fix_pattern": "若源码核查证实该风险，建议：访问前校验索引 < size()；减法先判断大小。",
+      "verification_hints": [
+        "构造非法 COA 索引",
+        "构造 shape 维度不一致的 case",
+        "检查 VF 合并后 op 顺序"
+      ],
+      "pattern_id": "S035",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_map_operator_default_null",
+      "category_cn": "源码模式：std::map::operator[] 默认构造导致空指针解引用",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "TuneSyncForVF"
+      ],
+      "files": [
+        "framework/src/passes/block_graph_pass/tune_sync_for_vf.cpp"
+      ],
+      "phenomenon_keywords": [
+        "setOpMap",
+        "waitOpMap",
+        "operator[]",
+        "nullptr"
+      ],
+      "code_anti_pattern": "源码审计假设：直接解引用 subGraphFunc->setOpMap[setFlag]；key 不存在时拿到默认构造的 nullptr。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用 find() + null 检查，或改用 at() 并捕获异常。",
+      "verification_hints": [
+        "构造 SYNC 关系异常或 map 中缺少对应 op 的 case"
+      ],
+      "pattern_id": "S036",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_ir_body_not_seqstmts",
+      "category_cn": "源码模式：IfStmt/ForStmt body 被默认为 SeqStmts",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "MergeStmts",
+        "InferToken",
+        "ConvertToSSA"
+      ],
+      "files": [
+        "framework/src/interface/ir/transforms/merge_stmts_pass.cpp",
+        "framework/src/interface/ir/transforms/infer_token_pass.cpp"
+      ],
+      "phenomenon_keywords": [
+        "IfStmt",
+        "ForStmt",
+        "SeqStmts",
+        "thenBody_",
+        "UB"
+      ],
+      "code_anti_pattern": "源码审计假设：直接访问 ifStmt->thenBody_->stmts_ 或把 thenBody_ 强转为 SeqStmts，但 body 只有一条语句时存放的是单条 StmtPtr。",
+      "fix_pattern": "若源码核查证实该风险，建议：builder 结束控制流时统一包成 SeqStmts；pass 中先用 As<SeqStmts>/FlattenBody 安全展开。",
+      "verification_hints": [
+        "构造单条语句 body 的 if/for",
+        "检查 merge_stmts/infer_token 崩溃"
+      ],
+      "pattern_id": "S037",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_ssa_iterarg_name_parse",
+      "category_cn": "源码模式：SSA 转换器对 IterArg 名称做字符串截取",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "ConvertToSSA"
+      ],
+      "files": [
+        "framework/src/interface/ir/transforms/convert_to_ssa_pass.cpp"
+      ],
+      "phenomenon_keywords": [
+        "IterArg",
+        "_iter",
+        "substr",
+        "base_name"
+      ],
+      "code_anti_pattern": "源码审计假设：用 base_name.find(\"_iter\") 后 substr 截取；任何含 _iter 子串的变量名都会被误截断。",
+      "fix_pattern": "若源码核查证实该风险，建议：在 IterArg 中显式携带 base_name 元数据，禁止从 name_ 字符串反向解析。",
+      "verification_hints": [
+        "构造变量名含 _iter 但不是 IterArg 的 case",
+        "检查 verify_ssa_pass 是否 MULTIPLE_ASSIGNMENT"
+      ],
+      "pattern_id": "S038",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_ssa_substitute_vars_in_type",
+      "category_cn": "源码模式：SubstituteVarsInType 只改写 validShape",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "ConvertToSSA"
+      ],
+      "files": [
+        "framework/src/interface/ir/transforms/convert_to_ssa_pass.cpp"
+      ],
+      "phenomenon_keywords": [
+        "SubstituteVarsInType",
+        "tileView_",
+        "stride",
+        "startOffset",
+        "PtrType"
+      ],
+      "code_anti_pattern": "源码审计假设：仅对 TileType::tileView_.validShape 调用 VisitExpr；未处理 stride/startOffset，也未递归处理 PtrType/TensorView/TupleType。",
+      "fix_pattern": "若源码核查证实该风险，建议：为 Type 增加统一字段访问器，递归替换所有 ExprPtr 字段。",
+      "verification_hints": [
+        "SSA 改名后 dump 类型中残留旧 Var",
+        "检查 structural_equal/hash 是否匹配"
+      ],
+      "pattern_id": "S039",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_ssa_loopcarried_at",
+      "category_cn": "源码模式：SSA 循环携带变量构造中使用未校验的 unordered_map::at",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "ConvertToSSA"
+      ],
+      "files": [
+        "framework/src/interface/ir/transforms/convert_to_ssa_pass.cpp"
+      ],
+      "phenomenon_keywords": [
+        "loop carried",
+        "versions_before",
+        "versions_after_body",
+        "at"
+      ],
+      "code_anti_pattern": "源码审计假设：AppendLoopCarriedIterArgs/CollectYieldValues 直接 versions_before.at(base_name)，无防御。",
+      "fix_pattern": "若源码核查证实该风险，建议：改用 find + 显式诊断；断言失败时报告变量名与 span。",
+      "verification_hints": [
+        "构造预分析与 body 不一致的 IR",
+        "检查是否抛 std::out_of_range"
+      ],
+      "pattern_id": "S040",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_tensor_type_equal_hash_incomplete",
+      "category_cn": "源码模式：TensorType 的结构相等与哈希忽略 tensor_view 和 memref",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "StructuralEqual",
+        "StructuralHash",
+        "CSE"
+      ],
+      "files": [
+        "framework/src/interface/ir/structural_equal.cpp",
+        "framework/src/interface/ir/structural_hash.cpp"
+      ],
+      "phenomenon_keywords": [
+        "TensorType",
+        "tensor_view_",
+        "memref_",
+        "EqualType",
+        "HashType"
+      ],
+      "code_anti_pattern": "源码审计假设：EqualType/HashType 的 TensorType 分支只比较/哈希 dtype_ 与 shape_，忽略 tensor_view_ 和 memref_。",
+      "fix_pattern": "若源码核查证实该风险，建议：把 tensor_view_ 与 memref_ 纳入相等比较与哈希；若应忽略需显式注释。",
+      "verification_hints": [
+        "构造视图不同但 dtype/shape 同的 tensor",
+        "检查 CSE/常量缓存是否错误合并"
+      ],
+      "pattern_id": "S041",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_structural_hash_var_order",
+      "category_cn": "源码模式：结构哈希的变量身份依赖遍历顺序",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "StructuralHash"
+      ],
+      "files": [
+        "framework/src/interface/ir/structural_hash.cpp"
+      ],
+      "phenomenon_keywords": [
+        "enable_auto_mapping_",
+        "free_var_counter_",
+        "hash_var_identity"
+      ],
+      "code_anti_pattern": "源码审计假设：enable_auto_mapping_ 模式下用全局递增 free_var_counter_++ 编号，编号取决于变量在遍历中首次出现顺序。",
+      "fix_pattern": "若源码核查证实该风险，建议：采用稳定的规范编号（先建立 var→index 映射再哈希）。",
+      "verification_hints": [
+        "构造变量首次出现顺序不同但结构等价的 IR",
+        "比较多次哈希结果"
+      ],
+      "pattern_id": "S042",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_op_conversion_registry_overwrite",
+      "category_cn": "源码模式：OpConversionRegistry 静默覆盖已有转换",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "OpConversionRegistry"
+      ],
+      "files": [
+        "framework/src/interface/ir/transforms/op_conversion_registry.cpp"
+      ],
+      "phenomenon_keywords": [
+        "RegisterSimple",
+        "RegisterCustom",
+        "conversions_",
+        "overwrite"
+      ],
+      "code_anti_pattern": "源码审计假设：conversions_[from_op] = ... 不检查是否已存在，后注册直接覆盖前者。",
+      "fix_pattern": "若源码核查证实该风险，建议：增加存在性检查；重复注册时报错或返回 bool 让调用方决定。",
+      "verification_hints": [
+        "注册同名转换两次",
+        "检查 lowering 输出算子类型"
+      ],
+      "pattern_id": "S043",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_merge_stmts_lookup_var",
+      "category_cn": "源码模式：merge_stmts_pass 的变量替换只处理直接 Var",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "MergeStmts"
+      ],
+      "files": [
+        "framework/src/interface/ir/transforms/merge_stmts_pass.cpp"
+      ],
+      "phenomenon_keywords": [
+        "LookupVarInExpr",
+        "dynamic_pointer_cast",
+        "GetItemExpr",
+        "MakeTuple"
+      ],
+      "code_anti_pattern": "源码审计假设：dynamic_pointer_cast<const Var>(expr) 后未判空就作为 unordered_map 键；不递归处理 GetItemExpr/MakeTuple 等子表达式。",
+      "fix_pattern": "若源码核查证实该风险，建议：引入递归表达式替换器；判空后再查表，无键时原样返回。",
+      "verification_hints": [
+        "构造嵌套表达式中的旧变量",
+        "检查 returnVars 与 yield 值是否一致"
+      ],
+      "pattern_id": "S044",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "source_pass_disable_dependency_bypass",
+      "category_cn": "源码模式：disable_pass 绕过必要 Pass 依赖",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "pass_modules": [
+        "PassInterface",
+        "PassManager",
+        "PassDependency"
+      ],
+      "files": [
+        "framework/src/passes/pass_interface/pass.cpp",
+        "framework/src/passes/pass_mgr/pass_manager.cpp",
+        "framework/src/passes/pass_mgr/pass_dependency.cpp"
+      ],
+      "phenomenon_keywords": [
+        "disable_pass",
+        "Pass is skipped",
+        "missing dependency",
+        "required pass",
+        "downstream invariant",
+        "OoOSchedule",
+        "CodegenPreproc"
+      ],
+      "code_anti_pattern": "源码审计假设：Pass::Run sees passDfxconfigs_.disablePass and returns SUCCESS before PreRun/RunOnFunction/PostRun; PassDependency only checks the registered strategy order and does not revalidate dependencies after runtime config disables a pass.",
+      "fix_pattern": "若源码核查证实该风险，建议：Do not use disable_pass as a generic triage suggestion for structural passes. If code changes are needed, add required-pass guards or dependency revalidation around disable_pass; otherwise use dump/checker/health report or narrower feature flags.",
+      "verification_hints": [
+        "Check whether the suspect pass appears in diagnostic_action_policy.required_passes or structural_or_dependency_sensitive_passes.",
+        "If the pass is structural, compare Before/After dumps and checker output instead of disabling it.",
+        "For COE-like optional passes, treat disable_pass only as a local isolation experiment and still fix the underlying rewrite logic."
+      ],
+      "pattern_id": "S045",
+      "example_commits": [],
+      "related_issues": []
+    }
+  ]
+}

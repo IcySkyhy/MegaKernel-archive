@@ -1,0 +1,4 @@
+operation,case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,world_size
+ReduceScatter,ReduceScatter_test_1,"[128, 256]","float16","ND","[,]","[32, 256]","float16","ND","[]","[16, 128]",4
+ReduceScatter,ReduceScatter_test_2,"[32, 32]","bfloat16","ND","[,]","[8, 32]","bfloat16","ND","[]","[4, 16]",4
+ReduceScatter,ReduceScatter_test_3,"[128, 256]","int32","ND","[-10, 10]","[32, 256]","int32","ND","[]","[16, 128]",4

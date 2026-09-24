@@ -1,0 +1,60 @@
+cmake-build-*
+.idea
+.arts
+.vscode
+.codemate
+build/
+build_out/
+oat_reports/
+dist/
+.cache
+*.log
+*.trace
+.clion.source.upload.marker
+*~
+.arts/
+
+pre-commit
+compile_commands.json
+
+**/__pycache__
+CostModelSimulationOutput/*
+simulator/*
+
+output_tools
+*.tar.gz
+dvcTestPlatform
+output
+summary
+log
+tmp
+
+kernel_meta
+*.egg-info
+
+# pip install -e 模式
+python/pypto/include/
+python/pypto/lib/
+python/pypto/pypto_impl*.so
+
+# 三方软件
+third_party_path/
+fusion_result.json
+
+# esl simulation
+log
+run_log
+log_ca
+cannsim*
+trace_*
+
+# gcov
+build_dir.json
+
+# agent
+.claude/
+.opencode/
+
+# 二进制
+*.run
+*.whl

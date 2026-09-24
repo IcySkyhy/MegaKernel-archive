@@ -1,0 +1,2912 @@
+{
+  "non_pass_source_patterns": [
+    {
+      "pattern_id": "N001",
+      "category": "non_pass_operation_view_validshape",
+      "category_cn": "非 Pass：View validshape 动态值默认回退",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "symptom_keywords": [
+        "view",
+        "validshape",
+        "dynamic",
+        "Concrete(..., 0)",
+        "rtMemcpy",
+        "memory overlap"
+      ],
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/operation_impl.cpp"
+      ],
+      "pass_symptoms": [
+        "OP_VIEW validshape 过大",
+        "buffer 复用错误",
+        "运行时越界",
+        "memory overlap 报错"
+      ],
+      "code_anti_pattern": "源码审计假设：Symbolic validshape that cannot be evaluated immediately is fallback to 0, making subsequent <= checks pass incorrectly.",
+      "fix_pattern": "若源码核查证实该风险，建议：Require view validshape to be fully concrete or explicitly pass symbolic bound checks; reject unknown dynamic dimensions.",
+      "verification_hints": [
+        "Check CheckViewValidShapesConstraint implementation.",
+        "Construct view with dynamic validshape larger than parent shape.",
+        "Verify validshape propagates to Pass correctly."
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N002",
+      "category": "non_pass_operation_tile_alignment",
+      "category_cn": "非 Pass：Tile shape 只校验尾维对齐",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "symptom_keywords": [
+        "tile",
+        "alignment",
+        "BLOCK_SIZE",
+        "misalignment",
+        "INVALID_TILE"
+      ],
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/operation_impl.cpp",
+        "framework/src/interface/operation/cube_operation_impl.cpp"
+      ],
+      "pass_symptoms": [
+        "AICore misalignment exception",
+        "INVALID_TILE",
+        "多维 UB tile 失败"
+      ],
+      "code_anti_pattern": "源码审计假设：Tile shape validation only checks last-dim bytes alignment, ignoring inner dimension requirements.",
+      "fix_pattern": "若源码核查证实该风险，建议：Add per-opcode memory layout checks for all relevant dimensions, not just the last.",
+      "verification_hints": [
+        "Review CheckFwkOpTileShape and CheckCubeTiling.",
+        "Test assemble/register_copy with non-last-dim misalignment.",
+        "Check hardware layout requirements per opcode."
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N003",
+      "category": "non_pass_operation_zero_divisor",
+      "category_cn": "非 Pass：CeilAlign 对 0 除数静默返回 0",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/cube_operation_impl.cpp"
+      ],
+      "pass_symptoms": [
+        "0 长维度",
+        "除零",
+        "ERR_INVALID_TILE",
+        "分配 0 字节"
+      ],
+      "code_anti_pattern": "源码审计假设：CeilAlign silently returns 0 when divisor is 0, propagating illegal tile sizes downstream.",
+      "fix_pattern": "若源码核查证实该风险，建议：Treat zero divisor as a fatal error (ASSERT or return error code) instead of returning 0.",
+      "verification_hints": [
+        "Search for CeilAlign implementation.",
+        "Test matmul with zero tile dimension.",
+        "Check downstream consumers of CeilAlign result."
+      ],
+      "symptom_keywords": [
+        "0 长维度",
+        "除零",
+        "ERR_INVALID_TILE",
+        "分配 0 字节"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N004",
+      "category": "non_pass_operation_bit_switch",
+      "category_cn": "非 Pass：多 bool 组合用位压缩 switch 遗漏状态",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/cube_operation_impl.cpp"
+      ],
+      "pass_symptoms": [
+        "operand 索引错位",
+        "attribute 缺失",
+        "shape 推导失败"
+      ],
+      "code_anti_pattern": "源码审计假设：Multiple boolean flags are encoded into a single integer and switched on, with some combinations not covered.",
+      "fix_pattern": "若源码核查证实该风险，建议：Use explicit if-else chains or enumerate all valid combinations; fail on undefined combinations early.",
+      "verification_hints": [
+        "Find bit-packed switch in SetTensorGraphNodes.",
+        "Test scale+bias+gmAccumulation+mxScale combinations.",
+        "Verify operand indices after operation construction."
+      ],
+      "symptom_keywords": [
+        "operand 索引错位",
+        "attribute 缺失",
+        "shape 推导失败"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N005",
+      "category": "non_pass_operation_unsupported_silent",
+      "category_cn": "非 Pass：未支持模式静默返回空 Tensor",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/operation_impl.cpp"
+      ],
+      "pass_symptoms": [
+        "空 operand",
+        "producer-consumer 断裂",
+        "shape 推导失败"
+      ],
+      "code_anti_pattern": "源码审计假设：Unsupported reduce mode or operation variant returns an empty Tensor instead of throwing an error.",
+      "fix_pattern": "若源码核查证实该风险，建议：ASSERT or return ERR_PARAM_INVALID for unsupported modes at construction time.",
+      "verification_hints": [
+        "Check Reduce and similar functions.",
+        "Test unsupported reduce modes.",
+        "Verify graph connectivity after operation creation."
+      ],
+      "symptom_keywords": [
+        "空 operand",
+        "producer-consumer 断裂",
+        "shape 推导失败"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N006",
+      "category": "non_pass_machine_workspace_overflow",
+      "category_cn": "非 Pass：Workspace 预算乘法溢出/0 当无限制",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/utils/dynamic/workspace_budget_calculator.cpp",
+        "framework/src/machine/utils/dynamic/dev_encode_workspace.cpp"
+      ],
+      "pass_symptoms": [
+        "rtMalloc failed",
+        "OUT_OF_MEMORY",
+        "launch 失败",
+        "编译成功运行失败"
+      ],
+      "code_anti_pattern": "源码审计假设：Workspace size calculations multiply parallelism without overflow checks; max_workspace_kb <= 0 is treated as unlimited.",
+      "fix_pattern": "若源码核查证实该风险，建议：Add Uint64MulWouldOverflow checks before multiplying; make unlimited workspace an explicit flag.",
+      "verification_hints": [
+        "Review CalcStitchWorkspace and EstimateMaxStitchDepthKUpperBound.",
+        "Test large shape / high parallelism cases.",
+        "Check workspace allocation logs."
+      ],
+      "symptom_keywords": [
+        "rtMalloc failed",
+        "OUT_OF_MEMORY",
+        "launch 失败",
+        "编译成功运行失败"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N007",
+      "category": "non_pass_machine_launch_sync_error_masking",
+      "category_cn": "非 Pass：Launch 三流同步错误码相加掩盖具体失败流",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/runtime/runner/device_runner.cpp",
+        "framework/src/machine/runtime/launcher/device_launcher.cpp"
+      ],
+      "pass_symptoms": [
+        "device hang",
+        "aicpu/aicore 结果不一致",
+        "dump 不完整",
+        "launch success 后失败"
+      ],
+      "code_anti_pattern": "源码审计假设：Error codes from three streams are summed, masking which stream failed; event failures are only logged and execution continues.",
+      "fix_pattern": "若源码核查证实该风险，建议：Return per-stream error codes independently; abort or propagate error on event creation/record/wait failure.",
+      "verification_hints": [
+        "Review DynamicLaunchSynchronize and RunPost.",
+        "Inject failure in one stream and check error reporting.",
+        "Verify resources are synchronized on failure path."
+      ],
+      "symptom_keywords": [
+        "device hang",
+        "aicpu/aicore 结果不一致",
+        "dump 不完整",
+        "launch success 后失败"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N008",
+      "category": "non_pass_machine_malloc_null",
+      "category_cn": "非 Pass：malloc 后未判空直接 memset",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/runtime/distributed/distributed_context.cpp",
+        "framework/src/machine/runtime/runner/device_runner.cpp"
+      ],
+      "pass_symptoms": [
+        "段错误",
+        "coredump",
+        "分布式大通信窗口截断"
+      ],
+      "code_anti_pattern": "源码审计假设：malloc result is passed directly to memset without null check; size limits are hard-coded without documentation.",
+      "fix_pattern": "若源码核查证实该风险，建议：Check malloc return value before use; validate size against documented limits.",
+      "verification_hints": [
+        "Search for malloc/memset pairs.",
+        "Test large distributed allocation.",
+        "Check AllocHostAddr implementation."
+      ],
+      "symptom_keywords": [
+        "段错误",
+        "coredump",
+        "分布式大通信窗口截断"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N009",
+      "category": "non_pass_machine_rawtensor_alias",
+      "category_cn": "非 Pass：RawTensor 别名 dtype/size 校验用整数除法",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/utils/dynamic/dev_encode.cpp"
+      ],
+      "pass_symptoms": [
+        "0 地址访问",
+        "shape mismatch ASSERT",
+        "view/quantize 运行时错误"
+      ],
+      "code_anti_pattern": "源码审计假设：Alias tensor dtype/size validation uses integer division (inSize/outSize) assuming exact divisibility.",
+      "fix_pattern": "若源码核查证实该风险，建议：Use bidirectional byte/element count validation with clear error codes.",
+      "verification_hints": [
+        "Review HandleActualRaw and InitRawTensorAndMemoryRequirement.",
+        "Test view/quantize aliases with non-divisible sizes.",
+        "Check addrOffset == UINT64_MAX handling."
+      ],
+      "symptom_keywords": [
+        "0 地址访问",
+        "shape mismatch ASSERT",
+        "view/quantize 运行时错误"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N010",
+      "category": "non_pass_interpreter_attr_out_of_range",
+      "category_cn": "非 Pass：Interpreter 属性/operand 访问未校验范围",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/calc_*.cpp",
+        "framework/src/interface/interpreter/operation.cpp"
+      ],
+      "pass_symptoms": [
+        "std::out_of_range",
+        "static_pointer_cast 失败",
+        "OpError",
+        "白屏 crash"
+      ],
+      "code_anti_pattern": "源码审计假设：ctx->ioperandDataViewList->at(1) or static_pointer_cast on op attribute is used without size/null checks.",
+      "fix_pattern": "若源码核查证实该风险，建议：Add ASSERT(size >= N) before at(); use dynamic_pointer_cast with null check before static_pointer_cast.",
+      "verification_hints": [
+        "Search for .at(1)/.at(2) and static_pointer_cast in interpreter.",
+        "Test op with changed input count or attr type.",
+        "Verify error propagation to Pass verify."
+      ],
+      "symptom_keywords": [
+        "std::out_of_range",
+        "static_pointer_cast 失败",
+        "OpError",
+        "白屏 crash"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N011",
+      "category": "non_pass_interpreter_dynamic_shape_unbound",
+      "category_cn": "非 Pass：Interpreter 动态 shape/offset 求值缺失回退",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/calc_common.cpp",
+        "framework/src/interface/interpreter/function.h"
+      ],
+      "pass_symptoms": [
+        "EMPTY_VALIDSHAPE",
+        "INVALID_TENSOR_SHAPE",
+        "Reshape 后数值错位"
+      ],
+      "code_anti_pattern": "源码审计假设：Dynamic validshape/offset evaluation returns empty or negative values without validation; reshape mismatch is silently skipped.",
+      "fix_pattern": "若源码核查证实该风险，建议：Validate evaluation results (non-empty, non-negative); fail explicitly on reshape size mismatch.",
+      "verification_hints": [
+        "Review ExecuteOpView/CopyOut/CopyIn/Reshape.",
+        "Test dynamic shape verify cases.",
+        "Check validshape propagation after reshape."
+      ],
+      "symptom_keywords": [
+        "EMPTY_VALIDSHAPE",
+        "INVALID_TENSOR_SHAPE",
+        "Reshape 后数值错位"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N012",
+      "category": "non_pass_interpreter_dtype_switch",
+      "category_cn": "非 Pass：Interpreter dtype/format switch 未识别分支 ASSERT",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/flow_verifier.cpp",
+        "framework/src/interface/interpreter/calc_cube.cpp"
+      ],
+      "pass_symptoms": [
+        "INVALID_TENSOR_DTYPE",
+        "精度异常",
+        "MatMul 精度错误"
+      ],
+      "code_anti_pattern": "源码审计假设：dtype switch has no default error path and hits ASSERT(false) for unrecognized dtypes.",
+      "fix_pattern": "若源码核查证实该风险，建议：Add default branch with explicit error code for unsupported dtypes/formats.",
+      "verification_hints": [
+        "Search switch(dtype) without default in interpreter.",
+        "Test new dtype or quantized op.",
+        "Verify error code instead of crash."
+      ],
+      "symptom_keywords": [
+        "INVALID_TENSOR_DTYPE",
+        "精度异常",
+        "MatMul 精度错误"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N013",
+      "category": "non_pass_ir_shape_broadcast_weak",
+      "category_cn": "非 Pass：IR shape/broadcast 比较过弱",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "ir"
+      ],
+      "files_to_check": [
+        "framework/src/interface/ir/op/type_inference.cpp"
+      ],
+      "pass_symptoms": [
+        "shape 推导失败",
+        "broadcast 误报 incompatible",
+        "常量折叠后 shape 断裂"
+      ],
+      "code_anti_pattern": "源码审计假设：DimensionsEqual compares symbolic dimensions by pointer equality; BroadcastShapes rejects symbolic dimensions outright.",
+      "fix_pattern": "若源码核查证实该风险，建议：Introduce symbolic expression normalization; conservatively allow unknown dims and validate later in layout/tiling.",
+      "verification_hints": [
+        "Review BroadcastShapes and DimensionsEqual.",
+        "Test symbolic broadcast cases.",
+        "Check shape propagation through const-fold."
+      ],
+      "symptom_keywords": [
+        "shape 推导失败",
+        "broadcast 误报 incompatible",
+        "常量折叠后 shape 断裂"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N014",
+      "category": "non_pass_ir_builder_context",
+      "category_cn": "非 Pass：IRBuilder 上下文嵌套 dynamic_cast 未判空",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "ir"
+      ],
+      "files_to_check": [
+        "framework/src/interface/ir/builder.cpp"
+      ],
+      "pass_symptoms": [
+        "前端构造错误 IR",
+        "Pass 遍历空 body",
+        "非法嵌套崩溃"
+      ],
+      "code_anti_pattern": "源码审计假设：IRBuilder context stack uses dynamic_cast but result is not checked; End* pops before possible exception.",
+      "fix_pattern": "若源码核查证实该风险，建议：Add ValidateInFunction precondition; check dynamic_cast result; use RAII for context stack.",
+      "verification_hints": [
+        "Review IRBuilder loop/if/while methods.",
+        "Test malformed frontend IR construction.",
+        "Check context stack consistency on exception."
+      ],
+      "symptom_keywords": [
+        "前端构造错误 IR",
+        "Pass 遍历空 body",
+        "非法嵌套崩溃"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N015",
+      "category": "non_pass_ir_ssa_token",
+      "category_cn": "非 Pass：SSA/Token 变量映射缺陷",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "ir"
+      ],
+      "files_to_check": [
+        "framework/src/interface/ir/transforms/convert_to_ssa_pass.cpp",
+        "framework/src/interface/ir/transforms/infer_token_pass.cpp"
+      ],
+      "pass_symptoms": [
+        "structural_equal 失败",
+        "token 编号重复",
+        "yield 值数量不匹配"
+      ],
+      "code_anti_pattern": "源码审计假设：SubstituteVarsInType does not recursively replace all type-embedded vars; token counter starts at 0 per instance and may conflict.",
+      "fix_pattern": "若源码核查证实该风险，建议：Recursively substitute vars in all types; use globally unique token prefix or scope-scoped counters.",
+      "verification_hints": [
+        "Review SSAConverter and InferTokenMutator.",
+        "Test nested loops/if with shared variables.",
+        "Check token uniqueness across functions."
+      ],
+      "symptom_keywords": [
+        "structural_equal 失败",
+        "token 编号重复",
+        "yield 值数量不匹配"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N016",
+      "category": "non_pass_frontend_dynamic_dim_binding",
+      "category_cn": "非 Pass：前端动态维度绑定字符串比较不可靠",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/frontend/parser/parser.py"
+      ],
+      "pass_symptoms": [
+        "同一符号绑定冲突表达式",
+        "validshape 推导失败",
+        "tiling 断言崩溃"
+      ],
+      "code_anti_pattern": "源码审计假设：Dynamic dimension equality is checked by str(sym_expr), which is unreliable for equivalent expressions with different string forms.",
+      "fix_pattern": "若源码核查证实该风险，建议：Use symbolic object identity or structural equivalence; fail on conflicts immediately.",
+      "verification_hints": [
+        "Review bind_dynamic_dims_to_input_tensors.",
+        "Test equivalent dynamic expressions with different forms.",
+        "Check rank strict equality in match_input_shapes."
+      ],
+      "symptom_keywords": [
+        "同一符号绑定冲突表达式",
+        "validshape 推导失败",
+        "tiling 断言崩溃"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N017",
+      "category": "non_pass_frontend_jit_input_check",
+      "category_cn": "非 Pass：JIT 输入 dtype/format/shape 校验特例绕开",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/frontend/parser/entry.py"
+      ],
+      "pass_symptoms": [
+        "unsupported datatype/format",
+        "broadcast/reshape Pass 失败",
+        "rank 不匹配"
+      ],
+      "code_anti_pattern": "源码审计假设：Unknown torch dtype falls through None branch; FP4/uint8 skip format checks; rank mismatch is allowed in status_shape mode.",
+      "fix_pattern": "若源码核查证实该风险，建议：Reject unknown dtypes explicitly; check rank>0 before FP4 adjustment; enforce format and rank validation uniformly.",
+      "verification_hints": [
+        "Review _check_input_defs_match_tensors.",
+        "Test unknown dtype and FP4 inputs.",
+        "Verify rank/format enforcement."
+      ],
+      "symptom_keywords": [
+        "unsupported datatype/format",
+        "broadcast/reshape Pass 失败",
+        "rank 不匹配"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N018",
+      "category": "non_pass_frontend_nested_inline",
+      "category_cn": "非 Pass：嵌套函数内联识别脆弱",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/frontend/parser/parser.py"
+      ],
+      "pass_symptoms": [
+        "IR 缺少子函数逻辑",
+        "未定义 op",
+        "不合法 attribute"
+      ],
+      "code_anti_pattern": "源码审计假设：Nested function detection relies on hasattr and string attribute chains; exceptions are broadly swallowed and fallback to evaluator.",
+      "fix_pattern": "若源码核查证实该风险，建议：Unify nested function recognition; explicitly error when source is unavailable; extend scalar type validation.",
+      "verification_hints": [
+        "Review _try_nested_call and _is_nested_function.",
+        "Test nested function inlining edge cases.",
+        "Check swallowed exceptions."
+      ],
+      "symptom_keywords": [
+        "IR 缺少子函数逻辑",
+        "未定义 op",
+        "不合法 attribute"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N019",
+      "category": "non_pass_codegen_tiletensor_reuse",
+      "category_cn": "非 Pass：Codegen TileTensor 复用键冲突",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/symbol_mgr/codegen_symbol.cpp"
+      ],
+      "pass_symptoms": [
+        "运行时地址别名",
+        "结果错误",
+        "codegen abort"
+      ],
+      "code_anti_pattern": "源码审计假设：TileTensorKey uses {dim, dtype, bufVar, shape, rawShape, localBufOffset} for reuse; same tensorMagic with different opMagic may collide.",
+      "fix_pattern": "若源码核查证实该风险，建议：Include opMagic in reuse key or verify shape consistency across opMagic; separate GM/local buffer reuse conditions.",
+      "verification_hints": [
+        "Review AddTileTensor and QueryTileTensorByMagic.",
+        "Test tile tensor reuse with shared shapes.",
+        "Check opMagic inclusion in keys."
+      ],
+      "symptom_keywords": [
+        "运行时地址别名",
+        "结果错误",
+        "codegen abort"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N020",
+      "category": "non_pass_codegen_attr_out_of_range",
+      "category_cn": "非 Pass：Codegen 属性访问 opAttrs.at(key) 越界",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/codegen_op.cpp",
+        "framework/src/codegen/npu/codegen_mte.cpp"
+      ],
+      "pass_symptoms": [
+        "std::out_of_range",
+        "codegen crash",
+        "Pass 未设置 attr 时崩溃"
+      ],
+      "code_anti_pattern": "源码审计假设：opAttrs.at(key) is used directly; missing key throws std::out_of_range.",
+      "fix_pattern": "若源码核查证实该风险，建议：Use HasAttr + find with default value or explicit error; validate attr presence before codegen.",
+      "verification_hints": [
+        "Search for .at( in codegen_op/codegen_mte.",
+        "Test op missing optional attrs.",
+        "Verify error handling instead of crash."
+      ],
+      "symptom_keywords": [
+        "std::out_of_range",
+        "codegen crash",
+        "Pass 未设置 attr 时崩溃"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N021",
+      "category": "non_pass_codegen_cube_matmul_index",
+      "category_cn": "非 Pass：Cube matmul 硬编码索引与隐式转置",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/npu/codegen_cube.cpp"
+      ],
+      "pass_symptoms": [
+        "codegen 崩溃",
+        "错误 kernel",
+        "非典型 matmul layout 失败"
+      ],
+      "code_anti_pattern": "源码审计假设：Direct access to l0cShapeDyn[ID0]/ID1 assumes 2D shape; transpose assumptions are implicit and not validated.",
+      "fix_pattern": "若源码核查证实该风险，建议：Add shape rank assertions; make transpose/bias constraints explicit and validate them upfront.",
+      "verification_hints": [
+        "Review GenCubeOp and PrintMatmulTileTensor.",
+        "Test matmul with 1D or non-standard layout.",
+        "Check bias detection logic."
+      ],
+      "symptom_keywords": [
+        "codegen 崩溃",
+        "错误 kernel",
+        "非典型 matmul layout 失败"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N022",
+      "category": "non_pass_distributed_shmem_signal_fixed",
+      "category_cn": "非 Pass：Shmem signal buffer 固定按 maxTileNum=1 分配",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "distributed",
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/distributed/shmem_operation_impl.cpp"
+      ],
+      "pass_symptoms": [
+        "signal 缓冲区不足",
+        "hang",
+        "错序数据",
+        "HCCL 同步失败"
+      ],
+      "code_anti_pattern": "源码审计假设：Shmem signal buffer size is computed with maxTileNum=1 regardless of actual tiled shmem operations.",
+      "fix_pattern": "若源码核查证实该风险，建议：Compute real maxTileNum from vecTile and shmem tensor shape, or let Pass recalculate signal buffer size.",
+      "verification_hints": [
+        "Review CreateShmemSignalImpl and GetSignalBufferSize.",
+        "Test multi-tile shmem operations.",
+        "Check signal buffer size against actual tile count."
+      ],
+      "symptom_keywords": [
+        "signal 缓冲区不足",
+        "hang",
+        "错序数据",
+        "HCCL 同步失败"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N023",
+      "category": "non_pass_distributed_rank_range",
+      "category_cn": "非 Pass：SymbolicScalar rank 求值后未校验范围",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "distributed",
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/calc_distributed.cpp"
+      ],
+      "pass_symptoms": [
+        "RUNTIME_EXCEPTION",
+        "GetRemoteRank 越界",
+        "非法远程 win 地址"
+      ],
+      "code_anti_pattern": "源码审计假设：dstRank evaluated from SymbolicScalar is used directly without checking 0 <= dstRank < worldSize.",
+      "fix_pattern": "若源码核查证实该风险，建议：Validate rank range after symbolic evaluation; handle notifyAll separately.",
+      "verification_hints": [
+        "Review ExecuteOpShmemPut/Signal/Get.",
+        "Test out-of-range dstRank.",
+        "Verify rank validation in NPU path."
+      ],
+      "symptom_keywords": [
+        "RUNTIME_EXCEPTION",
+        "GetRemoteRank 越界",
+        "非法远程 win 地址"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N024",
+      "category": "non_pass_distributed_worldsize_divisible",
+      "category_cn": "非 Pass：集合通信未校验 worldSize 整除性",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "distributed",
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/distributed/shmem_operation_impl.cpp"
+      ],
+      "pass_symptoms": [
+        "UB/GM 访问越界",
+        "结果 shape 不符",
+        "tile_graph_pass 通过但运行失败"
+      ],
+      "code_anti_pattern": "源码审计假设：ReduceScatter/AllReduce/AllGather directly divide row by worldSize without checking remainder.",
+      "fix_pattern": "若源码核查证实该风险，建议：Assert row % worldSize == 0 at API level or implement padding/splitting strategy.",
+      "verification_hints": [
+        "Review AllGather/ReduceScatter/OneShotAllReduce/TwoShotAllReduce.",
+        "Test collective with non-divisible shapes.",
+        "Check validshape consistency."
+      ],
+      "symptom_keywords": [
+        "UB/GM 访问越界",
+        "结果 shape 不符",
+        "tile_graph_pass 通过但运行失败"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "pattern_id": "N025",
+      "category": "non_pass_distributed_aicpu_hash",
+      "category_cn": "非 Pass：AICPU Wait-Until 任务哈希表容量与冲突链脆弱",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "distributed",
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/device/distributed/shmem_wait_until.h"
+      ],
+      "pass_symptoms": [
+        "AICPU_TASKID_NOT_IN_MAP",
+        "AICPU_TASK_NUM_EXCEED_LIMIT",
+        "同步信号丢失死锁"
+      ],
+      "code_anti_pattern": "源码审计假设：Fixed-size hash table with taskId & 1023; collision chain has no length limit; Remove does not update predecessor pointer in hash table.",
+      "fix_pattern": "若源码核查证实该风险，建议：Fail proactively when task count approaches capacity; maintain hash chain on Remove; or use dynamic structure.",
+      "verification_hints": [
+        "Review HashTaskId/FindTask/CircularQueue::Enqueue/Remove.",
+        "Test >1024 AICPU tasks.",
+        "Verify hash chain integrity after Remove."
+      ],
+      "symptom_keywords": [
+        "AICPU_TASKID_NOT_IN_MAP",
+        "AICPU_TASK_NUM_EXCEED_LIMIT",
+        "同步信号丢失死锁"
+      ],
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_ir_json_deserialize_validation",
+      "category_cn": "非 Pass：IR/JSON 反序列化缺少空值/类型/长度校验",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/attr_holder.h",
+        "framework/src/interface/operation/operation.cpp",
+        "framework/src/interface/operation/attribute.cpp",
+        "framework/src/interface/operation/operation_common.h"
+      ],
+      "symptom_keywords": [
+        "LoadVecAttr",
+        "LoadAttrJson",
+        "DeserializeFrom",
+        "OpSyncQueue",
+        "json"
+      ],
+      "pass_symptoms": [
+        "std::out_of_range",
+        "std::bad_any_cast",
+        "空 tensor 解引用",
+        "段错误"
+      ],
+      "code_anti_pattern": "源码审计假设：LoadVecAttr 直接访问 vec[0]；LoadOperandsFromJson 直接 get<int>() 未判类型；DeserializeFrom 顺序读取 attrJson[despos++] 无越界检查；FromJson 未判字段存在。",
+      "fix_pattern": "若源码核查证实该风险，建议：统一使用安全 accessor；数组/JSON 读取前判空、判 size、判类型；缺失字段返回错误码。",
+      "verification_hints": [
+        "构造空 vec、缺失 magic、字段类型错误的 JSON",
+        "检查反序列化失败路径"
+      ],
+      "pattern_id": "N026",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_call_op_cast",
+      "category_cn": "非 Pass：Call 类 OP 属性转换缺少前置校验",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/operation.h",
+        "framework/src/interface/operation/operation.cpp"
+      ],
+      "symptom_keywords": [
+        "CallOpAttribute",
+        "GetCalleeBracketName",
+        "GetCalleeHash",
+        "static_pointer_cast"
+      ],
+      "pass_symptoms": [
+        "空指针解引用",
+        "bad_cast",
+        "Pass inline/subfunc 优化崩溃"
+      ],
+      "code_anti_pattern": "源码审计假设：GetCalleeBracketName 直接 static_pointer_cast<CallOpAttribute> 无 FE_ASSERT(IsCall)；GetCalleeHash dynamic_pointer_cast 后未判空。",
+      "fix_pattern": "若源码核查证实该风险，建议：所有依赖 CallOpAttribute 的函数入口 FE_ASSERT(IsCall())；dynamic_pointer_cast 结果判空。",
+      "verification_hints": [
+        "非 Call OP 误入 Call 属性访问",
+        "检查 OP_BLOCK_CALL/OP_CALL 处理"
+      ],
+      "pattern_id": "N027",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_view_shape_length_mismatch",
+      "category_cn": "非 Pass：视图类 OP shape/offset/validshape 长度不一致",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/operation_impl.cpp",
+        "framework/src/interface/operation/op_infer_shape_impl.cpp"
+      ],
+      "symptom_keywords": [
+        "View",
+        "Assemble",
+        "Reshape",
+        "validshape",
+        "offset"
+      ],
+      "pass_symptoms": [
+        "shape mismatch",
+        "offset 越界",
+        "reshape 后 validshape 与实际内存不符"
+      ],
+      "code_anti_pattern": "源码审计假设：View(const Tensor&, DataType) 直接取 validShape.back() 未判空；AssembleInferFunc 未校验 offset/inputShapes 与 output shape rank 一致性；TensorInnerReshape 直接写入属性未校验对应关系。",
+      "fix_pattern": "若源码核查证实该风险，建议：统一校验：输入输出 rank 相等、offset 长度等于 rank、validshape 非空且与 shape 可对应；拒绝 -1 进入 validshape。",
+      "verification_hints": [
+        "构造 rank 不一致的 view/assemble",
+        "检查 layout/buffer reuse"
+      ],
+      "pattern_id": "N028",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_dynamic_shape_symbolic_overflow",
+      "category_cn": "非 Pass：动态 shape / SymbolicScalar 求值与整数溢出",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/operation_impl.cpp",
+        "framework/src/interface/operation/tile_shape_verifier.h",
+        "framework/src/interface/operation/distributed/distributed_common.h",
+        "framework/src/interface/operation/cube_operation_impl.cpp"
+      ],
+      "symptom_keywords": [
+        "SymbolicScalar",
+        "int(dstShape.back() * factor)",
+        "CeilAlign",
+        "GetTotalTileNum"
+      ],
+      "pass_symptoms": [
+        "负维度",
+        "零维度",
+        "除零",
+        "INVALID_TILE",
+        "INVALID_SHAPE"
+      ],
+      "code_anti_pattern": "源码审计假设：float 转 int 截断/溢出；axis_name_map.at 未注册抛异常；GetTotalTileNum 取模前未判 dataShape!=0；CeilAlign 0 除数返回 0。",
+      "fix_pattern": "若源码核查证实该风险，建议：动态维度走 symbolic 路径；除法/取模前判零；float→int 用饱和检查；axis_name_map 用 find。",
+      "verification_hints": [
+        "构造大 shape、零 tile 维度、未知 opcode",
+        "检查 tile/shape 推导"
+      ],
+      "pattern_id": "N029",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_tile_shape_verifier_empty_oob",
+      "category_cn": "非 Pass：TileShapeVerifier / InferShape 空容器与越界索引",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/tile_shape_verifier.h",
+        "framework/src/interface/operation/op_infer_shape_impl.h",
+        "framework/src/interface/operation/operation.cpp"
+      ],
+      "symptom_keywords": [
+        "RunVerifyFunc",
+        "GetIOperandIndex",
+        "GetOOperandIndex",
+        "front"
+      ],
+      "pass_symptoms": [
+        "shape verify pass 崩溃",
+        "合法 OP 被误判",
+        "动态图 shape 推导失败"
+      ],
+      "code_anti_pattern": "源码审计假设：RunVerifyFunc 直接 front() 未判空；GetTensorMemoryType 用 index -1 作为数组索引；CallInferShapeFunc outValidShapes 与 output 数量不一致。",
+      "fix_pattern": "若源码核查证实该风险，建议：空容器早返回；index == -1 视为错误；outValidShapes.size() 与 GetOOperands().size() 严格校验。",
+      "verification_hints": [
+        "构造无输入/无输出 OP",
+        "构造索引 -1 的 case",
+        "检查 infer shape 输出数量"
+      ],
+      "pattern_id": "N030",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_cube_matmul_tile_zero_div",
+      "category_cn": "非 Pass：Cube matmul tile 与对齐的零除 / 硬编码常量",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/cube_operation_impl.cpp"
+      ],
+      "symptom_keywords": [
+        "CheckL1L0Tile",
+        "CheckCubeTile",
+        "CeilAlign",
+        "VECTOR_TILE_SHAPE",
+        "AddOpView"
+      ],
+      "pass_symptoms": [
+        "INVALID_TILE",
+        "除零",
+        "矩阵分块与实际数据不对齐"
+      ],
+      "code_anti_pattern": "源码审计假设：tileKL1Min % tileInfo.tileKL0 等依赖 tile 值非零但验证在调用之后；CeilAlign 返回 0 导致除零；VECTOR_TILE_SHAPE=128 等硬编码；AddOpView 默认 rank>=2。",
+      "fix_pattern": "若源码核查证实该风险，建议：tile 值参与 %// 前判 >0；对齐常量集中配置；AddOpView 前置校验 rank 与 transFlag。",
+      "verification_hints": [
+        "构造零 tile 维度",
+        "非 2D matmul",
+        "FP4/量化对齐"
+      ],
+      "pattern_id": "N031",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_distributed_shmem_state",
+      "category_cn": "非 Pass：分布式 SHMEM 的 group/worldSize/rank 边界与静态状态",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation",
+        "distributed"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/distributed/shmem_operation_impl.cpp",
+        "framework/src/interface/operation/distributed/shmem_expand_function.cpp",
+        "framework/src/interface/operation/distributed/distributed_common.h"
+      ],
+      "symptom_keywords": [
+        "groupWorldSizeMap",
+        "ShmemSignalImpl",
+        "OneShotAllReduce",
+        "CalcTileCounts",
+        "static"
+      ],
+      "pass_symptoms": [
+        "group 大小不一致",
+        "rank 越界",
+        "shmem buffer size 错误",
+        "死锁",
+        "AllReduce 结果错误"
+      ],
+      "code_anti_pattern": "源码审计假设：groupWorldSizeMap 是 static 局部变量未清理；ShmemSignalImpl 未校验 srcRank<worldSize；OneShotAllReduce 直接除 worldSize 未判整除；CalcTileCounts 可能为 0 后做除数；ShmemViewImpl 写入未保证 shapes.size()<=signalShape.size()。",
+      "fix_pattern": "若源码核查证实该风险，建议：每个 program/function 入口重置 group map；校验 rank 范围与 worldSize 整除；tile count 为 0 报错；view 时校验 shape/offset 维度。",
+      "verification_hints": [
+        "多卡不同 group",
+        "非整除 AllReduce",
+        "多 tile shmem"
+      ],
+      "pattern_id": "N032",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_op_attribute_memory_dtype",
+      "category_cn": "非 Pass：OpAttribute 类型转换与 memory-type / dtype 路径不一致",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operation"
+      ],
+      "files_to_check": [
+        "framework/src/interface/operation/attribute.cpp",
+        "framework/src/interface/operation/operation.h",
+        "framework/src/interface/operation/tile_shape_verifier.h"
+      ],
+      "symptom_keywords": [
+        "static_cast<MemoryType>",
+        "SetOpAttribute",
+        "CopyOpAttribute",
+        "ConvertOpAttribute"
+      ],
+      "pass_symptoms": [
+        "copy 方向错误",
+        "buffer reuse 冲突",
+        "非法内存访问"
+      ],
+      "code_anti_pattern": "源码审计假设：static_cast<MemoryType>(buffer[0]) 未校验枚举值；SetOpAttribute 仅在 debug FE_ASSERT 校验 attr 类型；GetTensorMemoryType index 为 -1 访问非法数组。",
+      "fix_pattern": "若源码核查证实该风险，建议：增加 MemoryType 合法性检查；创建属性时校验与 opcode 对应关系；索引 -1 按错误处理。",
+      "verification_hints": [
+        "构造非法 MemoryType 值",
+        "属性类型不匹配",
+        "检查 memtype 数组访问"
+      ],
+      "pattern_id": "N033",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_runtime_view_eval_bound",
+      "category_cn": "非 Pass：VIEW / 动态 shape 运行时评估缺少边界校验",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/runtime/launcher/device_launcher_binding.h"
+      ],
+      "symptom_keywords": [
+        "Evaluator",
+        "GetViewValidShapeDim",
+        "viewoffset",
+        "outIdx"
+      ],
+      "pass_symptoms": [
+        "VIEW 运行时 0 长维度",
+        "shape mismatch",
+        "slice 结果异常"
+      ],
+      "code_anti_pattern": "源码审计假设：outIdx = argIdx - inputs.size() 未校验；GetViewValidShapeDim 用 vals[0x2] 魔法下标且未校验 viewoffset 符号与 dim 越界。",
+      "fix_pattern": "若源码核查证实该风险，建议：三段边界检查 argIdx/outputIdx/dim；用命名常量替换 0x2；校验 viewoffset 符号与上界。",
+      "verification_hints": [
+        "构造 argIdx 超出输入输出总数",
+        "构造负数/超大 viewoffset"
+      ],
+      "pattern_id": "N034",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_control_flow_cache_deref",
+      "category_cn": "非 Pass：控制流缓存指针与启动参数直接解引用",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/device/dynamic/context/device_execute_context.cpp"
+      ],
+      "symptom_keywords": [
+        "GELaunchRunCached",
+        "RunInit",
+        "DynDeviceTask",
+        "symbolTable"
+      ],
+      "pass_symptoms": [
+        "动态 shape 二次执行崩溃",
+        "symbol 值错位",
+        "循环边界异常"
+      ],
+      "code_anti_pattern": "源码审计假设：reinterpret_cast<DynDeviceTask*> 直接使用缓存指针，未校验缓存是否过期；symbolTable[inputSymbolIndex] 未校验索引。",
+      "fix_pattern": "若源码核查证实该风险，建议：恢复缓存前校验 deviceTaskCount、指针非空及版本戳；对 inputSymbolIndex 加范围断言。",
+      "verification_hints": [
+        "动态 shape 多次执行",
+        "构造缓存失效场景",
+        "检查 symbolTable 大小"
+      ],
+      "pattern_id": "N035",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_cell_match_overflow_empty",
+      "category_cn": "非 Pass：Cell match 表整数溢出与空表首元素访问",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/device/dynamic/context/device_slot_context.cpp",
+        "framework/src/machine/device/dynamic/context/device_stitch_context.cpp"
+      ],
+      "symptom_keywords": [
+        "PrepareRuntimeDynamicPartialUpdateTable",
+        "PartialUpdateStitchProducer",
+        "cellCount",
+        "&vec[0]"
+      ],
+      "pass_symptoms": [
+        "stitch 时 cell match 表越界写",
+        "部分更新缺失",
+        "producer-consumer 依赖错配"
+      ],
+      "code_anti_pattern": "源码审计假设：cellCount *= stride 乘完后再做容量检查；多处 &vec[0] 在 size==0 时未前置返回。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用 __builtin_mul_overflow；所有 &[0] 前强制 !empty()。",
+      "verification_hints": [
+        "大 stride 动态 shape",
+        "构造空 cell 向量"
+      ],
+      "pattern_id": "N036",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_global_static_state_thread_unsafe",
+      "category_cn": "非 Pass：全局静态通信/缓存状态非线程安全",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/runtime/distributed/distributed_context.cpp",
+        "framework/src/machine/device/dynamic/context/device_execute_context.cpp",
+        "framework/src/machine/runtime/launcher/device_launcher.h"
+      ],
+      "symptom_keywords": [
+        "g_context",
+        "staticShmemAddrEndOffset",
+        "deviceCommContextsMap",
+        "global"
+      ],
+      "pass_symptoms": [
+        "多 stream 并发 hang",
+        "shmem 窗口地址重叠",
+        "rtMemcpy 失败",
+        "精度随机错"
+      ],
+      "code_anti_pattern": "源码审计假设：g_context、staticShmemAddrEndOffset、deviceCommContextsMap 为跨调用共享的可变静态状态，无锁保护。",
+      "fix_pattern": "若源码核查证实该风险，建议：全局上下文加读写锁或按 Function/stream 隔离；staticShmemAddrEndOffset 放入 per-launch 上下文。",
+      "verification_hints": [
+        "多 stream/多算子并发",
+        "分布式大通信窗口"
+      ],
+      "pattern_id": "N037",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_function_ptr_sort_ub",
+      "category_cn": "非 Pass：函数指针排序引入未定义行为",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine",
+        "host"
+      ],
+      "files_to_check": [
+        "framework/src/machine/host/backend.cpp"
+      ],
+      "symptom_keywords": [
+        "BuildControlFlow",
+        "std::sort",
+        "Function*",
+        "pointer comparison"
+      ],
+      "pass_symptoms": [
+        "leaf function 执行顺序非确定性",
+        "funcKey 分配或 hash 索引不一致",
+        "偶发结果不一致"
+      ],
+      "code_anti_pattern": "源码审计假设：对 std::vector<Function*> 调用 std::sort，随后 ASSERT 相等；不同对象指针 < 比较在 C++ 中为 UB。",
+      "fix_pattern": "若源码核查证实该风险，建议：按 Function::GetFunctionHash() 或 GetFuncMagic() 排序。",
+      "verification_hints": [
+        "多次运行同一图比较顺序",
+        "检查 BuildControlFlow"
+      ],
+      "pattern_id": "N038",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_error_code_swallow_sum",
+      "category_cn": "非 Pass：错误码被吞并或简单相加",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/runtime/runner/device_runner.cpp",
+        "framework/src/machine/host/backend.cpp"
+      ],
+      "symptom_keywords": [
+        "DynamicLaunchSynchronize",
+        "rcAicore + rcAicpu + rcCtrl",
+        "Execute",
+        "return 0"
+      ],
+      "pass_symptoms": [
+        "Pass 拿到成功但底层失败",
+        "静默错误输出",
+        "无效状态继续"
+      ],
+      "code_anti_pattern": "源码审计假设：三流错误码相加；Execute 在 task/function 为空或编译失败时仍 return 0。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用结构化错误码/bitmask；空指针/编译失败返回明确错误码。",
+      "verification_hints": [
+        "注入单流失败",
+        "检查错误码来源",
+        "验证失败路径资源同步"
+      ],
+      "pattern_id": "N039",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_event_leak",
+      "category_cn": "非 Pass：同步 Event 创建后未释放",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine"
+      ],
+      "files_to_check": [
+        "framework/src/machine/runtime/launcher/device_launcher.cpp",
+        "framework/src/machine/runtime/runner/device_runner.cpp"
+      ],
+      "symptom_keywords": [
+        "AclRtCreateEventExWithFlag",
+        "RT_EVENT_FAILED",
+        "event leak"
+      ],
+      "pass_symptoms": [
+        "长时运行 event 句柄泄漏",
+        "RT_EVENT_FAILED",
+        "资源耗尽"
+      ],
+      "code_anti_pattern": "源码审计假设：创建 event 并 record/wait，但无 AclRtDestroyEvent。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用 RAII event guard，确保所有分支（含错误返回）销毁 event。",
+      "verification_hints": [
+        "高频 launch 场景",
+        "检查 event 句柄数量"
+      ],
+      "pattern_id": "N040",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_dyn_loop_attr_null",
+      "category_cn": "非 Pass：动态循环属性/设备程序裸指针空解引用",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine",
+        "host"
+      ],
+      "files_to_check": [
+        "framework/src/machine/host/backend.cpp",
+        "framework/src/machine/runtime/launcher/device_launcher.h"
+      ],
+      "symptom_keywords": [
+        "GetDynloopAttribute",
+        "GetDyndevAttribute",
+        "GetDevProg",
+        "parallel"
+      ],
+      "pass_symptoms": [
+        "非 loop 动态函数 segfault",
+        "AICore launch 失败",
+        "NULLPTR"
+      ],
+      "code_anti_pattern": "源码审计假设：func->GetDynloopAttribute()->parallel 可能解引用 null；GetDevProg 对 devProgBinary.data() 不做空检查。",
+      "fix_pattern": "若源码核查证实该风险，建议：解引用前加 null 检查；GetDevProg 返回 optional 或断言。",
+      "verification_hints": [
+        "构造非 loop 动态函数",
+        "检查 dev program 为空"
+      ],
+      "pattern_id": "N041",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_cf_source_injection",
+      "category_cn": "非 Pass：控制流源码生成中的字符串拼接未做注入校验",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "machine",
+        "host"
+      ],
+      "files_to_check": [
+        "framework/src/machine/host/backend.cpp",
+        "framework/src/machine/host/expr_generator.h"
+      ],
+      "symptom_keywords": [
+        "BuildControlFlow",
+        "GenerateBatchFile",
+        "EmitBatchBody",
+        "inputNameList"
+      ],
+      "pass_symptoms": [
+        "AICPU 控制流源码编译失败",
+        "循环边界整数溢出",
+        "动态 shape 计算错误"
+      ],
+      "code_anti_pattern": "源码审计假设：将 inputNameList、表达式字符串直接拼接到 .cpp 宏名与代码中；等差循环 lastImmValue = firstImm + step*(runLength-1) 无溢出检查。",
+      "fix_pattern": "若源码核查证实该风险，建议：对生成源码标识符做合法化/转义；等差序列生成使用饱和或溢出检测。",
+      "verification_hints": [
+        "张量名含特殊字符",
+        "大表达式循环边界"
+      ],
+      "pattern_id": "N042",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_function_io_copy_resize",
+      "category_cn": "非 Pass：FunctionIODataPair 越界/漏拷 outcast",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/function.h"
+      ],
+      "symptom_keywords": [
+        "CopyWithLinkRelationship",
+        "outcastDataViewList",
+        "incastDataViewList"
+      ],
+      "pass_symptoms": [
+        "多输出算子输出张量缺失",
+        "slot 对不齐",
+        "FUNC_OUTCAST_COUNT_MISMATCH"
+      ],
+      "code_anti_pattern": "源码审计假设：dst.outcastDataViewList.resize(src.incastDataViewList.size())，把 outcast resize 成 incast 大小。",
+      "fix_pattern": "若源码核查证实该风险，建议：改为 resize(src.outcastDataViewList.size())。",
+      "verification_hints": [
+        "构造多输出算子 capture/golden 拷贝",
+        "检查 outcast 数量"
+      ],
+      "pattern_id": "N043",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_reshape_size_mismatch_skip",
+      "category_cn": "非 Pass：视图类 OP size 不匹配时静默跳过",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/calc_common.cpp"
+      ],
+      "symptom_keywords": [
+        "ExecuteOpReshape",
+        "iopSize",
+        "oopSize",
+        "rawMagic"
+      ],
+      "pass_symptoms": [
+        "reshape 输入输出元素数不一致被吞掉",
+        "验证通过但 NPU 行为不一致"
+      ],
+      "code_anti_pattern": "源码审计假设：iopSize != oopSize 且 rawMagic 相同直接 return；后续补丁式 reshape 未明确区分 identity/real-reshape。",
+      "fix_pattern": "若源码核查证实该风险，建议：元素数不一致时若非预期应 ASSERT；明确区分 identity-reshape 与 real-reshape。",
+      "verification_hints": [
+        "构造 validshape 优化后 size 不一致的 reshape",
+        "对比解释器与 NPU 结果"
+      ],
+      "pattern_id": "N044",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_spill_string_match",
+      "category_cn": "非 Pass：用字符串匹配判定 spill tensor",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/function.h"
+      ],
+      "symptom_keywords": [
+        "AllocateDataView",
+        "rawMagic",
+        "find",
+        "1056964608"
+      ],
+      "pass_symptoms": [
+        "spill 判断失效",
+        "workspace 复用/越界",
+        "inplace 链断裂"
+      ],
+      "code_anti_pattern": "源码审计假设：std::string rawMagic = std::to_string(raw->GetRawMagic()); if (rawMagic.find(\"1056964608\") != npos)。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用显式 RawTensor 元数据标志位（如 IsSpilled()）替代字符串搜索。",
+      "verification_hints": [
+        "变更 raw tensor magic 分配规则",
+        "检查 spill tensor 识别"
+      ],
+      "pattern_id": "N045",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_linear_arglist_oob",
+      "category_cn": "非 Pass：EvaluateOpImmediate 越界访问 linearArgList",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/operation.cpp"
+      ],
+      "symptom_keywords": [
+        "EvaluateOpImmediate",
+        "linearArgList",
+        "coaIndex",
+        "GetAsParameterCoaIndex"
+      ],
+      "pass_symptoms": [
+        "动态 shape COA 索引偏移错误",
+        "偏移/validshape 随机跳变"
+      ],
+      "code_anti_pattern": "源码审计假设：frame->callopAttr->GetLinearArgList()[coaIndex] 与 [index] 无边界检查，依赖 COA 索引公式恒正确。",
+      "fix_pattern": "若源码核查证实该风险，建议：对 coaIndex 与 index 加范围断言，并校验 linearArgList.size()。",
+      "verification_hints": [
+        "构造错误 COA 索引",
+        "检查 dynamic shape 场景"
+      ],
+      "pattern_id": "N046",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_fixed_8dim_stack",
+      "category_cn": "非 Pass：固定 8 维栈缓冲区",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/raw_tensor_data.h"
+      ],
+      "symptom_keywords": [
+        "ViewIndexToDataIndex",
+        "int offset[0x8]",
+        "rank"
+      ],
+      "pass_symptoms": [
+        "高维张量 dump/verify 栈溢出",
+        "Pass 验证崩溃"
+      ],
+      "code_anti_pattern": "源码审计假设：int offset[0x8] 假定 rank <= 8，未检查 GetShape().size()。",
+      "fix_pattern": "若源码核查证实该风险，建议：用 std::vector<int64_t> 或 ASSERT(rank <= 8)。",
+      "verification_hints": [
+        "构造 >8D 张量",
+        "检查 verify 崩溃"
+      ],
+      "pattern_id": "N047",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_pairhash_weak",
+      "category_cn": "非 Pass：PairHash 弱哈希导致字典冲突",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/function.h"
+      ],
+      "symptom_keywords": [
+        "PairHash",
+        "hash1 ^ (hash2 << 1)",
+        "mix-split"
+      ],
+      "pass_symptoms": [
+        "mix-split 字典冲突",
+        "数据竞争",
+        "结果覆盖"
+      ],
+      "code_anti_pattern": "源码审计假设：return hash1 ^ (hash2 << 1)；对称键 (a,b) 与 (b,a) 易碰撞，高位移位溢出。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用 std::hash 组合库（boost::hash_combine 等价实现）。",
+      "verification_hints": [
+        "构造 (tensor, wrapId) 对称键",
+        "检查 mixGlobalTensorDict 冲突"
+      ],
+      "pattern_id": "N048",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_sharedptr_key_identity",
+      "category_cn": "非 Pass：mix-split 以 shared_ptr 身份做键",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/function.h"
+      ],
+      "symptom_keywords": [
+        "mixGlobalTensorDict",
+        "shared_ptr",
+        "mixKey"
+      ],
+      "pass_symptoms": [
+        "MIX_GLOBAL_TENSOR_WAIT_TIMEOUT",
+        "不同 frame 逻辑同一张量 miss"
+      ],
+      "code_anti_pattern": "源码审计假设：std::pair<std::shared_ptr<LogicalTensor>, int32_t> mixKey 比较 shared_ptr 对象身份。",
+      "fix_pattern": "若源码核查证实该风险，建议：键改用 (rawMagic, tensorMagic, wrapId) 元组。",
+      "verification_hints": [
+        "Pass 重建 LogicalTensor 后访问 mixGlobalTensorDict",
+        "检查 timeout"
+      ],
+      "pattern_id": "N049",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_distributed_sim_wait_spin",
+      "category_cn": "非 Pass：分布式模拟 Wait 永久自旋且无超时",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter",
+        "distributed"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/communication.cpp"
+      ],
+      "symptom_keywords": [
+        "SimulationCommContext::Wait",
+        "while",
+        "spin",
+        "timeout"
+      ],
+      "pass_symptoms": [
+        "SHMEM 同步验证进程卡死",
+        "信号丢失"
+      ],
+      "code_anti_pattern": "源码审计假设：while(ctrlBase[offset + slotSize - 1] != targetValue) 无最大轮次/超时。",
+      "fix_pattern": "若源码核查证实该风险，建议：增加有限自旋 + 超时 ASSERT，并记录期望/实际值。",
+      "verification_hints": [
+        "构造信号丢失或顺序错误",
+        "检查验证是否卡死"
+      ],
+      "pattern_id": "N050",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_win_size_overflow",
+      "category_cn": "非 Pass：WIN_IN_SIZE/WIN_EXP_SIZE 硬编码且累加无溢出检查",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter",
+        "distributed"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/communication.h",
+        "framework/src/interface/interpreter/communication.cpp"
+      ],
+      "symptom_keywords": [
+        "WIN_IN_SIZE",
+        "WIN_EXP_SIZE",
+        "shm_open",
+        "BytesOf"
+      ],
+      "pass_symptoms": [
+        "大 shape 分布式 tensor 写越界",
+        "dtype 非法时除 0"
+      ],
+      "code_anti_pattern": "源码审计假设：BytesOf 对未知 dtype 可能为 0；shape 累乘仅与 200MB/800MB 比较，无溢出检查。",
+      "fix_pattern": "若源码核查证实该风险，建议：BytesOf 返回 0 时断言；累加前检查 shape[i]>0 与乘积溢出。",
+      "verification_hints": [
+        "构造大 shape/未知 dtype 分布式 tensor",
+        "检查 shm 越界"
+      ],
+      "pattern_id": "N051",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_raw_tensor_numel_overflow",
+      "category_cn": "非 Pass：RawTensorData Numel/CalcRequiredSize int64 溢出",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/raw_tensor_data.h"
+      ],
+      "symptom_keywords": [
+        "Numel",
+        "CalcRequiredSize",
+        "n *= d",
+        "int64_t"
+      ],
+      "pass_symptoms": [
+        "分配极小缓冲区",
+        "后续 calc 越界"
+      ],
+      "code_anti_pattern": "源码审计假设：循环 n *= d 无溢出检查，随后转成 size_t 用于分配。",
+      "fix_pattern": "若源码核查证实该风险，建议：引入 checked_mul 或 __builtin_mul_overflow，溢出时 ASSERT。",
+      "verification_hints": [
+        "构造恶意/异常大 shape",
+        "检查分配大小"
+      ],
+      "pattern_id": "N052",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_amulb_scale_dtype_search",
+      "category_cn": "非 Pass：ExecuteOpAMulB 按 dtype 顺序盲搜 scale tensor",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/calc_cube.cpp"
+      ],
+      "symptom_keywords": [
+        "ExecuteOpAMulB",
+        "UINT64",
+        "scalePtr",
+        "量化 matmul"
+      ],
+      "pass_symptoms": [
+        "scale 错配",
+        "量化 matmul 精度异常"
+      ],
+      "code_anti_pattern": "源码审计假设：按顺序取第一个 UINT64 输入作为 scale，Pass 重排输入后 scale 错配。",
+      "fix_pattern": "若源码核查证实该风险，建议：通过属性或固定索引获取 scale，而非 dtype 顺序扫描。",
+      "verification_hints": [
+        "重排 matmul 输入顺序",
+        "检查 scale 来源"
+      ],
+      "pattern_id": "N053",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_flowverifier_threshold_magic",
+      "category_cn": "非 Pass：FlowVerifier 阈值魔法公式",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/flow_verifier.h"
+      ],
+      "symptom_keywords": [
+        "UpdateErrorCountThreshold",
+        "rtol",
+        "atol",
+        "cnt_normal=16"
+      ],
+      "pass_symptoms": [
+        "严格阈值下误判 FAIL",
+        "阈值 16 掩盖精度退化"
+      ],
+      "code_anti_pattern": "源码审计假设：errorCountThreshold = (size - zeroCount) * min(rtol, atol)；rtol=atol=0 时 fallback 到 16，逻辑不透明。",
+      "fix_pattern": "若源码核查证实该风险，建议：将公式与 magic number 提取为配置项并加注释。",
+      "verification_hints": [
+        "设置 rtol=atol=0",
+        "检查阈值行为"
+      ],
+      "pattern_id": "N054",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_threadpool_busy_wait",
+      "category_cn": "非 Pass：ThreadPool 忙等",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/thread_pool.h"
+      ],
+      "symptom_keywords": [
+        "WaitForAll",
+        "Yield",
+        "sleep_for(0ms)"
+      ],
+      "pass_symptoms": [
+        "mix-split 验证 CPU 打满",
+        "超时/假死"
+      ],
+      "code_anti_pattern": "源码审计假设：std::this_thread::sleep_for(0ms) 实际无 sleep，纯自旋。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用条件变量或递增 backoff。",
+      "verification_hints": [
+        "mix-split 并行验证",
+        "观察 CPU 占用"
+      ],
+      "pattern_id": "N055",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_determinism_stoll_noexcept",
+      "category_cn": "非 Pass：从 schema name 直接 std::stoll 无异常处理",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/determinism.cpp"
+      ],
+      "symptom_keywords": [
+        "LoadTraceExprList",
+        "LoadTraceInt",
+        "LoadTraceRawTensor",
+        "std::stoll"
+      ],
+      "pass_symptoms": [
+        "trace 文件格式不兼容时进程异常退出"
+      ],
+      "code_anti_pattern": "源码审计假设：std::stoll(name) 遇到非数字或超长字符串直接抛异常，外层未捕获。",
+      "fix_pattern": "若源码核查证实该风险，建议：封装为返回 bool 的解析函数，或加 try-catch 并打印节点名。",
+      "verification_hints": [
+        "构造非数字/超长 schema name",
+        "检查 determinism 退出码"
+      ],
+      "pattern_id": "N056",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_element_div_zero",
+      "category_cn": "非 Pass：Element 除法未判除零",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "interpreter"
+      ],
+      "files_to_check": [
+        "framework/src/interface/interpreter/element.cpp"
+      ],
+      "symptom_keywords": [
+        "Element::operator/",
+        "CALC_DIV",
+        "SIGFPE"
+      ],
+      "pass_symptoms": [
+        "标量除法 OP zero tensor 输入产生 SIGFPE",
+        "Pass 验证中断"
+      ],
+      "code_anti_pattern": "源码审计假设：直接 CALC_DIV(GetSignedData(), rhs.GetSignedData()) 未检查 rhs 是否为 0。",
+      "fix_pattern": "若源码核查证实该风险，建议：整数类型除法前检查除数；浮点按 IEEE 754 处理但显式说明。",
+      "verification_hints": [
+        "构造 zero tensor 输入",
+        "检查整数除法 SIGFPE"
+      ],
+      "pattern_id": "N057",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_kwargs_bool_rejected",
+      "category_cn": "非 Pass：kwargs 类型校验把 Python 的 bool 当非法类型",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "ir"
+      ],
+      "files_to_check": [
+        "framework/src/interface/ir/op_registry.cpp"
+      ],
+      "symptom_keywords": [
+        "ValidateKwargs",
+        "bool",
+        "incompatible type",
+        "set_attr"
+      ],
+      "pass_symptoms": [
+        "前端传入 bool 属性时 OpRegistry::Create 抛异常",
+        "IR 构造失败"
+      ],
+      "code_anti_pattern": "源码审计假设：int 分支只接受 int/int64_t/TilePad，bool 值落入 incompatible type。",
+      "fix_pattern": "若源码核查证实该风险，建议：为 set_attr<bool> 添加独立 bool 分支，或允许 bool 兼容 int。",
+      "verification_hints": [
+        "pybind 传入 bool 属性",
+        "检查 IR 构造"
+      ],
+      "pattern_id": "N058",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_tensor_view_assemble_no_rank_check",
+      "category_cn": "非 Pass：tensor.view / tensor.assemble 不校验 rank、offset 与边界",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "ir"
+      ],
+      "files_to_check": [
+        "framework/src/interface/ir/op/tensor_ops/memory.cpp"
+      ],
+      "symptom_keywords": [
+        "DeduceTensorViewType",
+        "DeduceTensorAssembleType",
+        "rank",
+        "offset"
+      ],
+      "pass_symptoms": [
+        "lowering 后地址越界",
+        "rank 错误",
+        "静默数据损坏"
+      ],
+      "code_anti_pattern": "源码审计假设：仅校验 shape/offset 元素为整型，不校验 rank 与原 tensor 是否一致、offset 长度是否匹配、source 是否超出 target。",
+      "fix_pattern": "若源码核查证实该风险，建议：type inference 阶段增加 rank 一致性；静态 shape 做边界校验，动态 shape 加保守标记。",
+      "verification_hints": [
+        "构造 rank 不一致 view",
+        "构造越界 offset"
+      ],
+      "pattern_id": "N059",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_memref_alias_overflow",
+      "category_cn": "非 Pass：MemRef MayAlias 整数溢出与符号混用",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "ir"
+      ],
+      "files_to_check": [
+        "framework/src/interface/ir/memref.cpp"
+      ],
+      "symptom_keywords": [
+        "MayAlias",
+        "SameAllocation",
+        "ConstInt",
+        "negative offset"
+      ],
+      "pass_symptoms": [
+        "内存规划 Pass 别名结论错误",
+        "unsafe 合并导致数据竞争",
+        "过度保守导致内存暴涨"
+      ],
+      "code_anti_pattern": "源码审计假设：off->value_ + size_ 可能溢出；ConstInt 可取负值，区间比较对负 offset 不健壮；同 space 符号 offset 直接保守返回 true。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用带溢出检测的算术；明确 offset/size 符号语义；符号 offset 引入 stride/alignment 约束。",
+      "verification_hints": [
+        "构造极大 size/负 offset",
+        "检查别名结论"
+      ],
+      "pattern_id": "N060",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_codegen_attr_read_unvalidated",
+      "category_cn": "非 Pass：Codegen 属性读取未校验存在性与类型",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/npu/codegen_vector.cpp",
+        "framework/src/codegen/npu/codegen_vector_unary.cpp",
+        "framework/src/codegen/npu/codegen_vector_unary_with_tmp.cpp",
+        "framework/src/codegen/npu/codegen_mte.cpp",
+        "framework/src/codegen/npu/codegen_distributed.cpp"
+      ],
+      "symptom_keywords": [
+        "AnyCast",
+        "opAttrs.at(key)",
+        "GetOpAttr",
+        "bad_any_cast"
+      ],
+      "pass_symptoms": [
+        "codegen 抛 out_of_range/bad_any_cast",
+        "默默使用默认值生成错误 TileOp 模板参数",
+        "精度异常"
+      ],
+      "code_anti_pattern": "源码审计假设：auto val = AnyCast<T>(opAttrs.at(key)) 不判断 key 存在且类型匹配。",
+      "fix_pattern": "若源码核查证实该风险，建议：用 HasAttr + 类型检查封装读取，缺失时显式报错并回传到 Pass。",
+      "verification_hints": [
+        "构造 Pass 漏下或类型写错 attr",
+        "检查 codegen 报错"
+      ],
+      "pattern_id": "N061",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_codegen_getopattr_ignored",
+      "category_cn": "非 Pass：Codegen GetOpAttr 返回值被忽略",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/npu/codegen_mte.cpp",
+        "framework/src/codegen/npu/codegen_distributed.cpp",
+        "framework/src/codegen/npu/codegen_op_npu.cpp"
+      ],
+      "symptom_keywords": [
+        "GetOpAttr",
+        "reluMode",
+        "copyMode",
+        "return value ignored"
+      ],
+      "pass_symptoms": [
+        "未下发 attr 时使用默认 0",
+        "copy mode/relu/atomic/scale/loop 轴配置错误"
+      ],
+      "code_anti_pattern": "源码审计假设：GetOpAttr(..., reluMode); 返回值未使用，变量保持初始值。",
+      "fix_pattern": "若源码核查证实该风险，建议：必选 attr 读取失败时 ASSERT 并带上 op.Dump()；可选 attr 显式赋默认值。",
+      "verification_hints": [
+        "构造缺失必选 attr 的 op",
+        "检查生成代码中的默认值"
+      ],
+      "pattern_id": "N062",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_codegen_ub_copy_macro_copy_bug",
+      "category_cn": "非 Pass：动态 UB Copy 形状/偏移宏复制错误",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/npu/codegen_mte.cpp"
+      ],
+      "symptom_keywords": [
+        "gmShapeExpr",
+        "gmOffsetExpr",
+        "PrintMemCopyWithUBDynamicSupportUnaligned"
+      ],
+      "pass_symptoms": [
+        "CCE 把 offset 表达式填到 shape 参数位",
+        "访问越界",
+        "数据错排"
+      ],
+      "code_anti_pattern": "源码审计假设：std::vector<std::string> gmShapeExpr = paramPack.gmOffsetExpr; gmOffsetExpr = paramPack.gmOffsetExpr; 两处都取 offset 宏。",
+      "fix_pattern": "若源码核查证实该风险，建议：gmShapeExpr 取 paramPack.gmShapeExpr，gmOffsetExpr 取 paramPack.gmOffsetExpr。",
+      "verification_hints": [
+        "检查 PrintMemCopyWithUBDynamicSupportUnaligned 宏赋值",
+        "对比 shape 与 offset 表达式"
+      ],
+      "pattern_id": "N063",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_codegen_hardcoded_dim_index",
+      "category_cn": "非 Pass：Codegen 硬编码维度下标直接访问 shape/offset",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/npu/codegen_mte.cpp",
+        "framework/src/codegen/npu/codegen_distributed.cpp"
+      ],
+      "symptom_keywords": [
+        "dynoffset[ID1]",
+        "gmShape[0]",
+        "shape.back()",
+        "TENSOR_DIM_UNSUPPORTED"
+      ],
+      "pass_symptoms": [
+        "非 2D/5D 张量越界",
+        "生成错误模板参数",
+        "运行时地址异常"
+      ],
+      "code_anti_pattern": "源码审计假设：dynoffset[ID1]、gmShape[0]、shape.back() 仅在个别路径做 size()==2 断言。",
+      "fix_pattern": "若源码核查证实该风险，建议：统一先 NormalizeShape 并校验 size()，避免维度假设不成立时直接用 ID0/ID1。",
+      "verification_hints": [
+        "构造 1D/3D/6D 张量进入这些分支",
+        "检查生成模板参数"
+      ],
+      "pattern_id": "N064",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_codegen_max_loop_depth",
+      "category_cn": "非 Pass：ForBlockManager 对固定 MAX_LOOP_DEPTH=3 的强假设",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/stmt_mgr/codegen_for_block.h",
+        "framework/src/codegen/stmt_mgr/codegen_for_block.cpp"
+      ],
+      "symptom_keywords": [
+        "MAX_LOOP_DEPTH=3",
+        "forNodes_",
+        "PrintForHeader",
+        "BuildOffsetInLoop"
+      ],
+      "pass_symptoms": [
+        "Pass 下发非 3 层循环时越界",
+        "循环轴与张量维度错位",
+        "TileOffset 错误"
+      ],
+      "code_anti_pattern": "源码审计假设：PrintForHeader/PrintForEnd 直接 forNodes_[i]；BuildOffsetInLoop rawShape 填充到 SHAPE_DIM5 后只遍历 MAX_LOOP_DEPTH。",
+      "fix_pattern": "若源码核查证实该风险，建议：loop depth 与张量维度解耦；Print 前断言 forNodes_.size() 与实际循环层数一致。",
+      "verification_hints": [
+        "构造 >3 层循环",
+        "检查生成代码 TileOffset"
+      ],
+      "pattern_id": "N065",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_codegen_reshape_validshape_missing",
+      "category_cn": "非 Pass：Reshape copy valid shape 未全覆盖",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/npu/codegen_mte.cpp",
+        "framework/src/codegen/codegen_op.cpp"
+      ],
+      "symptom_keywords": [
+        "AppendGmValidShapeForReshapeCopy",
+        "GenMemUBTransfer",
+        "GenMemCopyVar",
+        "RESHAPE_COPY_OP"
+      ],
+      "pass_symptoms": [
+        "reshape + padding 场景 copy 未携带 valid shape",
+        "形状错或数据污染"
+      ],
+      "code_anti_pattern": "源码审计假设：仅在部分 tile-tensor 路径调用 AppendGmValidShapeForReshapeCopy；非 tile 路径忽略 reshape valid shape。",
+      "fix_pattern": "若源码核查证实该风险，建议：在 GenMemCopyVar/GenMemUBTransfer 中统一识别 RESHAPE_COPY_OP 并追加 valid shape。",
+      "verification_hints": [
+        "构造 reshape + padding case",
+        "dump 生成 copy 的 valid shape"
+      ],
+      "pattern_id": "N066",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_codegen_distributed_shmem_oob",
+      "category_cn": "非 Pass：分布式 SHMEM 编码越界/截断假设",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/npu/codegen_npu.cpp",
+        "framework/src/codegen/npu/codegen_distributed.cpp"
+      ],
+      "symptom_keywords": [
+        "EncodeWaitUntilInfo",
+        "GetInputOperand(1)",
+        "paddedViewshapes.resize(SHAPE_DIM4, 0)"
+      ],
+      "pass_symptoms": [
+        "wait/signal 编码元数据维度错误",
+        "跨核同步失败",
+        "死锁",
+        "写入错误地址"
+      ],
+      "code_anti_pattern": "源码审计假设：op.GetInputOperand(1) 未校验输入个数；paddedViewshapes 直接 resize 到 4 维截断高维。",
+      "fix_pattern": "若源码核查证实该风险，建议：访问 operand 前断言 size；resize 前校验原维度 <= SHAPE_DIM4。",
+      "verification_hints": [
+        "构造缺少输入的 wait/signal",
+        "构造 >4 维 view shape"
+      ],
+      "pattern_id": "N067",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_codegen_parallel_exception_cmd",
+      "category_cn": "非 Pass：并行任务异常被吞 + 编译命令拼接未转义",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "codegen"
+      ],
+      "files_to_check": [
+        "framework/src/codegen/utils/parallel_execute.cpp",
+        "framework/src/codegen/npu/codegen_npu.cpp"
+      ],
+      "symptom_keywords": [
+        "ParallelExecuteAndWait",
+        "catch (...)",
+        "PrepareCmd",
+        "shell"
+      ],
+      "pass_symptoms": [
+        "leaf kernel 生成/编译失败但主流程继续",
+        "缺少 binary",
+        "路径含空格时命令解析错误"
+      ],
+      "code_anti_pattern": "源码审计假设：catch (...) 仅打印日志不传播；PrepareCmd 把路径直接拼进 shell 字符串。",
+      "fix_pattern": "若源码核查证实该风险，建议：收集首个异常并在 join 后重新抛出；路径用引号包裹并做安全转义。",
+      "verification_hints": [
+        "注入编译失败",
+        "路径含空格/特殊字符"
+      ],
+      "pattern_id": "N068",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_compare_int_scalar",
+      "category_cn": "非 Pass：比较算子只处理 float 标量",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/op/comparison.py"
+      ],
+      "symptom_keywords": [
+        "gt",
+        "ge",
+        "eq",
+        "Compare",
+        "int scalar"
+      ],
+      "pass_symptoms": [
+        "Compare 操作数类型不匹配",
+        "常量折叠或 shape 推导报错"
+      ],
+      "code_anti_pattern": "源码审计假设：if isinstance(other, float): ...; return Compare(input, other, ...) 让 int 标量直接进入 C++ Compare。",
+      "fix_pattern": "若源码核查证实该风险，建议：对 int 标量同样用 Element(input.dtype, other) 包装。",
+      "verification_hints": [
+        "用 int 标量调用比较算子",
+        "检查 Compare 输入 dtype"
+      ],
+      "pattern_id": "N069",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_int_scalar_numpy_wrap",
+      "category_cn": "非 Pass：整型标量通过 numpy 强制转换导致静默回绕",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/op/math.py"
+      ],
+      "symptom_keywords": [
+        "_clip_scalar_to_dtype",
+        "_INT_DTYPE_MAP",
+        "np.int8(128)"
+      ],
+      "pass_symptoms": [
+        "常量值错误",
+        "精度偏差",
+        "前端不报错"
+      ],
+      "code_anti_pattern": "源码审计假设：int(_INT_DTYPE_MAP[tensor_dtype](value)) 超出范围时 numpy 静默回绕。",
+      "fix_pattern": "若源码核查证实该风险，建议：转换前先判断标量是否在目标类型范围内，超范围主动抛错。",
+      "verification_hints": [
+        "传入超范围整型标量",
+        "检查回绕后的常量值"
+      ],
+      "pattern_id": "N070",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_matmul_scale_default",
+      "category_cn": "非 Pass：Matmul / Conv 扩展参数缺省时默认 scale=0.0",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/op/matmul.py",
+        "python/pypto/op/conv.py"
+      ],
+      "symptom_keywords": [
+        "extend_params",
+        "scale",
+        "0.0",
+        "bias_tensor"
+      ],
+      "pass_symptoms": [
+        "输出被错误乘以 0",
+        "量化/反量化 Pass 异常图"
+      ],
+      "code_anti_pattern": "源码审计假设：extend_params.setdefault('scale', 0.0)，用户只传 bias_tensor 时也被注入 scale。",
+      "fix_pattern": "若源码核查证实该风险，建议：scale 无显式值时使用 None 哨兵，底层转换时跳过。",
+      "verification_hints": [
+        "只传 bias 调用 matmul/conv",
+        "检查输出是否全 0"
+      ],
+      "pattern_id": "N071",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_scaled_mm_k1_validation",
+      "category_cn": "非 Pass：scaled_mm scale K1 维度校验逻辑错误",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/op/matmul.py"
+      ],
+      "symptom_keywords": [
+        "__validate_scale_k1_dimensions",
+        "ka",
+        "kb",
+        "shape_dim_2"
+      ],
+      "pass_symptoms": [
+        "非法 scale shape 未拦截",
+        "后端 tile/内存规划 shape mismatch"
+      ],
+      "code_anti_pattern": "源码审计假设：if ... k_a_scale1_dim != k_b_scale1_dim and k_a_scale1_dim != shape_dim_2，当 ka==kb!=2 时不报错。",
+      "fix_pattern": "若源码核查证实该风险，建议：明确校验 ka == 2 and kb == 2。",
+      "verification_hints": [
+        "构造 ka==kb==1 或 3 的 scale",
+        "检查是否被拦截"
+      ],
+      "pattern_id": "N072",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_tuple_getitem_oob",
+      "category_cn": "非 Pass：tuple_get_item 对索引不做越界检查",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend",
+        "ir"
+      ],
+      "files_to_check": [
+        "python/pypto/ir/__init__.py"
+      ],
+      "symptom_keywords": [
+        "tuple_get_item",
+        "ConstInt",
+        "index"
+      ],
+      "pass_symptoms": [
+        "Pass 解 tuple 越界",
+        "段错误",
+        "tuple index out of range"
+      ],
+      "code_anti_pattern": "源码审计假设：if isinstance(index, int): index = ConstInt(index, INDEX, span); return GetItemExpr(value, index, span)，不检查负数或越界。",
+      "fix_pattern": "若源码核查证实该风险，建议：根据 tuple 的 arity 做边界校验，拒绝负索引或越界索引。",
+      "verification_hints": [
+        "构造越界/负索引 tuple_get_item",
+        "检查报错"
+      ],
+      "pattern_id": "N073",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_arange_step",
+      "category_cn": "非 Pass：arange 未校验 step 与方向",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/op/creation.py"
+      ],
+      "symptom_keywords": [
+        "arange",
+        "Range",
+        "step",
+        "zero"
+      ],
+      "pass_symptoms": [
+        "tiling 阶段 0/负数循环上界",
+        "除零",
+        "空 tensor 异常"
+      ],
+      "code_anti_pattern": "源码审计假设：直接构造 Range(start, end, step)，未检查 step==0 或 step 方向与 start/end 不一致。",
+      "fix_pattern": "若源码核查证实该风险，建议：调用 Range 前校验 step 非零且方向正确。",
+      "verification_hints": [
+        "构造 step=0 或方向错误的 arange",
+        "检查 tiling"
+      ],
+      "pattern_id": "N074",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_where_float_fp32",
+      "category_cn": "非 Pass：where 对 float 标量强制使用 DT_FP32",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/op/other.py"
+      ],
+      "symptom_keywords": [
+        "where",
+        "DT_FP32",
+        "float scalar"
+      ],
+      "pass_symptoms": [
+        "Where 输入 dtype 不一致",
+        "后端拒绝或隐式插入 cast"
+      ],
+      "code_anti_pattern": "源码审计假设：非 Tensor/Element 输入默认 Element(DT_FP32, input)。",
+      "fix_pattern": "若源码核查证实该风险，建议：从成对 tensor 推断标量 dtype，或强制要求使用 Element 显式指定。",
+      "verification_hints": [
+        "FP16/BF16 tensor 与 float 标量调用 where",
+        "检查 dtype 一致性"
+      ],
+      "pattern_id": "N075",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_pass_verify_save_type",
+      "category_cn": "非 Pass：pass_verify_save 对非字符串 fname 调用正则",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/op/verify.py"
+      ],
+      "symptom_keywords": [
+        "pass_verify_save",
+        "_parse_format_string",
+        "SymbolicScalar",
+        "TypeError"
+      ],
+      "pass_symptoms": [
+        "verify 阶段前端崩溃",
+        "动态文件名错误格式化"
+      ],
+      "code_anti_pattern": "源码审计假设：签名允许 fname: Union[str, SymbolicScalar, int]，但 _parse_format_string 直接对 fname 做 re.finditer。",
+      "fix_pattern": "若源码核查证实该风险，建议：进入解析前先 str(fname)，或显式拒绝不支持的类型。",
+      "verification_hints": [
+        "用 SymbolicScalar/int 作为 fname",
+        "检查 TypeError"
+      ],
+      "pattern_id": "N076",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_normal_tensor_slice",
+      "category_cn": "非 Pass：normal 在 Python 层对 Tensor 做切片",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/op/random.py"
+      ],
+      "symptom_keywords": [
+        "normal",
+        "box_muller",
+        "Tensor slice",
+        ":-1"
+      ],
+      "pass_symptoms": [
+        "Tensor.__getitem__ 未实现或语义不符",
+        "编译期 TypeError",
+        "未预期 slice IR"
+      ],
+      "code_anti_pattern": "源码审计假设：normal_res = normal_res[:-1] 对 Tensor 对象使用 Python 切片语法。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用明确的 pypto.slice / pypto.reshape 算子表达裁剪逻辑。",
+      "verification_hints": [
+        "调用 normal",
+        "检查生成的 IR"
+      ],
+      "pattern_id": "N077",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_pil_scope_keyerror",
+      "category_cn": "非 Pass：PIL Scope 对未定义变量直接抛 KeyError",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/pil/pir.py"
+      ],
+      "symptom_keywords": [
+        "Scope.__getitem__",
+        "locals",
+        "KeyError"
+      ],
+      "pass_symptoms": [
+        "变量未先赋值就被引用时前端解释器崩溃"
+      ],
+      "code_anti_pattern": "源码审计假设：var = self.locals[name]，name 不在 locals 中直接 KeyError，未回退 parent。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用 self.locals.get(name) 并回退到 parent；仍未找到抛出带源码位置的语义错误。",
+      "verification_hints": [
+        "引用未定义变量",
+        "检查报错信息"
+      ],
+      "pattern_id": "N078",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_pil_kwargs_none_key",
+      "category_cn": "非 Pass：PIL 解析器不处理 **kwargs",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/pil/parser.py"
+      ],
+      "symptom_keywords": [
+        "visit_Call",
+        "kwargs",
+        "kw.arg is None"
+      ],
+      "pass_symptoms": [
+        "kwargs 含 None key",
+        "dispatch 或 IR 生成报错"
+      ],
+      "code_anti_pattern": "源码审计假设：kwargs = tuple((kw.arg, ...) for kw in stmt.keywords)，kw.arg is None 时 key 为 None。",
+      "fix_pattern": "若源码核查证实该风险，建议：检测 kw.arg is None 并显式不支持，或展开 dict 中的键值对。",
+      "verification_hints": [
+        "PIL 中调用 **kwargs",
+        "检查构造的 kwargs"
+      ],
+      "pattern_id": "N079",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_pil_uninit_loop_carried",
+      "category_cn": "非 Pass：PIL for/if 语句对未初始化 loop-carried 变量生成 none",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend"
+      ],
+      "files_to_check": [
+        "python/pypto/pil/ops.py"
+      ],
+      "symptom_keywords": [
+        "_for_stmt",
+        "_if_else_stmt",
+        "loop-carried",
+        "none"
+      ],
+      "pass_symptoms": [
+        "ForStmt/IfStmt iter_arg/yield 携带 None",
+        "类型推导 Pass 失败或段错误"
+      ],
+      "code_anti_pattern": "源码审计假设：val = scope.locals.get(name) 可能为 None，_to_ir_type(None, ctx) 返回 ctx.none()/UnknownType。",
+      "fix_pattern": "若源码核查证实该风险，建议：收集 loop-carried/branch 变量前校验其已定义且类型可推断。",
+      "verification_hints": [
+        "for/if 中使用未初始化变量",
+        "检查 iter_arg 类型"
+      ],
+      "pattern_id": "N080",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_shmem_view_normalize",
+      "category_cn": "非 Pass：shmem_view 参数归一化不一致",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend",
+        "distributed"
+      ],
+      "files_to_check": [
+        "python/pypto/op/distributed.py"
+      ],
+      "symptom_keywords": [
+        "shmem_view",
+        "valid_shape",
+        "to_syms",
+        "offsets"
+      ],
+      "pass_symptoms": [
+        "ShmemView lowering 失败",
+        "地址计算错误"
+      ],
+      "code_anti_pattern": "源码审计假设：valid_shape is None 时 ShmemView(src, shape, offsets)；否则 ShmemView(src, shape, to_syms(valid_shape), to_syms(offsets))，offset 处理方式不同。",
+      "fix_pattern": "若源码核查证实该风险，建议：统一先对 shape/valid_shape/offsets 做 to_syms 再调用底层接口。",
+      "verification_hints": [
+        "分别传/不传 valid_shape",
+        "检查底层 offset 类型"
+      ],
+      "pattern_id": "N081",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_python_distributed_pred_dtype",
+      "category_cn": "非 Pass：分布式 pred 默认值使用 DT_INT32 Full",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "frontend",
+        "distributed"
+      ],
+      "files_to_check": [
+        "python/pypto/op/distributed.py"
+      ],
+      "symptom_keywords": [
+        "__normalize_pred",
+        "DT_INT32",
+        "Full",
+        "predicate"
+      ],
+      "pass_symptoms": [
+        "ShmemPut/Get/Signal 因 dtype 不匹配被 Pass 拒绝"
+      ],
+      "code_anti_pattern": "源码审计假设：pred is None 时构造 Full(Element(DT_INT32, 1), DT_INT32, [1,1], ...)。",
+      "fix_pattern": "若源码核查证实该风险，建议：使用与通信原语期望类型一致的默认 predicate（如 DT_BOOL 或专用 true token）。",
+      "verification_hints": [
+        "调用无 pred 的 shmem 原语",
+        "检查底层期望 dtype"
+      ],
+      "pattern_id": "N082",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_operator_dtype_snapshot_in_place",
+      "category_cn": "非 Pass：dtype 快照丢失 & 输入引用被就地修改",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operator"
+      ],
+      "files_to_check": [
+        "framework/src/operator/activation/sigmoid.cpp",
+        "framework/src/operator/normalization/rms_norm.cpp",
+        "framework/src/operator/normalization/soft_max.cpp"
+      ],
+      "symptom_keywords": [
+        "Sigmoid",
+        "RmsNorm",
+        "SoftmaxNew",
+        "Cast",
+        "input = Cast(...)"
+      ],
+      "pass_symptoms": [
+        "原始 Tensor dtype 被意外改变",
+        "输出 dtype 与前端 IR 期望不符"
+      ],
+      "code_anti_pattern": "源码审计假设：auto dtype = input.GetStorage()->Datatype(); 后执行 input = Cast(input, DT_FP32)，修改引用参数。",
+      "fix_pattern": "若源码核查证实该风险，建议：用局部变量保存原始 dtype，避免直接修改引用参数。",
+      "verification_hints": [
+        "检查输出 dtype 是否与输入 dtype 一致",
+        "dump 前后 dtype"
+      ],
+      "pattern_id": "N086",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_operator_tile_magic_assert",
+      "category_cn": "非 Pass：硬编码 tile / alignment 常量且断言条件写错",
+      "severity": "medium",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operator"
+      ],
+      "files_to_check": [
+        "framework/src/interface/tileop/tileop_common.h"
+      ],
+      "symptom_keywords": [
+        "c0 = 16",
+        "tieM",
+        "256",
+        "assert",
+        "||"
+      ],
+      "pass_symptoms": [
+        "非支持 shape 下 tile 选择错误",
+        "core dump",
+        "编译失败"
+      ],
+      "code_anti_pattern": "源码审计假设：大量 c0=16、256/128/64 魔数；assert(qkNopeHeadDim==128 || qkRopeHeadDim==64) 实际应为 &&。",
+      "fix_pattern": "若源码核查证实该风险，建议：魔数抽成命名配置；断言改为同时满足支持集合。",
+      "verification_hints": [
+        "构造 headDim 不满足同时条件的 case",
+        "检查 assert 逻辑"
+      ],
+      "pattern_id": "N087",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_tileop_event_id_reuse",
+      "category_cn": "非 Pass：硬编码同步事件 ID 全局复用",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operator",
+        "tileop"
+      ],
+      "files_to_check": [
+        "framework/src/interface/tileop/vector/sort.h",
+        "framework/src/interface/tileop/vector/binary.h",
+        "framework/src/interface/tileop/distributed/common.h"
+      ],
+      "symptom_keywords": [
+        "EVENT_ID7",
+        "EVENT_ID0",
+        "PIPE_SYNC_EVENT",
+        "sort",
+        "gcd"
+      ],
+      "pass_symptoms": [
+        "流水线 hazard",
+        "偶发卡死",
+        "结果随机错误"
+      ],
+      "code_anti_pattern": "源码审计假设：多个独立算子、嵌套调用均使用 EVENT_ID7/EVENT_ID0。",
+      "fix_pattern": "若源码核查证实该风险，建议：按算子/scope 分配事件 ID pool，禁止跨 scope 复用。",
+      "verification_hints": [
+        "多个 sort/gcd 算子嵌套",
+        "检查 event 冲突"
+      ],
+      "pattern_id": "N088",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_gather_scatter_index_oob",
+      "category_cn": "非 Pass：Gather / Scatter / PageAttention 索引未校验越界",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operator",
+        "tileop"
+      ],
+      "files_to_check": [
+        "framework/src/interface/tileop/vector/gather.h"
+      ],
+      "symptom_keywords": [
+        "TgatherElement",
+        "blockTable",
+        "srcAddr",
+        "newIdxValue"
+      ],
+      "pass_symptoms": [
+        "AICore 越界访问",
+        "页表异常时结果错误"
+      ],
+      "code_anti_pattern": "源码审计假设：srcAddr[newIdxValue]、blockTable[blockID] 直接按索引取值，未校验范围。",
+      "fix_pattern": "若源码核查证实该风险，建议：对 index 做 0 <= idx < shape 断言或 clamp；页表增加边界检查。",
+      "verification_hints": [
+        "构造越界索引",
+        "检查页表访问"
+      ],
+      "pattern_id": "N089",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_adapter_stub_silent",
+      "category_cn": "非 Pass：Adapter 失败静默 / 错误码丢失",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "adapter"
+      ],
+      "files_to_check": [
+        "framework/src/adapter/api/runtime_api.cpp",
+        "framework/src/adapter/stubs/runtime_stubs.cpp",
+        "framework/src/adapter/manager/cann_adapter.h"
+      ],
+      "symptom_keywords": [
+        "stub",
+        "RT_SUCCESS",
+        "GetFunction",
+        "enum"
+      ],
+      "pass_symptoms": [
+        "Pass 层看到成功",
+        "运行期分配失败或越界拷贝",
+        "segfault",
+        "数据损坏"
+      ],
+      "code_anti_pattern": "源码审计假设：获取不到 CANN 函数时 fallback 到 stub；stub 对 devPtr==nullptr、cnt>destMax 仍返回 RT_SUCCESS；GetFunction 越界 enum 返回 nullptr。",
+      "fix_pattern": "若源码核查证实该风险，建议：stub 返回真实错误码；API 层关键路径将函数缺失视为错误；校验 enum range。",
+      "verification_hints": [
+        "构造 CANN 函数缺失",
+        "stub 传入 nullptr/越界 cnt",
+        "检查返回值"
+      ],
+      "pattern_id": "N090",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_tileop_distributed_addr_oob",
+      "category_cn": "非 Pass：分布式通信地址/下标未做边界校验",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "tileop",
+        "distributed"
+      ],
+      "files_to_check": [
+        "framework/src/interface/tileop/distributed/common.h"
+      ],
+      "symptom_keywords": [
+        "MapVirtualAddr",
+        "DevWinLog",
+        "ClearFlagV2",
+        "hcclContext",
+        "winAddr"
+      ],
+      "pass_symptoms": [
+        "跨 rank 写错窗口",
+        "死锁",
+        "非法远程地址"
+      ],
+      "code_anti_pattern": "源码审计假设：hcclContext[groupIndex]、winContext->winAddr[debugIndex + rankId]、MapVirtualAddr(..., dstRankId) 未校验下标越界。",
+      "fix_pattern": "若源码核查证实该风险，建议：断言 groupIndex/rankId 范围；用封装访问器替代裸数组。",
+      "verification_hints": [
+        "构造越界 groupIndex/rankId",
+        "检查通信地址"
+      ],
+      "pattern_id": "N091",
+      "example_commits": [],
+      "related_issues": []
+    },
+    {
+      "category": "non_pass_view_type_reinterpret_dtype",
+      "category_cn": "非 Pass：View 直接 reinterpret dtype 未校验字节数与对齐",
+      "severity": "high",
+      "evidence_type": "source_audit_hypothesis",
+      "likely_modules": [
+        "operator"
+      ],
+      "files_to_check": [
+        "framework/src/operator/models/nsa/view_type.cpp"
+      ],
+      "symptom_keywords": [
+        "ViewTypeFunc",
+        "ViewTypeQuantTestFunc",
+        "View(xView, dstDtype)",
+        "reinterpret"
+      ],
+      "pass_symptoms": [
+        "Pass 生成 reshape/view 时 dtype/size 不兼容",
+        "未对齐访问"
+      ],
+      "code_anti_pattern": "源码审计假设：View(xView, dstDtype) 直接按目标 dtype 解释内存，未验证总字节数一致、地址对齐。",
+      "fix_pattern": "若源码核查证实该风险，建议：断言总字节相等、offset 按目标 dtype size 对齐。",
+      "verification_hints": [
+        "构造字节数不等或不对齐的 view_type",
+        "检查运行结果"
+      ],
+      "pattern_id": "N092",
+      "example_commits": [],
+      "related_issues": []
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+    "summary": {
+        "avg_mean_time": 0.5269621449112892,
+        "avg_median_time": 0.5239999890327454,
+        "avg_iqr_time": 0.005600035190582275,
+        "all_configs_str": [
+            "batch_size_16_num_features_64_dim1_256_dim2_256"
+        ]
+    },
+    "eval_settings": {
+        "batch_size_16_num_features_64_dim1_256_dim2_256": {
+            "mean_time": 0.5269621449112892,
+            "median_time": 0.5239999890327454,
+            "iqr_time": 0.005600035190582275
+        }
+    },
+    "device_info": {
+        "torch_version": "2.5.1",
+        "cuda_version": "12.4",
+        "cudnn_version": "90.1",
+        "num_gpus": 1,
+        "devices": {
+            "GPU_0": {
+                "name": "NVIDIA H100 80GB HBM3",
+                "compute_capability": "9.0",
+                "total_memory_GB": 79.11,
+                "multiprocessors": 132,
+                "max_threads_per_block": 1024,
+                "max_threads_per_sm": 2048,
+                "shared_memory_per_block_KB": 48.0,
+                "L2_cache_size_KB": 51200.0,
+                "memory_bus_width_bits": 5120,
+                "clock_rate_MHz": 1980.0,
+                "memory_clock_rate_MHz": 2619.0,
+                "warp_size": 32,
+                "max_blocks_per_multiprocessor": 32
+            }
+        }
+    }
+}

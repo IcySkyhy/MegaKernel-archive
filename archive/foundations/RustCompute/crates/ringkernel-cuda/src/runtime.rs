@@ -1,0 +1,431 @@
+//! CUDA runtime implementation.
+
+use std::collections::HashMap;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Arc;
+use std::time::Instant;
+
+use async_trait::async_trait;
+use parking_lot::RwLock;
+
+use ringkernel_core::error::{Result, RingKernelError};
+use ringkernel_core::k2k::{K2KBroker, K2KBuilder, K2KConfig};
+use ringkernel_core::runtime::{
+    Backend, KernelHandle, KernelHandleInner, KernelId, LaunchOptions, RingKernelRuntime,
+    RuntimeMetrics,
+};
+use ringkernel_core::types::KernelMode;
+
+use crate::device::CudaDevice;
+use crate::kernel::CudaKernel;
+use crate::memory::CudaMemoryPool;
+use crate::persistent::{PersistentSimulation, PersistentSimulationConfig};
+use crate::RING_KERNEL_PTX_TEMPLATE;
+
+/// CUDA runtime for RingKernel.
+pub struct CudaRuntime {
+    /// Primary device.
+    device: CudaDevice,
+    /// Memory pool.
+    #[allow(dead_code)]
+    memory_pool: RwLock<CudaMemoryPool>,
+    /// Active kernels.
+    kernels: RwLock<HashMap<KernelId, Arc<CudaKernel>>>,
+    /// Kernel ID counter.
+    kernel_counter: AtomicU64,
+    /// Total kernels launched.
+    total_launched: AtomicU64,
+    /// Runtime start time.
+    #[allow(dead_code)]
+    start_time: Instant,
+    /// K2K broker for kernel-to-kernel messaging.
+    k2k_broker: Option<Arc<K2KBroker>>,
+}
+
+impl CudaRuntime {
+    /// Create a new CUDA runtime.
+    pub async fn new() -> Result<Self> {
+        Self::with_device(0).await
+    }
+
+    /// Create a runtime with a specific device.
+    pub async fn with_device(device_index: usize) -> Result<Self> {
+        Self::with_config(device_index, true).await
+    }
+
+    /// Create a runtime with configuration options.
+    pub async fn with_config(device_index: usize, enable_k2k: bool) -> Result<Self> {
+        let device = CudaDevice::new(device_index)?;
+
+        // Check compute capability
+        let (major, minor) = device.compute_capability();
+        if major < 7 {
+            tracing::warn!(
+                "CUDA device {} has compute capability {}.{}, persistent kernels require 7.0+",
+                device_index,
+                major,
+                minor
+            );
+        }
+
+        tracing::info!(
+            "Initialized CUDA runtime on device {} ({}) with CC {}.{}, k2k={}",
+            device_index,
+            device.name(),
+            major,
+            minor,
+            enable_k2k
+        );
+
+        let memory_pool = CudaMemoryPool::new(device.clone());
+
+        let k2k_broker = if enable_k2k {
+            Some(K2KBuilder::new().build())
+        } else {
+            None
+        };
+
+        Ok(Self {
+            device,
+            memory_pool: RwLock::new(memory_pool),
+            kernels: RwLock::new(HashMap::new()),
+            kernel_counter: AtomicU64::new(0),
+            total_launched: AtomicU64::new(0),
+            start_time: Instant::now(),
+            k2k_broker,
+        })
+    }
+
+    /// Create a runtime with custom K2K configuration.
+    pub async fn with_k2k_config(device_index: usize, k2k_config: K2KConfig) -> Result<Self> {
+        let device = CudaDevice::new(device_index)?;
+
+        // Check compute capability
+        let (major, minor) = device.compute_capability();
+        if major < 7 {
+            tracing::warn!(
+                "CUDA device {} has compute capability {}.{}, persistent kernels require 7.0+",
+                device_index,
+                major,
+                minor
+            );
+        }
+
+        tracing::info!(
+            "Initialized CUDA runtime with custom K2K config on device {} ({}) with CC {}.{}",
+            device_index,
+            device.name(),
+            major,
+            minor
+        );
+
+        let memory_pool = CudaMemoryPool::new(device.clone());
+
+        Ok(Self {
+            device,
+            memory_pool: RwLock::new(memory_pool),
+            kernels: RwLock::new(HashMap::new()),
+            kernel_counter: AtomicU64::new(0),
+            total_launched: AtomicU64::new(0),
+            start_time: Instant::now(),
+            k2k_broker: Some(K2KBroker::new(k2k_config)),
+        })
+    }
+
+    /// Get device info.
+    #[allow(dead_code)]
+    pub fn device(&self) -> &CudaDevice {
+        &self.device
+    }
+
+    /// Check if persistent kernels are supported.
+    #[allow(dead_code)]
+    pub fn supports_persistent_kernels(&self) -> bool {
+        self.device.supports_persistent_kernels()
+    }
+
+    /// Check if K2K messaging is enabled.
+    pub fn is_k2k_enabled(&self) -> bool {
+        self.k2k_broker.is_some()
+    }
+
+    /// Get the K2K broker (if enabled).
+    pub fn k2k_broker(&self) -> Option<&Arc<K2KBroker>> {
+        self.k2k_broker.as_ref()
+    }
+
+    /// Connect two kernels for GPU-direct K2K messaging.
+    ///
+    /// Creates a unidirectional route from source to target kernel.
+    /// Messages sent from source will be delivered directly to target's
+    /// inbox on the GPU without host intervention.
+    ///
+    /// Both kernels must have been launched with `enable_k2k: true`.
+    pub fn connect_k2k(&self, source_id: &KernelId, target_id: &KernelId) -> Result<()> {
+        let kernels = self.kernels.read();
+
+        let source = kernels
+            .get(source_id)
+            .ok_or_else(|| RingKernelError::KernelNotFound(source_id.to_string()))?;
+
+        let target = kernels
+            .get(target_id)
+            .ok_or_else(|| RingKernelError::KernelNotFound(target_id.to_string()))?;
+
+        // Get K2K buffers
+        let source_buffers = source.k2k_buffers().ok_or_else(|| {
+            RingKernelError::K2KError(format!(
+                "Source kernel {} does not have K2K enabled",
+                source_id
+            ))
+        })?;
+
+        let target_buffers = target.k2k_buffers().ok_or_else(|| {
+            RingKernelError::K2KError(format!(
+                "Target kernel {} does not have K2K enabled",
+                target_id
+            ))
+        })?;
+
+        // Allocate the next available route slot from source kernel
+        let slot = source.allocate_k2k_slot()?;
+
+        // Add route from source to target
+        source_buffers.add_route(slot, target_buffers, target.kernel_id_num())?;
+
+        tracing::info!(
+            source = %source_id,
+            target = %target_id,
+            slot = slot,
+            "Connected GPU K2K route"
+        );
+
+        Ok(())
+    }
+
+    /// Get a kernel by ID (internal use).
+    pub fn get_cuda_kernel(&self, kernel_id: &KernelId) -> Option<Arc<CudaKernel>> {
+        self.kernels.read().get(kernel_id).cloned()
+    }
+}
+
+#[async_trait]
+impl RingKernelRuntime for CudaRuntime {
+    fn backend(&self) -> Backend {
+        Backend::Cuda
+    }
+
+    fn is_backend_available(&self, backend: Backend) -> bool {
+        match backend {
+            Backend::Cuda => true,
+            Backend::Cpu => true, // CPU fallback always available
+            _ => false,
+        }
+    }
+
+    async fn launch(&self, kernel_id: &str, options: LaunchOptions) -> Result<KernelHandle> {
+        // Check for duplicate
+        let id = KernelId::new(kernel_id);
+        if self.kernels.read().contains_key(&id) {
+            return Err(RingKernelError::KernelAlreadyActive(kernel_id.to_string()));
+        }
+
+        let id_num = self.kernel_counter.fetch_add(1, Ordering::Relaxed);
+
+        // Register with K2K broker if enabled
+        // Note: CUDA K2K is host-mediated - messages go through host, not GPU-direct
+        let _k2k_endpoint = self
+            .k2k_broker
+            .as_ref()
+            .map(|broker| broker.register(id.clone()));
+
+        // Check if this is a persistent cooperative launch
+        let use_persistent_sim = options.mode == KernelMode::Persistent && options.cooperative;
+
+        // Create kernel
+        let auto_activate = options.auto_activate;
+        let mut kernel = CudaKernel::new(kernel_id, id_num, self.device.clone(), options.clone())?;
+
+        if use_persistent_sim {
+            // Persistent cooperative mode: create a PersistentSimulation and
+            // attach it to the kernel. The simulation handles mapped memory
+            // allocation, H2K/K2H queues, and cooperative kernel launch.
+            let h2k_cap = options.input_queue_capacity.next_power_of_two();
+            let k2h_cap = options.output_queue_capacity.next_power_of_two();
+
+            let sim_config = PersistentSimulationConfig::for_actor(
+                options.grid_size,
+                options.block_size,
+                h2k_cap,
+                k2h_cap,
+                true, // cooperative
+            );
+
+            let sim = PersistentSimulation::new(&self.device, sim_config)?;
+
+            // Determine PTX and function name for the persistent kernel.
+            // Use cooperative kernel PTX from build.rs if available.
+            #[cfg(feature = "cooperative")]
+            let (ptx, func_name) = {
+                let coop_ptx = crate::cooperative::cooperative_kernel_ptx();
+                if coop_ptx.is_empty() {
+                    // Fallback: use the template PTX (immediate termination)
+                    tracing::warn!(
+                        "Cooperative PTX not available (nvcc not found at build time), \
+                         falling back to template PTX"
+                    );
+                    (
+                        RING_KERNEL_PTX_TEMPLATE.to_string(),
+                        "ring_kernel_main".to_string(),
+                    )
+                } else {
+                    (coop_ptx.to_string(), "coop_persistent_fdtd".to_string())
+                }
+            };
+            #[cfg(not(feature = "cooperative"))]
+            let (ptx, func_name) = {
+                // Without cooperative feature, use template PTX
+                tracing::warn!(
+                    "Cooperative feature not enabled, persistent simulation will use template PTX"
+                );
+                (
+                    RING_KERNEL_PTX_TEMPLATE.to_string(),
+                    "ring_kernel_main".to_string(),
+                )
+            };
+
+            // Still load PTX for the CudaKernel's module/function fields
+            // (needed for state transition to Launched)
+            kernel.load_ptx(RING_KERNEL_PTX_TEMPLATE)?;
+
+            let kernel = Arc::new(kernel);
+
+            // Attach persistent simulation and PTX to the kernel
+            kernel.set_persistent_sim(sim);
+            kernel.set_persistent_ptx(ptx, func_name);
+
+            self.kernels.write().insert(id.clone(), Arc::clone(&kernel));
+            self.total_launched.fetch_add(1, Ordering::Relaxed);
+
+            if auto_activate {
+                kernel.activate().await?;
+            }
+
+            tracing::info!(
+                kernel_id = %kernel_id,
+                k2k = %self.is_k2k_enabled(),
+                auto_activate = %auto_activate,
+                persistent_cooperative = true,
+                "Launched CUDA kernel with PersistentSimulation"
+            );
+
+            Ok(KernelHandle::new(id, kernel))
+        } else {
+            // Standard path: load template PTX
+            kernel.load_ptx(RING_KERNEL_PTX_TEMPLATE)?;
+
+            let kernel = Arc::new(kernel);
+            self.kernels.write().insert(id.clone(), Arc::clone(&kernel));
+            self.total_launched.fetch_add(1, Ordering::Relaxed);
+
+            // Auto-activate: starts actual GPU execution via cuLaunchKernel.
+            // This matches the CPU runtime behavior and makes the trait contract
+            // truthful — launch() with auto_activate=true (the default) produces
+            // a running kernel, not just a loaded one.
+            if auto_activate {
+                kernel.activate().await?;
+            }
+
+            tracing::info!(
+                kernel_id = %kernel_id,
+                k2k = %self.is_k2k_enabled(),
+                auto_activate = %auto_activate,
+                "Launched CUDA kernel"
+            );
+
+            Ok(KernelHandle::new(id, kernel))
+        }
+    }
+
+    fn get_kernel(&self, kernel_id: &KernelId) -> Option<KernelHandle> {
+        self.kernels.read().get(kernel_id).map(|k| {
+            let inner: Arc<dyn KernelHandleInner> = Arc::clone(k) as Arc<dyn KernelHandleInner>;
+            KernelHandle::new(kernel_id.clone(), inner)
+        })
+    }
+
+    fn list_kernels(&self) -> Vec<KernelId> {
+        self.kernels.read().keys().cloned().collect()
+    }
+
+    fn metrics(&self) -> RuntimeMetrics {
+        RuntimeMetrics {
+            active_kernels: self.kernels.read().len(),
+            total_launched: self.total_launched.load(Ordering::Relaxed),
+            messages_sent: 0,
+            messages_received: 0,
+            gpu_memory_used: 0,
+            host_memory_used: 0,
+        }
+    }
+
+    async fn shutdown(&self) -> Result<()> {
+        tracing::info!("Shutting down CUDA runtime");
+
+        // Terminate all kernels
+        let kernel_ids: Vec<_> = self.kernels.read().keys().cloned().collect();
+
+        for id in kernel_ids.iter() {
+            let kernel = self.kernels.read().get(id).cloned();
+            if let Some(kernel) = kernel {
+                if let Err(e) = kernel.terminate().await {
+                    tracing::warn!(kernel_id = %id, error = %e, "Failed to terminate kernel");
+                }
+            }
+            // Unregister from K2K broker
+            if let Some(broker) = &self.k2k_broker {
+                broker.unregister(id);
+            }
+        }
+
+        // Clear kernels
+        self.kernels.write().clear();
+
+        // Synchronize device
+        self.device.synchronize()?;
+
+        tracing::info!("CUDA runtime shutdown complete");
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    #[ignore] // Requires CUDA hardware
+    async fn test_cuda_runtime_creation() {
+        let runtime = CudaRuntime::new().await.unwrap();
+        assert_eq!(runtime.backend(), Backend::Cuda);
+    }
+
+    #[tokio::test]
+    #[ignore] // Requires CUDA hardware
+    async fn test_cuda_kernel_launch() {
+        let runtime = CudaRuntime::new().await.unwrap();
+        let kernel = runtime
+            .launch("test_kernel", LaunchOptions::default())
+            .await
+            .unwrap();
+
+        assert_eq!(kernel.id().as_str(), "test_kernel");
+        // With auto_activate=true (default), kernel is Active after launch
+        assert_eq!(
+            kernel.status().state,
+            ringkernel_core::runtime::KernelState::Active
+        );
+
+        runtime.shutdown().await.unwrap();
+    }
+}

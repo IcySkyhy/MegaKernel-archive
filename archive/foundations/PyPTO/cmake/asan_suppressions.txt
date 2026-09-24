@@ -1,0 +1,35 @@
+# -----------------------------------------------------------------------------------------------------------
+# Copyright (c) 2026 Huawei Technologies Co., Ltd.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+# 过滤 Python 解释器的所有泄漏
+leak:python
+leak:Python
+
+# 过滤 CPython 内存分配器
+leak:_PyObject_Malloc
+leak:new_keys_object
+leak:dictresize
+leak:insertdict
+
+# 过滤 Python 运行时核心模块
+leak:_PyEval_EvalFrameDefault
+leak:_PyEval_Vector
+leak:PyEval_EvalCode
+leak:builtin_exec
+leak:cfunction_vectorcall_FASTCALL
+
+# 过滤导入系统
+leak:PyImport_ImportModuleLevelObject
+leak:object_vacall
+leak:_PyObject_CallMethodIdObjArgs
+
+# 过滤 PyTorch (如果使用)
+leak:torch
+leak:at::

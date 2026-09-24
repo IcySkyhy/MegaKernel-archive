@@ -1,0 +1,1076 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "ArgSort_test_0",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        128
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                128
+            ],
+            "tile_shape": [
+                32
+            ],
+            "params": {
+                "dims": [
+                    0
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        },
+        {
+            "case_index": 1,
+            "case_name": "ArgSort_test_1",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10000
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        10000
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                10000
+            ],
+            "tile_shape": [
+                128
+            ],
+            "params": {
+                "dims": [
+                    -1
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 1
+        },
+        {
+            "case_index": 2,
+            "case_name": "ArgSort_test_2",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        16,
+                        128
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        16,
+                        128
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                8,
+                128
+            ],
+            "tile_shape": [
+                8,
+                32
+            ],
+            "params": {
+                "dims": [
+                    1
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 2
+        },
+        {
+            "case_index": 3,
+            "case_name": "ArgSort_test_3",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        132,
+                        94
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10000,
+                        "max": 10000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        132,
+                        94
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                50,
+                94
+            ],
+            "tile_shape": [
+                20,
+                32
+            ],
+            "params": {
+                "dims": [
+                    -1
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 3
+        },
+        {
+            "case_index": 4,
+            "case_name": "ArgSort_test_4",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        111,
+                        178
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10000,
+                        "max": 10000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        111,
+                        178
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                24,
+                178
+            ],
+            "tile_shape": [
+                32,
+                256
+            ],
+            "params": {
+                "dims": [
+                    -1
+                ],
+                "descending": [
+                    false
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 4
+        },
+        {
+            "case_index": 5,
+            "case_name": "ArgSort_test_5",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        225,
+                        99
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10000,
+                        "max": 10000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        225,
+                        99
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                100,
+                99
+            ],
+            "tile_shape": [
+                70,
+                64
+            ],
+            "params": {
+                "dims": [
+                    -1
+                ],
+                "descending": [
+                    false
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 5
+        },
+        {
+            "case_index": 6,
+            "case_name": "ArgSort_test_6",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        1,
+                        16384
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10000,
+                        "max": 10000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        1,
+                        16384
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                1,
+                16384
+            ],
+            "tile_shape": [
+                1,
+                2048
+            ],
+            "params": {
+                "dims": [
+                    -1
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 6
+        },
+        {
+            "case_index": 7,
+            "case_name": "ArgSort_test_7",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        64,
+                        3
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        64,
+                        3
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                64,
+                2
+            ],
+            "tile_shape": [
+                32,
+                2
+            ],
+            "params": {
+                "dims": [
+                    0
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 7
+        },
+        {
+            "case_index": 8,
+            "case_name": "ArgSort_test_8",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        12101,
+                        33
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10000,
+                        "max": 10000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        12101,
+                        33
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                12101,
+                3
+            ],
+            "tile_shape": [
+                384,
+                13
+            ],
+            "params": {
+                "dims": [
+                    0
+                ],
+                "descending": [
+                    false
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 8
+        },
+        {
+            "case_index": 9,
+            "case_name": "ArgSort_test_9",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        15974,
+                        25
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        15974,
+                        25
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                15974,
+                20
+            ],
+            "tile_shape": [
+                384,
+                13
+            ],
+            "params": {
+                "dims": [
+                    0
+                ],
+                "descending": [
+                    false
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 9
+        },
+        {
+            "case_index": 10,
+            "case_name": "ArgSort_test_10",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        19200,
+                        17
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10000,
+                        "max": 10000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        19200,
+                        17
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                19200,
+                26
+            ],
+            "tile_shape": [
+                384,
+                13
+            ],
+            "params": {
+                "dims": [
+                    0
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 10
+        },
+        {
+            "case_index": 11,
+            "case_name": "ArgSort_test_11",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        25,
+                        7526
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -805,
+                        "max": 805
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        25,
+                        7526
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                20,
+                7526
+            ],
+            "tile_shape": [
+                13,
+                384
+            ],
+            "params": {
+                "dims": [
+                    1
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 11
+        },
+        {
+            "case_index": 12,
+            "case_name": "ArgSort_test_12",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        2000,
+                        5
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -5441,
+                        "max": 5441
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        2000,
+                        5
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                2000,
+                5
+            ],
+            "tile_shape": [
+                1024,
+                5
+            ],
+            "params": {
+                "dims": [
+                    0
+                ],
+                "descending": [
+                    false
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 12
+        },
+        {
+            "case_index": 13,
+            "case_name": "ArgSort_test_13",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        17,
+                        24,
+                        966
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -2253,
+                        "max": 2253
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        17,
+                        24,
+                        966
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                11,
+                27,
+                966
+            ],
+            "tile_shape": [
+                11,
+                14,
+                32
+            ],
+            "params": {
+                "dims": [
+                    2
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 13
+        },
+        {
+            "case_index": 14,
+            "case_name": "ArgSort_test_14",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        10,
+                        10,
+                        75
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        10,
+                        10,
+                        75
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                6,
+                6,
+                75
+            ],
+            "tile_shape": [
+                6,
+                6,
+                32
+            ],
+            "params": {
+                "dims": [
+                    -1
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 14
+        },
+        {
+            "case_index": 15,
+            "case_name": "ArgSort_test_15",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        37,
+                        151,
+                        14
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -10000,
+                        "max": 10000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        37,
+                        151,
+                        14
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                17,
+                151,
+                21
+            ],
+            "tile_shape": [
+                6,
+                224,
+                4
+            ],
+            "params": {
+                "dims": [
+                    1
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 15
+        },
+        {
+            "case_index": 16,
+            "case_name": "ArgSort_test_16",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        367,
+                        26,
+                        64
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -3066,
+                        "max": 3066
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        367,
+                        26,
+                        64
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                367,
+                29,
+                17
+            ],
+            "tile_shape": [
+                96,
+                2,
+                9
+            ],
+            "params": {
+                "dims": [
+                    0
+                ],
+                "descending": [
+                    false
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 16
+        },
+        {
+            "case_index": 17,
+            "case_name": "ArgSort_test_17",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        13,
+                        15,
+                        26,
+                        69
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        13,
+                        15,
+                        26,
+                        69
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                9,
+                9,
+                9,
+                69
+            ],
+            "tile_shape": [
+                5,
+                5,
+                5,
+                32
+            ],
+            "params": {
+                "dims": [
+                    -1
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 17
+        },
+        {
+            "case_index": 18,
+            "case_name": "ArgSort_test_18",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        5,
+                        35,
+                        31,
+                        24
+                    ],
+                    "dtype": "fp32",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        5,
+                        35,
+                        31,
+                        24
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                5,
+                35,
+                16,
+                2
+            ],
+            "tile_shape": [
+                1,
+                96,
+                1,
+                4
+            ],
+            "params": {
+                "dims": [
+                    1
+                ],
+                "descending": [
+                    true
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 18
+        },
+        {
+            "case_index": 19,
+            "case_name": "ArgSort_test_19",
+            "operation": "ArgSort",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        36,
+                        20,
+                        638,
+                        12
+                    ],
+                    "dtype": "fp16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": -1000,
+                        "max": 1000
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        36,
+                        20,
+                        638,
+                        12
+                    ],
+                    "dtype": "int32",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                5,
+                2,
+                638,
+                13
+            ],
+            "tile_shape": [
+                8,
+                3,
+                96,
+                2
+            ],
+            "params": {
+                "dims": [
+                    2
+                ],
+                "descending": [
+                    false
+                ],
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 19
+        }
+    ]
+}

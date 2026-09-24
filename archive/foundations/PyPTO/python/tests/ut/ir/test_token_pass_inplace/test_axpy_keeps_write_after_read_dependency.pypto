@@ -1,0 +1,7 @@
+function foo incast(v0_logical_tensor %target@0 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), v0_logical_tensor %source@1 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), v0_logical_tensor %out@2 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16])) outcast() #type(Opaque) #entry(false) {
+    v0_logical_tensor %$0@3 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]), token %target_r = !10006 ADDS(%target@0) token();
+    v0_logical_tensor %target_0@4 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]) = !10007 AXPY(%target@0, %source@1) token(%target_r);
+    v0_logical_tensor %$2@5 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]) = !10008 ADD(%$0@3, %target_0@4) token();
+    v0_logical_tensor %out_1@2 #dtype(float) #shape([16, 16]) #offset([0, 0]) #dynvalidshape([16, 16]) = !10009 ASSEMBLE(%$2@5) token() #toOffset(Unsupported);
+    return %target_0@4, %source@1, %out_1@2;
+}

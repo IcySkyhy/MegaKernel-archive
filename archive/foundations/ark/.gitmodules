@@ -1,0 +1,23 @@
+[submodule "third_party/cutlass"]
+	path = third_party/cutlass
+	url = https://github.com/NVIDIA/cutlass
+
+[submodule "examples/llama/llama"]
+	path = examples/llama/llama
+	url = https://github.com/facebookresearch/llama
+
+[submodule "third_party/composable_kernel"]
+	path = third_party/composable_kernel
+	url = https://github.com/ROCmSoftwarePlatform/composable_kernel
+
+[submodule "third_party/mscclpp"]
+	path = third_party/mscclpp
+	url = https://github.com/microsoft/mscclpp
+
+[submodule "third_party/json"]
+	path = third_party/json
+	url = https://github.com/nlohmann/json
+
+[submodule "third_party/dlpack"]
+	path = third_party/dlpack
+	url = https://github.com/dmlc/dlpack

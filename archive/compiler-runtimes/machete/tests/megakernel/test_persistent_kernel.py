@@ -1,0 +1,157 @@
+# Copyright (c) 2025, Machete Authors
+"""
+Tests for Megakernel with Instruction Stream and Fine-Grained Barriers.
+
+Tests the instruction stream builder and persistent megakernel implementation.
+"""
+
+import pytest
+import torch
+
+from tests.megakernel.support import get_nop_op
+
+
+def _named_nop_op():
+    class NamedNopOp(get_nop_op()):
+        OUTPUTS = ["x"]
+
+    return NamedNopOp
+
+
+# =============================================================================
+# Host-Side Tests (No GPU Required)
+# =============================================================================
+
+
+class TestMegakernelHost:
+    """Host-side tests for Megakernel (no GPU required)."""
+
+    def test_init(self):
+        """Test megakernel initialization."""
+        from machete.megakernel import Megakernel, MegakernelConfig, ScheduledOp
+        NopOp = _named_nop_op()
+
+        ops = [
+            ScheduledOp(NopOp, tile_counts=(16,), tensor_ptrs={"x": 1}),
+            ScheduledOp(NopOp, tile_counts=(16,), tensor_ptrs={"x": 2}),
+        ]
+
+        config = MegakernelConfig(num_sms=8)
+        kernel = Megakernel(ops, config=config, device="cpu")
+
+        assert kernel.num_sms == 8
+        assert len(kernel.ops) == 2
+        assert kernel.total_tiles == 32
+        assert kernel.num_barriers == 0
+
+    def test_repr(self):
+        """Test string representation."""
+        from machete.megakernel import Megakernel, MegakernelConfig, ScheduledOp
+        NopOp = get_nop_op()
+
+        ops = [ScheduledOp(NopOp, tile_counts=(4,))]
+        config = MegakernelConfig(num_sms=8)
+        kernel = Megakernel(ops, config=config, device="cpu")
+
+        repr_str = repr(kernel)
+        assert "Megakernel" in repr_str
+        assert "_NOPOp" in repr_str
+
+    def test_create_megakernel(self):
+        """Test factory function."""
+        from machete.megakernel import create_megakernel, ScheduledOp
+        NopOp = get_nop_op()
+
+        ops = [ScheduledOp(NopOp, tile_counts=(4,))]
+        kernel = create_megakernel(ops, num_sms=4)
+
+        assert kernel.num_sms == 4
+
+    def test_runtime_cache_key_ignores_tile_counts(self):
+        """Runtime metadata should absorb tile-count changes for the shell key."""
+        from machete.megakernel import Megakernel, MegakernelConfig, ScheduledOp
+        NopOp = get_nop_op()
+
+        config = MegakernelConfig(num_sms=1, num_pages=1)
+        k0 = Megakernel([ScheduledOp(NopOp, tile_counts=(4,))], config=config, device="cpu")
+        k1 = Megakernel([ScheduledOp(NopOp, tile_counts=(9,))], config=config, device="cpu")
+
+        k0._prepare_tensors()
+        k1._prepare_tensors()
+
+        assert k0._make_cache_key() == k1._make_cache_key()
+
+    def test_compute_only_metadata_uses_compact_stride(self):
+        """Compute-only replay should not carry full load/store phase metadata."""
+        from machete.megakernel import Megakernel, MegakernelConfig, ScheduledOp
+        NopOp = _named_nop_op()
+
+        ops = [
+            ScheduledOp(NopOp, tile_counts=(4,), tensor_ptrs={"x": 1}),
+            ScheduledOp(NopOp, tile_counts=(4,), tensor_ptrs={"x": 2}),
+        ]
+        kernel = Megakernel(
+            ops,
+            config=MegakernelConfig(num_sms=1, num_pages=1),
+            device="cpu",
+        )
+
+        assert kernel._use_compute_only_replay()
+        kernel._prepare_tensors()
+
+        op_meta = kernel._op_meta_exec_globals()
+        assert op_meta["_OP_META_STRIDE"] == 11
+        assert "_OP_META_PHASE_MASK" not in op_meta
+        assert kernel._op_metadata_tensor.numel() == len(ops) * 11
+
+
+# =============================================================================
+# GPU Tests (Require Hopper)
+# =============================================================================
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
+class TestMegakernelGPU:
+    """GPU tests for Megakernel."""
+
+    @pytest.fixture(autouse=True)
+    def check_gpu(self):
+        """Skip if not Hopper (SM90+)."""
+        major, _ = torch.cuda.get_device_capability()
+        if major < 9:
+            pytest.skip("Requires Hopper (SM90+) GPU")
+
+    @pytest.mark.parametrize("num_ops", [1, 2])
+    def test_nop_kernel_run(self, num_ops):
+        """Test running _NOPOp kernels with barrier reset across multiple runs."""
+        from machete.megakernel import Megakernel, ScheduledOp
+        NopOp = _named_nop_op()
+
+        ops = [
+            ScheduledOp(NopOp, tile_counts=(8,), tensor_ptrs={"x": i + 1})
+            for i in range(num_ops)
+        ]
+        kernel = Megakernel(ops)
+
+        # Run multiple times to verify barrier reset
+        for _ in range(2):
+            kernel.run()
+
+
+
+class TestMegakernelPagedMemory:
+    """Test megakernel with double-buffer memory integration."""
+
+    def test_smem_size_from_layout(self):
+        """Test that smem_size is computed from NPageLayout."""
+        from machete.megakernel import Megakernel, MegakernelConfig, ScheduledOp
+        NopOp = get_nop_op()
+
+        ops = [ScheduledOp(NopOp, tile_counts=(4,))]
+        config = MegakernelConfig(num_sms=8)
+        kernel = Megakernel(ops, config=config, device="cpu")
+
+        # smem_size should be > 0 and derived from the double-buffer layout
+        # Double-buffer layout has scratch + 2 pages
+        assert kernel.smem_size > 0
+        assert kernel.smem_size >= 2 * config.page_size

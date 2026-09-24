@@ -1,0 +1,5 @@
+variant,label,latency_us,stdev_us,trials,timing_scope,status,source
+persistent,Persistent VM,983.126588756331,0.026458060509,3,matched_in_process_decode_step,matched,direct_tk_pdl_summary.md
+pdl,81-kernel PDL chain,1009.711029773622,0.086562157142,3,matched_in_process_decode_step,matched,direct_tk_pdl_summary.md
+completion,81-kernel default-dependency chain,1169.071431798259,0.000000000000,1,matched_in_process_decode_step,single_process_control,direct_tk_pdl_summary.md
+sglang,SGLang v0.5.15.post1,1210.353393830000,2.893051927590,3,baseline_subtracted_server_request_e2e,scope_mismatch,../../../docs/reconstructing-a-megakernel-with-pdl.md

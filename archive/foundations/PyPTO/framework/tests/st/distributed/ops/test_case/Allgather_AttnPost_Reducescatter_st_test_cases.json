@@ -1,0 +1,55 @@
+{
+    "test_cases": [
+        {
+            "case_index": 0,
+            "case_name": "AllGatherAttnPostReduceScatter_test_1",
+            "operation": "AllGatherAttnPostReduceScatter",
+            "input_tensors": [
+                {
+                    "name": "input0",
+                    "shape": [
+                        "",
+                        ""
+                    ],
+                    "dtype": "bfloat16",
+                    "format": "ND",
+                    "need_trans": false,
+                    "data_range": {
+                        "min": "",
+                        "max": ""
+                    }
+                }
+            ],
+            "output_tensors": [
+                {
+                    "name": "output0",
+                    "shape": [
+                        "",
+                        ""
+                    ],
+                    "dtype": "bfloat16",
+                    "format": "ND",
+                    "need_trans": false
+                }
+            ],
+            "view_shape": [
+                ""
+            ],
+            "tile_shape": [
+                ""
+            ],
+            "params": {
+                "batch_size": 64,
+                "seq_len": 1,
+                "num_heads": 32,
+                "kv_lora_rank": 256,
+                "value_head_dim": 128,
+                "output_hidden_size": 128,
+                "world_size": 4,
+                "on_board": true,
+                "func_id": -1
+            },
+            "index": 0
+        }
+    ]
+}

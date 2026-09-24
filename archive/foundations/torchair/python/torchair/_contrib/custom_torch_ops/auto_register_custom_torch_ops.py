@@ -1,0 +1,184 @@
+import math
+from typing import Optional
+import torch
+from torch.library import Library, impl
+from torchair.ge._ge_graph import ge_type_to_torch_type, torch_dtype_value_to_ge_type
+
+m = Library("npu_inference", "DEF")
+m.define("npu_tome_merge(Tensor token_a, Tensor token_b, Tensor topk_indice, \
+         Tensor arg_max, float top_rate) -> (Tensor, Tensor, Tensor)")
+m.define("npu_tome_unmerge(Tensor atten_out, Tensor ori_indice_a, Tensor ori_indice_b, \
+         Tensor topk_indice, Tensor arg_max, float top_rate) -> Tensor")
+m.define("npu_moe_gating_top_k(Tensor x, int k, *, Tensor? bias=None, int k_group=1, \
+         int group_count=1, int group_select_mode=0, int renorm=0, int norm_type=0, \
+         bool out_flag=False, float routed_scaling_factor=1.0, float eps=1e-20) \
+         -> (Tensor, Tensor, Tensor)")
+m.define("npu_kv_rmsnorm_rope_cache(Tensor kv, Tensor gamma, Tensor cos, Tensor sin, \
+          Tensor index, Tensor k_cache, Tensor ckv_cache, *, Tensor? k_rope_scale=None, \
+          Tensor? c_kv_scale=None, Tensor? k_rope_offset=None, Tensor? c_kv_offset=None, Tensor? v=None, \
+          float epsilon=1e-5, str cache_mode='Norm', bool is_output_kv=False) -> (Tensor, Tensor, Tensor, Tensor)")
+m.define("npu_interleave_rope(Tensor x, Tensor cos, Tensor sin) -> Tensor")
+m.define("npu_dequant_swiglu_quant(Tensor x, *, Tensor? weight_scale=None, Tensor? activation_scale=None, \
+          Tensor? bias=None, Tensor? quant_scale=None, Tensor? quant_offset=None, Tensor? group_index=None, \
+          bool activate_left=False, int quant_mode=0, int? dst_type=None, int? round_mode=None, \
+          int? activate_dim=None, int swiglu_mode=0, float clamp_limit=7.0, float glu_alpha=1.702, \
+          float glu_bias=1.0) -> (Tensor, Tensor)")
+m.define("npu_fused_quant_matmul(Tensor x1, Tensor x2, Tensor scale, *, Tensor? offset=None, \
+ 	      Tensor? pertoken_scale=None, Tensor? bias=None, Tensor? x3=None, str fused_op_type='', \
+ 	      int? output_dtype=None, int? x1_dtype=None, int? x2_dtype=None, int? pertoken_scale_dtype=None, \
+ 	      int? scale_dtype=None, int? x3_dtype=None, int[]? group_sizes=None, Tensor? y_scale=None) -> Tensor")
+
+
+@impl(m, "npu_tome_merge", "PrivateUse1")
+def plug_npu_tome_merge(
+        token_a: torch.Tensor,
+        token_b: torch.Tensor,
+        topk_indice: torch.Tensor,
+        arg_max: torch.Tensor,
+        top_rate: float
+):
+    return token_a, token_b, arg_max
+
+
+@impl(m, "npu_tome_merge", "Meta")
+def npu_tome_merge_meta(token_a, token_b, topk_indice, arg_max, top_rate=0.5):
+    batch = token_a.size(0)
+    seq_len_a = token_a.size(1)
+    hidden_size = token_a.size(2)
+    seq_len_b = token_b.size(1)
+    top_r = math.floor((seq_len_a + seq_len_b) * top_rate)
+    heads = 8
+    unmerge_token_a_dim_list = [batch, seq_len_a - top_r, hidden_size]
+    unmerge_token_b_dim_list = [batch, heads, seq_len_b, hidden_size]
+    unreduce_count_dim_list = [batch, heads, seq_len_b]
+    unreduce_count = torch.empty(unreduce_count_dim_list, dtype=torch.float32, device='meta')
+    return (token_a.new_empty(tuple(unmerge_token_a_dim_list)), token_a.new_empty(tuple(unmerge_token_b_dim_list)),
+            torch.empty_like(unreduce_count))
+
+
+@impl(m, "npu_tome_unmerge", "Meta")
+def npu_tome_unmerge_meta(atten_out, ori_indice_a, ori_indice_b, topk_indice, arg_max, top_r_rate=0.5):
+    dim_list = []
+    dim_list.append(atten_out.size(0))
+    dim_list.append(ori_indice_a.size(1) + ori_indice_b.size(1))
+    dim_list.append(atten_out.size(2))
+    return atten_out.new_empty(tuple(dim_list))
+
+
+@impl(m, "npu_moe_gating_top_k", "Meta")
+def npu_moe_gating_top_k(x, k, *, bias=None, k_group=1, group_count=1, group_select_mode=0, renorm=0,
+                         norm_type=0, out_flag=False, routed_scaling_factor=1.0, eps=1e-20):
+    x_dim = x.dim()
+    if bias is not None:
+        bias_dim = bias.dim()
+    y_dim_list = [x.size(0), k]
+    expert_idx_dim_list = [x.size(0), k]
+    y2_dim_list = [x.size(0), x.size(1)]
+    return (x.new_empty(tuple(y_dim_list), dtype=x.dtype),
+            x.new_empty(tuple(expert_idx_dim_list), dtype=torch.int32),
+            x.new_empty(tuple(y2_dim_list), dtype=torch.float32))
+
+
+@impl(m, "npu_kv_rmsnorm_rope_cache", "Meta")
+def npu_kv_rmsnorm_rope_cache_meta(kv, gamma, cos, sin, index, k_cache, ckv_cache, *, k_rope_scale=None,
+                                   c_kv_scale=None, k_rope_offset=None, c_kv_offset=None, v=None, epsilon=1e-5,
+                                   cache_mode='Norm', is_output_kv=False):
+    if kv.dim() != 4:
+        raise RuntimeError("4D tensor expected for input kv")
+    if v is not None:
+        if v.dtype != kv.dtype:
+            raise RuntimeError("v MUST have same data type as kv!")
+        if v.dim() != 4:
+            raise RuntimeError("4D tensor expected for input v")
+        if v.size(0) != kv.size(0) or v.size(1) != kv.size(1) or v.size(2) != kv.size(2):
+            raise RuntimeError("v MUST have same token shape as kv!")
+    if gamma.dim() != 1:
+        raise RuntimeError("1D tensor expected for input gamma")
+    if cos.dim() != 4:
+        raise RuntimeError("4D tensor expected for input cos")
+    k_rope_size = []
+    c_kv_size = []
+    for i in range(kv.dim() - 1):
+        k_rope_size.append(kv.size(i))
+        c_kv_size.append(kv.size(i))
+    if v is None:
+        k_rope_size.append(cos.size(3))
+        c_kv_size.append(gamma.size(0))
+    else:
+        k_rope_size.append(kv.size(3))
+        c_kv_size.append(v.size(3))
+    return (torch.empty_like(k_cache), torch.empty_like(ckv_cache),
+            torch.empty(k_rope_size, dtype=kv.dtype, device=kv.device),
+            torch.empty(c_kv_size, dtype=kv.dtype, device=kv.device))
+
+
+@impl(m, "npu_interleave_rope", "Meta")
+def npu_interleave_rope_meta(x, cos, sin):
+    return torch.empty_like(x)
+
+
+@impl(m, "npu_dequant_swiglu_quant", "Meta")
+def npu_dequant_swiglu_quant_meta(x, *, weight_scale=None, activation_scale=None, bias=None, quant_scale=None,
+                                  quant_offset=None, group_index=None, activate_left=False, quant_mode=0,
+                                  dst_type=None, round_mode=None, activate_dim=None, swiglu_mode=0,
+                                  clamp_limit=7.0, glu_alpha=1.702, glu_bias=1.0):
+    dst_type = dst_type if dst_type is not None else 1
+    round_mode = round_mode if round_mode is not None else 0
+    activate_dim = activate_dim if activate_dim is not None else -1
+    select_dim = activate_dim if activate_dim >= 0 else activate_dim + x.dim()
+    if x.dim() <= 1:
+        raise RuntimeError("x dim should larger than 1")
+    if select_dim < 0 or select_dim >= x.dim():
+        raise RuntimeError("activate dim should less than x dim")
+    if x.size(select_dim) % 2 != 0:
+        raise RuntimeError("x last dim should be even")
+    if quant_mode != 0 and quant_mode != 1:
+        raise RuntimeError("quant_mode only support 0 or 1, but got " + str(quant_mode))
+
+    y_size = []
+    for i in range(x.dim()):
+        if i == select_dim:
+            y_size.append(math.floor(x.size(i) / 2))
+        else:
+            y_size.append(x.size(i))
+
+    scale_size = y_size[:-1]
+
+    output_dtype = torch.int8
+    if dst_type == 23:
+        output_dtype = torch.float8_e5m2
+    elif dst_type == 24:
+        output_dtype = torch.float8_e4m3fn
+    elif dst_type == 296 or dst_type == 297:
+        output_dtype = torch.uint8
+
+    return (torch.empty(y_size, dtype=output_dtype, device=x.device),
+            torch.empty(scale_size, dtype=torch.float32, device=x.device))
+
+
+@impl(m, "npu_fused_quant_matmul", "Meta")
+def npu_fused_quant_matmul_meta(x1, x2, scale, *, offset=None, pertoken_scale=None, bias=None, x3=None,
+                                fused_op_type='', output_dtype=None, x1_dtype=None, x2_dtype=None,
+                                pertoken_scale_dtype=None, scale_dtype=None, x3_dtype=None, group_sizes=None,
+                                y_scale=None):
+    import importlib
+    INT4_VALUES_PER_INT8 = 2
+    FIRST_DIM_INDEX = 0
+    LAST_DIM_INDEX = -1
+    torch_npu_int4 = getattr(importlib.import_module("torch_npu"), "int4", None)
+    is_a8w4 = x1.dtype == torch.int8 and x2_dtype == torch_npu_int4
+    if not is_a8w4:
+        raise RuntimeError("fused_quant_matmul only support a8w4.")
+
+    dim_list = []
+    dimm = x1.size(FIRST_DIM_INDEX)
+    dimn = x2.size(LAST_DIM_INDEX) * INT4_VALUES_PER_INT8
+    dim_list.append(dimm)
+    dim_list.append(dimn)
+    if bias is not None:
+        raise RuntimeError("fused_quant_matmul not support bias.")
+
+    tensor_dtype = torch.int8
+    if output_dtype is not None:
+        tensor_dtype = ge_type_to_torch_type(torch_dtype_value_to_ge_type(output_dtype))
+    return x1.new_empty(tuple(dim_list), dtype=tensor_dtype, device=x1.device)

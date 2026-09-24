@@ -1,0 +1,266 @@
+name: CI
+on:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+      - opened
+      - synchronize
+      - reopened
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PYTHONDEVMODE: "1"
+  PYTHONUNBUFFERED: "1"
+  PYTHONPATH: ""
+  PIP_USER: ""
+  COLUMNS: "100"
+  FORCE_COLOR: "1"
+  CLICOLOR_FORCE: "1"
+  UV_INDEX_STRATEGY: "unsafe-best-match"
+  UV_HTTP_TIMEOUT: "600"
+  XDG_CACHE_HOME: "${{ github.workspace }}/.cache"
+  PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+  UV_CACHE_DIR: "${{ github.workspace }}/.cache/uv"
+  PRE_COMMIT_HOME: "${{ github.workspace }}/.cache/pip/.pre-commit"
+
+jobs:
+  lint:
+    name: Lint
+    # Lint untrusted fork pull requests only on an ephemeral GitHub-hosted runner.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set environment for tilescale runner
+        run: |
+          if [[ -n "${{ secrets.SECRET_PATH_PREFIXES }}" ]]; then
+            echo "::add-mask::${{ secrets.SECRET_PATH_PREFIXES }}"
+            for secret in $(echo "${{ secrets.SECRET_PATH_PREFIXES }}" | tr ':' '\n'); do
+              echo "::add-mask::${secret}"
+            done
+          fi
+
+          export XDG_CACHE_HOME="${{ runner.tool_cache }}/.ci-cache-${{ github.workflow }}"
+          echo "XDG_CACHE_HOME=${XDG_CACHE_HOME}" | tee -a "${GITHUB_ENV}"
+          echo "PIP_CACHE_DIR=${XDG_CACHE_HOME}/pip" | tee -a "${GITHUB_ENV}"
+          echo "UV_CACHE_DIR=${XDG_CACHE_HOME}/uv" | tee -a "${GITHUB_ENV}"
+          echo "PRE_COMMIT_HOME=${XDG_CACHE_HOME}/pip/.pre-commit" | tee -a "${GITHUB_ENV}"
+
+      - name: Setup Python 3.10
+        id: setup-pylowest
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+          update-environment: true
+          cache: pip
+          cache-dependency-path: |
+            pyproject.toml
+            requirements*.txt
+            .pre-commit-config.yaml
+
+      - name: Check AST with Python 3.10
+        run: |
+          "${{ steps.setup-pylowest.outputs.python-path }}" -m compileall -q -f tilelang
+
+      - name: Install lint dependencies
+        run: |
+          "${{ steps.setup-pylowest.outputs.python-path }}" -m pip install -r requirements-lint.txt
+
+      - name: Pre-commit lint
+        run: |
+          if ! "${{ steps.setup-pylowest.outputs.python-path }}" -m pre_commit run --all-files --color=always --show-diff-on-failure; then
+            echo "::error::Pre-commit checks failed. Please run 'pre-commit install' and 'pre-commit run --all-files' locally to see the issues."
+            exit 1
+          fi
+
+  tests:
+    name: NVIDIA CUDA Tests
+    # Never execute fork pull-request code on the persistent GPU runner. A
+    # maintainer can reproduce an external contribution from a trusted branch
+    # or start this workflow manually after review.
+    if: |
+      github.repository_owner == 'tile-ai' &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        (
+          github.event_name == 'pull_request' &&
+          !github.event.pull_request.draft &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        )
+      )
+    needs: [lint]
+    runs-on: [self-hosted, tilescale, nvidia]
+    timeout-minutes: 120
+    env:
+      TOOLKIT: CUDA-12.8
+      TILELANG_TARGET: auto
+      TILELANG_EXECUTION_BACKEND: tvm_ffi
+      USE_CUDA: "ON"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set environment for tilescale runner
+        run: |
+          if [[ -n "${{ secrets.SECRET_PATH_PREFIXES }}" ]]; then
+            echo "::add-mask::${{ secrets.SECRET_PATH_PREFIXES }}"
+            for secret in $(echo "${{ secrets.SECRET_PATH_PREFIXES }}" | tr ':' '\n'); do
+              echo "::add-mask::${secret}"
+            done
+          fi
+
+          export XDG_CACHE_HOME="${{ runner.tool_cache }}/.ci-cache-${{ github.workflow }}"
+          echo "XDG_CACHE_HOME=${XDG_CACHE_HOME}" | tee -a "${GITHUB_ENV}"
+          echo "PIP_CACHE_DIR=${XDG_CACHE_HOME}/pip" | tee -a "${GITHUB_ENV}"
+          echo "UV_CACHE_DIR=${XDG_CACHE_HOME}/uv" | tee -a "${GITHUB_ENV}"
+          echo "PRE_COMMIT_HOME=${XDG_CACHE_HOME}/pip/.pre-commit" | tee -a "${GITHUB_ENV}"
+
+      - name: Set CUDA environment
+        run: |
+          CUDA_VERSION="${TOOLKIT##*-}"
+          CUDA_VERSION_MAJMIN="$(echo "${CUDA_VERSION}" | cut -d '.' -f-2)"
+          CUDA_VERSION_MAJMIN_NODOT="${CUDA_VERSION_MAJMIN//./}"
+          PIP_EXTRA_INDEX_URL="https://download.pytorch.org/whl/cu${CUDA_VERSION_MAJMIN_NODOT}"
+          UV_INDEX="${PIP_EXTRA_INDEX_URL}"
+
+          echo "CUDA_VERSION=${CUDA_VERSION}" | tee -a "${GITHUB_ENV}"
+          echo "CUDA_VERSION_MAJMIN=${CUDA_VERSION_MAJMIN}" | tee -a "${GITHUB_ENV}"
+          echo "CUDA_VERSION_MAJMIN_NODOT=${CUDA_VERSION_MAJMIN_NODOT}" | tee -a "${GITHUB_ENV}"
+          echo "PIP_EXTRA_INDEX_URL=${PIP_EXTRA_INDEX_URL}" | tee -a "${GITHUB_ENV}"
+          echo "UV_INDEX=${UV_INDEX}" | tee -a "${GITHUB_ENV}"
+
+          if [[ ! -x "$(command -v nvcc)" ]]; then
+            export PATH="/usr/local/cuda/bin:${PATH}"
+            export LD_LIBRARY_PATH="/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+            echo "PATH=${PATH}" | tee -a "${GITHUB_ENV}"
+            echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}" | tee -a "${GITHUB_ENV}"
+          fi
+          if [[ -x "$(command -v nvcc)" ]]; then
+            echo "\$ $(command -v nvcc) --version" && nvcc --version
+          else
+            echo "::warning::nvcc not found in PATH"
+          fi
+
+      - name: Setup Python and uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          activate-environment: true
+          enable-cache: false
+          prune-cache: false
+          cache-local-path: ${{ env.UV_CACHE_DIR }}
+          ignore-nothing-to-cache: true
+          cache-suffix: uv-${{ runner.os }}-${{ runner.arch }}-3.12-tilescale-nvidia-CUDA-12.8
+          cache-dependency-glob: |
+            pyproject.toml
+            requirements*.txt
+            .pre-commit-config.yaml
+
+      - name: Setup test environment
+        id: setup-venv
+        run: |
+          set -o pipefail
+
+          uv pip install --upgrade pip setuptools wheel
+          uv pip install -v -r requirements-test.txt
+          uv pip install --no-build-isolation-package=flash-attn -v flash-attn==2.5.8 cuda-python==12.9.4
+          echo "import torch; print(f'torch: {torch.__version__}')" | uv run --no-project --script -
+          echo "import flash_attn; print(f'flash_attn: {flash_attn.__version__}')" | uv run --no-project --script -
+          echo "::group::torch.utils.collect_env"
+          uv run --no-project -m -- torch.utils.collect_env
+          echo "::endgroup::"
+
+      - name: Clear uv cache if setup failed
+        if: >-
+          ${{
+            failure() &&
+            (steps.setup-uv.conclusion == 'failure' || steps.setup-venv.conclusion == 'failure')
+          }}
+        run: |
+          echo "Clearing uv cache at ${UV_CACHE_DIR} due to failure."
+          uv cache clean
+
+      - name: Install project
+        run: |
+          uv pip install -v .
+
+      - name: Clean up stale temporary files
+        run: |
+          rm -f /tmp/tmp*.so /tmp/tmp*.cu /tmp/tmp*.cubin /tmp/tmp*.cpp
+          rm -rf /tmp/tvm-debug-mode-tempdirs
+
+      - name: Run CUDA tests
+        run: |
+          cd testing
+          PYTEST=(
+            uv run --no-project -m --
+            pytest --verbose --color=yes --durations=0 --showlocals --cache-clear
+          )
+          "${PYTEST[@]}" --maxfail=3 --numprocesses=8 \
+            --ignore=./python/amd \
+            --ignore=./python/cpu \
+            --ignore=./python/distributed \
+            --ignore=./python/metal \
+            --ignore=./python/target \
+            --ignore=./python/webgpu \
+            --ignore=./python/autotune/test_tilelang_autotune_cutedsl_cache.py \
+            --ignore=./python/jit/test_tilelang_jit_cutedsl.py \
+            -k "not cutedsl and not rocm and not metal and not webgpu" \
+            ./python
+
+      - name: Run distributed CUDA tests
+        env:
+          MASTER_ADDR: "127.0.0.1"
+          NCCL_IB_DISABLE: "1"
+          NCCL_DEBUG: "WARN"
+        run: |
+          cd testing
+          GPU_COUNT="$(uv run --no-project -- python -c 'import torch; print(torch.cuda.device_count())')"
+          echo "Visible CUDA GPUs: ${GPU_COUNT}"
+          if (( GPU_COUNT < 2 )); then
+            echo "::error::Distributed CI requires at least 2 visible CUDA GPUs; found ${GPU_COUNT}."
+            exit 1
+          fi
+
+          # Tests spawn their own multi-process groups. Do not inject a
+          # single-rank launcher environment that can hide a broken smoke run.
+          unset WORLD_SIZE RANK LOCAL_RANK LOCAL_WORLD_SIZE GROUP_RANK NNODES NODE_RANK
+
+          PORT_SEED="${GITHUB_RUN_ID:-0}"
+          MASTER_PORT=$((20000 + PORT_SEED % 20000))
+          export MASTER_PORT
+          export TILESCALE_MASTER_PORT="${MASTER_PORT}"
+          echo "Using MASTER_PORT=${MASTER_PORT}"
+
+          PYTEST=(
+            uv run --no-project -m --
+            pytest --verbose --color=yes --durations=0 --showlocals --cache-clear
+          )
+          "${PYTEST[@]}" --maxfail=1 \
+            ./python/distributed
+
+      - name: List generated files
+        if: ${{ !cancelled() }}
+        run: |
+          find . -type f -name '*.py[co]' -delete
+          find . -depth -type d -name "__pycache__" -exec rm -r "{}" +
+          if git status --ignored --porcelain | grep -qvE '/$'; then
+            ls -alh $(git status --ignored --porcelain | grep -vE '/$' | grep -oE '\S+$')
+          fi

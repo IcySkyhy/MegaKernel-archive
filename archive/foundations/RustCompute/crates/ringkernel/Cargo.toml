@@ -1,0 +1,215 @@
+[package]
+name = "ringkernel"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+rust-version.workspace = true
+description = "GPU-native persistent actor model framework - Rust port of DotCompute Ring Kernel"
+keywords = ["gpu", "actor", "cuda", "compute", "distributed"]
+categories = ["concurrency", "asynchronous", "hardware-support"]
+readme = "../../README.md"
+
+[dependencies]
+# Core crate (always included)
+ringkernel-core = { workspace = true }
+
+# Derive macros
+ringkernel-derive = { workspace = true }
+
+# CPU backend (always available)
+ringkernel-cpu = { workspace = true }
+
+# GPU backends (optional)
+ringkernel-cuda = { workspace = true, optional = true }
+
+# Code generation
+ringkernel-codegen = { workspace = true }
+
+# Async runtime
+tokio = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+
+# Error handling
+thiserror = { workspace = true }
+
+# Logging
+tracing = { workspace = true }
+
+# Utilities
+cfg-if = { workspace = true }
+inventory = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util", "macros", "rt-multi-thread"] }
+proptest = { workspace = true }
+criterion = { workspace = true }
+tracing-subscriber = { workspace = true }
+rkyv = { workspace = true }
+zerocopy = { workspace = true }
+bytemuck = { workspace = true }
+# For CUDA tests - need explicit dep for test imports even though it's an optional dep
+ringkernel-cuda = { workspace = true }
+
+# For CUDA codegen examples
+ringkernel-cuda-codegen = { workspace = true }
+syn = { workspace = true, features = ["full", "parsing"] }
+
+# Web API (for axum example)
+axum = "0.7"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+
+# gRPC (for grpc_server example)
+tonic = "0.12"
+prost = "0.13"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Async utilities
+futures = "0.3"
+async-stream = "0.3"
+
+# Console output
+crossterm = "0.28"
+
+# HTTP client for testing
+reqwest = { version = "0.12", default-features = false, features = ["json"] }
+
+[features]
+default = ["cpu"]
+
+# Backend features
+cpu = []
+cuda = ["ringkernel-cuda/cuda"]
+
+# Functionality features (planned - not yet fully implemented)
+telemetry = []        # Real-time performance metrics
+k2k-messaging = []    # Kernel-to-kernel direct messaging
+topic-pubsub = []     # Topic-based publish/subscribe
+multi-gpu = ["cuda"]  # Multi-GPU coordination
+
+[[bench]]
+name = "message_queue"
+harness = false
+
+[[bench]]
+name = "serialization"
+harness = false
+
+[[bench]]
+name = "startup"
+harness = false
+
+[[bench]]
+name = "latency"
+harness = false
+
+[[bench]]
+name = "memory_layout"
+harness = false
+
+[[bench]]
+name = "hlc"
+harness = false
+
+[[bench]]
+name = "k2k_messaging"
+harness = false
+
+[[bench]]
+name = "claims_validation"
+harness = false
+
+[[example]]
+name = "vector_add"
+path = "examples/vector_add.rs"
+
+[[example]]
+name = "ping_pong"
+path = "examples/ping_pong.rs"
+
+# === Real-world examples from /examples directory ===
+
+# Basic examples
+[[example]]
+name = "basic_hello_kernel"
+path = "../../examples/basic/hello_kernel.rs"
+
+[[example]]
+name = "kernel_states"
+path = "../../examples/basic/kernel_states.rs"
+
+# Messaging examples
+[[example]]
+name = "request_response"
+path = "../../examples/messaging/request_response.rs"
+
+[[example]]
+name = "pub_sub"
+path = "../../examples/messaging/pub_sub.rs"
+
+[[example]]
+name = "kernel_to_kernel"
+path = "../../examples/messaging/kernel_to_kernel.rs"
+
+# Web API examples
+[[example]]
+name = "axum_api"
+path = "../../examples/web-api/axum_api.rs"
+
+# Data processing examples
+[[example]]
+name = "batch_processor"
+path = "../../examples/data-processing/batch_processor.rs"
+
+# Monitoring examples
+[[example]]
+name = "telemetry"
+path = "../../examples/monitoring/telemetry.rs"
+
+# Ecosystem examples
+[[example]]
+name = "grpc_server"
+path = "../../examples/ecosystem/grpc_server.rs"
+
+[[example]]
+name = "config_management"
+path = "../../examples/ecosystem/config_management.rs"
+
+[[example]]
+name = "ml_pipeline"
+path = "../../examples/ecosystem/ml_pipeline.rs"
+
+# Advanced examples
+[[example]]
+name = "multi_gpu"
+path = "../../examples/advanced/multi_gpu.rs"
+
+# Macro examples
+[[example]]
+name = "derive_example"
+path = "../../examples/macros/derive_example.rs"
+
+# CUDA Codegen examples
+[[example]]
+name = "global_kernel"
+path = "../../examples/cuda-codegen/global_kernel.rs"
+
+[[example]]
+name = "stencil_kernel"
+path = "../../examples/cuda-codegen/stencil_kernel.rs"
+
+[[example]]
+name = "ring_kernel_codegen"
+path = "../../examples/cuda-codegen/ring_kernel.rs"
+
+# Educational modes example - moved to ringkernel-wavesim crate to avoid circular dependency
+# Run with: cargo run -p ringkernel-wavesim --example educational_modes

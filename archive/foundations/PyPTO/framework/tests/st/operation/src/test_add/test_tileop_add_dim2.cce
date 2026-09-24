@@ -1,0 +1,44 @@
+#include "acl/acl.h"
+#include "acl/acl_rt.h"
+#include <vector>
+
+#define BLOCKS 1
+#define CACHELINE_SZ 64
+
+#include "TileOpImpl.h"
+__global__[aicore] void testBody(__gm__ uint8_t *Out, __gm__ uint8_t *Src0, __gm__ uint8_t *Src1) {
+    float __ubuf__ *UB_S0_E16384 = (float __ubuf__ *)get_imm(0x0);        // size: 4000
+    float __ubuf__ *UB_S16384_E32768 = (float __ubuf__ *)get_imm(0x4000); // size: 4000
+    TileOp::UBCopyIn<float, 1, 1, 1, 64, 64, /*dst stride*/ 1, 1, 64, 64, /*src stride*/ 1, 1, 64, 64>(
+        (__ubuf__ float *)UB_S0_E16384, (__gm__ float *)Src0);
+    TileOp::UBCopyIn<float, 1, 1, 1, 64, 64, /*dst stride*/ 1, 1, 64, 64, /*src stride*/ 1, 1, 64, 64>(
+        (__ubuf__ float *)UB_S16384_E32768, (__gm__ float *)Src1);
+    set_flag(PIPE_MTE2, PIPE_V, EVENT_ID0);
+    wait_flag(PIPE_MTE2, PIPE_V, EVENT_ID0);
+    TileOp::Tadd_<float, 1, 1, 64, 64, /*DS*/ 1, 64, 64, /*S0S*/ 1, 64, 64, /*S1S*/ 1, 64, 64>(
+        (__ubuf__ float *)UB_S0_E16384, (__ubuf__ float *)UB_S0_E16384, (__ubuf__ float *)UB_S16384_E32768);
+    set_flag(PIPE_V, PIPE_MTE3, EVENT_ID0);
+    wait_flag(PIPE_V, PIPE_MTE3, EVENT_ID0);
+    //    for (int i=0; i< 4096; ++i){
+    //        cce::printf("%f, ", UB_S0_E16384[i]);
+    //        if (i%16==0){
+    //            cce::printf("\n");
+    //        }
+    //    }
+    pipe_barrier(PIPE_ALL);
+    cce::printf("first: %f, last: %f\n", UB_S0_E16384[0], UB_S0_E16384[4095]);
+
+    TileOp::UBCopyOut<float, 1, 1, 1, 64, 64, /*dst stride*/ 1, 1, 64, 64, /*src stride*/ 1, 1, 64, 64>(
+        (__gm__ float *)Out, (__ubuf__ float *)UB_S0_E16384);
+}
+
+#include <iostream>
+extern "C" void TestTileOpKernelLaunch(const std::vector<uint64_t> &addrList, void *&stream) {
+    std::cout << "Kernel execution start!" << std::endl;
+    uint8_t *out = (uint8_t *)addrList[0];
+    uint8_t *src0 = (uint8_t *)addrList[1];
+    uint8_t *src1 = (uint8_t *)addrList[2];
+    testBody<<<BLOCKS, nullptr, stream>>>(out, src0, src1);
+    aclrtSynchronizeStream(stream);
+    std::cout << "Kernel execution end!" << std::endl;
+}

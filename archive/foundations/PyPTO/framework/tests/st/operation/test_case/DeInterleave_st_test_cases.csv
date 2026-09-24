@@ -1,0 +1,25 @@
+case_name,input_shape,input_dtype,input_format,input_datarange,output_shape,output_dtype,output_format,view_shape,tile_shape,single_input
+DeInterleave_1d_dual_fp32,"[64], [64]","fp32, fp32","ND, ND","[-10, 10], [-10, 10]","[64], [64]","[fp32,fp32]","[ND,ND]","[64]","[64]",false
+DeInterleave_2d_dual_fp32,"[8, 64], [8, 64]","fp32, fp32","ND, ND","[-10, 10], [-10, 10]","[8, 64], [8, 64]","[fp32,fp32]","[ND,ND]","[4, 64]","[2, 64]",false
+DeInterleave_3d_dual_fp32,"[2, 8, 64], [2, 8, 64]","fp32, fp32","ND, ND","[-10, 10], [-10, 10]","[2, 8, 64], [2, 8, 64]","[fp32,fp32]","[ND,ND]","[1, 4, 64]","[1, 2, 64]",false
+DeInterleave_4d_dual_fp32,"[2, 2, 8, 64], [2, 2, 8, 64]","fp32, fp32","ND, ND","[-10, 10], [-10, 10]","[2, 2, 8, 64], [2, 2, 8, 64]","[fp32,fp32]","[ND,ND]","[1, 1, 4, 64]","[1, 1, 2, 64]",false
+DeInterleave_1d_single_fp32,"[128]",fp32,ND,"[-10, 10]","[64], [64]","[fp32,fp32]","[ND,ND]","[64]","[32]",true
+DeInterleave_2d_single_fp32,"[8, 128]",fp32,ND,"[-10, 10]","[8, 64], [8, 64]","[fp32,fp32]","[ND,ND]","[4, 64]","[2, 32]",true
+DeInterleave_3d_single_fp32,"[2, 8, 128]",fp32,ND,"[-10, 10]","[2, 8, 64], [2, 8, 64]","[fp32,fp32]","[ND,ND]","[1, 4, 64]","[1, 2, 32]",true
+DeInterleave_4d_single_fp32,"[2, 2, 8, 128]",fp32,ND,"[-10, 10]","[2, 2, 8, 64], [2, 2, 8, 64]","[fp32,fp32]","[ND,ND]","[1, 1, 4, 64]","[1, 1, 2, 32]",true
+DeInterleave_2d_dual_fp16,"[8, 64], [8, 64]","fp16, fp16","ND, ND","[-10, 10], [-10, 10]","[8, 64], [8, 64]","[fp16,fp16]","[ND,ND]","[4, 64]","[2, 64]",false
+DeInterleave_2d_dual_bf16,"[8, 64], [8, 64]","bf16, bf16","ND, ND","[-10, 10], [-10, 10]","[8, 64], [8, 64]","[bf16,bf16]","[ND,ND]","[4, 64]","[2, 64]",false
+DeInterleave_2d_dual_int8,"[8, 64], [8, 64]","int8, int8","ND, ND","[-10, 10], [-10, 10]","[8, 64], [8, 64]","[int8,int8]","[ND,ND]","[4, 64]","[2, 64]",false
+DeInterleave_2d_dual_uint8,"[8, 64], [8, 64]","uint8, uint8","ND, ND","[0, 10], [0, 10]","[8, 64], [8, 64]","[uint8,uint8]","[ND,ND]","[4, 64]","[2, 64]",false
+DeInterleave_2d_dual_int16,"[8, 64], [8, 64]","int16, int16","ND, ND","[-10, 10], [-10, 10]","[8, 64], [8, 64]","[int16,int16]","[ND,ND]","[4, 64]","[2, 64]",false
+DeInterleave_2d_dual_uint16,"[8, 64], [8, 64]","uint16, uint16","ND, ND","[0, 10], [0, 10]","[8, 64], [8, 64]","[uint16,uint16]","[ND,ND]","[4, 64]","[2, 64]",false
+DeInterleave_2d_dual_int32,"[8, 64], [8, 64]","int32, int32","ND, ND","[-10, 10], [-10, 10]","[8, 64], [8, 64]","[int32,int32]","[ND,ND]","[4, 64]","[2, 64]",false
+DeInterleave_2d_dual_uint32,"[8, 64], [8, 64]","uint32, uint32","ND, ND","[0, 10], [0, 10]","[8, 64], [8, 64]","[uint32,uint32]","[ND,ND]","[4, 64]","[2, 64]",false
+DeInterleave_2d_single_fp16,"[8, 128]",fp16,ND,"[-10, 10]","[8, 64], [8, 64]","[fp16,fp16]","[ND,ND]","[4, 64]","[2, 32]",true
+DeInterleave_2d_single_bf16,"[8, 128]",bf16,ND,"[-10, 10]","[8, 64], [8, 64]","[bf16,bf16]","[ND,ND]","[4, 64]","[2, 32]",true
+DeInterleave_2d_single_int8,"[8, 128]",int8,ND,"[-10, 10]","[8, 64], [8, 64]","[int8,int8]","[ND,ND]","[4, 64]","[2, 32]",true
+DeInterleave_2d_single_uint8,"[8, 128]",uint8,ND,"[0, 10]","[8, 64], [8, 64]","[uint8,uint8]","[ND,ND]","[4, 64]","[2, 32]",true
+DeInterleave_2d_single_int16,"[8, 128]",int16,ND,"[-10, 10]","[8, 64], [8, 64]","[int16,int16]","[ND,ND]","[4, 64]","[2, 32]",true
+DeInterleave_2d_single_uint16,"[8, 128]",uint16,ND,"[0, 10]","[8, 64], [8, 64]","[uint16,uint16]","[ND,ND]","[4, 64]","[2, 32]",true
+DeInterleave_2d_single_int32,"[8, 128]",int32,ND,"[-10, 10]","[8, 64], [8, 64]","[int32,int32]","[ND,ND]","[4, 64]","[2, 32]",true
+DeInterleave_2d_single_uint32,"[8, 128]",uint32,ND,"[0, 10]","[8, 64], [8, 64]","[uint32,uint32]","[ND,ND]","[4, 64]","[2, 32]",true

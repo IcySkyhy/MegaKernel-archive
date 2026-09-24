@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/third_party/mscclpp/include",
+                "/usr/local/cuda/include",
+                "/opt/rocm/include"
+            ],
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}

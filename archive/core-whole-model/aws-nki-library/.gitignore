@@ -1,0 +1,64 @@
+*~
+*#
+*.swp
+.nvim
+
+*.DS_Store
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+
+
+/.coverage
+/.coverage.*
+/.cache
+/.pytest_cache
+/.mypy_cache
+
+src/nkilib_src/nkilib/version/__init__.py
+/doc/_apidoc/
+/build
+!/build-tools/
+/dist
+/.venv
+/bin/
+/stubs
+/wheelhouse/
+log-neuron-cc.txt
+neuron_test_output*
+compilation_artifacts
+neuronx_cc*
+.mise.toml
+wasabi-toolbag
+.attach_pid*
+*.whl
+tmp
+pyrightconfig.json
+.vscode
+.env
+.kaena-remote/
+/artifacts-*/
+/results-*/
+*unison*
+.idea
+oncall_data/
+test/utils/bin/neuron_explorer_profile_upload
+qor_separated_analysis.csv
+/.agents/skills
+/.codex/agents
+.ruff_cache
+
+# NAKOS (Pi orchestrator) per-run outputs, written into the repo root by
+# optimize.mjs / agent.mjs. Gitignored so they never dirty the tree that the
+# optimize loop's safety gate guards, survive its per-iteration git reset/clean,
+# and don't register as source changes. (neuron_test_output* + /wheelhouse/ above
+# already cover the build/measure artifacts.)
+run_log.jsonl
+optimize_result.json
+optimize_status.json
+nakos_run.log
+nakos_config.json
+subagent_logs/
+.attempts/

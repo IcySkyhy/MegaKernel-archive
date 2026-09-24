@@ -1,0 +1,6 @@
+add_subdirectory(Distributed)
+if (TRITON_USE_ASCEND)
+    add_subdirectory(DTile)
+else()
+    add_subdirectory(SIMT)
+endif()

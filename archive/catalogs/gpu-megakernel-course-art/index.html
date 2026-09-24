@@ -1,0 +1,40 @@
+---
+layout: default
+title: GPU Megakernel 实战课
+description: 54 篇面向新手的 GPU Megakernel 课程，从 GPU 基础、Llama 数据流一直讲到资源驻留与可证伪实验。
+image: /assets/images/course-hero.png
+---
+<section class="course-hero shell">
+  <div class="hero-frame">
+    <img src="{{ '/assets/images/course-hero.png' | relative_url }}" alt="GPU Megakernel 课程封面：persistent control hall、页流水、TMA 与双 CTA">
+    <div class="hero-copy">
+      <p class="eyebrow">NO GPU BACKGROUND REQUIRED · 54 LESSONS · B200</p>
+      <h1>从一个大 Kernel，<br>学会读懂整张 <em>GPU 执行图。</em></h1>
+      <p>不懂 GPU 也可以开始。每课先用一个日常问题和生活类比讲清直觉，再逐层进入 GPU、Llama、Persistent Kernel、性能证据与可证伪实验。</p>
+      <div class="hero-actions"><a class="button button-primary" href="{{ '/lessons/gpu-kernel-mental-model/' | relative_url }}">从第 1 课开始</a><a class="button" href="{{ '/evidence/' | relative_url }}">先读证据规则</a></div>
+    </div>
+  </div>
+  <div class="stat-strip" data-reveal><div><strong>54</strong><span>篇完整课程</span></div><div><strong>54</strong><span>张 16:9 图解</span></div><div><strong>0</strong><span>GPU 基础要求</span></div><div><strong>B200</strong><span>主要硬件语境</span></div></div>
+</section>
+
+<section class="section shell">
+  <div class="section-heading" data-reveal><div><p class="section-index">COURSE MAP</p><h2>十个阶段，建立<br>一套可迁移的直觉。</h2></div><p>第 1–35 课从 GPU 基础、源码、调度与实验方法逐步搭建心智模型；第 36–54 课进入真实 B200 Megakernel 的资源、并发与证据审计。</p></div>
+
+  {% assign lessons = site.posts | sort: 'lesson' %}
+  {% assign current_stage = '' %}
+  {% for post in lessons %}
+    {% if post.stage != current_stage %}
+      {% unless current_stage == '' %}</div>{% endunless %}
+      {% assign current_stage = post.stage %}
+      <div class="stage-banner" data-reveal><strong>{{ post.stage }}</strong><span>{{ post.stage_description }}</span></div>
+      <div class="lesson-grid-cards">
+    {% endif %}
+      <a class="course-card" href="{{ post.url | relative_url }}" data-reveal>
+        <img src="{{ post.image | relative_url }}" alt="第 {{ post.lesson }} 课：{{ post.title }}" loading="lazy" width="1672" height="941">
+        <div class="course-card-body"><div class="course-card-meta"><span>LESSON {{ post.lesson }}</span><span>{{ post.read_time }} MIN</span></div><h3>{{ post.title }}</h3><p>{{ post.description }}</p></div>
+      </a>
+    {% if forloop.last %}</div>{% endif %}
+  {% endfor %}
+</section>
+
+<section class="section shell"><div class="stage-banner" data-reveal><div><p class="section-index">HOW TO READ</p><strong>建议顺序阅读；遇到缩写先查术语表，遇到性能数字先看证据标签。</strong></div><div class="hero-actions"><a class="button" href="{{ '/glossary/' | relative_url }}">查看术语表</a><a class="button" href="{{ '/about/' | relative_url }}">查看课程路线</a></div></div></section>

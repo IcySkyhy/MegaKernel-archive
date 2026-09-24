@@ -1,0 +1,46 @@
+# Copyright (c) 2025 Huawei Technologies Co., Ltd.
+# This program is free software, you can redistribute it and/or modify it under the terms and conditions of
+# CANN Open Software License Agreement Version 2.0 (the "License").
+# Please refer to the License for details. You may not use this file except in compliance with the License.
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
+# See LICENSE in the root of the software repository for the full text of the License.
+# -----------------------------------------------------------------------------------------------------------
+
+@PACKAGE_INIT@
+
+# 路径配置
+if (NOT @PROJECT_NAME@_PREFIX_DIR)
+    set_and_check(@PROJECT_NAME@_PREFIX_DIR "${PACKAGE_PREFIX_DIR}/@WHL_NAME@")
+endif ()
+set_and_check(@PROJECT_NAME@_INCLUDE_DIR  "${@PROJECT_NAME@_PREFIX_DIR}/include")
+set_and_check(@PROJECT_NAME@_INCLUDE_DIRS "${@PROJECT_NAME@_INCLUDE_DIR}")  # 兼容老版本
+
+# 包含目标文件
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+if (TARGET @PROJECT_NAME@::@PROJECT_NAME@)
+    set_target_properties(@PROJECT_NAME@::@PROJECT_NAME@
+        PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES ${@PROJECT_NAME@_INCLUDE_DIR}
+    )
+else ()
+    message(FATAL_ERROR "Target @PROJECT_NAME@::@PROJECT_NAME@ not exist.")
+endif ()
+
+# 设置版本信息
+set(@PROJECT_NAME@_VERSION @PROJECT_VERSION@)
+set(@PROJECT_NAME@_VERSION_MAJOR @PROJECT_VERSION_MAJOR@)
+set(@PROJECT_NAME@_VERSION_MINOR @PROJECT_VERSION_MINOR@)
+set(@PROJECT_NAME@_VERSION_PATCH @PROJECT_VERSION_PATCH@)
+
+# 设置结果
+set(@PROJECT_NAME@_FOUND TRUE)
+set(@PROJECT_NAME@_CONFIG_LOADED TRUE)
+
+if(@PROJECT_NAME@_VERBOSE)
+    message(STATUS "@PROJECT_NAME@ Configuration:")
+    message(STATUS "  Found        : ${@PROJECT_NAME@_FOUND}")
+    message(STATUS "  ConfigLoaded : ${@PROJECT_NAME@_CONFIG_LOADED}")
+    message(STATUS "  Version      : ${@PROJECT_NAME@_VERSION}")
+    message(STATUS "  Include dir  : ${@PROJECT_NAME@_INCLUDE_DIR}")
+endif()

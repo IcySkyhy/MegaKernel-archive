@@ -1,0 +1,258 @@
+# coding=utf-8
+# --------------------------------------------------------------------------------
+# Copyright (c) 2026 Huawei Technologies Co., Ltd. This program is free
+# software, you can redistribute it and/or modify it under the terms and
+# conditions of CANN Open Software License Agreement Version 2.0 (the
+# "License"). Please refer to the License for details. You may not use this file
+# except in compliance with the License. THIS SOFTWARE IS PROVIDED ON AN "AS IS"
+# BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+# BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A
+# PARTICULAR PURPOSE. See LICENSE in the root of the software repository for the
+# full text of the License.
+# --------------------------------------------------------------------------------
+
+cmake_minimum_required(VERSION 3.16.0)
+project(pto-kernels)
+set(LINUX TRUE)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_EXTENSIONS OFF)
+# cce-ld does not support --dependency-file; disable CMake's linker depfile
+# generation (introduced in CMake 3.26) to prevent link failures.
+set(CMAKE_LINK_DEPENDS_USE_LINKER OFF)
+
+option(PIP_INSTALL "True if building via pip" OFF)
+
+# Kernel toolchain selection.
+#
+# ON (default)  ASC language (find_package(ASC)), as in cann/ops-sparse. Needs
+# CANN >= 9.0 and ASCEND_HOME_PATH on the environment. OFF           legacy
+# ascendc.cmake, kept for comparison until the ASC path has had more mileage.
+#
+# Both paths reach the kernels through the pto_launch_* shims (declared in the
+# csrc/host/torch_*.h header that uses them), so the host code is identical
+# either way and neither path depends on the code-generated
+# aclrtlaunch_<kernel>.h headers that only the legacy toolchain emits.
+option(USE_ASC_LANGUAGE
+       "Compile kernels with the ASC language toolchain (CANN >= 9.0)" ON)
+
+set(BASE_MODE
+    "MEMORY"
+    CACHE STRING "Base addressing mode: MEMORY or REGISTER")
+set_property(CACHE BASE_MODE PROPERTY STRINGS "MEMORY" "REGISTER")
+
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+  set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+  set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+endif()
+
+find_package(Python REQUIRED COMPONENTS Interpreter Development)
+find_package(pybind11 CONFIG REQUIRED)
+find_package(Torch REQUIRED)
+
+# user-defined configuration
+set(SOC_VERSION
+    "Ascend910b4"
+    CACHE STRING "system on chip type")
+set(CMAKE_BUILD_TYPE
+    "Debug"
+    CACHE STRING "Build type Release/Debug (default Debug)" FORCE)
+set(CMAKE_INSTALL_PREFIX
+    "${CMAKE_CURRENT_LIST_DIR}/out"
+    CACHE STRING "path for install()" FORCE)
+if(DEFINED ASCEND_CANN_PACKAGE_PATH)
+
+elseif(DEFINED ENV{ASCEND_HOME_PATH})
+  set(ASCEND_CANN_PACKAGE_PATH
+      "$ENV{ASCEND_HOME_PATH}"
+      CACHE PATH "ASCEND CANN package installation directory" FORCE)
+endif()
+
+# SOC_VERSION -> NPU_ARCH: the ASC compiler takes the target architecture
+# instead of SOC_VERSION.
+string(TOLOWER "${SOC_VERSION}" SOC_VERSION_LOWER)
+if(SOC_VERSION_LOWER MATCHES "^ascend910b" OR SOC_VERSION_LOWER MATCHES
+                                              "^ascend910_93")
+  set(NPU_ARCH "dav-2201")
+elseif(SOC_VERSION_LOWER MATCHES "^ascend950")
+  set(NPU_ARCH "dav-3510")
+elseif(SOC_VERSION_LOWER MATCHES "^ascend310p")
+  set(NPU_ARCH "dav-2002")
+else()
+  message(
+    FATAL_ERROR
+      "Unsupported SOC_VERSION: ${SOC_VERSION}. Supported: ascend910b*, ascend910_93*, ascend950*, ascend310p*"
+  )
+endif()
+
+set(ASCEND_DRIVER_PATH /usr/local/Ascend/driver)
+set(CMAKE_COMPILER bisheng)
+set(CMAKE_C_COMPILER ${CMAKE_COMPILER})
+set(CMAKE_CXX_COMPILER ${CMAKE_COMPILER})
+
+add_compile_options(-D_FORTIFY_SOURCE=2 -O2 -std=c++17 -Wno-macro-redefined
+                    -Wno-ignored-attributes -fstack-protector-strong)
+
+add_link_options(-s -Wl,-z,relro -Wl,-z,now)
+
+set(CMAKE_CPP_COMPILE_OPTIONS -xc++ "SHELL:-include stdint.h"
+                              "SHELL:-include stddef.h")
+
+include_directories(${ASCEND_DRIVER_PATH}/kernel/inc)
+
+if(USE_ASC_LANGUAGE)
+  # find_package(ASC) provides the ASC language plus ASC-flavoured
+  # ascendc_library / ascendc_compile_definitions / ascendc_include_directories.
+  # enable_language(ASC) only resolves once find_package has put the ASC plugin
+  # on CMAKE_MODULE_PATH.
+  if(NOT DEFINED ENV{ASCEND_HOME_PATH})
+    message(
+      FATAL_ERROR
+        "USE_ASC_LANGUAGE requires ASCEND_HOME_PATH, source <cann>/set_env.sh first."
+    )
+  endif()
+  find_package(ASC REQUIRED)
+  enable_language(ASC)
+
+  # CMakeASCInformation.cmake derives CMAKE_ASC_CREATE_SHARED_MODULE from
+  # CMAKE_ASC_CREATE_SHARED_LIBRARY before that one is defined, so it ends up
+  # empty and MODULE targets (the pybind11 extension) fail to generate.
+  if(NOT CMAKE_ASC_CREATE_SHARED_MODULE)
+    set(CMAKE_ASC_CREATE_SHARED_MODULE "${CMAKE_ASC_CREATE_SHARED_LIBRARY}")
+  endif()
+else()
+  if(EXISTS ${ASCEND_CANN_PACKAGE_PATH}/tools/tikcpp/ascendc_kernel_cmake)
+    set(ASCENDC_CMAKE_DIR
+        ${ASCEND_CANN_PACKAGE_PATH}/tools/tikcpp/ascendc_kernel_cmake)
+  elseif(EXISTS
+         ${ASCEND_CANN_PACKAGE_PATH}/compiler/tikcpp/ascendc_kernel_cmake)
+    set(ASCENDC_CMAKE_DIR
+        ${ASCEND_CANN_PACKAGE_PATH}/compiler/tikcpp/ascendc_kernel_cmake)
+  elseif(EXISTS ${ASCEND_CANN_PACKAGE_PATH}/ascendc_devkit/tikcpp/samples/cmake)
+    set(ASCENDC_CMAKE_DIR
+        ${ASCEND_CANN_PACKAGE_PATH}/ascendc_devkit/tikcpp/samples/cmake)
+  else()
+    message(
+      FATAL_ERROR
+        "ascendc_kernel_cmake does not exist, please check whether the cann package is installed."
+    )
+  endif()
+
+  include(${ASCENDC_CMAKE_DIR}/ascendc.cmake)
+endif()
+
+# TORCH_NPU_PATH is the location where PyTorch Ascend Adapter (torch_npu) is
+# installed.
+execute_process(
+  COMMAND
+    python3 -c
+    "import os; import torch_npu; print(os.path.dirname(torch_npu.__file__))"
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  OUTPUT_VARIABLE TORCH_NPU_PATH)
+
+string(REPLACE "\n" "" TORCH_NPU_PATH "${TORCH_NPU_PATH}")
+string(REPLACE "path string is NULL" "" TORCH_NPU_PATH "${TORCH_NPU_PATH}")
+
+message("***********************************************************")
+message("* ASCEND_CANN_PACKAGE_PATH : ${ASCEND_CANN_PACKAGE_PATH}")
+message("* USE_ASC_LANGUAGE         : ${USE_ASC_LANGUAGE}")
+message("* SOC_VERSION / NPU_ARCH   : ${SOC_VERSION} / ${NPU_ARCH}")
+message("* TORCH_INSTALL_PREFIX     : ${TORCH_INSTALL_PREFIX}")
+message("* TORCH_NPU_PATH           : ${TORCH_NPU_PATH}")
+message("* TORCH_LIBRARIES          : ${TORCH_LIBRARIES}")
+message("***********************************************************")
+
+ascendc_library(
+  no_workspace_kernel
+  SHARED
+  csrc/kernel/kernel_tri_inv_col_sweep.cpp
+  csrc/kernel/kernel_abs.cpp
+  csrc/kernel/kernel_gdn_chunk_cumsum.cpp
+  csrc/kernel/kernel_csr_gather.cpp
+  csrc/kernel/kernel_kda_chunk_h.cpp
+  csrc/kernel/kernel_kda_chunk_o.cpp
+  csrc/kernel/kernel_gdn_chunk_h.cpp
+  csrc/kernel/kernel_gdn_scaled_dot_kkt.cpp
+  csrc/kernel/kernel_gdn_chunk_o.cpp
+  csrc/kernel/kernel_gdn_wy_fast.cpp
+  csrc/kernel/kernel_scan_ul1.cpp
+  csrc/kernel/kernel_simple_matmul.cpp
+  csrc/kernel/kernel_batch_matrix_square.cpp
+  csrc/kernel/kernel_tri_inv_ns.cpp
+  csrc/kernel/kernel_tri_inv_rec_unroll.cpp
+  csrc/kernel/kernel_tri_inv_trick.cpp
+  csrc/kernel/kernel_swiglu.cpp
+  csrc/kernel/kernel_kda_gate_cumsum.cpp
+  csrc/kernel/kernel_kda_wy.cpp
+  csrc/kernel/kernel_kda_kkt.cpp
+  csrc/kernel/kernel_flash_attention.cpp)
+
+if(USE_ASC_LANGUAGE)
+  # pto_kernels_ops is linked with RUNPATH $ORIGIN/build/lib, so the kernel
+  # library has to land there whichever toolchain built it.
+  set_target_properties(no_workspace_kernel PROPERTIES LIBRARY_OUTPUT_DIRECTORY
+                                                       ${CMAKE_BINARY_DIR}/lib)
+  target_compile_options(
+    no_workspace_kernel
+    PRIVATE $<$<COMPILE_LANGUAGE:ASC>:--npu-arch=${NPU_ARCH}>)
+endif()
+
+if(BASE_MODE STREQUAL "MEMORY")
+  message(STATUS "BASE_MODE is MEMORY")
+  ascendc_compile_definitions(no_workspace_kernel PRIVATE -DMEMORY_BASE)
+elseif(BASE_MODE STREQUAL "REGISTER")
+  message(STATUS "BASE_MODE is REGISTER")
+  ascendc_compile_definitions(no_workspace_kernel PRIVATE -DREGISTER_BASE)
+else()
+  message(FATAL_ERROR "BASE_MODE must be MEMORY or REGISTER, got: ${BASE_MODE}")
+endif()
+
+pybind11_add_module(pto_kernels_ops csrc/host/pybind11.cpp)
+# pybind11 does not work with C++20, so we set C++17 for the pybind11 module
+# target
+set_target_properties(pto_kernels_ops PROPERTIES CXX_STANDARD 17)
+
+target_link_libraries(pto_kernels_ops PRIVATE ${TORCH_LIBRARIES} c10 torch_cpu
+                                              torch_npu no_workspace_kernel)
+
+target_link_directories(pto_kernels_ops PRIVATE ${TORCH_INSTALL_PREFIX}/lib
+                        ${TORCH_NPU_PATH}/lib)
+
+target_include_directories(
+  pto_kernels_ops
+  PRIVATE ${TORCH_NPU_PATH}/include ${TORCH_INCLUDE_DIRS}
+          ${TORCH_INSTALL_PREFIX}/include
+          ${TORCH_INSTALL_PREFIX}/include/torch/csrc/api/include)
+
+if(PIP_INSTALL)
+  message(STATUS ">>> Running under scikit-build-core (pip install)")
+
+  target_link_options(pto_kernels_ops PRIVATE "LINKER:-no-as-needed")
+
+  # install pto_kernels_ops.so under site-packages/pto_kernels
+  install(TARGETS pto_kernels_ops LIBRARY DESTINATION pto_kernels)
+
+  # Set RPATH to $ORIGIN/lib (See Python package layout)
+  set_target_properties(
+    pto_kernels_ops
+    PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE
+               INSTALL_RPATH_USE_LINK_PATH TRUE
+               LINK_FLAGS "-Wl,-rpath,\${ORIGIN}/lib")
+
+  # install dynamic libraries under site-packages/pto_kernels/libs
+  install(TARGETS no_workspace_kernel LIBRARY DESTINATION pto_kernels/lib)
+else()
+  message(STATUS ">>>======================================================")
+  message(STATUS ">>> Ignoring dynamic libraries COPY inside Python wheel.")
+  message(STATUS ">>>======================================================")
+
+  # Set RPATH to $(pwd)/build/lib
+  set_target_properties(
+    pto_kernels_ops
+    PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE
+               INSTALL_RPATH_USE_LINK_PATH TRUE
+               LINK_FLAGS "-Wl,-rpath,\${ORIGIN}/build/lib"
+               LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+endif()

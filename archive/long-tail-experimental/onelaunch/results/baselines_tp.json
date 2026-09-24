@@ -1,0 +1,29 @@
+{
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "gpu": "2x NVIDIA H100 80GB HBM3 SXM (NVLink, 18 links x 26.5 GB/s)",
+  "peak_gbs_per_gpu": 3350.0,
+  "config": {"context": 512, "decode_tokens": 100, "batch": 1},
+  "status": "measured on 2x H100 SXM (RunPod). Sharding verified argmax 8/8 vs single-GPU oracle on H100.",
+  "single_gpu_h100": {
+    "fused_megakernel_ms": 2.028,
+    "fused_megakernel_tok_s": 493,
+    "weight_bandwidth_floor_ms": 0.923,
+    "x_floor": 2.20,
+    "note": "on H100 the fused kernel is 2.2x off the weight floor (vs 1.21x on the 4090) -- fixed attention/small-matrix/launch overheads don't shrink when bandwidth is 3.3x larger, so they dominate a bigger share."
+  },
+  "tensor_parallel_h100": {
+    "code_path_note": "TPDecoder has extra o_buf/d_buf fp32 copies + lm_head all-gather vs the plain model_graph path, so its TP=1 (2.815) is the fair same-code baseline for TP=2, not the 2.028 plain single-GPU number.",
+    "tp1_end_to_end_ms": 2.815,
+    "tp2_compute_ms": 2.060,
+    "tp2_comm_ms": 0.915,
+    "tp2_total_ms": 2.975,
+    "tp2_tok_s": 336
+  },
+  "finding": "Tensor parallelism did NOT speed up batch-1 decode here. Halving the per-GPU weights cut compute 2.815 -> 2.060 ms (saved 0.76 ms), but the per-layer all-reduce latency added 0.92 ms (2 all-reduce/layer x 28 layers, ~16 us each -- latency-bound on tiny 6KB payloads, not bandwidth-bound), cancelling the gain. TP=2 (2.975) ~= TP=1 (2.815). The honest lesson: TP wins batch-1 latency only when per-GPU weight-streaming time dominates the fixed all-reduce latency -- i.e. larger models or slower per-GPU bandwidth. On a fast H100 with a small model, comm latency wins, and TP is the wrong tool for single-stream latency.",
+  "caveats": [
+    "NCCL collectives would not capture inside a CUDA graph on this stack (torch 2.4.1 + NCCL, even with NCCL_CUMEM_ENABLE=0 and pre-capture barriers -- it deadlocks). So TP=2 comm is measured EAGER: 56 all-reduce + 1 all-gather in a Python loop. Per-call launch overhead is NOT amortized, so 0.915 ms is an UPPER BOUND; a captured/fused comm path would be lower and could push TP=2 toward break-even.",
+    "Production TP fuses the all-reduces and overlaps compute/comm; at batch 1 there is little compute to overlap the comm with.",
+    "The qualitative conclusion (TP marginal for small-model batch-1 latency on a fast GPU) is robust regardless of the comm-measurement method."
+  ],
+  "cost": "2x H100 SXM secure, ~20 min, ~$2.2."
+}

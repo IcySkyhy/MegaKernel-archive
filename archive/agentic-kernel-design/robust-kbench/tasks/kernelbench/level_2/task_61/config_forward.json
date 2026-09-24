@@ -1,0 +1,33 @@
+{
+    "single_input_configs": [
+        {
+            "batch_size": 16,
+            "D": 8,
+            "H": 16,
+            "W": 16
+        }
+    ],
+    "single_init_configs": [
+        {
+            "out_channels": 128,
+            "kernel_size": 3,
+            "groups": 8,
+            "bias": false,
+            "eps": 1e-05
+        }
+    ],
+    "single_shared_configs": [
+        {
+            "in_channels": 64
+        }
+    ],
+    "multi_input_configs": [
+        {}
+    ],
+    "multi_init_configs": [
+        {}
+    ],
+    "multi_shared_configs": [
+        {}
+    ]
+}
