@@ -1,0 +1,18 @@
+{
+  "tensor": "res2.bin",
+  "shape": [
+    1,
+    2560
+  ],
+  "dtype": "fp32",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 10240,
+  "sha256": "0044fe63bdbc92f40b520ea7cf76be33bbcaa505023e13fe7bcbf00f8b3950be",
+  "kind": "golden",
+  "description": "m6#2 residual out (fp32) from the quant-aware moe_output"
+}

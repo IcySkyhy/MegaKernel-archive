@@ -1,0 +1,114 @@
+# probe_aiv_sync 证据生成记录（M64）
+date            : 2026-09-27T01:23:47+00:00
+host            : Linux 6.6.0-132.0.0.111.oe2403sp3.x86_64 x86_64
+npu             : +========+==================+===============+=====================================================+
+CANN/compiler   : /usr/local/Ascend/cann-9.1.0/bin/bisheng
+bisheng version : 2026-07-30T20:53:21+08:00 clang version 15.0.5 (clang-5c68a1cb1231 flang-5c68a1cb1231) Target: x86_64-unknown-linux-gnu 
+ASC arch        : dav-3510  (cmake CMAKE_ASC_ARCHITECTURES)
+cmake           : cmake version 3.27.9
+reps per variant: 1
+per-run timeout : 60s
+
+## 复现命令（本目录执行）
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j4
+bash run_probe.sh                    # 本文件（REPS 默认 9）
+
+## 单变体手工复现
+  ./build/probe_aiv_sync <variantIdx|name> <runNo> [outdir] [--snap] [--trace]
+  ./build/probe_aiv_sync                       # 打印全部变体清单
+  ./build/probe_visibility <variantIdx|name> <runNo>
+  ./build/probe_m53_reverse                    # M53 原探针（逐字副本）
+
+## 源码 sha256
+63691b9a8ff427d653003dcc4e2b6e0a6c64afb0e7b612a9bcac5f18f7c7b9e3  probe_aiv_sync.asc
+97f1ea3a0e8e0f3550b38a075b3bd84bae1a2cc782e62c7106218862938cd033  probe_visibility.asc
+eb89cfc6c1478a565f1eb407c5f339b288af4c880d8624fe4527463fa4e2ad61  probe_aic_aiv.asc
+db1fcf50501d5ef4103054404aaf0fe6d97e0eaba5956a0bb9ba79d5db9a36bf  probe_m53_reverse.asc
+9eb0240cef7044d82440f8a4dc02129c921819a5503289b8569d15deff694993  run_probe.sh
+897fc8d01539725fbfa4f7bdb58a186eb25499e43dce4190738af8f8777adb80  run_aic_probe.sh
+575f69f5dd20d27ba3074efb65e93f24f4e157fe5a8ef2add7ea515b79956328  tools/analyze_snap.py
+70cbc4ab21f6fe3a2e3729c2c6532bebb9329b7820371424475e64938f3156fe  tools/make_tables.py
+4fb752816ccc1c0ce53546dc1fbd22e511f8e6068fcf4e2a413067aa2531fe72  CMakeLists.txt
+
+## 交卷前刷新（r4；以本块为准）
+date : 2026-09-27T01:25:19+00:00
+自检三件（命令 → rc）：
+  python3 tools/verify_section9_claims.py      -> rc=0   （V1..V6 全过 = 19/19 段）
+  python3 tools/verify_controls.py             -> rc=0   （0 条对照不符合预期；含 ★删一行真实 stdout 必须 FAIL）
+  python3 tools/crosscheck_diag.py <A2 log> <A2 snap> -> rc=0（双源逐轮一致）
+
+63691b9a8ff427d653003dcc4e2b6e0a6c64afb0e7b612a9bcac5f18f7c7b9e3  probe_aiv_sync.asc
+97f1ea3a0e8e0f3550b38a075b3bd84bae1a2cc782e62c7106218862938cd033  probe_visibility.asc
+eb89cfc6c1478a565f1eb407c5f339b288af4c880d8624fe4527463fa4e2ad61  probe_aic_aiv.asc
+db1fcf50501d5ef4103054404aaf0fe6d97e0eaba5956a0bb9ba79d5db9a36bf  probe_m53_reverse.asc
+f56f1abaa8da4678ac1bb50715aa30fa208d5b1d35dc5c9a11a869e6fee248a8  probe_api_check.asc
+9eb0240cef7044d82440f8a4dc02129c921819a5503289b8569d15deff694993  run_probe.sh
+897fc8d01539725fbfa4f7bdb58a186eb25499e43dce4190738af8f8777adb80  run_aic_probe.sh
+b2158b100e1c91d046cf2a849b860f7659df19c05d52229ff331030b9b5a6242  tools/analyze_snap.py
+8404da928640776c8876508e88aa6cfb1d4cb61e8732d7b872d07b96b50123c0  tools/make_tables.py
+da82d1c4bab231260bbee52922632edc9da31b4ebc7344cb040348d55e2a92b0  tools/dump_section9_evidence.sh
+07a3162b857ec24126f1b851a6db61db56df059050bc4798a3ec0d7f65a6aeb9  tools/verify_section9_claims.py
+298cc65e3e35ce64f46fa9ed51824ac8b0708e611e0ef9c0cbbf8e765e30ccaf  tools/verify_controls.py
+c2cb683666e0ba9ae6f80466b632324d9aecafd53f115b77828e05d6805c78be  tools/crosscheck_diag.py
+4fb752816ccc1c0ce53546dc1fbd22e511f8e6068fcf4e2a413067aa2531fe72  CMakeLists.txt
+ed00796371dae381309607078ed85426f8b81d2f86fc024f80b4aa5043255c7a  README.md
+a87dd0e8251e38373fe8a307e2836ae39de5b8f3b4f7975b31ec59212cad54c1  evidence/section9_greps.txt
+
+### verify_section9_claims 输出（原文）
+tag                      stdout footer  decl exit   V1  V2  V3  V4  V5  结论
+m20_processaiv_dws            8      8     8    0   OK  OK  OK  OK  OK  OK
+m20_barrierAiv_calls          3      3     3    0   OK  OK  OK  OK  OK  OK
+m20_barrierAiv_def            7      7     7    0   OK  OK  OK  OK  OK  OK
+m15_phase_boundary            2      2     2    0   OK  OK  OK  OK  OK  OK
+m15_phase_body                9      9     9    0   OK  OK  OK  OK  OK  OK
+m15_chain_loop                8      8     8    0   OK  OK  OK  OK  OK  OK
+m15_chain_sync_calls         19     19    19    0   OK  OK  OK  OK  OK  OK
+m15_nl_def                    1      1     1    0   OK  OK  OK  OK  OK  OK
+m15_head_loop                 2      2     2    0   OK  OK  OK  OK  OK  OK
+m15_head_loop_ctx            11     11    11    0   OK  OK  OK  OK  OK  OK
+m15_state_access              4      4     4    0   OK  OK  OK  OK  OK  OK
+m15_ws_segments              14     14    14    0   OK  OK  OK  OK  OK  OK
+m15_aic_inline               10     10    10    0   OK  OK  OK  OK  OK  OK
+aic_splitcube_pipe           59     59    59    0   OK  OK  OK  OK  OK  OK
+m20_barrierAic_def            6      6     6    0   OK  OK  OK  OK  OK  OK
+m20_barrierAic_calls          4      4     4    0   OK  OK  OK  OK  OK  OK
+doc_counter_repo              1      1     1    0   OK  OK  OK  OK  OK  OK
+doc_counter_tpl               1      1     1    0   OK  OK  OK  OK  OK  OK
+doc_counter_keyfeat           4      4     4    0   OK  OK  OK  OK  OK  OK
+
+段数: 19；README 引用: 19；未引用段: 0 -> (none)  [V6 OK]
+FAIL 数: 0   (V1=行数一致 V2=声明一致 V3=exit0 V4=无错误文本 V5=列出行长在块内 V6=无未引用段)
+### verify_controls 输出（原文）
+# 变异正对照（全部在 /tmp 副本里做）：/tmp/m64_controls_wdzlzwkx
+对照                                         注入生效   自检 rc   期望  结论
+N0 原样（负向对照）                                True       0    0  OK
+M1 README 声明行数改错                           True       1    1  OK
+M2 ★删一行真实 stdout（页脚不动）                     True       1    1  OK
+M3 改 dump 页脚计数                             True       1    1  OK
+M4 删掉完整行数标注                                True       1    1  OK
+M5 删掉列出里的一个行号                              True       1    1  OK
+M6 exit 翻成非 0                              True       1    1  OK
+M6' stdout 换错误文本（exit 仍 0）                 True       1    1  OK
+
+不符合预期的对照数：0
+
+## 交卷前刷新（r4 终稿；以本块为准）
+date : 2026-09-27T01:25:54+00:00
+自检：verify_section9_claims.py rc=0；verify_controls.py rc=0；dump 生成器在任何段 exit≠0 时非零退出（本块生成时 rc=0）
+63691b9a8ff427d653003dcc4e2b6e0a6c64afb0e7b612a9bcac5f18f7c7b9e3  probe_aiv_sync.asc
+97f1ea3a0e8e0f3550b38a075b3bd84bae1a2cc782e62c7106218862938cd033  probe_visibility.asc
+eb89cfc6c1478a565f1eb407c5f339b288af4c880d8624fe4527463fa4e2ad61  probe_aic_aiv.asc
+db1fcf50501d5ef4103054404aaf0fe6d97e0eaba5956a0bb9ba79d5db9a36bf  probe_m53_reverse.asc
+f56f1abaa8da4678ac1bb50715aa30fa208d5b1d35dc5c9a11a869e6fee248a8  probe_api_check.asc
+9eb0240cef7044d82440f8a4dc02129c921819a5503289b8569d15deff694993  run_probe.sh
+897fc8d01539725fbfa4f7bdb58a186eb25499e43dce4190738af8f8777adb80  run_aic_probe.sh
+b2158b100e1c91d046cf2a849b860f7659df19c05d52229ff331030b9b5a6242  tools/analyze_snap.py
+8404da928640776c8876508e88aa6cfb1d4cb61e8732d7b872d07b96b50123c0  tools/make_tables.py
+77b81c8befd4a267ed72c8a5d948e48e3a98ae126048dafa3ebb836a58aa9f09  tools/dump_section9_evidence.sh
+07a3162b857ec24126f1b851a6db61db56df059050bc4798a3ec0d7f65a6aeb9  tools/verify_section9_claims.py
+298cc65e3e35ce64f46fa9ed51824ac8b0708e611e0ef9c0cbbf8e765e30ccaf  tools/verify_controls.py
+c2cb683666e0ba9ae6f80466b632324d9aecafd53f115b77828e05d6805c78be  tools/crosscheck_diag.py
+4fb752816ccc1c0ce53546dc1fbd22e511f8e6068fcf4e2a413067aa2531fe72  CMakeLists.txt
+194f7002f5cf6f3c949d5b0ad788a3b5def0df84183957833884fa34f2b9fffc  README.md
+2fc33d4540e11a71eb3f45449d2599af638a2d4a7019697c6c169644d01b29a8  evidence/section9_greps.txt

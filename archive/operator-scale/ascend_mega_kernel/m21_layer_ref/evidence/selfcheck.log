@@ -1,0 +1,97 @@
+
+=== A. HC ops vs vLLM's own torch references (test_hc_ops.py) ===
+  [PASS] A1 grouped_gemma_rmsnorm: 0 ulp
+  [PASS] A2 hc_gate_mix: 0 ulp
+  [PASS] A3 hc_combine: 0 ulp
+  [PASS] A4 hc_combine unit injection bit-exact: 0 ulp
+  [PASS] A5 hc_combine_norm materialized: 0 ulp
+  [PASS] A6 hc_combine_norm normalized: 0 ulp
+  [PASS] A7 unit-injection combine_norm == gemma_rmsnorm(bf16(h+e)): 0 / 0 ulp
+
+=== B. HC mixer vs EXECUTED official common/hyperconnection.py (layer 0) ===
+  [PASS] B1a normed input: official GroupedGemmaRMSNorm vs ref/hc.py: max abs 3.05e-05, max 1 bf16-ulp of xn (0 ulp if restricted to ≥2^-8·max elements; the difference lives in the low binades)
+  [PASS] B1c cause of B1a: `mean(-1)` instead of `sum(-1)/G` is bit-identical: reduction order alone explains the 1-ulp difference (`mean(-1)` == official, `sum(-1)/G` == Triton kernel and ref/hc.py)
+  [PASS] B1b official common.mix() vs ref/hc.py mix() (block_input): max abs 0.0156 = 0.50 bf16-ulp at scale 0.0312 (amplified from the 1-ulp xn difference through the 10240->320->10240 chain)
+  [PASS] B2 official eager combine vs ref/hc.py hc_combine (state): max abs 0.00195 = 1.00 bf16-ulp at scale 0.00195
+  [PASS] B3 official eager mix(combined) vs fused combine_and_mix block_input: max abs 0.0312 = 1.00 bf16-ulp at scale 0.0312 <-- this is the docs/14 §10 item 3 question
+  [PASS] B4 fused-vs-eager state rounding is OBSERVABLE (docs/14 §10 item 3): 14029/40960 materialized-state elements differ (34.25%) -> the early bf16 round at nvidia/ops/hc.py:327 is a real, measurable effect; a bit-exact L0 comparison of `layer.out.hidden` MUST replicate it
+
+=== C. MXFP4 dequant vs repo numpy golden (layer 0 real bytes) ===
+  [PASS] C1 our numpy dequant vs our torch dequant: max abs diff 0.0
+  [PASS] C2 repo golden dequant vs our torch dequant: max abs diff 0.0
+
+=== D. tensor contract vs docs/14 §2.3 ===
+  [PASS] D1 layer0 attn_hyper_connection shapes: all 4 match docs/14 §2.3
+  [PASS] D1 layer0 mlp_hyper_connection shapes: all 4 match docs/14 §2.3
+  [PASS] D2 final mixer has no block_inject_weight (use_combine=False): 3 tensors, hc_norm [10240]
+  [PASS] D3 layer3 QSA weight shapes: all 9 match the QSA spec
+  [PASS] D4 layer dispatch: layer3 layer_type=full_attention but indexer present -> QSA: layer_types[3]='full_attention', indexer_n_heads=4
+  [PASS] D5 ple_layer_ids is 1-based -> 0-based layer 1: ple_layer_ids=[2]
+  [PASS] D6 query/key/value head geometry: GDN 16k/48v x 128 ; conv_dim = 2*2048+6144 = 10240
+
+=== E. non-hollowness (layer 0) ===
+  [PASS] E1 input sensitivity (1 element of hidden changed): 24/24 dumped segments changed; e.g. ['attn.out', 'attn_hc.block_input', 'attn_hc.hidden', 'attn_hc.injection']
+  [PASS] E2 layer boundary state moves (attn_hc.hidden != input hidden): fused combine materializes a new 4-stream state
+  [PASS] E3 ssm_state is non-zero after the run: |ssm_state|_max = 0.2953
+  [PASS] E4 conv_state is non-zero after the run: |conv_state|_max = 10.19
+  [PASS] E5 ssm_state evolves across steps: max |ssm_step1 - ssm_step2| = 0.07255
+  [PASS] E5b conv_state depends only on the newest 3 columns, ssm_state on the whole history: perturbing column 0 only: conv_state identical (max |d|=0), ssm_state moves (max |d|=0.003147)
+  [PASS] E5c step 2 MoE output differs from step 1 MoE output: max |out_1-out_2| = 0.1409
+  [PASS] E6 every dumped float segment is non-zero: 23 float segments, zero-only: none
+
+=== E-lite: QSA layer 3 runs ===
+  [PASS] F1 QSA token_indices count column: row -1 count = 4 for m=4
+  [PASS] F2 QSA compressed keys computed for complete groups: 1 rows = m // 4
+  [PASS] F3 QSA sparse attention: vectorized vs head-by-head recompute: max 1 bf16-ulp (summation order only)
+  [PASS] F4 QSA packed selection invariants (count col / causality / tail): 4 rows checked; violations: none
+
+=== H. QSA top-k truncation (T=2101 > token_topk=2048) ===
+  [PASS] H1 block top-k truncates at block_topk = 512: visible_blocks = 525 > 512, selected blocks = 512
+  [PASS] H2 count column = min(visible,512)*4 + tail_count: count = 2049 = 2048 + 1 (tail), fits output_width 2051
+  [PASS] H3 every selected token is a complete-group token or the causal tail: non-(-1) entries = 2049, max token = 2100 = T-1
+  [PASS] H4 logits dump covers all visible blocks, not just block_topk: last row has 525/525 finite scores, dump shape (2101, 525) -- top-512 is taken FROM these 525, as the kernel does
+
+=== G. global final mixer (use_combine=False) ===
+  [PASS] G1 final mixer has no block_inject / returns no injection: `hyper_connection_mixer` ships only 3 tensors (vLLM: use_combine=False, nvidia/model.py:437-441)
+  [PASS] G2 final mixer output shapes: multi_hidden (4, 10240) = [T,10240], sample_hidden (4, 2560) = [T,2560] (feeds lm_head, :590)
+
+=== I. official-source anchors resolve and are in range ===
+  [PASS] I1 every anchor resolves to ONE intended file and is in range: 522 anchors: 522 verified against the intended file, 0 UNVERIFIED (ambiguous / root absent), 0 out of range
+== negative controls for the anchor checker ==
+  [OK  ] `R:tools/golden/moe_block_ref.py:57-59` -> verified (expected verified)
+          a real anchor into this repo
+  [OK  ] `vllm/model_executor/layers/rotary_embedding/base.py:80-102` -> verified (expected verified)
+          a real anchor with a full path
+  [OK  ] `causal_conv1d.py:600-600` -> out_of_range (expected out_of_range)
+          BASENAME_MAP points at the 147-line cpu file; 600 exists only in mamba/ops/causal_conv1d.py (1288 lines) -- must NOT pass via the twin
+          .anchor_selftest_case.md:1: `causal_conv1d.py:600-600` OUT OF RANGE for `vllm/model_executor/layers/mamba/ops/cpu/causal_conv1d.py` (len 147); symbol there: cau
+  [OK  ] `hc.py:460-460` -> verified (expected verified)
+          BASENAME_MAP points at qwen4_exp/nvidia/ops/hc.py (504 lines); 460 <= 504, in range -- proves the map is used and the line test is real
+  [OK  ] `hc.py:700-700` -> out_of_range (expected out_of_range)
+          qwen4_exp/nvidia/ops/hc.py is 504 lines and models/hy_v4/nvidia/hc.py is 390 -- 700 exists in neither, so the mapped file must be the one tested
+          .anchor_selftest_case.md:1: `hc.py:700-700` OUT OF RANGE for `vllm/models/qwen4_exp/nvidia/ops/hc.py` (len 504); symbol there: hc_combine_norm
+  [OK  ] `nonexistent_twin_name.py:1-1` -> unverified (expected unverified)
+          unmapped bare basename with no candidate -> UNVERIFIED, never a pass
+          .anchor_selftest_case.md:1: `nonexistent_twin_name.py:1-1` UNVERIFIED (ambiguous); candidates: no candidate. Add an explicit BASENAME_MAP entry or a directory-q
+  [OK  ] `qsa_indexer:94` -> not_checked (expected not_checked)
+          KNOWN BLIND SPOT: a reference written without a file extension is invisible to the matcher. It must show up in the NOT-CHECKED list, never as a pass
+          .anchor_selftest_case.md:1: `qsa_indexer:94` (no file extension -> NOT CHECKED by this matcher)
+RESULT: OK (7/7 cases as expected)
+  [PASS] I2 anchor checker negative controls (would silently pass via a twin file): see the printed cases above: an anchor that exists only in the twin file is reported OUT OF RANGE / UNVERIFIED, never OK
+
+=== J. copied safetensors_reader is verbatim upstream ===
+  [PASS] J1 copy sha256 == upstream sha256: copy 72b93ca2f2727c68 / upstream 72b93ca2f2727c68
+  [PASS] J2 pinned sha256 matches this copy: pinned 72b93ca2f2727c68
+  [PASS] J3 torch API on the reader behaves (bf16 is a reinterpretation): TorchShardReader.load_torch / load_torch_f32 present (bf16 = bit reinterpretation, no rounding); bf16 bit-reinterpretation probe 0x3F80 -> 1.0 OK
+
+=== K. QSA segment vs vLLM's own torch references (test_qsa_reference.py) ===
+  [PASS] K0 copied reference bodies still match upstream line range 93-234: sha256 0f5c5c7c115983e3 (match)
+  [PASS] K1 indexer logits == official torch reference x sqrt(128) (its :103 scale): max rel diff 8.99e-08 over 8128 scored entries; the unscaled difference is exactly the 1/sqrt(128) factor that only the test reference applies
+  [PASS] K2 block top-k SET matches the official reference for every row: 256 rows compared as sets (kernel order is unspecified in both); 0 mismatching rows
+  [PASS] K3 expanded token SET matches the official reference for every row: 256 rows compared as sets; 0 mismatching. The official helper compacts -1 to the end and has no count column (:128-164) while the kernel keeps positions + count (:268-276) -- sets are the invariant
+  [PASS] K5 visible_blocks->score->top-k end-to-end via _qsa_select_paged_reference: 256 rows compared as sets; 0 mismatching. This is the only check where BOTH sides compute `visible_blocks` independently of each other (K1 passes mine in), so it is what covers that formula at all
+  [PASS] K4 sparse attention == official reference (bf16-round, then *sigmoid(gate)): max 2 bf16-ulp over 1572864 elements; the official helper returns pre-gate output (test_qsa_reference.py:198-234) and the test applies `expected * sigmoid(output_gate)` outside (test_qsa_reference.py:1077)
+
+=== selfcheck summary: 51 checks, 0 FAIL ===
+docs/14 §10 item 3 measurement: eager-vs-fused state max 0.001953125 ulp, block_input max 0.03125 ulp
+RESULT: OK (51/51 judgements passed)

@@ -1,0 +1,41 @@
+[check] PASS  A1 6 项每专家张量的 RHS 已是 TOTAL_MAX 基且不含 NUM_EXPERTS: 不符项 = （6 项无一项落在 NUM_EXPERTS 上）
+[check] PASS  A2 routed 侧用紧凑行号 rowBase 寻址的符号集 = 6 项: routed = ['WS_AQ', 'WS_AS', 'WS_GU', 'WS_HQ', 'WS_HS', 'WS_Y']；集外符号 = []
+[check] PASS  A2 shared 侧用行号寻址的符号集 = 6 项 + _SHD: shared = ['WS_AQ_SHD', 'WS_AS_SHD', 'WS_GU_SHD', 'WS_HQ_SHD', 'WS_HS_SHD', 'WS_Y_SHD']
+[check] PASS  A2 紧凑寻址符号集与被重定尺的 6 项**同一集合**: routed ∩ 6 项（按 SZ_↔WS_ 映射）= ['WS_AQ', 'WS_AS', 'WS_GU', 'WS_HQ', 'WS_HS', 'WS_Y']；routed − 6 项 = []；6 项 − routed = []
+[check] PASS  A3 routed rowBase = offGm.GetValue(slot) + mt*BASE_M（两组 GEMM 各 1 处）: 命中 = 2 处
+[check] PASS  A4 量化器 routed 行数 = Σt_e（startOff[NUM_EXPERTS]）: 命中 = 1 处
+[check] PASS  当前档 SZ_AQ 的紧凑/padded 行数（诊断读数）: SZ_AQ: 紧凑 256 行 vs padded 256 行（同值）
+[check] PASS  当前档 SZ_AS 的紧凑/padded 行数（诊断读数）: SZ_AS: 紧凑 256 行 vs padded 256 行（同值）
+[check] PASS  当前档 SZ_GU 的紧凑/padded 行数（诊断读数）: SZ_GU: 紧凑 256 行 vs padded 256 行（同值）
+[check] PASS  当前档 SZ_HQ 的紧凑/padded 行数（诊断读数）: SZ_HQ: 紧凑 256 行 vs padded 256 行（同值）
+[check] PASS  当前档 SZ_HS 的紧凑/padded 行数（诊断读数）: SZ_HS: 紧凑 256 行 vs padded 256 行（同值）
+[check] PASS  当前档 SZ_Y 的紧凑/padded 行数（诊断读数）: SZ_Y: 紧凑 256 行 vs padded 256 行（同值）
+[check] ---- 布局算术：当前档 NUM_EXPERTS=4 / TOPK_MAX=4 ----
+[check] PASS  [E=4] SZ_AQ == AlignUp(TOTAL_MAX * (HIDDEN / 2), WS_ALIGN): NUM_EXPERTS=4/TOPK_MAX=4: TOTAL_MAX = 256 行；单位 = 1280 B/行；读数 = 327680（期望 327680）
+[check] PASS  [E=4] SZ_AS == AlignUp(TOTAL_MAX * (GU_SCALE_STRIDE), WS_ALIGN): NUM_EXPERTS=4/TOPK_MAX=4: TOTAL_MAX = 256 行；单位 = 80 B/行；读数 = 20480（期望 20480）
+[check] PASS  [E=4] SZ_GU == AlignUp(TOTAL_MAX * (GU_N * 2), WS_ALIGN): NUM_EXPERTS=4/TOPK_MAX=4: TOTAL_MAX = 256 行；单位 = 2560 B/行；读数 = 655360（期望 655360）
+[check] PASS  [E=4] SZ_HQ == AlignUp(TOTAL_MAX * (INTER / 2), WS_ALIGN): NUM_EXPERTS=4/TOPK_MAX=4: TOTAL_MAX = 256 行；单位 = 320 B/行；读数 = 81920（期望 81920）
+[check] PASS  [E=4] SZ_HS == AlignUp(TOTAL_MAX * (DN_SCALE_STRIDE), WS_ALIGN): NUM_EXPERTS=4/TOPK_MAX=4: TOTAL_MAX = 256 行；单位 = 32 B/行；读数 = 8192（期望 8192）
+[check] PASS  [E=4] SZ_Y == AlignUp(TOTAL_MAX * (HIDDEN * 2), WS_ALIGN): NUM_EXPERTS=4/TOPK_MAX=4: TOTAL_MAX = 256 行；单位 = 5120 B/行；读数 = 1310720（期望 1310720）
+[check] PASS  [E=4] SZ_LOGITS == AlignUp(M_MAX*NUM_EXPERTS*4, WS_ALIGN)（随 E 增长、不缩）: NUM_EXPERTS=4: SZ_LOGITS = 1024 B == AlignUp(1024, 32)；≥ M_MAX*E*4 = 1024 B
+[check] PASS  [E=4] 6 项行数 ≥ Σt_e 上界（= m*topk ≤ M_MAX*TOPK_MAX = TOTAL_MAX）: NUM_EXPERTS=4/TOPK_MAX=4: Σt_e 上界 = M_MAX*TOPK_MAX = 256 行；6 项均按该上界定尺
+[check] PASS  [E=4] WS_BYTES（诊断读数）: NUM_EXPERTS=4/TOPK_MAX=4: WS_BYTES = 7685472 B
+[check] PASS  当前档 WS_BYTES == 改前归档值 7,685,472（当前档数值不变）: WS_BYTES = 7685472（归档/M77 §3.2「今天」= 7,685,472）
+[check] PASS  当前档 SZ_AQ == padded 算式 AlignUp(NUM_EXPERTS*M_MAX*(HIDDEN / 2), WS_ALIGN)（no-op）: 紧凑 = 327680；padded = 327680
+[check] PASS  当前档 SZ_AS == padded 算式 AlignUp(NUM_EXPERTS*M_MAX*(GU_SCALE_STRIDE), WS_ALIGN)（no-op）: 紧凑 = 20480；padded = 20480
+[check] PASS  当前档 SZ_GU == padded 算式 AlignUp(NUM_EXPERTS*M_MAX*(GU_N * 2), WS_ALIGN)（no-op）: 紧凑 = 655360；padded = 655360
+[check] PASS  当前档 SZ_HQ == padded 算式 AlignUp(NUM_EXPERTS*M_MAX*(INTER / 2), WS_ALIGN)（no-op）: 紧凑 = 81920；padded = 81920
+[check] PASS  当前档 SZ_HS == padded 算式 AlignUp(NUM_EXPERTS*M_MAX*(DN_SCALE_STRIDE), WS_ALIGN)（no-op）: 紧凑 = 8192；padded = 8192
+[check] PASS  当前档 SZ_Y == padded 算式 AlignUp(NUM_EXPERTS*M_MAX*(HIDDEN * 2), WS_ALIGN)（no-op）: 紧凑 = 1310720；padded = 1310720
+[check] ---- 布局算术：E=512 假设档（只重算算术；仓库常量未改）----
+[check] PASS  [E=512] SZ_AQ == AlignUp(TOTAL_MAX * (HIDDEN / 2), WS_ALIGN): NUM_EXPERTS=512/TOPK_MAX=10: TOTAL_MAX = 640 行；单位 = 1280 B/行；读数 = 819200（期望 819200）
+[check] PASS  [E=512] SZ_AS == AlignUp(TOTAL_MAX * (GU_SCALE_STRIDE), WS_ALIGN): NUM_EXPERTS=512/TOPK_MAX=10: TOTAL_MAX = 640 行；单位 = 80 B/行；读数 = 51200（期望 51200）
+[check] PASS  [E=512] SZ_GU == AlignUp(TOTAL_MAX * (GU_N * 2), WS_ALIGN): NUM_EXPERTS=512/TOPK_MAX=10: TOTAL_MAX = 640 行；单位 = 2560 B/行；读数 = 1638400（期望 1638400）
+[check] PASS  [E=512] SZ_HQ == AlignUp(TOTAL_MAX * (INTER / 2), WS_ALIGN): NUM_EXPERTS=512/TOPK_MAX=10: TOTAL_MAX = 640 行；单位 = 320 B/行；读数 = 204800（期望 204800）
+[check] PASS  [E=512] SZ_HS == AlignUp(TOTAL_MAX * (DN_SCALE_STRIDE), WS_ALIGN): NUM_EXPERTS=512/TOPK_MAX=10: TOTAL_MAX = 640 行；单位 = 32 B/行；读数 = 20480（期望 20480）
+[check] PASS  [E=512] SZ_Y == AlignUp(TOTAL_MAX * (HIDDEN * 2), WS_ALIGN): NUM_EXPERTS=512/TOPK_MAX=10: TOTAL_MAX = 640 行；单位 = 5120 B/行；读数 = 3276800（期望 3276800）
+[check] PASS  [E=512] SZ_LOGITS == AlignUp(M_MAX*NUM_EXPERTS*4, WS_ALIGN)（随 E 增长、不缩）: NUM_EXPERTS=512: SZ_LOGITS = 131072 B == AlignUp(131072, 32)；≥ M_MAX*E*4 = 131072 B
+[check] PASS  [E=512] 6 项行数 ≥ Σt_e 上界（= m*topk ≤ M_MAX*TOPK_MAX = TOTAL_MAX）: NUM_EXPERTS=512/TOPK_MAX=10: Σt_e 上界 = M_MAX*TOPK_MAX = 640 行；6 项均按该上界定尺
+[check] PASS  [E=512] WS_BYTES（诊断读数）: NUM_EXPERTS=512/TOPK_MAX=10: WS_BYTES = 13891392 B
+[check] PASS  E=512 档 WS_BYTES == M77 §3.2 的独立复算 13,891,392（紧凑档）: NUM_EXPERTS=512/TOPK_MAX=10: WS_BYTES = 13891392 B（M77 §3.2「真实·紧凑」= 13,891,392）
+[check] ===== 可 FAIL 的判据 30 条（FAIL 0 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====

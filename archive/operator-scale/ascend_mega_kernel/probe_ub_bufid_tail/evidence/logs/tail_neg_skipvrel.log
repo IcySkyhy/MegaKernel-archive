@@ -1,0 +1,8 @@
+--- run 1 (timeout 20s) ---
+[probe] mode=tail variant=neg_skipvrel vi=15 run=1 N=8 handoffs=1 idSame=1 apiV=1 apiE3=1 skipVrel=1 skipE3rel=0 copyForm=0 trace=0 blocks=1
+exit=124
+SUMMARY mode=tail variant=neg_skipvrel run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+--- run 2 (timeout 20s) ---
+[probe] mode=tail variant=neg_skipvrel vi=15 run=2 N=8 handoffs=1 idSame=1 apiV=1 apiE3=1 skipVrel=1 skipE3rel=0 copyForm=0 trace=0 blocks=1
+exit=124
+SUMMARY mode=tail variant=neg_skipvrel run=2 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）

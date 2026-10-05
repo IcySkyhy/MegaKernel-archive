@@ -1,0 +1,114 @@
+
+=== 1. check_ref.py --selftest ===
+[SELFTEST] 合成目录：/tmp/m23_nan_selftest_ucggz38n（零设备、零探针）
+[SELFTEST] tag=syn（参考侧注入 NaN=False，设备侧注入 NaN=False，chunk 内上溢=False）
+           [REF] syn            H= 3 T=8    nAic=1 rtol=2.0e-03 | o 超界 0/3072 max|Δ|=1.466e-08 max|ref|=4.872e-01 | ht 超界 0/49152 max|Δ|=1.509e-08 max|ref|=5.838e-01 | PASS
+           [REF] syn            非有限 | o: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 devInf=0 refInf=0 仅一侧Inf=0 异号Inf=0 非有限不匹配=0 | ht: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 非有限不匹配=0
+[SELFTEST] 期望 PASS / 实得 PASS  ✓
+[SELFTEST] 旧式 `|dev-ref|>lim` 计数 = 0（该数据非有限元素 0 个）
+
+[SELFTEST] tag=syn_refmut（参考侧注入 NaN=True，设备侧注入 NaN=False，chunk 内上溢=False）
+           [REF] syn_refmut     H= 3 T=8    nAic=1 rtol=2.0e-03 | o 超界 0/3072 max|Δ|=1.466e-08 max|ref|=4.872e-01 | ht 超界 0/49152 max|Δ|=1.509e-08 max|ref|=5.838e-01 | FAIL
+           [REF] syn_refmut     非有限 | o: devNaN=0 refNaN=1024 仅一侧NaN=1024 双侧NaN=0 devInf=0 refInf=0 仅一侧Inf=0 异号Inf=0 非有限不匹配=1024 | ht: devNaN=0 refNaN=16384 仅一侧NaN=16384 双侧NaN=0 非有限不匹配=16384
+[SELFTEST] 期望 FAIL / 实得 FAIL  ✓
+[SELFTEST] 旧式 `|dev-ref|>lim` 计数 = 0（该数据非有限元素 0 个）
+
+[SELFTEST] tag=syn_devmut（参考侧注入 NaN=False，设备侧注入 NaN=True，chunk 内上溢=False）
+           [REF] syn_devmut     H= 3 T=8    nAic=1 rtol=2.0e-03 | o 超界 0/3072 max|Δ|=1.466e-08 max|ref|=4.872e-01 | ht 超界 0/49152 max|Δ|=1.509e-08 max|ref|=5.838e-01 | FAIL
+           [REF] syn_devmut     非有限 | o: devNaN=16 refNaN=0 仅一侧NaN=16 双侧NaN=0 devInf=0 refInf=0 仅一侧Inf=0 异号Inf=0 非有限不匹配=16 | ht: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 非有限不匹配=0
+[SELFTEST] 期望 FAIL / 实得 FAIL  ✓
+[SELFTEST] 旧式 `|dev-ref|>lim` 计数 = 0（该数据非有限元素 16 个）
+[SELFTEST] ⇒ 复现「NaN 被静默放行」：旧判据报 0 超界，新判据报 非有限不匹配 > 0
+
+[SELFTEST] tag=syn_overflow（参考侧注入 NaN=False，设备侧注入 NaN=False，chunk 内上溢=True）
+           [REF] syn_overflow   H= 3 T=8    nAic=1 rtol=2.0e-03 | o 超界 0/3072 max|Δ|=1.466e-08 max|ref|=4.872e-01 | ht 超界 0/49152 max|Δ|=1.509e-08 max|ref|=5.838e-01 | PASS
+           [REF] syn_overflow   非有限 | o: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 devInf=0 refInf=0 仅一侧Inf=0 异号Inf=0 非有限不匹配=0 | ht: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 非有限不匹配=0
+[SELFTEST] 期望 PASS / 实得 PASS  ✓
+[SELFTEST] 旧式 `|dev-ref|>lim` 计数 = 0（该数据非有限元素 0 个）
+[SELFTEST] 同档旧式 Γ：参考 NaN=17408，判定=FAIL
+[SELFTEST] ✓ 指数差 PASS / 旧式 FAIL —— 修法见证（同一份上溢输入）
+
+[SELFTEST] 各档符合期望（rc=0）
+
+
+=== 2. --stab-demo（M151 m4097 clean；旧式 vs 指数差） ===
+[STAB-DEMO] Pf.gdn         H=48 T=4097 | 设备 o/ht NaN = 8636544
+[STAB-DEMO] Pf.gdn         旧式       float64 | o NaN = 3670912 / 25171968 | ht NaN = 114688 / 786432
+[STAB-DEMO] Pf.gdn         旧式       float32 | o NaN = 8374272 / 25171968 | ht NaN = 262144 / 786432
+[STAB-DEMO] Pf.gdn         指数差      float64 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.gdn         指数差      float32 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.gdn         float64 | 联合有限 max|指数差−旧式|: o=1.665e-16 ht=1.110e-15
+[STAB-DEMO] Pf.gdn         float32 | 联合有限 max|指数差−旧式|: o=7.451e-08 ht=9.537e-07
+[STAB-DEMO] Pf.gdn_mut1    H=48 T=4097 | 设备 o/ht NaN = 8636544
+[STAB-DEMO] Pf.gdn_mut1    旧式       float64 | o NaN = 3670912 / 25171968 | ht NaN = 114688 / 786432
+[STAB-DEMO] Pf.gdn_mut1    旧式       float32 | o NaN = 8374272 / 25171968 | ht NaN = 262144 / 786432
+[STAB-DEMO] Pf.gdn_mut1    指数差      float64 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.gdn_mut1    指数差      float32 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.gdn_mut1    float64 | 联合有限 max|指数差−旧式|: o=1.665e-16 ht=1.110e-15
+[STAB-DEMO] Pf.gdn_mut1    float32 | 联合有限 max|指数差−旧式|: o=7.451e-08 ht=9.537e-07
+[STAB-DEMO] Pf.prolog_mut1 H=48 T=4097 | 设备 o/ht NaN = 8636544
+[STAB-DEMO] Pf.prolog_mut1 旧式       float64 | o NaN = 3670912 / 25171968 | ht NaN = 114688 / 786432
+[STAB-DEMO] Pf.prolog_mut1 旧式       float32 | o NaN = 8374272 / 25171968 | ht NaN = 262144 / 786432
+[STAB-DEMO] Pf.prolog_mut1 指数差      float64 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.prolog_mut1 指数差      float32 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.prolog_mut1 float64 | 联合有限 max|指数差−旧式|: o=9.714e-17 ht=8.882e-16
+[STAB-DEMO] Pf.prolog_mut1 float32 | 联合有限 max|指数差−旧式|: o=3.725e-08 ht=2.384e-07
+[STAB-DEMO] Pf.prolog_mut2 H=48 T=4097 | 设备 o/ht NaN = 8636544
+[STAB-DEMO] Pf.prolog_mut2 旧式       float64 | o NaN = 3670912 / 25171968 | ht NaN = 114688 / 786432
+[STAB-DEMO] Pf.prolog_mut2 旧式       float32 | o NaN = 8374272 / 25171968 | ht NaN = 262144 / 786432
+[STAB-DEMO] Pf.prolog_mut2 指数差      float64 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.prolog_mut2 指数差      float32 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.prolog_mut2 float64 | 联合有限 max|指数差−旧式|: o=1.665e-16 ht=1.110e-15
+[STAB-DEMO] Pf.prolog_mut2 float32 | 联合有限 max|指数差−旧式|: o=7.451e-08 ht=9.537e-07
+[STAB-DEMO] Pf.prolog_mut3 H=48 T=4097 | 设备 o/ht NaN = 8636544
+[STAB-DEMO] Pf.prolog_mut3 旧式       float64 | o NaN = 3670912 / 25171968 | ht NaN = 114688 / 786432
+[STAB-DEMO] Pf.prolog_mut3 旧式       float32 | o NaN = 8374272 / 25171968 | ht NaN = 262144 / 786432
+[STAB-DEMO] Pf.prolog_mut3 指数差      float64 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.prolog_mut3 指数差      float32 | o NaN = 0 / 25171968 | ht NaN = 0 / 786432
+[STAB-DEMO] Pf.prolog_mut3 float64 | 联合有限 max|指数差−旧式|: o=2.220e-16 ht=1.776e-15
+[STAB-DEMO] Pf.prolog_mut3 float32 | 联合有限 max|指数差−旧式|: o=1.192e-07 ht=9.537e-07
+[STAB-DEMO] rc=0（0=指数差各档均有限；1=指数差仍有非有限；2=无 dump 或读取失败）
+
+
+=== 3. m165_official_align.py（官方 core_out） ===
+[ALIGN] layer0_chunk_m64 | T=64 H=48 max|core|=0.1152 | 官方 core_out NaN = 0（shape (64, 48, 128)）
+[ALIGN] layer0_chunk_m64 旧式       float64 | NaN=57344 | |chunk−seq|=6.939e-17 | |chunk−官方core|=2.881e-04 (=0.64 bf16ulp @max, 逐元素 max ulp=2.74) | |seq−core|=2.881e-04
+[ALIGN] layer0_chunk_m64 旧式       float32 | NaN=131072 | |chunk−seq|=3.725e-08 | |chunk−官方core|=2.881e-04 (=0.64 bf16ulp @max, 逐元素 max ulp=2.74) | |seq−core|=2.881e-04
+[ALIGN] layer0_chunk_m64 指数差      float64 | NaN=0 | |chunk−seq|=6.939e-17 | |chunk−官方core|=2.881e-04 (=0.64 bf16ulp @max, 逐元素 max ulp=2.93) | |seq−core|=2.881e-04
+[ALIGN] layer0_chunk_m64 指数差      float32 | NaN=0 | |chunk−seq|=2.980e-08 | |chunk−官方core|=2.881e-04 (=0.64 bf16ulp @max, 逐元素 max ulp=2.93) | |seq−core|=2.881e-04
+[ALIGN] m165_layer0_m1 | T=1 H=48 max|core|=0.09912 | 官方 core_out NaN = 0（shape (1, 48, 128)）
+[ALIGN] m165_layer0_m1 旧式       float64 | NaN=0 | |chunk−seq|=6.939e-18 | |chunk−官方core|=2.705e-04 (=0.70 bf16ulp @max, 逐元素 max ulp=1.36) | |seq−core|=2.705e-04
+[ALIGN] m165_layer0_m1 旧式       float32 | NaN=0 | |chunk−seq|=4.470e-08 | |chunk−官方core|=2.706e-04 (=0.70 bf16ulp @max, 逐元素 max ulp=1.36) | |seq−core|=2.705e-04
+[ALIGN] m165_layer0_m1 指数差      float64 | NaN=0 | |chunk−seq|=6.939e-18 | |chunk−官方core|=2.705e-04 (=0.70 bf16ulp @max, 逐元素 max ulp=1.36) | |seq−core|=2.705e-04
+[ALIGN] m165_layer0_m1 指数差      float32 | NaN=0 | |chunk−seq|=3.725e-08 | |chunk−官方core|=2.706e-04 (=0.70 bf16ulp @max, 逐元素 max ulp=1.36) | |seq−core|=2.705e-04
+[ALIGN] m165_layer0_m64 | T=64 H=48 max|core|=0.4902 | 官方 core_out NaN = 0（shape (64, 48, 128)）
+[ALIGN] m165_layer0_m64 旧式       float64 | NaN=73728 | |chunk−seq|=2.776e-16 | |chunk−官方core|=1.252e-03 (=0.65 bf16ulp @max, 逐元素 max ulp=1.69) | |seq−core|=1.252e-03
+[ALIGN] m165_layer0_m64 旧式       float32 | NaN=163840 | |chunk−seq|=2.384e-07 | |chunk−官方core|=1.253e-03 (=0.65 bf16ulp @max, 逐元素 max ulp=1.62) | |seq−core|=1.252e-03
+[ALIGN] m165_layer0_m64 指数差      float64 | NaN=0 | |chunk−seq|=2.776e-16 | |chunk−官方core|=1.252e-03 (=0.65 bf16ulp @max, 逐元素 max ulp=1.69) | |seq−core|=1.252e-03
+[ALIGN] m165_layer0_m64 指数差      float32 | NaN=0 | |chunk−seq|=2.384e-07 | |chunk−官方core|=1.253e-03 (=0.65 bf16ulp @max, 逐元素 max ulp=1.69) | |seq−core|=1.252e-03
+[ALIGN] m165_layer0_m4097 | T=4097 H=48 max|core|=1.953 | 官方 core_out NaN = 0（shape (4097, 48, 128)）
+[ALIGN] m165_layer0_m4097 旧式       float64 | NaN=5235968 | |chunk−seq|=1.665e-14 | |chunk−官方core|=8.981e-03 (=1.18 bf16ulp @max, 逐元素 max ulp=2.02) | |seq−core|=8.981e-03
+[ALIGN] m165_layer0_m4097 旧式       float32 | NaN=11111168 | |chunk−seq|=4.604e-06 | |chunk−官方core|=8.981e-03 (=1.18 bf16ulp @max, 逐元素 max ulp=2.02) | |seq−core|=8.980e-03
+[ALIGN] m165_layer0_m4097 指数差      float64 | NaN=0 | |chunk−seq|=1.621e-14 | |chunk−官方core|=8.981e-03 (=1.18 bf16ulp @max, 逐元素 max ulp=2.36) | |seq−core|=8.981e-03
+[ALIGN] m165_layer0_m4097 指数差      float32 | NaN=0 | |chunk−seq|=4.590e-06 | |chunk−官方core|=8.981e-03 (=1.18 bf16ulp @max, 逐元素 max ulp=2.36) | |seq−core|=8.980e-03
+[ALIGN] rc=0（0=官方与指数差参考均有限、chunk==官方递推、且差在 bf16 舍入量级；1=有判据不符；2=无输入可比）
+
+
+=== 4. 归档重跑（NaN-aware 判据；stable vs legacy） ===
+[REF] Pf.gdn         H=48 T=4097 nAic=28 rtol=2.0e-03 | o 超界 0/25171968 max|Δ|=7.203e-04 max|ref|=3.604e-01 | ht 超界 0/786432 max|Δ|=5.543e-07 max|ref|=4.144e+00 | FAIL
+[REF] Pf.gdn         非有限 | o: devNaN=8374400 refNaN=0 仅一侧NaN=8374400 双侧NaN=0 devInf=0 refInf=0 仅一侧Inf=0 异号Inf=0 非有限不匹配=8374400 | ht: devNaN=262144 refNaN=0 仅一侧NaN=262144 双侧NaN=0 非有限不匹配=262144
+
+[REF] 注意：--legacy-exp —— 参考用旧式 exp(ĝ)·exp(−ĝ)（仅对照，可能自造 NaN）
+[REF] Pf.gdn         H=48 T=4097 nAic=28 rtol=2.0e-03 | o 超界 0/25171968 max|Δ|=7.203e-04 max|ref|=3.604e-01 | ht 超界 0/786432 max|Δ|=5.543e-07 max|ref|=4.144e+00 | FAIL
+[REF] Pf.gdn         非有限 | o: devNaN=8374400 refNaN=3670912 仅一侧NaN=4703488 双侧NaN=3670912 devInf=0 refInf=0 仅一侧Inf=0 异号Inf=0 非有限不匹配=4703488 | ht: devNaN=262144 refNaN=114688 仅一侧NaN=147456 双侧NaN=114688 非有限不匹配=147456
+
+[REF] Pf.gdn         H=48 T=1    nAic=28 rtol=2.0e-03 | o 超界 0/6144 max|Δ|=5.267e-09 max|ref|=1.720e-02 | ht 超界 0/786432 max|Δ|=1.194e-08 max|ref|=1.281e-01 | PASS
+[REF] Pf.gdn         非有限 | o: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 devInf=0 refInf=0 仅一侧Inf=0 异号Inf=0 非有限不匹配=0 | ht: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 非有限不匹配=0
+
+[REF] m1             H=48 T=1    nAic=28 rtol=2.0e-03 | o 超界 0/6144 max|Δ|=7.655e-09 max|ref|=2.292e-02 | ht 超界 0/786432 max|Δ|=3.313e-08 max|ref|=2.439e-01 | PASS
+[REF] m1             非有限 | o: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 devInf=0 refInf=0 仅一侧Inf=0 异号Inf=0 非有限不匹配=0 | ht: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 非有限不匹配=0
+[REF] m4097          H=48 T=4097 nAic=28 rtol=2.0e-03 | o 超界 0/25171968 max|Δ|=3.042e-08 max|ref|=7.500e-02 | ht 超界 0/786432 max|Δ|=1.458e-07 max|ref|=5.829e-01 | PASS
+[REF] m4097          非有限 | o: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 devInf=0 refInf=0 仅一侧Inf=0 异号Inf=0 非有限不匹配=0 | ht: devNaN=0 refNaN=0 仅一侧NaN=0 双侧NaN=0 非有限不匹配=0
+
+
+[M165-REPRO] rc=0

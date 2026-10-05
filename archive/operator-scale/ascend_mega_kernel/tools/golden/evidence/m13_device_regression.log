@@ -1,0 +1,31 @@
+# M26 dataset regression against the m13 device kernel (Ascend950PR / CANN 9.1.0)
+#
+# 目的：确认 tools/golden 的数据集升级（新增 gamma/x_res/层链 golden/qaware 子目录、
+#       manifest format_version 2）没有扰动既有设备路径。m13 只按文件名读 bin，不解析新增字段。
+# 命令：
+#   source /usr/local/Ascend/ascend-toolkit/set_env.sh
+#   mkdir -p /tmp/m13_dump_m26 && cd /tmp/m13_dump_m26
+#   M13_DUMP=1 <m13_moe_layer binary> <repo>/tools/golden/data m1 m33
+#   （binary 由 m13_moe_layer/CMakeLists.txt 在 /tmp 里构建，仓库源文件未改动）
+#   NOTE: M32 正在改 m13_moe_layer/**，上面的 cp/构建命令将来不再能重建同一 binary；
+#         那版源码与那批 dump 的 sha256 对应关系见 evidence/m13_dump_sha256.txt
+#         （m13 源码 sha256 + git blob + base commit 7880e63 + 144 个 dump/meta 的 sha256）。
+#
+# 结果：
+#   m13 自判据：683 PASS / 0 FAIL，rc=0，末尾 ===== ALL PASS =====
+#   与升级前同一数据集运行的 140 个 dump 张量 sha256 逐字节一致（0 个不同）
+#   即：device 路径完全未受升级影响，M21 的验收证据与偏差数字（0.6045/0.6282/0.7627 等）依旧成立
+#
+# m13 日志末尾：
+[M13]   Y_shd (w4a4-ref)             PASS (w4a4-ref: 越界 0/2560, maxAbs 7.812e-03, 最差占容差 0.28, idx 563)
+[M13]   Y_shd (w4a4-ref)             PASS (w4a4-ref: 越界 0/2560, maxAbs 7.812e-03, 最差占容差 0.28, idx 1751)
+[M13]   Y_shd (w4a4-ref)             PASS (w4a4-ref: 越界 0/2560, maxAbs 7.812e-03, 最差占容差 0.28, idx 1115)
+[M13]   Y_shd (w4a4-ref)             PASS (w4a4-ref: 越界 0/2560, maxAbs 1.367e-02, 最差占容差 0.28, idx 1384)
+[M13]   shared gate GEMV (w4a4-ref)  PASS (sgate 裸点积 max abs diff 2.337e-07)
+[M13]   shared_output (w4a4-ref)     PASS (w4a4-ref: 越界 0/84480, maxAbs 7.784e-03, 最差占容差 0.28, idx 51586)
+[M13]   shared gating (fp32 product) PASS (bf16 位距 ≤2 ulp: 越界 0/84480, 最大 0 ulp)
+[M13]   moe combine (routed+G)       PASS (bf16 位距 ≤2 ulp: 越界 0/84480, 最大 1 ulp)
+[M13]   routed_output [golden 预算] PASS (vs float golden: 偏差 3.3789 ≤ 量化预算 3.3789(+容差); 违反 0/84480)
+[M13]   shared_output [golden 预算] PASS (vs float golden: 偏差 1.8848 ≤ 量化预算 1.8848(+容差); 违反 0/84480)
+[M13]   moe_output [golden 预算]   PASS (vs float golden: 偏差 3.7734 ≤ 量化预算 3.7734(+容差); 违反 0/84480)
+[M13] ===== ALL PASS =====

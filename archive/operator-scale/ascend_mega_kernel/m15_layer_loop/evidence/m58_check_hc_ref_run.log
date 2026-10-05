@@ -1,0 +1,412 @@
+# M58 · 独立 numpy 交叉校验（check_hc_ref.py；参考 = m20_hyperconn/check_ref.py 的 reference()/judge()）
+# 二进制 sha256 = c20d73f63ce768afecd8099b630021727122e41af2a4bf962a0073388aeb7666（三档都在这一个二进制上采集）
+# 命令（三档只差 M15_HC_M）：
+#   mkdir -p /tmp/m58_d<M> && cd /tmp/m58_d<M>
+#   M15_DUMP=1 M15_LAYERS=4 M15_HC_M=<M> M15_HC_LAYERS=0,1,3 <bin> <repo>/m15_layer_loop/weights_manifest.txt h
+#   M15_HC_M=<M> /usr/local/python3.12.13/bin/python3 <repo>/m15_layer_loop/check_hc_ref.py ; echo rc=$?
+
+################################################################
+## m=1（decode 交付档）：期望 RESULT: OK（判定项 64 + guard 15；SKIPPED 1 = mode 0 的 H' 不适用），rc=0
+
+[chk] m15 hc 独立交叉校验（参考 = m20_hyperconn/check_ref.py 的 reference()）
+[chk] 层表 = [0, 1, 3]；m = 1；ws 布局来自 hc_layout.txt（由 C++ 常量算出，与 kernel 同源）
+[chk] 布局键：attn_w_off=0, hc=4, hid=2560, hyper=10240, inj_n=4, inj_stride=16, injw_slot=8, layer_w_stride=26910720, lowrank=320, m_max=64, mlp_w_off=13455360, off_blk=4025344, off_gate=2714624, off_hcp=0, off_injw=2622464, off_ls=2673664, off_oh=2630656, off_rstd=2621440, off_xn=1310720, oh_inj=320, oh_w=336, up_k=320, up_n=10240, ws_bytes=4353024
+
+===== 层 00（attn 边界 mode=0，mlp 边界 mode=1）=====
+
+-- A1. 边界 #1 逐段（输入 = 设备自己的 dump）--
+[chk] 判定 A1.H'                            mode 0（mix-only）不做 combine → SKIPPED（unverified）
+[chk] 判定 A1.rstd<-hin/h'                  maxRel=3.130e-08 (tol 1e-04)  PASS
+[chk] 判定 A1.xn<-h'/H, hc_norm     n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.lora<-xn,wdown        n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.inject<-xn,winj       n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.ls<-lora              n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.gate<-ls,wup          n=10240   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.403e-07  PASS
+[chk] 判定 A1.blk<-gate,xn          n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- A2. 边界 #2 逐段（输入 = 设备边界 #1 的 dump + 子层段出口）--
+[chk] 判定 A2.H'<-ij,hin,bo         n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.injW<-ij                      maxRel=7.399e-08 (tol 1e-06)  PASS
+[chk] 判定 A2.rstd<-hin/h'                  maxRel=6.065e-08 (tol 1e-04)  PASS
+[chk] 判定 A2.xn<-h'/ hc_norm       n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.lora<-xn,wdown        n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.inject<-xn,winj       n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.ls<-lora              n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.gate<-ls,wup          n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.blk<-gate,xn          n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- B. 整层链（参考自己串 hc 的两个边界；锚点 = 层输入 + 子层段出口）--
+[chk]   （整层：H'' = 参考链边界 #2 的 h'；BLK_mlp = 它的 blk；injection = 它的 lora[:,320:]）
+[chk] 判定 B整层H''<-层输入链             n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B整层blk_mlp<-层输入链         n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B整层injection<-层输入链       n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 报告 B层出口==H''                        hout(=WS_HCP) 与 b2_hcp 逐字节一致 = True（布局契约自检，不计入计数）
+
+-- C. combine-only 档（MODE_COMBINE_ONLY；m20 三档都不提供）--
+[chk] 判定 C combine-only H'<-H,BO,IJ n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- D. 非空洞性 / 可区分性（guard）--
+[chk] guard 0 H'' 非常量                       取值数=1635  OK
+[chk] guard 0 BLK_mlp 非常量                   取值数=1368  OK
+[chk] guard 0 H''≠层输入 H                     整层不是恒等映射  OK
+[chk] guard 0 两个边界 blk 不同                   attn 边界与 mlp 边界的 block input 不同  OK
+
+===== 层 01（attn 边界 mode=1，mlp 边界 mode=1）=====
+
+-- A1. 边界 #1 逐段（输入 = 设备自己的 dump）--
+[chk] 判定 A1.H'<-ij,hin,bo         n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.injW<-ij                      maxRel=9.044e-08 (tol 1e-06)  PASS
+[chk] 判定 A1.rstd<-hin/h'                  maxRel=9.045e-08 (tol 1e-04)  PASS
+[chk] 判定 A1.xn<-h'/ hc_norm       n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.lora<-xn,wdown        n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.inject<-xn,winj       n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.ls<-lora              n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.gate<-ls,wup          n=10240   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=4.555e-07  PASS
+[chk] 判定 A1.blk<-gate,xn          n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- A2. 边界 #2 逐段（输入 = 设备边界 #1 的 dump + 子层段出口）--
+[chk] 判定 A2.H'<-ij,hin,bo         n=10240   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=7.393e-09  PASS
+[chk] 判定 A2.injW<-ij                      maxRel=6.352e-08 (tol 1e-06)  PASS
+[chk] 判定 A2.rstd<-hin/h'                  maxRel=7.875e-08 (tol 1e-04)  PASS
+[chk] 判定 A2.xn<-h'/ hc_norm       n=10240   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=7.170e-09  PASS
+[chk] 判定 A2.lora<-xn,wdown        n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.inject<-xn,winj       n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.ls<-lora              n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.gate<-ls,wup          n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.blk<-gate,xn          n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- B. 整层链（参考自己串 hc 的两个边界；锚点 = 层输入 + 子层段出口）--
+[chk]   （整层：H'' = 参考链边界 #2 的 h'；BLK_mlp = 它的 blk；injection = 它的 lora[:,320:]）
+[chk] 判定 B整层H''<-层输入链             n=10240   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=7.393e-09  PASS
+[chk] 判定 B整层blk_mlp<-层输入链         n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B整层injection<-层输入链       n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 报告 B层出口==H''                        hout(=WS_HCP) 与 b2_hcp 逐字节一致 = True（布局契约自检，不计入计数）
+
+-- C. combine-only 档（MODE_COMBINE_ONLY；m20 三档都不提供）--
+[chk] 判定 C combine-only H'<-H,BO,IJ n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- D. 非空洞性 / 可区分性（guard）--
+[chk] guard 1 H'' 非常量                       取值数=1778  OK
+[chk] guard 1 BLK_mlp 非常量                   取值数=1240  OK
+[chk] guard 1 H''≠层输入 H                     整层不是恒等映射  OK
+[chk] guard 1 两个边界 blk 不同                   attn 边界与 mlp 边界的 block input 不同  OK
+
+===== 层 03（attn 边界 mode=1，mlp 边界 mode=1）=====
+
+-- A1. 边界 #1 逐段（输入 = 设备自己的 dump）--
+[chk] 判定 A1.H'<-ij,hin,bo         n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.injW<-ij                      maxRel=9.044e-08 (tol 1e-06)  PASS
+[chk] 判定 A1.rstd<-hin/h'                  maxRel=9.045e-08 (tol 1e-04)  PASS
+[chk] 判定 A1.xn<-h'/ hc_norm       n=10240   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=4.883e-05  PASS
+[chk] 判定 A1.lora<-xn,wdown        n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.inject<-xn,winj       n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.ls<-lora              n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.gate<-ls,wup          n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.blk<-gate,xn          n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- A2. 边界 #2 逐段（输入 = 设备边界 #1 的 dump + 子层段出口）--
+[chk] 判定 A2.H'<-ij,hin,bo         n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.injW<-ij                      maxRel=9.163e-08 (tol 1e-06)  PASS
+[chk] 判定 A2.rstd<-hin/h'                  maxRel=3.979e-08 (tol 1e-04)  PASS
+[chk] 判定 A2.xn<-h'/ hc_norm       n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.lora<-xn,wdown        n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.inject<-xn,winj       n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.ls<-lora              n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.gate<-ls,wup          n=10240   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=5.600e-07  PASS
+[chk] 判定 A2.blk<-gate,xn          n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- B. 整层链（参考自己串 hc 的两个边界；锚点 = 层输入 + 子层段出口）--
+[chk]   （整层：H'' = 参考链边界 #2 的 h'；BLK_mlp = 它的 blk；injection = 它的 lora[:,320:]）
+[chk] 判定 B整层H''<-层输入链             n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B整层blk_mlp<-层输入链         n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B整层injection<-层输入链       n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 报告 B层出口==H''                        hout(=WS_HCP) 与 b2_hcp 逐字节一致 = True（布局契约自检，不计入计数）
+
+-- C. combine-only 档（MODE_COMBINE_ONLY；m20 三档都不提供）--
+[chk] 判定 C combine-only H'<-H,BO,IJ n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- D. 非空洞性 / 可区分性（guard）--
+[chk] guard 3 H'' 非常量                       取值数=1697  OK
+[chk] guard 3 BLK_mlp 非常量                   取值数=1273  OK
+[chk] guard 3 H''≠层输入 H                     整层不是恒等映射  OK
+[chk] guard 3 两个边界 blk 不同                   attn 边界与 mlp 边界的 block input 不同  OK
+
+-- D2. 跨层可区分性 --
+[chk] guard 跨层 blk 指纹 L00≠L01               两层权重槽没有错位到同一个摘要  OK
+[chk] guard 跨层 blk 指纹 L00≠L03               两层权重槽没有错位到同一个摘要  OK
+[chk] guard 跨层 blk 指纹 L01≠L03               两层权重槽没有错位到同一个摘要  OK
+
+[chk] 覆盖：判定项 64 条 + guard 15 条（共比较 79 条）；unverified/SKIPPED 1 条
+[chk] 其中由 m20 的 judge() 直接产出的条数 = 53（同一份门限代码）
+[chk] RESULT: OK (79/79 条比较过：判定项 64 + guard 15；SKIPPED 1)
+
+################################################################
+## m=2：期望 RESULT: OK（同上），rc=0
+
+[chk] m15 hc 独立交叉校验（参考 = m20_hyperconn/check_ref.py 的 reference()）
+[chk] 层表 = [0, 1, 3]；m = 2；ws 布局来自 hc_layout.txt（由 C++ 常量算出，与 kernel 同源）
+[chk] 布局键：attn_w_off=0, hc=4, hid=2560, hyper=10240, inj_n=4, inj_stride=16, injw_slot=8, layer_w_stride=26910720, lowrank=320, m_max=64, mlp_w_off=13455360, off_blk=4025344, off_gate=2714624, off_hcp=0, off_injw=2622464, off_ls=2673664, off_oh=2630656, off_rstd=2621440, off_xn=1310720, oh_inj=320, oh_w=336, up_k=320, up_n=10240, ws_bytes=4353024
+
+===== 层 00（attn 边界 mode=0，mlp 边界 mode=1）=====
+
+-- A1. 边界 #1 逐段（输入 = 设备自己的 dump）--
+[chk] 判定 A1.H'                            mode 0（mix-only）不做 combine → SKIPPED（unverified）
+[chk] 判定 A1.rstd<-hin/h'                  maxRel=5.279e-08 (tol 1e-04)  PASS
+[chk] 判定 A1.xn<-h'/H, hc_norm     n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.lora<-xn,wdown        n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.inject<-xn,winj       n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.ls<-lora              n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.gate<-ls,wup          n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.403e-07  PASS
+[chk] 判定 A1.blk<-gate,xn          n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- A2. 边界 #2 逐段（输入 = 设备边界 #1 的 dump + 子层段出口）--
+[chk] 判定 A2.H'<-ij,hin,bo         n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.889e-06  PASS
+[chk] 判定 A2.injW<-ij                      maxRel=7.399e-08 (tol 1e-06)  PASS
+[chk] 判定 A2.rstd<-hin/h'                  maxRel=6.065e-08 (tol 1e-04)  PASS
+[chk] 判定 A2.xn<-h'/ hc_norm       n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=8.782e-07  PASS
+[chk] 判定 A2.lora<-xn,wdown        n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.inject<-xn,winj       n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.ls<-lora              n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.gate<-ls,wup          n=20480   逐位=0.9998 良态逐位=1.0000 ulpMax=0   归一maxAbs=6.483e-05  PASS
+[chk] 判定 A2.blk<-gate,xn          n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- B. 整层链（参考自己串 hc 的两个边界；锚点 = 层输入 + 子层段出口）--
+[chk]   （整层：H'' = 参考链边界 #2 的 h'；BLK_mlp = 它的 blk；injection = 它的 lora[:,320:]）
+[chk] 判定 B整层H''<-层输入链             n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.889e-06  PASS
+[chk] 判定 B整层blk_mlp<-层输入链         n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B整层injection<-层输入链       n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 报告 B层出口==H''                        hout(=WS_HCP) 与 b2_hcp 逐字节一致 = True（布局契约自检，不计入计数）
+
+-- C. combine-only 档（MODE_COMBINE_ONLY；m20 三档都不提供）--
+[chk] 判定 C combine-only H'<-H,BO,IJ n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- D. 非空洞性 / 可区分性（guard）--
+[chk] guard 0 H'' 非常量                       取值数=1976  OK
+[chk] guard 0 BLK_mlp 非常量                   取值数=1935  OK
+[chk] guard 0 H''≠层输入 H                     整层不是恒等映射  OK
+[chk] guard 0 两个边界 blk 不同                   attn 边界与 mlp 边界的 block input 不同  OK
+
+===== 层 01（attn 边界 mode=1，mlp 边界 mode=1）=====
+
+-- A1. 边界 #1 逐段（输入 = 设备自己的 dump）--
+[chk] 判定 A1.H'<-ij,hin,bo         n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.injW<-ij                      maxRel=9.044e-08 (tol 1e-06)  PASS
+[chk] 判定 A1.rstd<-hin/h'                  maxRel=9.045e-08 (tol 1e-04)  PASS
+[chk] 判定 A1.xn<-h'/ hc_norm       n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.lora<-xn,wdown        n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.inject<-xn,winj       n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.ls<-lora              n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.gate<-ls,wup          n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=4.555e-07  PASS
+[chk] 判定 A1.blk<-gate,xn          n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- A2. 边界 #2 逐段（输入 = 设备边界 #1 的 dump + 子层段出口）--
+[chk] 判定 A2.H'<-ij,hin,bo         n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=7.393e-09  PASS
+[chk] 判定 A2.injW<-ij                      maxRel=6.659e-08 (tol 1e-06)  PASS
+[chk] 判定 A2.rstd<-hin/h'                  maxRel=8.918e-08 (tol 1e-04)  PASS
+[chk] 判定 A2.xn<-h'/ hc_norm       n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=7.170e-09  PASS
+[chk] 判定 A2.lora<-xn,wdown        n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.inject<-xn,winj       n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.ls<-lora              n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.gate<-ls,wup          n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.855e-09  PASS
+[chk] 判定 A2.blk<-gate,xn          n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- B. 整层链（参考自己串 hc 的两个边界；锚点 = 层输入 + 子层段出口）--
+[chk]   （整层：H'' = 参考链边界 #2 的 h'；BLK_mlp = 它的 blk；injection = 它的 lora[:,320:]）
+[chk] 判定 B整层H''<-层输入链             n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=7.393e-09  PASS
+[chk] 判定 B整层blk_mlp<-层输入链         n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B整层injection<-层输入链       n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 报告 B层出口==H''                        hout(=WS_HCP) 与 b2_hcp 逐字节一致 = True（布局契约自检，不计入计数）
+
+-- C. combine-only 档（MODE_COMBINE_ONLY；m20 三档都不提供）--
+[chk] 判定 C combine-only H'<-H,BO,IJ n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- D. 非空洞性 / 可区分性（guard）--
+[chk] guard 1 H'' 非常量                       取值数=2062  OK
+[chk] guard 1 BLK_mlp 非常量                   取值数=1588  OK
+[chk] guard 1 H''≠层输入 H                     整层不是恒等映射  OK
+[chk] guard 1 两个边界 blk 不同                   attn 边界与 mlp 边界的 block input 不同  OK
+
+===== 层 03（attn 边界 mode=1，mlp 边界 mode=1）=====
+
+-- A1. 边界 #1 逐段（输入 = 设备自己的 dump）--
+[chk] 判定 A1.H'<-ij,hin,bo         n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.injW<-ij                      maxRel=9.044e-08 (tol 1e-06)  PASS
+[chk] 判定 A1.rstd<-hin/h'                  maxRel=9.045e-08 (tol 1e-04)  PASS
+[chk] 判定 A1.xn<-h'/ hc_norm       n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=4.883e-05  PASS
+[chk] 判定 A1.lora<-xn,wdown        n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.inject<-xn,winj       n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.ls<-lora              n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.gate<-ls,wup          n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.860e-06  PASS
+[chk] 判定 A1.blk<-gate,xn          n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- A2. 边界 #2 逐段（输入 = 设备边界 #1 的 dump + 子层段出口）--
+[chk] 判定 A2.H'<-ij,hin,bo         n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.injW<-ij                      maxRel=9.163e-08 (tol 1e-06)  PASS
+[chk] 判定 A2.rstd<-hin/h'                  maxRel=4.359e-08 (tol 1e-04)  PASS
+[chk] 判定 A2.xn<-h'/ hc_norm       n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.lora<-xn,wdown        n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.inject<-xn,winj       n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.ls<-lora              n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.gate<-ls,wup          n=20480   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.130e-06  PASS
+[chk] 判定 A2.blk<-gate,xn          n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- B. 整层链（参考自己串 hc 的两个边界；锚点 = 层输入 + 子层段出口）--
+[chk]   （整层：H'' = 参考链边界 #2 的 h'；BLK_mlp = 它的 blk；injection = 它的 lora[:,320:]）
+[chk] 判定 B整层H''<-层输入链             n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B整层blk_mlp<-层输入链         n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B整层injection<-层输入链       n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 报告 B层出口==H''                        hout(=WS_HCP) 与 b2_hcp 逐字节一致 = True（布局契约自检，不计入计数）
+
+-- C. combine-only 档（MODE_COMBINE_ONLY；m20 三档都不提供）--
+[chk] 判定 C combine-only H'<-H,BO,IJ n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+-- D. 非空洞性 / 可区分性（guard）--
+[chk] guard 3 H'' 非常量                       取值数=1991  OK
+[chk] guard 3 BLK_mlp 非常量                   取值数=1688  OK
+[chk] guard 3 H''≠层输入 H                     整层不是恒等映射  OK
+[chk] guard 3 两个边界 blk 不同                   attn 边界与 mlp 边界的 block input 不同  OK
+
+-- D2. 跨层可区分性 --
+[chk] guard 跨层 blk 指纹 L00≠L01               两层权重槽没有错位到同一个摘要  OK
+[chk] guard 跨层 blk 指纹 L00≠L03               两层权重槽没有错位到同一个摘要  OK
+[chk] guard 跨层 blk 指纹 L01≠L03               两层权重槽没有错位到同一个摘要  OK
+
+[chk] 覆盖：判定项 64 条 + guard 15 条（共比较 79 条）；unverified/SKIPPED 1 条
+[chk] 其中由 m20 的 judge() 直接产出的条数 = 53（同一份门限代码）
+[chk] RESULT: OK (79/79 条比较过：判定项 64 + guard 15；SKIPPED 1)
+
+################################################################
+## m=33：**11/64 条越过 m20 的保守门限**（maxulp=3 vs ≤2、良态逐位率最低 0.9891 vs ≥0.99），rc=1
+## 状态：**未归因**（kernel 内 H.h1ws/H.h2ws 在本档仍逐字节一致 ⇒ 与融合无关；见 README M58-9 第 2 条）
+
+[chk] m15 hc 独立交叉校验（参考 = m20_hyperconn/check_ref.py 的 reference()）
+[chk] 层表 = [0, 1, 3]；m = 33；ws 布局来自 hc_layout.txt（由 C++ 常量算出，与 kernel 同源）
+[chk] 布局键：attn_w_off=0, hc=4, hid=2560, hyper=10240, inj_n=4, inj_stride=16, injw_slot=8, layer_w_stride=26910720, lowrank=320, m_max=64, mlp_w_off=13455360, off_blk=4025344, off_gate=2714624, off_hcp=0, off_injw=2622464, off_ls=2673664, off_oh=2630656, off_rstd=2621440, off_xn=1310720, oh_inj=320, oh_w=336, up_k=320, up_n=10240, ws_bytes=4353024
+
+===== 层 00（attn 边界 mode=0，mlp 边界 mode=1）=====
+
+-- A1. 边界 #1 逐段（输入 = 设备自己的 dump）--
+[chk] 判定 A1.H'                            mode 0（mix-only）不做 combine → SKIPPED（unverified）
+[chk] 判定 A1.rstd<-hin/h'                  maxRel=8.798e-08 (tol 1e-04)  PASS
+[chk] 判定 A1.xn<-h'/H, hc_norm     n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=3.019e-04  PASS
+[chk] 判定 A1.lora<-xn,wdown        n=10560   逐位=0.9991 良态逐位=0.9998 ulpMax=1   归一maxAbs=3.743e-04  PASS
+[chk] 判定 A1.inject<-xn,winj       n=132     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A1.ls<-lora              n=10560   逐位=0.9991 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.339e-05  PASS
+[chk] 判定 A1.gate<-ls,wup          n=337920  逐位=0.9994 良态逐位=1.0000 ulpMax=1   归一maxAbs=2.854e-04  PASS
+[chk] 判定 A1.blk<-gate,xn          n=84480   逐位=0.9997 良态逐位=0.9999 ulpMax=1   归一maxAbs=3.472e-04  PASS
+
+-- A2. 边界 #2 逐段（输入 = 设备边界 #1 的 dump + 子层段出口）--
+[chk] 判定 A2.H'<-ij,hin,bo         n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=9.669e-06  PASS
+[chk] 判定 A2.injW<-ij                      maxRel=1.051e-07 (tol 1e-06)  PASS
+[chk] 判定 A2.rstd<-hin/h'                  maxRel=8.424e-08 (tol 1e-04)  PASS
+[chk] 判定 A2.xn<-h'/ hc_norm       n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=9.527e-05  PASS
+[chk] 判定 A2.lora<-xn,wdown        n=10560   逐位=0.9993 良态逐位=0.9999 ulpMax=1   归一maxAbs=1.404e-03  PASS
+[chk] 判定 A2.inject<-xn,winj       n=132     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.ls<-lora              n=10560   逐位=0.9989 良态逐位=0.9984 ulpMax=1   归一maxAbs=1.437e-03  PASS
+[chk] 判定 A2.gate<-ls,wup          n=337920  逐位=0.9690 良态逐位=0.9891 ulpMax=2   归一maxAbs=2.577e-03  FAIL
+[chk] 判定 A2.blk<-gate,xn          n=84480   逐位=0.9801 良态逐位=0.9941 ulpMax=2   归一maxAbs=1.282e-03  PASS
+
+-- B. 整层链（参考自己串 hc 的两个边界；锚点 = 层输入 + 子层段出口）--
+[chk]   （整层：H'' = 参考链边界 #2 的 h'；BLK_mlp = 它的 blk；injection = 它的 lora[:,320:]）
+[chk] 判定 B整层H''<-层输入链             n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=9.669e-06  PASS
+[chk] 判定 B整层blk_mlp<-层输入链         n=84480   逐位=0.9801 良态逐位=0.9941 ulpMax=2   归一maxAbs=1.282e-03  PASS
+[chk] 判定 B整层injection<-层输入链       n=132     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 报告 B层出口==H''                        hout(=WS_HCP) 与 b2_hcp 逐字节一致 = True（布局契约自检，不计入计数）
+
+-- C. combine-only 档（MODE_COMBINE_ONLY；m20 三档都不提供）--
+[chk] 判定 C combine-only H'<-H,BO,IJ n=337920  逐位=0.9999 良态逐位=1.0000 ulpMax=1   归一maxAbs=4.049e-03  PASS
+
+-- D. 非空洞性 / 可区分性（guard）--
+[chk] guard 0 H'' 非常量                       取值数=3232  OK
+[chk] guard 0 BLK_mlp 非常量                   取值数=3802  OK
+[chk] guard 0 H''≠层输入 H                     整层不是恒等映射  OK
+[chk] guard 0 两个边界 blk 不同                   attn 边界与 mlp 边界的 block input 不同  OK
+
+===== 层 01（attn 边界 mode=1，mlp 边界 mode=1）=====
+
+-- A1. 边界 #1 逐段（输入 = 设备自己的 dump）--
+[chk] 判定 A1.H'<-ij,hin,bo         n=337920  逐位=0.9999 良态逐位=1.0000 ulpMax=1   归一maxAbs=4.049e-03  PASS
+[chk] 判定 A1.injW<-ij                      maxRel=1.101e-07 (tol 1e-06)  PASS
+[chk] 判定 A1.rstd<-hin/h'                  maxRel=7.904e-06 (tol 1e-04)  PASS
+[chk] 判定 A1.xn<-h'/ hc_norm       n=337920  逐位=0.9999 良态逐位=1.0000 ulpMax=2   归一maxAbs=1.761e-03  PASS
+[chk] 判定 A1.lora<-xn,wdown        n=10560   逐位=0.9946 良态逐位=0.9979 ulpMax=1   归一maxAbs=2.717e-03  PASS
+[chk] 判定 A1.inject<-xn,winj       n=132     逐位=0.9924 良态逐位=1.0000 ulpMax=0   归一maxAbs=7.512e-05  PASS
+[chk] 判定 A1.ls<-lora              n=10560   逐位=0.9952 良态逐位=0.9983 ulpMax=2   归一maxAbs=2.747e-03  PASS
+[chk] 判定 A1.gate<-ls,wup          n=337920  逐位=0.9819 良态逐位=0.9926 ulpMax=1   归一maxAbs=2.841e-03  PASS
+[chk] 判定 A1.blk<-gate,xn          n=84480   逐位=0.9888 良态逐位=0.9931 ulpMax=2   归一maxAbs=2.674e-03  PASS
+
+-- A2. 边界 #2 逐段（输入 = 设备边界 #1 的 dump + 子层段出口）--
+[chk] 判定 A2.H'<-ij,hin,bo         n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=7.813e-04  PASS
+[chk] 判定 A2.injW<-ij                      maxRel=9.934e-08 (tol 1e-06)  PASS
+[chk] 判定 A2.rstd<-hin/h'                  maxRel=1.566e-06 (tol 1e-04)  PASS
+[chk] 判定 A2.xn<-h'/ hc_norm       n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=4.699e-04  PASS
+[chk] 判定 A2.lora<-xn,wdown        n=10560   逐位=0.9971 良态逐位=0.9993 ulpMax=1   归一maxAbs=1.908e-03  PASS
+[chk] 判定 A2.inject<-xn,winj       n=132     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 A2.ls<-lora              n=10560   逐位=0.9973 良态逐位=0.9985 ulpMax=3   归一maxAbs=3.074e-03  FAIL
+[chk] 判定 A2.gate<-ls,wup          n=337920  逐位=0.9838 良态逐位=0.9952 ulpMax=1   归一maxAbs=2.994e-03  PASS
+[chk] 判定 A2.blk<-gate,xn          n=84480   逐位=0.9919 良态逐位=0.9959 ulpMax=1   归一maxAbs=2.252e-03  PASS
+
+-- B. 整层链（参考自己串 hc 的两个边界；锚点 = 层输入 + 子层段出口）--
+[chk]   （整层：H'' = 参考链边界 #2 的 h'；BLK_mlp = 它的 blk；injection = 它的 lora[:,320:]）
+[chk] 判定 B整层H''<-层输入链             n=337920  逐位=0.9997 良态逐位=0.9999 ulpMax=1   归一maxAbs=1.563e-03  PASS
+[chk] 判定 B整层blk_mlp<-层输入链         n=84480   逐位=0.9848 良态逐位=0.9916 ulpMax=3   归一maxAbs=2.252e-03  FAIL
+[chk] 判定 B整层injection<-层输入链       n=132     逐位=0.9924 良态逐位=0.9912 ulpMax=1   归一maxAbs=8.865e-04  PASS
+[chk] 报告 B层出口==H''                        hout(=WS_HCP) 与 b2_hcp 逐字节一致 = True（布局契约自检，不计入计数）
+
+-- C. combine-only 档（MODE_COMBINE_ONLY；m20 三档都不提供）--
+[chk] 判定 C combine-only H'<-H,BO,IJ n=337920  逐位=0.9999 良态逐位=1.0000 ulpMax=1   归一maxAbs=4.049e-03  PASS
+
+-- D. 非空洞性 / 可区分性（guard）--
+[chk] guard 1 H'' 非常量                       取值数=3161  OK
+[chk] guard 1 BLK_mlp 非常量                   取值数=2865  OK
+[chk] guard 1 H''≠层输入 H                     整层不是恒等映射  OK
+[chk] guard 1 两个边界 blk 不同                   attn 边界与 mlp 边界的 block input 不同  OK
+
+===== 层 03（attn 边界 mode=1，mlp 边界 mode=1）=====
+
+-- A1. 边界 #1 逐段（输入 = 设备自己的 dump）--
+[chk] 判定 A1.H'<-ij,hin,bo         n=337920  逐位=0.9999 良态逐位=1.0000 ulpMax=1   归一maxAbs=4.049e-03  PASS
+[chk] 判定 A1.injW<-ij                      maxRel=1.101e-07 (tol 1e-06)  PASS
+[chk] 判定 A1.rstd<-hin/h'                  maxRel=7.904e-06 (tol 1e-04)  PASS
+[chk] 判定 A1.xn<-h'/ hc_norm       n=337920  逐位=0.9999 良态逐位=1.0000 ulpMax=1   归一maxAbs=2.793e-03  PASS
+[chk] 判定 A1.lora<-xn,wdown        n=10560   逐位=0.9943 良态逐位=0.9978 ulpMax=1   归一maxAbs=2.146e-03  PASS
+[chk] 判定 A1.inject<-xn,winj       n=132     逐位=0.9924 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.083e-04  PASS
+[chk] 判定 A1.ls<-lora              n=10560   逐位=0.9950 良态逐位=0.9986 ulpMax=2   归一maxAbs=1.147e-03  PASS
+[chk] 判定 A1.gate<-ls,wup          n=337920  逐位=0.9892 良态逐位=0.9976 ulpMax=1   归一maxAbs=1.976e-03  PASS
+[chk] 判定 A1.blk<-gate,xn          n=84480   逐位=0.9949 良态逐位=0.9968 ulpMax=2   归一maxAbs=4.310e-03  PASS
+
+-- A2. 边界 #2 逐段（输入 = 设备边界 #1 的 dump + 子层段出口）--
+[chk] 判定 A2.H'<-ij,hin,bo         n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.386e-15  PASS
+[chk] 判定 A2.injW<-ij                      maxRel=1.119e-07 (tol 1e-06)  PASS
+[chk] 判定 A2.rstd<-hin/h'                  maxRel=1.027e-07 (tol 1e-04)  PASS
+[chk] 判定 A2.xn<-h'/ hc_norm       n=337920  逐位=0.9718 良态逐位=0.9593 ulpMax=1   归一maxAbs=2.890e-03  FAIL
+[chk] 判定 A2.lora<-xn,wdown        n=10560   逐位=0.7847 良态逐位=0.8490 ulpMax=2   归一maxAbs=3.378e-03  FAIL
+[chk] 判定 A2.inject<-xn,winj       n=132     逐位=0.9015 良态逐位=0.9000 ulpMax=1   归一maxAbs=3.125e-03  FAIL
+[chk] 判定 A2.ls<-lora              n=10560   逐位=0.8053 良态逐位=0.8502 ulpMax=4   归一maxAbs=3.378e-03  FAIL
+[chk] 判定 A2.gate<-ls,wup          n=337920  逐位=0.7979 良态逐位=0.8498 ulpMax=4   归一maxAbs=6.944e-03  FAIL
+[chk] 判定 A2.blk<-gate,xn          n=84480   逐位=0.9128 良态逐位=0.9068 ulpMax=3   归一maxAbs=3.676e-03  FAIL
+
+-- B. 整层链（参考自己串 hc 的两个边界；锚点 = 层输入 + 子层段出口）--
+[chk]   （整层：H'' = 参考链边界 #2 的 h'；BLK_mlp = 它的 blk；injection = 它的 lora[:,320:]）
+[chk] 判定 B整层H''<-层输入链             n=337920  逐位=0.9998 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.272e-11  PASS
+[chk] 判定 B整层blk_mlp<-层输入链         n=84480   逐位=0.9089 良态逐位=0.9053 ulpMax=3   归一maxAbs=3.676e-03  FAIL
+[chk] 判定 B整层injection<-层输入链       n=132     逐位=0.9015 良态逐位=0.9000 ulpMax=1   归一maxAbs=3.125e-03  FAIL
+[chk] 报告 B层出口==H''                        hout(=WS_HCP) 与 b2_hcp 逐字节一致 = True（布局契约自检，不计入计数）
+
+-- C. combine-only 档（MODE_COMBINE_ONLY；m20 三档都不提供）--
+[chk] 判定 C combine-only H'<-H,BO,IJ n=337920  逐位=0.9999 良态逐位=1.0000 ulpMax=1   归一maxAbs=4.049e-03  PASS
+
+-- D. 非空洞性 / 可区分性（guard）--
+[chk] guard 3 H'' 非常量                       取值数=2469  OK
+[chk] guard 3 BLK_mlp 非常量                   取值数=3152  OK
+[chk] guard 3 H''≠层输入 H                     整层不是恒等映射  OK
+[chk] guard 3 两个边界 blk 不同                   attn 边界与 mlp 边界的 block input 不同  OK
+
+-- D2. 跨层可区分性 --
+[chk] guard 跨层 blk 指纹 L00≠L01               两层权重槽没有错位到同一个摘要  OK
+[chk] guard 跨层 blk 指纹 L00≠L03               两层权重槽没有错位到同一个摘要  OK
+[chk] guard 跨层 blk 指纹 L01≠L03               两层权重槽没有错位到同一个摘要  OK
+
+[chk] 覆盖：判定项 64 条 + guard 15 条（共比较 79 条）；unverified/SKIPPED 1 条
+[chk] 其中由 m20 的 judge() 直接产出的条数 = 53（同一份门限代码）
+[chk] RESULT: FAILED (11 条不符：['A2.gate<-ls,wup', 'A2.ls<-lora', 'B整层blk_mlp<-层输入链', "A2.xn<-h'/ hc_norm", 'A2.lora<-xn,wdown', 'A2.inject<-xn,winj', 'A2.ls<-lora', 'A2.gate<-ls,wup', 'A2.blk<-gate,xn', 'B整层blk_mlp<-层输入链', 'B整层injection<-层输入链'])

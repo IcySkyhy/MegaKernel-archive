@@ -1,0 +1,51 @@
+# M52 · `lift_moe_segment.py` 的三态与负向对照（按 tower 规则：「判据自己要会咬」）
+#
+# 背景：M52 把旧「规则 7」从**替换**降级为**断言** `assert_upstream_vf()`。断言极易写成
+# 「恒真」，故按规则做 1 条正对照 + 3 条负向对照 + 1 条匹配器自身的对照。
+#
+# 这段代码真正检查什么（覆盖范围，与匹配器同源）：
+#   ① 上游 device 段的**代码行**（先剥行尾注释）里不得出现 `Extract(` 调用；
+#   ② 上游必须含 `LoadAlign<float, LoadDist::DIST_DINTLV_B32>(vr, vi, pairUb);` 这一句 VF 形态；
+#   ③ 上游 `Sort32` 调用点必须带依据注释的 4 个片段（例外声明 / docs/05 §6.1 / 无 Reg:: 等价物 /
+#      官方 donor 位置）；
+#   ④ `--check` 比对「入库文件 vs 按规则重抽的结果」的**整份文本**（任何差异都 FAIL）。
+#   **不检查**：其它 memory-based vector API（属 M44 审计与 docs/05 §6.1 的覆盖面，不在本脚本）；
+#   也不检查 m13 自身的算术/数值（那是 m13 自己的判据）。
+#   三态退出码：0 = 比过且一致 / 1 = 有差异或断言不成立 / （本脚本无「没得比」态：上游文件缺失
+#   时直接抛异常，不会被误读成通过）。
+#
+# 做法：三条负向对照都在 /tmp 的**影子目录**里做（拷一份脚本 + 一份被改过的上游 asc），
+# 不污染工作树。命令见下方各段（可直接照抄复现）。
+
+=== NC-0 正对照：未改动的上游 ===
+$ python3 lift_moe_segment.py
+[lift] 写出 m15_moe_layer.h（2025 行；内容锚点 asc 行 62..2031，入口第 2033 行）
+  -> exit=0
+$ python3 lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+  -> exit=0
+
+=== NC-1 负向：上游退回经典 memory-based Extract（VF 解交织 → LocalTensor + Extract）===
+$ python3 lift_moe_segment.py
+    assert not CLASSIC_EXTRACT_RE.search(code_only(text)), (
+AssertionError: 上游 m13 的 device 段出现经典 memory-based `Extract(` 调用 —— tower M44 裁决认定 `Extract` 不入例外，副本会落后于 donor
+  -> exit=1
+
+=== NC-2 负向：上游删掉 Sort32 依据注释的第一行 ===
+$ python3 lift_moe_segment.py
+    assert not missing, f"上游 m13 的 Sort32 调用点缺依据注释片段：{missing}"
+AssertionError: 上游 m13 的 Sort32 调用点缺依据注释片段：['Sort32 属**裁定例外**', 'docs/05 §6.1']
+  -> exit=1
+
+=== NC-3 负向：入库生成物被手改（Sort32 第 4 实参 1→2）时 --check ===
+$ python3 lift_moe_segment.py --check
+[lift][FAIL] m15_moe_layer.h 与抽取规则不一致（被手改或上游已变）
+  --- on-disk
+  +++ lifted
+  -> exit=1
+
+=== NC-4 对照：为什么断言必须先剥行尾注释 ===
+全文匹配（不剥注释）: 命中 -> 会把注释里的历史提法误报成违规
+  命中片段: '    }\n        // 前 32 对 (value, idx) 拆分 = 经典 `Extract(..., 1)` 的 VF '
+剥注释后匹配: 无（正确）
+assert_upstream_vf 在正确上游上通过 -> OK

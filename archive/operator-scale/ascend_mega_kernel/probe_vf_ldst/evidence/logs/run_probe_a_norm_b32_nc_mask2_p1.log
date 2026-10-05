@@ -1,0 +1,5 @@
+[probe A] probe_a_norm_b32_nc  dist=DIST_NORM_B32 maskSel=2 altFamily=1 proc=1
+[probe A] 实测: dst[0..7]=100 -999 102 -999 104 -999 106 -999
+[probe A] 落盘位图(.=未触碰 #=被写): #.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.
+[probe A] 写出 lane 数=32（偶 32 / 奇 0）
+[probe A] probe_a_norm_b32_nc maskSel=2 RUN PASS：交替掩码被严格遵守（32 个 lane、全偶；其余全为 POISON）

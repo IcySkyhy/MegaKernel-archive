@@ -1,0 +1,4 @@
+C-ref   vs numpy: out rows all within 0.01 rel: False (max rel 2)
+  first out mismatch at [0][1]: got np.float32(9.8228455e-05) expect np.float32(-9.8228455e-05) rel 2, total 153264
+NPU-dev vs numpy: out rows all within 0.01 rel: False (max rel 2)
+  first out mismatch at [0][1]: got np.float32(9.8228455e-05) expect np.float32(-9.8228455e-05) rel 2, total 153264

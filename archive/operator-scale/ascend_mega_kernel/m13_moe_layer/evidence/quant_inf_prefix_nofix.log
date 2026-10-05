@@ -1,0 +1,50 @@
+[M13]   qs A 量化段                 PASS (K=2560 SS=80 rows=1 seed=0 inf=0: qx 1280 B / scale 80 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs H 量化段                 PASS (K=640 SS=32 rows=1 seed=0 inf=0: qx 320 B / scale 20 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs A 量化段                 FAIL (K=2560 SS=80 rows=1 seed=0 inf=1: qx 1280 B / scale 80 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=640)
+[M13]     badQx=320 (first byte 16: got 0x77 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=0
+[M13]   qs H 量化段                 FAIL (K=640 SS=32 rows=1 seed=0 inf=1: qx 320 B / scale 20 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=160)
+[M13]     badQx=80 (first byte 16: got 0x77 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=640
+[M13]   qs A 量化段                 FAIL (K=2560 SS=80 rows=1 seed=0 inf=2: qx 1280 B / scale 80 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=297)
+[M13]     badQx=224 (first byte 16: got 0x08 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=0
+[M13]   qs H 量化段                 FAIL (K=640 SS=32 rows=1 seed=0 inf=2: qx 320 B / scale 20 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=81)
+[M13]     badQx=65 (first byte 17: got 0x80 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=640
+[M13]   qs A 量化段                 PASS (K=2560 SS=80 rows=1 seed=0 inf=3: qx 1280 B / scale 80 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs H 量化段                 PASS (K=640 SS=32 rows=1 seed=0 inf=3: qx 320 B / scale 20 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs A 量化段                 PASS (K=2560 SS=80 rows=64 seed=0 inf=0: qx 81920 B / scale 5120 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs H 量化段                 PASS (K=640 SS=32 rows=64 seed=0 inf=0: qx 20480 B / scale 1280 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs A 量化段                 FAIL (K=2560 SS=80 rows=64 seed=0 inf=1: qx 81920 B / scale 5120 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=40960)
+[M13]     badQx=20480 (first byte 16: got 0x77 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=0
+[M13]   qs H 量化段                 FAIL (K=640 SS=32 rows=64 seed=0 inf=1: qx 20480 B / scale 1280 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=10240)
+[M13]     badQx=5120 (first byte 16: got 0x77 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=40960
+[M13]   qs A 量化段                 FAIL (K=2560 SS=80 rows=64 seed=0 inf=2: qx 81920 B / scale 5120 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=18771)
+[M13]     badQx=13905 (first byte 16: got 0x08 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=0
+[M13]   qs H 量化段                 FAIL (K=640 SS=32 rows=64 seed=0 inf=2: qx 20480 B / scale 1280 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=4521)
+[M13]     badQx=3439 (first byte 17: got 0x80 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=40960
+[M13]   qs A 量化段                 PASS (K=2560 SS=80 rows=64 seed=0 inf=3: qx 81920 B / scale 5120 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs H 量化段                 PASS (K=640 SS=32 rows=64 seed=0 inf=3: qx 20480 B / scale 1280 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs A 量化段                 PASS (K=2560 SS=80 rows=1 seed=1 inf=0: qx 1280 B / scale 80 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs H 量化段                 PASS (K=640 SS=32 rows=1 seed=1 inf=0: qx 320 B / scale 20 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs A 量化段                 FAIL (K=2560 SS=80 rows=1 seed=1 inf=1: qx 1280 B / scale 80 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=640)
+[M13]     badQx=320 (first byte 16: got 0x77 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=0
+[M13]   qs H 量化段                 FAIL (K=640 SS=32 rows=1 seed=1 inf=1: qx 320 B / scale 20 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=160)
+[M13]     badQx=80 (first byte 16: got 0x77 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=640
+[M13]   qs A 量化段                 FAIL (K=2560 SS=80 rows=1 seed=1 inf=2: qx 1280 B / scale 80 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=315)
+[M13]     badQx=235 (first byte 16: got 0x80 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=0
+[M13]   qs H 量化段                 FAIL (K=640 SS=32 rows=1 seed=1 inf=2: qx 320 B / scale 20 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=75)
+[M13]     badQx=54 (first byte 18: got 0x88 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=640
+[M13]   qs A 量化段                 PASS (K=2560 SS=80 rows=1 seed=1 inf=3: qx 1280 B / scale 80 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs H 量化段                 PASS (K=640 SS=32 rows=1 seed=1 inf=3: qx 320 B / scale 20 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs A 量化段                 PASS (K=2560 SS=80 rows=64 seed=1 inf=0: qx 81920 B / scale 5120 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs H 量化段                 PASS (K=640 SS=32 rows=64 seed=1 inf=0: qx 20480 B / scale 1280 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs A 量化段                 FAIL (K=2560 SS=80 rows=64 seed=1 inf=1: qx 81920 B / scale 5120 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=40960)
+[M13]     badQx=20480 (first byte 16: got 0x77 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=0
+[M13]   qs H 量化段                 FAIL (K=640 SS=32 rows=64 seed=1 inf=1: qx 20480 B / scale 1280 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=10240)
+[M13]     badQx=5120 (first byte 16: got 0x77 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=40960
+[M13]   qs A 量化段                 FAIL (K=2560 SS=80 rows=64 seed=1 inf=2: qx 81920 B / scale 5120 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=18857)
+[M13]     badQx=13992 (first byte 16: got 0x80 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=0
+[M13]   qs H 量化段                 FAIL (K=640 SS=32 rows=64 seed=1 inf=2: qx 20480 B / scale 1280 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=4458)
+[M13]     badQx=3374 (first byte 18: got 0x88 exp 0x00) badScale=0 scaleOverrun=0 swigluExact=40960
+[M13]   qs A 量化段                 PASS (K=2560 SS=80 rows=64 seed=1 inf=3: qx 81920 B / scale 5120 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   qs H 量化段                 PASS (K=640 SS=32 rows=64 seed=1 inf=3: qx 20480 B / scale 1280 B bit-exact, swiglu maxULP=0 非有限不一致=0, 非有限组 nibble 非零=0)
+[M13]   量化段自检（含 ±Inf/NaN 用例） FAIL
+[M13] ===== FAILURES PRESENT =====

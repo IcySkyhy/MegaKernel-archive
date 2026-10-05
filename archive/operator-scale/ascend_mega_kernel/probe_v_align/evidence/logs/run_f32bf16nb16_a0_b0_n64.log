@@ -1,0 +1,7 @@
+VARIANT op=f32bf16nb16(id=39) a=0 b=0 n=64 model=15 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x6656fa44b82777f3
+HEAD32 00003f00 00003fc0 00004020 00004060
+COMPARE window_bytes=256 bytes_outside_window_written=64
+OUTCOME: OK
+RESULT: OK (partial bitwise: even 16-bit lanes == model; odd lanes report-only; 256 bytes compared)

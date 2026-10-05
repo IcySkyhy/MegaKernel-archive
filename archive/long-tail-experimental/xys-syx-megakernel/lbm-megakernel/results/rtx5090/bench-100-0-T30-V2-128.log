@@ -1,0 +1,23 @@
+RESOURCE name=T30-V2-128 threads=128 registers=63 static_shared=0 dynamic_shared=36480 local_bytes=0 active_blocks_per_sm=2 grid=4x30x38 block=128x1x1 steps_per_launch=2 theoretical_occupancy_pct=16.666667
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=144.834556580
+TRIAL 1 us_per_step=144.968004227
+TRIAL 2 us_per_step=144.887676239
+TRIAL 3 us_per_step=144.969282150
+TRIAL 4 us_per_step=144.969282150
+TRIAL 5 us_per_step=144.775037766
+TRIAL 6 us_per_step=144.928636551
+TRIAL 7 us_per_step=145.000000000
+TRIAL 8 us_per_step=144.762878418
+TRIAL 9 us_per_step=145.152320862
+TRIAL 10 us_per_step=144.905920029
+TRIAL 11 us_per_step=144.918403625
+TRIAL 12 us_per_step=144.835844040
+TRIAL 13 us_per_step=144.897918701
+TRIAL 14 us_per_step=144.908161163
+TRIAL 15 us_per_step=145.091199875
+TRIAL 16 us_per_step=144.887361526
+TRIAL 17 us_per_step=144.969596863
+TRIAL 18 us_per_step=145.070400238
+TRIAL 19 us_per_step=144.833278656
+BENCH mode=T30-V2-128 warmups=5 trials=20 steps=100 launches=50 median_us=144.913282394 min_us=144.762878418 p90_us=145.070400238 mlups=14905.465974617 equivalent_population_TB_s=2.265630828

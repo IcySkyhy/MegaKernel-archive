@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+
+# Real-topology tier (E=512, topK=10): ~1.3 GiB of MXFP4 weights.  Generated on
+# demand with `gen_dataset.py --groups real`; only the manifests (tensor list +
+# size_bytes + sha256 + deviation budget) are committed, which is what makes the
+# tier verifiable without shipping the bytes (selfcheck.py --real).
+data/real/*.bin
+data/real/*.bin.json
+data/real/qaware/*/*.bin
+data/real/qaware/*/*.bin.json

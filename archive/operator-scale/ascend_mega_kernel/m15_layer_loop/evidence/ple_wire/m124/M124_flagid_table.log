@@ -1,0 +1,38 @@
+# M124：flagId 逐 (核型, mode) 执行序与用量表（**从 FLAG_SEQ 解析**，不是手抄）
+# 生成命令： /usr/local/python3.12.13/bin/python3.12 m15_layer_loop/evidence/ple_wire/m124/M124_flagid_table.py
+# 生成时点 tip： db68139（+工作树未提交改动）
+# 本文件由 r1 复审 P2-1 触发（初版表手抄漏了 AIC mode2 的 12/13）；r2 复审 P2-1 残留再触发一次：
+#   补登记 M85P::FLAG_B4（AIV mode0，8(PLE_IN) 与 9(PLE_OUT) 之间）后，脚本即可原样产出 AIV mode0 的层 1 真实序。
+
+== 解析到的 FLAG_SEQ 行：69 条 ==
+（本脚本的语义与 `m15_layer_resources.h` 的 `FlagSeqAdjacentOk()`/`FlagMaxUse()` 同口径：
+  相邻 = 数组序里下一条**同 mode 且 CoreSame** 的行；`both` 与任何核型都 CoreSame）
+
+-- AIC · mode0：22 个同步点
+   执行序 id: 0(hc(H1)) → 1(hc(H1)) → 2(hc(H1)) → 3(hc(H1)) → 14(PLE) → 15(PLE) → 0(hc(H1b)) → 1(hc(H1b)) → 2(hc(H1b)) → 3(hc(H1b)) → 12(GDN) → 13(GDN) → 14(GDN) → 15(GDN) → 0(hc(H2)) → 1(hc(H2)) → 2(hc(H2)) → 3(hc(H2)) → 8(MoE) → 9(MoE) → 10(MoE) → 11(MoE)
+   每 id 用量（**全表口径**：含只有非 PLE 层才走的 `hc(H1)` 行；＝ C++ 侧检查所见）: 0×3, 1×3, 2×3, 3×3, 8×1, 9×1, 10×1, 11×1, 12×1, 13×1, 14×2, 15×2
+
+-- AIV · mode0：25 个同步点
+   执行序 id: 12(hc(H1)) → 13(hc(H1)) → 14(hc(H1)) → 12(hc(H1a)) → 8(bound) → 14(PLE) → 9(bound) → 12(hc(H1b)) → 13(hc(H1b)) → 14(hc(H1b)) → 8(bound) → 10(GDN) → 8(GDN) → 9(GDN) → 11(GDN) → 9(bound) → 12(hc(H2)) → 13(hc(H2)) → 14(hc(H2)) → 8(bound) → 12(MoE) → 13(MoE) → 14(MoE) → 15(MoE) → 12(MoE)
+   每 id 用量（**全表口径**：含只有非 PLE 层才走的 `hc(H1)` 行；＝ C++ 侧检查所见）: 8×4, 9×3, 10×1, 11×1, 12×6, 13×4, 14×5, 15×1
+
+-- both · mode2：22 个同步点
+   执行序 id: 8(hc(H1)) → 9(hc(H1)) → 10(hc(H1)) → 11(hc(H1)) → 12(PLE) → 13(PLE) → 8(hc(H1b)) → 9(hc(H1b)) → 10(hc(H1b)) → 11(hc(H1b)) → 4(GDN) → 5(GDN) → 6(GDN) → 7(GDN) → 8(hc(H2)) → 9(hc(H2)) → 10(hc(H2)) → 11(hc(H2)) → 0(MoE) → 1(MoE) → 2(MoE) → 3(MoE)
+   每 id 用量（**全表口径**：含只有非 PLE 层才走的 `hc(H1)` 行；＝ C++ 侧检查所见）: 0×1, 1×1, 2×1, 3×1, 4×1, 5×1, 6×1, 7×1, 8×3, 9×3, 10×3, 11×3, 12×1, 13×1
+
+== 独立重算的判定 ==
+FlagSeqAdjacentOk() 口径：通过（相邻对无同号）
+FlagMaxUse() 口径：同一 (核型,mode,id) 的最大用量 = 6（C++ 侧 static_assert 的上限是 6，硬件 4bit 计数器上限 15）
+
+== 层 1（PLE 打断点层）的真实执行序与用量（**层 1 口径**：去掉非 PLE 层才有的 hc(H1) 行）==
+   AIV · mode2: 12(PLE) → 13(PLE) → 8(hc(H1b)) → 9(hc(H1b)) → 10(hc(H1b)) → 11(hc(H1b)) → 4(GDN) → 5(GDN) → 6(GDN) → 7(GDN) → 8(hc(H2)) → 9(hc(H2)) → 10(hc(H2)) → 11(hc(H2)) → 0(MoE) → 1(MoE) → 2(MoE) → 3(MoE)
+      用量: 0×1, 1×1, 2×1, 3×1, 4×1, 5×1, 6×1, 7×1, 8×2, 9×2, 10×2, 11×2, 12×1, 13×1；相邻对无同号
+   AIV · mode0: 12(hc(H1a)) → 8(bound) → 14(PLE) → 9(bound) → 12(hc(H1b)) → 13(hc(H1b)) → 14(hc(H1b)) → 8(bound) → 10(GDN) → 8(GDN) → 9(GDN) → 11(GDN) → 9(bound) → 12(hc(H2)) → 13(hc(H2)) → 14(hc(H2)) → 8(bound) → 12(MoE) → 13(MoE) → 14(MoE) → 15(MoE) → 12(MoE)
+      用量: 8×4, 9×3, 10×1, 11×1, 12×5, 13×3, 14×4, 15×1；相邻对无同号
+   AIC · mode2: 12(PLE) → 13(PLE) → 8(hc(H1b)) → 9(hc(H1b)) → 10(hc(H1b)) → 11(hc(H1b)) → 4(GDN) → 5(GDN) → 6(GDN) → 7(GDN) → 8(hc(H2)) → 9(hc(H2)) → 10(hc(H2)) → 11(hc(H2)) → 0(MoE) → 1(MoE) → 2(MoE) → 3(MoE)
+      用量: 0×1, 1×1, 2×1, 3×1, 4×1, 5×1, 6×1, 7×1, 8×2, 9×2, 10×2, 11×2, 12×1, 13×1；相邻对无同号
+   AIC · mode0: 14(PLE) → 15(PLE) → 0(hc(H1b)) → 1(hc(H1b)) → 2(hc(H1b)) → 3(hc(H1b)) → 12(GDN) → 13(GDN) → 14(GDN) → 15(GDN) → 0(hc(H2)) → 1(hc(H2)) → 2(hc(H2)) → 3(hc(H2)) → 8(MoE) → 9(MoE) → 10(MoE) → 11(MoE)
+      用量: 0×2, 1×2, 2×2, 3×2, 8×1, 9×1, 10×1, 11×1, 12×1, 13×1, 14×2, 15×2；相邻对无同号
+
+注：`bound` = PLE 挂载点的两条相位边界（`FLAG_PLE_IN/OUT_BOUND_AIV` = `FLAG_HC0/HC1_BOUND_AIV` = 8/9）；`h1→a` / `a→h2` / `h2→b` 三条在表里同样以 `bound` 记（同号复用，见 `m15_layer_kernel.h` 的注释）。
+script_rc=0

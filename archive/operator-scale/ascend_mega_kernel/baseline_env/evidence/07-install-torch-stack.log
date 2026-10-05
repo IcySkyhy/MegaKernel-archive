@@ -1,0 +1,162 @@
++ VENV=/workspace/venvs/baseline
++ PY=/workspace/venvs/baseline/bin/python
++ PIP=/workspace/venvs/baseline/bin/pip
++ /workspace/venvs/baseline/bin/python -V
+Python 3.12.13
++ export PIP_DISABLE_PIP_VERSION_CHECK=1
++ PIP_DISABLE_PIP_VERSION_CHECK=1
++ /workspace/venvs/baseline/bin/pip install -U 'packaging>=24.2' 'setuptools>=77.0.3,<81.0.0' setuptools-scm wheel
+Looking in indexes: https://repo.huaweicloud.com/repository/pypi/simple
+Requirement already satisfied: packaging>=24.2 in ./baseline/lib/python3.12/site-packages (26.3)
+Requirement already satisfied: setuptools<81.0.0,>=77.0.3 in ./baseline/lib/python3.12/site-packages (80.10.2)
+Requirement already satisfied: setuptools-scm in ./baseline/lib/python3.12/site-packages (10.3.4)
+Requirement already satisfied: wheel in ./baseline/lib/python3.12/site-packages (0.48.0)
+Requirement already satisfied: vcs-versioning<3,>=2.5.0.dev0 in ./baseline/lib/python3.12/site-packages (from setuptools-scm) (2.5.0)
++ /workspace/venvs/baseline/bin/pip install triton-ascend==3.2.2 --extra-index-url https://mirrors.huaweicloud.com/ascend/repos/pypi
+Looking in indexes: https://repo.huaweicloud.com/repository/pypi/simple, https://mirrors.huaweicloud.com/ascend/repos/pypi
+Requirement already satisfied: triton-ascend==3.2.2 in ./baseline/lib/python3.12/site-packages (3.2.2)
+Requirement already satisfied: attrs==24.2.0 in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (24.2.0)
+Requirement already satisfied: numpy==1.26.4 in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (1.26.4)
+Requirement already satisfied: scipy==1.13.1 in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (1.13.1)
+Requirement already satisfied: decorator==5.1.1 in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (5.1.1)
+Requirement already satisfied: psutil==6.0.0 in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (6.0.0)
+Requirement already satisfied: pytest==8.3.2 in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (8.3.2)
+Requirement already satisfied: pytest-xdist==3.6.1 in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (3.6.1)
+Requirement already satisfied: pyyaml in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (6.0.3)
+Requirement already satisfied: pybind11 in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (3.1.0)
+Requirement already satisfied: pandas in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (3.0.6)
+Requirement already satisfied: triton==3.2.0 in ./baseline/lib/python3.12/site-packages (from triton-ascend==3.2.2) (3.2.0)
+Requirement already satisfied: iniconfig in ./baseline/lib/python3.12/site-packages (from pytest==8.3.2->triton-ascend==3.2.2) (2.3.0)
+Requirement already satisfied: packaging in ./baseline/lib/python3.12/site-packages (from pytest==8.3.2->triton-ascend==3.2.2) (26.3)
+Requirement already satisfied: pluggy<2,>=1.5 in ./baseline/lib/python3.12/site-packages (from pytest==8.3.2->triton-ascend==3.2.2) (1.6.0)
+Requirement already satisfied: execnet>=2.1 in ./baseline/lib/python3.12/site-packages (from pytest-xdist==3.6.1->triton-ascend==3.2.2) (2.1.2)
+Requirement already satisfied: python-dateutil>=2.8.2 in ./baseline/lib/python3.12/site-packages (from pandas->triton-ascend==3.2.2) (2.9.0.post0)
+Requirement already satisfied: six>=1.5 in ./baseline/lib/python3.12/site-packages (from python-dateutil>=2.8.2->pandas->triton-ascend==3.2.2) (1.17.0)
++ /workspace/venvs/baseline/bin/pip install --timeout 60 --retries 5 filelock typing-extensions sympy networkx jinja2 fsspec numpy pillow
+Looking in indexes: https://repo.huaweicloud.com/repository/pypi/simple
+Collecting filelock
+  Using cached https://repo.huaweicloud.com/repository/pypi/packages/7a/6d/db8b86e168fef0cf904737e275bccb683558088ef971e92d3b41ce980699/filelock-4.0.3-py3-none-any.whl (108 kB)
+Collecting typing-extensions
+  Downloading https://repo.huaweicloud.com/repository/pypi/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Collecting sympy
+  Downloading https://repo.huaweicloud.com/repository/pypi/packages/a2/09/77d55d46fd61b4a135c444fc97158ef34a095e5681d0a6c10b75bf356191/sympy-1.14.0-py3-none-any.whl (6.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.3/6.3 MB 49.9 MB/s eta 0:00:00
+Collecting networkx
+  Downloading https://repo.huaweicloud.com/repository/pypi/packages/7e/cd/fe58041e9011f307c490e3e17dd48cc516448f7c698a3f2d9d9d65d7e6a8/networkx-3.7-py3-none-any.whl (2.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 6.0 MB/s eta 0:00:00
+Collecting jinja2
+  Downloading https://repo.huaweicloud.com/repository/pypi/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl (134 kB)
+Collecting fsspec
+  Downloading https://repo.huaweicloud.com/repository/pypi/packages/6c/c0/a98505f18594f1bce828bb159cec0fcf9860562f1a2c85913409fc8f3d9e/fsspec-2026.9.0-py3-none-any.whl (221 kB)
+Requirement already satisfied: numpy in ./baseline/lib/python3.12/site-packages (1.26.4)
+Collecting pillow
+  Downloading https://repo.huaweicloud.com/repository/pypi/packages/84/21/a35af28dcc61f37ed850a2d64c65c701321dfbf25085e469d5559360cbbf/pillow-12.3.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 81.4 MB/s eta 0:00:00
+Collecting mpmath<1.4,>=1.1.0 (from sympy)
+  Downloading https://repo.huaweicloud.com/repository/pypi/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl (536 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 73.6 MB/s eta 0:00:00
+Collecting MarkupSafe>=2.0 (from jinja2)
+  Downloading https://repo.huaweicloud.com/repository/pypi/packages/3c/2e/8d0c2ab90a8c1d9a24f0399058ab8519a3279d1bd4289511d74e909f060e/markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Installing collected packages: mpmath, typing-extensions, sympy, pillow, networkx, MarkupSafe, fsspec, filelock, jinja2
+Successfully installed MarkupSafe-3.0.3 filelock-4.0.3 fsspec-2026.9.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.7 pillow-12.3.0 sympy-1.14.0 typing-extensions-4.16.0
++ /workspace/venvs/baseline/bin/pip install --no-deps --timeout 60 --retries 5 torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+Looking in indexes: https://download.pytorch.org/whl/cpu
+Collecting torch==2.10.0
+  Using cached https://download-r2.pytorch.org/whl/cpu/torch-2.10.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (29 kB)
+Collecting torchvision==0.25.0
+  Using cached https://download-r2.pytorch.org/whl/cpu/torchvision-0.25.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (5.4 kB)
+Collecting torchaudio==2.10.0
+  Using cached https://download-r2.pytorch.org/whl/cpu/torchaudio-2.10.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (6.9 kB)
+Using cached https://download-r2.pytorch.org/whl/cpu/torch-2.10.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (188.9 MB)
+Using cached https://download-r2.pytorch.org/whl/cpu/torchvision-0.25.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (1.9 MB)
+Using cached https://download-r2.pytorch.org/whl/cpu/torchaudio-2.10.0%2Bcpu-cp312-cp312-manylinux_2_28_x86_64.whl (413 kB)
+Installing collected packages: torchaudio, torchvision, torch
+Successfully installed torch-2.10.0+cpu torchaudio-2.10.0+cpu torchvision-0.25.0+cpu
++ /workspace/venvs/baseline/bin/pip install torch_npu==2.10.0.post4 --timeout 60 --retries 5
+Looking in indexes: https://repo.huaweicloud.com/repository/pypi/simple
+Collecting torch_npu==2.10.0.post4
+  Using cached https://repo.huaweicloud.com/repository/pypi/packages/05/c5/0d60feb38ba60952d0c150db21baab1b518aabb0ef2c6a8377bfc0e241e8/torch_npu-2.10.0.post4-cp312-cp312-manylinux_2_28_x86_64.whl (40.0 MB)
+Requirement already satisfied: torch==2.10.0+cpu in ./baseline/lib/python3.12/site-packages (from torch_npu==2.10.0.post4) (2.10.0+cpu)
+Requirement already satisfied: filelock in ./baseline/lib/python3.12/site-packages (from torch==2.10.0+cpu->torch_npu==2.10.0.post4) (4.0.3)
+Requirement already satisfied: typing-extensions>=4.10.0 in ./baseline/lib/python3.12/site-packages (from torch==2.10.0+cpu->torch_npu==2.10.0.post4) (4.16.0)
+Requirement already satisfied: setuptools in ./baseline/lib/python3.12/site-packages (from torch==2.10.0+cpu->torch_npu==2.10.0.post4) (80.10.2)
+Requirement already satisfied: sympy>=1.13.3 in ./baseline/lib/python3.12/site-packages (from torch==2.10.0+cpu->torch_npu==2.10.0.post4) (1.14.0)
+Requirement already satisfied: networkx>=2.5.1 in ./baseline/lib/python3.12/site-packages (from torch==2.10.0+cpu->torch_npu==2.10.0.post4) (3.7)
+Requirement already satisfied: jinja2 in ./baseline/lib/python3.12/site-packages (from torch==2.10.0+cpu->torch_npu==2.10.0.post4) (3.1.6)
+Requirement already satisfied: fsspec>=0.8.5 in ./baseline/lib/python3.12/site-packages (from torch==2.10.0+cpu->torch_npu==2.10.0.post4) (2026.9.0)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in ./baseline/lib/python3.12/site-packages (from sympy>=1.13.3->torch==2.10.0+cpu->torch_npu==2.10.0.post4) (1.3.0)
+Requirement already satisfied: MarkupSafe>=2.0 in ./baseline/lib/python3.12/site-packages (from jinja2->torch==2.10.0+cpu->torch_npu==2.10.0.post4) (3.0.3)
+Installing collected packages: torch_npu
+Successfully installed torch_npu-2.10.0.post4
++ /workspace/venvs/baseline/bin/pip list
+Package                Version
+---------------------- ------------
+affinity-sched         26.1.0
+asc_op_compile_base    0.1.0
+asc_opc_tool           0.1.0
+attrs                  24.2.0
+auto_tune              0.1.0
+cann_ops_transformer   1.0.0
+cannsim                0.1.0
+dataflow               0.0.1
+decorator              5.1.1
+es_cv                  1.0.0
+es_hccl                1.0.0
+es_math                1.0.0
+es_nn                  1.0.0
+es_transformer         1.0.0
+execnet                2.1.2
+filelock               4.0.3
+fsspec                 2026.9.0
+ge-py                  0.0.1
+hccl                   0.1.0
+iniconfig              2.3.0
+Jinja2                 3.1.6
+llm_datadist           0.0.1
+llm_datadist_v1        0.0.1
+MarkupSafe             3.0.3
+mindstudio-kl          26.1.0
+mindstudio-kpp         26.1.0
+mindstudio-opgen       26.0.0
+mindstudio-opst        26.0.0
+mpmath                 1.3.0
+ms_service_profiler    26.0.0
+msobjdump              0.1.0
+mspti                  26.1.0
+networkx               3.7
+numpy                  1.26.4
+op_compile_tool        0.1.0
+opc_tool               0.1.0
+optype_collector       0.1.0
+packaging              26.3
+pandas                 3.0.6
+pillow                 12.3.0
+pip                    25.0.1
+pluggy                 1.6.0
+psutil                 6.0.0
+pybind11               3.1.0
+pypto                  0.2.1
+pytest                 8.3.2
+pytest-xdist           3.6.1
+python-dateutil        2.9.0.post0
+PyYAML                 6.0.3
+schedule_search        0.0.1
+scipy                  1.13.1
+setuptools             80.10.2
+setuptools-scm         10.3.4
+show_kernel_debug_data 0.1.0
+six                    1.17.0
+superkernel            0.1.0
+sympy                  1.14.0
+te                     0.4.0
+torch                  2.10.0+cpu
+torch_npu              2.10.0.post4
+torchaudio             2.10.0+cpu
+torchvision            0.25.0+cpu
+triton                 3.2.0
+triton_ascend          3.2.2
+typing_extensions      4.16.0
+vcs-versioning         2.5.0
+wheel                  0.48.0
++ echo INSTALL_TORCH_STACK_RC=0
+INSTALL_TORCH_STACK_RC=0

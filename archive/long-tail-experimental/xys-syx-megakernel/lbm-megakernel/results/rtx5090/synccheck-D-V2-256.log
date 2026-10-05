@@ -1,0 +1,11 @@
+========= COMPUTE-SANITIZER
+RESOURCE name=D-V2-256 threads=256 registers=56 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+LBM_allocateGrid: allocated 185.2 MByte
+SENTINELS invariant_slots=324236 y_alias_slots=178204
+LBM_showGridStatistics:
+	nObstacleCells:  205306 nAccelCells:   24625 nFluidCells: 1930069
+	minRho:   0.9808 maxRho:   1.0169 mass: 2.160039e+06
+	minU: 1.809432e-06 maxU: 1.152855e-02
+
+DONE physical_steps=6 kernel_launches=3 final_buffer=B patterned=1
+========= ERROR SUMMARY: 0 errors

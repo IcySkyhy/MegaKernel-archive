@@ -1,0 +1,18 @@
+{
+  "tensor": "x_sorted.bin",
+  "shape": [
+    2,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 10240,
+  "sha256": "fb87a344fcc5c30ed8a6e8d3ef352dae19894e6f2251f5a5eb97d3dbd14cb192",
+  "kind": "golden",
+  "description": "rearranged activations grouped by expert [m*top_k, hidden], bf16"
+}

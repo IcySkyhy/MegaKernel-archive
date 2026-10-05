@@ -1,0 +1,18 @@
+{
+  "tensor": "a_scale_shd.bin",
+  "shape": [
+    33,
+    80
+  ],
+  "dtype": "uint8",
+  "strides": [
+    80,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 2640,
+  "sha256": "da2c79907fd6c07da1092bf1580c1576a80231776afa0cb1eff7375dd5015133",
+  "kind": "golden",
+  "description": "shared-expert A E8M0 group scales [m, hidden/32]"
+}

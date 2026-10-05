@@ -1,0 +1,21 @@
+# peak process memory per tag (child ru_maxrss via os.wait4)
+# measured by tools/measure_peak_rss.py; the weights are read from the
+# real checkpoint, so this is what 'a layer fits in memory' must cite
+# M39_THREADS=8  loadavg=13.32 21.63 21.45
+#
+# THIS FILE IS A MEASUREMENT, NOT A DETERMINISTIC ARTIFACT: the per-tag
+# values move by ~0.05 GiB between runs (allocator/load), so -- unlike the
+# other evidence files -- it is NOT expected to be byte-identical across
+# runs. Valid for the collection above; quote it as a level (~5.4 GiB),
+# and quote the min/max below rather than a single tag's number.
+
+layer0_decode_m1: 5.41 GiB
+layer0_decode_m1_pending: 5.42 GiB
+layer3_decode_m1: 3.20 GiB
+layer0_chunk_m64: 4.51 GiB
+layer3_chunk_m64: 2.40 GiB
+layer3_chunk_m64_seed1: 2.42 GiB
+
+max over 6/6 tags: 5.42 GiB (layer0_decode_m1_pending)
+min: 2.40 GiB
+RESULT: OK (6/6 tags measured)

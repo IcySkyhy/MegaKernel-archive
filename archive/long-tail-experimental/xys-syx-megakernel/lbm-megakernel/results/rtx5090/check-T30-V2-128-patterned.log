@@ -1,0 +1,16 @@
+RESOURCE name=T30-V2-128 threads=128 registers=63 static_shared=0 dynamic_shared=36480 local_bytes=0 active_blocks_per_sm=2 grid=4x30x38 block=128x1x1 steps_per_launch=2 theoretical_occupancy_pct=16.666667
+LBM_allocateGrid: allocated 185.2 MByte
+CHECK step=2 role=current-even populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=0 role=inactive populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=4 role=current-even populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=2 role=inactive populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=6 role=current-even populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=4 role=inactive populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=1000 role=current-even populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=998 role=inactive populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+LBM_showGridStatistics:
+	nObstacleCells:  170309 nAccelCells:   25984 nFluidCells: 1963707
+	minRho:   0.8849 maxRho:   1.1135 mass: 2.160005e+06
+	minU: 1.633981e-07 maxU: 6.426667e-02
+
+PASS physical_steps=1000 kernel_launches=500 final_buffer=A patterned=1

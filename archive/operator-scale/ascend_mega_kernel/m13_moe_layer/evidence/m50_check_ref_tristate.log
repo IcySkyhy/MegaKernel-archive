@@ -1,0 +1,29 @@
+# M50 审校脚本三态退出码的负向对照（tower 2026-09-26 规则：没有可比较输入时不得发合格证）
+#   脚本头注释已写明：0 = 比过且通过；1 = 比过且有差异；2 = 没得比 / 输入缺失
+
+## (a) 正常输入 quant-inf（device dump 齐备）——必须 OK 且计数正确、rc=0
+$ python3 m13_moe_layer/check_ref.py quant-inf m13_moe_layer/evidence/quant_inf_dumps; echo rc=$?
+[check_ref] quant-inf 判定项：40 条，40 PASS / 0 FAIL
+[check_ref] quant-inf 报告项：OK   quant-inf 用例集合完整（2 侧 × 5 kinds，r1/s0）: 实到 10
+[check_ref] quant-inf 报告项：OK   tools/golden 交叉见证（moe_block_ref.quantize_ocp vs device 逐字节）: 0/8500 字节不符，10 个用例
+[check_ref] quant-inf ===== ALL PASS =====
+rc=0
+
+## (b) 空/缺失输入 quant-inf —— 不得发合格证：SKIPPED + rc=2
+$ python3 m13_moe_layer/check_ref.py quant-inf /tmp/m50/empty_dumps; echo rc=$?
+[check_ref] quant-inf 判定项：0 条，0 PASS / 0 FAIL
+[check_ref] quant-inf 报告项：WARN quant-inf 用例集合完整（2 侧 × 5 kinds，r1/s0）: 实到 0
+[check_ref] quant-inf 报告项：WARN tools/golden 交叉见证（moe_block_ref.quantize_ocp vs device 逐字节）: 0/0 字节不符，0 个用例
+[check_ref] quant-inf ===== SKIPPED（/tmp/m50/empty_dumps 下没有 qs_*_r1_s0_*_device.bin：未比较任何用例，退出码 2）=====
+rc=2
+
+## (c) 空/缺失输入 数据集模式 —— 不得发合格证：SKIPPED + rc=2
+$ python3 m13_moe_layer/check_ref.py /tmp/m50/empty_dumps m1 m33; echo rc=$?
+[check_ref] 判定项：4 条，4 PASS / 0 FAIL
+[check_ref] ===== SKIPPED（没有可比较的 case×mode dump：未比较任何 device 张量；退出码 2）=====
+rc=2
+
+## (d) 正常输入 数据集模式 —— rc=0，输出与归档 m50_check_ref_after.log 逐字节相同
+$ python3 m13_moe_layer/check_ref.py /tmp/m50/fin_r2/dump m1 m33; echo rc=$?
+[check_ref] ===== ALL PASS （判定 118 项 / 参考 32 项）=====
+rc=0

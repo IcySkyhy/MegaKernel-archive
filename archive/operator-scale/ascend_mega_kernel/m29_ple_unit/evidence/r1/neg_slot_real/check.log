@@ -1,0 +1,33 @@
+RESULT|B1.ids.s0|T1|32|0|PASS
+[PASS] B1.ids.s0                  tier=T1  n=32       bad=0      n-gram id 逐位
+RESULT|B2.emb.s0|T1|5120|5116|FAIL
+[FAIL] B2.emb.s0                  tier=T1  n=5120     bad=5116   表行逐字节（covered 32/32；真实档与直读分片比）
+RESULT|B2.miss.s0|T1-struct|32|0|PASS
+[PASS] B2.miss.s0                 tier=T1-struct n=32       bad=0      设备越窗计数 0 vs 参考未覆盖 0
+RESULT|B3.kv.s0|T3|25600|25399|FAIL
+[FAIL] B3.kv.s0                   tier=T3  n=25600    bad=25399  cube mmad K=2560 eps=0.000153 max(d/bound)=725.355 grid=Sum|terms|(median/max ratio=22.4/2.73e+03)
+RESULT|B4.gated.s0|T3|20480|0|PASS
+[PASS] B4.gated.s0                tier=T3  n=20480    bad=0      gate g·v eps=3.58e-07 max(d/bound)=0.000 grid=proxy=max(|out|,|ref|)
+RESULT|B4.normed.s0|T3|20480|0|PASS
+[PASS] B4.normed.s0               tier=T3  n=20480    bad=0      normed eps=3.58e-07 max(d/bound)=1.000 grid=proxy=max(|out|,|ref|)
+RESULT|B5.out.s0|T3|20480|0|PASS
+[PASS] B5.out.s0                  tier=T3  n=20480    bad=0      conv+SiLU+残差 eps=3.58e-07 max(d/bound)=0.000 grid=proxy=max(|out|,|ref|)
+RESULT|B5.state.s0|T3|184320|0|PASS
+[PASS] B5.state.s0                tier=T3  n=184320   bad=0      活跃 slot [2] 状态演化 eps=0 max(d/bound)=1.000 grid=proxy=max(|out|,|ref|)
+RESULT|B1.ids.s1|T1|32|0|PASS
+[PASS] B1.ids.s1                  tier=T1  n=32       bad=0      n-gram id 逐位
+RESULT|B2.emb.s1|T1|5120|5117|FAIL
+[FAIL] B2.emb.s1                  tier=T1  n=5120     bad=5117   表行逐字节（covered 32/32；真实档与直读分片比）
+RESULT|B2.miss.s1|T1-struct|32|0|PASS
+[PASS] B2.miss.s1                 tier=T1-struct n=32       bad=0      设备越窗计数 0 vs 参考未覆盖 0
+RESULT|B3.kv.s1|T3|25600|25480|FAIL
+[FAIL] B3.kv.s1                   tier=T3  n=25600    bad=25480  cube mmad K=2560 eps=0.000153 max(d/bound)=909.147 grid=Sum|terms|(median/max ratio=23.8/8.73e+03)
+RESULT|B4.gated.s1|T3|20480|0|PASS
+[PASS] B4.gated.s1                tier=T3  n=20480    bad=0      gate g·v eps=3.58e-07 max(d/bound)=0.000 grid=proxy=max(|out|,|ref|)
+RESULT|B4.normed.s1|T3|20480|0|PASS
+[PASS] B4.normed.s1               tier=T3  n=20480    bad=0      normed eps=3.58e-07 max(d/bound)=0.000 grid=proxy=max(|out|,|ref|)
+RESULT|B5.out.s1|T3|20480|0|PASS
+[PASS] B5.out.s1                  tier=T3  n=20480    bad=0      conv+SiLU+残差 eps=3.58e-07 max(d/bound)=0.000 grid=proxy=max(|out|,|ref|)
+RESULT|B5.state.s1|T3|184320|0|PASS
+[PASS] B5.state.s1                tier=T3  n=184320   bad=0      活跃 slot [2] 状态演化 eps=0 max(d/bound)=1.000 grid=proxy=max(|out|,|ref|)
+VERDICT=FAILED steps=2 n_fail=4

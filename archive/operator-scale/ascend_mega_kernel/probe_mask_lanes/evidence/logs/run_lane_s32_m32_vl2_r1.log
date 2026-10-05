@@ -1,0 +1,8 @@
+VARIANT name=lane_s32_m32_vl2 kind=0 group=lane-enc sd=s32 md=m32 pat=vl2 rows=0 pitchI=0 pitchW=0 im=0
+LAUNCH aclError=0 (sync timeout=120000ms)
+AREABYTES 12288
+WRANGES 0-8,1024-1032
+NZ bytes_written=16 first_off=0 last_off=1032
+FNV 0xd77c9b1ff684f9d3
+OUTCOME: RAN
+rc=0

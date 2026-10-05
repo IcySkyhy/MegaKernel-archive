@@ -1,0 +1,79 @@
+======================================================================================================================
+M30 README 全量数字对账（每个量 → 归档出处:行号 → 判定）
+======================================================================================================================
+主张                        类别       README  期望值             归档出处                        判定
+----------------------------------------------------------------------------------------------------------------------
+HBM 总量                    fixed    53      131072          evidence/01-host-and-npu.txt:19PASS
+HBM GiB                   derived  54      128 GiB         evidence/01-host-and-npu.txt:19PASS
+total_memory 字节           fixed    54      132,238,016,512 evidence/05-npu-selfcheck.txt:13PASS
+total_memory GiB          derived  54      123.16          evidence/05-npu-selfcheck.txt:13PASS
+driver 版本                 fixed    55      25.7.rc1.6      evidence/01-host-and-npu.txt:13PASS
+CANN 版本                   fixed    56      9.1.0           evidence/01-host-and-npu.txt:65PASS
+ATB 版本                    fixed    57      9.1.0.B150      evidence/01-host-and-npu.txt:50PASS
+容器内存上限字节                  fixed    59      34,359,738,368  evidence/01-host-and-npu.txt:75PASS
+容器内存上限 GiB                derived  59      32 GiB          evidence/01-host-and-npu.txt:75PASS
+宿主内存                      fixed    59      754 GiB         evidence/01-host-and-npu.txt:78PASS
+磁盘配额（用户口径）                external 60      300 GB          docs/01-environment.md      ATTRIBUTED（外部来源，README 已标注）
+磁盘实测可用                    live     61      live=426G       evidence/01-host-and-npu.txt:83LIVE-OK（标注活值 + 归档现场解析 = 426G；README 读数 426G 与之一致）
+模型分片数                     fixed    62      131 分片          evidence/03-checkpoint-memory.txt:2PASS
+模型 tensor 数               fixed    62      1898 tensor     evidence/03-checkpoint-memory.txt:3PASS
+模型总量                      fixed    62      169.72 GiB      evidence/03-checkpoint-memory.txt:4PASS
+torch 版本                  fixed    17      2.10.0          evidence/06-pip-list.txt:64 PASS
+torch_npu 版本              fixed    17      2.10.0.post4    evidence/06-pip-list.txt:65 PASS
+triton-ascend 版本          fixed    17      3.2.2           evidence/06-pip-list.txt:69 PASS
+torch_npu 候选列表            fixed    95      2.13.0rc1       evidence/02-version-matrix.txt:291PASS
+vLLM main torch pin       fixed    97      2.13.0          evidence/11-upstream-refs.txt:152PASS
+CXX11 ABI                 fixed    103     True            evidence/08-abi-linkage.txt:12PASS
+cxx_abi 符号数               fixed    106     262 个           evidence/08-abi-linkage.txt:54PASS
+qwen4_exp v0.23.0 命中      fixed    119     0               evidence/02-version-matrix.txt:33PASS
+qwen4_exp v0.29.0 命中      fixed    123     23              evidence/02-version-matrix.txt:61PASS
+qwen4_exp v0.30.0 命中      fixed    124     27              evidence/02-version-matrix.txt:68PASS
+上游 head 数                 fixed    141     26 个 head       evidence/11-upstream-refs.txt:32PASS
+上游 tag 数                  fixed    296     46 个 tag        evidence/11-upstream-refs.txt:82PASS
+qwen4_exp 文件数(ced6857a)   fixed    28      34 个文件          evidence/11-upstream-refs.txt:136PASS
+vllm_version_is 文件数       fixed    496     20              evidence/11-upstream-refs.txt:110PASS
+vllm_version_is 出现次数      fixed    496     37              evidence/11-upstream-refs.txt:111PASS
+插件引用失效统计                  fixed    175     73              evidence/04-plugin-vs-vllm-main.txt:8PASS
+插件扫描文件数                   fixed    174     449             evidence/04-plugin-vs-vllm-main.txt:4PASS
+fork vLLM 区间              fixed    149     v0.24.0         evidence/11-upstream-refs.txt:146PASS
+QSA 文档文件数                 fixed    215     2               evidence/11-upstream-refs.txt:189PASS
+A3 验证配置                   fixed    211     64GB × 8        evidence/11-upstream-refs.txt:165PASS
+教程行号 7                    fixed    203     第 7 行           evidence/11-upstream-refs.txt:160PASS
+教程行号 9                    fixed    225     第 9 行           evidence/11-upstream-refs.txt:162PASS
+support matrix 行号         fixed    207     140             evidence/11-upstream-refs.txt:175PASS
+quay 镜像 tag               fixed    212     qwen3.8-next-a3 evidence/11-upstream-refs.txt:182PASS
+OCI 镜像体积                  external 417     5.9 GB          -                           ATTRIBUTED（外部来源，README 已标注）
+device_count              fixed    265     1               evidence/05-npu-selfcheck.txt:10PASS
+设备名                       fixed    53      Ascend950PR_9579evidence/05-npu-selfcheck.txt:12PASS
+matmul 相对误差               fixed    269     4.34e-04        evidence/05-npu-selfcheck.txt:20PASS
+reduce 相对误差               fixed    271     4.66e-04        evidence/05-npu-selfcheck.txt:24PASS
+算子往返耗时                    fixed    273     9.7 ms          evidence/05-npu-selfcheck.txt:28PASS
+显存记账                      fixed    274     3.5 MiB         evidence/05-npu-selfcheck.txt:31PASS
+ngram 表                   fixed    41      95.37 GiB       evidence/03-checkpoint-memory.txt:12PASS
+ngram tensor 数            fixed    325     130 tensors     evidence/03-checkpoint-memory.txt:12PASS
+device 常驻                 derived  41      74.35 GiB       evidence/03-checkpoint-memory.txt:4PASS
+设计稿对齐值                    external 42      74.3 GiB        docs/04-summary.md          ATTRIBUTED（外部来源，README 已标注）
+mxfp4 packed              fixed    326     56.36 GiB       evidence/03-checkpoint-memory.txt:13PASS
+e8m0 scale                fixed    329     3.52 GiB        evidence/03-checkpoint-memory.txt:16PASS
+KV 余量                     derived  340     48.8            evidence/03-checkpoint-memory.txt:4PASS
+每 token 读取量               external 344     5 KiB           -                           ATTRIBUTED（外部来源，README 已标注）
+§10.1 引用旧值 25 head        quote    493     -               -                           EXEMPT（更正记录/叙述）
+§10.1 引用旧值 48 tag         quote    495     -               -                           EXEMPT（更正记录/叙述）
+§10.1 引用旧活值               quote    503     -               -                           EXEMPT（更正记录/叙述）
+pypi wheel 体积             narrative311     -               -                           EXEMPT（更正记录/叙述）
+----------------------------------------------------------------------------------------------------------------------
+对账条目: 58（PASS/LIVE-OK/ATTRIBUTED/EXEMPT 之外 = 失败）
+失败条目: 无
+
+== 覆盖性检查：README 中未纳入对账表的带单位数字（需人工判定是否应补条目） ==
+  （无）
+  （另有 11 行 checkpoint 角色台账整行逐字摘自 evidence/03，按 §6.2 的引用说明覆盖）
+
+== 口径说明 ==
+  fixed/derived : 固定量，可直接引用；derived 由其他固定量算出（括号内为算式）
+  live          : 活值（随其它 worker 波动），只能写'活值 + 指向 evidence 采集时刻'，不得作为结论；
+                  '期望值'列现场从归档解析（本表不存字面量），README 若写了实例读数则必须与之一致
+  external      : 来自本仓库外（tower/用户口径），README 必须注明来源
+  quote         : 更正记录里引用的旧值，按设计豁免
+
+RESULT: OK (50 compared = 49 归档比对 + 1 live 现场解析; 另 4 外部来源、4 豁免)

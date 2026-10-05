@@ -1,0 +1,22 @@
+95a73e855faa8eb0d66432532471b6ae94ac0b4a94aa91723cc8f10bd56b8c8b  m29_ple_unit/m29_ple_unit.asc
+22cc1f18ff1dc5359665ab7c206b1df57020c5c753b7a4f8362213aa13b4f621  m29_ple_unit/m29_ple_support.h
+95a73e855faa8eb0d66432532471b6ae94ac0b4a94aa91723cc8f10bd56b8c8b  m29_ple_unit/m29_ple_unit.asc
+3fbd3c81637d2513b3075dfc21c18b419078b0d95d15fb79b95b6e1b581a1128  m29_ple_unit/build/m29_ple_unit
+
+#
+# ===== M190 漂移标注（2026-10-05）=====
+# 第 1-3 行的记录值与当前 main 不一致。记录值保留原样，仅标注历史 blob 与当前实际值。
+# 未改上方任何行值、任何设备代码/注释。
+#   :1 / :3  m29_ple_unit/m29_ple_unit.asc
+#       记录 95a73e855faa8eb0d66432532471b6ae94ac0b4a94aa91723cc8f10bd56b8c8b == f7f9096（M161）时的 blob
+#       其后 8aa293b（M161 r1：kv T3 界改 Sum|terms| 等，行为改动）、95671e7（M187 release 措辞清扫，仅注释）先后改动
+#       当前实际 9553d02567b739488432efe2c7c3f897bfba275c2e34c385aa81401bda5d2697
+#   :2  m29_ple_unit/m29_ple_support.h
+#       记录 22cc1f18ff1dc5359665ab7c206b1df57020c5c753b7a4f8362213aa13b4f621 == f7f9096（M161）时的 blob
+#       其后 9c0179c（M182：独立模块 BufferID 释放模式 true->false）改动
+#       当前实际 2d6fcc7abc0a8e089350c470798a52297aafde6401991896505c30de6a5b36a7
+# 复算（当前 main）：
+#   sha256sum m29_ple_unit/m29_ple_unit.asc m29_ple_unit/m29_ple_support.h
+# 复算（核对记录值本身，对历史 rev）：
+#   git show f7f9096:m29_ple_unit/m29_ple_unit.asc | sha256sum
+#   git show f7f9096:m29_ple_unit/m29_ple_support.h | sha256sum

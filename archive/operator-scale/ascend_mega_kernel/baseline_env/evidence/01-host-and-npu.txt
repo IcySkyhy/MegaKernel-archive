@@ -1,0 +1,92 @@
+### collected: 2026-09-26T12:13:46+00:00
+
+## host
+Linux 09d612de5aab 6.6.0-132.0.0.111.oe2403sp3.x86_64 #1 SMP Mon Dec 29 23:07:38 CST 2025 x86_64 x86_64 x86_64 GNU/Linux
+CPU(s):                               128
+Model name:                           AMD EPYC 9355 32-Core Processor
+Socket(s):                            2
+CPU(s) scaling MHz:                   95%
+NUMA node(s):                         2
+
+## npu-smi
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.6                               Version: 25.7.rc1.6                            |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 197.4       59                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5531  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| 0                         | 597900        | m16_geom                 | 83                      |
+| 0                         | 597891        | ag_gather_sweep          | 93                      |
+| 0                         | 597975        | probe_a_first_e          | 271                     |
++===========================+===============+=====================================================+
+
+## driver
+Version=25.7.rc1.6
+ascendhal_version=7.35.23
+aicpu_version=1.0
+tdt_version=1.0
+log_version=1.0
+prof_version=2.0
+dvppkernels_version=1.1
+tsfw_version=1.0
+Innerversion=V100R001C10SPC105B220
+compatible_version=[V100R001C22],[V100R001C23],[V100R001C25],[V100R001C10],[V100R001C11]
+compatible_version_fw=[7.0.0,9.9.9]
+package_version=25.7.rc1.6
+
+## CANN / ATB versions
+--- /usr/local/Ascend/cann-9.1.0/version.cfg
+cat: /usr/local/Ascend/cann-9.1.0/version.cfg: No such file or directory
+--- /usr/local/Ascend/cann-9.1.0/ascend_toolkit_install.info
+cat: /usr/local/Ascend/cann-9.1.0/ascend_toolkit_install.info: No such file or directory
+--- /usr/local/Ascend/nnal/atb/latest/version.info
+    Ascend-cann-atb : 9.1.0
+    Ascend-cann-atb Version : 9.1.0.B150
+    Platform : x86_64
+    branch : br_release_cann_9.1.0_20261223
+    commit id : 31084fe8a5761db66b212e995a7dde093ed6394f
+--- /usr/local/Ascend/ascend-toolkit/latest/version.cfg
+cat: /usr/local/Ascend/ascend-toolkit/latest/version.cfg: No such file or directory
+
+## ATB cxx ABI deployment
+cxx_abi_0
+cxx_abi_1
+set_env.sh
+ATB_CXX_ABI=1
+ATB_HOME_PATH=/usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1
+ASCEND_TOOLKIT_HOME=/usr/local/Ascend/cann-9.1.0
+ASCEND_OPP_PATH=/usr/local/Ascend/cann-9.1.0/opp
+ASCEND_HOME_PATH=/usr/local/Ascend/cann-9.1.0
+
+## python
+Python 3.12.13
+/usr/bin/python3
+/usr/local/python3.12.13/bin/python3
+/bin/python3
+/usr/local/python3.12.13/bin/pip3
+
+## memory cgroup limit / disk
+34359738368
+## host memory (frame view; NOT the container limit -- see cgroup line above)
+               total        used        free      shared  buff/cache   available
+Mem:             754          32         166           1         562         722
+Swap:              3           1           2
+MemTotal:       791570660 kB
+MemAvailable:   757874776 kB
+Filesystem      Size  Used Avail Use% Mounted on
+overlay         8.7T  8.3T  426G  96% /
+
+## model checkpoint
+170G	/workspace/Qwen3.8-Flash-Next-MXFP4
+131
+  "model_type": "qwen4_exp",
+  "architectures": [
+    "Qwen4ExpForConditionalGeneration"
+  ],
+### EOF

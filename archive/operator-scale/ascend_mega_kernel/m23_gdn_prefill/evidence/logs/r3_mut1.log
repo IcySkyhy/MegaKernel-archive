@@ -1,0 +1,5 @@
+[M23] mix(1,2) launch: nblk(AIC)=28 → AIV 线程数=56；slot=753664 B；scratch=21102592 B
+[M23] M15GP_ONLY_P4097=(unset) ⇒ 本次跑 case [0, 2)
+[M23] m1_mut1  H=48 T=1    blk=28 : 0.100 ms  (o[0..3]=0.015160 0.003094 -0.006332 -0.004458, dump ok)
+[M23] p4097_mut1 H=48 T=4097 blk=28 : 4.167 ms  (o[0..3]=-0.003831 0.003767 0.002000 0.003279, dump ok)
+[M23] ===== ALL RUNS OK（数值判据请运行 check_ref.py）=====

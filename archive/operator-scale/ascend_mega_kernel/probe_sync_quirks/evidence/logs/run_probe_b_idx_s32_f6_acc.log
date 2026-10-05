@@ -1,0 +1,2 @@
+[probe B] probe_b_idx_s32_f6_acc  form=6 idx=int32_t sizeof=4 base=200 n=8 reps=50
+[probe B] probe_b_idx_s32_f6_acc  RUN FAIL：351/400 点不符；首个不符 rep=0 i=0 得到 0 期望 2428

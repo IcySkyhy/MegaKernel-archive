@@ -1,0 +1,38 @@
+===== m1 =====
+===== m33 =====
+
+[check_ref] 判定项：118 条，118 PASS / 0 FAIL
+[check_ref] 参考项（非判定）：32 条 —— kernel 激活量化规范（硬件 floor 指数 e8m0）vs golden 权重打包规范（ceil(log2(amax/6))）的逐字节差异占比
+[check_ref][参考] m1_mode0 A_qx(routed): 1098/2560 字节不同 = 42.9%
+[check_ref][参考] m1_mode0 A_scale(routed): 68/160 字节不同 = 42.5%
+[check_ref][参考] m1_mode0 A_shd_qx(共享): 549/1280 字节不同 = 42.9%
+[check_ref][参考] m1_mode0 A_shd_scale(共享): 34/80 字节不同 = 42.5%
+[check_ref][参考] m1_mode0 H_qx(routed): 237/640 字节不同 = 37.0%
+[check_ref][参考] m1_mode0 H_scale(routed): 19/40 字节不同 = 47.5%
+[check_ref][参考] m1_mode0 H_shd_qx(共享): 103/320 字节不同 = 32.2%
+[check_ref][参考] m1_mode0 H_shd_scale(共享): 8/20 字节不同 = 40.0%
+[check_ref][参考] m1_mode1 A_qx(routed): 818/2560 字节不同 = 32.0%
+[check_ref][参考] m1_mode1 A_scale(routed): 52/160 字节不同 = 32.5%
+[check_ref][参考] m1_mode1 A_shd_qx(共享): 409/1280 字节不同 = 32.0%
+[check_ref][参考] m1_mode1 A_shd_scale(共享): 26/80 字节不同 = 32.5%
+[check_ref][参考] m1_mode1 H_qx(routed): 217/640 字节不同 = 33.9%
+[check_ref][参考] m1_mode1 H_scale(routed): 17/40 字节不同 = 42.5%
+[check_ref][参考] m1_mode1 H_shd_qx(共享): 105/320 字节不同 = 32.8%
+[check_ref][参考] m1_mode1 H_shd_scale(共享): 8/20 字节不同 = 40.0%
+[check_ref][参考] m33_mode0 A_qx(routed): 24484/84480 字节不同 = 29.0%
+[check_ref][参考] m33_mode0 A_scale(routed): 1504/5280 字节不同 = 28.5%
+[check_ref][参考] m33_mode0 A_shd_qx(共享): 12242/42240 字节不同 = 29.0%
+[check_ref][参考] m33_mode0 A_shd_scale(共享): 752/2640 字节不同 = 28.5%
+[check_ref][参考] m33_mode0 H_qx(routed): 6880/21120 字节不同 = 32.6%
+[check_ref][参考] m33_mode0 H_scale(routed): 547/1320 字节不同 = 41.4%
+[check_ref][参考] m33_mode0 H_shd_qx(共享): 3270/10560 字节不同 = 31.0%
+[check_ref][参考] m33_mode0 H_shd_scale(共享): 261/660 字节不同 = 39.5%
+[check_ref][参考] m33_mode1 A_qx(routed): 29690/84480 字节不同 = 35.1%
+[check_ref][参考] m33_mode1 A_scale(routed): 1876/5280 字节不同 = 35.5%
+[check_ref][参考] m33_mode1 A_shd_qx(共享): 14845/42240 字节不同 = 35.1%
+[check_ref][参考] m33_mode1 A_shd_scale(共享): 938/2640 字节不同 = 35.5%
+[check_ref][参考] m33_mode1 H_qx(routed): 6673/21120 字节不同 = 31.6%
+[check_ref][参考] m33_mode1 H_scale(routed): 543/1320 字节不同 = 41.1%
+[check_ref][参考] m33_mode1 H_shd_qx(共享): 2991/10560 字节不同 = 28.3%
+[check_ref][参考] m33_mode1 H_shd_scale(共享): 238/660 字节不同 = 36.1%
+[check_ref] ===== ALL PASS （判定 118 项 / 参考 32 项）=====

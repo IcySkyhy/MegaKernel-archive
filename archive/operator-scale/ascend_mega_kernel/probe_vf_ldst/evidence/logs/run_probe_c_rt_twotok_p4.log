@@ -1,0 +1,7 @@
+[probe C] probe_c_rt_twotok  order=3 (两个不同 BufferID（A drain 释放无人取 / B 立即取）——复刻 M36 事实)  shape=0 (一次性 16KB 整块 MTE3)  iters=64  proc=4
+[probe C] chunk 判读(.=ok p=上一chunk n=下一chunk X=poison z=0 ?=其它): X...............................................................
+[probe C] chunk: ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 / 64
+[probe C] lane0 不符=1  全 lane 不符=64/4096
+[probe C] 首个不符 chunk=0 得到 -999 期望 1000
+[probe C] probe_c_rt_twotok RUN FAIL
+[probe C] GM(gmMid) 最终内容逐 chunk 正确数: 64/64

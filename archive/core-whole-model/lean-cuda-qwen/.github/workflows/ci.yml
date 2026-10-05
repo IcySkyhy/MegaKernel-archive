@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contracts:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python contract tests
+        run: |
+          python -m unittest discover -s examples/qwen38_train -p 'test_*.py' -v
+          python -m unittest discover -s examples/qwen38_chat -p 'test_*.py' -v
+      - name: Shell syntax
+        run: git ls-files '*.sh' -z | xargs -0 -n1 bash -n
+      - name: Dependency pins agree
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          pins = dict(line.split('=', 1) for line in Path('toolchain/lean-cuda.env').read_text().splitlines() if '=' in line)
+          manifest = json.loads(Path('lake-manifest.json').read_text())
+          lean_test = next(package for package in manifest['packages'] if package['name'] == 'LeanTest')
+          assert lean_test['rev'] == pins['LEAN_TEST_REVISION']
+          assert len(manifest['packages']) == 1
+          PY
+      - name: Patch hygiene
+        run: git diff --check
+
+
+  nightly-binary-build:
+    name: Nightly binary build (${{ matrix.runner }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    container: nvidia/cuda:13.0.1-devel-ubuntu24.04
+    env:
+      QWEN_CUDA_ARCH: sm_90a
+    steps:
+      - name: Install build prerequisites
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git curl ca-certificates zstd python3 make g++ binutils libgmp-dev libssl-dev libuv1-dev lld
+      - uses: actions/checkout@v4
+      - name: Install checksum-verified published Lean CUDA binary
+        shell: bash
+        run: |
+          toolchain=$(bash scripts/install-nightly.sh)
+          echo "LEAN_CUDA_TOOLCHAIN_ROOT=$toolchain" >> "$GITHUB_ENV"
+          "$toolchain/bin/lean" --version
+          "$toolchain/bin/lean" --features
+      - name: Build complete library and link the CUDA chat worker
+        shell: bash
+        run: |
+          # This must succeed without a backend source tree, GPU, or model weights.
+          test ! -d .lake/lean4-cuda-backend
+          worker=$(bash examples/qwen38_chat/build_worker.sh)
+          test -x "$worker"
+          ldd "$worker" | tee /tmp/worker-libraries.txt
+          ! grep -F 'not found' /tmp/worker-libraries.txt
+
+  # GPU execution, numerical parity and optimizer-update gates remain separate.
+  # The hosted job compiles host/device code and links the executable, but does not run inference.

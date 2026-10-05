@@ -1,0 +1,14 @@
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-54/tools/golden/moe_block_ref.py:140: RuntimeWarning: invalid value encountered in cast
+  e[nonzero] = np.ceil(np.log2(a[nonzero] / E2M1_MAX))
+[M54-rebaseline] 输入 /workspace/ascend_mega_kernel/.tower/worktrees/wt-54/m3_grouped_gemm/evidence/quant_cross/h.bin：128 行 × 640（bf16 网格值）
+[M54-rebaseline] ① scale 规则 ceil -> floor：scale 字节差异 1629/2560 (63.6%)
+[M54-rebaseline] ② data 方向 mul scale -> mul 1/scale：pack 字节差异 38823/40960 (94.8%)
+[M54-rebaseline] ③ pre-M54 vs tools/golden quantize_ceil_legacy（legacy ceil 的权威实现）：pack 37895/40960 (92.5%)、scale 220/2560（⇒ 即使 scale 字节在多数组相同，data 方向相反仍使 pre-M54 与 legacy 规范大范围不符）
+[M54-rebaseline] H 反量化重建误差 |deq-h|/|h|（76080 个有限非零元素）：
+[M54-rebaseline]   pre-M54 (ceil + mul scale)： mean 1.46e+75, p50 142, p99 2.04e+39, max 1.74e+77
+[M54-rebaseline]   post-M54 (floor + mul 1/scale)： mean 0.665, p50 1, p99 1, max 1
+[M54-rebaseline] 注：post-M54 的 p50=1.0 是因为本 dump 的随机行刻意让组内同时覆盖很宽的
+[M54-rebaseline]     指数档（2^120..2^139），组内小量级元素按 group scale 量化到 code 0；
+[M54-rebaseline]     这是 MXFP4 group-32 的固有行为，不是缺陷。判定：post-M54 的 H 反量化
+[M54-rebaseline]     误差与 e2m1/group32 量级相符；pre-M54 因乘了 scale 而非 1/scale，
+[M54-rebaseline]     重建误差远超量化噪声。

@@ -1,0 +1,18 @@
+{
+  "tensor": "x_res.bin",
+  "shape": [
+    33,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 168960,
+  "sha256": "aea9bc10a46129d1d8794b12959df30101ffa11e8598818852fc6a8803a4fa22",
+  "kind": "input",
+  "description": "layer residual input [m, hidden], bf16 \u2014 m6#1 x (with a zero residual); also the fp32 residual the MoE block adds to (layer stacking)"
+}

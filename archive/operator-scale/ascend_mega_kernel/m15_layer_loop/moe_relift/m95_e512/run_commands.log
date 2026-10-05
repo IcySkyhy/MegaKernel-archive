@@ -1,0 +1,147 @@
+# M95 独立锤点（E=512 / top-10）的实跑记录
+# 生成方式：本文件的每一段都是**在 tip 上当场实跑**并把 stdout/stderr 原样重定向进来的
+#   （不是从别处抄的读数）。设备：Ascend950PR（NPU 0）；并发背景见文末。
+# 日期：2026-09-27T03:26:53+00:00   tip：4f5066a
+
+## 0. 档位表（构建期生成：只替换 2 个字面值）+ 被测代码副本的 sha256 对照
+$ cat m15_layer_loop/moe_relift/m95_e512/build/m95_tier.txt
+NUM_EXPERTS=512
+TOPK_MAX=10
+m15_moe_layer.h     源 sha256=0af84032dc194e8a0350caf822e91ae005833dae8df52b0ce98ea65c577b2a64
+m15_moe_layer.h   副本 sha256=0af84032dc194e8a0350caf822e91ae005833dae8df52b0ce98ea65c577b2a64   ← 必须相等（逐字节相同，只换了档位表）
+m15_moe_resources.h 源 sha256=971dd3b02342fcdcbf47b4815bd1e14ec6bcfe982c2b5ac0b7629a8cd5b41d5b
+m15_moe_resources.h 副本 sha256=02553fbe3f9a738046473c001e75ec9749c8114b31a0d599be85210eae8b7605   ← 只有 NUM_EXPERTS/TOPK_MAX 两个字面值不同
+
+$ diff m15_layer_loop/m15_moe_resources.h m15_layer_loop/moe_relift/m95_e512/build/m15_moe_resources.h
+68,69c68,69
+< constexpr uint32_t NUM_EXPERTS = 4;    // 专家数（golden 数据集：512 → 4）
+< constexpr uint32_t TOPK_MAX = 4;       // top-k 模板上界（golden 数据集：10 → 2）
+---
+> constexpr uint32_t NUM_EXPERTS = 512;    // 专家数（golden 数据集：512 → 4）
+> constexpr uint32_t TOPK_MAX = 10;       // top-k 模板上界（golden 数据集：10 → 2）
+rc=1
+
+## 1. 同步构建 + 跑（真实权重档 m=33 seed=7；权重 = m22 的 router_weight.bin 切片）
+$ cmake -B … -S … -DCMAKE_BUILD_TYPE=Release && cmake --build … -j4
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/ascend_mega_kernel/.tower/worktrees/wt-95/m15_layer_loop/moe_relift/m95_e512/build
+[100%] Linking ASC executable m95_e512
+[100%] Built target m95_e512
+$ M95_OUT=/tmp/m95_e512_real …/m95_e512 --m 33 --seed 7 --w $W/m22_router512/data/router_weight.bin
+[M95] ok m=33 seed=7 E=512 topk=10 w=/workspace/ascend_mega_kernel/.tower/worktrees/wt-95/m22_router512/data/router_weight.bin kernel_ms=1.482 out=/tmp/m95_e512_real
+rc=0
+
+## 2. 银点对拍（真实权重档）
+$ python3.12 m15_layer_loop/moe_relift/m95_e512/check_ref.py /tmp/m95_e512_real --w …/router_weight.bin --x-seed 7
+[check_ref] J1  PASS  topk_ids 逐元素相等（330 项；差异 0 项 / 0 行）
+[check_ref] J2  PASS  topk_weights ≤ 9.54e-07（在设备 logits 上复算；max abs 1.192e-07，max ulp 3）
+[check_ref] J3  PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 4.578e-05，界占用 0.03%）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] R1 logits: max abs 4.578e-05 / max rel 3.090e-05
+[check_ref] R2 每行 topk 权重行和: min 1.000000 max 1.000000
+[check_ref] R3 银点端到端权重 vs 设备权重：max abs 3.159e-06（含 GEMV 链误差；J2 已在设备 logits 上隔离它）
+[check_ref] 输入 x：确定性重建（seed=7，sha256=b1307b0df6519ada…）；权重 w：/workspace/ascend_mega_kernel/.tower/worktrees/wt-95/m22_router512/data/router_weight.bin（sha256=966e4d1ca7c18994…）
+[check_ref] guard G1  ok  logits 每行 max == 0（max-shift 语义）
+[check_ref] guard G2  ok  ids 值域 ∈ [0,512) 且行内互异（33 行）
+[check_ref] m=33 E=512 topk=10 : PASS | 判定 3/3 | guard 2/2
+[check_ref] RESULT: OK (3/3 判定项通过，guard 2/2)
+rc=0
+
+## 3. 合成/缩形权重档（one-hot gate，logit[t][e] == x[t][e]；m=33 seed=11）
+$ M95_OUT=/tmp/m95_e512_onehot …/m95_e512 --m 33 --seed 11 --w onehot
+[M95] ok m=33 seed=11 E=512 topk=10 w=onehot kernel_ms=1.485 out=/tmp/m95_e512_onehot
+$ python3.12 …/check_ref.py /tmp/m95_e512_onehot --w onehot --x-seed 11
+[check_ref] J1  PASS  topk_ids 逐元素相等（330 项；差异 0 项 / 0 行）
+[check_ref] J2  PASS  topk_weights ≤ 9.54e-07（在设备 logits 上复算；max abs 1.192e-07，max ulp 2）
+[check_ref] J3  PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 0.000e+00，界占用 0.00%）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] R1 logits: max abs 0.000e+00 / max rel 0.000e+00
+[check_ref] R2 每行 topk 权重行和: min 1.000000 max 1.000000
+[check_ref] R3 银点端到端权重 vs 设备权重：max abs 1.192e-07（含 GEMV 链误差；J2 已在设备 logits 上隔离它）
+[check_ref] 输入 x：确定性重建（seed=11，sha256=ae062afa44e46f86…）；权重 w：合成 one-hot（W[e][k] = (k == e) bf16）
+[check_ref] guard G1  ok  logits 每行 max == 0（max-shift 语义）
+[check_ref] guard G2  ok  ids 值域 ∈ [0,512) 且行内互异（33 行）
+[check_ref] m=33 E=512 topk=10 : PASS | 判定 3/3 | guard 2/2
+[check_ref] RESULT: OK (3/3 判定项通过，guard 2/2)
+rc=0
+
+## 4. 负向对照（变异只在 /tmp 副本：/tmp/m95_nc；基线方向 = 把根缓冲 MB 改成 MA）
+$ python3 - <<'PY'  # 注入：Extract 读 UB_RT_MB → UB_RT_MA（归并级序错），1 处
+NC1 注入：Extract 从根缓冲 MB 改成 MA（归并级序错）——1 处
+$ M95_OUT=/tmp/m95_nc_out /tmp/m95_nc/build/m95_e512 --m 33 --seed 7 --w …/router_weight.bin
+[M95] ok m=33 seed=7 E=512 topk=10 w=/workspace/ascend_mega_kernel/.tower/worktrees/wt-95/m22_router512/data/router_weight.bin kernel_ms=1.491 out=/tmp/m95_nc_out
+$ python3.12 …/check_ref.py /tmp/m95_nc_out --w …/router_weight.bin --x-seed 7
+[check_ref] J1  FAIL  topk_ids 逐元素相等（330 项；差异 286 项 / 33 行）
+[check_ref] J2  FAIL  topk_weights ≤ 9.54e-07（在设备 logits 上复算；max abs 6.504e-01，max ulp 486301172）
+[check_ref] J3  PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 4.578e-05，界占用 0.03%）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] guard G1  ok  logits 每行 max == 0（max-shift 语义）
+[check_ref] guard G2  ok  ids 值域 ∈ [0,512) 且行内互异（33 行）
+[check_ref] m=33 E=512 topk=10 : FAIL | 判定 1/3 | guard 2/2
+[check_ref] RESULT: FAIL (2/3 判定项失败)
+rc=1（expect 1）
+
+## 5. 负向对照 2（Sort32 块数 16 → 8：归并树的一半输入未排序）
+NC2 注入：Sort32(pairT, valT, idxT, RT_SORT_NBLK) → Sort32(pairT, valT, idxT, 8)——1 处
+$ M95_OUT=/tmp/m95_nc_out2 /tmp/m95_nc/build/m95_e512 --m 33 --seed 7 --w …/router_weight.bin
+[M95] ok m=33 seed=7 E=512 topk=10 w=/workspace/ascend_mega_kernel/.tower/worktrees/wt-95/m22_router512/data/router_weight.bin kernel_ms=1.533 out=/tmp/m95_nc_out2
+$ python3.12 …/check_ref.py /tmp/m95_nc_out2 …
+[check_ref] J1  FAIL  topk_ids 逐元素相等（330 项；差异 286 项 / 33 行）
+[check_ref] J2  FAIL  topk_weights ≤ 9.54e-07（在设备 logits 上复算；max abs 6.504e-01，max ulp 486301172）
+[check_ref] J3  PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 4.578e-05，界占用 0.03%）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] guard G1  ok  logits 每行 max == 0（max-shift 语义）
+[check_ref] guard G2  ok  ids 值域 ∈ [0,512) 且行内互异（33 行）
+[check_ref] m=33 E=512 topk=10 : FAIL | 判定 1/3 | guard 2/2
+[check_ref] RESULT: FAIL (2/3 判定项失败)
+rc=1（expect 1）
+
+## 6. 静态判据的负向对照（最小绕过：check_stream 的 A10/A13/B5）
+$ python3 …/check_stream.py --header /tmp/m95_nc_row/m15_moe_layer.h   # 删掉 MergeTree() 调用
+[check] FAIL  A10 top-k 已落地 #4 归并树（Sort32 块数 = RT_SORT_NBLK 且**被调用**、MergeTree 定义+调用、Merge2 = 1 定义 + 4 调用点、无经典 Extract、无 MrgSort4）: Sort32 = 1（块数实参 RT_SORT_NBLK = 1）；MrgSort = 1；MergeTree 定义/调用 = 1/0；Merge2 定义 = 1、`Merge2(` 合计 = 5（应为 5 = 1 定义 + 4 调用点，即 8+4+2+1 级）；经典 Extract = 0；MrgSort4 = 0
+[check] ===== 可 FAIL 的判据 22 条（FAIL 1 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=1（expect 1）
+$ python3 …/check_stream.py --res /tmp/m95_nc_row/m15_moe_resources.h   # RT_ROWL 退回 64
+[check] FAIL  [E=4] top-k 覆盖性：RT_ROWL == RT_SORTLN == RT_SORT_NBLK × 32 ≥ NUM_EXPERTS: RT_ROWL = 64，RT_SORTLN = 512，RT_SORT_NBLK = 16，NUM_EXPERTS = 4
+[check] FAIL  [E=512] top-k 覆盖性：RT_ROWL == RT_SORTLN == RT_SORT_NBLK × 32 ≥ NUM_EXPERTS: RT_ROWL = 64，RT_SORTLN = 512，RT_SORT_NBLK = 16，NUM_EXPERTS = 512
+[check] ===== 可 FAIL 的判据 22 条（FAIL 2 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=1（expect 1）
+
+## 7. 并发背景（跑设备前后的 npu-smi，如实记录：NPU 0 上有别的 mission 的进程）
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.6                               Version: 25.7.rc1.6                            |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 198.9       58                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          12961 / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| 0                         | 263726        | m15_layer_loop           | 6867                    |
+| 0                         | 264012        | probe_mask_lane          | 0                       |
++===========================+===============+=====================================================+
+
+## 8. 静态判据的**逐条「弄坏被测对象」对照**（第五变体纪律：判据 PASS 必须在被测对象坏掉时变 FAIL）
+# 全部注入都在 /tmp 副本（/tmp/m95_nc2），每处 1 行/1 串；命令 = check_stream.py --header/--res 指向副本
+$ # NC-A11：GemvGroupRow 的对数行取址退回写死 64 lane（RT_ROWL 4 处里改 1 处）
+[check] FAIL  A11 行距重排：对数行 4 处 RT_ROWL（0 处写死 64）、top-k staging 4 处 RT_WROW（0 处写死 64）: UB_RT_LOG + r * 64 * 4 = 1；RT_ROWL = 3（PadLogitsRow/GemvGroupRow/SoftmaxTopkRow/CopyOutBlock）；IDS/WS + r * 64 * 4 = 0；RT_WROW = 4（IDS/WS 各 2 处）
+[check] ===== 可 FAIL 的判据 22 条（FAIL 1 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=1（expect 1）
+$ # NC-A12：索引模板 chunk 循环上界 RT_NCHUNK_W -> 1（只铺前 64 个 id）
+[check] FAIL  A12 索引模板按 RT_NCHUNK_W 铺满行宽（1 处）且 Extract 用 RT_EXTRACT_REP 重复（1 处）: 模板 chunk 循环 = 0；Extract 重复循环 = 1
+[check] ===== 可 FAIL 的判据 22 条（FAIL 1 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=1（expect 1）
+$ # NC-A13：level2 的循环上界 4 -> 0（归并树缺一级）
+[check] FAIL  A13 归并树 4 级结构齐备（8 / 4 / 2 / 1 各 1 处）: 各级命中数（8/4/2/1）= [1, 0, 1, 1]
+[check] ===== 可 FAIL 的判据 22 条（FAIL 1 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=1（expect 1）
+$ # NC-B6：RT_WROW 64 -> 4096（UB 越界）
+[check] FAIL  B2 UB_RT_END <= GDN 相位峰值 UB_RC_END（不抬高融合 UB 峰值）: UB_RT_END = 480800 B ≤ UB_RC_END = 227328 B（余量 -253472 B；历史读数：M91 改前 193600 / M91 改后 192544 / M95 改后 222752）
+[check] FAIL  B3 UB_RT_END <= UB_BYTES_TOTAL（248KB）: UB_RT_END = 480800 B ≤ 253952 B
+[check] FAIL  [E=4] UB_RT_END <= UB_RC_END（融合 UB 峰值不被抬高）: UB_RT_END = 480800 B ≤ UB_RC_END = 227328 B（余量 -253472 B）
+[check] FAIL  [E=512] UB_RT_END <= UB_RC_END（融合 UB 峰值不被抬高）: UB_RT_END = 480800 B ≤ UB_RC_END = 227328 B（余量 -253472 B）
+[check] ===== 可 FAIL 的判据 22 条（FAIL 4 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=1（expect 1）

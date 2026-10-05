@@ -1,0 +1,10 @@
+# M114：本目录是 `docs/scan_doc_refs.py` 的证据目录。本目录下的脚本会 import 扫描器本体
+# （`importlib.util.spec_from_file_location`），会在 `docs/__pycache__` 留下字节码 —— 仓根 `.gitignore`
+# 已含 `__pycache__/`，这里按 evidence 目录惯例再显式列一遍（picomatch 的 `**` 不匹配点文件，
+# 故 `.gitignore` 本身也必须被 scope 显式列入）。
+__pycache__/
+*.pyc
+*.pyo
+
+# `run_e2e_fixture.sh` 的落盘文件（默认写在 /tmp 的 fixture 里；若有人把 fixture 指到本目录内，别入库）
+out.txt

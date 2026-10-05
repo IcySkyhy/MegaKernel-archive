@@ -1,0 +1,45 @@
+# check_ref.py 三态退出码实测（docs/17 §8.3；M61）
+# 目的：区分『比过且通过』/『比过且有 FAIL』/『压根没比』—— 最后一栏绝不发合格证。
+# 每段末尾的 rc 是单独重跑该命令得到的真实退出码（上面管道里的 grep 不影响它）。
+
+== [rc=0 见证] cd <dump 目录> && check_ref.py pv 256 300 4096   （判定项 E/F ×3 档全过）
+[check] seq=256,300,4096 | 判定项 6/6 通过 | 报告项 6 单列 | guard 0/0 | 输入缺失 0 项
+RESULT: OK (判定项 6/6 全通过；报告项 6 单列；guard 0/0；比较了 seq=256,300,4096 的全部判据输入，无抽样)
+   rc=0
+
+== [rc=1] cd <dump 目录> && check_ref.py   （三档全量；唯一 FAIL = 4096 判据 A）
+[check] seq=  256 (seq_pad=256)
+[check] seq=  300 (seq_pad=512)
+[check] seq= 4096 (seq_pad=4096)
+[check] seq=256,300,4096 | 判定项 23/24 通过 | 报告项 27 单列 | guard 9/9 | 输入缺失 0 项
+        判定项 FAIL: seq=4096 A. out 边界感知 ulp
+RESULT: FAIL (判定项 23/24 通过；判定 FAIL 1 项、guard FAIL 0 项；报告项 27 单列)
+   rc=1
+
+== [rc=2] cd <空目录> && check_ref.py   （12 项没得比）
+        缺输入: seq=256 A/B out 判据 —— q,k,v,out
+        缺输入: seq=256 C/D P̃ 全数组判据 —— q,k,gp
+        缺输入: seq=256 E P·V（独立 P）判据 —— q,k,v,gp,dbgc2
+        缺输入: seq=256 F P·V（设备 P）判据 —— v,gp,dbgc2
+RESULT: SKIPPED (判定项 0/0 通过，但 12 项**没得比** —— 缺输入不构成合格证；缺项清单见上列 '缺输入' 行)
+   rc=2
+
+== [rc=2] cd <只有 seq=256 dump 的目录> && check_ref.py 256 300   （256 的 8 项照跑并打印，300 没得比）
+[check] seq=  256 (seq_pad=256)
+[check] seq=256,300 | 判定项 8/8 通过 | 报告项 9 单列 | guard 3/3 | 输入缺失 4 项
+        缺输入: seq=300 A/B out 判据 —— q,k,v,out
+        缺输入: seq=300 C/D P̃ 全数组判据 —— q,k,gp
+        缺输入: seq=300 E P·V（独立 P）判据 —— q,k,v,gp,dbgc2
+        缺输入: seq=300 F P·V（设备 P）判据 —— v,gp,dbgc2
+RESULT: SKIPPED (判定项 8/8 通过，但 4 项**没得比** —— 缺输入不构成合格证；缺项清单见上列 '缺输入' 行)
+   rc=2
+
+== [rc=2] cd <只有 data/ 归档 dump 的目录（缺 4096 的 k/v，二者按 dump_sha256_regenerable.txt 可确定性重跑）>
+        && check_ref.py   （256/300 十六项照跑并打印；4096 四项没得比）
+[check] seq=256,300,4096 | 判定项 16/16 通过 | 报告项 18 单列 | guard 6/6 | 输入缺失 4 项
+        缺输入: seq=4096 A/B out 判据 —— k,v
+        缺输入: seq=4096 C/D P̃ 全数组判据 —— k
+        缺输入: seq=4096 E P·V（独立 P）判据 —— k,v
+        缺输入: seq=4096 F P·V（设备 P）判据 —— v
+RESULT: SKIPPED (判定项 16/16 通过，但 4 项**没得比** —— 缺输入不构成合格证；缺项清单见上列 '缺输入' 行)
+   rc=2

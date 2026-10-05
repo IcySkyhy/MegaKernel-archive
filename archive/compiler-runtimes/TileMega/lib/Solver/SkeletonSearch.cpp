@@ -1,0 +1,1010 @@
+// SPDX-License-Identifier: BSD-3-Clause
+#include <tilemega/Solver/SkeletonSearch.h>
+#include <tilemega/Solver/ModelDramFloor.h>
+#include <tilemega/Frontend/ExportBridge.h>
+#include <tilemega/Analysis/ExactMemo.h>
+#include <tilemega/Solver/ServingPruning.h>
+#include <tilemega/Solver/PageLayout.h>
+#include <fstream>
+#include <iomanip>
+#include <numeric>
+#include <sstream>
+namespace tilemega::solver {
+namespace {
+std::string ConfigKey(std::vector<GemmConfig> const& config,int kappa,int residency) {
+  std::ostringstream out;for(auto const& g:config)out<<g.tile_m<<'x'<<g.tile_n<<'x'<<g.tile_k<<'s'<<g.stages<<'k'<<g.split_k<<';';
+  out<<"kappa="<<kappa<<";residency="<<residency;return out.str();
+}
+// Price the runtime stage transformation at Level 1 before the expensive
+// materialization. Stage slots and event windows remain in the program, so an
+// elided producer/reducer has a zero-cost task instead of disappearing from
+// the release graph. Recompute charges the whole source row to each consumer
+// GEMM tile; last-arriver conservatively charges the entire reduction to each
+// block that could be last. Access legality is proved again on the selected
+// CG by SelectServingHandoffs before this choice is emitted.
+double PriceServingHandoffFlow(FlowProblem flow,SymbolicProblem const& problem,
+    frontend::ModelPlan const& plan,unsigned mask) {
+  if(!mask)return EvaluateFlow(flow).makespan_ns;
+  std::vector<int> entry(plan.stages.size(),-1);
+  for(std::size_t s=0;s<problem.projection.stages.size();++s)
+    if(!problem.projection.stages[s].combine)
+      entry.at(problem.projection.stages[s].logical_stage)=int(s);
+  auto linked=[&](int producer,int consumer) {
+    return std::any_of(problem.data_edges.begin(),problem.data_edges.end(),
+        [&](auto const& edge){return edge.producer==producer && edge.consumer==consumer;});
+  };
+  auto average=[](FlowSpace const& space) {
+    double fixed=0,compute=0,dram=0,external=0;
+    for(auto const& piece:space.pieces) {
+      fixed+=piece.count*piece.parts.fixed_ns;
+      compute+=piece.count*piece.parts.compute_ns;
+      dram+=piece.count*piece.parts.dram_bytes;
+      external+=piece.count*piece.parts.no_producer_dram_bytes;
+    }
+    double count=std::max(1,space.count);
+    return std::array<double,4>{fixed/count,compute/count,dram/count,external/count};
+  };
+  auto clear=[](FlowSpace& space) {
+    for(auto& piece:space.pieces) {
+      piece.parts.fixed_ns=piece.parts.compute_ns=0;
+      piece.parts.dram_bytes=piece.parts.no_producer_dram_bytes=0;
+      piece.parts.inflight_bytes=0;
+    }
+    space.rank_ns=0;
+  };
+  for(std::size_t logical=1;logical<plan.stages.size();++logical) {
+    auto const& source=plan.stages[logical-1];
+    auto const& sink=plan.stages[logical];
+    int p=entry[logical-1],c=entry[logical];
+    if(p<0 || c<0 || !linked(p,c))continue;
+    if((mask&1) && source.kind==frontend::PlanTaskKind::kRMSNorm &&
+       sink.kind==frontend::PlanTaskKind::kGemm) {
+      bool exclusive=std::none_of(problem.data_edges.begin(),problem.data_edges.end(),
+          [&](auto const& edge){return edge.producer==p && edge.consumer!=c;});
+      if(!exclusive)continue;
+      auto norm=average(flow.spaces[p]);
+      int tile_m=problem.geometry.at(sink.gemm).tile_m;
+      int rows=std::min(flow.spaces[p].count,tile_m);
+      for(auto& piece:flow.spaces[c].pieces) {
+        piece.parts.fixed_ns+=rows*norm[0];
+        piece.parts.compute_ns+=rows*norm[1];
+        piece.parts.dram_bytes+=rows*norm[2];
+        piece.parts.no_producer_dram_bytes+=rows*norm[3];
+      }
+      clear(flow.spaces[p]);
+    } else if((mask&2) && source.kind==frontend::PlanTaskKind::kFusedAttention &&
+               sink.kind==frontend::PlanTaskKind::kAttentionMerge) {
+      auto reduction=average(flow.spaces[c]);
+      // A block may be the final arrival for any output. Charging each block
+      // the full reducer is an upper envelope; top-3 real timing validates it.
+      for(auto& piece:flow.spaces[p].pieces) {
+        piece.parts.fixed_ns+=reduction[0];
+        piece.parts.compute_ns+=reduction[1];
+        piece.parts.dram_bytes+=reduction[2];
+        piece.parts.no_producer_dram_bytes+=reduction[3];
+      }
+      clear(flow.spaces[c]);
+    }
+  }
+  if(mask&2)for(std::size_t s=0;s<problem.projection.stages.size();++s) {
+    auto const& projection=problem.projection.stages[s];
+    if(!projection.combine)continue;
+    int logical=projection.logical_stage;
+    if(plan.stages[logical].kind!=frontend::PlanTaskKind::kGemm)continue;
+    // One runtime stage can carry one handoff in the conservative lowering.
+    // An earlier norm-to-GEMM recompute takes precedence over its split-K
+    // combine until phase composition supports two handoffs on one tile.
+    if((mask&1) && logical>0 &&
+       plan.stages[logical-1].kind==frontend::PlanTaskKind::kRMSNorm)
+      continue;
+    int p=entry[logical],c=int(s);
+    if(p<0 || !linked(p,c))continue;
+    auto reduction=average(flow.spaces[c]);
+    for(auto& piece:flow.spaces[p].pieces) {
+      piece.parts.fixed_ns+=reduction[0];
+      piece.parts.compute_ns+=reduction[1];
+      piece.parts.dram_bytes+=reduction[2];
+      piece.parts.no_producer_dram_bytes+=reduction[3];
+    }
+    clear(flow.spaces[c]);
+  }
+  return EvaluateFlow(flow).makespan_ns;
+}
+struct SearchContext {
+  frontend::ImportedSemantics imported;
+  frontend::TorchExportImporter importer;
+  std::vector<OperatorClass> classes;
+  analysis::CouplingCache cache;
+  FlowPreparationCache flow_cache;
+  VariantResourceCache resources;
+  mlir::MLIRContext& context;
+  SkeletonSearchOptions options;
+  std::optional<analysis::DramFloor> floor;
+  std::map<std::string,analysis::DramFloor::Value> floor_values;
+  std::optional<SymbolicProblem> base,last_structure;
+  std::string last_geometry;
+  struct FlowSnapshot {
+    std::vector<GemmConfig> config;
+    int residency=0;
+    PreparedFlow prepared;
+  };
+  std::map<int,FlowSnapshot> recent_flows;
+  struct StructureState {
+    frontend::ModelPlan plan;
+    decltype(frontend::ImportedSemantics::lifted) lifted;
+    std::vector<OperatorClass> classes;
+    std::optional<analysis::DramFloor> floor;
+    std::map<std::string,analysis::DramFloor::Value> floor_values;
+    std::optional<SymbolicProblem> base,last_structure;
+    std::string last_geometry;
+    std::map<int,FlowSnapshot> recent_flows;
+    mlir::Attribute floor_attribute;
+  };
+  std::map<std::tuple<int,int,int>,StructureState> serving_structures;
+  mlir::Attribute floor_attribute;
+  ScalarType dtype;
+  int attention_kv_block=0,attention_query_rows=0,argmax_tile_n=0;
+  int current_page_bytes=0;
+  int current_lookahead_bytes=0;
+  unsigned current_handoff_mask=0;
+  SearchContext(frontend::ImportedSemantics input,mlir::MLIRContext& ctx,SkeletonSearchOptions const& opts)
+      :imported(std::move(input)),classes(BuildOperatorClasses(imported)),resources(opts.variant_probe,opts.common.timing),context(ctx),options(opts),
+       dtype(imported.lifted.sem.ops.front().dtype==analysis::ScalarType::kBF16?ScalarType::kBF16:ScalarType::kF32) {
+    current_page_bytes=options.page_bytes;
+    if(imported.plan.serving)for(auto const& stage:imported.plan.stages)
+      if(stage.kind==frontend::PlanTaskKind::kFusedAttention) {
+        attention_kv_block=stage.attention_kv_block;
+        attention_query_rows=stage.attention_query_rows;
+        break;
+      }
+    for(auto const& gemm:imported.plan.gemms)
+      if(gemm.epilogue==frontend::PlanGemm::Epilogue::kArgmaxPartial) {
+        argmax_tile_n=gemm.partial_tile_n;
+        break;
+      }
+  }
+  int ArgmaxTileN(std::vector<GemmConfig> const& config) const {
+    for(std::size_t c=0;c<classes.size();++c)
+      for(auto id:classes[c].gemms)
+        if(imported.plan.gemms.at(id).epilogue==
+           frontend::PlanGemm::Epilogue::kArgmaxPartial)
+          return config.at(c).tile_n;
+    throw std::runtime_error("serving plan has no argmax partial GEMM");
+  }
+  void SetServingStructure(int kv_block,int query_rows,int partial_tile_n) {
+    if(!imported.plan.serving ||
+       (kv_block==attention_kv_block && query_rows==attention_query_rows &&
+        partial_tile_n==argmax_tile_n))return;
+    auto old_key=std::make_tuple(attention_kv_block,attention_query_rows,argmax_tile_n);
+    auto next_key=std::make_tuple(kv_block,query_rows,partial_tile_n);
+    serving_structures[old_key]={std::move(imported.plan),std::move(imported.lifted),
+        std::move(classes),std::move(floor),std::move(floor_values),std::move(base),
+        std::move(last_structure),std::move(last_geometry),std::move(recent_flows),floor_attribute};
+    // Price pieces, ownership and releases are keyed by semantic signature,
+    // local geometry, theta and access relation. Preserve those exact caches
+    // when Ec/Rq changes in the incremental arm. The full-control arm must
+    // rebuild them, so it remains an independent score-equivalence check.
+    if(options.incremental_prepare) {
+      flow_cache.graph.reset();flow_cache.graph_geometry.clear();
+      flow_cache.signatures.clear();flow_cache.floor_tensor_keys.clear();
+    } else flow_cache={};
+    auto hit=serving_structures.find(next_key);
+    if(options.incremental_prepare && hit!=serving_structures.end()) {
+      auto state=std::move(hit->second);serving_structures.erase(hit);
+      imported.plan=std::move(state.plan);imported.lifted=std::move(state.lifted);
+      classes=std::move(state.classes);
+      floor=std::move(state.floor);floor_values=std::move(state.floor_values);
+      base=std::move(state.base);
+      last_structure=std::move(state.last_structure);last_geometry=std::move(state.last_geometry);
+      recent_flows=std::move(state.recent_flows);floor_attribute=state.floor_attribute;
+      attention_kv_block=kv_block;attention_query_rows=query_rows;argmax_tile_n=partial_tile_n;
+      if(options.common.timing)options.common.timing->Add("serving_structure_cache_hit");
+      return;
+    }
+    auto const& previous=serving_structures.at(old_key);
+    if(options.common.timing)options.common.timing->Add("serving_structure_cache_miss");
+    frontend::ServingOptions requested;
+    requested.phase=previous.plan.serving_seq==1
+        ?frontend::ServingOptions::Phase::kDecode
+        :frontend::ServingOptions::Phase::kPrefill;
+    // Rebuilding an attention/argmax coordinate must preserve DN-off controls.
+    requested.deferred_norm=std::any_of(previous.plan.gemms.begin(),previous.plan.gemms.end(),
+        [](auto const& gemm){return gemm.norm_ss!=std::numeric_limits<std::uint32_t>::max();});
+    requested.seq=previous.plan.serving_seq;
+    requested.capacity=previous.plan.serving_capacity;
+    requested.kv_block=kv_block;
+    requested.query_rows=query_rows;
+    requested.argmax_tile_n=partial_tile_n;
+    auto plan=frontend::BuildModelPlan(imported.bridge.nodes,imported.bridge.inputs,
+        imported.bridge.outputs,requested);
+    imported.lifted=frontend::LiftSemantics(plan,imported.lift_options);
+    imported.plan=std::move(plan);
+    auto next_classes=BuildOperatorClasses(imported);
+    if(next_classes.size()!=previous.classes.size())
+      throw std::runtime_error("attention coordinate changed GEMM class count");
+    // Removing the decode merge at Ec=capacity changes the consumers of the
+    // O projection and therefore its semantic signature. Class identity is
+    // its GEMM membership, not a signature frozen at another attention shape.
+    for(std::size_t i=0;i<previous.classes.size();++i)
+      if(next_classes[i].gemms!=previous.classes[i].gemms)
+        throw std::runtime_error("attention coordinate changed GEMM class order");
+    classes=std::move(next_classes);
+    attention_kv_block=kv_block;attention_query_rows=query_rows;
+    argmax_tile_n=partial_tile_n;
+    base.reset();last_structure.reset();last_geometry.clear();floor.reset();
+    floor_values.clear();
+    floor_attribute={};recent_flows.clear();
+  }
+  std::string Key(std::vector<GemmConfig> const& config,int kappa,int residency) const {
+    auto key=ConfigKey(config,kappa,residency);
+    if(imported.plan.serving)key+=";Ec="+std::to_string(attention_kv_block)+
+        ";Rq="+std::to_string(attention_query_rows);
+    if(options.pg_pages)key+=";page_bytes="+std::to_string(current_page_bytes)+
+        ";lookahead_bytes="+std::to_string(current_lookahead_bytes);
+    if(options.handoff_auto)key+=";handoff="+std::to_string(current_handoff_mask);
+    return key;
+  }
+  ResourceEstimate EstimateResources(std::vector<GemmConfig> const& config) {
+    auto const& target=options.common.placement.target;
+    auto estimate=resources.Estimate(classes,config,target,dtype);
+    if(imported.plan.serving) {
+      int gemm_shared=0;
+      for(auto const& g:config)gemm_shared=std::max(gemm_shared,
+          ServingBF16SmemBytes(g.tile_m,g.tile_n,g.tile_k,g.stages));
+      estimate.shared_bytes=gemm_shared;
+      estimate.resident_limit=options.pg_pages?1:VariantResourceCache::ResidentLimit(estimate,target);
+    }
+    return estimate;
+  }
+  SkeletonSolvedPoint Prepare(std::vector<GemmConfig> const& config,int kappa,int residency,int actual=0,bool materialize=false,int past_override=-1) {
+    if(imported.plan.serving)
+      SetServingStructure(attention_kv_block,attention_query_rows,
+                          ArgmaxTileN(config));
+    auto* timing=options.common.timing;auto const& target=options.common.placement.target;
+    if(timing)timing->candidate=Key(config,kappa,residency);
+    auto estimate=EstimateResources(config);
+    auto granularity=ClassGranularity(imported,classes,config);
+    granularity.phase_analysis=options.pg_pages && materialize;
+    granularity.phase_batch=options.common.placement.dims.batch;
+    std::optional<PageLayout> pages;
+    if(options.pg_pages) {
+      if(current_lookahead_bytes>target.res.l2_bytes/(4*target.res.num_sms))
+        throw std::invalid_argument("L2 lookahead exceeds per-SM budget");
+      std::vector<std::array<int,3>> shapes;
+      for(auto const& g:granularity.gemms) {
+        if(g.tile_n*g.tile_k*2>current_page_bytes)
+          throw std::invalid_argument("paged B stage exceeds one page");
+        if(!PageLayout::StageFits(current_page_bytes,g.tile_n,g.tile_k))
+          throw std::invalid_argument("paged B stage cannot occupy complete page slots");
+        shapes.push_back({g.tile_m,g.tile_n,g.tile_k});
+      }
+      std::vector<std::array<int,2>> attention_shapes;
+      for(auto const& stage:imported.plan.stages)
+        if(stage.kind==frontend::PlanTaskKind::kFusedAttention)
+          attention_shapes.push_back({int(stage.width),int(stage.group)});
+      auto [activation,scratch]=PageLayout::ServingWorkspace(shapes,attention_shapes);
+      pages=PageLayout::Build(target,current_page_bytes,activation,scratch);
+      for(auto const& g:granularity.gemms)
+        if(g.tile_n*g.tile_k*2>current_page_bytes*pages->pages)
+          throw std::invalid_argument("paged B stage exceeds the page ring");
+      estimate.shared_bytes=pages->shared_bytes;
+      estimate.resident_limit=1; // PG-1 launches exactly one 160-thread CTA per SM.
+    }
+    // Paged decode uses PageLayout rather than the legacy TaskSmem union.
+    // The union check would reject a legal Qwen3 page layout at the seed.
+    if(imported.plan.serving && !options.pg_pages) {
+      auto attention=std::find_if(imported.plan.stages.begin(),
+          imported.plan.stages.end(),[](auto const& stage){
+            return stage.kind==frontend::PlanTaskKind::kFusedAttention;
+          });
+      if(attention==imported.plan.stages.end() ||
+         PruneServingAttentionSmemR1(attention->width,
+             attention->attention_query_rows,config,target))
+        throw std::invalid_argument("R-1 attention exceeds GEMM shared-memory union");
+    }
+    int limit=options.pg_pages?1:(actual?actual:estimate.resident_limit);
+    if(limit<1)throw std::invalid_argument("no resident CTA for geometry");
+    residency=std::min(residency,limit);
+    SkeletonSolvedPoint point;point.candidate.config=config;point.candidate.kappa=kappa;point.candidate.residency=residency;
+    point.candidate.key=Key(config,kappa,residency);point.candidate.estimated_limit=estimate.resident_limit;point.candidate.actual_limit=actual;
+    point.candidate.shared_bytes=estimate.shared_bytes;
+    point.candidate.attention_kv_block=attention_kv_block;
+    point.candidate.attention_query_rows=attention_query_rows;
+    point.candidate.page_bytes=options.pg_pages?current_page_bytes:0;
+    point.candidate.lookahead_bytes=options.pg_pages?current_lookahead_bytes:0;
+    point.candidate.handoff_mask=options.handoff_auto?current_handoff_mask:0;
+    if(!base || materialize) {
+      point.module=importer.InstantiateForGranularity(imported,context,granularity,&cache,nullptr,timing);
+      {SolverPhase phase(timing,"prepare_relations");point.problem=PrepareSymbolicProblem(*point.module,target,options.common.placement.dims,target.res.num_sms*residency,residency,kappa,nullptr,false);}
+      if(!base)base=point.problem;
+      if(!floor){
+        SolverPhase floor_phase(timing,"dram_floor");
+        floor=DeriveModelDramFloor(*point.module,point.problem.model,target,options.fixture);
+        floor_attribute=(*point.module)->getAttr("tmexec.dram_floor");
+      }
+      else (*point.module)->setAttr("tmexec.dram_floor",floor_attribute);
+    } else {
+      std::vector<GemmConfig> geometry;for(auto const& g:granularity.gemms)geometry.push_back({g.tile_m,g.tile_n,g.tile_k,g.stages,g.split_k});
+      SolverPhase phase(timing,"instantiate_and_derive");auto geometry_key=ConfigKey(config,0,0)+":"+std::to_string(past_override);
+      if(last_structure && last_geometry==geometry_key){point.problem=*last_structure;point.problem.projection.options.grid=target.res.num_sms*residency;point.problem.projection.options.kappa=kappa;}
+      else{
+        auto source=*base;
+        if(past_override>=0) {
+          source.model.dims.past=past_override;
+          source.model.dims.total=source.model.dims.seq+past_override;
+        }
+        point.problem=PrepareFlowStructure(source,geometry,target.res.num_sms*residency,kappa,
+            cache,&flow_cache,options.pg_pages);
+        last_structure=point.problem;last_geometry=std::move(geometry_key);
+      }
+    }
+    PreparedFlow const* prior=nullptr;
+    std::vector<bool> reusable(imported.plan.stages.size(),false);
+    int const past_key=past_override>=0?past_override:-1;
+    {
+      SolverPhase phase(timing,"incremental_prepare");
+      auto previous=recent_flows.find(past_key);
+      if(options.incremental_prepare && !materialize &&
+         previous!=recent_flows.end() &&
+         previous->second.residency==residency &&
+         previous->second.config.size()==config.size()) {
+        prior=&previous->second.prepared;
+        std::fill(reusable.begin(),reusable.end(),true);
+        for(std::size_t c=0;c<classes.size();++c)
+          if(ClassGeometryKey(previous->second.config[c])!=ClassGeometryKey(config[c]))
+            for(std::size_t s=0;s<imported.plan.stages.size();++s) {
+              int gemm=imported.plan.stages[s].gemm;
+              if(gemm>=0 && std::find(classes[c].gemms.begin(),classes[c].gemms.end(),
+                  std::size_t(gemm))!=classes[c].gemms.end())reusable[s]=false;
+            }
+      }
+    }
+    // A decode interval evaluates the same floor at three theta bindings for
+    // every candidate.  The quasipolynomial parser is expensive, while the
+    // floor is independent of g, kappa and residency within this structure.
+    auto floor_model=point.problem.model;
+    floor_model.metric_bindings.values.erase("Tm");
+    floor_model.metric_bindings.values.erase("Tn");
+    auto floor_theta=floor_model.MetricBindings();
+    std::ostringstream floor_key;
+    for(auto const& [name,value]:std::map<std::string,long>(
+            floor_theta.values.begin(),floor_theta.values.end()))
+      floor_key<<name.size()<<':'<<name<<'='<<value<<';';
+    auto bound=floor_values.find(floor_key.str());
+    if(bound==floor_values.end())
+      bound=floor_values.emplace(floor_key.str(),floor->Evaluate(floor_theta)).first;
+    {SolverPhase phase(timing,"piece_pricing_and_release");point.flow=PrepareFlow(
+        point.problem,*floor,target,residency,options.common.placement.hop,
+        cache,flow_cache,true,estimate.shared_bytes,prior,prior?&reusable:nullptr,
+        &bound->second,options.pg_pages,current_page_bytes);}
+    if(pages) {
+      point.flow->flow.page_bytes=pages->page_bytes;
+      point.flow->flow.pages_per_worker=pages->pages;
+      point.flow->flow.lookahead_bytes=current_lookahead_bytes;
+      for(std::size_t s=0;s<point.flow->flow.spaces.size();++s) {
+        auto const& projected=point.problem.projection.stages[s];
+        auto kind=point.problem.model.stages[projected.logical_stage].kind;
+        point.flow->flow.spaces[s].fused_reducer=projected.combine ||
+            kind==StageKind::kAttentionMerge ||
+            kind==StageKind::kArgmaxReduce;
+      }
+    }
+    point.candidate.task_count=std::accumulate(point.problem.counts.begin(),point.problem.counts.end(),std::uint64_t(0));
+    if(options.incremental_prepare && !materialize)
+      recent_flows[past_key]={config,residency,*point.flow};
+    return point;
+  }
+  SkeletonCandidate Evaluate(std::vector<GemmConfig> const& config,int kappa,int residency,int actual=0) {
+    // PG-1's PagedGemmTaskBody builds its MMA mainloop with Stages=2 and
+    // obtains prefetch depth from the page ring. The legacy stages coordinate
+    // has no effect on that kernel, so charging its R10 latency benefit here
+    // would rank a different program from the one we execute.
+    auto priced=config;
+    if(options.pg_pages)for(auto& g:priced)g.stages=2;
+    auto point=Prepare(priced,kappa,residency,actual);
+    {SolverPhase phase(options.common.timing,"flow");
+      point.candidate.score=PriceServingHandoffFlow(point.flow->flow,point.problem,
+          imported.plan,point.candidate.handoff_mask);}
+    if(options.serving_past_lo>=0 && options.serving_past_hi>=options.serving_past_lo) {
+      auto low=Prepare(priced,kappa,residency,actual,false,options.serving_past_lo);
+      auto high=Prepare(priced,kappa,residency,actual,false,options.serving_past_hi);
+      SolverPhase phase(options.common.timing,"flow");
+      point.candidate.score=(PriceServingHandoffFlow(low.flow->flow,low.problem,
+          imported.plan,point.candidate.handoff_mask)+4*point.candidate.score+
+          PriceServingHandoffFlow(high.flow->flow,high.problem,imported.plan,
+              point.candidate.handoff_mask))/6;
+    }
+    return point.candidate;
+  }
+  SkeletonSolvedPoint Materialize(SkeletonCandidate const& candidate,bool pure,int actual=0) {
+    if(options.pg_pages)current_page_bytes=candidate.page_bytes;
+    if(options.pg_pages)current_lookahead_bytes=candidate.lookahead_bytes;
+    current_handoff_mask=candidate.handoff_mask;
+    SetServingStructure(candidate.attention_kv_block,
+                        candidate.attention_query_rows,
+                        ArgmaxTileN(candidate.config));
+    auto point=Prepare(candidate.config,candidate.kappa,candidate.residency,actual,true);point.candidate.score=candidate.score;
+    if(options.pg_pages)(*point.module)->setAttr("tmexec.lookahead_bytes",
+        mlir::IntegerAttr::get(mlir::IntegerType::get(&context,64),
+                               candidate.lookahead_bytes));
+    if(options.serving_past_lo>=0 &&
+       options.serving_past_hi>=options.serving_past_lo) {
+      for(int past:{options.serving_past_lo,options.serving_past_hi}) {
+        auto endpoint=Prepare(candidate.config,candidate.kappa,
+            candidate.residency,actual,false,past);
+        for(std::size_t s=0;s<point.problem.counts.size();++s)
+          if(point.problem.counts[s]!=endpoint.problem.counts[s])
+            throw std::runtime_error("serving interval changes a task-space count");
+        point.interval_flows.emplace_back(past,std::move(*endpoint.flow));
+      }
+    }
+    auto const& target=options.common.placement.target;
+    ApplyFlowPrices(point.problem,*point.flow,target,point.candidate.residency);
+    point.skeleton=BuildPlanSkeleton(point.problem,target.res.num_sms*point.candidate.residency,point.candidate.residency,options.k_base,options.all_workers,cache,options.common.timing);
+    SkeletonRequest request;request.skeleton=&point.skeleton;request.hop=options.common.placement.hop;request.sms=point.skeleton.grid;request.pure_template=pure;
+    std::string error;{SolverPhase phase(options.common.timing,"materialize");if(!ScheduleBySkeleton(request,&point.schedule,&point.candidate.placement,&error))throw std::runtime_error(error);}
+    return point;
+  }
+};
+GemmConfig ServingSeed(OperatorClass const& cls,
+    frontend::ImportedSemantics const& imported,
+    TargetSpec const& target,int batch,int seq,
+    std::vector<GemmConfig> const& domain,bool paged,int page_bytes) {
+  if(domain.empty())throw std::invalid_argument("serving class has no legal geometry");
+  auto id=cls.gemms.front();
+  auto stage=std::find_if(imported.plan.stages.begin(),imported.plan.stages.end(),
+      [&](auto const& s){return s.kind==frontend::PlanTaskKind::kGemm && s.gemm==id;});
+  if(stage==imported.plan.stages.end())throw std::invalid_argument("serving seed has no GEMM stage");
+  int rows=stage->batch_rows?batch:batch*seq;
+  int columns=int(imported.plan.gemms.at(id).n);
+  int preferred_n=paged && page_bytes==8192 ? 64 : 128;
+  (void)target;(void)rows;(void)columns;
+  auto fits_page=[&](GemmConfig const& g) {
+    return !paged || (page_bytes>0 && g.tile_n*g.tile_k*2<=page_bytes);
+  };
+  for(int tile_k:{128,64}) {
+    int chosen_split=0;
+    for(auto const& g:domain)
+      if(fits_page(g) && g.tile_m==16 && g.tile_n==preferred_n && g.tile_k==tile_k &&
+         (chosen_split==0 || g.split_k<chosen_split))chosen_split=g.split_k;
+    if(!chosen_split)continue;
+    auto best=domain.end();
+    for(auto it=domain.begin();it!=domain.end();++it)
+      if(it->tile_m==16 && it->tile_n==preferred_n && it->tile_k==tile_k &&
+         it->split_k==chosen_split &&
+         (best==domain.end() || it->stages>best->stages))best=it;
+    if(best!=domain.end())return *best;
+  }
+  auto first=std::find_if(domain.begin(),domain.end(),fits_page);
+  if(first==domain.end())throw std::invalid_argument("serving class has no page-sized seed geometry");
+  return *first;
+}
+bool BetterCandidate(SkeletonCandidate const& candidate,
+                     SkeletonCandidate const& current,bool serving) {
+  if(!serving)return candidate.score<current.score;
+  if(!std::isfinite(candidate.score))return false;
+  if(!std::isfinite(current.score))return true;
+  double const tolerance=1e-6*std::max({1.0,std::abs(candidate.score),std::abs(current.score)});
+  if(candidate.score<current.score-tolerance)return true;
+  if(current.score<candidate.score-tolerance)return false;
+  return std::tie(candidate.shared_bytes,candidate.task_count,candidate.key)<
+      std::tie(current.shared_bytes,current.task_count,current.key);
+}
+std::vector<SkeletonCandidate> CoordinateDescent(SearchContext& search,int& rounds,std::ostream& out,std::string& seed_key,std::vector<std::string>& split1_seed_keys) {
+  auto const& options=search.options;
+  if(options.passes<1 || options.passes>3)throw std::invalid_argument("coordinate descent supports P=1..3");
+  auto const scan_start=std::chrono::steady_clock::now();
+  auto budget_expired=[&] {
+    return search.imported.plan.serving && options.search_budget_ms>0 &&
+        std::chrono::steady_clock::now()-scan_start>=
+            std::chrono::milliseconds(options.search_budget_ms);
+  };
+  std::vector<SkeletonCandidate> evaluated;std::map<std::string,std::size_t> seen;
+  auto evaluate=[&](std::vector<GemmConfig> const& config,int kappa,int residency)->std::size_t {
+    if(options.pg_pages) kappa=1;
+    auto key=search.Key(config,kappa,residency);auto old=seen.find(key);if(old!=seen.end())return old->second;
+    SkeletonCandidate candidate;candidate.config=config;candidate.key=key;candidate.kappa=kappa;candidate.residency=residency;
+    candidate.attention_kv_block=search.attention_kv_block;
+    candidate.attention_query_rows=search.attention_query_rows;
+    try{candidate=search.Evaluate(config,kappa,residency);}catch(std::exception const& e){candidate.error=e.what();}
+    auto canonical=seen.find(candidate.key);if(canonical!=seen.end()){seen.emplace(key,canonical->second);return canonical->second;}
+    std::size_t index=evaluated.size();seen.emplace(key,index);seen.emplace(candidate.key,index);evaluated.push_back(std::move(candidate));
+    auto const& c=evaluated.back();out<<"EVALUATE\t"<<index<<'\t'<<c.key<<'\t'<<c.score<<'\t'<<c.residency<<'\t'<<c.estimated_limit<<'\t'<<c.error<<'\n';out.flush();return index;
+  };
+  std::vector<std::vector<GemmConfig>> domains;
+  for(auto const& cls:search.classes) {
+    std::vector<GemmConfig> domain;
+    if(search.imported.plan.serving) {
+      auto pruned=ServingClassCandidates(cls,search.imported,
+          options.common.placement.target,options.common.placement.dims.batch,
+          options.common.placement.dims.seq,options.serving_pruning,
+          false);
+      domain=std::move(pruned.candidates);
+      out<<"PRUNING\t"<<domains.size()<<'\t'<<pruned.raw<<'\t'
+         <<pruned.removed_r1<<'\t'<<pruned.removed_r2<<'\t'
+         <<pruned.removed_r3<<'\t'<<domain.size()<<'\n';
+    }else domain=ClassCandidates(cls,search.imported,options.common.placement.target,search.dtype);
+    if(options.pg_pages) {
+      auto before=domain.size();
+      domain.erase(std::remove_if(domain.begin(),domain.end(),[](auto const& g){
+        return g.stages!=2;
+      }),domain.end());
+      out<<"PG_STAGE_EQUIVALENCE\t"<<domains.size()<<'\t'<<before<<'\t'
+         <<domain.size()<<"\tmainloop_stages=2\n";
+    }
+    if(!options.common.geometry_domain.empty())domain.erase(std::remove_if(domain.begin(),domain.end(),[&](auto const& g){return std::none_of(options.common.geometry_domain.begin(),options.common.geometry_domain.end(),[&](auto const& a){return std::tie(g.tile_m,g.tile_n,g.tile_k,g.stages)==std::tie(a.tile_m,a.tile_n,a.tile_k,a.stages);});}),domain.end());
+    out<<"DOMAIN\t"<<domains.size()<<'\t'<<domain.size()<<'\n';
+    if(search.imported.plan.serving)for(auto const& g:domain)
+      out<<"DOMAIN_MEMBER\t"<<domains.size()<<'\t'<<g.tile_m<<'x'
+         <<g.tile_n<<'x'<<g.tile_k<<'s'<<g.stages<<'k'<<g.split_k<<'\n';
+    domains.push_back(std::move(domain));
+  }
+  std::vector<GemmConfig> seed(search.classes.size(),options.seed);
+  if(search.imported.plan.serving)
+    for(std::size_t c=0;c<seed.size();++c)
+      seed[c]=ServingSeed(search.classes[c],search.imported,
+          options.common.placement.target,
+          options.common.placement.dims.batch,
+          options.common.placement.dims.seq,domains[c],options.pg_pages,
+          search.current_page_bytes);
+  if(search.imported.plan.serving) {
+    // First choose each variant geometry, then query the compiled variant set
+    // for its actual occupancy. A paged decode always has one CTA per SM.
+    int const workers=options.common.placement.target.res.num_sms*
+        (options.pg_pages?1:std::max(1,search.EstimateResources(seed).resident_limit));
+    for(std::size_t c=0;c<seed.size();++c) {
+      auto const& cls=search.classes[c];
+      auto id=cls.gemms.front();
+      auto stage=std::find_if(search.imported.plan.stages.begin(),
+          search.imported.plan.stages.end(),[&](auto const& s){
+            return s.kind==frontend::PlanTaskKind::kGemm && s.gemm==id;});
+      if(stage==search.imported.plan.stages.end())continue;
+      int rows=stage->batch_rows?options.common.placement.dims.batch:
+          options.common.placement.dims.batch*options.common.placement.dims.seq;
+      int tiles=((rows+seed[c].tile_m-1)/seed[c].tile_m)*
+          ((int(search.imported.plan.gemms[id].n)+seed[c].tile_n-1)/seed[c].tile_n);
+      auto chosen=domains[c].end();
+      for(auto it=domains[c].begin();it!=domains[c].end();++it) {
+        auto const& g=*it;
+        if(g.tile_m==seed[c].tile_m && g.tile_n==seed[c].tile_n &&
+           g.tile_k==seed[c].tile_k && g.stages==seed[c].stages &&
+           tiles*g.split_k*2>=workers &&
+           (chosen==domains[c].end() || g.split_k<chosen->split_k))chosen=it;
+      }
+      if(chosen!=domains[c].end())seed[c]=*chosen;
+    }
+  }
+  int seed_residency=options.seed_residency;
+  if(search.imported.plan.serving)seed_residency=std::max(1,
+      search.EstimateResources(seed).resident_limit);
+  auto legacy=evaluate(seed,search.imported.plan.serving?1:options.kappa,
+      seed_residency);std::size_t uniform=legacy;
+  seed_key=evaluated[legacy].key;
+  if(search.imported.plan.serving && !options.serving_pruning)
+    for(int k:{1,2,4})for(int r=1;r<=seed_residency;++r) {
+      auto i=evaluate(seed,k,r);
+      if(BetterCandidate(evaluated[i],evaluated[legacy],true))legacy=i;
+    }
+  // A uniform configuration must be legal for every operator class.
+  if(!search.imported.plan.serving)for(auto const& g:domains.front()) {
+    bool legal=true;for(auto const& domain:domains)legal &= std::any_of(domain.begin(),domain.end(),[&](auto const& other){return ClassGeometryKey(g)==ClassGeometryKey(other);});
+    if(!legal)continue;std::vector<GemmConfig> config(search.classes.size(),g);
+    auto limit=search.EstimateResources(config).resident_limit;
+    for(int k:{1,2,4})for(int r=1;r<=limit;++r){auto i=evaluate(config,k,r);if(evaluated[i].score<evaluated[uniform].score)uniform=i;}
+  }
+  std::vector<std::size_t> starts{legacy};
+  if(search.imported.plan.serving && options.pg_pages) {
+    int saved_page=search.current_page_bytes;
+    for(int bytes:options.page_choices.empty()?std::vector<int>{saved_page}:options.page_choices) {
+      search.current_page_bytes=bytes;
+      std::vector<GemmConfig> projected;
+      for(auto const& cls:search.classes) {
+        auto id=cls.gemms.front();
+        auto op=search.imported.plan.gemms[id].epilogue;
+        GemmConfig g{16,32,128,2,1};
+        if(!options.paged_seed_gemms.empty()) {
+          if(options.paged_seed_gemms.size()!=search.imported.plan.gemms.size())
+            throw std::invalid_argument("paged seed GEMM count differs");
+          g=options.paged_seed_gemms.at(id);
+          for(auto member:cls.gemms)
+            if(ClassGeometryKey(options.paged_seed_gemms.at(member))!=
+               ClassGeometryKey(options.paged_seed_gemms.at(id)))
+              throw std::invalid_argument("paged seed geometry disagrees within class");
+        }else if(op==frontend::PlanGemm::Epilogue::kSwiGLU ||
+                 op==frontend::PlanGemm::Epilogue::kArgmaxPartial)g={16,128,64,2,1};
+        g.stages=2;g.split_k=1;
+        if(g.tile_n*g.tile_k*2>bytes)g.tile_n=bytes/(2*g.tile_k);
+        projected.push_back(g);
+      }
+      auto index=evaluate(projected,1,1);
+      split1_seed_keys.push_back(evaluated[index].key);
+      starts.push_back(index);
+      out<<"PAGED_SPLIT1_SEED page_bytes="<<bytes<<" key="<<evaluated[index].key
+         <<" error="<<evaluated[index].error<<'\n';
+    }
+    search.current_page_bytes=saved_page;
+  }
+  if(uniform!=legacy)starts.push_back(uniform);
+  if(search.imported.plan.serving && !options.serving_warm_gemms.empty()) {
+    if(options.serving_warm_gemms.size()!=search.imported.plan.gemms.size())
+      throw std::invalid_argument("warm start GEMM count differs from imported serving plan");
+    std::vector<GemmConfig> warm;
+    warm.reserve(search.classes.size());
+    for(std::size_t c=0;c<search.classes.size();++c) {
+      auto const& members=search.classes[c].gemms;
+      auto const& first=options.serving_warm_gemms.at(members.front());
+      if(std::any_of(members.begin(),members.end(),[&](auto id){
+           return ClassGeometryKey(options.serving_warm_gemms.at(id))!=
+                  ClassGeometryKey(first);
+         }))throw std::invalid_argument("warm start disagrees within a SemSig class");
+      auto canonical=first;
+      if(options.pg_pages)canonical.stages=2;
+      if(std::none_of(domains[c].begin(),domains[c].end(),[&](auto const& g){
+           return ClassGeometryKey(g)==ClassGeometryKey(canonical);
+         }))throw std::invalid_argument("warm start is outside the next batch's legal domain");
+      warm.push_back(canonical);
+    }
+    search.SetServingStructure(options.serving_warm_kv_block,
+        options.serving_warm_query_rows,search.ArgmaxTileN(warm));
+    auto index=evaluate(warm,options.serving_warm_kappa,
+                        options.serving_warm_residency);
+    if(!std::isfinite(evaluated[index].score))
+      throw std::runtime_error("warm start failed: "+evaluated[index].error);
+    if(std::find(starts.begin(),starts.end(),index)==starts.end())
+      starts.push_back(index);
+    out<<"WARM_START\taccepted\t"<<evaluated[index].key<<'\t'
+       <<evaluated[index].score<<'\n';out.flush();
+  }
+  for(std::size_t start:starts) {
+    auto incumbent=start;if(!std::isfinite(evaluated[incumbent].score))throw std::runtime_error("flow seed has no valid score: "+evaluated[incumbent].error);
+    for(int pass=0;pass<options.passes;++pass){bool moved=false;++rounds;
+      for(std::size_t c=0;c<search.classes.size();++c){auto fixed=evaluated[incumbent];int improvements=0;
+        if(options.pg_pages){search.current_page_bytes=fixed.page_bytes;search.current_lookahead_bytes=fixed.lookahead_bytes;}
+        search.current_handoff_mask=fixed.handoff_mask;
+        if(search.imported.plan.serving)
+          search.SetServingStructure(fixed.attention_kv_block,
+              fixed.attention_query_rows,search.ArgmaxTileN(fixed.config));
+        for(auto const& g:domains[c]){if(budget_expired())goto search_complete;
+          auto config=fixed.config;config[c]=g;
+          int residency=fixed.residency;
+          int kappa=fixed.kappa;
+          if(search.imported.plan.serving) {
+            auto limit=search.EstimateResources(config).resident_limit;
+            if(limit<1)continue;
+            if(!options.serving_pruning) {
+              for(int k:{1,2,4})for(int r=1;r<=limit;++r) {
+                auto i=evaluate(config,k,r);
+                if(BetterCandidate(evaluated[i],evaluated[incumbent],true)) {
+                  incumbent=i;moved=true;++improvements;
+                }
+              }
+              continue;
+            }
+            residency=limit;
+            kappa=1;
+          }
+          auto i=evaluate(config,kappa,residency);
+          if(BetterCandidate(evaluated[i],evaluated[incumbent],search.imported.plan.serving)){incumbent=i;moved=true;++improvements;}}
+        out<<"COORDINATE\t"<<start<<'\t'<<pass<<'\t'<<c<<'\t'<<domains[c].size()<<'\t'<<improvements<<'\t'<<evaluated[incumbent].score<<'\n';out.flush();
+      }
+      if(search.imported.plan.serving) {
+        auto fixed=evaluated[incumbent];
+        if(options.pg_pages){search.current_page_bytes=fixed.page_bytes;search.current_lookahead_bytes=fixed.lookahead_bytes;}
+        search.current_handoff_mask=fixed.handoff_mask;
+        std::vector<int> attention_domain;
+        bool decode=search.imported.plan.serving_seq==1;
+        if(decode)attention_domain={64,128,256,512,search.imported.plan.serving_capacity};
+        else {
+          auto attention=std::find_if(search.imported.plan.stages.begin(),
+              search.imported.plan.stages.end(),[](auto const& stage){
+                return stage.kind==frontend::PlanTaskKind::kFusedAttention;
+              });
+          if(attention==search.imported.plan.stages.end())
+            throw std::runtime_error("serving plan has no attention coordinate");
+          for(int rows:{16,32,64,128})
+            if(rows<=int(attention->group)*search.imported.plan.serving_seq)
+              attention_domain.push_back(rows);
+        }
+        std::sort(attention_domain.begin(),attention_domain.end());
+        attention_domain.erase(std::unique(attention_domain.begin(),attention_domain.end()),attention_domain.end());
+        for(int value:attention_domain) {if(budget_expired())goto search_complete;
+          int ec=decode?value:fixed.attention_kv_block;
+          int rq=decode?fixed.attention_query_rows:value;
+          search.SetServingStructure(ec,rq,search.ArgmaxTileN(fixed.config));
+          auto i=evaluate(fixed.config,fixed.kappa,fixed.residency);
+          if(BetterCandidate(evaluated[i],evaluated[incumbent],true)){incumbent=i;moved=true;}
+        }
+        out<<"ATTENTION_COORDINATE\t"<<start<<'\t'<<pass<<'\t'
+           <<(decode?"Ec":"Rq")<<'\t'<<attention_domain.size()<<'\t'
+           <<evaluated[incumbent].score<<'\n';out.flush();
+        search.SetServingStructure(evaluated[incumbent].attention_kv_block,
+            evaluated[incumbent].attention_query_rows,
+            search.ArgmaxTileN(evaluated[incumbent].config));
+      }
+      if(!search.imported.plan.serving || options.serving_pruning) {
+        auto fixed=evaluated[incumbent];
+        if(options.pg_pages){search.current_page_bytes=fixed.page_bytes;search.current_lookahead_bytes=fixed.lookahead_bytes;}
+        search.current_handoff_mask=fixed.handoff_mask;
+        auto serving_order=MakeServingSearchOrderR4(fixed.estimated_limit);
+        for(int k:serving_order.kappa_scan){if(budget_expired())goto search_complete;
+          auto i=evaluate(fixed.config,k,fixed.residency);if(BetterCandidate(evaluated[i],evaluated[incumbent],search.imported.plan.serving)){incumbent=i;moved=true;}}
+        fixed=evaluated[incumbent];
+        if(options.pg_pages){search.current_page_bytes=fixed.page_bytes;search.current_lookahead_bytes=fixed.lookahead_bytes;}
+        search.current_handoff_mask=fixed.handoff_mask;
+        serving_order=MakeServingSearchOrderR4(fixed.estimated_limit);
+        for(int r:serving_order.residency_scan){if(budget_expired())goto search_complete;
+          auto i=evaluate(fixed.config,fixed.kappa,r);if(BetterCandidate(evaluated[i],evaluated[incumbent],search.imported.plan.serving)){incumbent=i;moved=true;}}
+      }
+      if(options.pg_pages) {
+        auto fixed=evaluated[incumbent];
+        search.current_handoff_mask=fixed.handoff_mask;
+        for(int bytes:options.page_choices) {if(budget_expired())goto search_complete;
+          search.current_page_bytes=bytes;
+          auto i=evaluate(fixed.config,fixed.kappa,fixed.residency);
+          if(BetterCandidate(evaluated[i],evaluated[incumbent],true)) {
+            incumbent=i;moved=true;
+          }
+        }
+        out<<"PAGE_COORDINATE\t"<<start<<'\t'<<pass<<'\t'
+           <<options.page_choices.size()<<'\t'
+           <<evaluated[incumbent].page_bytes<<'\t'
+           <<evaluated[incumbent].score<<'\n';out.flush();
+        fixed=evaluated[incumbent];
+        search.current_page_bytes=fixed.page_bytes;
+        for(int bytes:options.lookahead_choices) {if(budget_expired())goto search_complete;
+          search.current_lookahead_bytes=bytes;
+          auto i=evaluate(fixed.config,fixed.kappa,fixed.residency);
+          if(BetterCandidate(evaluated[i],evaluated[incumbent],true)) {
+            incumbent=i;moved=true;
+          }
+        }
+        out<<"LOOKAHEAD_COORDINATE\t"<<start<<'\t'<<pass<<'\t'
+           <<evaluated[incumbent].lookahead_bytes<<'\t'
+           <<evaluated[incumbent].score<<'\n';out.flush();
+      }
+      if(options.handoff_auto && search.imported.plan.serving) {
+        auto fixed=evaluated[incumbent];
+        if(options.pg_pages){search.current_page_bytes=fixed.page_bytes;search.current_lookahead_bytes=fixed.lookahead_bytes;}
+        for(unsigned mask=0;mask<4;++mask) {if(budget_expired())goto search_complete;
+          search.current_handoff_mask=mask;
+          auto i=evaluate(fixed.config,fixed.kappa,fixed.residency);
+          if(BetterCandidate(evaluated[i],evaluated[incumbent],true)) {
+            incumbent=i;moved=true;
+          }
+        }
+        out<<"HANDOFF_COORDINATE\t"<<start<<'\t'<<pass<<'\t'
+           <<evaluated[incumbent].handoff_mask<<'\t'
+           <<evaluated[incumbent].score<<'\n';out.flush();
+      }
+      if(!moved)break;
+    }
+  }
+search_complete:
+  if(budget_expired())out<<"SEARCH_BUDGET\t"<<options.search_budget_ms
+      <<"\t"<<evaluated.size()<<"\tpartial_coordinate_scan\n";
+  std::stable_sort(evaluated.begin(),evaluated.end(),[](auto const& a,auto const& b){return a.score<b.score;});
+  if(search.imported.plan.serving)for(std::size_t begin=0;begin<evaluated.size();) {
+    std::size_t end=begin+1;
+    auto const score=evaluated[begin].score;
+    if(std::isfinite(score))while(end<evaluated.size() && std::isfinite(evaluated[end].score) &&
+        std::abs(evaluated[end].score-score)<1e-6*std::max({1.0,std::abs(score),std::abs(evaluated[end].score)}))++end;
+    if(end-begin>1) {
+      std::stable_sort(evaluated.begin()+begin,evaluated.begin()+end,
+          [](auto const& a,auto const& b){return std::tie(a.shared_bytes,a.task_count,a.key)<
+              std::tie(b.shared_bytes,b.task_count,b.key);});
+      out<<"TIE_GROUP\t"<<begin<<'\t'<<end-begin<<'\t'<<score<<'\t'
+         <<evaluated[begin].shared_bytes<<'\t'<<evaluated[begin].task_count<<'\n';
+    }
+    begin=end;
+  }
+  return evaluated;
+}
+}
+SkeletonSearchResult SolveSkeletonExport(std::string const& path,mlir::MLIRContext& context,
+    SkeletonSearchOptions const& options,frontend::ImportSummary* summary,std::ostream& evidence) {
+  SolverPhase total(options.common.timing,"total");analysis::ScopedExactAnalysisMemo memo;frontend::TorchExportImporter importer;
+  if(options.jobs<1)throw std::invalid_argument("search jobs must be positive");
+  auto plan=[&]{SolverPhase phase(options.common.timing,"bridge_and_plan");auto b=frontend::ReadExportBridge(path);return frontend::BuildModelPlan(b.nodes,b.inputs,b.outputs);}();
+  auto imported=[&]{SolverPhase phase(options.common.timing,"import");return importer.ImportSemantics(path,plan,context);}();
+  return SolveSkeletonImported(imported,context,options,summary,evidence);
+}
+SkeletonSearchResult SolveSkeletonImported(frontend::ImportedSemantics const& imported,
+    mlir::MLIRContext& context,SkeletonSearchOptions const& options,
+    frontend::ImportSummary* summary,std::ostream& evidence) {
+  analysis::ScopedExactAnalysisMemo memo;
+  if(options.jobs<1)throw std::invalid_argument("search jobs must be positive");
+  // Candidate preparation remains single-threaded: ISL contexts and price
+  // caches belong to this thread. The compile driver uses jobs only after
+  // search, when independent top-3 CUDA sources can be compiled concurrently.
+  SearchContext search(imported,context,options);SkeletonSearchResult result;result.classes=search.classes;
+  evidence<<std::setprecision(17);
+  if(!options.evaluation_cases.empty()) {
+    // A fixed baseline creates the symbolic ModelDescription once.  Random
+    // cases then change only their explicit class coordinates, just as the
+    // production coordinate-descent path does after its seed evaluation.
+    std::vector<GemmConfig> seed(search.classes.size(),options.seed);
+    search.Evaluate(seed,options.kappa,options.seed_residency);
+  }
+  if(options.evaluation_cases.empty())
+    result.evaluated=CoordinateDescent(search,result.rounds,evidence,result.seed_key,result.split1_seed_keys);
+  else for(std::size_t i=0;i<options.evaluation_cases.size();++i) {
+    auto const& test=options.evaluation_cases[i];
+    try {result.evaluated.push_back(search.Evaluate(test.config,test.kappa,test.residency));}
+    catch(std::exception const& e) {
+      SkeletonCandidate failed;failed.config=test.config;failed.kappa=test.kappa;
+      failed.residency=test.residency;failed.error=e.what();result.evaluated.push_back(std::move(failed));
+    }
+    auto const& candidate=result.evaluated.back();
+    evidence<<"EVALUATE\t"<<i<<'\t'<<candidate.key<<'\t'
+            <<candidate.score<<'\t'<<candidate.residency<<'\t'
+            <<candidate.estimated_limit<<'\t'<<candidate.error<<'\n';
+    evidence.flush();
+  }
+  // Coordinate descent can finish after switching back to an already scored
+  // attention shape.  In that case all remaining candidates are memo hits and
+  // SetServingStructure has cleared base/floor without another Prepare call.
+  // Restore the best shape before reporting its floor or materializing plans.
+  if(search.imported.plan.serving && !result.evaluated.empty() &&
+     result.evaluated.front().error.empty()) {
+    auto const& best=result.evaluated.front();
+    if(options.pg_pages){search.current_page_bytes=best.page_bytes;search.current_lookahead_bytes=best.lookahead_bytes;}
+    search.current_handoff_mask=best.handoff_mask;
+    search.SetServingStructure(best.attention_kv_block,
+        best.attention_query_rows,search.ArgmaxTileN(best.config));
+    if(!search.base || !search.floor)
+      search.Prepare(best.config,best.kappa,best.residency);
+  }
+  if(search.floor && search.base) {
+    auto theta=search.base->model.MetricBindings();
+    std::ofstream detail(options.artifact_prefix+".floor_tensors.tsv");
+    detail<<"tensor\telement_bytes\tno_producer_read_bytes\texternal_write_bytes\tstate\toutput\n";
+    for(auto const& [name,tensor]:search.floor->tensors)
+      detail<<name<<'\t'<<tensor.element_bytes<<'\t'
+            <<tensor.read_bytes.Eval(theta)<<'\t'
+            <<tensor.write_bytes.Eval(theta)<<'\t'
+            <<tensor.state<<'\t'<<tensor.output<<'\n';
+  }
+  if(options.search_only) {
+    if(!search.floor || !search.base)
+      throw std::runtime_error("flow search has no priced configuration");
+    std::ofstream floor(options.artifact_prefix+".floor.tsv");
+    auto value=search.floor->Evaluate(search.base->model.MetricBindings());
+    floor<<std::setprecision(17)<<"dram_ns\tcompute_ns\tfloor_ns\n"
+         <<value.dram_ns<<'\t'<<value.compute_ns<<'\t'<<value.floor_ns<<'\n';
+    if(auto* t=options.common.timing){
+      t->Add("cache_hit",0,search.cache.hits);t->Add("cache_miss",0,search.cache.misses);
+      t->Add("space_cache_hit",0,search.flow_cache.space_hits);
+      t->Add("space_cache_miss",0,search.flow_cache.space_misses);
+      t->Add("incremental_space_hit",0,search.flow_cache.incremental_space_hits);
+      t->Add("price_cache_hit",0,search.flow_cache.prices.hits);
+      t->Add("price_cache_miss",0,search.flow_cache.prices.misses);
+      t->Add("release_cache_hit",0,search.flow_cache.release_hits);
+      t->Add("prepare_spaces",search.flow_cache.spaces_ms,0);
+      t->Add("prepare_graph",search.flow_cache.graph_ms,0);
+      t->Add("prepare_derive",search.flow_cache.derive_ms,0);
+      t->Add("prepare_price",search.flow_cache.price_ms,0);
+      t->Add("prepare_piece_map",search.flow_cache.piece_map_ms,0);
+      t->Add("prepare_edges",search.flow_cache.edges_ms,0);
+      t->Add("search_evaluations",0,result.evaluated.size());t->Add("search_rounds",0,result.rounds);
+    }
+    return result;
+  }
+  struct Materialized {CompilerSearchResult::ShortlistEntry entry;SkeletonCandidate candidate;bool pure;std::string origin="model";};std::vector<Materialized> materialized;
+  std::ofstream table(options.artifact_prefix+".materializations.tsv");table<<"rank\tkey\tpure_ns\teft_ns\tpure_selected\tmoved_fraction\n";
+  int rank=0;for(auto const& candidate:result.evaluated) {
+    if(!candidate.error.empty())continue;if(rank==options.top_m)break;++rank;
+    auto opts=options;opts.kappa=candidate.kappa;
+    auto a=search.Materialize(candidate,true);auto a_stats=a.candidate.placement;
+    auto ea=FinalizeSkeletonPoint(std::move(a),opts,options.artifact_prefix+".m"+std::to_string(rank)+"A");
+    auto b=search.Materialize(candidate,false);auto b_stats=b.candidate.placement;
+    auto eb=FinalizeSkeletonPoint(std::move(b),opts,options.artifact_prefix+".m"+std::to_string(rank)+"B");
+    bool pure=options.pure_template ||
+        (search.imported.plan.serving
+          ? eb.evaluation.makespan_ns>0.98*ea.evaluation.makespan_ns
+          : ea.evaluation.makespan_ns<=eb.evaluation.makespan_ns);
+    table<<rank<<'\t'<<candidate.key<<'\t'<<ea.evaluation.makespan_ns<<'\t'<<eb.evaluation.makespan_ns<<'\t'<<pure<<'\t'<<(b_stats.placed?double(b_stats.moved_from_home)/b_stats.placed:0)<<'\n';table.flush();
+    auto c=candidate;c.placement=pure?a_stats:b_stats;
+    materialized.push_back({pure?std::move(ea):std::move(eb),c,pure});
+  }
+  std::stable_sort(materialized.begin(),materialized.end(),[](auto const& a,auto const& b){return a.entry.evaluation.makespan_ns<b.entry.evaluation.makespan_ns;});
+  if(materialized.size()>3)materialized.resize(3);
+  if(search.imported.plan.serving && options.top_m>=3 && materialized.size()==3 &&
+     !result.seed_key.empty()) {
+    std::vector<std::pair<std::string,std::string>> required{{result.seed_key,"seed"}};
+    // Each page size is evaluated. The best legal split-1 seed represents
+    // that family in the three-slot shortlist, alongside the original seed.
+    SkeletonCandidate const* split1=nullptr;
+    for(auto const& key:result.split1_seed_keys)
+      for(auto const& candidate:result.evaluated)
+        if(candidate.key==key && candidate.error.empty() &&
+           (!split1 || BetterCandidate(candidate,*split1,true)))split1=&candidate;
+    if(split1)required.push_back({split1->key,"seed_split1"});
+    std::set<std::string> protected_keys;
+    for(auto const& [key,origin]:required)protected_keys.insert(key);
+    for(auto const& [key,origin]:required) {
+      auto present=std::find_if(materialized.begin(),materialized.end(),[&](auto const& item){
+        return item.candidate.key==key;
+      });
+      std::string replaced="none";
+      if(present!=materialized.end())
+        present->origin=present->origin=="model"?"model+"+origin:present->origin+"+"+origin;
+      else {
+        auto seed=std::find_if(result.evaluated.begin(),result.evaluated.end(),[&](auto const& c){
+          return c.key==key && c.error.empty();
+        });
+        auto victim=std::find_if(materialized.rbegin(),materialized.rend(),[&](auto const& item){
+          return !protected_keys.count(item.candidate.key);
+        });
+        if(seed==result.evaluated.end() || victim==materialized.rend())continue;
+        auto opts=options;opts.kappa=seed->kappa;
+        auto a=search.Materialize(*seed,true),b=search.Materialize(*seed,false);
+        auto astats=a.candidate.placement,bstats=b.candidate.placement;
+        auto ea=FinalizeSkeletonPoint(std::move(a),opts,options.artifact_prefix+".m"+origin+"A");
+        auto eb=FinalizeSkeletonPoint(std::move(b),opts,options.artifact_prefix+".m"+origin+"B");
+        bool pure=options.pure_template || eb.evaluation.makespan_ns>0.98*ea.evaluation.makespan_ns;
+        auto candidate=*seed;candidate.placement=pure?astats:bstats;
+        replaced=victim->candidate.key;
+        *victim={pure?std::move(ea):std::move(eb),candidate,pure,origin};
+      }
+      evidence<<"SEED_IN_TOP3 origin="<<origin<<" key="<<key<<" replaced="<<replaced<<'\n';
+    }
+  }
+
+  std::ofstream resources(options.artifact_prefix+".resources.tsv");resources<<"rank\tkey\testimated\tactual\tre_solved\tresidency\tflow_ns\tsimulated_ns\n";
+  std::vector<int> actual_limits;
+  if(options.common.query_residencies && !materialized.empty()) {
+    std::vector<std::pair<mlir::ModuleOp,int>> probes;
+    probes.reserve(materialized.size());
+    for(auto const& item:materialized)
+      probes.emplace_back(*item.entry.module,item.candidate.kappa);
+    {SolverPhase phase(options.common.timing,"megakernel_compile");
+      actual_limits=options.common.query_residencies(probes);}
+    if(actual_limits.size()!=materialized.size())
+      throw std::runtime_error("top-3 resource probe count mismatch");
+  }
+  rank=0;for(auto& item:materialized) {
+    auto& c=item.candidate;int actual;
+    if(!actual_limits.empty())actual=actual_limits[rank];
+    else {
+      if(!options.common.query_residency)throw std::invalid_argument("top-3 requires real queryResidency");
+      {SolverPhase phase(options.common.timing,"megakernel_compile");
+        actual=options.common.query_residency(*item.entry.module,c.kappa);}
+    }
+    if(actual<1)throw std::runtime_error("top-3 compiled with zero residency");
+    bool changed=options.pg_pages?actual<1:actual!=c.estimated_limit;
+    if(changed) {
+      // Correct occupancy can expose a better residency as well as invalidate one.
+      if(options.pg_pages){search.current_page_bytes=c.page_bytes;search.current_lookahead_bytes=c.lookahead_bytes;}
+      search.current_handoff_mask=c.handoff_mask;
+      search.SetServingStructure(c.attention_kv_block,c.attention_query_rows,search.ArgmaxTileN(c.config));
+      auto best=search.Evaluate(c.config,c.kappa,1,actual);
+      for(int r=2;r<=actual;++r) {
+        auto trial=search.Evaluate(c.config,c.kappa,r,actual);
+        if(trial.score<best.score)best=std::move(trial);
+      }
+      c=std::move(best);auto opts=options;opts.kappa=c.kappa;
+      auto a=search.Materialize(c,true,actual),b=search.Materialize(c,false,actual);
+      auto astats=a.candidate.placement,bstats=b.candidate.placement;
+      auto ea=FinalizeSkeletonPoint(std::move(a),opts,options.artifact_prefix+".verified"+std::to_string(rank)+"A");
+      auto eb=FinalizeSkeletonPoint(std::move(b),opts,options.artifact_prefix+".verified"+std::to_string(rank)+"B");
+      item.pure=options.pure_template ||
+          (search.imported.plan.serving
+            ? eb.evaluation.makespan_ns>0.98*ea.evaluation.makespan_ns
+            : ea.evaluation.makespan_ns<=eb.evaluation.makespan_ns);
+      c.placement=item.pure?astats:bstats;item.entry=item.pure?std::move(ea):std::move(eb);
+    }
+    c.actual_limit=actual;resources<<++rank<<'\t'<<c.key<<'\t'<<c.estimated_limit<<'\t'<<actual<<'\t'<<changed<<'\t'<<c.residency<<'\t'<<c.score<<'\t'<<item.entry.evaluation.makespan_ns<<'\n';resources.flush();
+    item.entry.origin=item.origin;
+    result.top.push_back(c);result.compiled.shortlist.push_back(std::move(item.entry));
+  }
+  if(result.top.empty())throw std::runtime_error("no admitted flow candidate");
+  std::stable_sort(result.compiled.shortlist.begin(),result.compiled.shortlist.end(),[](auto const& a,auto const& b){return a.evaluation.makespan_ns<b.evaluation.makespan_ns;});
+  auto& best=result.compiled.shortlist.front();result.compiled.module=mlir::OwningOpRef<mlir::ModuleOp>(mlir::cast<mlir::ModuleOp>(best.module->clone()));result.compiled.winner=best.evaluation.candidate;
+  auto selected=std::find_if(result.top.begin(),result.top.end(),[&](auto const& c){return c.key==best.evaluation.candidate.key;});result.compiled.winner_resident_limit=selected->actual_limit;result.compiled.stats.evaluated=result.evaluated.size();
+  std::ofstream classes(options.artifact_prefix+".classes.tsv");classes<<"class\tgemm\top\ttile_m\ttile_n\ttile_k\tstages\tsplit_k\n";
+  for(std::size_t c=0;c<search.classes.size();++c)for(std::size_t j=0;j<search.classes[c].gemms.size();++j){auto const& g=selected->config[c];classes<<c<<'\t'<<search.classes[c].gemms[j]<<'\t'<<search.classes[c].operators[j]<<'\t'<<g.tile_m<<'\t'<<g.tile_n<<'\t'<<g.tile_k<<'\t'<<g.stages<<'\t'<<g.split_k<<'\n';}
+  if(summary){*summary={};summary->stages=search.imported.plan.stages.size();for(auto op:result.compiled.module->getOps<dialect::TileSpaceOp>())++summary->task_spaces;for(auto op:result.compiled.module->getOps<dialect::CouplingOp>())++summary->couplings;}
+  if(auto* t=options.common.timing){t->Add("cache_hit",0,search.cache.hits);t->Add("cache_miss",0,search.cache.misses);t->Add("incremental_space_hit",0,search.flow_cache.incremental_space_hits);t->Add("price_cache_hit",0,search.flow_cache.prices.hits);t->Add("release_cache_hit",0,search.flow_cache.release_hits);t->Add("search_evaluations",0,result.evaluated.size());t->Add("search_rounds",0,result.rounds);}
+  return result;
+}
+}

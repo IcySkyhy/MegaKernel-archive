@@ -1,0 +1,14 @@
+=== 构建读数（clean rebuild，2026-10-04T08:45:41Z）===
+$ source /usr/local/Ascend/ascend-toolkit/set_env.sh
+$ cmake --build m25_attn_fa_core/build -j4
+[ 50%] Building ASC object CMakeFiles/m25_attn_fa_core.dir/m25_attn_fa_core.asc.o
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-117/m25_attn_fa_core/../m15_layer_loop/m15_hc_layer.h:740:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-117/m25_attn_fa_core/../m15_layer_loop/m15_hc_layer.h:766:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+2 warnings generated.
+[100%] Linking ASC executable m25_attn_fa_core
+[100%] Built target m25_attn_fa_core
+rc=0
+
+=== 移动 host 头后的复验（2026-10-04T08:46:16Z）===
+$ cmake --build m25_attn_fa_core/build -j4
+[100%] Built target m25_attn_fa_core

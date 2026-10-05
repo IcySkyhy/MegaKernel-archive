@@ -1,0 +1,47 @@
+=== $ M15_PLE_HM=1 M15_PLE_OUT=m15_layer_loop/ple/out_hm ./m15_layer_loop/build/m15_ple
+并发背景（采集时）：NPU 0 上同时有 M86 的 probe_host_dma regbench 与 M88 的 m15_layer_loop prolog；npu-smi 读取时 NPU Util=0% / HBM 12.7 GB
+[m15ple] M85 PLE 独立 kernel | aic=28 aiv=56 | out=m15_layer_loop/ple/out_hm data=m15_layer_loop/ple/data_hm neg=0
+[m15ple] hm: shard=0 rows_per_shard=2500012 r0=0 win=268435456 B (838860 rows) | file mmap->anon staging = 268435200 B（76.0 ms，host 墙钟单次）| aclrtHostRegisterV2(MAPPED) rc=0（8350.1 ms，host 墙钟单次）| getDevPtr rc=0 win=0x7f5950000000 dev=0x40000000000
+[m15ple] hm dev-side raw: 参与核=56（应 56） winRows(设备侧读到)=838860 hmBad/槽0 合计=0.0 越窗=2.0
+[m15ple] hm ②③④⑤(host-mapped 真实表): n_tok=64 items=1024 in_win=1022 dev_row_fail=0.0 dev_miss=2
+[m15ple] ===== kernel-side OK =====
+kernel rc=0
+
+=== $ python3.12 m15_layer_loop/m15_ple_check.py m15_layer_loop/ple/out_hm
+[SKIP] A_ids.bin 缺失（kernel 未跑该矩阵）
+[SKIP] B_ids.bin 缺失（kernel 未跑该矩阵）
+[PASS] H2.emb.nonvac                tier=T1-struct n=163520   bad=0      对照行（直读分片文件）的非零元素 = 163520 / 163520；窗口内 item = 1022
+       └ 能 FAIL 掉的错误类别: 整片为 0 ⇒ 逐字节判据是空过（比较双方同为常量）
+RESULT|H2.emb.nonvac|T1-struct|163520|0|PASS
+[PASS] H2.emb                       tier=T1  n=163520   bad=0      元素逐位（差 0 元素 / 0 字节；n=163520 在 mask 内）
+       └ 能 FAIL 掉的错误类别: id→窗口行号换算错（方向/基址）、head 落点错、行宽错、窗口未注册而读失败
+RESULT|H2.emb|T1|163520|0|PASS
+[PASS] H3.kv                        tier=T3  n=806400   bad=0      eps=5.72e-06 ulp系数=1.0 maxRel=2.82 max(d/bound)=0.993（63 行 token 参与；界尺度=Σ|terms|）
+       └ 能 FAIL 掉的错误类别: key/value 顺序反、GEMM 转置错；本条同时是 ② 的正确性下游证据（emb 错 ⇒ kv 错）
+RESULT|H3.kv|T3|806400|0|PASS
+[PASS] H4.gated                     tier=T3  n=645120   bad=0      eps=6.08e-06 ulp系数=2.0 maxRel=0.0109 max(d/bound)=0.999（63 行 token 参与；界尺度=max(|out|,|ref|) 代理）
+       └ 能 FAIL 掉的错误类别: query 用了 pending BO、4 流共享 value 错、`(1+w)` 漏 1
+RESULT|H4.gated|T3|645120|0|PASS
+[PASS] H4.normed                    tier=T3  n=645120   bad=0      eps=6.08e-06 ulp系数=2.0 maxRel=0.0118 max(d/bound)=0.999（63 行 token 参与；界尺度=max(|out|,|ref|) 代理）
+       └ 能 FAIL 掉的错误类别: 同上 + normed 的分组归约
+RESULT|H4.normed|T3|645120|0|PASS
+[PASS] H5.out                       tier=T3  n=645120   bad=0      eps=6.08e-06 ulp系数=2.0 maxRel=0.00709 max(d/bound)=0.500（63 行 token 参与；界尺度=max(|out|,|ref|) 代理）
+       └ 能 FAIL 掉的错误类别: taps lag 9/6/3/0 错、SiLU 漏、残差顺序反（② 的错会一路传到这里）
+RESULT|H5.out|T3|645120|0|PASS
+[PASS] Hd.cores                     tier=T1-struct n=56       bad=0      设备侧自报参与核 = 56 / 56；设备侧读到的 winRows = [838860.0]
+       └ 能 FAIL 掉的错误类别: 核没跑 ②（判据落点为空）或 winRows 参数没传到核里
+RESULT|Hd.cores|T1-struct|56|0|PASS
+[PASS] Hd.row_fail                  tier=T1-struct n=1022     bad=0      设备侧「行首 64 元素 vs host 直读期望」错行计数 = 0（窗口内 item 1022）
+       └ 能 FAIL 掉的错误类别: 该计数 > 0 ⇔ 设备取到的行 ≠ 该 id 应有的行（id→偏移换算错、窗口内容错、head 落点错）
+RESULT|Hd.row_fail|T1-struct|1022|0|PASS
+[PASS] Hd.miss                      tier=T1-struct n=1024     bad=0      设备侧越窗行计数 = 2；host 独立算出的越窗 item = 2
+       └ 能 FAIL 掉的错误类别: 越窗判定的窗口范围参数错（winBase/winRows 与注册长度不符）
+RESULT|Hd.miss|T1-struct|1024|0|PASS
+[PASS] Hd.nonvac                    tier=T1-struct n=1024     bad=0      窗口内 item = 1022（>0 才算比过）；设备侧参与核 = 56（=2×AIC 才算真的跑了 ②）
+       └ 能 FAIL 掉的错误类别: 窗口内没有 item 或没有核跑 ② ⇒ Hd.row_fail 是空过
+RESULT|Hd.nonvac|T1-struct|1024|0|PASS
+
+===== 判据合计 10 条 = 判定项 10 + 对照项 0；FAIL 0 条 =====
+       注：'咬合力被演示'的条数见 m15_ple_mutants.py 的 RESULT|coverage 行（本脚本不声明）
+===== ALL PASS =====
+check rc=0

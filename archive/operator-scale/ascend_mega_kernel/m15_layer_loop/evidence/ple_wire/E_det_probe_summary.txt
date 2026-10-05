@@ -1,0 +1,61 @@
+# M100 `E_miswire_winbase` 档 `Pw.det` 的 run-to-run 跳变：探针记录
+
+## 结论（先写结论）
+
+- `Pw.det`（判据口径：两次接线跑的 `ids/emb/hcp/stout/hmbad/failb` 六项逐字节相同）在
+  **`E_miswire_winbase` 档**（`M15_PLE_WIRE=1 M15_PLE_STAGE=15 M15_PLE_MISWIRE=2`，故意把行基址
+  偏 1 的**负向对照档**）上**偶发红**：**有转录可举证的 16 次观察里 1 次红（≈1/16）**。
+- **本探针 6 次没捕捉到**（6/6 全 `Pw.det PASS` ⇒ `FAIL 2 条`）；r2 复审 6 次也没捕捉到；
+  一次出现是在作者上一批（二进制 `fbc132a3…`）的 committed 转录里（那份写的是 `FAIL 3 条`）。
+- **是哪一项在抖：未捕捉到。** 当时 `Pw.det` 的 detail 只有一句"两次接线跑逐字节相同"，
+  不点名差异项 ⇒ 从那份转录里判不出来（**不猜机制**）。为此 `m15_layer_loop.asc` 的 `Pw.det`
+  已把 detail 改成**点名不相等的项**（受判项与判据口径不变），下次出现即可定位。
+- **不是"二进制差异"**：r2 相对 r1 的**唯一行为性**改动是删掉 `runs=="all"||runs=="m"` 分支里
+  三行 host 侧 `aclrtMemset`，而 `plewire` 档**不进那个分支** ⇒ 两个二进制在这条路径上语义等价。
+  r2 复审在**新**二进制上 6/6 得 2 红，直接证伪"新二进制多出 `Pw.det`"的旧归因。
+- **不影响任何结论**：跳变只出现在这条**故意弄坏**的负向对照档；该档无论 2 红还是 3 红都是红的，
+  负向对照成立；主体档 A 与 D/F2 的 `Pw.det` 在作者的多次跑与复审的多次跑里都是 PASS。
+
+## 探针命令（本 tip 实跑；设备段放在进程锁里，绝不同时占设备）
+
+```
+cd <repo>                                     # 本文件所在目录：<repo>/m15_layer_loop/evidence/ple_wire/
+for i in 1 2 3 4 5 6; do
+  flock -w 900 /tmp/npu0.lock env M15_PLE_WIRE=1 M15_PLE_STAGE=15 M15_PLE_MISWIRE=2 \
+      ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt plewire \
+      > /tmp/m100_e_probe_$i.log 2>&1
+  echo "run $i: det_fail=$(grep -c 'Pw.det.*FAIL' /tmp/m100_e_probe_$i.log) | $(grep '验证 Pw：' /tmp/m100_e_probe_$i.log | tail -1)"
+done
+```
+
+二进制 sha256 = `1cf6ecad24199a6648b4df7d7e366ce21742e3a6de7ec642382f196a3ea4db99`
+（与同目录 `binary_sha256.txt` 一致；逐 run 的完整转录留在 `/tmp/m100_e_probe_*.log`，未入库）。
+
+## 逐 run 读数
+
+```
+run 1: det_fail=0 | [m15] 验证 Pw：判定项 10 条 / FAIL 2 条（累计 checks 142 / fails 2）
+run 2: det_fail=0 | [m15] 验证 Pw：判定项 10 条 / FAIL 2 条（累计 checks 142 / fails 2）
+run 3: det_fail=0 | [m15] 验证 Pw：判定项 10 条 / FAIL 2 条（累计 checks 142 / fails 2）
+run 4: det_fail=0 | [m15] 验证 Pw：判定项 10 条 / FAIL 2 条（累计 checks 142 / fails 2）
+run 5: det_fail=0 | [m15] 验证 Pw：判定项 10 条 / FAIL 2 条（累计 checks 142 / fails 2）
+run 6: det_fail=0 | [m15] 验证 Pw：判定项 10 条 / FAIL 2 条（累计 checks 142 / fails 2）
+```
+
+每 run 的 `Pw.det` 行都是
+`PASS 两次接线跑逐字节相同（六项：ids/emb/hcp/stout/hmbad/failb）`。
+
+## 观察到的两次"红"分别是谁
+
+| 来源 | 红线 | `Pw.det` |
+|---|---|---|
+| committed `E_miswire_winbase.log`（**本文件同批重跑的转录**，二进制 `1cf6ecad…`） | 2 条 | PASS |
+| 上一批 committed 转录（二进制 `fbc132a3…`，已随本轮重采被替换） | **3 条** | **FAIL（唯一的 1 次红）** |
+| 上一批作者自跑（二进制 `dacbc1e3…`，见 `3ba28f5` 的转录） | 2 条 | PASS |
+| r2 复审 6 次（`fbc132a3…`） | 2 条 | PASS ×6 |
+| r1 复审 1 次（`dacbc1e3…`） | 2 条 | PASS |
+| 本探针 6 次（`1cf6ecad…`） | 2 条 | PASS ×6 |
+| **合计** | —— | **16 次观察 / 1 次红（≈1/16）** |
+
+⇒ 可复现的读数是 **2 红**（那份 3 红的转录已被**同批可复现的转录覆盖**，不再在库里留歧义；
+它的存在与"逐行只差 `Pw.det` 那一行"的对比，记录在 `WITNESS.md §3.4`）。

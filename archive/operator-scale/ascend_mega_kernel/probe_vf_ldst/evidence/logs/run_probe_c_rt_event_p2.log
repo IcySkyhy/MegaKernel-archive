@@ -1,0 +1,6 @@
+[probe C] probe_c_rt_event  order=1 (SetFlag/WaitFlag<MTE3_MTE2>)  shape=0 (一次性 16KB 整块 MTE3)  iters=64  proc=2
+[probe C] chunk 判读(.=ok p=上一chunk n=下一chunk X=poison z=0 ?=其它): ................................................................
+[probe C] chunk: ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 / 64
+[probe C] lane0 不符=0  全 lane 不符=0/4096
+[probe C] probe_c_rt_event RUN PASS
+[probe C] GM(gmMid) 最终内容逐 chunk 正确数: 64/64

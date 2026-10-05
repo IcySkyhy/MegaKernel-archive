@@ -1,0 +1,19 @@
+diff --git a/include/cute/numeric/arithmetic_tuple.hpp b/include/cute/numeric/arithmetic_tuple.hpp
+index 01dde5f1..b4a49ad6 100644
+--- a/include/cute/numeric/arithmetic_tuple.hpp
++++ b/include/cute/numeric/arithmetic_tuple.hpp
+@@ -369,7 +369,13 @@ CUTE_HOST_DEVICE constexpr
+ auto
+ operator==(ScaledBasis<T,Ns...> const& t, ScaledBasis<U,Ms...> const& u) {
+   if constexpr (sizeof...(Ns) == sizeof...(Ms)) {
+-    return bool_constant<((Ns == Ms) && ...)>{} && t.value() == u.value();
++    if constexpr (((Ns == Ms) && ...)) {
++      return bool_constant<((Ns == Ms) && ...)>{} && t.value() == u.value();
++    } else {
++      // Bases differ: statically unequal. Do not instantiate the value
++      // comparison (mixed dynamic/static value types may lack operator==).
++      return false_type{};
++    }
+   } else {
+     return false_type{};
+   }

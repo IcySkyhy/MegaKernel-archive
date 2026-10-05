@@ -1,0 +1,41 @@
+# 归并树 A/B：2 路（m7 现行）vs 4 路（本 mission 新增）
+# 生成于 2026-09-26T12:07:02Z
+
+## 两棵树在全部 10 档上逐字节等价（cmp 全部张量，0 处不同）
+
+对照范围：router_logits / topk_ids / topk_weights / expert_counts / expert_slot_base /
+          perm_src_token / perm_expert / group_list_i64 / route_scalars（每档 9 个张量 × 10 档 = 90 对象 × 2 棵树）
+
+命令：for f in <上述 9 个张量>; do cmp -s <mode2 档>/$f <mode4 档>/$f || echo DIFF; done
+
+结果：differing tensors = 0（含 review round-1 reviewer 对未入库的 8.4MB real_m4097/router_logits.bin 的复算，90/90 全等）
+
+## 两棵树的离线 check_ref 结论
+  mode2 [check_ref] m=1 : PASS | 判定 10/10 | guard 3/3
+  mode2 [check_ref] m=2 : PASS | 判定 10/10 | guard 3/3
+  mode2 [check_ref] m=16 : PASS | 判定 10/10 | guard 3/3
+  mode2 [check_ref] m=33 : PASS | 判定 10/10 | guard 3/3
+  mode2 [check_ref] m=64 : PASS | 判定 10/10 | guard 3/3
+  mode2 [check_ref] m=4097 : PASS | 判定 9/9 | guard 2/2
+  mode2 [check_ref] m=1 : PASS | 判定 10/10 | guard 3/3
+  mode2 [check_ref] m=7 : PASS | 判定 10/10 | guard 3/3
+  mode2 [check_ref] m=33 : PASS | 判定 10/10 | guard 3/3
+  mode2 [check_ref] m=64 : PASS | 判定 10/10 | guard 3/3
+  mode4 [check_ref] m=1 : PASS | 判定 10/10 | guard 3/3
+  mode4 [check_ref] m=2 : PASS | 判定 10/10 | guard 3/3
+  mode4 [check_ref] m=16 : PASS | 判定 10/10 | guard 3/3
+  mode4 [check_ref] m=33 : PASS | 判定 10/10 | guard 3/3
+  mode4 [check_ref] m=64 : PASS | 判定 10/10 | guard 3/3
+  mode4 [check_ref] m=4097 : PASS | 判定 9/9 | guard 2/2
+  mode4 [check_ref] m=1 : PASS | 判定 10/10 | guard 3/3
+  mode4 [check_ref] m=7 : PASS | 判定 10/10 | guard 3/3
+  mode4 [check_ref] m=33 : PASS | 判定 10/10 | guard 3/3
+  mode4 [check_ref] m=64 : PASS | 判定 10/10 | guard 3/3
+
+## 两棵树的机内自检（m22_router512 / m22_router512_m4）
+  mode2 [M22] ===== judged 100/100 + 4*40 case-guard, extra guards det=1/1 sens=1 | ALL PASS =====
+  mode4 [M22] ===== judged 100/100 + 4*40 case-guard, extra guards det=1/1 sens=1 | ALL PASS =====
+
+## 结论
+  4 路树与 2 路树在全部 10 档（含 m=4097）上产出**逐字节相同**的输出，故二者可互换；
+  4 路树的 MrgSort 调用 15→5、UB 归并对流量 1920→1280 对（-33%），端到端时间无显著差异（见 cost_model.txt）。

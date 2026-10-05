@@ -1,0 +1,25 @@
+===== check_ref  m7_router_topk/m7_out/m1
+topk_ids exact:      True
+topk_weights bf16-grid (<=1 ulp, denormal-flush allowed): True (max ulp 0)
+router_logits (max-shifted) abs diff <= 2e-2: True (max 3.815e-05)
+[check_ref] m=1 : PASS
+===== check_ref  m7_router_topk/m7_out/m2
+topk_ids exact:      True
+topk_weights bf16-grid (<=1 ulp, denormal-flush allowed): True (max ulp 0)
+router_logits (max-shifted) abs diff <= 2e-2: True (max 2.289e-05)
+[check_ref] m=2 : PASS
+===== check_ref  m7_router_topk/m7_out/m16
+topk_ids exact:      True
+topk_weights bf16-grid (<=1 ulp, denormal-flush allowed): True (max ulp 0)
+router_logits (max-shifted) abs diff <= 2e-2: True (max 4.578e-05)
+[check_ref] m=16 : PASS
+===== check_ref  m7_router_topk/m7_out/m33
+topk_ids exact:      True
+topk_weights bf16-grid (<=1 ulp, denormal-flush allowed): True (max ulp 0)
+router_logits (max-shifted) abs diff <= 2e-2: True (max 4.578e-05)
+[check_ref] m=33 : PASS
+===== check_ref  m7_router_topk/m7_out/m64
+topk_ids exact:      True
+topk_weights bf16-grid (<=1 ulp, denormal-flush allowed): True (max ulp 0)
+router_logits (max-shifted) abs diff <= 2e-2: True (max 6.866e-05)
+[check_ref] m=64 : PASS

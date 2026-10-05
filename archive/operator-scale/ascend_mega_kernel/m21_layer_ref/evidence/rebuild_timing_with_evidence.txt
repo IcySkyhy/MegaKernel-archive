@@ -1,0 +1,11 @@
+# rebuild wall time, mode=with-evidence, 3 consecutive runs, M39_THREADS=8
+# host wall clock on a SHARED box -> read as a range, not a number
+# (project rule 2026-09-26: single-number host timings are not evidence)
+# 2026-09-26T13:06:06Z  load=19.82 17.19 14.80
+
+run 1: 54.5 s  (+ make_evidence.sh 75.8 s -> total 130.3 s)
+run 2: 41.2 s  (+ make_evidence.sh 52.4 s -> total 93.6 s)
+run 3: 39.0 s  (+ make_evidence.sh 49.6 s -> total 88.6 s)
+RESULT: OK (3/3 runs measured)
+dumps only: min 39.0 s / max 54.5 s / median 41.2 s / spread 1.40x
+dumps + evidence: min 88.6 s / max 130.3 s / median 93.6 s / spread 1.47x

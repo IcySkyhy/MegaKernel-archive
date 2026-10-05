@@ -1,0 +1,32 @@
+### 负向对照（M15_PLE_MUT=1：① 取模方向反转；该位只跑 ①）
+[m15ple] M85 PLE 独立 kernel | aic=28 aiv=56 | out=m15_layer_loop/ple/out_neg data=m15_layer_loop/ple/data neg=1
+[m15ple] A    ① ids: 10 tok × 16 head, dev_range_fail=0 -> A_ids.bin
+[m15ple] B    ① ids: 2 tok × 16 head, dev_range_fail=0 -> B_ids.bin
+[m15ple] ===== kernel-side OK =====
+rc=0
+
+### (a) 主判据跑在变异产物上（**必须 FAIL**）
+[FAIL] B1.ids.A                     tier=T1  n=160      bad=160    元素逐位（差 160 元素 / 563 字节）
+[PASS] B1.ids.A.range               tier=T1-struct n=160      bad=0      值域 [0,320001536)
+[FAIL] B1.ids.B                     tier=T1  n=32       bad=31     元素逐位（差 31 元素 / 32 字节）
+[PASS] B1.ids.B.range               tier=T1-struct n=32       bad=0      值域 [0,320001536)
+===== 判据合计 4 条 = 判定项 4 + 对照项 0；FAIL 2 条 =====
+
+### (b) 对照成立性（变异产物 == 用反转规则算出的参考）
+[PASS] N1_neg.ids.A.bites           tier=T1-neg n=160      bad=0      方向反转后与正确参考不符 160/160（须 >0）
+       └ 能 FAIL 掉的错误类别: 无（对照项：证明 B1 能抓住 mod 方向错）
+RESULT|N1_neg.ids.A.bites|T1-neg|160|0|PASS
+[PASS] N1_neg.ids.A.applied         tier=T1-neg n=160      bad=0      与「反转后参考」相符 160/160（须全等）
+       └ 能 FAIL 掉的错误类别: 无（对照项）
+RESULT|N1_neg.ids.A.applied|T1-neg|160|0|PASS
+[PASS] N1_neg.ids.B.bites           tier=T1-neg n=32       bad=0      方向反转后与正确参考不符 31/32（须 >0）
+       └ 能 FAIL 掉的错误类别: 无（对照项：证明 B1 能抓住 mod 方向错）
+RESULT|N1_neg.ids.B.bites|T1-neg|32|0|PASS
+[PASS] N1_neg.ids.B.applied         tier=T1-neg n=32       bad=0      与「反转后参考」相符 32/32（须全等）
+       └ 能 FAIL 掉的错误类别: 无（对照项）
+RESULT|N1_neg.ids.B.applied|T1-neg|32|0|PASS
+
+===== 判据合计 4 条 = 判定项 0 + 对照项 4；FAIL 0 条 =====
+       注：'咬合力被演示'的条数见 m15_ple_mutants.py 的 RESULT|coverage 行（本脚本不声明）
+===== 负向对照档：上表 PASS = 对照成立（主判据在变异输入上必 FAIL，见 README §判据）=====
+rc=0

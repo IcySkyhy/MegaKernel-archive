@@ -1,0 +1,60 @@
+# M86 audit_numbers.py 负向对照（6 个用例；注入只在 /tmp 副本，不动仓库）
+date: 2026-09-27T03:14:10+00:00
+HEAD_at_run（可能早于把本批证据提交进去的 commit）: b0c151a38ecc773ceba006f6e7ffc0751bef6810
+
+复现：cp -r probe_host_dma/evidence /tmp/m86_nc/evidence ；往 /tmp/m86_nc/<case>.md 的 §3.7 前注入下面那行；
+      python3 audit_numbers.py /tmp/m86_nc/<case>.md /tmp/m86_nc/evidence
+
+======================================================================
+## 过程留痕：**本组负向对照第一次跑时我自己做错了**（R4 复审核出声称写进归档但归档没有，现补上）
+======================================================================
+  第一次：先 `echo <假数> > evidence/zz_fake.txt`，**再**跑 NC0–NC2 ⇒ 四个用例**全部 PASS**（FLAG 0）。
+  原因：那个植入文件让假数对**所有**用例都成了 IN-EVIDENCE，对照组被自己的植入污染 ⇒ 这次全 PASS是假的。
+  重跑：把植入挪到 NC3 **之前**（即 NC0–NC2 在未植入的 evidence 上跑），才得到下面上表的真实读数。
+  ⇒ 教训：**负向对照的 evidence 状态必须与用例匹配**，否则对照退化为自证式的全 PASS。
+  （这正是 R3 复审指出的绕过③在**方法层面**的体现：'在 evidence 里找到' 由文件集合决定，而不是由可复现性决定。）
+
+== 前五个用例（evidence 里**没有**植入假数）==
+----- NC0 平铺假数（期望 FLAG>=1）-----
+    IN-EVIDENCE   : 170
+    LABELED       : 2   （**作者自证**，脚本无法验证其真假）
+    FLAG          : 1
+  结论: NEEDS-FIX（1 个 FLAG）
+  rc=1
+----- NC1 假数+同行'中位/区间'（期望 FLAG>=1）-----
+    IN-EVIDENCE   : 170
+    LABELED       : 2   （**作者自证**，脚本无法验证其真假）
+    FLAG          : 1
+  结论: NEEDS-FIX（1 个 FLAG）
+  rc=1
+----- NC2 假数+同行 [外部]（期望 FLAG>=1）-----
+    IN-EVIDENCE   : 170
+    LABELED       : 2   （**作者自证**，脚本无法验证其真假）
+    FLAG          : 1
+  结论: NEEDS-FIX（1 个 FLAG）
+  rc=1
+----- NC4 数字紧贴单位 (ms)（期望 FLAG>=1）-----
+    IN-EVIDENCE   : 170
+    LABELED       : 2   （**作者自证**，脚本无法验证其真假）
+    FLAG          : 1
+  结论: NEEDS-FIX（1 个 FLAG）
+  rc=1
+----- NC5 数字紧贴单位 (GB/s)（期望 FLAG>=1）-----
+    IN-EVIDENCE   : 170
+    LABELED       : 2   （**作者自证**，脚本无法验证其真假）
+    FLAG          : 1
+  结论: NEEDS-FIX（1 个 FLAG）
+  rc=1
+
+== 第六个用例（假数塞进**普通命名**的 evidence 文件）==
+----- NC3 塞进 evidence/zz_fake.txt（**已知口子**，未修复）-----
+    IN-EVIDENCE   : 171
+    FLAG          : 0
+  结论: PASS（无 FLAG）
+  rc=0
+
+== 结论 ==
+  NC0/NC1/NC2/NC4/NC5 均 FLAG 1, rc=1 ⇒ R3 的绕过①（同行'中位/区间'放行）、绕过②（同行 [外部] 放行）
+  与 R4 的绕过（数字紧贴单位被当结构引用跳过）**均已收敛**。
+  NC3 仍 FLAG 0, rc=0 ⇒ '在 evidence 里逐字找到' ≠ '可复现'：**未修复**，已在 README §2 登记为已知口子，
+  并把守卫定位降级为**启发式冒烟测试**（rc=0 不构成任何保证）。

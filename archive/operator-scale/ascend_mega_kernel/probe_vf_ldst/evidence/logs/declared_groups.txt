@@ -1,0 +1,47 @@
+# 声明集（由 run_probes.sh 的跑变体循环逐条产出；summarize.py 以此为覆盖基准）
+probe_a_first_elem mask=0
+probe_a_first_elem mask=1
+probe_a_first_elem mask=8
+probe_a_first_elem mask=64
+probe_a_norm_b32 mask=0
+probe_a_norm_b32 mask=1
+probe_a_norm_b32 mask=8
+probe_a_norm_b32 mask=64
+probe_a_first_elem_nc mask=0
+probe_a_first_elem_nc mask=1
+probe_a_first_elem_nc mask=2
+probe_a_first_elem_nc mask=3
+probe_a_norm_b32_nc mask=0
+probe_a_norm_b32_nc mask=1
+probe_a_norm_b32_nc mask=2
+probe_a_norm_b32_nc mask=3
+probe_b_rel0_brc
+probe_b_rel1_brc
+probe_b_rel2_brc
+probe_b_rel0_norm
+probe_b_rel1_norm
+probe_b_rel2_norm
+probe_b_rel0_getval
+probe_b_rel1_getval
+probe_b_rel2_getval
+probe_b_rel1_brc_membar
+probe_b_rel1_brc_mid
+probe_b_rel1_brc_g32
+probe_b_rel1_brc_g4
+probe_b_rel1_brc_perchunk
+probe_b_rel1_brc_vprod
+probe_b_rel1_brc_off4
+probe_b_noprod
+probe_b_vrelimm
+probe_b_rel0_vrelimm
+probe_b_backlog_rel1
+probe_b_backlog_rel0
+probe_b_backlog_rel2
+probe_b_prod3_selftest
+probe_c_rt_unordered
+probe_c_rt_event
+probe_c_rt_bufid
+probe_c_rt_twotok
+probe_c_rt_small_unordered
+probe_c_rt_small_twotok
+probe_c_rt_small_bufid

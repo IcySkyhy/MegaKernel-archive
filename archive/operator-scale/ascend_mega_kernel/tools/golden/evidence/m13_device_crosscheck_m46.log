@@ -1,0 +1,407 @@
+check 1: e2m1 encode/decode
+  [PASS] all 16 e2m1 codes round-trip
+  [PASS] e2m1 levels are 0,.5,1,1.5,2,3,4,6 with sign
+  [PASS] encode picks a nearest level everywhere
+  [PASS] -0.0 encodes to sign-bit code 0x8
+check 2: e8m0 scales (weight-packing ceil rule)
+  [PASS] e8m0 encode/decode round trip
+  [PASS] scale=2**ceil(log2(amax/6)) keeps max|q|<=6
+check 3: activation quantization — official OCP/floor sequence vs legacy ceil
+  [PASS] official finite path: byte = clip(bf16 exponent field of amax - 2, 0, 254) (= 127 + floor(log2 amax) - 2)
+  [PASS] legacy ceil byte = 127 + ceil(log2(amax/6))
+  [PASS] scale_rule_bytes dispatches both rules
+  [PASS] official == legacy while amax in [4*2^k, 6*2^k]
+  [PASS] official = legacy - 1 on amax in (6*2^k, 8*2^k] (the legacy rule is the deviating one)
+  [PASS] floor rule: |q-v| <= analytic per-element bound (0 violations)
+  [PASS] floor rule: bound is tight (utilization 1.00 > 0.5)
+  [PASS] ceil rule: |q-v| <= analytic per-element bound (0 violations)
+  [PASS] ceil rule: bound is tight (utilization 1.00 > 0.5)
+  [PASS] CAST_ROUND path: ties away from zero, saturating at ±6
+  [PASS] =6 saturation uses e2m1 code 7 (=6.0)
+  [PASS] official corner: a group whose field clamps to emax gets byte 0 + all-zero codes (halfScale 0, :402-403/:414)
+  [PASS] official corner: non-finite group -> E8M0 NaN byte 0xFF (:406 / docs/13 §4.2)
+  [PASS] official corner: non-finite group -> Mul(±Inf, NaN) = NaN -> cast -> all-zero codes (:413, docs/13 §6)
+  [note] the current device kernels (m2/m5/m13) miss only the :413 halfScale override, so they return ±6 for the Inf corner; M32 is fixing that.
+check 4: mxfp4 pack/unpack round trip
+  [PASS] amax=1.5 group encodes e8m0 byte 125 (2^-2)
+  [PASS] lohi: byte0 = code(w0/s)=0 | code(w1/s)=4 <<4
+  [PASS] lohi: byte1 = code(w2/s)=6 | code(w3/s)=7 <<4
+  [PASS] known-answer unpack exact
+  [PASS] dequant fixed point: unpack(pack(unpack(pack(w)))) == unpack(pack(w)) [640x2560]
+  [PASS] dequant == e2m1(level) * e8m0(scale) [640x2560]
+  [PASS] dequant error bounded [640x2560] max|err|=0.02621
+  [PASS] dequant fixed point: unpack(pack(unpack(pack(w)))) == unpack(pack(w)) [2560x640]
+  [PASS] dequant == e2m1(level) * e8m0(scale) [2560x640]
+  [PASS] dequant error bounded [2560x640] max|err|=0.02678
+  [PASS] dequant fixed point: unpack(pack(unpack(pack(w)))) == unpack(pack(w)) [1280x2560]
+  [PASS] dequant == e2m1(level) * e8m0(scale) [1280x2560]
+  [PASS] dequant error bounded [1280x2560] max|err|=0.02866
+  [PASS] dequant fixed point: unpack(pack(unpack(pack(w)))) == unpack(pack(w)) [17x32]
+  [PASS] dequant == e2m1(level) * e8m0(scale) [17x32]
+  [PASS] dequant error bounded [17x32] max|err|=0.01431
+  [PASS] quantize_activations(floor) layout [rows, K/2] / [rows, K/32]
+  [PASS] quantize_activations(floor) dequant == e2m1(level) * e8m0(scale)
+  [PASS] quantize_activations(floor) is a value fixed point
+  [PASS] quantize_activations(ceil) layout [rows, K/2] / [rows, K/32]
+  [PASS] quantize_activations(ceil) dequant == e2m1(level) * e8m0(scale)
+  [PASS] quantize_activations(ceil) is a value fixed point
+check 5: bf16 RNE conversion
+  [PASS] f32->bf16 is idempotent (RNE)
+  [PASS] bf16 round trip stable
+  [PASS] inf/zero preserved through bf16 conversion
+check 6: agreement with m13_moe_layer/check_ref.py quantizers
+  [PASS] floor (official OCP sequence) == m13 quant_mxfp4_hw byte-for-byte (8192+512 bytes, bf16-grid activations)
+  [PASS] legacy ceil rule == m13 quant_mxfp4_f32 byte-for-byte (8192+512 bytes)
+check 7: dataset 'm1' (m=1, E=4, top_k=2)
+  [PASS] data/m1 exists
+  [PASS] m1: tensor set / dtypes / shapes as declared (extra=[], missing=[])
+  [PASS] m1: real model K/N kept (hidden=2560, inter=640, group=32)
+  [PASS] m1/x.bin size matches
+  [PASS] m1/router_weight.bin size matches
+  [PASS] m1/shared_expert_gate_weight.bin size matches
+  [PASS] m1/x_res.bin size matches
+  [PASS] m1/gamma1.bin size matches
+  [PASS] m1/gamma2.bin size matches
+  [PASS] m1/experts.gate_up_proj.bin size matches
+  [PASS] m1/experts.gate_up_proj.weight_scale.bin size matches
+  [PASS] m1/experts.down_proj.bin size matches
+  [PASS] m1/experts.down_proj.weight_scale.bin size matches
+  [PASS] m1/shared_expert.gate_proj.bin size matches
+  [PASS] m1/shared_expert.gate_proj.weight_scale.bin size matches
+  [PASS] m1/shared_expert.up_proj.bin size matches
+  [PASS] m1/shared_expert.up_proj.weight_scale.bin size matches
+  [PASS] m1/shared_expert.down_proj.bin size matches
+  [PASS] m1/shared_expert.down_proj.weight_scale.bin size matches
+  [PASS] m1/router_logits.bin size matches
+  [PASS] m1/shared_gate_logits.bin size matches
+  [PASS] m1/topk_ids.bin size matches
+  [PASS] m1/topk_weights.bin size matches
+  [PASS] m1/perm_src_token.bin size matches
+  [PASS] m1/perm_expert.bin size matches
+  [PASS] m1/expert_token_counts.bin size matches
+  [PASS] m1/x_sorted.bin size matches
+  [PASS] m1/routed_output.bin size matches
+  [PASS] m1/shared_output.bin size matches
+  [PASS] m1/moe_output.bin size matches
+  [PASS] m1/x_norm1.bin size matches
+  [PASS] m1/res1.bin size matches
+  [PASS] m1/y_final.bin size matches
+  [PASS] m1/res2.bin size matches
+  [GUARD] m1: manifest format_version == 2 (generator/harness invariant)
+  [SKIP] m1: regeneration skipped (--no-regen); sizes + sha256 only
+  [PASS] m1: recomputed 'router_logits' matches stored bin bit-exactly
+  [PASS] m1: recomputed 'topk_ids' matches stored bin bit-exactly
+  [PASS] m1: recomputed 'topk_weights' matches stored bin bit-exactly
+  [PASS] m1: recomputed 'perm_src_token' matches stored bin bit-exactly
+  [PASS] m1: recomputed 'perm_expert' matches stored bin bit-exactly
+  [PASS] m1: recomputed 'expert_token_counts' matches stored bin bit-exactly
+  [PASS] m1: recomputed 'x_sorted' matches stored bin bit-exactly
+  [PASS] m1: recomputed 'routed_output' matches stored bin bit-exactly
+  [PASS] m1: recomputed 'shared_output' matches stored bin bit-exactly
+  [PASS] m1: recomputed 'moe_output' matches stored bin bit-exactly
+  [PASS] m1: shared_gate_logits == x @ shared_expert_gate_weight.T (bit-exact)
+  [PASS] m1: res1 == f32(x_res) bit-exact (zero residual at m6#1)
+  [PASS] m1: x_norm1 == rmsnorm(x_res, gamma1) bit-exact
+  [PASS] m1: res2 == f32(moe_output) + res1 bit-exact
+  [PASS] m1: y_final == rmsnorm(moe_output + res1, gamma2) bit-exact
+  [PASS] m1: x_norm1/gamma has unit RMS per row (max |rms-1| 1.01e-05)
+  [PASS] m1: y_final/gamma has unit RMS per row (max |rms-1| 3.56e-05)
+  [PASS] m1: x_norm1 != x (slice and chain inputs differ by construction)
+  [PASS] m1: qaware manifest dirs match the manifest (['ceil', 'floor'] vs ['ceil', 'floor'])
+  [GUARD] m1: the device-path floor rule is emitted (rules=['ceil', 'floor']) -- harness invariant
+  [PASS] m1/qaware/ceil: tensor set / dtypes / shapes as declared
+  [PASS] m1/qaware/ceil: recomputed 'a_qx.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'a_scale.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'a_qx_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'a_scale_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'gu.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'gu_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'h_swiglu.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'h_swiglu_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'h_qx.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'h_scale.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'h_qx_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'h_scale_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'y_sorted.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'y_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'routed_output.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'shared_output.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'moe_output.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'x_norm1.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'res1.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'y_final.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: recomputed 'res2.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/ceil: report measured key set complete (missing [])
+  [PASS] m1/qaware/ceil: report ceiling key set complete (missing [])
+  [PASS] m1/qaware/ceil: report source_budget key set complete
+  [PASS] m1/qaware/ceil: report f32_chain_gap key set complete
+  [PASS] m1/qaware/ceil: stored budget measured key set complete (missing [])
+  [PASS] m1/qaware/ceil: stored budget ceiling key set complete (missing [])
+  [PASS] m1/qaware/ceil: source_budget respected on every element (violations 0)
+  [PASS] m1/qaware/ceil: ceiling respected on every element (violations 0)
+  [PASS] m1/qaware/ceil: source bounds hold (worst utilization 1.000)
+  [PASS] m1/qaware/ceil: stored budget criterion matches
+  [PASS] m1/qaware/ceil: stored measured max_abs for routed_output reproduced (0.62419)
+  [PASS] m1/qaware/ceil: stored measured max_abs for shared_output reproduced (0.644998)
+  [PASS] m1/qaware/ceil: stored measured max_abs for moe_output reproduced (0.850142)
+  [PASS] m1/qaware/ceil: stored measured max_abs for y_final reproduced (0.679688)
+  [PASS] m1/qaware/ceil: stored measured max_abs for res2 reproduced (0.851562)
+  [PASS] m1/qaware/ceil: routed_output deviates from the float golden (>0)
+  [PASS] m1/qaware/ceil: shared_output deviates from the float golden (>0)
+  [PASS] m1/qaware/ceil: moe_output deviates from the float golden (>0)
+  [PASS] m1/qaware/ceil: y_final deviates from the float golden (>0)
+  [PASS] m1/qaware/ceil: res2 deviates from the float golden (>0)
+  [PASS] m1/qaware/floor: tensor set / dtypes / shapes as declared
+  [PASS] m1/qaware/floor: recomputed 'a_qx.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'a_scale.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'a_qx_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'a_scale_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'gu.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'gu_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'h_swiglu.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'h_swiglu_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'h_qx.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'h_scale.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'h_qx_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'h_scale_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'y_sorted.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'y_shd.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'routed_output.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'shared_output.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'moe_output.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'x_norm1.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'res1.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'y_final.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: recomputed 'res2.bin' matches the stored bin bit-exactly
+  [PASS] m1/qaware/floor: report measured key set complete (missing [])
+  [PASS] m1/qaware/floor: report ceiling key set complete (missing [])
+  [PASS] m1/qaware/floor: report source_budget key set complete
+  [PASS] m1/qaware/floor: report f32_chain_gap key set complete
+  [PASS] m1/qaware/floor: stored budget measured key set complete (missing [])
+  [PASS] m1/qaware/floor: stored budget ceiling key set complete (missing [])
+  [PASS] m1/qaware/floor: source_budget respected on every element (violations 0)
+  [PASS] m1/qaware/floor: ceiling respected on every element (violations 0)
+  [PASS] m1/qaware/floor: source bounds hold (worst utilization 1.000)
+  [PASS] m1/qaware/floor: stored budget criterion matches
+  [PASS] m1/qaware/floor: stored measured max_abs for routed_output reproduced (0.604351)
+  [PASS] m1/qaware/floor: stored measured max_abs for shared_output reproduced (0.626675)
+  [PASS] m1/qaware/floor: stored measured max_abs for moe_output reproduced (0.76291)
+  [PASS] m1/qaware/floor: stored measured max_abs for y_final reproduced (0.703125)
+  [PASS] m1/qaware/floor: stored measured max_abs for res2 reproduced (0.762695)
+  [PASS] m1/qaware/floor: routed_output deviates from the float golden (>0)
+  [PASS] m1/qaware/floor: shared_output deviates from the float golden (>0)
+  [PASS] m1/qaware/floor: moe_output deviates from the float golden (>0)
+  [PASS] m1/qaware/floor: y_final deviates from the float golden (>0)
+  [PASS] m1/qaware/floor: res2 deviates from the float golden (>0)
+  [PASS] m1: topk_ids shape
+  [PASS] m1: topk_ids in range
+  [PASS] m1: topk_weights renormalized to 1
+  [PASS] m1: perm grouped by expert
+  [PASS] m1: token counts sum m*top_k
+check 7: dataset 'm33' (m=33, E=4, top_k=2)
+  [PASS] data/m33 exists
+  [PASS] m33: tensor set / dtypes / shapes as declared (extra=[], missing=[])
+  [PASS] m33: real model K/N kept (hidden=2560, inter=640, group=32)
+  [PASS] m33/x.bin size matches
+  [PASS] m33/router_weight.bin size matches
+  [PASS] m33/shared_expert_gate_weight.bin size matches
+  [PASS] m33/x_res.bin size matches
+  [PASS] m33/gamma1.bin size matches
+  [PASS] m33/gamma2.bin size matches
+  [PASS] m33/experts.gate_up_proj.bin size matches
+  [PASS] m33/experts.gate_up_proj.weight_scale.bin size matches
+  [PASS] m33/experts.down_proj.bin size matches
+  [PASS] m33/experts.down_proj.weight_scale.bin size matches
+  [PASS] m33/shared_expert.gate_proj.bin size matches
+  [PASS] m33/shared_expert.gate_proj.weight_scale.bin size matches
+  [PASS] m33/shared_expert.up_proj.bin size matches
+  [PASS] m33/shared_expert.up_proj.weight_scale.bin size matches
+  [PASS] m33/shared_expert.down_proj.bin size matches
+  [PASS] m33/shared_expert.down_proj.weight_scale.bin size matches
+  [PASS] m33/router_logits.bin size matches
+  [PASS] m33/shared_gate_logits.bin size matches
+  [PASS] m33/topk_ids.bin size matches
+  [PASS] m33/topk_weights.bin size matches
+  [PASS] m33/perm_src_token.bin size matches
+  [PASS] m33/perm_expert.bin size matches
+  [PASS] m33/expert_token_counts.bin size matches
+  [PASS] m33/x_sorted.bin size matches
+  [PASS] m33/routed_output.bin size matches
+  [PASS] m33/shared_output.bin size matches
+  [PASS] m33/moe_output.bin size matches
+  [PASS] m33/x_norm1.bin size matches
+  [PASS] m33/res1.bin size matches
+  [PASS] m33/y_final.bin size matches
+  [PASS] m33/res2.bin size matches
+  [GUARD] m33: manifest format_version == 2 (generator/harness invariant)
+  [SKIP] m33: regeneration skipped (--no-regen); sizes + sha256 only
+  [PASS] m33: recomputed 'router_logits' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'topk_ids' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'topk_weights' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'perm_src_token' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'perm_expert' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'expert_token_counts' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'x_sorted' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'routed_output' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'shared_output' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'moe_output' matches stored bin bit-exactly
+  [PASS] m33: shared_gate_logits == x @ shared_expert_gate_weight.T (bit-exact)
+  [PASS] m33: res1 == f32(x_res) bit-exact (zero residual at m6#1)
+  [PASS] m33: x_norm1 == rmsnorm(x_res, gamma1) bit-exact
+  [PASS] m33: res2 == f32(moe_output) + res1 bit-exact
+  [PASS] m33: y_final == rmsnorm(moe_output + res1, gamma2) bit-exact
+  [PASS] m33: x_norm1/gamma has unit RMS per row (max |rms-1| 1.60e-04)
+  [PASS] m33: y_final/gamma has unit RMS per row (max |rms-1| 1.90e-04)
+  [PASS] m33: x_norm1 != x (slice and chain inputs differ by construction)
+  [PASS] m33: qaware manifest dirs match the manifest (['ceil', 'floor'] vs ['ceil', 'floor'])
+  [GUARD] m33: the device-path floor rule is emitted (rules=['ceil', 'floor']) -- harness invariant
+  [PASS] m33/qaware/ceil: tensor set / dtypes / shapes as declared
+  [PASS] m33/qaware/ceil: recomputed 'a_qx.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'a_scale.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'a_qx_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'a_scale_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'gu.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'gu_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'h_swiglu.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'h_swiglu_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'h_qx.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'h_scale.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'h_qx_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'h_scale_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'y_sorted.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'y_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'routed_output.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'shared_output.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'moe_output.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'x_norm1.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'res1.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'y_final.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: recomputed 'res2.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/ceil: report measured key set complete (missing [])
+  [PASS] m33/qaware/ceil: report ceiling key set complete (missing [])
+  [PASS] m33/qaware/ceil: report source_budget key set complete
+  [PASS] m33/qaware/ceil: report f32_chain_gap key set complete
+  [PASS] m33/qaware/ceil: stored budget measured key set complete (missing [])
+  [PASS] m33/qaware/ceil: stored budget ceiling key set complete (missing [])
+  [PASS] m33/qaware/ceil: source_budget respected on every element (violations 0)
+  [PASS] m33/qaware/ceil: ceiling respected on every element (violations 0)
+  [PASS] m33/qaware/ceil: source bounds hold (worst utilization 1.000)
+  [PASS] m33/qaware/ceil: stored budget criterion matches
+  [PASS] m33/qaware/ceil: stored measured max_abs for routed_output reproduced (0.998144)
+  [PASS] m33/qaware/ceil: stored measured max_abs for shared_output reproduced (0.831954)
+  [PASS] m33/qaware/ceil: stored measured max_abs for moe_output reproduced (1.32474)
+  [PASS] m33/qaware/ceil: stored measured max_abs for y_final reproduced (0.984375)
+  [PASS] m33/qaware/ceil: stored measured max_abs for res2 reproduced (1.32812)
+  [PASS] m33/qaware/ceil: routed_output deviates from the float golden (>0)
+  [PASS] m33/qaware/ceil: shared_output deviates from the float golden (>0)
+  [PASS] m33/qaware/ceil: moe_output deviates from the float golden (>0)
+  [PASS] m33/qaware/ceil: y_final deviates from the float golden (>0)
+  [PASS] m33/qaware/ceil: res2 deviates from the float golden (>0)
+  [PASS] m33/qaware/floor: tensor set / dtypes / shapes as declared
+  [PASS] m33/qaware/floor: recomputed 'a_qx.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'a_scale.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'a_qx_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'a_scale_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'gu.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'gu_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'h_swiglu.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'h_swiglu_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'h_qx.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'h_scale.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'h_qx_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'h_scale_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'y_sorted.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'y_shd.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'routed_output.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'shared_output.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'moe_output.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'x_norm1.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'res1.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'y_final.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: recomputed 'res2.bin' matches the stored bin bit-exactly
+  [PASS] m33/qaware/floor: report measured key set complete (missing [])
+  [PASS] m33/qaware/floor: report ceiling key set complete (missing [])
+  [PASS] m33/qaware/floor: report source_budget key set complete
+  [PASS] m33/qaware/floor: report f32_chain_gap key set complete
+  [PASS] m33/qaware/floor: stored budget measured key set complete (missing [])
+  [PASS] m33/qaware/floor: stored budget ceiling key set complete (missing [])
+  [PASS] m33/qaware/floor: source_budget respected on every element (violations 0)
+  [PASS] m33/qaware/floor: ceiling respected on every element (violations 0)
+  [PASS] m33/qaware/floor: source bounds hold (worst utilization 1.000)
+  [PASS] m33/qaware/floor: stored budget criterion matches
+  [PASS] m33/qaware/floor: stored measured max_abs for routed_output reproduced (0.962813)
+  [PASS] m33/qaware/floor: stored measured max_abs for shared_output reproduced (0.860623)
+  [PASS] m33/qaware/floor: stored measured max_abs for moe_output reproduced (1.19159)
+  [PASS] m33/qaware/floor: stored measured max_abs for y_final reproduced (0.978516)
+  [PASS] m33/qaware/floor: stored measured max_abs for res2 reproduced (1.1875)
+  [PASS] m33/qaware/floor: routed_output deviates from the float golden (>0)
+  [PASS] m33/qaware/floor: shared_output deviates from the float golden (>0)
+  [PASS] m33/qaware/floor: moe_output deviates from the float golden (>0)
+  [PASS] m33/qaware/floor: y_final deviates from the float golden (>0)
+  [PASS] m33/qaware/floor: res2 deviates from the float golden (>0)
+  [PASS] m33: topk_ids shape
+  [PASS] m33: topk_ids in range
+  [PASS] m33: topk_weights renormalized to 1
+  [PASS] m33: perm grouped by expert
+  [PASS] m33: token counts sum m*top_k
+check 8: cross-tier consistency
+  [PASS] m1: same tensor names as m1
+  [PASS] m1: same dtypes per tensor as m1
+  [GUARD] m1: floor (device path) rule emitted (harness invariant)
+  [PASS] m1: same activation rules as m1 (['ceil', 'floor'])
+  [PASS] m33: same tensor names as m1
+  [PASS] m33: same dtypes per tensor as m1
+  [PASS] m33: same activation rules as m1 (['ceil', 'floor'])
+check 9: device cross-check against m13_moe_layer dumps (mode 0)
+  [PASS] m1 mode0: a_qx device bytes == floor-rule golden (0/2560 mismatched)
+  [PASS] m1 mode0: a_scale device bytes == floor-rule golden (0/160 mismatched)
+  [PASS] m1 mode0: h_qx device bytes == floor-rule golden (0/640 mismatched)
+  [PASS] m1 mode0: h_scale device bytes == floor-rule golden (0/40 mismatched)
+  [PASS] m1 mode0: a_qx_shd device bytes == floor-rule golden
+  [PASS] m1 mode0: a_scale_shd device bytes == floor-rule golden
+  [PASS] m1 mode0: h_qx_shd device bytes == floor-rule golden
+  [PASS] m1 mode0: h_scale_shd device bytes == floor-rule golden
+  [PASS] m1 mode0: gu device bits == q-aware golden (0/2560 mismatched)
+  [PASS] m1 mode0: y_sorted device bits == q-aware golden (0/5120 mismatched)
+  [PASS] m1 mode0: gu_shd device bits == q-aware golden
+  [PASS] m1 mode0: y_shd device bits == q-aware golden
+  [PASS] m1 mode0: shared_output device bits == q-aware golden
+  [PASS] m1 mode0: h_swiglu device bits == q-aware golden (compact rows)
+  [PASS] m1 mode0: h_swiglu_shd device bits == q-aware golden
+  [PASS] m1 mode0: routed_output within 2 bf16 ulp of the golden (max |diff| 0.000e+00 <= 1.709e-02)
+  [PASS] m1 mode0: moe_output within 2 bf16 ulp of the golden (max |diff| 1.562e-02 <= 2.673e-02)
+  [PASS] m1 mode0: routed_output satisfies the m13 layer-chain criterion against the floor-rule golden (violations 0/2560, worst ratio 0.66)
+  [PASS] m1 mode0: shared_output satisfies the m13 layer-chain criterion against the floor-rule golden (violations 0/2560, worst ratio 0.66)
+  [PASS] m1 mode0: moe_output satisfies the m13 layer-chain criterion against the floor-rule golden (violations 0/2560, worst ratio 0.67)
+  [PASS] m33 mode0: a_qx device bytes == floor-rule golden (0/84480 mismatched)
+  [PASS] m33 mode0: a_scale device bytes == floor-rule golden (0/5280 mismatched)
+  [PASS] m33 mode0: h_qx device bytes == floor-rule golden (0/21120 mismatched)
+  [PASS] m33 mode0: h_scale device bytes == floor-rule golden (0/1320 mismatched)
+  [PASS] m33 mode0: a_qx_shd device bytes == floor-rule golden
+  [PASS] m33 mode0: a_scale_shd device bytes == floor-rule golden
+  [PASS] m33 mode0: h_qx_shd device bytes == floor-rule golden
+  [PASS] m33 mode0: h_scale_shd device bytes == floor-rule golden
+  [PASS] m33 mode0: gu device bits == q-aware golden (0/84480 mismatched)
+  [PASS] m33 mode0: y_sorted device bits == q-aware golden (0/168960 mismatched)
+  [PASS] m33 mode0: gu_shd device bits == q-aware golden
+  [PASS] m33 mode0: y_shd device bits == q-aware golden
+  [PASS] m33 mode0: shared_output device bits == q-aware golden
+  [PASS] m33 mode0: h_swiglu device bits == q-aware golden (compact rows)
+  [PASS] m33 mode0: h_swiglu_shd device bits == q-aware golden
+  [PASS] m33 mode0: routed_output within 2 bf16 ulp of the golden (max |diff| 1.562e-02 <= 3.369e-02)
+  [PASS] m33 mode0: moe_output within 2 bf16 ulp of the golden (max |diff| 3.125e-02 <= 3.833e-02)
+  [PASS] m33 mode0: routed_output satisfies the m13 layer-chain criterion against the floor-rule golden (violations 0/84480, worst ratio 0.67)
+  [PASS] m33 mode0: shared_output satisfies the m13 layer-chain criterion against the floor-rule golden (violations 0/84480, worst ratio 0.66)
+  [PASS] m33 mode0: moe_output satisfies the m13 layer-chain criterion against the floor-rule golden (violations 0/84480, worst ratio 0.72)
+check 10: router fp32 FTZ (subnormal flush to zero)
+  [PASS] ftz_f32 flushes |v| < 2**-126 (both signs) to +0 and keeps the smallest normal and zero (probe [1.1754942106924411e-38, -1.1754942106924411e-38, 1.1754943508222875e-38, -1.1754943508222875e-38, 0.0, 1.0000000031710769e-30])
+  [PASS] the case really lands in the subnormal band: 17/20 experts per row have exp(logit) < 2**-126 (reach 17)
+  [PASS] expert 2 sits just *above* the flush line (exp = 1.216e-37 > 2**-126) — the boundary is pinned from both sides
+  [PASS] the tail scores are non-zero fp32 subnormals (the un-modelled reference genuinely mis-ranks them, so the case is not vacuous)
+  [PASS] the pre-M46 reference ranks the largest subnormal scores instead ([0, 1, 2, 19, 18, 17, 16, 15] = the highest expert ids) — it FAILs the device semantics
+  [PASS] router_topk ids == device semantics (2 hot experts, then the one normal-score expert, then the zeroed tail by lower id) = [0, 1, 2, 3, 4, 5, 6, 7]
+  [PASS] REMOVAL GUARD: the modelled ids differ from the pre-M46 replica — deleting the FTZ modelling makes them identical and fails the check above
+  [PASS] flushed top-k weights are exactly 0 and the surviving ones are > 0
+  [PASS] top-k weights still renormalize to 1 (max |sum-1| 0.00e+00)
+  [GUARD] qaware default rule is floor = the official ops-nn sequence (harness invariant)
+all selfchecks passed — 386 判定项 + 6 guard 项

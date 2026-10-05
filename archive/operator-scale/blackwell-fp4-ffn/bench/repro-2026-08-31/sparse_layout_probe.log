@@ -1,0 +1,9 @@
+sm120 nvf4 sparse config constants:
+  LogicalElemsAPerChunk=8 PhysicalElemsAPerChunk=4 ElemsARawPerMmaRaw=2
+  TensorEAtomM=128 TensorEAtomK=256 atom_cosize(logical)=32768 atom_bytes=2048
+  TensorAAlignmentM=1 TensorAAlignmentK=64 (logical, incl 2x sparsity)  KMajor=1
+  M=  256 K=  512  -> A: M_al=256 K_al=512 bytes=32768   E: M_al=256 K_al=512 bytes=8192  ok
+  M= 8192 K= 8192  -> A: M_al=8192 K_al=8192 bytes=16777216   E: M_al=8192 K_al=8192 bytes=4194304  ok
+  M=  200 K=  320  -> A: M_al=200 K_al=320 bytes=16000   E: M_al=256 K_al=512 bytes=8192  ok
+  M= 1024 K= 1024  -> A: M_al=1024 K_al=1024 bytes=262144   E: M_al=1024 K_al=1024 bytes=65536  ok
+ALL LAYOUT FORMULAS HOLD

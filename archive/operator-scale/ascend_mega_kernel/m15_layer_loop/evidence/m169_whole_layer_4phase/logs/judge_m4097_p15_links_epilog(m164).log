@@ -1,0 +1,36 @@
+[M164] == m164_Pf.gdn ==  m=4097 mut=0
+[M164]   (1) transpose o  bit-diff 0/25171968
+[M164]   (2) z pack      bit-diff 0/25171968
+[M164]   (3) S5 y        finite-bad 0/25171968 worstRel=0.00781 (tol 1e-02) nan-pattern-mismatch 0
+[M164]   (4) S6 out      finite-bad 0/10488320 worst(tol-ratio)=0.493 nan-pattern-mismatch 0
+[M164]   (a) hcAttnOut   0xCD16 residue 0, differs-from-hostsynth 10478831/10488320
+[M164]   expectation: clean: o/z bit-exact, S5/S6 finite-T3 + nan-pattern pass -> OK
+[M164] == m164_Pf.gdn_mut1 ==  m=4097 mut=0
+[M164]   (1) transpose o  bit-diff 0/25171968
+[M164]   (2) z pack      bit-diff 0/25171968
+[M164]   (3) S5 y        finite-bad 0/25171968 worstRel=0.00781 (tol 1e-02) nan-pattern-mismatch 0
+[M164]   (4) S6 out      finite-bad 0/10488320 worst(tol-ratio)=0.448 nan-pattern-mismatch 0
+[M164]   (a) hcAttnOut   0xCD16 residue 0, differs-from-hostsynth 10479146/10488320
+[M164]   expectation: clean: o/z bit-exact, S5/S6 finite-T3 + nan-pattern pass -> OK
+[M164] == m164_Pf.prolog_mut1 ==  m=4097 mut=0
+[M164]   (1) transpose o  bit-diff 0/25171968
+[M164]   (2) z pack      bit-diff 0/25171968
+[M164]   (3) S5 y        finite-bad 0/25171968 worstRel=0.00763 (tol 1e-02) nan-pattern-mismatch 0
+[M164]   (4) S6 out      finite-bad 0/10488320 worst(tol-ratio)=0.388 nan-pattern-mismatch 0
+[M164]   (a) hcAttnOut   0xCD16 residue 0, differs-from-hostsynth 10479195/10488320
+[M164]   expectation: clean: o/z bit-exact, S5/S6 finite-T3 + nan-pattern pass -> OK
+[M164] == m164_Pf.prolog_mut2 ==  m=4097 mut=0
+[M164]   (1) transpose o  bit-diff 0/25171968
+[M164]   (2) z pack      bit-diff 0/25171968
+[M164]   (3) S5 y        finite-bad 0/25171968 worstRel=0.00781 (tol 1e-02) nan-pattern-mismatch 0
+[M164]   (4) S6 out      finite-bad 0/10488320 worst(tol-ratio)=0.493 nan-pattern-mismatch 0
+[M164]   (a) hcAttnOut   0xCD16 residue 0, differs-from-hostsynth 10478831/10488320
+[M164]   expectation: clean: o/z bit-exact, S5/S6 finite-T3 + nan-pattern pass -> OK
+[M164] == m164_Pf.prolog_mut3 ==  m=4097 mut=0
+[M164]   (1) transpose o  bit-diff 0/25171968
+[M164]   (2) z pack      bit-diff 0/25171968
+[M164]   (3) S5 y        finite-bad 0/25171968 worstRel=0.00781 (tol 1e-02) nan-pattern-mismatch 0
+[M164]   (4) S6 out      finite-bad 0/10488320 worst(tol-ratio)=0.559 nan-pattern-mismatch 0
+[M164]   (a) hcAttnOut   0xCD16 residue 0, differs-from-hostsynth 10478978/10488320
+[M164]   expectation: clean: o/z bit-exact, S5/S6 finite-T3 + nan-pattern pass -> OK
+[M164] == check_epilog: ALL PASS ==

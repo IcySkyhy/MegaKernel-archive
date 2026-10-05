@@ -1,0 +1,106 @@
+# M94 判据报告（设备读数 vs 位编码模型）
+# 模型来源：asc-devkit 官方文档 doc:docs/zh/api/SIMD-API/c_api/reg_compute/reg_mask/asc_create_mask.md 的位宽模式表（b8=1bit/元素/256 元素；b16=2bit/128；b32=4bit/64）
+#           + doc:docs/zh/api/SIMD-API/c_api/reg_compute/store/asc_storealign.md（单次搬出量 = VL = 256B）
+
+== 常量绑定（判据的几何 vs 探针源码的几何；不得让同名裸常量静默各说各话）==
+  ARENA        probe=12288    checker=12288    OK
+  IDS_OFF      probe=0        checker=0        OK
+  PAT_LANE_A   probe=8192     checker=8192     OK
+  PAT_LANE_B   probe=8448     checker=8448     OK
+  PAT_SLOT     probe=256      checker=256      OK
+  WS_OFF       probe=4096     checker=4096     OK
+  SENTINEL     probe=0xa5     checker=0xa5     OK
+  注：VL=256 不是探针里的常量（探针不按 VL 做判定）；判据侧的 VL 由**实测**支撑，
+      即本脚本 C-L2「本位宽 ALL 必须把窗口写满 256B」——若 VL 不是 256，该判据必然变红。
+  绑定结果：PASS（判据几何 = 探针几何）
+
+op                   group       sd     mask  pat   rep   exp_n   obs_n    verdict   stable detail
+dual_s16             dual        s16    m8    all   1     512     510      OK        y     dual（intlv）落盘跨度 = 512 B（模型 2×VL = 512 B）⇒ >VL 的单次落盘**只有**这一形态
+dual_s32             dual        s32    m8    all   1     512     510      OK        y     dual（intlv）落盘跨度 = 512 B（模型 2×VL = 512 B）⇒ >VL 的单次落盘**只有**这一形态
+dual_s8              dual        s8     m8    all   1     512     510      OK        y     dual（intlv）落盘跨度 = 512 B（模型 2×VL = 512 B）⇒ >VL 的单次落盘**只有**这一形态
+lane_bf16_m16_all    lane-own    bf16   m16   all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_bf16_m16_vl1    lane-enc    bf16   m16   vl1   1     4       4        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 4 B / 可见 4 B，实测可见 4 B）
+lane_bf16_m16_vl2    lane-enc    bf16   m16   vl2   1     8       8        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 8 B / 可见 8 B，实测可见 8 B）
+lane_bf16_m32_vl1    lane-enc    bf16   m32   vl1   1     8       4        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 8 B / 可见 8 B，实测可见 4 B）
+lane_f16_m16_all     lane-own    f16    m16   all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_f32_m16_all     lane-cross  f32    m16   all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_f32_m32_all     lane-own    f32    m32   all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_s16_m16_all     lane-own    s16    m16   all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_s16_m16_h       lane-enc    s16    m16   h     1     255     255      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 256 B / 可见 255 B，实测可见 255 B）
+lane_s16_m16_vl1     lane-enc    s16    m16   vl1   1     4       4        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 4 B / 可见 4 B，实测可见 4 B）
+lane_s16_m16_vl128   lane-enc    s16    m16   vl128 1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_s16_m16_vl2     lane-enc    s16    m16   vl2   1     8       8        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 8 B / 可见 8 B，实测可见 8 B）
+lane_s16_m16_vl64    lane-enc    s16    m16   vl64  1     255     255      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 256 B / 可见 255 B，实测可见 255 B）
+lane_s16_m16_vl8     lane-enc    s16    m16   vl8   1     32      32       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 32 B / 可见 32 B，实测可见 32 B）
+lane_s16_m32_all     lane-cross  s16    m32   all   1     510     255      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 512 B / 可见 510 B，实测可见 255 B）
+lane_s16_m32_vl1     lane-enc    s16    m32   vl1   1     8       4        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 8 B / 可见 8 B，实测可见 4 B）
+lane_s16_m32_vl2     lane-enc    s16    m32   vl2   1     16      8        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 16 B / 可见 16 B，实测可见 8 B）
+lane_s16_m32_vl8     lane-enc    s16    m32   vl8   1     64      32       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 64 B / 可见 64 B，实测可见 32 B）
+lane_s16_m8_vl1      lane-enc    s16    m8    vl1   1     0       4        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 0 B / 可见 0 B，实测可见 4 B）
+lane_s16_m8_vl8      lane-enc    s16    m8    vl8   1     16      16       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 16 B / 可见 16 B，实测可见 16 B）
+lane_s32_m16_all     lane-cross  s32    m16   all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_s32_m16_h       lane-enc    s32    m16   h     1     255     255      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 256 B / 可见 255 B，实测可见 255 B）
+lane_s32_m16_vl1     lane-enc    s32    m16   vl1   1     0       8        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 0 B / 可见 0 B，实测可见 8 B）
+lane_s32_m16_vl2     lane-enc    s32    m16   vl2   1     8       8        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 8 B / 可见 8 B，实测可见 8 B）
+lane_s32_m16_vl4     lane-enc    s32    m16   vl4   1     16      16       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 16 B / 可见 16 B，实测可见 16 B）
+lane_s32_m16_vl8     lane-enc    s32    m16   vl8   1     32      32       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 32 B / 可见 32 B，实测可见 32 B）
+lane_s32_m32_all     lane-own    s32    m32   all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_s32_m32_h       lane-enc    s32    m32   h     1     255     255      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 256 B / 可见 255 B，实测可见 255 B）
+lane_s32_m32_m3      lane-enc    s32    m32   m3    1     175     175      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 176 B / 可见 175 B，实测可见 175 B）
+lane_s32_m32_m4      lane-enc    s32    m32   m4    1     128     128      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 128 B / 可见 128 B，实测可见 128 B）
+lane_s32_m32_q       lane-enc    s32    m32   q     1     128     128      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 128 B / 可见 128 B，实测可见 128 B）
+lane_s32_m32_vl1     lane-enc    s32    m32   vl1   1     8       8        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 8 B / 可见 8 B，实测可见 8 B）
+lane_s32_m32_vl16    lane-enc    s32    m32   vl16  1     128     128      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 128 B / 可见 128 B，实测可见 128 B）
+lane_s32_m32_vl2     lane-enc    s32    m32   vl2   1     16      16       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 16 B / 可见 16 B，实测可见 16 B）
+lane_s32_m32_vl32    lane-enc    s32    m32   vl32  1     255     255      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 256 B / 可见 255 B，实测可见 255 B）
+lane_s32_m32_vl4     lane-enc    s32    m32   vl4   1     32      32       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 32 B / 可见 32 B，实测可见 32 B）
+lane_s32_m32_vl64    lane-enc    s32    m32   vl64  1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_s32_m32_vl8     lane-enc    s32    m32   vl8   1     64      64       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 64 B / 可见 64 B，实测可见 64 B）
+lane_s32_m8_all      lane-cross  s32    m8    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_s32_m8_vl1      lane-enc    s32    m8    vl1   1     0       8        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 0 B / 可见 0 B，实测可见 8 B）
+lane_s32_m8_vl4      lane-enc    s32    m8    vl4   1     8       8        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 8 B / 可见 8 B，实测可见 8 B）
+lane_s32_m8_vl8      lane-enc    s32    m8    vl8   1     16      16       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 16 B / 可见 16 B，实测可见 16 B）
+lane_s8_m16_vl1      lane-enc    s8     m16   vl1   1     4       2        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 4 B / 可见 4 B，实测可见 2 B）
+lane_s8_m16_vl2      lane-enc    s8     m16   vl2   1     8       4        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 8 B / 可见 8 B，实测可见 4 B）
+lane_s8_m32_all      lane-cross  s8     m32   all   1     510     127      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 512 B / 可见 510 B，实测可见 127 B）
+lane_s8_m32_vl1      lane-enc    s8     m32   vl1   1     8       2        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 8 B / 可见 8 B，实测可见 2 B）
+lane_s8_m8_all       lane-own    s8     m8    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_s8_m8_vl1       lane-enc    s8     m8    vl1   1     2       2        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 2 B / 可见 2 B，实测可见 2 B）
+lane_s8_m8_vl4       lane-enc    s8     m8    vl4   1     8       8        OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 8 B / 可见 8 B，实测可见 8 B）
+lane_s8_m8_vl8       lane-enc    s8     m8    vl8   1     16      16       OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 16 B / 可见 16 B，实测可见 16 B）
+lane_u16_m16_all     lane-own    u16    m16   all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_u32_m32_all     lane-own    u32    m32   all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+lane_u8_m16_all      lane-cross  u8     m16   all   1     510     254      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=diverge（模型应写 512 B / 可见 510 B，实测可见 254 B）
+lane_u8_m8_all       lane-own    u8     m8    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+mt_f16_tA            masktype    f16    tA    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+mt_f16_tB            masktype    f16    tB    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+mt_f32_tA            masktype    f32    tA    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+mt_f32_tB            masktype    f32    tB    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+mt_s16_tA            masktype    s16    tA    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+mt_s16_tB            masktype    s16    tB    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+mt_u8_tA             masktype    u8     tA    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+mt_u8_tB             masktype    u8     tB    all   1     510     510      OK        y     C-L1 窗口外=0（首 -，单次落盘须 <= VL=256）C-L2 未写满=0 | doc先验=match（模型应写 512 B / 可见 510 B，实测可见 510 B）
+row_m15_cur          row         s32    m32   all   3     7680    7680     OK        y     C1 越行槽=0（首 -）C2 越 VL 窗=0（首 -）C3 归属错=0（首 -）C4 未写满行=0（首 -）
+row_m16_b16mask      row         s32    m16   all   3     8192    8192     OK        y     C1 越行槽=0（首 -）C2 越 VL 窗=0（首 -）C3 归属错=0（首 -）C4 未写满行=0（首 -）
+row_m16_b8mask       row         s32    m8    all   3     8192    8192     OK        y     C1 越行槽=0（首 -）C2 越 VL 窗=0（首 -）C3 归属错=0（首 -）C4 未写满行=0（首 -）
+row_m16_cur          row         s32    m32   all   3     8192    8192     OK        y     C1 越行槽=0（首 -）C2 越 VL 窗=0（首 -）C3 归属错=0（首 -）C4 未写满行=0（首 -）
+row_m16_upd64        row         s32    m32   all   3     8192    8192     OK        y     C1 越行槽=0（首 -）C2 越 VL 窗=0（首 -）C3 归属错=0（首 -）C4 未写满行=0（首 -）
+row_m1_cur           row         s32    m32   all   3     512     512      OK        y     C1 越行槽=0（首 -）C2 越 VL 窗=0（首 -）C3 归属错=0（首 -）C4 未写满行=0（首 -）
+row_m8_cur           row         s32    m32   all   3     4096    4096     OK        y     C1 越行槽=0（首 -）C2 越 VL 窗=0（首 -）C3 归属错=0（首 -）C4 未写满行=0（首 -）
+row_nc_p128_b16      row         s16    m16   all   3     2048    1664     OK        y     负向对照（行距 128B < VL 256B）：C1 检出越出本行槽 128 B，首坏偏移 512（≈ 落盘 256B − 行距 128B，末行）
+row_nc_p192          row         s32    m32   all   3     8192    7232     OK        y     负向对照（行距 192B < VL 256B）：C1 检出越出本行槽 64 B，首坏偏移 3072（≈ 落盘 256B − 行距 192B，末行）
+row_sparse4_p512     row         s32    m32   all   3     2048    2048     OK        y     C1 越行槽=0（首 -）C2 越 VL 窗=0（首 -）C3 归属错=0（首 -）C4 未写满行=0（首 -）
+
+== 守卫（判据不得空过）==
+  负向对照数 = 2（期望 > 0，且 C1 必须咬住越界）: row_nc_p128_b16→C1=128, row_nc_p192→C1=64
+  稀疏正对照（行距 > VL ⇒ 槽内空洞必须保持哨兵；空洞字节应 > 0，越界=0）: row_sparse4_p512→slot_hole_bytes=1024 C1=0 C2=0
+  覆盖判据 C4（每行 VL 窗口必须写满）: row_m15_cur→未写满行=0（应写 7680 B）, row_m16_b16mask→未写满行=0（应写 8192 B）, row_m16_b8mask→未写满行=0（应写 8192 B）, row_m16_cur→未写满行=0（应写 8192 B）, row_m16_upd64→未写满行=0（应写 8192 B）, row_m1_cur→未写满行=0（应写 512 B）, row_m8_cur→未写满行=0（应写 4096 B）, row_sparse4_p512→未写满行=0（应写 2048 B）
+  L 组模型期望可见字节总数 = 14998（期望 > 0；=0 说明在比 0 vs 0）
+  doc 位映射先验：与实测 **不一致** 的变体数 = 10 / 62（这些**不是**判据门：它们是「官方文档的交叉位宽扩展方式 ≠ 设备实测」的证伪读数，见 README §5.1；逐条已在 detail 列标出）
+    分歧清单（按组计数）: lane-cross×3, lane-enc×7
+  L 组模型盲点字节总数 = 40（可解释：图案值恰等于哨兵的字节，两种图案互补覆盖）
+  可变性守卫：L 组模型期望可见字节数取值集合 = [0, 2, 4, 8, 16, 32, 64, 128, 175, 255, 510]（须 > 1 个取值，否则判据不区分形态）
+
+== 汇总 ==
+variants=75 ok=75 wrong=0 skip=0
+RESULT: PASS

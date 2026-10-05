@@ -1,0 +1,31 @@
+{
+ "sglang": {
+  "1": {
+   "disable_prefill_cuda_graph": true,
+   "enable_torch_compile": true
+  },
+  "2": {
+   "disable_prefill_cuda_graph": true,
+   "attention_backend": "fa3"
+  },
+  "4": {
+   "disable_prefill_cuda_graph": true
+  },
+  "8": {
+   "disable_prefill_cuda_graph": true,
+   "enable_torch_compile": true
+  }
+ },
+ "trtllm": {
+  "1": {},
+  "2": {
+   "attn_backend": "FLASHINFER"
+  },
+  "4": {
+   "attn_backend": "FLASHINFER"
+  },
+  "8": {
+   "attn_backend": "FLASHINFER"
+  }
+ }
+}

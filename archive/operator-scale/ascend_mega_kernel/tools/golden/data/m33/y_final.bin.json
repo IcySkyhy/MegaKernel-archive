@@ -1,0 +1,18 @@
+{
+  "tensor": "y_final.bin",
+  "shape": [
+    33,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 168960,
+  "sha256": "e7f983d9aded8cb941c9acda4b3f95e7d41c9fb300e947d9b47cb38d0100a7d4",
+  "kind": "golden",
+  "description": "m6#2 output = bf16(rmsnorm(moe_output + res1, gamma2)) [m, hidden]"
+}

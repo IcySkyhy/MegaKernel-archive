@@ -1,0 +1,40 @@
+# M91-#3（router 权重流式）的 A/B dump 逐字节对拍
+# ① = 改前二进制（tip 26d644b 原样构建，已拷 /tmp/m91_base）；② = 加完 C 与 #3 之后的二进制
+# 两侧都用 M15_DUMP=1 M15_STEPS=3 跑 runs=all，比较落盘文件 sha256 清单
+
+$ sha256sum /tmp/m91_base/m15_layer_loop_base
+c6ee3ca0e2164be7603821bba5a6590274cfdc7500457a3756c24c717bf853c8  /tmp/m91_base/m15_layer_loop_base
+rc=0
+
+$ sha256sum m15_layer_loop/build/m15_layer_loop
+2d42ba86e2f7d7918230d77f360295a5e12f4bbc2a6841602475e5b85945486c  m15_layer_loop/build/m15_layer_loop
+rc=0
+
+$ tail -1 /tmp/m91_dump_base_run.log
+[m15] ===== ALL PASS（checks=2068, guards=291, fails=0）=====
+rc=0
+
+$ tail -1 /tmp/m91_dump_s_run.log
+[m15] ===== ALL PASS（checks=2068, guards=291, fails=0）=====
+rc=0
+
+$ ls /tmp/m91_dump_base | wc -l
+1307
+rc=0
+
+$ ls /tmp/m91_dump_s | wc -l
+1307
+rc=0
+
+$ (cd /tmp/m91_dump_s && LC_ALL=C sha256sum * | sort -k2) > /tmp/m91_s_sha.txt
+rc=0
+
+$ wc -l /tmp/m91_base_sha.txt /tmp/m91_s_sha.txt
+  1307 /tmp/m91_base_sha.txt
+  1307 /tmp/m91_s_sha.txt
+  2614 total
+rc=0
+
+$ diff /tmp/m91_base_sha.txt /tmp/m91_s_sha.txt
+rc=0
+

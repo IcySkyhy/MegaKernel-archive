@@ -1,0 +1,9 @@
+# 独立见证（M32）：device dump vs M26 的 tools/golden/moe_block_ref.quantize_ocp
+#   —— 官方 ops-nn 序列的逐句 numpy 转写（另一个 agent 的独立实现，含 :413 与非有限角落）
+# 被引参考文件：M26 分支 6f68f8e 的 tools/golden/moe_block_ref.py（未合入 main）
+#   md5 = c9ffe5f0484f9ad2a461c278e98296a5（对应上面那个已提交 commit；M26 工作树可能有未提交改动，比对前请以该 commit 为准）
+# 复跑：M13_QS_DUMP=1 <build>/m13_moe_layer quant-inf 后逐用例调 quantize_ocp(量化段输入) 比对
+#   A 侧输入 = qs_A_*_x.bin（K=2560，scale 行距 80 = K/32）；H 侧输入 = qs_H_*_swiglu_device.bin（K=640，scale 行距 32，只比前 20B）
+# 判据：全部用例 qx 与 scale 都 byte-exact 才算 PASS。
+[m13-A] ===== 16 PASS / 0 FAIL =====
+[m13-H] ===== 16 PASS / 0 FAIL =====

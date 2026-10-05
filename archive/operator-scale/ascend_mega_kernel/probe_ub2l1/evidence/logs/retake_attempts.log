@@ -1,0 +1,40 @@
+# M121 —— 2026-10-04 重采/绑定期间的「未取得读数」尝试（转录）
+#
+# 为什么单独有这个文件（r2 复审 P2-2）：
+#   `evidence/slot.sh` 写每档 log 用的是 `> "$LOG"`（截断）。所以**同一档先失败、后成功**时，
+#   失败那次留下的"未执行 / LOCK_ACQUIRE_FAILED"记录会被随后成功那次的运行覆盖掉。
+#   `device_batch.log` 只收 `run_probes.sh` 驱动的那批（每档一行 rc=），
+#   而这一轮补读数是走 `evidence/retake.sh` / 临时驱动 + `slot.sh` 的，**没有进那条流水**。
+#   ⇒ 下面这几条是本轮驱动脚本 stdout 的**逐字转录**（当时落在 /tmp，现转录入库以便复核）。
+#   它**不是** slot.sh 写入的证据，价值=记录"某档曾被尝试、当时没拿到锁"。
+#
+# 从本轮起 `slot.sh` 另建一份**只追加**的 `evidence/logs/attempts.log`，每次调用都记一行
+#   （时间 / 档名 / 结果），这样以后不会再出现"失败尝试无记录"。
+#
+# ---- 转录开始（下列各行的原始来源见每段的 [src]）----
+
+[src] /tmp/m121_retake_steps.out（2026-10-04 08:57~09:04 的第一轮重采驱动）
+rc=0 name=capi_step1 executed=yes
+rc=0 name=capi_step2 executed=yes
+rc=1 name=capi_step3 LOCK_ACQUIRE_FAILED（-w 120 内没拿到锁，未执行；log 里没有进锁标记）
+rc=0 name=capi_step4 executed=yes
+rc=1 name=capi_step9 LOCK_ACQUIRE_FAILED（-w 120 内没拿到锁，未执行；log 里没有进锁标记）
+rc=1 name=capi_rt_k4_intraonly LOCK_ACQUIRE_FAILED（-w 120 内没拿到锁，未执行；log 里没有进锁标记）
+
+[src] /tmp/m121_retry39.out（2026-10-04 09:05~09:08 的 step3/step9 重试驱动）
+rc=0 name=capi_step3 executed=yes                       # 这次取到了（即分支里 capi_step3.log 的成功读数）
+rc=1 name=capi_step9 LOCK_ACQUIRE_FAILED（-w 180 内没拿到锁，未执行；log 里没有进锁标记）
+
+[src] /tmp/m121_loop39.out（2026-10-04 09:08~09:10 的循环补采驱动）
+rc=0 name=capi_step9 executed=yes                       # 这次取到了（即分支里 capi_step9.log 的成功读数）
+rc=0 name=capi_rt_k4_intraonly executed=yes             # 这次取到了（即分支里 k4 的成功读数）
+ALL_DONE at 2026-10-04T09:10:59+00:00
+
+[src] /tmp/m121_bind.out（2026-10-04 09:11~09:16 的头条读数绑定驱动）
+rc=0 name=capi_rt_k0_default executed=yes
+rc=0 name=basic_mmad_k0_default executed=yes
+BIND_DONE at 2026-10-04T09:16:51+00:00
+
+# ---- 转录结束 ----
+# 计数（供复核）：本轮"未取得读数"的尝试共 **4 次**，落在 3 个档上：
+#   capi_step3 ×1、capi_step9 ×2、capi_rt_k4_intraonly ×1；三个档随后都取到了成功读数。

@@ -1,0 +1,15 @@
+--- run 1 (timeout 40s) ---
+[probe] mode=sp variant=mte2_neg_shift vi=11 run=1 N=8 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_neg_shift run=1 N=8 aivs=2 mismatched=2 elems=4096 match=0 zero=0 histOther=4096 rc=1
+HIST mode=sp variant=mte2_neg_shift run=1 obs=[0,0,0,0,0,0,0,0] other=4096 (下标=第几次 op 的 tag)
+exit=1
+--- run 2 (timeout 40s) ---
+[probe] mode=sp variant=mte2_neg_shift vi=11 run=2 N=8 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_neg_shift run=2 N=8 aivs=2 mismatched=2 elems=4096 match=0 zero=0 histOther=4096 rc=1
+HIST mode=sp variant=mte2_neg_shift run=2 obs=[0,0,0,0,0,0,0,0] other=4096 (下标=第几次 op 的 tag)
+exit=1
+--- run 3 (timeout 40s) ---
+[probe] mode=sp variant=mte2_neg_shift vi=11 run=3 N=8 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_neg_shift run=3 N=8 aivs=2 mismatched=2 elems=4096 match=0 zero=0 histOther=4096 rc=1
+HIST mode=sp variant=mte2_neg_shift run=3 obs=[0,0,0,0,0,0,0,0] other=4096 (下标=第几次 op 的 tag)
+exit=1

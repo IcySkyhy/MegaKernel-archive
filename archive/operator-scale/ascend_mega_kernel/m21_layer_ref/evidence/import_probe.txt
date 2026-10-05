@@ -1,0 +1,146 @@
+== 1. direct-import probe
+/workspace/vllm/vllm/__init__.py:7: RuntimeWarning: Failed to read commit hash:
+No module named 'vllm._version'
+  from .version import __version__, __version_tuple__  # isort:skip
+=== direct import probe (sys.path += /workspace/vllm) ===
+  vllm.models.qwen4_exp.nvidia.model: fail
+      ModuleNotFoundError: No module named 'regex'
+      at /workspace/vllm/vllm/utils/platform_utils.py:10
+  vllm.models.qwen4_exp.nvidia.qsa: fail
+      ModuleNotFoundError: No module named 'regex'
+      at /workspace/vllm/vllm/utils/platform_utils.py:10
+  vllm.models.qwen4_exp.nvidia.ops.hc: fail
+      ModuleNotFoundError: No module named 'regex'
+      at /workspace/vllm/vllm/utils/platform_utils.py:10
+
+=== official common/hyperconnection.py loaded by file path ===
+  ok: qwen4_exp_common_hyperconnection, GatedResidual=<class 'qwen4_exp_common_hyperconnection.GatedResidual'>
+
+=== static dependency closure from nvidia/model.py ===
+  vllm modules in closure: 1045
+  external distributions : 121
+    OK   PIL
+    MISS PyNvVideoCodec
+    OK   _hashlib
+    MISS _typeshed
+    MISS aiohttp
+    MISS aiter
+    MISS amdsmi
+    MISS arctic_inference
+    OK   atexit
+    OK   bisect
+    MISS boto3
+    MISS botocore
+    OK   builtins
+    MISS cachetools
+    MISS cbor2
+    MISS cloudpickle
+    MISS cohere_melody
+    MISS compressed_tensors
+    MISS conch
+    OK   concurrent
+    OK   contextvars
+    OK   copyreg
+    MISS cpuinfo
+    MISS cuda
+    MISS cutlass
+    MISS cv2
+    MISS deep_ep
+    MISS depyf
+    MISS einops
+    OK   errno
+    MISS fastapi
+    MISS fastsafetensors
+    MISS fbgemm_gpu
+    OK   filelock
+    MISS flash_attn
+    MISS flashinfer
+    MISS flydsl
+    OK   fnmatch
+    OK   fractions
+    OK   getpass
+    MISS gpt_oss
+    MISS grpc
+    MISS grpc_health
+    MISS grpc_reflection
+    MISS hpc
+    OK   http
+    MISS huggingface_hub
+    MISS humming
+    MISS ijson
+    MISS instanttensor
+    OK   ipaddress
+    OK   keyword
+    MISS libtpu
+    MISS llguidance
+    MISS lmformatenforcer
+    MISS mcp
+    OK   mimetypes
+    MISS mistral_common
+    MISS model_hosting_container_standards
+    MISS modelscope
+    MISS moonep
+    MISS msgspec
+    MISS numba
+    OK   numpy
+    MISS nvtx
+    MISS openai
+    MISS openai_harmony
+    MISS outlines_core
+    OK   packaging
+    MISS partial_json_parser
+    OK   platform
+    OK   pprint
+    MISS prometheus_client
+    OK   psutil
+    MISS pybase64
+    MISS pydantic
+    MISS pydantic_core
+    MISS quack
+    MISS quark
+    OK   queue
+    MISS ray
+    MISS regex
+    MISS requests
+    OK   resource
+    MISS runai_model_streamer
+    MISS safetensors
+    MISS setproctitle
+    MISS smg_grpc_proto
+    MISS smg_grpc_servicer
+    OK   sqlite3
+    OK   sre_constants
+    OK   sre_parse
+    OK   ssl
+    MISS starlette
+    OK   stat
+    MISS tensorizer
+    MISS tokenizers
+    OK   torch
+    MISS torchao
+    MISS torchcodec
+    OK   torchvision
+    MISS tpu_inference
+    MISS tqdm
+    MISS transformers
+    MISS transformers_modules
+    OK   triton
+    MISS triton_kernels
+    OK   typing_extensions
+    OK   unittest
+    OK   urllib
+    MISS urllib3
+    MISS uvicorn
+    MISS uvloop
+    MISS vllm_xpu_kernels
+    MISS xgrammar
+    MISS xielu
+    MISS xxhash
+    OK   yaml
+    MISS zentorch
+    OK   zlib
+    MISS zmq
+
+=== is the vllm source tree even built? ===
+  compiled extensions in vllm/ : 0 []
+  -> the tree has never been built, so `vllm._C` / `_custom_ops` cannot be imported even if every python dependency above were installed.

@@ -1,0 +1,16 @@
+{
+  "tensor": "expert_token_counts.bin",
+  "shape": [
+    4
+  ],
+  "dtype": "int32",
+  "strides": [
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 16,
+  "sha256": "29b1cdab034fcf93e32384a56afdcdefcff1fac4a9916e7c137e57581b86820e",
+  "kind": "golden",
+  "description": "tokens per expert [num_experts]"
+}

@@ -1,0 +1,18 @@
+{
+  "tensor": "moe_output.bin",
+  "shape": [
+    33,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 168960,
+  "sha256": "2510fec35aced09e0ee22ebb62771f01b9b79e92e4fea25b4288d4e5c5476d19",
+  "kind": "golden",
+  "description": "final MoE block output = routed + shared [m, hidden], bf16"
+}

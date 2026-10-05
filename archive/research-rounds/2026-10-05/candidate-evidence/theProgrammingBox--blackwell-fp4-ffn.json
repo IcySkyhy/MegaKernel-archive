@@ -1,0 +1,235 @@
+{
+  "repository": "theProgrammingBox/blackwell-fp4-ffn",
+  "url": "https://github.com/theProgrammingBox/blackwell-fp4-ffn",
+  "created_at": "2026-09-01T01:57:41Z",
+  "pushed_at": "2026-09-04T05:36:46Z",
+  "branch": "main",
+  "license": "NOASSERTION",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 78
+    },
+    {
+      "path": "LICENSE",
+      "size": 1436
+    },
+    {
+      "path": "README.md",
+      "size": 23502
+    },
+    {
+      "path": "backward_bound.html",
+      "size": 5950
+    },
+    {
+      "path": "bench/anchor.log",
+      "size": 38439
+    },
+    {
+      "path": "bench/bound.html",
+      "size": 48682
+    },
+    {
+      "path": "bench/repro-2026-08-31/README.md",
+      "size": 1808
+    },
+    {
+      "path": "bench/repro-2026-08-31/chain_dense_vs_sparse_3090lock.log",
+      "size": 1752
+    },
+    {
+      "path": "bench/repro-2026-08-31/contention.log",
+      "size": 1561
+    },
+    {
+      "path": "bench/repro-2026-08-31/ffn_block_2700_and_3090.log",
+      "size": 4023
+    },
+    {
+      "path": "bench/repro-2026-08-31/ffn_no_clock_lock.log",
+      "size": 2012
+    },
+    {
+      "path": "bench/repro-2026-08-31/fused_chain_4096.log",
+      "size": 2216
+    },
+    {
+      "path": "bench/repro-2026-08-31/sparse_layout_probe.log",
+      "size": 681
+    },
+    {
+      "path": "bench/tf32.log",
+      "size": 38383
+    },
+    {
+      "path": "build_sparse.sh",
+      "size": 1515
+    },
+    {
+      "path": "bwd_1000.cu",
+      "size": 26710
+    },
+    {
+      "path": "bwd_probe.cu",
+      "size": 19827
+    },
+    {
+      "path": "compress_equiv.cu",
+      "size": 11075
+    },
+    {
+      "path": "cute_scaledbasis_eq.patch",
+      "size": 846
+    },
+    {
+      "path": "dense_probe.cu",
+      "size": 6837
+    },
+    {
+      "path": "fast24.inc",
+      "size": 4463
+    },
+    {
+      "path": "fast24_vec.inc",
+      "size": 2445
+    },
+    {
+      "path": "flip_training_curves.html",
+      "size": 46519
+    },
+    {
+      "path": "forward_cold.cu",
+      "size": 12934
+    },
+    {
+      "path": "fp4_actsparse_fwd.cu",
+      "size": 16669
+    },
+    {
+      "path": "fp4_chain_cutlass.cu",
+      "size": 13115
+    },
+    {
+      "path": "fp4_cutlass.cu",
+      "size": 23263
+    },
+    {
+      "path": "fp4_ffn_block.cu",
+      "size": 43271
+    },
+    {
+      "path": "fp4_fullstep.cu",
+      "size": 51562
+    },
+    {
+      "path": "fp4_fused_chain.cu",
+      "size": 17499
+    },
+    {
+      "path": "fp4_nlayer_deploy.cu",
+      "size": 17437
+    },
+    {
+      "path": "fp4_nlayer_fwd.cu",
+      "size": 18212
+    },
+    {
+      "path": "fp4_nlayer_mb.cu",
+      "size": 15720
+    },
+    {
+      "path": "fp4_nlayer_valid.cu",
+      "size": 18554
+    },
+    {
+      "path": "fp4_quant_probe.cu",
+      "size": 29609
+    },
+    {
+      "path": "fp4_sparse_chain.cu",
+      "size": 12602
+    },
+    {
+      "path": "layout_probe.cu",
+      "size": 2299
+    },
+    {
+      "path": "make_fused_kernel.py",
+      "size": 12289
+    },
+    {
+      "path": "make_sparse_phase.py",
+      "size": 4003
+    },
+    {
+      "path": "mma_roof.cu",
+      "size": 5595
+    },
+    {
+      "path": "pairwise_prune.cuh",
+      "size": 2591
+    },
+    {
+      "path": "plot_bound.py",
+      "size": 9717
+    },
+    {
+      "path": "plot_flip.py",
+      "size": 6155
+    },
+    {
+      "path": "probe_chain.cu",
+      "size": 19553
+    },
+    {
+      "path": "probe_nt.cu",
+      "size": 2883
+    },
+    {
+      "path": "run_flip_gate.sh",
+      "size": 1248
+    },
+    {
+      "path": "run_flip_sched.sh",
+      "size": 977
+    },
+    {
+      "path": "run_sparse_phase.sh",
+      "size": 2019
+    },
+    {
+      "path": "sparse_layout_probe.cpp",
+      "size": 5759
+    },
+    {
+      "path": "sparse_probe.cu",
+      "size": 17390
+    },
+    {
+      "path": "tput.cu",
+      "size": 12150
+    },
+    {
+      "path": "train_flip_24.cu",
+      "size": 16250
+    },
+    {
+      "path": "train_flip_opt.cu",
+      "size": 32517
+    },
+    {
+      "path": "train_flip_pair48.cu",
+      "size": 20221
+    },
+    {
+      "path": "train_flip_ref.cu",
+      "size": 13317
+    }
+  ],
+  "recent_commits": [],
+  "readme": "# blackwell-fp4-ffn\n\nPushing FP4 matrix throughput to its ceiling on a consumer Blackwell GPU\n(RTX 5070 Ti, sm120). Accuracy is a low priority, lower precision accumulate is\nacceptable. The measuring stick is the residual double GEMM at 4096 square\n(D2 = W2*(W1*X) + C); the end goal is a fused transformer block (residual,\nRMSNorm, SwiGLU) at the peak rate.\n\n## Environment\n\nHardware: RTX 5070 Ti, GB203, sm120a, 70 SM, 16 GB GDDR7 at ~896 GB/s, max SM\nclock 3210 MHz, 100 KB shared memory per block, 15 GB system RAM (max 3\nparallel CUTLASS compiles, ~3.2 GB each).\nSoftware: CUDA 13.1 (V13.1.115) and CUTLASS 4.4.2 in a sibling checkout, referred\nto below as `$CUT` (not vendored), plus a 13.3 ptxas from pip for the sparse\npath (recipe below).\n\n## Results (2026-07-02)\n\nThe headline of this repo is the fused row, and its re-measured value is 858,\nnot the 862 shown below. On 2026-08-31 the dense, sparse and fused d=8 rows\nwere re-measured from a clean build under a clock lock, and the fused d=8 row\ncame back at 858.6 / 857.3 / 857.0, lower than the 862 first claimed here. 858\nis the number the repo description quotes. The FFN block figure further down\nwas re-measured in the same session, and no other throughput number on this\npage has a committed log. The two marked rows below, and the sections after\nthis one, are exploratory runs at a different epilogue configuration, a\ndifferent residual precision, a different shape or a different tile geometry.\n[Reproducing the headline numbers](#reproducing-the-headline-numbers) has the\nre-measured table, the conditions and the raw stdout.\n\nResidual FP4 double GEMM, 4096 square, 3090 MHz lock, interleaved same-thermal\nA/B:\n\n| variant | ms/pair | TFLOPS | note |\n| --- | --- | --- | --- |\n| dense chain, raster AlongM | 0.404 | 680 | best dense config |\n| 2:4 sparse chain, row-major C/D | 0.336 | **819** | dense-equivalent, +20% |\n| fused sparse chain, one kernel, d=8 | 0.320 | 862 | +4.2% vs champion same session (827) |\n| fused chain, deep-C epilogue (2026-07-03) | 0.3147 | 873 | StagesC=3/StagesD=1, bf16 C. Not reproduced on 2026-08-31 |\n| fused chain, fp4 residual stream | 0.3131 | 878 | -DC_FP4, StagesC=8, C=e2m1. Not re-measured |\n\nBigger shapes, same kernel (fresh 200/120-iter runs; ON = residual on, OFF =\nbeta2off wall):\n\n| shape | ON bf16-C | ON fp4-C | OFF wall | ON/wall |\n| --- | --- | --- | --- | --- |\n| 6144sq | 909 | **918.6** | 939.8 | 97.7% |\n| 8192sq | 896 | **912.3** | 924.5 | 98.7% |\n\n1000-iter soaks (fp4-C, heat-soaked sustained): 895 at 6144, 852 at 4096.\n\n### The 256-tile unlock (2026-07-03, same day, hours later)\n\nThe walls above fell too. ncu on the deep-C wall kernel showed L2 at 93% of\npeak with tensor pipes at 59): the real ceiling was L2 *bandwidth* (every tile\nre-reads its A-row/B-col through L2; sparse metadata+SF ride the same port),\nnot MMA rate and not the epilogue. The fix is arithmetic intensity: TBM=256\nhalves B re-reads. The \"tile fixed at 128x128x256\" claim was a cute template\nbug, not a hardware limit: bw_coalesce on the two-atom (M=256) metadata layout\ninstantiates `int == cute::R<1,16>` inside a statically-false branch.\n`cute_scaledbasis_eq.patch` (one guarded if-constexpr in cute's ScaledBasis\noperator==, semantics preserved) unblocks it; correctness verified via CUTLASS\nexample 80b reference check at 4096/6144 with the 256 tile.\n\nFused chain, 256x128x256, fp4-C sC=16/sD=1, d=2, 3090 lock, fresh:\n\n| shape | ON | OFF wall | ON/wall | soak ON |\n| --- | --- | --- | --- | --- |\n| 6144sq | **1069.5** | 1092.0 | 98% | 1033.9 (1000 it) |\n| 8192sq | **1045.0** | 1079.4 | 97% | 1024.0 (400 it) |\n\nAt 4096 the fat tile loses to wave quantization (14.6 waves of 2x-long tiles):\n831 vs 878 - keep 128x128x256 there. Tile is now a per-shape knob: -DTBM=256\nfor >=6144. bf16-C at 256-tile: 1066.7 @6144 (C stream stops mattering once L2\nhas headroom) but 960 @8192 (it matters again at 128MB C); fp4-C dominates.\nGeometry frontier, all measured to fail: 256x256x256 (smem, StagesB>=2 assert),\n128x256x256 (B-side make_tma_copy break), 256x256x128 + 384x128x256 (smem-atom\ntile_to_shape divisibility). Mem-clock down-lock (power shift): flat. After the\ntile, ncu shows L2 76% / tensor 66% - neither saturated; the next wall is a\nmixed feed-rate regime, and tensor@66% says ~1600 is what a perfectly-fed\nOMMA.SF.SP could do at this clock.\n\nMeta-lesson, standing bias: every \"unreachable/fixed/ceiling\" in this file is a\nclaim about assumptions tried, not physics. Two such claims fell in one day\n(901-unreachable -> StagesC default; tile-fixed -> cute bug). Re-derive the\nlimiting assumption before repeating a verdict.\n\nThe 2026-07-03 \"~870 ceiling at 4096\" claim is retired. The flat +20 us\nresidual read was never DRAM bandwidth (the chain runs at ~250 of 896 GB/s and\nC2 hits L2 at 94%): it was the epilogue C pipeline. The sm120 CollectiveBuilder\nhardcodes StagesC=2, so the epi-load warp can only run 2 subtiles (of 8 per\ntile) ahead and every GEMM2 tile pays exposed C latency inside its epilogue\nwindow. Instantiating Sm120TmaBuilderImpl directly with StagesC=3/StagesD=1\n(D is fp4, one store stage is free; 101376B smem budget exactly holds\n87040 mainloop + 14336 epi) spreads C loads across the mainloop window:\ntax 18.6 -> ~13 us at 4096, 52 -> 35 at 6144, 153 -> 114 at 8192. Shrinking the\nstream to fp4 C (-DC_FP4, StagesC=8 = full-tile run-ahead, stage = 1KB) buys\nthe rest at scale: tax ~13 us at 8192. Failed routes, measured: persisting-L2\nwindow on C2 is a no-op (TMA descriptors ignore the access policy; hit rate\n94.57 vs 94.56), fp8/fp4 C at StagesC=2 is *slower* than bf16 (convert ALU in\nan epilogue that already does the FP4+SF quantize; -15/-11 TF), locking 3210\nMHz loses to 3090 (clock flutter under FP4 load). What remains vs the wall is\n~10-15 us of epilogue ALU floor (the C add shares issue slots with the MMA\nconsumer warps) plus the sparse structure wall itself. d-interleave is flat\n1..32 with the deep pipeline (d=1 no longer pathological); d=2 default.\n\nSparse single GEMM (dense-equivalent): 782 TFLOPS at 4096 cube, 955 at 8192.\nDense single GEMM best: 710 at 8192 cube. Dense knob space is exhausted at\n~80% of the ~870 TFLOPS clock-adjusted dense peak; sparsity is the only physics\nabove that wall and it works now.\n\nFused FFN block (`fp4_ffn_block.cu`, dense, T 4096, d_model 4096, d_ff 14336,\nclock locked 2700): 551 TFLOPS effective, gated by the 234 MB bf16 gate+up\nintermediate (the SwiGLU reread runs at 90% of the memory wall). Fusing SiLU\ninto the GEMM epilogue is the fix. Relative Frobenius error 0.24 vs fp32.\n\n### N-layer forward: the rate holds through depth (2026-07-03)\n\nThe 1069/1045 champion is ONE residual double-GEMM (one layer). Was the >1000\nnumber ever over N layers? No — the 8-layer chain lived only in the fp32 cuBLAS\nreference trainer. `fp4_nlayer_fwd.cu` chains L fused residual double-GEMMs\n(distinct weights/layer = L2-cold, ping-pong activations, residual = layer input,\nper-layer gate check). Locked 3090, fp4-C, dense-equiv TFLOPS:\n\n| S | L=1 | L=4 | L=8 | L8/L1 |\n| --- | --- | --- | --- | --- |\n| 4096 (128t) | 866 | 841 | 837 | 96.6% |\n| 6144 (256t) | 1099 | 1050 | 1041 | 94.7% |\n| 8192 (256t) | 1056 | 1023 | 1019 | 96.5% |\n\nPer-layer time is ~constant with depth (8192: 2.08 -> 2.16 ms/layer over 8x); the\nsmall L=1->L=2 dip is losing single-weight L2 residency, flat from L=4. An\n8-layer forward sustains 95-97% of the single-layer rate (rate is preserved: 8\nidentical layers = 8x work in ~8x time). This chains fp4->fp4: a valid THROUGHPUT\nPROXY (exact FLOPs+traffic) but see the deployable section for real numerics.\nBuild: `build_sparse.sh fp4_nlayer_fwd.cu /tmp/nlayer -DTBM=256 -DC_FP4` (argv:\nn iters L swz gate d).\n\n### The numerically-valid deployable N-layer forward (2026-07-04)\n\n`fp4_nlayer_deploy.cu`. Two earlier claims fall here.\n\nFIRST: the fp4->fp4 chain is NOT numerically invalid. The old 0.44 rel-err was\n(a) row-major D putting the output block-scale on the wrong axis + (b) a vec16\nassumption (the sparse nvf4 sm120 SF vector is **32**, sm1xx_common.inl:170).\nWith **column-major D** the epilogue col-store writes SF via\n`Sm1xxBlockScaledOutputConfig<VS,Major::MN>`, whose layout is byte-identical to\nthe mainloop SFB layout (`layout_probe.cu`: SFD_MN[m,n]==SFB[n,m], 0 mismatch).\n`probe_chain.cu` (fixed to vec32) then passes CHAIN D2 rel_frob **0.10** = fp4\nnoise floor.\n\nSECOND: fusing the requant into the epilogue (col-major D, `fp4_nlayer_valid.cu`)\nis SLOWER, not faster: 627/729 @6144/8192 vs the proxy 1044/1019 -- the sub-byte\ncol-major fp4 store defeats the MMA pipe. (Col-major *bf16* out is free,\n1202/1248 == row-major.) So the fast valid path is bf16 GEMMs + a dedicated\ncoalesced fp4 requant kernel + a bf16 residual stream (raw fp4 residual is\nunscaled => invalid). The GEMM's fp4 B is K-contiguous (stride N,1) so requant is\ntranspose-free: one thread per (n,32-k block), uint4 load + ue4m3 SF + uint4\npacked store, ~0.4ms/pass @8192.\n\nLocked 3090, L=8, dense-equiv (requant included), validated vs fp32 (relPJ grows\n~sqrt(L): L=1 0.086 -> L=8 0.239):\n\n| S | valid deploy | invalid proxy | valid/proxy |\n| --- | --- | --- | --- |\n| 4096 (128t) | 584 | 837 | 70% |\n| 6144 (256t) | **773** | 1033 | 75% |\n| 8192 (256t) | **860** | 1016 | 85% |\n\nFlat with depth. The gap = the 2 requant passes/layer (each GEMM output must be\nre-quantized with a fresh block scale for the next GEMM; memory-bound, exposed\nserially -- the irreducible deployable tax of a valid fp4 chain). Build:\n`build_sparse.sh fp4_nlayer_deploy.cu /tmp/nd -DTBM=256` (argv: S iters L\n[validate]; validate=1 at small S runs the fp32 host check).\n\n## Training the flipped identity (2026-07-03)\n\nCan we hold the lead while *training* the 8-layer residual double GEMM on the\nflip (output[i] = input[S-1-i])? `train_flip_ref.cu` (cuBLAS fp32 + NVFP4 sim),\n`probe_chain.cu` (chain numerics), `tput.cu` (throughput components),\n`build_sparse.sh` (reusable splice).\n\nAccuracy — the net is linear so P = ∏(I + W2_l W1_l); want P = J (reversal).\n- L=1 solves exactly (W2W1 = J−I). L=8 plateaus (loss ~0.02) despite equal\n  expressivity: a determinant-sign barrier. J's 2D blocks are swaps (det −1);\n  the balanced \"each layer does J^{1/8}\" solution is a real 8th root of a\n  reflection, which does not exist, so GD stalls short.\n- Fix = homotopy: ramp the target I→J over training. relPJ 0.0006 (exact).\n  SOTA recipe: AdamW 0.9/0.95 wd 0, init 1/√S + zero residual branch, warmup +\n  cosine, grad-clip, homotopy (the key ingredient).\n- fp4: PTQ relPJ 0.234 → QAT (fp4 fwd + STE, fp32 master) 0.131, b=0.981. Flip\n  is structurally perfect; residual is the e2m1 noise floor.\n\nThroughput (locked 3090, 8192, dense-equiv): sparse GEMM bf16-out 1205, sparse\nfp4-out 1132, dense fp4 712, 2:4 compress 0.45ms/weight (47% of a GEMM).\n- Correct-numerics forward (bf16 intermediate + requant) is FASTER than the\n  fused champion (1205 > 1045) and valid — the fused fp4→fp4 chain is\n  numerically invalid (SFD≠SFB layout, D row/col mismatch; `probe_chain` = 0.44\n  rel err). Chaining requires requant between layers.\n### The backward / full training step, MEASURED (2026-07-04)\n\n`bwd_probe.cu` composes the step from real kernels; `train_flip_24.cu` adds real\n2:4 pruning (per-row/block/transposable) to measure accuracy. This corrects the\nearlier ~930 *projection*. Graph: `backward_bound.html`.\n\nComponents (S=8192, 3090 lock, dense-equiv): sparse GEMM 1268, dense dW 711,\n**dense dW half-N = 1386** (the structured-sparse-dW 2× ceiling, 1.95×), weight\ncompress 0.46ms, activation requant 0.21ms (799 GB/s). Step / layer (6 GEMMs):\n\n| scenario | GEMM-only | +compress | DEPLOYABLE (+4 requant) |\n| --- | --- | --- | --- |\n| plain 2:4 (bwd dense) | 833 | — | 716 |\n| transposable 2:4 | 1006 | 940 | **839** |\n| + structured-sparse dW | 1305 | 1196 | **1038** |\n\nThree findings overturn the projection:\n1. The structured-sparse dW 2× (1386) is real but needs a **block-2:4** mask\n   (per-row output-sparsity can't feed a shared B tile — proven). Block-2:4\n   **collapses the flip**: relPJ 0.82 @blk128 vs 0.34 per-row / 0.40 transposable\n   / 0.17 dense (b 0.42 vs 0.90). Channel permutation can't save a permutation\n   target; may hold on real redundant nets (untested).\n2. The requant tax is real and does **not** overlap (measured 3% hidden — the\n   bf16-out write + 799 GB/s requant saturate memory). It knocks transposable\n   940 → 839.\n3. So the **binding constraint is the dense dW gradient GEMM** (711, the dense-fp4\n   ceiling, ~40% of the step). The accuracy-viable path (transposable, relPJ 0.40)\n   caps at **~840 < 900**. >900 needs a sparse dW (block masks → accuracy break) OR\n   fused fp4-out GEMMs to kill requant (~894, still short: dW stays dense). A\n   genuine accuracy↔throughput tension at the 900 line; forward/inference >1000\n   stands, training is a harder profile.\n\n## The sparse unlock\n\nCUDA 13.1 ptxas refuses the sm120 sparse FP4 MMA (a toolkit gap, not silicon).\nThe 13.3 ptxas from the pip wheel assembles it and the 13.1-era driver runs the\ncubin. Two traps cost real throughput:\n\n1. Only block-scaled sparse (`OpClassBlockScaledSparseTensorOp`, SASS\n   `OMMA.SF.SP...4X`, CUTLASS example 80b type) runs at the marketed rate. The\n   plain sparse path (`MMA.SP`, example 83 type) is quarter-rate on GeForce:\n   325 dense-equiv, half of dense. Measured, do not use.\n2. Example 80b's column-major C/D costs 10% in the chain epilogue. Row-major\n   gives 819 vs 743.\n\nThe sparse tile default is 128x128x256; 256x128x256 works after\n`cute_scaledbasis_eq.patch` (see the 256-tile section), other geometries fail\n(measured list above). stream-K loses ~4%, raster and swizzle are near flat.\n\n## Files\n\n- `fp4_sparse_chain.cu`: the two-kernel champion. Sparse residual double GEMM,\n  weights as the compressed sparse A operand, GEMM1 emits FP4 + scales, GEMM2\n  reads that buffer as B and adds the residual via beta. Throughput-only\n  (prepared input scales, accuracy parked). argv: n iters swizzle raster.\n- `fp4_fused_chain.cu` + `make_fused_kernel.py`: the fused best. Epilogue is\n  built via Sm120TmaBuilderImpl directly: `-DSTAGESC/-DSTAGESD` override the C/D\n  pipeline depths (defaults 3/1 bf16-C, 8/1 with `-DC_FP4` fp4-C). Both GEMMs in\n  one persistent kernel: the patcher copies CUTLASS's sm120 sparse kernel and\n  doubles the scheduler N domain, second half is GEMM2 with its own param set;\n  GEMM2 B-loads gate on per n-stripe counters GEMM1 bumps after its store\n  (ordering is real, gate measured free). Launch order must put producers\n  before consumers (CLC steals are strict launch order): AlongM forced, and\n  stripe interleave needs swz=1. argv: n iters swz ras gate d beta2off pf,\n  best d=8.\n- `fp4_chain_cutlass.cu`: the dense residual double GEMM baseline. `-DRESIDUAL`\n  for the residual, tile via `-DTBM/-DTBN/-DTBK`, argv: n iters swizzle raster.\n- `fp4_ffn_block.cu`: the fused SwiGLU FFN block, the end-goal deliverable.\n  Builds with `-DFFN_BLOCK`, flags `--t --dm --dff`.\n- `fp4_cutlass.cu`: single dense NVFP4 GEMM benchmark. `--verify=0` for sweeps.\n- `fp4_quant_probe.cu`: device side NVFP4 quantizer (CUTLASS ships only a host\n  one), validated at relative Frobenius 0.145. Builds with `-DQUANT_PROBE`.\n\nExploration harnesses (gemm2 bf16/fp8/fp4 sticks, chain pipe/overlap/tower,\ncuDNN and cuBLASLt probes, plain sparse probe) were pruned 2026-07-02; they\nlive in git history and their findings are in the recap below.\n\n## Prerequisites\n\nThree things, none vendored:\n\n1. CUDA 13.1 or newer, and an sm120 (consumer Blackwell) GPU.\n2. A CUTLASS 4.4.2 checkout at `4ca61d06`, with `cute_scaledbasis_eq.patch`\n   from this repo applied to it (needed only for the 256-tile builds).\n3. For any sparse build, a 13.3 `ptxas` in a venv — recipe below. `build_sparse.sh`\n   exits with `13.3 ptxas missing` if it is not there.\n\nVerified 2026-08-31 from a fresh clone on an account with none of the author's\nfiles present: with the three above in place, `build_sparse.sh fp4_sparse_chain.cu\n/tmp/out -DTBM=256 -DC_FP4` builds and the binary runs (842.9 TFLOPS at 4096,\nunlocked clocks).\n\n## Build and run\n\n```\nCUT=/path/to/cutlass          # 4.4.2 at 4ca61d06, not vendored\nREPO=/path/to/this/repo       # the directory this README is in\nexport CUT REPO               # build_sparse.sh reads $CUT from the environment\ncd $CUT\nINC=\"-I include -I tools/util/include -I examples/common\"\nFLAGS=\"-O3 -arch=sm_120a -std=c++17 --expt-relaxed-constexpr -DNDEBUG\"\n\n# dense chain (raster 1 = AlongM, best dense config)\nnvcc $FLAGS -DRESIDUAL $INC $REPO/fp4_chain_cutlass.cu -o /tmp/fp4chain\n/tmp/fp4chain 4096 300 1 1\n\n# fused FFN block\nnvcc $FLAGS -DFFN_BLOCK $INC $REPO/fp4_ffn_block.cu -o /tmp/fp4_ffn\n/tmp/fp4_ffn --t=4096 --dm=4096 --dff=14336 --verify=0 --iterations=300\n#   --verify defaults to 1 and runs a host-side reference that takes many\n#   minutes at this shape. Pass --verify=0 for timing runs.\n#   --iterations defaults to 10, which is visibly noisy; 300 is stable.\n```\n\nTrue peak numbers need a clock lock (machine wide, revert after):\n\n```\nsudo nvidia-smi -pl 330 && sudo nvidia-smi -lgc 3090\n# run benchmarks\nsudo nvidia-smi -rgc && sudo nvidia-smi -pl 300\n```\n\n### Sparse build recipe (the 13.3 ptxas splice)\n\nnvcc offers no ptxas override, so splice via `--dryrun`. Build 120a-only: the\ncompute_120 fallback pass rejects family-specific sparse instructions.\n\n```\npython3 -m venv ~/.local/share/double-gemm/ptxvenv\n~/.local/share/double-gemm/ptxvenv/bin/pip install nvidia-cuda-nvcc==13.3.73\nP33=$(find ~/.local/share/double-gemm/ptxvenv -path '*/site-packages/nvidia/cu13/bin/ptxas' -type f | head -n1)\n\ncd $CUT\nnvcc --dryrun -O3 -gencode arch=compute_120a,code=sm_120a -std=c++17 \\\n  --expt-relaxed-constexpr -DNDEBUG $INC \\\n  $REPO/fp4_sparse_chain.cu -o /tmp/sparse_chain 2>&1 \\\n  | sed 's/^#\\$ //' > /tmp/dry.sh\n{ echo 'set -e'; echo \"cd $CUT\"\n  sed -e \"1,13s|^\\([A-Za-z_][A-Za-z0-9_]*\\)=\\(.*\\)|export \\1='\\2'|\" -e '14,18d' \\\n      -e \"s|^ptxas -arch=sm_120a|$P33 -arch=sm_120a|\" \\\n      -e 's|^rm /tmp/tmpxft|rm -f /tmp/tmpxft|' /tmp/dry.sh\n} > /tmp/hyb.sh\nbash /tmp/hyb.sh\n/tmp/sparse_chain 4096 300 1 1\n```\n\nThe fused chain builds the same way after generating its kernel header next to\nthe source (regenerate after bumping the CUTLASS checkout; anchored patches\nfail loudly on drift):\n\n```\npython3 $REPO/make_fused_kernel.py   # writes sm120_fused_chain.hpp\n# then the dryrun splice above with fp4_fused_chain.cu\n/tmp/fused_chain 4096 300 1 1 1 2   # argv: n iters swz ras gate d [beta2off pf]\n\n# 256-tile build (>=6144 shapes): apply the cute patch once to the CUTLASS\n# checkout, then add -DTBM=256 (and -DC_FP4 for the fp4 residual stream):\n#   cd $CUT && git apply $REPO/cute_scaledbasis_eq.patch\n#   XFLAGS=\"-DTBM=256 -DC_FP4\" <splice build>\n/tmp/fused_chain_256 6144 200 1 1 1 2\n```\n\n## Reproducing the headline numbers\n\nThe dense, sparse and fused d=8 rows in the table at the top of this file were\nre-measured from a clean build on 2026-08-31, along with the FFN block, and the\nraw stdout is committed under `bench/repro-2026-08-31/`. The deep-C 873 row and\nthe fp4-residual 878 row were not reproduced in that session, and they are\nmarked as such in that table. Methodology is interleaved same-session A/B:\ndense, sparse and fused alternate inside one run at one clock lock, so no\nvariant gets a thermal advantage.\n\n| variant | claimed above | re-measured, 3 rounds |\n| --- | --- | --- |\n| dense chain | 0.404 ms · 680 | 0.3995 / 0.3997 / 0.3994 ms · **688.0 / 687.7 / 688.3** |\n| 2:4 sparse chain | 0.336 ms · 819 | 0.3338 / 0.3342 / 0.3343 ms · **823.4 / 822.5 / 822.3** |\n| fused, one kernel, d=8 | 0.320 ms · 862 | 0.3202 / 0.3206 / 0.3207 ms · **858.6 / 857.3 / 857.0** |\n| fused, one kernel, d=2 | — | 0.3188 / 0.3191 / 0.3197 ms · **862.3 / 861.5 / 859.7** |\n| fused, deep-C epilogue | 0.3147 ms · 873 | not reproduced; the d=8 and d=2 rounds above run that epilogue (`sC=3 sD=1 C=16b`) and read 857.0 to 862.3 |\n| fused, fp4 residual stream | 0.3131 ms · 878 | not re-measured; no `-DC_FP4` round was run in this session |\n| FFN block, 2700 lock | 551 | **561.0 / 561.4 / 560.9** (10 it), **558.8 / 558.5 / 558.0** (300 it) |\n\nConditions: RTX 5070 Ti, driver 595.71.05, `nvidia-smi -pl 330 -lgc 3090`\n(2700 for the FFN row), sustained 3022 MHz, 46-64 C, no other compute process on\nthe device. nvcc 13.1.115 front end; CUTLASS 4.4.2 at `4ca61d06` with\n`cute_scaledbasis_eq.patch` applied; the sparse and fused binaries use the 13.3\nptxas splice below.\n\n**An idle GPU is part of the measurement.** `bench/repro-2026-08-31/contention.log`\nis an A/B/A: one competing GPU process running the dense chain in a loop takes\nthe FFN block's first GEMM from 1.4452 ms to 3.1099 ms, and it returns to\n1.4278 ms when the competitor stops. A number read off a busy device can be 40%\nlow with no other symptom.\n\n## Findings recap\n\n- Thermal methodology: cold runs read 2 to 3% higher than soaked runs\n  (sustained 3037 vs 2970 MHz at a 3090 lock). Only interleaved same-session\n  A/Bs are valid comparisons.\n- Dense knob graveyard at 4096 square: MXFP4 -6%, FP8 residual -4.5%,\n  cooperative schedule -8%, 2 stages -9%, 3 stages -2%, stream-K unsupported on\n  pingpong, CUDA graphs flat, swizzle flat to negative, 64 and 256 wide tiles\n  broken or pathological, EPI subtiles and 5 stages fail to compile. Raster\n  AlongM +1.6% was the only dense win.\n- Naive GEMM chaining does not amortize and 2-stream cross-iteration overlap\n  runs slower than serial (654 vs 675). Depth wins need in-kernel fusion.\n- Real FFN shapes (deep K, wide N) give ~7% more GEMM throughput than the\n  square stick; the square number is the conservative one.\n- The chain pair is not bandwidth bound (~200 GB/s of a ~896 GB/s wall); the\n  FFN block is, through its bf16 intermediate.\n- On sm120 with CUDA 13.1 only dense block-scaled NVFP4 is emittable; plain\n  f8f6f4 and all sparse FP4 need the 13.3 ptxas splice.\n- Seam findings (2026-07-03): the kernel boundary at 4096 square costs ~10 us\n  (two tail waves + launch gap); tile-granular fusion recovers it and stripe\n  interleave adds ~3 us more. Dependency gating over CLC launch order is free\n  (gate on equals gate off). d=1 interleave is too tight (-13%), d 2..32 is\n  flat within 1%, d=8 best by a hair.\n- The GEMM2 bf16 residual read is a flat 20 us at every schedule. Warming C2\n  into L2 via prefetch.global.L2 from the idle epi-load warp made it 15 TFLOPS\n  worse: the default L2 policy was already optimal, the eviction pressure was\n  not worth it.\n\n## Open levers\n\n1. Sparsify `fp4_ffn_block.cu` the way the chain was sparsified (weights as the\n   sparse A operand) + carry the 256-tile and deep-C epilogue there. The block\n   sits at 551 dense; the chain techniques are worth ~2x combined.\n2. Fuse the SiLU times up epilogue into the gate+up GEMM to delete the 234 MB\n   intermediate and lift the block toward the GEMM rate.\n3. Above ~1070: tensor pipes are at 66% with L2 at 76% (256-tile wall). Feed\n   rate is the game: a smem-atom rework could unlock 256x256x128 / 384-M tiles\n   (the current failures are layout-atom divisibility, not hardware), or attack\n   L1/smem-side traffic (l1tex 45%). ~1600 is the perfectly-fed bound at 3090.\n4. 4096 square is quantization-bound with fat tiles: a tail-aware schedule\n   (mixed tile sizes or stream-K on the last wave) could close 872 -> ~900.\n5. A full CUDA 13.3+ toolkit install would retire the dryrun splice.\n"
+}

@@ -1,0 +1,18 @@
+{
+  "tensor": "res1.bin",
+  "shape": [
+    1,
+    2560
+  ],
+  "dtype": "fp32",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 10240,
+  "sha256": "472b02d05f9c0041c11a64d43ce6066ef4225449ff579d2a2cf315b376f6d6cb",
+  "kind": "golden",
+  "description": "m6#1 residual out (fp32) = f32(x_res) + 0 [m, hidden]; the m6#2 residual input"
+}

@@ -1,0 +1,61 @@
+# M94 任务 3：ids 行距越界的触发条件表（纯算术；常量从指定 rev 读出）
+# repo = /workspace/ascend_mega_kernel/.tower/worktrees/wt-94 ; rev = e37909e
+# 默认 rev 是**不可变**的 e37909e：M95 并入 main 后，`main` 上旧形态已不存在，
+#   钉 moving ref 会让「命令 → 输出」随 main 移动而失效（第 2 轮复审 P2）。
+# 参数：repo（位置，可省）| --rev <sha> / --rev=<sha> | --tip | --m-max <N>
+
+== 锚点齐备性（rc 契约：读不到锚点 ⇒ rc≠0，不静默出降级表）==
+  旧形态核心锚点命中 3/3；新形态核心锚点命中 0/3；m13 内容锚点命中 1；该 rev 的 RT_RB = 8
+  判定：PASS（至少一形态的锚点齐备）
+
+== 常量与引用（逐条打印，便于核对）==
+  命中   m15_moe_layer.h:nblk=                    L787   const uint32_t nblk = (M + RT_RB - 1) / RT_RB;
+  命中   m15_moe_layer.h:rows=                    L790   const uint32_t rows = (M - b0 < RT_RB) ? (M - b0) : RT_RB;
+  命中   m15_moe_layer.h:ids_pitch_old            L1047  __ubuf__ int32_t* idsUb = reinterpret_cast<__ubuf__ int32_t*>(UB_RT_IDS + r * 64 * 4);
+  命中   m15_moe_layer.h:ids_pitch_old            L1118  LocalTensor<int32_t> idsL(TPosition::VECCALC, UB_RT_IDS + r * 64 * 4, 64);
+  命中   m15_moe_layer.h:maskAllI_old             L1099  MaskReg maskAllI = CreateMask<int32_t, MaskPattern::ALL>();
+  命中   m15_moe_layer.h:ids_store_old            L1108  StoreAlign(idsUb, idxs, maskAllI);
+  命中   m15_moe_resources.h:RT_RB                L197   constexpr uint32_t RT_RB = 8;                                    // row-block 行数（x 块；m17 同款）
+  命中   m15_moe_resources.h:UB_RT_IDS            L206   constexpr uint32_t UB_RT_IDS = UB_RT_LOG + RT_RB * 64 * 4;       // i32[RT_RB][64]  = 2048B
+  命中   m15_moe_resources.h:UB_RT_WS             L207   constexpr uint32_t UB_RT_WS = UB_RT_IDS + RT_RB * 64 * 4;        // fp32[RT_RB][64] = 2048B
+  命中   m17_moe_layer.asc:m17_comment_128        L1138  // int32 的 ALL mask 是 128 lane，而 RT_IDS 行槽只有 64 个 → 必须用 64-lane mask，
+  命中   m17_moe_layer.asc:m17_upd64              L1141  MaskReg m64i = UpdateMask<int32_t>(n64);
+  命中   m13_moe_layer.asc:m13_maskAllI           L1006  MaskReg maskAllI = CreateMask<int32_t, MaskPattern::ALL>();
+  命中   m13_moe_layer.asc:m13_ids_store          L1015  StoreAlign(idsUb, idxs, maskAllI);
+  未命中（该 rev 无此锚点；它们属另一形态，逐条列出以免「命中列表悄悄变短」）：
+         m15_moe_layer.h:RT_RB(static)
+         m15_moe_layer.h:ids_pitch_new
+         m15_moe_layer.h:mwi
+         m15_moe_layer.h:ids_store_new
+         m15_moe_resources.h:RT_WROW
+
+  行距 pitch = 256 B（来源：旧形态：`UB_RT_IDS + r * 64 * 4`（64 个 int32 = 256B））
+  该 rev 的 RT_RB = 8
+
+== 触发判定（按 store_bytes 假设 x RT_RB x M 枚举）==
+  判据：rows = RT_RB（等价 M %% RT_RB == 0）⇒ 末行 ids 落盘溢到 ws 第 0 行（首坏 = UB_RT_WS+0）
+        rows < RT_RB ⇒ 溢到 ids 区内未使用的槽 ⇒ 输出不可见（自愈/无害）
+        store_bytes <= pitch ⇒ 任何 M 都不越界
+
+  store_B    RT_RB   M        rows       覆盖区间(相对 ids 区)           判定
+  512        8       1        1          [0,512)          溢到未使用 ids 槽（无外部可见影响）
+  512        8       8..64    8          [1792,2304)          **越区** 首坏 = UB_RT_WS+0（ws 第 0 行权重）
+  512        16      1        1          [0,512)          溢到未使用 ids 槽（无外部可见影响）
+  512        16      16..64   16         [3840,4352)          **越区** 首坏 = UB_RT_WS+0（ws 第 0 行权重）
+  256        8       1        1          [0,256)          本行内 OK
+  256        8       8..64    8          [1792,2048)          本行内 OK
+  256        16      1        1          [0,256)          本行内 OK
+  256        16      16..64   16         [3840,4096)          本行内 OK
+
+== 触发集合（M 值；RT_RB 取该 rev 的实测值、以及 M91 之前的值 16）==
+  store_B=512  RT_RB=8   触发 M = [8, 16, 24, 32, 40, 48, 56, 64]
+  store_B=512  RT_RB=16  触发 M = [16, 32, 48, 64]
+  store_B=256  RT_RB=8   触发 M = []（store_B <= 行距 ⇒ 无触发 M）
+  store_B=256  RT_RB=16  触发 M = []（store_B <= 行距 ⇒ 无触发 M）
+
+== 读数 vs 假设 ==
+  本表给出的是**条件式**结论：它成立的前提是「单次 ids 落盘写 512B」。
+  实测（probe_mask_lanes 的 row_* 变体 + lane_* 变体）给出的 store_bytes = 256B = 1 VL
+  ⇒ 本表 store_B=256 那一列才是真实几何：任何 M 都不越界。
+  结论与证据的绑定见 README.md §5/§6。
+RESULT: PASS（锚点齐备；表与该 rev 的几何一致）

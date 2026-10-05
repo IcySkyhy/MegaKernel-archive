@@ -1,0 +1,7 @@
+VARIANT op=vldas(id=8) a=16 b=0 n=64 model=1 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0xa2e5ebc34ee528db
+HEAD32 40900000 40b00000 40d00000 40f00000
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (bitwise model match over 1024 bytes; 1024/1024 bytes compared)

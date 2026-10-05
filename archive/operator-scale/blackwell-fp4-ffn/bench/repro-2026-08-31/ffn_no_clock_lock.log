@@ -1,0 +1,39 @@
+=== CONTROL: same binary, NO clock lock, stock 300 W cap ===
+purpose: show what this benchmark reads with no clock lock at the stock power cap
+idle state: 300 MHz, 405 MHz, 11.80 W, 44
+--- UNLOCKED iterations=10 run 1 ---
+  g1   1.4354 ms  670.3 TFLOPS  (gate+up N=28672 K=4096)
+  g2   0.6977 ms  689.5 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5165 ms   BLOCK 2.5491 ms  566.1 TFLOPS(gemm)
+    during-idle sample: 2565 MHz, 13801 MHz, 81.72 W, 56
+--- UNLOCKED iterations=10 run 2 ---
+  g1   1.4410 ms  667.7 TFLOPS  (gate+up N=28672 K=4096)
+  g2   0.7045 ms  682.8 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5292 ms   BLOCK 2.5458 ms  566.9 TFLOPS(gemm)
+    during-idle sample: 2565 MHz, 13801 MHz, 88.29 W, 46
+--- UNLOCKED iterations=10 run 3 ---
+  g1   1.4376 ms  669.2 TFLOPS  (gate+up N=28672 K=4096)
+  g2   0.7037 ms  683.6 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5248 ms   BLOCK 2.5486 ms  566.2 TFLOPS(gemm)
+    during-idle sample: 2565 MHz, 13801 MHz, 87.86 W, 46
+--- UNLOCKED iterations=300 run 1 ---
+  g1   1.5107 ms  636.8 TFLOPS  (gate+up N=28672 K=4096)
+  g2   0.7392 ms  650.8 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.6319 ms   BLOCK 2.6470 ms  545.2 TFLOPS(gemm)
+    during-idle sample: 2640 MHz, 13801 MHz, 256.26 W, 69
+--- UNLOCKED iterations=300 run 2 ---
+  g1   1.5116 ms  636.5 TFLOPS  (gate+up N=28672 K=4096)
+  g2   0.7435 ms  647.0 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.6372 ms   BLOCK 2.6689 ms  540.7 TFLOPS(gemm)
+    during-idle sample: 2677 MHz, 13801 MHz, 251.30 W, 54
+--- UNLOCKED iterations=300 run 3 ---
+  g1   1.5158 ms  634.7 TFLOPS  (gate+up N=28672 K=4096)
+  g2   0.7416 ms  648.6 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.6394 ms   BLOCK 2.6686 ms  540.8 TFLOPS(gemm)
+    during-idle sample: 2670 MHz, 13801 MHz, 266.03 W, 58
+
+=== and with the README's documented default (verify ON, iterations default 10) ===
+(README's own run line: /tmp/fp4_ffn --t=4096 --dm=4096 --dff=14336)
+rc=0 (124 = the documented command exceeded 300 s)
+DONE 2026-08-31T14:20:42-07:00
+EXIT=0

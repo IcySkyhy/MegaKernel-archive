@@ -1,0 +1,128 @@
+### 0. 锚点
+date        = 2026-10-04T09:03:55+00:00
+CANN_HOME   = /usr/local/Ascend/cann-9.1.0
+version.info= Version=9.1.0 version_dir=cann required_package_runtime_version="9.1" required_package_ge-executor_version="9.1" required_package_metadef_version="9.1" required_package_bisheng-compiler_version="9.1" required_package_tbe-tik_version="9.1" timestamp=20260730_231653901 
+BISHENG     = /usr/local/Ascend/cann-9.1.0/bin/bisheng
+bisheng     = 2026-07-30T20:53:21+08:00 clang version 15.0.5 (clang-5c68a1cb1231 flang-5c68a1cb1231)
+ASC_DEVKIT  = /workspace/asc-devkit
+devkit rev  = 648a6018207d75af44c6865f96511bafadd90630
+
+### 1. 官方样例的版本声明（逐字）
+11:| Ascend 950PR/Ascend 950DT | >= CANN 9.2.0 |
+
+### 2. 官方【基础 API】样例 scenario 1，逐字整编（期望：卡在 ceil_div）
+data_copy_ub2l1.asc:83:46: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        loadDataParams.mStep = AscendC::Std::ceil_div(m, 16);
+                               ~~~~~~~~~~~~~~^
+data_copy_ub2l1.asc:84:46: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        loadDataParams.kStep = AscendC::Std::ceil_div(k * sizeof(InputType), 32);
+                               ~~~~~~~~~~~~~~^
+data_copy_ub2l1.asc:85:50: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        loadDataParams.srcStride = AscendC::Std::ceil_div(m, 16);
+                                   ~~~~~~~~~~~~~~^
+data_copy_ub2l1.asc:86:50: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        loadDataParams.dstStride = AscendC::Std::ceil_div(m, 16);
+                                   ~~~~~~~~~~~~~~^
+data_copy_ub2l1.asc:95:63: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        uint16_t nAlign = static_cast<uint16_t>(AscendC::Std::ceil_div(n * sizeof(InputType), 32));
+                                                ~~~~~~~~~~~~~~^
+data_copy_ub2l1.asc:96:63: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        uint16_t kAlign = static_cast<uint16_t>(AscendC::Std::ceil_div(k, 16));
+                                                ~~~~~~~~~~~~~~^
+6 errors generated.
+data_copy_ub2l1.asc:83:46: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        loadDataParams.mStep = AscendC::Std::ceil_div(m, 16);
+                               ~~~~~~~~~~~~~~^
+data_copy_ub2l1.asc:84:46: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        loadDataParams.kStep = AscendC::Std::ceil_div(k * sizeof(InputType), 32);
+                               ~~~~~~~~~~~~~~^
+data_copy_ub2l1.asc:85:50: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        loadDataParams.srcStride = AscendC::Std::ceil_div(m, 16);
+                                   ~~~~~~~~~~~~~~^
+data_copy_ub2l1.asc:86:50: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+        loadDataParams.dstStride = AscendC::Std::ceil_div(m, 16);
+bisheng rc=1   （非 0 = 整编不通过；上面是前 30 行）
+
+### 3. 绕开缺符号的最小探针：把 AscendC::Std::ceil_div 换成等价本地 constexpr，其余一字不改
+bisheng rc=0   （0 = 只差这一个符号；绕开后可编过）
+
+### 4. 官方【C API】样例 scenario 1，逐字整编（期望：先卡 ASCENDC_HOST_AICORE，再卡 ceil_div）
+In file included from data_copy_ub2l1.asc:22:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/utils/std/cmath.h:29:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/impl/utils/std/cmath/sqrt.h:23:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/impl/utils/std/cmath/../type_traits/is_one_of.h:18:
+/usr/local/Ascend/cann-9.1.0/asc/impl/utils/std/cmath/../type_traits/integral_constant.h:29:5: error: unknown type name 'ASCENDC_HOST_AICORE'
+    ASCENDC_HOST_AICORE inline constexpr operator value_type() const noexcept {
+    ^
+/usr/local/Ascend/cann-9.1.0/asc/impl/utils/std/cmath/../type_traits/integral_constant.h:33:5: error: unknown type name 'ASCENDC_HOST_AICORE'
+    ASCENDC_HOST_AICORE inline constexpr value_type operator()() const noexcept {
+    ^
+/usr/local/Ascend/cann-9.1.0/asc/impl/utils/std/cmath/../type_traits/integral_constant.h:33:32: error: non-static data member cannot be constexpr; did you intend to make it const?
+    ASCENDC_HOST_AICORE inline constexpr value_type operator()() const noexcept {
+                               ^~~~~~~~~
+                               const
+/usr/local/Ascend/cann-9.1.0/asc/impl/utils/std/cmath/../type_traits/integral_constant.h:33:25: error: 'inline' can only appear on functions and non-local variables
+    ASCENDC_HOST_AICORE inline constexpr value_type operator()() const noexcept {
+                        ^
+/usr/local/Ascend/cann-9.1.0/asc/impl/utils/std/cmath/../type_traits/integral_constant.h:33:42: error: duplicate member 'value_type'
+    ASCENDC_HOST_AICORE inline constexpr value_type operator()() const noexcept {
+                                         ^
+bisheng rc=1   （非 0 = 整编不通过）
+
+### 5. 拿本探针源码本体做同样的只编不跑（证明「我们自己的最小实现能编过」）
+bisheng rc=0   （0 = 本探针源码可编过）
+
+### 6. 分支判定：DataCopyUB2L1Impl 自身的 #if 到底走了哪条（本机 9.1.0，两条编译选项各一次）
+    6a 文件作用域 vs mix kernel 体内（同一个 #if 抄两处）：
+  [选项: （无）]
+    /tmp/m121_verdiff.aUu5gi/brscope.asc:16:2: error: BODY_MIX_RATION_UNDEFINED
+    /tmp/m121_verdiff.aUu5gi/brscope.asc:3:2: error: SCOPE_FILE_BRANCH_HARDWARE
+    /tmp/m121_verdiff.aUu5gi/brscope.asc:9:2: error: SCOPE_BODY_BRANCH_HARDWARE
+  [选项: -DENABLE_CV_COMM_VIA_SSBUF=true]
+    /tmp/m121_verdiff.aUu5gi/brscope.asc:16:2: error: BODY_MIX_RATION_UNDEFINED
+    /tmp/m121_verdiff.aUu5gi/brscope.asc:3:2: error: SCOPE_FILE_BRANCH_HARDWARE
+    /tmp/m121_verdiff.aUu5gi/brscope.asc:9:2: error: SCOPE_BODY_BRANCH_HARDWARE
+    6b 宏的实际取值（static_assert 故意写错，让诊断把展开后的值打出来）：
+  [选项: （无）]
+    /tmp/m121_verdiff.aUu5gi/brval.asc:4:5: error: static assertion failed due to requirement '0 == 1': PROBE: KFC_C310_SSBUF == 1
+  [选项: -DENABLE_CV_COMM_VIA_SSBUF=true]
+    /tmp/m121_verdiff.aUu5gi/brval.asc:3:5: error: static assertion failed due to requirement '1 == 0': PROBE: KFC_C310_SSBUF == 0
+    读法：默认构建 KFC_C310_SSBUF=0，但 #if 仍成立 —— 因为 __MIX_CORE_AIC_RATION__ 在本机 9.1.0 的
+    mix kernel 体内**未定义**（#if 里当 0 用）⇒ '0 != 1' 为真 ⇒ 落硬件分支。带宏时则是 KFC_C310_SSBUF=1 成立。
+
+### 7. 本机 9.1.0 里这几个官方样例用到的符号的落点
+--- 7a. AscendC::Std::cmath 只有 ceil_division / ceil_align，**没有 ceil_div**：
+31:#include "impl/utils/std/cmath/ceil_division.h"
+32:#include "impl/utils/std/cmath/ceil_align.h"
+--- 7b. asc_unit_flag_mode / asc_store_l2_cache_mode / asc_relu_pre_mode 三个枚举包装在 9.1.0 头里不存在：
+--- 7c. 底层枚举本体在编译器自带头（bisheng）里，故传裸值等价：
+  VSHIFT2S16_POST = 17,
+  SHIFT2S16_POST = 18,
+
+} QuantMode_post;
+
+typedef enum {
+
+  NoQuant= 0,
+#if (defined __DAV_N350__)
+  VREQ8 = 2,
+  REQ8 = 3,
+  QF162S16_PRE = 30,
+  VQF322F16_PRE = 31,
+  QF322F16_PRE = 32,
+  VQF322BF16_PRE = 33,
+  QF322BF16_PRE = 34,
+  VQS322BF16_PRE = 35,
+  QS322BF16_PRE = 36,
+#endif // if (defined __DAV_N350__)
+
+} QuantMode_t;
+
+typedef enum {
+
+### 8. 结论口径（不外推）
+  ① 官方样例（基础 API 与 C API 两版）在 9.1.0 上**整编不通过**，缺的是 9.2 新增的符号/枚举包装；
+  ② 本探针用「本地 constexpr 代替 ceil_div + 传裸值代替枚举包装」绕开，两个 executable 都编过 rc=0；
+  ③ 这**只证明接口/编译面可用**，**不证明**「官方样例本身能在 9.1.0 跑通」——绕开处改变了源码；
+  ④ 本探针真机读数（见 README 主体）与是否绕开无关：它直接调用 9.1.0 头里就有的
+     asc_copy_ub2l1 / 基础 API DataCopy，绕开只影响 L0/L0C 那几行的参数写法。

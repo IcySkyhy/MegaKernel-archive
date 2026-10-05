@@ -1,0 +1,18 @@
+{
+  "tensor": "y_sorted.bin",
+  "shape": [
+    2,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 10240,
+  "sha256": "e25797f9cd0b091a8186fe25b2ac251c17e690a7c68d30aa0fa2da6aa2448f5d",
+  "kind": "golden",
+  "description": "GMM#2 output (bf16), compact rows [m*top_k, hidden]"
+}

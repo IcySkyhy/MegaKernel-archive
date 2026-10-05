@@ -1,0 +1,702 @@
+# Copyright © 2024 Apple Inc.
+
+import math
+from dataclasses import dataclass
+from functools import partial
+from typing import Any, Dict, Optional
+
+import mlx.core as mx
+import mlx.nn as nn
+from mlx.nn.layers.distributed import shard_inplace, shard_linear, sum_gradients
+
+from .activations import swiglu
+from .base import (
+    BaseModelArgs,
+    _contiguous_quant,
+    create_attention_mask,
+    scaled_dot_product_attention,
+)
+from .mla import (
+    MultiLinear,
+    absorbed_max_query,
+    refuse_asymmetric_mla_kv_bits,
+    use_absorbed_path,
+)
+from .pipeline import PipelineMixin
+from .rope_utils import initialize_rope
+from .switch_layers import SwitchGLU
+
+
+@dataclass
+class ModelArgs(BaseModelArgs):
+    model_type: str = "deepseek_v3"
+    vocab_size: int = 102400
+    hidden_size: int = 4096
+    intermediate_size: int = 11008
+    moe_intermediate_size: int = 1407
+    num_hidden_layers: int = 30
+    num_attention_heads: int = 32
+    num_key_value_heads: int = 32
+    n_shared_experts: Optional[int] = None
+    n_routed_experts: Optional[int] = None
+    routed_scaling_factor: float = 1.0
+    kv_lora_rank: int = 512
+    q_lora_rank: int = 1536
+    qk_rope_head_dim: int = 64
+    v_head_dim: int = 128
+    qk_nope_head_dim: int = 128
+    topk_method: str = "noaux_tc"
+    scoring_func: str = "sigmoid"
+    norm_topk_prob: bool = True
+    n_group: int = 1
+    topk_group: int = 1
+    num_experts_per_tok: int = 1
+    moe_layer_freq: int = 1
+    first_k_dense_replace: int = 0
+    max_position_embeddings: int = 2048
+    rms_norm_eps: float = 1e-6
+    rope_theta: float = 10000.0
+    rope_scaling: Dict = None
+    attention_bias: bool = False
+    # Instella-MoE extensions (arXiv:2511.10628). All default off so stock
+    # DeepSeek-V3 checkpoints are unaffected.
+    gated_attention: bool = False
+    rope_interleave: bool = False
+    farskip: bool = False
+    farskip_start_idx: int = 0
+    farskip_end_idx: int = 10**9
+    attn_only_farskip: bool = False
+    mlp_only_farskip: bool = False
+
+
+class DeepseekV3Attention(nn.Module):
+    def __init__(self, config: ModelArgs):
+        super().__init__()
+        self.config = config
+        self.hidden_size = config.hidden_size
+        self.num_heads = config.num_attention_heads
+        self.max_position_embeddings = config.max_position_embeddings
+        self.rope_theta = config.rope_theta
+        self.q_lora_rank = config.q_lora_rank
+        self.qk_rope_head_dim = config.qk_rope_head_dim
+        self.kv_lora_rank = config.kv_lora_rank
+        self.v_head_dim = config.v_head_dim
+        self.qk_nope_head_dim = config.qk_nope_head_dim
+        self.q_head_dim = config.qk_nope_head_dim + config.qk_rope_head_dim
+
+        self.scale = self.q_head_dim**-0.5
+
+        if self.q_lora_rank is None:
+            self.q_proj = nn.Linear(
+                self.hidden_size, self.num_heads * self.q_head_dim, bias=False
+            )
+        else:
+            self.q_a_proj = nn.Linear(
+                self.hidden_size, self.q_lora_rank, bias=config.attention_bias
+            )
+            self.q_a_layernorm = nn.RMSNorm(self.q_lora_rank, eps=1e-6)
+            self.q_b_proj = nn.Linear(
+                self.q_lora_rank, self.num_heads * self.q_head_dim, bias=False
+            )
+
+        self.kv_a_proj_with_mqa = nn.Linear(
+            self.hidden_size,
+            self.kv_lora_rank + self.qk_rope_head_dim,
+            bias=config.attention_bias,
+        )
+        self.kv_a_layernorm = nn.RMSNorm(self.kv_lora_rank, eps=1e-6)
+        self.embed_q = MultiLinear(
+            self.qk_nope_head_dim, self.kv_lora_rank, self.num_heads
+        )
+        self.unembed_out = MultiLinear(
+            self.kv_lora_rank, self.v_head_dim, self.num_heads
+        )
+
+        # Absorbed MLA is cheaper than the expanded form for every query width
+        # up to a crossover that depends on both the geometry and the attended
+        # cache length (see mla.absorbed_max_query for the derivation), not just
+        # for L == 1 -- which covers the whole speculative-verify range
+        # (L = k+1) against a warm cache.  self.absorbed_max_query is the
+        # asymptotic (long-cache) value, kept for receipts; the forward gate
+        # resolves the S-aware limit per call.
+        self.absorbed_geometry = (
+            self.kv_lora_rank,
+            self.qk_nope_head_dim,
+            self.v_head_dim,
+        )
+        self.absorbed_max_query = absorbed_max_query(*self.absorbed_geometry)
+
+        self.o_proj = nn.Linear(
+            self.num_heads * self.v_head_dim,
+            self.hidden_size,
+            bias=config.attention_bias,
+        )
+
+        # Instella-MoE gated attention: attn_output * sigmoid(gate(x)) before o_proj.
+        self.gated_attention = getattr(config, "gated_attention", False)
+        if self.gated_attention:
+            self.gate_proj = nn.Linear(
+                self.hidden_size, self.num_heads * self.v_head_dim, bias=False
+            )
+
+        if self.config.rope_scaling is not None:
+            mscale_all_dim = self.config.rope_scaling.get("mscale_all_dim", 0)
+            if mscale_all_dim:
+                scaling_factor = self.config.rope_scaling["factor"]
+                if scaling_factor > 1:
+                    s = 0.1 * mscale_all_dim * math.log(scaling_factor) + 1.0
+                    self.scale = self.scale * s * s
+
+        # traditional=True (adjacent-pair pairing) is also correct for
+        # Instella's rope_interleave=True: HF's interleaved apply differs from
+        # MLX traditional RoPE only by a fixed permutation of the rope dims,
+        # which cancels in the q_pe @ k_pe dot product.
+        self.rope = initialize_rope(
+            dims=self.qk_rope_head_dim,
+            base=self.rope_theta,
+            traditional=True,
+            max_position_embeddings=self.max_position_embeddings,
+            scaling_config=self.config.rope_scaling,
+        )
+
+    def __call__(
+        self,
+        x: mx.array,
+        mask: Optional[mx.array] = None,
+        cache: Optional[Any] = None,
+    ) -> mx.array:
+        B, L, D = x.shape
+
+        if self.q_lora_rank is None:
+            q = self.q_proj(x)
+        else:
+            q = self.q_b_proj(self.q_a_layernorm(self.q_a_proj(x)))
+
+        q = q.reshape(B, L, self.num_heads, self.q_head_dim).transpose(0, 2, 1, 3)
+        q_nope, q_pe = mx.split(q, [self.qk_nope_head_dim], axis=-1)
+        compressed_kv = self.kv_a_proj_with_mqa(x)
+        compressed_kv, k_pe = mx.split(compressed_kv, [self.kv_lora_rank], axis=-1)
+        k_pe = k_pe.reshape(B, L, 1, self.qk_rope_head_dim).transpose(0, 2, 1, 3)
+        kv_latent = self.kv_a_layernorm(compressed_kv)
+
+        offset = cache.offset if cache is not None else 0
+        q_pe = self.rope(q_pe, offset)
+        k_pe = self.rope(k_pe, offset)
+
+        kv_latent = mx.expand_dims(kv_latent, axis=1)
+
+        if cache is not None:
+            kv_latent, k_pe = cache.update_and_fetch(kv_latent, k_pe)
+
+        # A QuantizedKVCache returns (weight, scales, biases) tuples for the
+        # cached latent and rope keys.
+        quantized = not isinstance(k_pe, mx.array)
+        if quantized:
+            refuse_asymmetric_mla_kv_bits(cache, "DeepseekV3")
+            pe_scores = mx.quantized_matmul(
+                q_pe * self.scale,
+                *k_pe,
+                transpose=True,
+                group_size=cache.group_size,
+                bits=cache.bits,
+            )
+        else:
+            pe_scores = (q_pe * self.scale) @ k_pe.swapaxes(-1, -2)
+        if mask is not None:
+            pe_scores = mx.where(
+                mask,
+                pe_scores,
+                mx.array(mx.finfo(pe_scores.dtype).min, pe_scores.dtype),
+            )
+
+        absorbed = use_absorbed_path(
+            L, pe_scores.shape[-1], self.absorbed_geometry
+        )
+        if absorbed:
+            q_nope = self.embed_q(q_nope)
+            k = v = kv_latent
+            output = scaled_dot_product_attention(
+                q_nope, k, v, cache=cache, scale=self.scale, mask=pe_scores
+            )
+        else:
+            if quantized:
+                kv_latent = mx.dequantize(
+                    *_contiguous_quant(kv_latent),
+                    group_size=cache.group_size,
+                    bits=cache.bits,
+                )
+            k = self.embed_q(kv_latent, transpose=False)
+            v = self.unembed_out(kv_latent)
+            # k/v are materialized arrays here, so use the plain SDPA path
+            # even when the cache itself is quantized.
+            output = scaled_dot_product_attention(
+                q_nope, k, v, cache=None, scale=self.scale, mask=pe_scores
+            )
+        if absorbed:
+            output = self.unembed_out(output)
+
+        output = output.transpose(0, 2, 1, 3).reshape(B, L, -1)
+        if self.gated_attention:
+            # Gate input is the attention input x (already input-layernormed by
+            # the decoder layer), matching HF MLAGatedAttention.
+            output = output * mx.sigmoid(self.gate_proj(x))
+        return self.o_proj(output)
+
+
+class DeepseekV3MLP(nn.Module):
+    def __init__(
+        self, config: ModelArgs, hidden_size: int = None, intermediate_size: int = None
+    ):
+        super().__init__()
+        self.config = config
+        self.hidden_size = config.hidden_size if hidden_size is None else hidden_size
+        self.intermediate_size = (
+            config.intermediate_size if intermediate_size is None else intermediate_size
+        )
+
+        self.gate_proj = nn.Linear(self.hidden_size, self.intermediate_size, bias=False)
+        self.up_proj = nn.Linear(self.hidden_size, self.intermediate_size, bias=False)
+        self.down_proj = nn.Linear(self.intermediate_size, self.hidden_size, bias=False)
+
+    def __call__(self, x):
+        down_proj = self.down_proj(swiglu(self.gate_proj(x), self.up_proj(x)))
+        return down_proj
+
+
+@mx.compile
+def group_expert_select(
+    gates,
+    e_score_correction_bias,
+    top_k,
+    n_group,
+    topk_group,
+    routed_scaling_factor,
+    norm_topk_prob,
+):
+
+    scores = mx.sigmoid(gates.astype(mx.float32))
+    orig_scores = scores
+    scores = scores + e_score_correction_bias
+    if n_group > 1:
+        scores = mx.unflatten(scores, axis=-1, shape=(n_group, -1))
+        group_scores = mx.topk(scores, 2, axis=-1).sum(axis=-1, keepdims=True)
+        k = n_group - topk_group
+        group_idx = mx.argpartition(group_scores, kth=k - 1, axis=-2)[..., :k, :]
+        scores = mx.put_along_axis(
+            scores, mx.stop_gradient(group_idx), mx.array(0.0), axis=-2
+        )
+        scores = mx.flatten(scores, -2, -1)
+
+    k = top_k
+    inds = mx.argpartition(-scores, kth=k - 1, axis=-1)[..., :k]
+    scores = mx.take_along_axis(orig_scores, inds, axis=-1)
+    if top_k > 1 and norm_topk_prob:
+        denominator = scores.sum(axis=-1, keepdims=True)
+        scores = scores / denominator
+    scores = scores * routed_scaling_factor
+
+    return inds, scores
+
+
+class MoEGate(nn.Module):
+    def __init__(self, config: ModelArgs):
+        super().__init__()
+        self.config = config
+        self.top_k = config.num_experts_per_tok
+        self.norm_topk_prob = config.norm_topk_prob
+        self.n_routed_experts = config.n_routed_experts
+        self.routed_scaling_factor = config.routed_scaling_factor
+        self.n_group = config.n_group
+        self.topk_group = config.topk_group
+        self.weight = mx.zeros((self.n_routed_experts, config.hidden_size))
+        self.e_score_correction_bias = mx.zeros((self.n_routed_experts,))
+        assert config.topk_method == "noaux_tc", "Unsupported topk method."
+
+    def __call__(self, x):
+        return group_expert_select(
+            x @ self.weight.T,
+            self.e_score_correction_bias,
+            self.top_k,
+            self.n_group,
+            self.topk_group,
+            self.routed_scaling_factor,
+            self.norm_topk_prob,
+        )
+
+
+class DeepseekV3MoE(nn.Module):
+    def __init__(self, config: ModelArgs):
+        super().__init__()
+        self.config = config
+        self.num_experts_per_tok = config.num_experts_per_tok
+        self.switch_mlp = SwitchGLU(
+            config.hidden_size,
+            config.moe_intermediate_size,
+            config.n_routed_experts,
+        )
+
+        self.gate = MoEGate(config)
+        if config.n_shared_experts is not None:
+            intermediate_size = config.moe_intermediate_size * config.n_shared_experts
+            self.shared_experts = DeepseekV3MLP(
+                config=config, intermediate_size=intermediate_size
+            )
+
+        self.sharding_group = None
+
+    def __call__(self, x, return_parts=False):
+        if self.sharding_group is not None:
+            x = sum_gradients(self.sharding_group)(x)
+
+        inds, scores = self.gate(x)
+        routed = self.switch_mlp(x, inds)
+        routed = (routed * scores[..., None]).sum(axis=-2).astype(routed.dtype)
+        shared = (
+            self.shared_experts(x)
+            if self.config.n_shared_experts is not None
+            else None
+        )
+
+        # FarSkip needs routed and shared separately to maintain its two
+        # residual streams; all_sum is linear so splitting it is equivalent.
+        if return_parts:
+            if shared is None:
+                shared = mx.zeros_like(routed)
+            if self.sharding_group is not None:
+                routed = mx.distributed.all_sum(routed, group=self.sharding_group)
+                shared = mx.distributed.all_sum(shared, group=self.sharding_group)
+            return routed, shared
+
+        y = routed if shared is None else routed + shared
+        if self.sharding_group is not None:
+            y = mx.distributed.all_sum(y, group=self.sharding_group)
+
+        return y
+
+
+class DeepseekV3DecoderLayer(nn.Module):
+    def __init__(self, config: ModelArgs, layer_idx: int):
+        super().__init__()
+        self.config = config
+        self.self_attn = DeepseekV3Attention(config)
+        self.mlp = (
+            DeepseekV3MoE(config)
+            if (
+                config.n_routed_experts is not None
+                and layer_idx >= config.first_k_dense_replace
+                and layer_idx % config.moe_layer_freq == 0
+            )
+            else DeepseekV3MLP(config)
+        )
+        self.input_layernorm = nn.RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.post_attention_layernorm = nn.RMSNorm(
+            config.hidden_size, eps=config.rms_norm_eps
+        )
+        # FarSkip-Collective connectivity (Instella-MoE): enabled layers carry
+        # two residual streams (full, routed-free) as a tuple between layers.
+        # getattr with defaults: kimi_vl builds this model from its own
+        # TextArgs, which carries none of the Instella-MoE fields.
+        self.farskip = getattr(config, "farskip", False) and (
+            getattr(config, "farskip_start_idx", 0)
+            <= layer_idx
+            <= min(
+                getattr(config, "farskip_end_idx", 10**9),
+                config.num_hidden_layers - 1,
+            )
+        )
+
+    def __call__(
+        self,
+        x,
+        mask: Optional[mx.array] = None,
+        cache: Optional[Any] = None,
+    ):
+        if not self.farskip:
+            if isinstance(x, tuple):
+                x = x[0]
+            r = self.self_attn(self.input_layernorm(x), mask, cache)
+            h = x + r
+            r = self.mlp(self.post_attention_layernorm(h))
+            return h + r
+
+        if isinstance(x, tuple):
+            residual, attn_in = x
+            mlp_in = residual
+        else:
+            residual = attn_in = mlp_in = x
+        if getattr(self.config, "attn_only_farskip", False):
+            mlp_in = None
+        if getattr(self.config, "mlp_only_farskip", False):
+            attn_in = residual
+
+        r = self.self_attn(self.input_layernorm(attn_in), mask, cache)
+        residual = residual + r
+
+        if mlp_in is None:
+            mlp_in = residual
+        mlp_in = self.post_attention_layernorm(mlp_in)
+
+        if isinstance(self.mlp, DeepseekV3MoE):
+            routed, shared = self.mlp(mlp_in, return_parts=True)
+            residual_no_routed = residual + shared
+            residual = residual + routed + shared
+            return residual, residual_no_routed
+        return residual + self.mlp(mlp_in)
+
+
+class DeepseekV3Model(PipelineMixin, nn.Module):
+    def __init__(self, config: ModelArgs):
+        super().__init__()
+        self.vocab_size = config.vocab_size
+        self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size)
+        self.layers = [
+            DeepseekV3DecoderLayer(config, idx)
+            for idx in range(config.num_hidden_layers)
+        ]
+        self.norm = nn.RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+
+    def __call__(
+        self,
+        x: mx.array,
+        cache: Optional[Any] = None,
+    ) -> mx.array:
+        h = self.embed_tokens(x)
+
+        pipeline_rank = self.pipeline_rank
+        pipeline_size = self.pipeline_size
+
+        if cache is None:
+            cache = [None] * len(self.pipeline_layers)
+        mask = create_attention_mask(h, cache[0], return_array=True)
+
+        # Receive from the previous process in the pipeline
+        if pipeline_rank < pipeline_size - 1:
+            h = mx.distributed.recv_like(h, (pipeline_rank + 1))
+
+        for l, c in zip(self.pipeline_layers, cache):
+            h = l(h, mask, cache=c)
+
+        # FarSkip layers pass (residual, residual_no_routed); the final norm
+        # uses the routed-inclusive stream, matching HF InstellaMoEModel.
+        if isinstance(h, tuple):
+            h = h[0]
+
+        # Send to the next process in the pipeline
+        if pipeline_rank != 0:
+            h = mx.distributed.send(h, (pipeline_rank - 1) % pipeline_size)
+            if cache[-1] is not None:
+                cache[-1].keys = mx.depends(cache[-1].keys, h)
+
+        # Broadcast h while keeping it in the graph
+        if pipeline_size > 1:
+            h = mx.distributed.all_gather(h)[: h.shape[0]]
+
+        return self.norm(h)
+
+
+class Model(nn.Module):
+    def __init__(self, config: ModelArgs):
+        super().__init__()
+        self.args = config
+        self.model_type = config.model_type
+        self.model = DeepseekV3Model(config)
+        self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
+
+    def __call__(
+        self,
+        inputs: mx.array,
+        cache: Optional[Any] = None,
+    ):
+        out = self.model(inputs, cache)
+        return self.lm_head(out)
+
+    def sanitize(self, weights):
+        def dequant(weight, scale_inv):
+            dtype = mx.bfloat16
+            weight = mx.from_fp8(weight, dtype=mx.bfloat16)
+            bs = 128  # block size
+            m, n = weight.shape
+            pad_bottom = (-m) % bs
+            pad_side = (-n) % bs
+            weight = mx.pad(weight, ((0, pad_bottom), (0, pad_side)))
+            weight = weight.reshape(
+                ((m + pad_bottom) // bs, bs, (n + pad_side) // bs, bs)
+            )
+            weight = (weight * scale_inv[:, None, :, None]).reshape(
+                m + pad_bottom, n + pad_side
+            )
+            return weight[:m, :n].astype(dtype)
+
+        # Remap for int4
+        new_weights = {}
+        for k, v in weights.items():
+            if k.endswith("weight_shape"):
+                base = k.replace("weight_shape", "")
+                new_weights[base + "weight"] = weights[base + "weight_packed"].view(
+                    mx.uint32
+                )
+                s = weights[base + "weight_scale"]
+                new_weights[base + "scales"] = s
+                new_weights[base + "biases"] = -8 * s
+            elif not (k.endswith("weight_scale") or k.endswith("weight_packed")):
+                new_weights[k] = v
+        weights = new_weights
+
+        # Dequantize fp8
+        new_weights = {}
+        for k, v in weights.items():
+            if "weight_scale_inv" in k:
+                scale_inv = v
+                wk = k.replace("_scale_inv", "")
+                weight = weights[wk]
+                weight = dequant(weight, scale_inv)
+                new_weights[wk] = weight
+            elif k not in new_weights:
+                new_weights[k] = v
+        weights = new_weights
+
+        # Stack experts
+        for l in range(self.args.num_hidden_layers):
+            prefix = f"model.layers.{l}"
+            for n, m in [("w1", "gate_proj"), ("w2", "down_proj"), ("w3", "up_proj")]:
+                for k in ["weight", "scales", "biases"]:
+                    if f"{prefix}.mlp.experts.0.{m}.{k}" in weights:
+                        to_join = [
+                            weights.pop(f"{prefix}.mlp.experts.{e}.{m}.{k}")
+                            for e in range(self.args.n_routed_experts)
+                        ]
+                        weights[f"{prefix}.mlp.switch_mlp.{m}.{k}"] = mx.stack(to_join)
+            prefix = f"model.layers.{l}.self_attn"
+            if f"{prefix}.kv_b_proj.weight" in weights:
+                layer = self.model.layers[l].self_attn.embed_q
+                quantized = f"{prefix}.kv_b_proj.scales" in weights
+                v = weights.pop(f"{prefix}.kv_b_proj.weight")
+                head_dim = self.args.qk_nope_head_dim + self.args.v_head_dim
+
+                if quantized:
+                    dims = self.args.kv_lora_rank
+                    scales = weights.pop(f"{prefix}.kv_b_proj.scales")
+                    biases = weights.pop(f"{prefix}.kv_b_proj.biases", None)
+                    quant_mode = (getattr(self.args, "quantization", None) or {}).get(
+                        "mode", "affine"
+                    )
+                    if biases is None or quant_mode != "affine":
+                        raise ValueError(
+                            "unsupported quantization mode for MLA kv_b_proj "
+                            f"folding: {quant_mode!r}"
+                            + ("" if biases is not None else " (no biases tensor)")
+                            + "; only affine quantization is supported"
+                        )
+                    # Try to infer bits and group size
+                    bits = (v.shape[-1] * 32) // dims
+                    group_size = dims // scales.shape[-1]
+                    v = mx.dequantize(
+                        v, scales, biases, bits=bits, group_size=group_size
+                    )
+                num_heads = self.args.num_attention_heads
+                v = v.reshape(num_heads, head_dim, -1)
+                wk = mx.contiguous(
+                    v[:, : self.args.qk_nope_head_dim, :].swapaxes(-1, -2)
+                )
+                wv = mx.contiguous(v[:, self.args.qk_nope_head_dim :, :])
+                if quantized:
+                    wk, wk_scales, wk_biases = mx.quantize(
+                        wk, bits=bits, group_size=group_size
+                    )
+                    wv, wv_scales, wv_biases = mx.quantize(
+                        wv, bits=bits, group_size=group_size
+                    )
+                    weights[f"{prefix}.embed_q.scales"] = wk_scales
+                    weights[f"{prefix}.unembed_out.scales"] = wv_scales
+                    weights[f"{prefix}.embed_q.biases"] = wk_biases
+                    weights[f"{prefix}.unembed_out.biases"] = wv_biases
+                weights[f"{prefix}.embed_q.weight"] = wk
+                weights[f"{prefix}.unembed_out.weight"] = wv
+
+        # Remove multi-token prediction layer(s) — any layer index at or above
+        # num_hidden_layers — and any unused precomputed rotary freqs.
+        def is_mtp_layer(k):
+            if not k.startswith("model.layers."):
+                return False
+            return int(k.split(".")[2]) >= self.args.num_hidden_layers
+
+        return {
+            k: v
+            for k, v in weights.items()
+            if not is_mtp_layer(k) and "rotary_emb.inv_freq" not in k
+        }
+
+    def shard(self, group: Optional[mx.distributed.Group] = None):
+        group = group or mx.distributed.init()
+        N = group.size()
+        rank = group.rank()
+        for layer in self.model.layers:
+            # Shard the self attention
+            if layer.self_attn.q_lora_rank is None:
+                layer.self_attn.q_proj = shard_linear(
+                    layer.self_attn.q_proj, "all-to-sharded", group=group
+                )
+            else:
+                layer.self_attn.q_b_proj = shard_linear(
+                    layer.self_attn.q_b_proj, "all-to-sharded", group=group
+                )
+            layer.self_attn.num_heads //= N
+            num_heads = layer.self_attn.num_heads
+            sh = rank * num_heads
+            eh = sh + num_heads
+
+            def shard_heads(w):
+                return w[sh:eh]
+
+            layer.self_attn.embed_q.apply(shard_heads)
+            layer.self_attn.unembed_out.apply(shard_heads)
+
+            layer.self_attn.o_proj = shard_linear(
+                layer.self_attn.o_proj, "sharded-to-all", group=group
+            )
+
+            # Shard the MLP
+            if isinstance(layer.mlp, DeepseekV3MLP):
+                layer.mlp.gate_proj = shard_linear(
+                    layer.mlp.gate_proj, "all-to-sharded", group=group
+                )
+                layer.mlp.down_proj = shard_linear(
+                    layer.mlp.down_proj, "sharded-to-all", group=group
+                )
+                layer.mlp.up_proj = shard_linear(
+                    layer.mlp.up_proj, "all-to-sharded", group=group
+                )
+
+            # Shard the MoE. Shard in place since the MoE should be responsible
+            # for aggregating the results.
+            else:
+                layer.mlp.sharding_group = group
+                shard_inplace(
+                    layer.mlp.shared_experts.gate_proj, "all-to-sharded", group=group
+                )
+                shard_inplace(
+                    layer.mlp.shared_experts.down_proj, "sharded-to-all", group=group
+                )
+                shard_inplace(
+                    layer.mlp.shared_experts.up_proj, "all-to-sharded", group=group
+                )
+                shard_inplace(
+                    layer.mlp.switch_mlp.gate_proj, "all-to-sharded", group=group
+                )
+                shard_inplace(
+                    layer.mlp.switch_mlp.down_proj, "sharded-to-all", group=group
+                )
+                shard_inplace(
+                    layer.mlp.switch_mlp.up_proj, "all-to-sharded", group=group
+                )
+
+    @property
+    def layers(self):
+        return self.model.pipeline_layers
+
+    @property
+    def cast_predicate(self):
+        def predicate(k):
+            return "e_score_correction_bias" not in k
+
+        return predicate

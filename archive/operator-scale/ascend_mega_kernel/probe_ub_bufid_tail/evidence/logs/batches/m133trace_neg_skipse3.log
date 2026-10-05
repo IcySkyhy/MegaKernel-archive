@@ -1,0 +1,12 @@
+# M133 P2-2 取证批：trace=1（kernel 内逐次 printf；挂死档与对照档各一）
+# variant=neg_skipse3 reps=2 timeout=20s date=2026-10-04T10:56:34+00:00
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 207.3       71                0     / 0             |
+lock_acquired=2026-10-04T10:56:35+00:00
+--- run 1 (timeout 20s) ---
+[probe] mode=tail variant=neg_skipse3 vi=17 run=1 N=8 handoffs=1 idSame=1 apiV=1 apiE3=1 skipVrel=0 skipE3rel=1 copyForm=0 trace=1 blocks=1
+exit=124
+--- run 2 (timeout 20s) ---
+[probe] mode=tail variant=neg_skipse3 vi=17 run=2 N=8 handoffs=1 idSame=1 apiV=1 apiE3=1 skipVrel=0 skipE3rel=1 copyForm=0 trace=1 blocks=1
+exit=124

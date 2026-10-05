@@ -1,0 +1,36 @@
+# M58 · weights_manifest.txt 的增量（M52 入库版 → 本 mission）
+# 复现：git show HEAD:m15_layer_loop/weights_manifest.txt > /tmp/m58_manifest_before.txt
+#       python3 m15_layer_loop/slice_layer_manifest.py --out m15_layer_loop/weights_manifest.txt
+#       diff /tmp/m58_manifest_before.txt m15_layer_loop/weights_manifest.txt
+#
+# 口径：本文件为**纯增量**（原有 900 条张量行一字未改，仅在每层末尾追加 8 条 hc 角色）
+# 行数：**张量行** 900 → 1284（+384 = 48 层 × 8 行）；`wc -l` 含 4 行文件头 ⇒ 904 → 1288
+#   （review r2 的 P2-B/C 一轮里把这条口径写明确，免得读者按 `wc -l` 对不上；数值本身未变）
+
+## 1. 差异摘要（diff 的 hunk 头 + 每层追加块的样例）
+25a26,33
+> tensor layer=0 role=attn_hc_norm file=model-00001-of-00131.safetensors offset=13248904 bytes=20480 dtype=BF16 rows=1 cols=10240
+> tensor layer=0 role=attn_hc_down file=model-00001-of-00131.safetensors offset=13269384 bytes=6553600 dtype=BF16 rows=320 cols=10240
+> tensor layer=0 role=attn_hc_up file=model-00001-of-00131.safetensors offset=19822984 bytes=6553600 dtype=BF16 rows=10240 cols=320
+> tensor layer=0 role=attn_hc_inj file=model-00001-of-00131.safetensors offset=13166984 bytes=81920 dtype=BF16 rows=4 cols=10240
+> tensor layer=0 role=mlp_hc_norm file=model-00003-of-00131.safetensors offset=2712169 bytes=20480 dtype=BF16 rows=1 cols=10240
+> tensor layer=0 role=mlp_hc_down file=model-00003-of-00131.safetensors offset=2732649 bytes=6553600 dtype=BF16 rows=320 cols=10240
+> tensor layer=0 role=mlp_hc_up file=model-00003-of-00131.safetensors offset=9286249 bytes=6553600 dtype=BF16 rows=10240 cols=320
+> tensor layer=0 role=mlp_hc_inj file=model-00003-of-00131.safetensors offset=2630249 bytes=81920 dtype=BF16 rows=4 cols=10240
+46a55,62
+> tensor layer=1 role=attn_hc_norm file=model-00003-of-00131.safetensors offset=15921769 bytes=20480 dtype=BF16 rows=1 cols=10240
+> tensor layer=1 role=attn_hc_down file=model-00003-of-00131.safetensors offset=15942249 bytes=6553600 dtype=BF16 rows=320 cols=10240
+  ...（共 384 行新增，0 行删除）
+
+## 2. 删除行清单（应为空）
+删除行数 = 0
+
+## 3. 层 0 的 8 行 hc 张量（样例）
+tensor layer=0 role=attn_hc_norm file=model-00001-of-00131.safetensors offset=13248904 bytes=20480 dtype=BF16 rows=1 cols=10240
+tensor layer=0 role=attn_hc_down file=model-00001-of-00131.safetensors offset=13269384 bytes=6553600 dtype=BF16 rows=320 cols=10240
+tensor layer=0 role=attn_hc_up file=model-00001-of-00131.safetensors offset=19822984 bytes=6553600 dtype=BF16 rows=10240 cols=320
+tensor layer=0 role=attn_hc_inj file=model-00001-of-00131.safetensors offset=13166984 bytes=81920 dtype=BF16 rows=4 cols=10240
+tensor layer=0 role=mlp_hc_norm file=model-00003-of-00131.safetensors offset=2712169 bytes=20480 dtype=BF16 rows=1 cols=10240
+tensor layer=0 role=mlp_hc_down file=model-00003-of-00131.safetensors offset=2732649 bytes=6553600 dtype=BF16 rows=320 cols=10240
+tensor layer=0 role=mlp_hc_up file=model-00003-of-00131.safetensors offset=9286249 bytes=6553600 dtype=BF16 rows=10240 cols=320
+tensor layer=0 role=mlp_hc_inj file=model-00003-of-00131.safetensors offset=2630249 bytes=81920 dtype=BF16 rows=4 cols=10240

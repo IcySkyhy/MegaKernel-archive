@@ -1,0 +1,155 @@
+# M105 · 生成器 A/B 证据（第 2 轮形态；r2 复审后按建议改措辞）
+
+口径：**m15_moe_layer.h 是生成物**。本 mission 只改生成器 `m15_layer_loop/lift_moe_segment.py`，
+然后重新生成。本节证明：① 动手之前库内 artifact 与（未改的）生成器一致（基线 = 不可变 rev `20bd20d`）；
+② 改后生成器产物与库内新 artifact 逐字节相同 —— 即库内 artifact 不是手改的。
+
+## 0) 基线（不可变 rev `20bd20d` 的库内 artifact）与 tip 上的 `--check`
+```
+$ git show 20bd20d:m15_layer_loop/m15_moe_layer.h | sha256sum
+0af84032dc194e8a0350caf822e91ae005833dae8df52b0ce98ea65c577b2a64  -
+$ cd <wt-105>/m15_layer_loop && python3 lift_moe_segment.py --check; echo rc=$?
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+```
+
+## 1) 旧生成器（`git show 20bd20d:…` 的版本）在 /tmp 重生成 ⇒ 逐字节 == base rev 的库内 artifact
+```
+$ git show 20bd20d:m15_layer_loop/lift_moe_segment.py > /tmp/m105/gen_old/lift_moe_segment.py
+$ ln -sfn <wt-105>/m13_moe_layer /tmp/m105/m13_moe_layer   # SRC 锚点 = HERE.parent/m13_moe_layer/m13_moe_layer.asc
+$ sha256sum /tmp/m105/gen_old/lift_moe_segment.py
+90a1a651ab5577449ab60b4abebf7092337f54726411ee67f722f7231f615bb1  lift_moe_segment.py
+$ python3 /tmp/m105/gen_old/lift_moe_segment.py; echo rc=$?
+[lift] 写出 m15_moe_layer.h（2293 行；内容锚点 asc 行 62..2031，入口第 2033 行）
+rc=0
+$ python3 /tmp/m105/gen_old/lift_moe_segment.py --check; echo rc=$?
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+$ sha256sum /tmp/m105/gen_old/m15_moe_layer.h
+0af84032dc194e8a0350caf822e91ae005833dae8df52b0ce98ea65c577b2a64  /tmp/m105/gen_old/m15_moe_layer.h
+$ diff <(git show 20bd20d:m15_layer_loop/m15_moe_layer.h) /tmp/m105/gen_old/m15_moe_layer.h; echo rc=$?
+rc=0  ⇒ diff 空 = IDENTICAL
+```
+
+## 2) 新生成器在 /tmp 重生成 ⇒ 逐字节 == 库内新 artifact
+```
+$ cp <wt-105>/m15_layer_loop/lift_moe_segment.py /tmp/m105/gen_new/   # 同源副本
+$ sha256sum /tmp/m105/gen_new/lift_moe_segment.py
+4a29e04b8d4a384aa705af6b73c6522dea54c012cdb14fe67d1ca1c857dce39f  lift_moe_segment.py
+$ python3 /tmp/m105/gen_new/lift_moe_segment.py; echo rc=$?
+[lift] 写出 m15_moe_layer.h（2320 行；内容锚点 asc 行 62..2031，入口第 2033 行）
+rc=0
+$ python3 /tmp/m105/gen_new/lift_moe_segment.py --check; echo rc=$?
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+$ sha256sum /tmp/m105/gen_new/m15_moe_layer.h
+50b12682c03371121e57760b953522d0d3f90b50e89b011cc023cf824dc138a2  /tmp/m105/gen_new/m15_moe_layer.h
+$ diff /tmp/m105/gen_new/m15_moe_layer.h <wt-105>/m15_layer_loop/m15_moe_layer.h; echo rc=$?
+rc=0  ⇒ diff 空 = IDENTICAL
+```
+
+## 2b) 只改注释不改二进制（r2 复审后按建议改了「成对形态」的措辞；2026-10-04 实编）
+```
+$ sha256sum m15_layer_loop/m15_moe_layer.h   # 第 2 轮送审版（措辞修订前）
+ee12ba635c952873f0aedee25f42313b849b89e828931f5677b689129e9145a6  m15_moe_layer.h
+$ sha256sum m15_layer_loop/m15_moe_layer.h   # 措辞修订后（= 本 tip）
+50b12682c03371121e57760b953522d0d3f90b50e89b011cc023cf824dc138a2  /workspace/ascend_mega_kernel/.tower/worktrees/wt-105/m15_layer_loop/m15_moe_layer.h
+$ 在两棵等价树（/tmp/m105/c9_fix2 与 /tmp/m105/c9_fix2b）各编一次:
+措辞修订前（artifact ee12ba63…）→ build/m15_layer_loop sha256 8310e71df5d83f21bf3357789c1404f99d50ab7e2e9c9fcbcae9569201f1ae2c
+措辞修订后（artifact 50b12682…）→ build/m15_layer_loop sha256 8310e71df5d83f21bf3357789c1404f99d50ab7e2e9c9fcbcae9569201f1ae2c
+```
+⇒ 措辞修订**不改二进制** ⇒ README §4 的 25 档设备读数（含 20/20 确定性、9 层落盘、探针、反例）对本 tip 继续成立，无需重跑设备。
+
+## 3) 产物差异面（第 2 轮：写位移 + 写侧释放改 drain + 注释）
+```
+$ diff -u /tmp/m105/gen_old/m15_moe_layer.h /tmp/m105/gen_new/m15_moe_layer.h
+--- /tmp/m105/gen_old/m15_moe_layer.h	2026-10-04 08:42:35.063675495 +0000
++++ /tmp/m105/gen_new/m15_moe_layer.h	2026-10-04 08:42:35.125675495 +0000
+@@ -10,6 +10,10 @@
+  *   出口 y 独立成 GM 缓冲 / 紧凑专家槽 + (expert,mTile,nBlock) 工作项 /
+  *   **规模无关前置修复（M84）**：S3 标量数组 → UB 静态槽位 + 诊断槽 GM 下标（#5/#6）、
+  *   unpermute K 链与实例展开到 10（#7）、unpermute Y 视图上界写成 TOTAL_MAX（#8）/
++ *   **S3 诊断槽次序修复（M105）**：`IndexGenStage::Run` 的 UB 标量写
++ *   `bUb[32] = oobCountUb;` 从 `BufAcquire<PIPE_MTE3>` **之后**提前到写侧 acquire **之前**，
++ *   并把写侧释放 `MutexUnlock<PIPE_S>`（mode 0）换成 **`BufRelease<PIPE_S>`（drain）** ——
++ *   成对形态见 `docs/05` §6.1 ⓔ（不动地址、不加 set/wait flag）/
+  *   **router 权重流式（M91-#3，整块替换）**：`PrecastWeights`（`[NUM_EXPERTS+1][HIDDEN]` 全量
+  *   预转 fp32 常驻 UB）→ `LoadWRow`/`PrecastWRow`/`PrecastSgateW`（bf16 行 ping/pong + `RT_EGRP`
+  *   行 fp32 窗）；`GemvRow` → `PadLogitsRow`/`SgateRows`/`GemvGroupRow`；`ComputeBlock` 重组。
+@@ -1320,6 +1324,20 @@
+             cntUb[e] = cntUb[e] + 1;
+         }
+         oobCountUb = badIds;   // 诊断槽（badIds != 0 时下面的落位循环整体短路）
++        // [M105] 诊断槽的 UB 标量写必须落在 MTE3 那条读的**次序 token 之内**。改前的形态是：
++        //   「紧邻最后那次 `DataCopyPad(offsGm[IG_DIAG_GM_SLOT], bL[32], ExtBlock1(4))`」，却排在
++        //   它的 `BufAcquire<PIPE_MTE3>(BUF_AIV_IDX)` **之后** ⇒ 落在 token 之外、与那条读抢跑
++        //   （可能落到该 UB 位置 `UB_IG_CNT+128` —— 落在 router x 行 0 窗内 —— 的残值；实测两种
++        //   落点都出现过，见 `evidence/moe_race/slot_bytes.txt`）。本处把它提前到写侧 acquire 之前。
++        //   次序由**写侧的 drain release** 建立：`BufRelease<PIPE_S>(BUF_AIV_IDX)`
++        //   （= `RlsBufInternal<PIPE_S,true>`，S pipe 排空后才释放 token，覆盖它**之前**的全部
++        //   标量写），成对形态 = 本仓 docs/05 §6.1 ⓔ「写 → 写侧 acquire → 写侧 drain release
++        //   → 搬侧 acquire → 搬」（本次的写落在写侧 acquire **之前**；ⓔ 的覆盖面前提只要求写在该
++        //   drain release 之前）。同款的已受审站点（在 `main` 上核过）：`m15_ple.asc` 的 IDS/BODY；
++        //   m17 的 `IndexGenStage::Run` 是同一诊断的先例。
++        //   见 `evidence/moe_race/README.md` §2①/§2④ 与 `mechanism_note.md`。
++        __ubuf__ int32_t* diagUb = reinterpret_cast<__ubuf__ int32_t*>(UB_IG_CNT);
++        diagUb[32] = static_cast<int32_t>(oobCountUb);
+         offUb[0] = 0;
+         for (uint32_t e = 0; e < NUM_EXPERTS; ++e) {
+             offUb[e + 1] = offUb[e] + cntUb[e];
+@@ -1357,7 +1375,14 @@
+                 wtkUb[t * 16 + k] = static_cast<int32_t>(rounded & 0xFFFFu);
+             }
+         }
+-        MutexUnlock<PIPE_S>(BUF_AIV_IDX);
++        // [M105] 写侧释放用 **drain 模式**：`BufRelease<PIPE_S>` = `RlsBufInternal<PIPE_S,true>`
++        //   —— S pipe 排空后才释放 token ⇒ 覆盖它**之前**的全部标量写（含诊断槽那次）。
++        //   改前这里是 `MutexUnlock<PIPE_S>`（= `RlsBufInternal<PIPE_S,0>`，mode 0「立即生效」，
++        //   只做互斥交接、不承载跨 pipe 数据可见性；见 docs/05 §6 与 CANN kernel_common.h:138-160）。
++        //   写侧 acquire 仍是 `MutexLock<PIPE_S>`（= `GetBufInternal<PIPE_S,0>`，与 `BufAcquire<PIPE_S>`
++        //   是同一 token 获取）⇒ 成对不破（只放 release 而缺写侧 acquire 会挂死，见 `m15_ple.asc`
++        //   文件头 §BUF 的教训）。代价：scalar 发射要等 S pipe 排空（见证据 README 的 trade-off 段）。
++        BufRelease<PIPE_S>(BUF_AIV_IDX);
+         if (subLimit < 7) {
+             return;
+         }
+@@ -1383,8 +1408,10 @@
+         if (subLimit >= 9) {
+             // [M84-6] 诊断槽：UB 源 32B 对齐（+128B）；GM 目的放 IG_DIAG_GM_SLOT
+             //   （= SZ_OFFSETS 尾部 32B 槽起点，恒在真 offsets[0..E] 之后）
+-            __ubuf__ int32_t* bUb = reinterpret_cast<__ubuf__ int32_t*>(UB_IG_CNT);
+-            bUb[32] = static_cast<int32_t>(oobCountUb);
++            // [M105] 这一读的 UB 源那 4 B 的**标量写**已提前到写侧 acquire 之前
++            //   （见本函数开头 `diagUb[32] = …`）—— 此处只留 MTE3 那一读；改前写在这一读紧邻处、
++            //   却排在 `BufAcquire<PIPE_MTE3>` **之后**（次序 token 之外），与它无次序保证。
++            //   次序现由写侧 drain release `BufRelease<PIPE_S>(BUF_AIV_IDX)` 建立（见该行注释）。
+             LocalTensor<int32_t> bL(TPosition::VECCALC, UB_IG_CNT, 64);
+             DataCopyPad(offsGm[IG_DIAG_GM_SLOT], bL[32], ExtBlock1(4));
+         }
+```
+
+## 4) 整脚本重跑（把本目录的 reproduce_host.sh 从头跑一遍，2026-10-04 08:42–08:44 UTC）
+```
+$ bash m15_layer_loop/evidence/moe_race/reproduce_host.sh /tmp/m105_repro
+WT=/workspace/ascend_mega_kernel/.tower/worktrees/wt-105  WORK=/tmp/m105_repro
+patched c9_unf/m15_layer_loop/m15_layer_loop.asc
+patched c9_fix/m15_layer_loop/m15_layer_loop.asc
+patched mn_unf/m15_layer_loop/m15_layer_loop.asc
+patched mn_fix/m15_layer_loop/m15_layer_loop.asc
+0af84032dc194e8a0350caf822e91ae005833dae8df52b0ce98ea65c577b2a64  c9_unf/m15_layer_loop/m15_moe_layer.h
+50b12682c03371121e57760b953522d0d3f90b50e89b011cc023cf824dc138a2  c9_fix/m15_layer_loop/m15_moe_layer.h
+0af84032dc194e8a0350caf822e91ae005833dae8df52b0ce98ea65c577b2a64  mn_unf/m15_layer_loop/m15_moe_layer.h
+50b12682c03371121e57760b953522d0d3f90b50e89b011cc023cf824dc138a2  mn_fix/m15_layer_loop/m15_moe_layer.h
+=== c9_unf build rc=0 ===
+a1d431f9a283f52d10e612452518b7f8793f5af012ed8bd58f3d829b4322f0a7  c9_unf/m15_layer_loop/build/m15_layer_loop
+=== c9_fix build rc=0 ===
+8310e71df5d83f21bf3357789c1404f99d50ab7e2e9c9fcbcae9569201f1ae2c  c9_fix/m15_layer_loop/build/m15_layer_loop
+=== mn_unf build rc=0 ===
+63ffd4d9e032b1ea9cbb8c4d709ebf2c6d74d2688db3b09297f8064840507c8f  mn_unf/m15_layer_loop/build/m15_layer_loop
+=== mn_fix build rc=0 ===
+aed6c2fbe164cbc82d2c2c7971826d6d830f29dcf5196db2c005f59fd2c56a14  mn_fix/m15_layer_loop/build/m15_layer_loop
+reproduce_host.sh overall rc=0
+```
+四档 artifact 与二进制：`c9_unf` `0af84032…`/`a1d431f9a283…`（未修，与 M102 相同）、`c9_fix` `50b12682…`/`8310e71df5d8…`、
+`mn_unf` `0af84032…`/`63ffd4d9e032…`（未修，与 M102 相同）、`mn_fix` `50b12682…`/`aed6c2fbe164…`
+⇒ README §4 的 `c9_fix2`（= `c9_fix` 同二进制）与 tip 档读数都可由本脚本重放。

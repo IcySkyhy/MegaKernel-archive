@@ -1,0 +1,29 @@
+# M105 · 上游先例逐字（m17 的同一诊断 / 同一修法）
+
+基准不可变 rev：`20bd20d659b11cbb5e6e6d317921ecb3c16e2629`（main，本 mission 的 base）
+行号以该 commit 为准（下文同时给内容锚点，行号漂移时按锚点找）。
+
+$ git show 20bd20d:m17_moe_real/m17_moe_layer.asc | sed -n "1291,1299p" | cat -n  （下面自 1291 起）
+```
+  1291	        oobCountUb = badIds;   // 诊断槽（badIds != 0 时下面的落位循环整体短路）
+  1292	        // 诊断槽的 UB 标量写必须落在 MutexLock/Unlock<PIPE_S> **之内或之前**：
+  1293	        // MTE3 读 UB 的次序由「S 侧 unlock（drain）→ MTE3 acquire」保证，若把这次标量写
+  1294	        // 放到 unlock 之后（m13 原样），就会与 DataCopyPad 抢跑 —— 实测 m=8 时诊断槽读到
+  1295	        // 上一段遗留的 UB 残值（0x3ec5be6f），落盘 sha256 逐次不同。
+  1296	        {
+  1297	            __ubuf__ int32_t* bUb = reinterpret_cast<__ubuf__ int32_t*>(UB_IG_CNT);
+  1298	            bUb[IG_CNT_DIAG_SLOT] = static_cast<int32_t>(badIds);
+  1299	        }
+```
+
+$ git show 20bd20d:m17_moe_real/m17_moe_layer.asc | grep -n "IG_CNT_DIAG_SLOT\|IG_DIAG_GM_SLOT"
+```
+1298:            bUb[IG_CNT_DIAG_SLOT] = static_cast<int32_t>(badIds);
+1348:        LocalTensor<int32_t> cntL(TPosition::VECCALC, UB_IG_CNT, IG_CNT_DIAG_SLOT + 1);
+1366:            DataCopyPad(offsGm[IG_DIAG_GM_SLOT], cntL[IG_CNT_DIAG_SLOT], ExtBlock1(4));
+2887:    const int32_t diag = offs[M17::IG_DIAG_GM_SLOT];
+```
+$ git show 20bd20d:m17_moe_real/m17_resources.h | grep -n "IG_CNT_DIAG_SLOT"
+```
+187:constexpr uint32_t IG_CNT_DIAG_SLOT = 2 * NUM_EXPERTS + 8;   // UB 诊断槽（IG 越界计数）
+```

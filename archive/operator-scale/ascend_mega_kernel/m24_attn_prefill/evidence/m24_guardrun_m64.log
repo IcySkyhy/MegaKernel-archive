@@ -1,0 +1,32 @@
+### RUN A —— 有界等待 flock -w 180（不是 -n）；锁内先 npu-smi + df -h；命令 timeout 110
+### 命令：flock -w 180 /tmp/npu0.lock bash -c 'npu-smi …; df -h /; timeout 110 env M24_ONLY=m64 ./m24_attn_prefill/build/m24_attn_prefill'
+### 起始 2026-10-04T08:16:54+00:00
+| npu-smi 25.7.rc1.10                              Version: 25.7.rc1.10                           |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 202.8       67                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5240  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+overlay         8.7T  8.3T  433G  96% /
+[lock] 已进锁 2026-10-04T08:17:15+00:00
+[M24] mix(1,2) launch: nblk(AIC)=28 → AIV=56；chunk=128 行 = 2 个 m-tile（64 行）
+[M24] 形状：HIDDEN=2560 NH=24 HD=256 NKV=2 IDX_NH=4 IDX_D=128 ROT=64 | item 维=56 | GEMM 项=218（2 m-tile × 109 N 块）
+[M24] cache：主 KV 层 stride=8421376、压缩层 stride=263168、环层 stride=1120、packed 行=8208 B
+[M24] 夹具：x 4099 行 × 2560 bf16、权重平面 71435776 B（8 role）、cos/sin 4097 行、packed seed 16416 B
+[M24] M24_ONLY=m64（只跑名字里含该串的案例；诊断用）
+
+[M24] ==== 案例 m64（rows=64 @0, chunk=64 × 1, mut=0x0, acMode=0, 逐 chunk 发射）====
+[M24][GUARD-OK] Pf.guard.y0live.c0 poisonRows=0/64(阈值 1e6)
+[M24][GUARD-OK] Ac.guard.poollive.c0 池化行参考 != 毒值面
+[M24]   m64：checks=23 fails=0 guards=2(guardFails=0)
+
+[M24] ===== ALL PASS =====
+### A 的 rc=0 （1=180s 内未取到锁；124=锁内 timeout；0=跑完）
+### 结束 2026-10-04T08:17:22+00:00

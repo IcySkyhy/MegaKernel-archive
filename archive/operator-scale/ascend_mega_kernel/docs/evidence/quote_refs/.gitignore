@@ -1,0 +1,6 @@
+# M129：本目录是 `docs/scan_quote_refs.py` 的证据目录。`repro.sh` 会跑扫描器本体。
+# 仓根 `.gitignore` 已含 `__pycache__/`，这里按 evidence 目录惯例再显式列一遍
+# （`docs/*.py` 被 import 时会在 `docs/__pycache__` 落字节码）。
+__pycache__/
+*.pyc
+*.pyo

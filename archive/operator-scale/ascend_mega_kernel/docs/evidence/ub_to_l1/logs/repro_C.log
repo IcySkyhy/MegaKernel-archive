@@ -1,0 +1,86 @@
+### 0. 锚点（外部快照的取值，读的人自行核对）
+CANN_HOME   = /usr/local/Ascend/cann-9.1.0
+BISHENG     = /usr/local/Ascend/cann-9.1.0/bin/bisheng
+ASC_DEVKIT  = /workspace/asc-devkit
+asc-devkit rev = 648a6018207d75af44c6865f96511bafadd90630
+
+### 1. 官方文档逐字（asc-devkit，行号以 rev 648a6018207d75af44c6865f96511bafadd90630 为准）
+--- 1a. 四条 UBToL1 基础 API 的『软件仿真』NOTE（这四条都在） ---
+/workspace/asc-devkit/docs/zh/api/SIMD-API/basic_api/cube_compute_ISASI/cube_compute_load/DataCopyPad_UBToL1.md:31:> 本接口为软件仿真实现，是在Matmul高阶API的基础上，利用Matmul高阶API中的workspace GM空间作为数据中转空间，数据先搬入GM，再搬入L1 Buffer。因此，在使用本接口时，需要先使用REGISTER_MATMUL注册高阶API。
+/workspace/asc-devkit/docs/zh/api/SIMD-API/basic_api/cube_compute_ISASI/cube_compute_load/DataCopy_UBToL1_ND2NZ.md:37:> 本接口为软件仿真实现，是在Matmul高阶API的基础上，利用Matmul高阶API中的workspace GM空间作为数据中转空间，数据先搬入GM，再搬入L1 Buffer。因此，在使用本接口时，需要先使用REGISTER_MATMUL注册高阶API。
+/workspace/asc-devkit/docs/zh/api/SIMD-API/basic_api/cube_compute_ISASI/cube_compute_load/DataCopy_UBToL1_continuous.md:37:> 本接口为软件仿真实现，是在Matmul高阶API的基础上，利用Matmul高阶API中的workspace GM空间作为数据中转空间，数据先搬入GM，再搬入L1 Buffer。因此，在使用本接口时，需要先使用REGISTER_MATMUL注册高阶API。
+/workspace/asc-devkit/docs/zh/api/SIMD-API/basic_api/cube_compute_ISASI/cube_compute_load/DataCopy_UBToL1_highdim_split.md:37:> 本接口为软件仿真实现，是在Matmul高阶API的基础上，利用Matmul高阶API中的workspace GM空间作为数据中转空间，数据先搬入GM，再搬入L1 Buffer。因此，在使用本接口时，需要先使用REGISTER_MATMUL注册高阶API。
+--- 1b. 3510 新增 UB→L1 硬件通道（同一批文档的另一半） ---
+11:| 数据搬运 | [新增UB到L1 Buffer搬运数据通路](#section_ub2l1) | [DataCopy（UB到L1 Buffer）](../../../api/SIMD-API/basic_api/cube_compute_ISASI/cube_compute_load/DataCopy_UBToL1_continuous.md)、[DataCopyPad（UB到L1 Buffer）](../../../api/SIMD-API/basic_api/cube_compute_ISASI/cube_compute_load/DataCopyPad_UBToL1.md) | [asc_copy_ub2l1](../../../api/SIMD-API/c_api/vector_datamove/asc_copy_ub2l1.md) |
+38:### 新增UB到L1 Buffer搬运数据通路<a name="section_ub2l1"></a>
+42:CV融合算子中，UB向L1 Buffer搬运数据不再需要通过GM中转。
+46:- 对于C API，使用[asc_copy_ub2l1](../../../api/SIMD-API/c_api/vector_datamove/asc_copy_ub2l1.md)接口实现UB到L1 Buffer数据搬运，无需配置编译选项。
+48:  - 开启该编译选项后，数据通过UB到L1 Buffer之间的硬件通道直接搬运。该方式无需经过GM中转，性能较高。
+49:  - 未开启该编译选项时，数据需经由GM搬运至L1 Buffer。在此场景下，UB到L1 Buffer搬运接口采用软件仿真实现。
+--- 1c. SSBuffer 指南：硬通道 vs GM 仿真，C API 不受注册要求约束 ---
+289:基础API的UB到L1 Buffer硬通道路径与GM软件仿真路径不同：前者在相应配置下直接搬运，后者需要借助Matmul注册及GM中转空间。C API直接使用对应硬件接口，不能套用基础API兼容路径的注册要求。数据搬运能力也不意味着每次调用都要求用户另写一条SSBuffer消息，是否交换地址和参数取决于算子设计。
+--- 1d. 编译宏 ENABLE_CV_COMM_VIA_SSBUF 的定义处 ---
+    （定义句 :299 里宏名是**转义下划线** ENABLE\_CV\_COMM\_VIA\_SSBUF，字面量 grep 会漏掉它、只命中 :301；
+      故 pattern 让那个反斜杠可选 —— M120 r1 复审 P2-1 的教训）
+299: -   **ENABLE\_CV\_COMM\_VIA\_SSBUF** 用于控制是否使用SSBuffer以及UB到L1 Buffer的硬通道，在涉及CV通信（AIC和AIV）或使用数据搬运API时需关注此选项。开启该选项可以提高相关API的性能或拓展使用更多功能。默认开关关闭；设置为true后，表示开关打开。示例如下：
+301:     bisheng <source_file>.asc -o <output_file> --npu-arch=dav-<npu architecture> -DENABLE_CV_COMM_VIA_SSBUF=true
+--- 1e. 官方样例 README：版本声明 + 为什么它不用 Nd2NzParams 版本 ---
+11:| Ascend 950PR/Ascend 950DT | >= CANN 9.2.0 |
+42:  场景2未直接使用 `DataCopy(dst, src, Nd2NzParams)` 接口，而是在UB内完成ND→NZ转换，再用连续搬运 `DataCopy(l1Dst, ubNZ, count)` 搬至L1。因为 `DataCopy(dst, src, Nd2NzParams)` 接口为软件仿真实现，硬件本身不支持该能力，如果有业务场景需要，推荐用户根据自身业务场景设计UB→L1的ND2NZ搬运方案。
+68:  使用内核调用符<<<>>>调用核函数，核函数声明为 `__mix__(1, 2)` 混合核（1个AIC + 2个AIV）。
+--- 1f. ND2NZ 文档里的 950 特例（1:2 硬通道 + 1:1 兼容模式经 GM） ---
+129:- 针对Ascend 950PR&950DT系列产品，支持UB->L1 Buffer的1:2硬通道的方式；同时提供1:1的兼容模式，解决A2/A3的代码迁移兼容问题，这种模式通过Global Memory进行中转，效率稍低。
+
+### 2. 本机 CANN 头/实现逐字
+--- 2a. C API 公开声明 ---
+468://======asc_copy_ub2l1=======
+469:__aicore__ inline void asc_copy_ub2l1(__cbuf__ void* dst, __ubuf__ void* src,
+472:__aicore__ inline void asc_copy_ub2l1(__cbuf__ void* dst, __ubuf__ void* src, uint32_t size);
+474:__aicore__ inline void asc_copy_ub2l1_sync(__cbuf__ void* dst, __ubuf__ void* src, uint32_t size);
+--- 2b. C API 实现：直接下发硬件 intrinsic，不碰 TPipe/KFC/Matmul ---
+30:    if ASC_IS_AIV {
+31:        copy_ubuf_to_cbuf(dst, src, 0, n_burst, len_burst, src_gap, dst_gap);
+--- 2c. 硬件 intrinsic 本体（Bisheng 自带头） ---
+1031:__attribute__((clang_builtin_alias(__builtin_cce_copy_ubuf_to_cbuf))) void copy_ubuf_to_cbuf(...);
+--- 2d. KFC_C310_SSBUF 的定义（探针 3 引用的那个宏） ---
+37:#define KFC_C310_SSBUF 1
+39:#define KFC_C310_SSBUF 0
+--- 2e. 基础 API 的两条分支（硬件 vs GM/KFC + Matmul workspace） ---
+284:        ScmDataCopyMsg((__cbuf__ void*)dst, (__gm__ void*)src, intriParams, -1);
+582:#if KFC_C310_SSBUF == 1 || __MIX_CORE_AIC_RATION__ != 1
+583:    CopyUbufToCbuf(dst, src, intriParams.blockCount, intriParams.blockLen, intriParams.srcStride,
+604:        GM_ADDR gmAddr = (GetKfcClient()->AllocUB(tensorSize, ubAddr));
+627:        ScmDataCopyMsg((__cbuf__ void*)dst, (__gm__ void*)gmAddr, intriParams, ubAddr);
+712:#if KFC_C310_SSBUF == 1 || __MIX_CORE_AIC_RATION__ != 1
+763:        GM_ADDR gmAddr = (GetKfcClient()->AllocUB(tensorSize, ubAddr));
+765:        GM_ADDR gmAddr = (GetKfcClient()->AllocUB(tensorSize, ubAddr));
+1204:        GM_ADDR gmAddr = (GetKfcClient()->AllocUB(tensorSize, ubAddr));
+1206:        GM_ADDR gmAddr = (GetKfcClient()->AllocUB(tensorSize, ubAddr));
+
+### 3. 编译探针（零设备；只编不跑）
+COMMON FLAGS: --npu-arch=dav-3510 -std=c++17 --asc-aicore-lang -c
+--- 3a. C API asc_copy_ub2l1（__mix__(1,2) kernel） ---
+rc=0   (stderr 空 ⇒ 编过；产物 <TMPDIR>/capi.o)
+--- 3b. 基础 API DataCopy(L1_TSCM, UB_VECIN, count)，不带编译宏 ---
+rc=0
+--- 3c. 同上，带 -DENABLE_CV_COMM_VIA_SSBUF=true（官方样例的配置） ---
+rc=0
+--- 3d. 分支判定（把 DataCopyUB2L1Impl:582 的 #if 抄成 #error） ---
+    不带编译宏：
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-120/docs/evidence/ub_to_l1/probe_branch.asc:8:2: error: BRANCH_HARDWARE_CopyUbufToCbuf
+    带 -DENABLE_CV_COMM_VIA_SSBUF=true：
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-120/docs/evidence/ub_to_l1/probe_branch.asc:8:2: error: BRANCH_HARDWARE_CopyUbufToCbuf
+--- 3e. `__MIX_CORE_AIC_RATION__` 到底有没有被定义（3d 结论的前提） ---
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-120/docs/evidence/ub_to_l1/probe_mixmacro.asc:9:2: error: MIX_RATIO_NOT_DEFINED
+
+### 4. 版本差取证：官方样例在本机 CANN 9.1.0 上能不能整编
+    官方样例 README:11 声明『>= CANN 9.2.0』；本机是 9.1.0。把样例（basic API 版，scenario 1）
+    拷到临时目录整编一次，看它卡在哪 —— 这决定『硬通道在本机是否已就绪』能说到哪一步。
+    cmake rc=0
+    make  rc=2  （非 0 = 整编不通过；首个 error 行如下）
+<TMPDIR>/basic_ub2l1_example/data_copy_ub2l1.asc:83:46: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+<TMPDIR>/basic_ub2l1_example/data_copy_ub2l1.asc:84:46: error: no member named 'ceil_div' in namespace 'AscendC::Std'
+
+### 5. 说明
+本脚本只回答『接口在不在、走哪条分支、能不能编过』。
+**『真机上这条硬通道是否可用、带宽多少、AIC 怎么等到数据』不在本脚本覆盖范围内** —— 需要设备档。

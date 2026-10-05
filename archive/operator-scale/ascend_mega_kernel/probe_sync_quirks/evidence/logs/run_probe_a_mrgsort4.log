@@ -1,0 +1,30 @@
+[probe A] 3510 MrgSort 变体矩阵（1 对 = 8 字节 {fp32 value, u32 index}；dump=/workspace/ascend_mega_kernel/.tower/worktrees/wt-23/probe_sync_quirks/evidence/dumps；输入字序=vfirst）
+[A00] A00_2way_v3_base         src=hand preset=1  写出的对: 合法=64 非法=0 残留sentinel=192  前缀序匹配=64/64
+[A01] A01_2way_tree_v3         src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=0  前缀序匹配=128/128
+[A02] A02_4way_v15             src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=128  前缀序匹配=128/128
+[A03] A03_4way_v15_zero        src=hand preset=2  写出的对: 合法=128 非法=0 残留sentinel=0  前缀序匹配=128/128
+[A04] A04_4way_v15_nopreset    src=hand preset=0  写出的对: 合法=128 非法=0 残留sentinel=0  前缀序匹配=128/128
+[A05] A05_4way_v15_dst2        src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=0  前缀序匹配=128/128
+[A06] A06_3way_v7              src=hand preset=1  写出的对: 合法=96 非法=0 残留sentinel=160  前缀序匹配=96/96
+[A07] A07_4way_v15_ph34_l0     src=hand preset=1  写出的对: 合法=0 非法=0 残留sentinel=256  前缀序匹配=0/64
+        首个不匹配 pos=0: 得到(-6.25985e+18, 3203391149) 期望(1000, 0)
+[A08] A08_4way_v15_ph34_l32    src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=128  前缀序匹配=128/128
+[A09] A09_4way_v15_noncontig   src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=128  前缀序匹配=128/128
+[A10] A10_2way_v3_len16        src=hand preset=1  写出的对: 合法=32 非法=0 残留sentinel=224  前缀序匹配=32/32
+[A11] A11_4way_v15_len16       src=hand preset=1  写出的对: 合法=64 非法=0 残留sentinel=192  前缀序匹配=64/64
+[A12] A12_4way_v15_rep2        src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=128  （本变体只取证、不判序）
+[A13] A13_4way_v15_exhtrue     src=hand preset=1  写出的对: 合法=125 非法=0 残留sentinel=131  前缀序匹配=125/128  VMS4_SR[list1..4]=32/31/31/31
+        首个不匹配 pos=125: 得到(-6.25985e+18, 3203391149) 期望(875, 1031)
+[A14] A14_sort32_layout        src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=0  前缀序匹配=128/128
+[A15] A15_4way_v15_sort32src   src=sort32 preset=1  写出的对: 合法=128 非法=0 残留sentinel=128  前缀序匹配=128/128
+[A16] A16_4way_v15_allb0       src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=128  前缀序匹配=128/128
+[A17] A17_4way_v15_len4        src=hand preset=1  写出的对: 合法=16 非法=0 残留sentinel=240  前缀序匹配=16/16
+[A18] A18_dst_alias_src1       src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=0  （本变体只取证、不判序）
+[A19] A19_dst_alias_src3       src=hand preset=1  写出的对: 合法=128 非法=0 残留sentinel=0  （本变体只取证、不判序）
+[A20] A20_sort32_nobar         src=sort32 preset=1  写出的对: 合法=128 非法=0 残留sentinel=128  前缀序匹配=128/128
+[A21] A21_4way_v15_rep0        src=hand preset=1  写出的对: 合法=0 非法=0 残留sentinel=256  （本变体只取证、不判序）
+[A22] A22_2way_v3_len4x32      src=hand preset=1  写出的对: 合法=64 非法=0 残留sentinel=192  （本变体只取证、不判序）
+[A23] A23_4way_v15_len0_all    src=hand preset=1  写出的对: 合法=0 非法=0 残留sentinel=256  （本变体只取证、不判序）
+[A24] A24_4way_v15_rep2_len8   src=hand preset=1  写出的对: 合法=64 非法=0 残留sentinel=192  （本变体只取证、不判序）
+[A25] A25_4way_v15_len8        src=hand preset=1  写出的对: 合法=32 非法=0 残留sentinel=224  前缀序匹配=32/32
+[probe A] 变体总数=26 未达期望=2

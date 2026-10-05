@@ -1,0 +1,83 @@
+== 1) 故障分类（独立复算自 log 原文）==
+   FAULT 45 / HANG 0 / OK-or-struct 84
+   add            出现故障码 ['507035']
+   arange         出现故障码 ['507035']
+   bf16f32norm    出现故障码 ['507035']
+   bf16f32unpk    出现故障码 ['507035']
+   brcb           出现故障码 ['507035']
+   cmpsel         出现故障码 ['507035']
+   dupreg         出现故障码 ['507035']
+   dupub          出现故障码 ['507035']
+   exp            出现故障码 ['507035']
+   f32bf16nb16    出现故障码 ['507035']
+   f32bf16norm    出现故障码 ['507035']
+   f32bf16pack    出现故障码 ['507035']
+   gather         出现故障码 ['507035']
+   gatherb        出现故障码 ['507035']
+   ldbrc          出现故障码 ['507035']
+   lmbarin        出现故障码 ['507035']
+   lmbarout       出现故障码 ['507035']
+   ls             出现故障码 ['507035']
+   mul            出现故障码 ['507035']
+   pld            出现故障码 ['507035']
+   psts           出现故障码 ['507035']
+   redmax         出现故障码 ['507035']
+   redsum         出现故障码 ['507035']
+   scatter        出现故障码 ['507035']
+   stfirst        出现故障码 ['507035']
+   stpack         出现故障码 ['507035']
+   stpack4        出现故障码 ['507035']
+   vld            出现故障码 ['507035']
+
+== 2) 逐字节模型复核（docs/17 T1）==
+   判定行 84 = 逐字节模型 57（其中负向对照 2 条按'期望不符'计通过） + 结构性 27；与模型不符 0；无数据 0；缺证据 0
+   备注（前 40 条）：
+     - stfirst n=64 b=0: 实测写出区间 [0,3]（模型窗口 [0,4)）
+     - stfirst n=64 b=16: 实测写出区间 [16,19]（模型窗口 [16,20)）
+     - stfirst n=64 b=8: 实测写出区间 [8,11]（模型窗口 [8,12)）
+     - stfirst n=64 b=4: 实测写出区间 [4,7]（模型窗口 [4,8)）
+     - lsn n=1 b=0: 实测写出区间 [0,3]（模型窗口 [0,4)）
+     - lsn n=3 b=0: 实测写出区间 [0,11]（模型窗口 [0,12)）
+     - lsn n=7 b=0: 实测写出区间 [0,27]（模型窗口 [0,28)）
+     - lsn n=8 b=0: 实测写出区间 [0,31]（模型窗口 [0,32)）
+     - lsn n=63 b=0: 实测写出区间 [0,251]（模型窗口 [0,252)）
+     - lsn n=64 b=0: 实测写出区间 [0,255]（模型窗口 [0,256)）
+     - vldasnopre a=1 b=0: 负向对照生效（与模型不符，首个差异字节 2）
+     - vstusnopost a=0 b=1: 负向对照生效（与模型不符，首个差异字节 256）
+
+== 3) 实测最小 UB 偏移对齐（按 (op,轴) 汇总；0=32B 对齐对照）==
+   add            dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   arange         dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   bf16f32norm    dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   bf16f32unpk    dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   brcb           dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   cmpsel         dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   dupreg         dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   dupub          dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   exp            dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   f32bf16nb16    dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   f32bf16norm    dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   f32bf16pack    dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   gather         src 对照(0)=OK     最小通过偏移=0 | 1:FAULT 2:FAULT 4:OK 8:OK 16:OK 24:OK 32:OK
+   gatherb        src 对照(0)=FAULT  最小通过偏移=无 | 
+   ldbrc          src 对照(0)=OK     最小通过偏移=0 | 2:FAULT 4:OK 8:OK 16:OK
+   lmbarin        dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   lmbarout       dst 对照(0)=FAULT  最小通过偏移=无 | 
+   load1          src 对照(0)=OK     最小通过偏移=0 | 1:OK 2:OK 4:OK 8:OK 16:OK
+   ls             dst 对照(0)=OK     最小通过偏移=0 | 1:FAULT 2:FAULT 4:FAULT 8:FAULT 16:FAULT 24:FAULT 32:OK
+   ls             src 对照(0)=OK     最小通过偏移=0 | 1:FAULT 2:FAULT 4:FAULT 8:FAULT 16:FAULT 24:FAULT 32:OK
+   lsn            dst 对照(0)=OK     最小通过偏移=0 | 
+   mul            dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   pld            src 对照(0)=?      最小通过偏移=无 | 16:FAULT
+   redmax         dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   redsum         dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   scatter        dst 对照(0)=OK     最小通过偏移=0 | 2:FAULT 4:OK 8:OK 16:OK
+   stfirst        dst 对照(0)=OK     最小通过偏移=0 | 2:FAULT 4:OK 8:OK 16:OK
+   store1         dst 对照(0)=OK     最小通过偏移=0 | 1:OK 2:OK 4:OK 8:OK 16:OK
+   stpack         dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   stpack4        dst 对照(0)=OK     最小通过偏移=0 | 16:FAULT
+   vld            src 对照(0)=OK     最小通过偏移=0 | 1:FAULT 2:FAULT 4:FAULT 8:FAULT 16:FAULT 24:FAULT 32:OK
+   vldas          src 对照(0)=OK     最小通过偏移=0 | 1:OK 2:OK 4:OK 8:OK 16:OK
+   vstus          dst 对照(0)=OK     最小通过偏移=0 | 1:OK 2:OK 4:OK 8:OK 16:OK
+
+RESULT: OK (比过 57 条逐字节 + 27 条结构性；故障 45（已分类归档）、挂死 0、无输出 0、**无数据 0**、缺证据 0、与模型不符 0)

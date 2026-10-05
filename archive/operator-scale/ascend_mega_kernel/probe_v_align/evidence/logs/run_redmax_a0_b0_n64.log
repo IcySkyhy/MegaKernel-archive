@@ -1,0 +1,7 @@
+VARIANT op=redmax(id=23) a=0 b=0 n=64 model=14 window=4
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0xad9603c389a2597b
+HEAD32 427e0000 a5a5a5a5 a5a5a5a5 a5a5a5a5
+COMPARE window_bytes=4 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (bitwise model match over 1024 bytes; 1024/1024 bytes compared)

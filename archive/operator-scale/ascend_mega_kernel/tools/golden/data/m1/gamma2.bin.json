@@ -1,0 +1,18 @@
+{
+  "tensor": "gamma2.bin",
+  "shape": [
+    1,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 5120,
+  "sha256": "85931ebf86942f6ff6e880e6e297f6b7de8c9ba5cab0a818cd746fa146e07704",
+  "kind": "input",
+  "description": "m6#2 RMSNorm weight [1, hidden], bf16 (post-MoE norm)"
+}

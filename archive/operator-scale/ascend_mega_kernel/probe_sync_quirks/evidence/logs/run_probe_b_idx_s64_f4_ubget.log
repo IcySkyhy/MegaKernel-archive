@@ -1,0 +1,2 @@
+[probe B] probe_b_idx_s64_f4_ubget  form=4 idx=int64_t sizeof=8 base=200 n=8 reps=50
+[probe B] probe_b_idx_s64_f4_ubget  RUN PASS：50 次 × 8 点全部 out[i*VL]==w[base+i]

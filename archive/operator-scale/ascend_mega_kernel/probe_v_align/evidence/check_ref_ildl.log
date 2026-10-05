@@ -1,0 +1,33 @@
+[intlv_f32] d0/d1 命中候选映射: INTLV
+[intlv_f32] d0 逐 lane 来源: s0[0] s1[0] s0[1] s1[1] s0[2] s1[2] s0[3] s1[3] s0[4] s1[4] s0[5] s1[5] s0[6] s1[6] s0[7] s1[7] …（前 16 lane）
+[intlv_f32] d1 逐 lane 来源: s0[32] s1[32] s0[33] s1[33] s0[34] s1[34] s0[35] s1[35] s0[36] s1[36] s0[37] s1[37] s0[38] s1[38] s0[39] s1[39] …（前 16 lane）
+[dintlv_f32] d0/d1 命中候选映射: DEINTLV
+[dintlv_f32] d0 逐 lane 来源: s0[0] s0[2] s0[4] s0[6] s0[8] s0[10] s0[12] s0[14] s0[16] s0[18] s0[20] s0[22] s0[24] s0[26] s0[28] s0[30] …（前 16 lane）
+[dintlv_f32] d1 逐 lane 来源: s0[1] s0[3] s0[5] s0[7] s0[9] s0[11] s0[13] s0[15] s0[17] s0[19] s0[21] s0[23] s0[25] s0[27] s0[29] s0[31] …（前 16 lane）
+[inv_f32] d0/d1 命中候选映射: IDENTITY(d0=s0,d1=s1)
+[inv_f32] d0 逐 lane 来源: s0[0] s0[1] s0[2] s0[3] s0[4] s0[5] s0[6] s0[7] s0[8] s0[9] s0[10] s0[11] s0[12] s0[13] s0[14] s0[15] …（前 16 lane）
+[inv_f32] d1 逐 lane 来源: s1[0] s1[1] s1[2] s1[3] s1[4] s1[5] s1[6] s1[7] s1[8] s1[9] s1[10] s1[11] s1[12] s1[13] s1[14] s1[15] …（前 16 lane）
+[intlv_f32_neg] d0/d1 命中候选映射: 其它 / 其它
+[intlv_f32_neg] d0 逐 lane 来源: s0[0] s0[32] s1[0] s1[32] s0[1] s0[33] s1[1] s1[33] s0[2] s0[34] s1[2] s1[34] s0[3] s0[35] s1[3] s1[35] …（前 16 lane）
+[intlv_f32_neg] d1 逐 lane 来源: s0[16] s0[48] s1[16] s1[48] s0[17] s0[49] s1[17] s1[49] s0[18] s0[50] s1[18] s1[50] s0[19] s0[51] s1[19] s1[51] …（前 16 lane）
+[same_f32] d0/d1 命中候选映射: SAME(=src0==src1)
+[same_f32] d0 逐 lane 来源: s0[0] s0[2] s0[4] s0[6] s0[8] s0[10] s0[12] s0[14] s0[16] s0[18] s0[20] s0[22] s0[24] s0[26] s0[28] s0[30] …（前 16 lane）
+[same_f32] d1 逐 lane 来源: s0[1] s0[3] s0[5] s0[7] s0[9] s0[11] s0[13] s0[15] s0[17] s0[19] s0[21] s0[23] s0[25] s0[27] s0[29] s0[31] …（前 16 lane）
+[intlv_b16] d0/d1 命中候选映射: INTLV
+[intlv_b16] d0 逐 lane 来源: s0[0] s1[0] s0[1] s1[1] s0[2] s1[2] s0[3] s1[3] s0[4] s1[4] s0[5] s1[5] s0[6] s1[6] s0[7] s1[7] …（前 16 lane）
+[intlv_b16] d1 逐 lane 来源: s0[64] s1[64] s0[65] s1[65] s0[66] s1[66] s0[67] s1[67] s0[68] s1[68] s0[69] s1[69] s0[70] s1[70] s0[71] s1[71] …（前 16 lane）
+[dintlv_b16] d0/d1 命中候选映射: DEINTLV
+[dintlv_b16] d0 逐 lane 来源: s0[0] s0[2] s0[4] s0[6] s0[8] s0[10] s0[12] s0[14] s0[16] s0[18] s0[20] s0[22] s0[24] s0[26] s0[28] s0[30] …（前 16 lane）
+[dintlv_b16] d1 逐 lane 来源: s0[1] s0[3] s0[5] s0[7] s0[9] s0[11] s0[13] s0[15] s0[17] s0[19] s0[21] s0[23] s0[25] s0[27] s0[29] s0[31] …（前 16 lane）
+[intlv_misalign] 缺 dump
+
+== 逐用例映射汇总 ==
+   intlv_f32        INTLV
+   dintlv_f32       DEINTLV
+   inv_f32          IDENTITY(d0=s0,d1=s1)
+   intlv_f32_neg    （无候选命中）
+   same_f32         SAME(=src0==src1)
+   intlv_b16        INTLV
+   dintlv_b16       DEINTLV
+
+RESULT: OK (判定项 7：通过 7 / 不通过 0；缺证据 1)

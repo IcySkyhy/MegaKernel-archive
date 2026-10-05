@@ -1,0 +1,15 @@
+{"version": "1.1.0",
+ "packagesDir": ".lake/packages",
+ "packages":
+ [{"url": "https://github.com/cpehle/lean_test.git",
+   "type": "git",
+   "subDir": null,
+   "scope": "",
+   "rev": "fbfea9210f4f2eb1fc7c3b9e3c86f57c5dfa6e28",
+   "name": "LeanTest",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "fbfea9210f4f2eb1fc7c3b9e3c86f57c5dfa6e28",
+   "inherited": false,
+   "configFile": "lakefile.lean"}],
+ "name": "qwen36_cuda_tests",
+ "lakeDir": ".lake"}

@@ -1,0 +1,7 @@
+build/
+__pycache__/
+*.pyc
+
+# M150 m=257/4097 取证的大 dump（o/z/y/y_device，m=4097 约 251MB）：不入库，
+# 重建方式见 evidence/m4097_envelope/README.md 与同目录 reproduce.sh（M12_DEVICE=1）。
+evidence/**/*.bin

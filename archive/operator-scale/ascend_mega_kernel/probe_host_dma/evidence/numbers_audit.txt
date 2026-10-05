@@ -1,0 +1,13 @@
+== README 逐数字冒烟测试（audit_numbers.py）==
+   注意：这是**启发式**冒烟测试，rc=0 **不构成**可复现性保证（见脚本 docstring 的能力边界）。
+readme   : README.md
+evidence : evidence（61 个文件，排除含 'audit' 的）
+扫描 token（≥4 位有效数字）: 207
+  IN-EVIDENCE   : 170
+  IN-EVIDENCE(四舍五入): 2
+  ESCAPE-TAGGED : 3   （`[外部]`/`[git史]` 紧贴该数）
+  LABELED       : 2   （**作者自证**，脚本无法验证其真假）
+  FILE-REF/结构  : 30
+  FLAG          : 0
+
+结论: PASS（无 FLAG）

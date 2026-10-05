@@ -1,0 +1,133 @@
+# m18_gdn_prefill：`audit_readme_numbers.py` 读数归档（含负向对照）
+
+WHERE：`m18_gdn_prefill/` 下运行，**干净 checkout（无 `build/`、无 numpy）**，解释器
+`/usr/local/python3.12.13/bin/python3`。
+WHY  ：M56 任务 2 —— 此前该脚本在干净 checkout 上 **exit 1**（base `ea4c818` 实测：**6 条 FAIL**，
+       `/usr/local/python3.12.13/bin/python3` 下）且**静默回退到已作废的 Neumann ε**
+       （`eps_sum` 由 `γ₁₂₈·1.05 + 65δ + 3e-7` 得到 1.606e-5，与 README 的 4.48e-5 不符，被报成 FAIL）。
+       现改为：退出码三态 0/1/2；缺输入的断言标 UNVERIFIED（**不回退**）；合格证文案必须带比较计数；
+       并补两组负向对照。下面五份读数**原样粘贴自实际运行**（随 `96e7e96`/`c0558b3` 按当前 README/脚本重跑）。
+
+> ⚠ **`0c163b5`/`c0558b3` 那版的两处纠错**（评审 `reviews/…m56-r1.md` P2-3）：
+> ① 旧文写 `PART2 249 行` —— 那是 **pre-M56 README** 的旧读数；当前实测 **259 行**（下方五份读数一致）。
+> ② 旧文把「干净 checkout」笼统写成必然 `77/77`；实为 **`../ops-transformer`（sibling donor）可达时才 77/77**，
+> 不可达时是 `76/77` + 1 条**外部** unverified（rc 仍为 0，外部路径不阻塞本仓合格证）。
+> 故下面把两种环境分别列为 **A1 / A2**。
+
+---
+
+## 读数 A1 —— 仓内运行（sibling donor 可达），期望 rc=0、77/77
+
+```
+$ cd m18_gdn_prefill && /usr/local/python3.12.13/bin/python3 audit_readme_numbers.py
+  [note] build/*_probe.bin 不存在（dump 不入库）⇒ 跳过交叉见证
+  [note] 交叉见证不可得 ⇒ 仅靠 probe_geometry.txt 归档值（该值本身已带 dump sha256 出处）
+wrote .../m18_gdn_prefill/evidence/readme_number_audit.md
+RESULT: OK (compared 77/77 claims (archive 50 / recomputed 25 / constants 2), 0 failed, 0 unverified (local), 0 unverified (external))
+PART1 断言 77 条（归档 50 / 真重算 25 / 常量一致性 2）/ 比较 77 / 失败 0 / 没得比 0；PART2 259 行；PART3 待裁定 0 行
+$ echo $?
+0
+```
+
+## 读数 A2 —— 隔离副本（任何祖先目录都**没有** `ops-transformer`），期望 rc=0、76/77
+
+```
+$ cp -r m18_gdn_prefill /var/tmp/m56iso/ && cd /var/tmp/m56iso/m18_gdn_prefill
+$ rm -rf build          # 确保无 build/（构建产物可能被一并复制过来）
+$ /usr/local/python3.12.13/bin/python3 audit_readme_numbers.py
+  [note] build/*_probe.bin 不存在（dump 不入库）⇒ 跳过交叉见证
+  [note] 交叉见证不可得 ⇒ 仅靠 probe_geometry.txt 归档值（该值本身已带 dump sha256 出处）
+wrote /var/tmp/m56iso/m18_gdn_prefill/evidence/readme_number_audit.md
+RESULT: OK (compared 76/77 claims (archive 49 / recomputed 25 / constants 2), 0 failed, 0 unverified (local), 1 unverified (external))
+PART1 断言 77 条（归档 49 / 真重算 25 / 常量一致性 2）/ 比较 76 / 失败 0 / 没得比 1；PART2 259 行；PART3 待裁定 0 行
+$ echo $?
+0
+```
+
+⇒ 差的那 1 条是 `§1 donor tiling BT=64`（路径 `../ops-transformer/...`），属**外部输入**；
+外部缺失按设计**不阻塞本仓合格证，但始终打印在合格证那一行的计数里**（不静默）。
+**选目录时要注意**：脚本按「从仓根逐级上溯找该路径」解析外部 donor，所以只要**祖先链上任何一级**
+存在 `ops-transformer`，A1 就会变成 77/77 —— 测 A2 必须放在**祖先链上都没有该目录**的位置
+（本次用的是 `/var/tmp/m56iso`）。
+⚠ **不要把某个具体目录当成"一定没有"**（随 `cecf0ae` 订正）：本文早前写「本机 `/tmp` 下也有 `ops-transformer`」，
+那其实是**评审在 `reviews/…m56-r1.md` 那轮复算时建的符号链接**（`/tmp/ops-transformer` → `/workspace/ops-transformer`），
+不是环境固有的事实。正确表述是**与方法绑定**的：先 `ls` 逐级确认祖先链，再下结论。
+**本读数不依赖那条链接** —— A2 用的是 `/var/tmp/m56iso`，其祖先链（`/var/tmp`、`/var`、`/`）无该目录。
+
+## 读数 B —— 负向对照 A+B（期望：两组都有效、对照自身 rc=0）
+
+```
+$ /usr/local/python3.12.13/bin/python3 audit_readme_numbers.py --negative-control
+NEGATIVE-CONTROL A（扰动）: §4.7 gqa3 run1（4640.499 → 9999.999）
+  rc=1（期望 1）；点名失败项=['§4.7 gqa3 run1']（期望恰为 [§4.7 gqa3 run1]）⇒ 对照有效
+NEGATIVE-CONTROL B（缺输入）: 强制 probe_geometry.txt 缺失
+  rc=2（期望 2，即 NOT CERTIFIED）；ε 合计行=('不可得（输入缺失）', 'UNVERIFIED'）（期望 UNVERIFIED，不是 PASS）⇒ 对照有效
+  未发合格证文案：是
+$ echo $?
+0
+```
+
+对应产物：`evidence/readme_number_audit_negative_control.md`（A 的扰动表，**不是合格证**）。
+
+## 读数 C —— 缺输入读数（期望 rc=2、NOT CERTIFIED，**不得发合格证**）
+
+```
+$ /usr/local/python3.12.13/bin/python3 audit_readme_numbers.py --no-geometry
+  [note] **`--no-geometry`**：强制几何量归档缺失（负向对照 · 缺输入读数），产物不覆盖正式合格证。
+  [note] probe_geometry.txt 缺失或无法解析 ⇒ ‖A‖∞/κ∞/ε 断言 UNVERIFIED
+  [note] build/*_probe.bin 不存在（dump 不入库）⇒ 跳过交叉见证
+wrote .../m18_gdn_prefill/evidence/readme_number_audit_no_geometry.md
+RESULT: NOT CERTIFIED (compared 71/77 claims (archive 50 / recomputed 20 / constants 1), 0 failed, 6 unverified (local), 0 unverified (external))
+  [unverified] §4.2 ε 合计 ← 计算输入缺失（键 eps_sum）
+  [unverified] §4.2 κ∞ = ‖(I+A)⁻¹‖∞ ← 计算输入缺失（键 kappa_inf）
+  [unverified] §4.2 ‖A‖∞（说明 Neumann 界不适用） ← 计算输入缺失（键 A_inf）
+  [unverified] §4.2 ‖A‖∞（Neumann 界不适用） ← 计算输入缺失（键 A_inf）
+  [unverified] §4.2 κ∞ ← 计算输入缺失（键 kappa_inf）
+  [unverified] §4.2 ε 取值 ← 常量 eps_used 未定义
+PART1 断言 77 条（归档 50 / 真重算 20 / 常量一致性 1）/ 比较 71 / 失败 0 / 没得比 6；PART2 259 行；PART3 待裁定 0 行
+$ echo $?
+2
+```
+
+**关键对照**：修复前，同样的缺输入情形下 `§4.2 ε 合计` 会以 1.606e-5 出现在 FAIL 列（rc=1）；
+现在它是 `UNVERIFIED`（rc=2），且**不打印任何合格证文案**。
+
+## 读数 D —— 前置输入全缺（期望 rc=2、不发合格证、不崩）
+
+```
+$ rm -rf evidence && /usr/local/python3.12.13/bin/python3 audit_readme_numbers.py
+RESULT: SKIPPED (evidence/ 缺失 ⇒ 无可比较的归档输入；本脚本不发合格证)
+$ echo $?
+2
+
+$ mv README.md README.md.bak && /usr/local/python3.12.13/bin/python3 audit_readme_numbers.py
+RESULT: SKIPPED (README.md 缺失 ⇒ 无可比较对象；本脚本不发合格证)
+$ echo $?
+2
+```
+
+（以上两行在 A2 的隔离副本上跑；`README.md` 随后已还原。）
+
+## 交叉见证（把 3 个 probe dump 放进 `build/` 后）
+
+```
+  [note] 交叉见证：3 个 probe dump 全命中 sha256
+  [note] 交叉见证：复算 ‖A‖∞=2.313775544 / κ∞=3.211607375，与归档差 1.71e-10 / 4.2e-12 ⇒ 一致
+```
+
+（该次运行在 `/tmp` 的副本上；dump 来自 M18 归档、与本仓 `evidence/dump_sha256.txt` 的 sha256 逐项相符。）
+
+## 覆盖范围（脚本自己交代，防「通过了」与「根本没检查」同形）
+
+- 断言总数 **77** = 归档取回类 **50** + **真重算类 25** + **常量一致性类 2**（见下）。
+- 三态分栏：`compared` / `failed` / `unverified(local)` / `unverified(external)`，**unverified 逐条点名缺哪个输入**。
+- **常量一致性类**（随 `96e7e96` 从「脚本可重算」里分出，评审 `reviews/…m56-r1.md` 观察 1）：`§4.2 ε 取值`(5e-5) 与
+  `§4.2 Γ/eg 传递项`(3e-7) 的「计算值」就是脚本里的字面量常数，**不是独立重算** ⇒ 两条恒真。
+  它们现在单列一栏，只校验**README 与脚本两处的字面量是否一致**，不计入「可重算」。
+- 已知**会被本脚本漏掉**的形态：README 里以**裸行号**引用代码的行 —— PART 2 只按数字分类，
+  不校验行号是否仍指向那段代码（行号漂移不是数字漂移）。这类引用由写作规则（用符号不用行号）覆盖，
+  **不在本脚本的判据内**，故此处明示。
+- **跨环境可复现的边界**（评审观察 2）：`golden_recurrence()` 用 `random.Random(0)` 的固定数据集，
+  但 `random.gauss` 的**末位**随 Python 版本不同（py3.12.13 实测 `1.110e-15`、py3.11.6 实测 `3.553e-15`，
+  两次都 ≤ 4.0e-15）⇒ **判据（`≤4.0e-15` 上界 + `≥1` 判别性）跨环境一致，数值末位可能不同**；
+  判据按「界/量级」判而非按 2% 恒等判，正是为此。

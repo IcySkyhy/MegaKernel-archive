@@ -1,0 +1,68 @@
+empty_run1.log                 perLaunch=2136.8       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1053        | 
+empty_run2.log                 perLaunch=2488.2       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1109        | 
+empty_run3.log                 perLaunch=2488.2       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1103        | 
+empty_run4.log                 perLaunch=3095.1       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1062        | 
+empty_run5.log                 perLaunch=3727.6       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1147        | 
+filemmap_anon_run1.log         perLaunch=165009.8     ns aclError=0        regRC=0       overall=OK                 cycSpan=1194       22.24 GB/s (bytes=3670016 perLaunch=165009.8 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_anon_run2.log         perLaunch=166524.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1304       22.04 GB/s (bytes=3670016 perLaunch=166524.0 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_anon_run3.log         perLaunch=164213.5     ns aclError=0        regRC=0       overall=OK                 cycSpan=1142       22.35 GB/s (bytes=3670016 perLaunch=164213.5 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_malloc_run1.log       perLaunch=164296.7     ns aclError=0        regRC=0       overall=OK                 cycSpan=1231       22.34 GB/s (bytes=3670016 perLaunch=164296.7 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_malloc_run2.log       perLaunch=165114.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1238       22.23 GB/s (bytes=3670016 perLaunch=165114.0 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_malloc_run3.log       perLaunch=163876.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1251       22.40 GB/s (bytes=3670016 perLaunch=163876.0 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+hbm_run1.log                   perLaunch=3399.6       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1145       1079.54 GB/s (bytes=3670016 perLaunch=3399.6 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+hbm_run2.log                   perLaunch=3659.5       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1271       1002.87 GB/s (bytes=3670016 perLaunch=3659.5 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+hbm_run3.log                   perLaunch=3401.1       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1112       1079.07 GB/s (bytes=3670016 perLaunch=3401.1 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+hbm_run4.log                   perLaunch=3379.1       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1214       1086.09 GB/s (bytes=3670016 perLaunch=3379.1 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+hbm_run5.log                   perLaunch=3442.7       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1169       1066.04 GB/s (bytes=3670016 perLaunch=3442.7 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_run1.log                  perLaunch=164772.9     ns aclError=0        regRC=0       overall=OK                 cycSpan=1279       22.27 GB/s (bytes=3670016 perLaunch=164772.9 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_run2.log                  perLaunch=165314.7     ns aclError=0        regRC=0       overall=OK                 cycSpan=1211       22.20 GB/s (bytes=3670016 perLaunch=165314.7 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_run3.log                  perLaunch=177437.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1118       20.68 GB/s (bytes=3670016 perLaunch=177437.0 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_run4.log                  perLaunch=165036.8     ns aclError=0        regRC=0       overall=OK                 cycSpan=1156       22.24 GB/s (bytes=3670016 perLaunch=165036.8 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_run5.log                  perLaunch=163236.6     ns aclError=0        regRC=0       overall=OK                 cycSpan=1204       22.48 GB/s (bytes=3670016 perLaunch=163236.6 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+regbench_run1.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+regbench_run2.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+regbench_run3.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+regbench_run4.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+regbench_run5.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+read_sweep_r16.log             perLaunch=324946.9     ns aclError=0        regRC=0       overall=OK                 cycSpan=321390     22.59 GB/s (bytes=7340032 perLaunch=324946.9 ns) | bytes=7340032 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_sweep_r2.log              perLaunch=45203.9      ns aclError=0        regRC=0       overall=OK                 cycSpan=1225       20.30 GB/s (bytes=917504 perLaunch=45203.9 ns) | bytes=917504 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_sweep_r22.log             perLaunch=442108.8     ns aclError=0        regRC=0       overall=OK                 cycSpan=439059     22.83 GB/s (bytes=10092544 perLaunch=442108.8 ns) | bytes=10092544 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_sweep_r4.log              perLaunch=85046.7      ns aclError=0        regRC=0       overall=OK                 cycSpan=1133       21.58 GB/s (bytes=1835008 perLaunch=85046.7 ns) | bytes=1835008 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_sweep_r8.log              perLaunch=165831.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1259       22.13 GB/s (bytes=3670016 perLaunch=165831.0 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_tile2048_r16.log          perLaunch=85497.4      ns aclError=0        regRC=0       overall=OK                 cycSpan=83786      21.46 GB/s (bytes=1835008 perLaunch=85497.4 ns) | bytes=1835008 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_tile4096_r16.log          perLaunch=164255.7     ns aclError=0        regRC=0       overall=OK                 cycSpan=160448     22.34 GB/s (bytes=3670016 perLaunch=164255.7 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+read_tile8192_r14.log          perLaunch=289028.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1211       22.22 GB/s (bytes=6422528 perLaunch=289028.0 ns) | bytes=6422528 mismatches=0 firstBadOff=0 (expect=0 got=0)
+unreg_unregistered_ptr.log     perLaunch=-1.0         ns aclError=507035   regRC=NA      overall=DEVICE-ERROR       cycSpan=575557805   | bytes=3670016 mismatches=3655680 firstBadOff=0 (expect=90 got=255)
+page_partial_registration.log  perLaunch=-1.0         ns aclError=507035   regRC=0       overall=DEVICE-ERROR       cycSpan=4230        | bytes=3670016 mismatches=8160 firstBadOff=3661824 (expect=26 got=0)
+align_off1.log                 perLaunch=169845.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1139       21.61 GB/s (bytes=3670016 perLaunch=169845.0 ns) | bytes=3670016 mismatches=3670016 firstBadOff=0 (expect=90 got=221)
+align_off32.log                perLaunch=177369.7     ns aclError=0        regRC=0       overall=OK                 cycSpan=1240       20.69 GB/s (bytes=3670016 perLaunch=177369.7 ns) | bytes=3670016 mismatches=3670016 firstBadOff=0 (expect=90 got=186)
+hbm_off1_contrast.log          perLaunch=4562.8       ns aclError=0        regRC=NA      overall=OK                 cycSpan=1301       804.33 GB/s (bytes=3670016 perLaunch=4562.8 ns) | bytes=3670016 mismatches=3670016 firstBadOff=0 (expect=90 got=221)
+filemmap_anon_run1.log         perLaunch=165009.8     ns aclError=0        regRC=0       overall=OK                 cycSpan=1194       22.24 GB/s (bytes=3670016 perLaunch=165009.8 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_anon_run2.log         perLaunch=166524.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1304       22.04 GB/s (bytes=3670016 perLaunch=166524.0 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_anon_run3.log         perLaunch=164213.5     ns aclError=0        regRC=0       overall=OK                 cycSpan=1142       22.35 GB/s (bytes=3670016 perLaunch=164213.5 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_file.log              perLaunch=NA           ns aclError=NA       regRC=507899  overall=REGISTER-REJECTED  cycSpan=NA          | 
+filemmap_filepriv.log          perLaunch=NA           ns aclError=NA       regRC=507899  overall=REGISTER-REJECTED  cycSpan=NA          | 
+filemmap_filerd.log            perLaunch=NA           ns aclError=NA       regRC=507899  overall=REGISTER-REJECTED  cycSpan=NA          | 
+filemmap_malloc_run1.log       perLaunch=164296.7     ns aclError=0        regRC=0       overall=OK                 cycSpan=1231       22.34 GB/s (bytes=3670016 perLaunch=164296.7 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_malloc_run2.log       perLaunch=165114.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1238       22.23 GB/s (bytes=3670016 perLaunch=165114.0 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+filemmap_malloc_run3.log       perLaunch=163876.0     ns aclError=0        regRC=0       overall=OK                 cycSpan=1251       22.40 GB/s (bytes=3670016 perLaunch=163876.0 ns) | bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+regbench_run1.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+regbench_run2.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+regbench_run3.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+regbench_run4.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+regbench_run5.log              perLaunch=NA           ns aclError=NA       regRC=NA      overall=== done mode=regbench cycSpan=NA          | 
+== 中位数汇总（共享卡上单次易受并发干扰；核心结论按中位 + 区间）==
+  empty_run                n=5   median_perLaunch=2488.2 ns
+  hbm_run                  n=5   median_perLaunch=3401.1 ns
+  read_run                 n=5   median_perLaunch=165036.8 ns
+  filemmap_anon_run        n=3   median_perLaunch=165009.8 ns
+  filemmap_malloc_run      n=3   median_perLaunch=164296.7 ns
+  注：上表每个 log 都可在 evidence/logs/ 复核；单点离群（共享卡）已在上方逐行列出。
+== regbench 汇总（register ms，跨独立进程；中位 + [min,max] + n）==
+  [正对照] 原始行 -> 抽取值（须等于该行 register 字段，不是 unregister 字段）：
+    register_extracted=59.763     unregister_field=0.541      <= [REGBENCH] size=     4 MB register rc=0 59.763 ms | getDevPtr rc=0 0.016 ms | unregister rc=0 0.541 ms
+    register_extracted=836.124    unregister_field=2.437      <= [REGBENCH] size=    64 MB register rc=0 836.124 ms | getDevPtr rc=0 0.009 ms | unregister rc=0 2.437 ms
+    register_extracted=6730.705   unregister_field=8.210      <= [REGBENCH] size=   256 MB register rc=0 6730.705 ms | getDevPtr rc=0 0.013 ms | unregister rc=0 8.210 ms
+    4 MB register: median=48.161     ms range=[6.780, 72.969] n=5
+   64 MB register: median=576.875    ms range=[309.046, 836.124] n=5
+  256 MB register: median=6730.705   ms range=[1144.784, 10211.197] n=5

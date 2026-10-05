@@ -1,0 +1,194 @@
+### collected: 2026-09-26T12:03:08+00:00
+### upstream: https://github.com/vllm-project/vllm-ascend.git   fork: https://gitcode.com/liruixin_dvc/vllm-ascend.git
+### local shallow copy: /tmp/va-refs (git clone --depth 1 --single-branch --branch main)
+
+## 1. upstream HEADS — RAW, unfiltered
+1d72b8c7170749b3fd81f36736eba628bbdfad27	dependabot/github_actions/actions/labeler-7
+db07443b1545bc2fa35dc93e26854a762985ea09	dependabot/github_actions/actions/setup-python-7.0.0
+1e9e03bc53bdc53f3cc78c7af191794ee7544ad9	main
+f92eadfca968666893715f0a295f036c7bc9d207	releases/v0.13.0
+35b0fdf7d57aee5bd93793e03506ae2d85959595	releases/v0.18.0
+792ea0c6de317f364d542aff0e758af383ce9aec	releases/v0.20.2rc
+b4884b4200a377240d92ec0d1630bdb091a7f3a1	releases/v0.21.0rc
+6fb87d07d99cd9f7f16220b7599aaa9ce1494fb2	releases/v0.22.1rc
+1cdb8c4db6e50f36f1fb3283b3e3dd618f6821e8	releases/v0.23.0
+b19127c7e855af6a1ee6a67d3825205086a87a8e	releases/v0.24.0rc
+73953fc05401783b8da544cabe2e8280d4f1c1cf	releases/v0.25.1rc
+57179dd3e5d05a547a9fdea8b6958f66717e6098	releases/v0.26.0rc
+edfa79016ecca1a32b4edda978cfa9007f2bf605	releases/v0.27.1rc
+df7d511e9282745ccbef73509495637b01e160b4	releases/v0.28.0rc
+a71b766ce6fc0a9669a412e15a5cf53f7f827093	releases/v0.29.0rc
+6eb4456307e3a2b1e0ad1a139bff3de446a18287	revert-13905-releases/v0.23.0_bugbix_w8a8_mxfp8_for_rl
+f75f9984900742d4a1e67da75dbbb2ce18541d6a	revert-15210-glm52_v2_dspark
+8fee594c9092167e18dddb38f6b2906d9f3fe66f	revert-15908-new-refactor
+155f68974c802633c19650ece430d41ee6802fa6	rfc/0.26.0rc1-bugfix
+4c7616410af0ad11e77a311a6ff5b9ff94567e2a	rfc/community-contrib
+f75e6fefa720d3364187b2ecc9abf2cc095fafa5	rfc/megakernel
+11ee45653b199a097805b87011824a81ffa51b95	rfc/vllm_cann
+b30408353a8397471ba675a0893b47a15481b4b3	v0.11.0-dev
+e8131b99cf199f50a304e6e6fb125a1b95bcc92b	v0.7.1-dev
+b69d41de4935fe520ccc294fc92b0978dcd4a9e5	v0.7.3-dev
+f2e39a4ccf7fcd4bcc42ca307add724b998dd231	v0.9.1-dev
+  (count = 26 heads — same command re-run later is
+   expected to give the same number; report this count, not a remembered one)
+
+## 2. upstream TAGS — RAW (peeled ^{} entries dropped)
+f17417f2d5b5b6cbb3c8929c5d826540a811918e	v0.7.1rc1
+779eebb8021ede2a4434769ffd84e426c4d29fbb	v0.7.3
+c69ceaca1ecc6b7546b4235465fa1d0d90d902af	v0.7.3.post1
+f025df05f61482ac7ab7975e1bfffe2fc7f8596a	v0.7.3rc1
+00459aea2110ff0fc93d8e7aba58736690b388ee	v0.7.3rc2
+086423dc352e393cafb54b1380eebd8391f0b365	v0.8.4rc1
+1fce70a2fb2602170781773104a69c69beb16161	v0.8.4rc2
+ec27af346ae812f4bd29565d3eb46f0dfc653ba9	v0.8.5rc1
+706de02317625fa3477f5379e31caaec0b174453	v0.9.0rc1
+8dd686dfa20d8f577cd63fb751ce0a7a98f2f516	v0.9.0rc2
+0740d10211fcdcaa00d29e8659d7de892f5ed4d8	v0.9.1
+c30ddb83313da9db644a17fa779a297f80368a80	v0.9.1rc1
+b9f715d6ce30ee4511402bc81f1b46219bec2b85	v0.9.1rc2
+763ed69c1c924969bb1433f6b737faa86b1ce15c	v0.9.1rc3
+b5b7e0ecc765adfec4ec4efdd14bfc7cce715e23	v0.9.2rc1
+4604882a3e2c6abe4f02318861a90b46a8794488	v0.10.0rc1
+7e16b4a7cdb15723c63c1c0efe58672a056eace8	v0.10.1rc1
+048bfd55531909e1827616102dd40b4cf233f250	v0.10.2rc1
+2f1aed98ccdb0fcbe1ff4fd0abab225bfd8d0367	v0.11.0
+00ba07102212c7c7a40de427f09848f2e203c498	v0.11.0rc0
+c5fe179cef7f91096c5090bdd3de846cab92b736	v0.11.0rc1
+a2e4c3fe783dc8c3ce500a6e8794685bb90193e8	v0.11.0rc2
+b6d63bbd52945192bba2ad8038e6c3bc241bc3b5	v0.11.0rc3
+42ceaf08a1ef02af66dc5b17d1f23d625d061f4d	v0.12.0rc1
+6281c1207a7a499e9f23a42b3a1e7027469f2b10	v0.13.0
+1b5d5abf865f57742aab2d22dd6737af719c124a	v0.13.0rc1
+a17059a23a2a2375f95cfba5afdc782a8b4bfbe4	v0.13.0rc2
+bbe9bc0d90f31afbc5c79175ae30daa2d23f3ebd	v0.13.0rc3
+52d4acfa51fb868823d1070b81cbd2d97e9e4696	v0.14.0rc1
+3d43ed997e715981321bffc10f72f11d9522a5ae	v0.15.0rc1
+a78a00e0b1b618f26a3bfce2519055b40cf4bf1e	v0.16.0rc1
+e20f0b1a0d2fdb1d86a15d55d70fe60a7a1b5a45	v0.17.0rc1
+e18643f8a4d5bd9990727654318ad069ea0b56e2	v0.18.0
+99e1ea0fe685e93f53ee5adfe4b41cdd42fb809f	v0.18.0rc1
+da421afad7192dac64e39ae1d32305d57344f3cf	v0.19.1rc1
+367b8e62da799870a7476ce34f5f7658589a8aad	v0.20.2rc1
+80610e4438dba05011b05f89fc45d91e96992671	v0.21.0rc1
+5f6faa0cb8830f667266f3b8121cd1383606f2a1	v0.22.1rc1
+5cb98caaadeff42b5b62b996e34bb2aaa29d20fd	v0.23.0
+02f59fd6be16c3f898d4179f0822ac12870954fe	v0.23.0.post1
+f4a08bddd0cc65a0bd8c3d377b158ae5ca7527db	v0.23.0rc1
+412cda26814ff70c326f6eb6510f1b610f67bbc0	v0.24.0rc1
+9bf964cb4b87c8cd0d6852c41a55b3c29711fa95	v0.25.1rc1
+fadb1544a2e0ebc82ee69b6aeb75cb130798438f	v0.26.0rc1
+155f68974c802633c19650ece430d41ee6802fa6	v0.26.0rc2
+3b31886237ed65c435e0965b10e8002ff5769766	v0.27.1rc1
+  (count = 46 tags;
+   raw ls-remote --tags lines including peeled ^{} = 48)
+
+## 3. fork HEADS — RAW
+35d606dfe2392122824cd00c802f7864d427e2dc	qwen3.8-950
+  (count = 1 heads)
+
+## 4. what vLLM version each plugin lane targets
+### requirements.txt / [build-system].requires are BUILD-TIME pins. The target vLLM
+### version is VLLM_TAG in Dockerfile / .github/vllm-release-tag.commit.
+--- main  (1e9e03b [Feature]Support using fused operators to improve pe)
+  .github/vllm-release-tag.commit   : v0.30.0
+  .github/vllm-main-verified.commit : ced6857afa0ea7b2e3f0846a62e1394e90f15607
+  Dockerfile ARG VLLM_TAG           : ARG VLLM_TAG=v0.30.0
+  requirements.txt torch pins       : torch==2.10.0 torch-npu==2.10.0.post4 triton-ascend==3.2.2 
+  vllm_ascend/ files w/ qwen4_exp in the PATH : 0
+  vllm_ascend/ FILES matching content qwen4_exp (git grep -l | wc -l) : 0
+  vllm_ascend/ OCCURRENCES of qwen4_exp (git grep -o | wc -l) : 0
+  vllm_version_is("0.29.0") FILES matching (git grep -l | wc -l) : 0
+  vllm_version_is("0.29.0") OCCURRENCES (git grep -o | wc -l) : 0
+--- releases/v0.29.0rc  (a71b766 [BugFix][Spec Decode] Restore DSpARK weight post-pro)
+  .github/vllm-release-tag.commit   : v0.29.0
+  .github/vllm-main-verified.commit : 84030bbe3d74d99bad477a3d2e37a973ccd8865c
+  Dockerfile ARG VLLM_TAG           : ARG VLLM_TAG=v0.29.0
+  requirements.txt torch pins       : torch==2.10.0 torch-npu==2.10.0.post4 triton-ascend==3.2.2 
+  vllm_ascend/ files w/ qwen4_exp in the PATH : 0
+  vllm_ascend/ FILES matching content qwen4_exp (git grep -l | wc -l) : 0
+  vllm_ascend/ OCCURRENCES of qwen4_exp (git grep -o | wc -l) : 0
+  vllm_version_is("0.29.0") FILES matching (git grep -l | wc -l) : 20
+  vllm_version_is("0.29.0") OCCURRENCES (git grep -o | wc -l) : 37
+--- releases/v0.28.0rc  (df7d511 [v0.28.0rc][BugFix][SpecDecode] Preserve tensor stat)
+  .github/vllm-release-tag.commit   : v0.28.0
+  .github/vllm-main-verified.commit : 84030bbe3d74d99bad477a3d2e37a973ccd8865c
+  Dockerfile ARG VLLM_TAG           : ARG VLLM_TAG=v0.28.0
+  requirements.txt torch pins       : torch==2.10.0 torch-npu==2.10.0.post4 triton-ascend==3.2.2 
+  vllm_ascend/ files w/ qwen4_exp in the PATH : 0
+  vllm_ascend/ FILES matching content qwen4_exp (git grep -l | wc -l) : 0
+  vllm_ascend/ OCCURRENCES of qwen4_exp (git grep -o | wc -l) : 0
+  vllm_version_is("0.29.0") FILES matching (git grep -l | wc -l) : 0
+  vllm_version_is("0.29.0") OCCURRENCES (git grep -o | wc -l) : 0
+
+## 5. BOTTOM LINE — does ANY Ascend plugin tree implement qwen4_exp?
+### (all counts below are FILES matching, i.e. 'git grep -l | wc -l')
+  upstream main   whole-tree FILES matching qwen4_exp : 0
+  upstream releases/v0.29.0rc   whole-tree FILES matching qwen4_exp : 0
+  upstream main    whole-tree OCCURRENCES of qwen4_exp : 0
+  upstream main    FILES matching VLLM_ASCEND_ENABLE_QSA : 2
+  (0 under vllm_ascend/ = the upstream 'QSA support' is documentation-first; no code carries it)
+  ... of those, FILES under vllm_ascend/ (code) : 0
+
+## 6. the vLLM commits those lanes pin — do they contain qwen4_exp?
+--- ced6857afa0ea7b2e3f0846a62e1394e90f15607
+  object type in /workspace/vllm            : commit
+  git describe --tags          : v0.30.0
+  files under vllm/models/qwen4_exp/ : 34
+--- releases/v0.29.0rc pins (full sha, from markdown frontmatter above):
+  describe --tags : v0.28.1rc0-676-g84030bbe3d
+  files under vllm/models/qwen4_exp/ : 34
+
+## 7. the local source checkouts (read-only) — what each one pins
+--- /workspace/vllm-ascend (fork, branch qwen3.8-950)
+  .github/vllm-release-tag.commit: v0.23.0
+    -> vLLM tag: v0.23.0
+    -> is it an ancestor of vLLM HEAD? (1 = no) : 1
+  .github/vllm-main-verified.commit: ee0da84ab9e04ac7610e28580af62c365e898389    -> vLLM tag: v0.24.0
+    -> is it an ancestor of vLLM HEAD? (1 = no) : 1
+  fork README model: lenlrx/Qwen3.8-27B-MXFP4-ascend950
+--- /workspace/vllm (upstream) HEAD
+8a2364605c [Core] Bound draft-token RPC waits by the execute-model timeout (#58779)
+v0.30.1rc0-189-g8a2364605c
+  vLLM v0.29.0 / v0.30.0 pyproject torch pin :     "torch == 2.13.0",
+
+## 8. venv has no vllm (row 10 of README §6.1)
+ModuleNotFoundError: No module named 'vllm'
+
+## 9. does upstream claim support for THIS model? (Qwen3.8-Flash-Next)
+### 9a. tutorial: docs/source/tutorials/models/Qwen3.8-Flash-Next.md
+  tutorial exists : 1
+  hardware statement (line 7):
+The current version supports only Atlas A3 series hardware. Atlas A2 series hardware and Ascend 950DT and 950PR products are not yet supported and will be enabled progressively in future releases. This tutorial describes the W8A8 deployment on Atlas 800 A3. Text and multimodal input have been validated on Atlas 800 A3.
+  validated version statement (line 9):
+This document is validated and written based on **vLLM-Ascend 0.26.0rc release**. The current model (Qwen3.8-Flash-Next) is first supported in this version.
+  validated config / checkpoint row (line 29):
+- `Qwen3.8-Flash-Next-w8a8-mtp` (Quantized version): requires 1 Atlas 800 A3 (64GB × 8) node. [https://www.modelscope.cn/models/Eco-Tech/Qwen3.8-Flash-Next-w8a8-mtp](https://www.modelscope.cn/models/Eco-Tech/Qwen3.8-Flash-Next-w8a8-mtp)
+
+### 9b. support matrix row (docs/source/user_guide/support_matrix/supported_models.md)
+  section tabs and line numbers:
+18:=== "950DT Products"
+27:=== "A2/A3"
+52:=== "Atlas 300I DUO"
+90:=== "A2/A3"
+103:=== "Atlas 300I DUO"
+  Qwen3.8-Flash-Next rows (note the Supported Hardware column):
+140:    | Qwen3.8-Flash-Next           | 🔵      |      | ✅  | A3              | ✅ | ✅ | ✅ |  | ✅ | ✅ | ✅ |  | ✅ | ✅ | ✅ | ✅ | ✅ | 262144 | [Qwen3.8-Flash-Next](../../tutorials/models/Qwen3.8-Flash-Next.md) |
+157:    | Qwen3.8-27B | ✅ |  | ❌ | Atlas 300I DUO | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | 256k | [Qwen3.8-27B](../../tutorials/models/Qwen3.8-27B.md) |
+
+### 9c. quay image tags for qwen3.8 mentioned in the docs
+quay.io/ascend/vllm-ascend:qwen3.8-a2
+quay.io/ascend/vllm-ascend:qwen3.8-a3
+quay.io/ascend/vllm-ascend:qwen3.8-a5
+quay.io/ascend/vllm-ascend:qwen3.8-next-a3
+quay.io/ascend/vllm-ascend:qwen3.8-next-a3-openeuler
+
+### 9d. the VLLM_ASCEND_ENABLE_QSA_* variables the tutorial exports: docs or code?
+  files containing the name (whole repo):
+    main:docs/source/locale/zh_CN/LC_MESSAGES/tutorials/models/Qwen3.8-Flash-Next.po
+    main:docs/source/tutorials/models/Qwen3.8-Flash-Next.md
+  ... of which under vllm_ascend/ (code): 0
+### 9e. is the model implemented in the plugin, or reused from vLLM upstream?
+  plugin tree arch strings 'qwen4_exp|Qwen4Exp' hits : 0
+  (0 = the plugin ships no such arch; support must come from vLLM's qwen4_exp
+   model plus plugin ops/patches -- mechanism NOT verified in M30, treat as open)
+### EOF

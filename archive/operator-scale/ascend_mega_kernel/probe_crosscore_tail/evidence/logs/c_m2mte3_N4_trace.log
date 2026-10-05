@@ -1,0 +1,65 @@
+=== lock acquired 2026-10-04T11:53:54+00:00 variant=c_m2mte3 N=4 reps=2 timeout=20s ===
+--- npu-smi (lock entry) ---
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.10                              Version: 25.7.rc1.10                           |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 262.9       61                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5475  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+--- run 1 (timeout 20s) ---
+[AIC Block 0/28] [PCT][AIC] enter N=4 variant=17
+[AIC Block 0/28] [PCT][AIC] r=0 waitFREE
+[AIC Block 0/28] [PCT][AIC] r=0 fixp+setRDY done
+[AIC Block 0/28] [PCT][AIC] r=1 waitFREE
+[AIV Block 0/56] [PCT][AIV0] enter N=4 variant=17
+[AIV Block 0/56] [PCT][AIV0] r=0 waitRDY
+[AIV Block 0/56] [PCT][AIV0] r=0 consumed+logged
+[AIV Block 0/56] [PCT][AIV0] r=1 waitRDY
+[AIV Block 0/56] [PCT][AIV0] r=1 consumed+logged
+[AIV Block 0/56] [PCT][AIV0] r=2 waitRDY
+[AIV Block 0/56] [PCT][AIV0] r=2 consumed+logged
+[AIV Block 0/56] [PCT][AIV0] r=3 waitRDY
+[AIV Block 0/56] [PCT][AIV0] r=3 consumed+logged
+[AIV Block 1/56] [PCT][AIV1] enter N=4 variant=17
+[AIV Block 1/56] [PCT][AIV1] r=0 waitRDY
+[AIV Block 1/56] [PCT][AIV1] r=0 consumed+logged
+[AIV Block 1/56] [PCT][AIV1] r=1 waitRDY
+[AIV Block 1/56] [PCT][AIV1] r=1 consumed+logged
+[AIV Block 1/56] [PCT][AIV1] r=2 waitRDY
+[AIV Block 1/56] [PCT][AIV1] r=2 consumed+logged
+[AIV Block 1/56] [PCT][AIV1] r=3 waitRDY
+[AIV Block 1/56] [PCT][AIV1] r=3 consumed+logged
+exit=124
+SUMMARY variant=c_m2mte3 run=1 HANG=1 rc=124（锁内超时未返回：记「未取得内容读数」，不记「没复现」）
+--- run 2 (timeout 20s) ---
+[AIC Block 0/28] [PCT][AIC] enter N=4 variant=17
+[AIC Block 0/28] [PCT][AIC] r=0 waitFREE
+[AIC Block 0/28] [PCT][AIC] r=0 fixp+setRDY done
+[AIC Block 0/28] [PCT][AIC] r=1 waitFREE
+[AIV Block 0/56] [PCT][AIV0] enter N=4 variant=17
+[AIV Block 0/56] [PCT][AIV0] r=0 waitRDY
+[AIV Block 0/56] [PCT][AIV0] r=0 consumed+logged
+[AIV Block 0/56] [PCT][AIV0] r=1 waitRDY
+[AIV Block 0/56] [PCT][AIV0] r=1 consumed+logged
+[AIV Block 0/56] [PCT][AIV0] r=2 waitRDY
+[AIV Block 0/56] [PCT][AIV0] r=2 consumed+logged
+[AIV Block 0/56] [PCT][AIV0] r=3 waitRDY
+[AIV Block 0/56] [PCT][AIV0] r=3 consumed+logged
+[AIV Block 1/56] [PCT][AIV1] enter N=4 variant=17
+[AIV Block 1/56] [PCT][AIV1] r=0 waitRDY
+[AIV Block 1/56] [PCT][AIV1] r=0 consumed+logged
+[AIV Block 1/56] [PCT][AIV1] r=1 waitRDY
+[AIV Block 1/56] [PCT][AIV1] r=1 consumed+logged
+[AIV Block 1/56] [PCT][AIV1] r=2 waitRDY
+[AIV Block 1/56] [PCT][AIV1] r=2 consumed+logged
+[AIV Block 1/56] [PCT][AIV1] r=3 waitRDY
+[AIV Block 1/56] [PCT][AIV1] r=3 consumed+logged
+exit=124
+SUMMARY variant=c_m2mte3 run=2 HANG=1 rc=124（锁内超时未返回：记「未取得内容读数」，不记「没复现」）
+AGG variant=c_m2mte3 N=4 rc0=0 rc1=0 rc2=0 hang=2 reps=2

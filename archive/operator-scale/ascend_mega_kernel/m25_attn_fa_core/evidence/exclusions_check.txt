@@ -1,0 +1,92 @@
+=== M117 排除表 14 行逐行复核（2026-10-04T10:44:30Z，tip 6962d95）===
+$ python3 /tmp/check_excl.py
+共 14 行；逐行核对（日志文件存在 / commit 存在 / 读数串出现在该日志）
+  行 1: 日志=- commit=- 读数=-  => OK
+  行 2: 日志=['run_m64_1r.log'] commit=['b15509b', 'aeb5f51'] 读数=['EXIT_1R=124']  => OK
+  行 3: 日志=['run_m64_28.log'] commit=['aeb5f51'] 读数=['EXIT28=124', 'EXIT24=124']  => OK
+  行 4: 日志=['run_m64_diag.log'] commit=['aeb5f51'] 读数=['EXIT_DIAG28=124', 'EXIT_DIAG1=124']  => OK
+  行 5: 日志=['run_m64_p32.log'] commit=['2a148a1'] 读数=['EXIT_P32_1=124', 'EXIT_P32_28=124']  => OK
+  行 6: 日志=['probe_logs/run_m64d.log', 'run_m64b.log', 'probe_logs/run_m64d.log'] commit=['b15509b'] 读数=['EXIT=124']  =>  !! 读数不在日志:['EXIT=124']; 日志缺:run_m64b.log; 读数不在日志:['EXIT=124']
+  行 7: 日志=['run_m64_clean.log', 'probe_logs/run_m64i.log'] commit=['b15509b'] 读数=['EXIT_C=124']  => OK
+  行 8: 日志=['run_m64j.log'] commit=['b15509b'] 读数=-  =>  !! 日志缺:run_m64j.log
+  行 9: 日志=- commit=- 读数=-  => OK
+  行10: 日志=['run_m64_gm.log'] commit=['bec205f'] 读数=['EXIT_GM1=124', 'EXIT_GM28=124']  => OK
+  行11: 日志=['run_vf64.log'] commit=['63a37b6'] 读数=['EXIT=124']  => OK
+  行12: 日志=['run_geo.log'] commit=['c8b7b66'] 读数=-  => OK
+  行13: 日志=['run_k1mad.log'] commit=['b4c578a'] 读数=['EXIT=124']  => OK
+  行14: 日志=['run_aicdma.log'] commit=['b4c578a'] 读数=-  => OK
+HAS_PROBLEM
+
+--- 另核：上表之外还有没有引用不存在的日志 ---
+$ grep -o '`[A-Za-z0-9_./]*\.log`' m25_attn_fa_core/evidence/exclusions.md | sort -u | while read f; do ...; done
+  MISSING evidence/run_m64_clean.log
+  exists  probe_logs/run_m64d.log
+  exists  probe_logs/run_m64i.log
+  exists  run_aicdma.log
+  exists  run_geo.log
+  exists  run_k1mad.log
+  exists  run_m64_1r.log
+  exists  run_m64_28.log
+  exists  run_m64_clean.log
+  exists  run_m64_diag.log
+  exists  run_m64_gm.log
+  exists  run_m64_p32.log
+  exists  run_m64_pb.log
+  MISSING run_m64b.log
+  MISSING run_m64j.log
+  exists  run_vf64.log
+  exists  run_wit.log
+
+=== 修完后再跑一遍（2026-10-04T10:44:41Z，tip 6962d95）===
+共 14 行；逐行核对（日志文件存在 / commit 存在 / 读数串出现在该日志）
+  行 1: 日志=- commit=- 读数=-  => OK
+  行 2: 日志=['run_m64_1r.log'] commit=['b15509b', 'aeb5f51'] 读数=['EXIT_1R=124']  => OK
+  行 3: 日志=['run_m64_28.log'] commit=['aeb5f51'] 读数=['EXIT28=124', 'EXIT24=124']  => OK
+  行 4: 日志=['run_m64_diag.log'] commit=['aeb5f51'] 读数=['EXIT_DIAG28=124', 'EXIT_DIAG1=124']  => OK
+  行 5: 日志=['run_m64_p32.log'] commit=['2a148a1'] 读数=['EXIT_P32_1=124', 'EXIT_P32_28=124']  => OK
+  行 6: 日志=['probe_logs/run_m64d.log', 'run_m64b.log', 'probe_logs/run_m64d.log'] commit=['b15509b'] 读数=-  =>  !! 日志缺:run_m64b.log
+  行 7: 日志=['run_m64_clean.log', 'probe_logs/run_m64i.log'] commit=['b15509b'] 读数=['EXIT_C=124']  => OK
+  行 8: 日志=['probe_logs/run_m64j.log'] commit=['b15509b'] 读数=-  => OK
+  行 9: 日志=- commit=- 读数=-  => OK
+  行10: 日志=['run_m64_gm.log'] commit=['bec205f'] 读数=['EXIT_GM1=124', 'EXIT_GM28=124']  => OK
+  行11: 日志=['run_vf64.log'] commit=['63a37b6'] 读数=['EXIT=124']  => OK
+  行12: 日志=['run_geo.log'] commit=['c8b7b66'] 读数=-  => OK
+  行13: 日志=['run_k1mad.log'] commit=['b4c578a'] 读数=['EXIT=124']  => OK
+  行14: 日志=['run_aicdma.log'] commit=['b4c578a'] 读数=-  => OK
+HAS_PROBLEM
+
+--- 全库引用日志存在性 ---
+  exists  probe_logs/run_m64d.log
+  exists  probe_logs/run_m64i.log
+  exists  probe_logs/run_m64j.log
+  exists  run_aicdma.log
+  exists  run_geo.log
+  exists  run_k1mad.log
+  exists  run_m64_1r.log
+  exists  run_m64_28.log
+  exists  run_m64_clean.log
+  exists  run_m64_diag.log
+  exists  run_m64_gm.log
+  exists  run_m64_p32.log
+  exists  run_m64_pb.log
+  MISSING run_m64b.log
+  exists  run_vf64.log
+  exists  run_wit.log
+
+=== 第三遍（脚本已把「run_m64b.log 出现在『已不在库中』免责句里」白名单化）===
+共 14 行；逐行核对（日志文件存在 / commit 存在 / 读数串出现在该日志）
+  行 1: 日志=- commit=- 读数=-  => OK
+  行 2: 日志=['run_m64_1r.log'] commit=['b15509b', 'aeb5f51'] 读数=['EXIT_1R=124']  => OK
+  行 3: 日志=['run_m64_28.log'] commit=['aeb5f51'] 读数=['EXIT28=124', 'EXIT24=124']  => OK
+  行 4: 日志=['run_m64_diag.log'] commit=['aeb5f51'] 读数=['EXIT_DIAG28=124', 'EXIT_DIAG1=124']  => OK
+  行 5: 日志=['run_m64_p32.log'] commit=['2a148a1'] 读数=['EXIT_P32_1=124', 'EXIT_P32_28=124']  => OK
+  行 6: 日志=['probe_logs/run_m64d.log', 'run_m64b.log', 'probe_logs/run_m64d.log'] commit=['b15509b'] 读数=-  => OK
+  行 7: 日志=['run_m64_clean.log', 'probe_logs/run_m64i.log'] commit=['b15509b'] 读数=['EXIT_C=124']  => OK
+  行 8: 日志=['probe_logs/run_m64j.log'] commit=['b15509b'] 读数=-  => OK
+  行 9: 日志=- commit=- 读数=-  => OK
+  行10: 日志=['run_m64_gm.log'] commit=['bec205f'] 读数=['EXIT_GM1=124', 'EXIT_GM28=124']  => OK
+  行11: 日志=['run_vf64.log'] commit=['63a37b6'] 读数=['EXIT=124']  => OK
+  行12: 日志=['run_geo.log'] commit=['c8b7b66'] 读数=-  => OK
+  行13: 日志=['run_k1mad.log'] commit=['b4c578a'] 读数=['EXIT=124']  => OK
+  行14: 日志=['run_aicdma.log'] commit=['b4c578a'] 读数=-  => OK
+ALL_OK

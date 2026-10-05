@@ -1,0 +1,20 @@
+# M46 回归防护取证：check 10 的变异测试（各自独立进程，避免 monkeypatch 串味）
+
+=== 变异 1：把 ftz_f32 换成恒等（等价于整体删掉 FTZ 建模）===
+check 10: router fp32 FTZ (subnormal flush to zero)
+  [FAIL] ftz_f32 flushes |v| < 2**-126 (both signs) to +0 and keeps the smallest normal and zero (probe [1.1754942106924411e-38, -1.1754942106924411e-38, 1.1754943508222875e-38, -1.1754943508222875e-38, 0.0, 1.0000000031710769e-30])
+MUTATION CAUGHT: selfcheck failed: ftz_f32 flushes |v| < 2**-126 (both signs) to +0 and keeps the smallest normal and zero (probe [1.1754942106924411e-38, -1.1754942106924411e-38, 1.1754943508222875e-38, -1.1754943508222875e-38, 0.0, 1.0000000031710769e-30])
+
+=== 变异 2：只删掉 router_topk 里的三处 ftz_f32 调用（保留 ftz_f32 定义，ids 级守卫）===
+check 10: router fp32 FTZ (subnormal flush to zero)
+  [PASS] ftz_f32 flushes |v| < 2**-126 (both signs) to +0 and keeps the smallest normal and zero (probe [1.1754942106924411e-38, -1.1754942106924411e-38, 1.1754943508222875e-38, -1.1754943508222875e-38, 0.0, 1.0000000031710769e-30])
+  [PASS] the case really lands in the subnormal band: 17/20 experts per row have exp(logit) < 2**-126 (reach 17)
+  [PASS] expert 2 sits just *above* the flush line (exp = 1.216e-37 > 2**-126) — the boundary is pinned from both sides
+  [PASS] the tail scores are non-zero fp32 subnormals (the un-modelled reference genuinely mis-ranks them, so the case is not vacuous)
+  [PASS] the pre-M46 reference ranks the largest subnormal scores instead ([0, 1, 2, 19, 18, 17, 16, 15] = the highest expert ids) — it FAILs the device semantics
+  [FAIL] router_topk ids == device semantics (2 hot experts, then the one normal-score expert, then the zeroed tail by lower id) = [0, 1, 2, 3, 4, 5, 6, 7]
+MUTATION CAUGHT: selfcheck failed: router_topk ids == device semantics (2 hot experts, then the one normal-score expert, then the zeroed tail by lower id) = [0, 1, 2, 3, 4, 5, 6, 7]
+
+=== 变异 3：deviation_report 静默漏掉 'res2'（M26 N1 防漏项机制是否仍会咬）===
+  [FAIL] m33/qaware/ceil: report measured key set complete (missing ['res2'])
+MUTATION CAUGHT: selfcheck failed: m33/qaware/ceil: report measured key set complete (missing ['res2'])

@@ -1,0 +1,12 @@
+DEVICE name=NVIDIA GeForce RTX 5090 cc=12.0 sms=170
+RESOURCE name=D-C0-XZ4-Spread threads=256 registers=56 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+CLUSTER runtime_cluster=1 dim=2x1x2 size=4 policy=Spread active_clusters_device=85 potential_cluster_size=8
+LBM_allocateGrid: allocated 185.2 MByte
+CHECK step=2 role=current-even populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=0 role=inactive populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+LBM_showGridStatistics:
+	nObstacleCells:   99248 nAccelCells:   26912 nFluidCells: 2033840
+	minRho:   0.9961 maxRho:   1.0039 mass: 2.160000e+06
+	minU: 0.000000e+00 maxU: 4.025421e-03
+
+PASS physical_steps=2 kernel_launches=1 final_buffer=B patterned=0

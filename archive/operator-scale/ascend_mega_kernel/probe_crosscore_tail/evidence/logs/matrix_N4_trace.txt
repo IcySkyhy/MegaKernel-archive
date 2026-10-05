@@ -1,0 +1,3 @@
+variant N=4 reps=3 timeout=20s
+dbg_rdyonly    variant=dbg_rdyonly N=4 rc0=3 rc1=0 rc2=0 hang=0 reps=3
+c_mode4free    variant=c_mode4free N=4 rc0=3 rc1=0 rc2=0 hang=0 reps=3

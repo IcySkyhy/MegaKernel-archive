@@ -1,0 +1,17 @@
+{
+  "tensor": "shared_expert.up_proj.bin",
+  "shape": [
+    640,
+    1280
+  ],
+  "dtype": "uint8",
+  "strides": [
+    1280,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 819200,
+  "kind": "input",
+  "description": "MXFP4 packed weights [N, K//2], lohi nibbles along K"
+}

@@ -1,0 +1,6 @@
+[PV] 使用真实 dump：P=../evidence/m24_s256_P_unit0_par0.bin（前 8KB = gp[0][0][16][256]），V=../evidence/m24_s256_V_n2_0.bin（前 128KB = v[0][256][256]）
+[PV] 预测配方（与 kernel 共用同一组常量）：A(P) T0 {mStep=1, kStep=16, srcStride=1, dstStride=1}；B(V) T1 {mStep=16, kStep=8, srcStride=16, dstStride=8}
+[PV]   Nd2Nz: A nValue=16/dValue=256/srcDValue=256/dstNzC0Stride=16；B nValue=256/dValue=128(N_TILE)/srcDValue=256(nTotal)/dstNzC0Stride=256；mmad m=16 n=128 k=256
+[PV] device C vs host fp32 参考（RNE→bf16）：0/4096 逐位不等，maxRel=0.000e+00，device 零元素=0
+[PV] PASS（逐位一致）
+[PV] dumped m16_pv_{p,v,c_device,c_ref}.bin（check_ref.py 可独立 numpy 复核）

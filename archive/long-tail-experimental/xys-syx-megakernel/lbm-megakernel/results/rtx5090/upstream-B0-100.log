@@ -1,0 +1,29 @@
+LBM_allocateGrid: allocated 185.2 MByte
+MAIN_printInfo:
+	grid size      : 120 x 120 x 150 = 2.16 * 10^6 Cells
+	nTimeSteps     : 100
+	result file    : /mnt2/xys-syx/Project/lbm-megakernel/results/rtx5090/upstream-B0-100.dat
+	action         : store
+	simulation type: lid-driven cavity
+	obstacle file  : <none>
+
+LBM_allocateGrid: allocated 185.2 MByte
+LBM_allocateGrid: allocated 185.2 MByte
+LBM_showGridStatistics:
+	nObstacleCells:   99248 nAccelCells:   26912 nFluidCells: 2033840
+	minRho:   1.0000 maxRho:   1.0000 mass: 2.160000e+06
+	minU: 0.000000e+00 maxU: 0.000000e+00
+
+nt: 100 took 29118 us
+LBM_allocateGrid: allocated 185.2 MByte
+LBM_showGridStatistics:
+	nObstacleCells:   99248 nAccelCells:   26912 nFluidCells: 2033840
+	minRho:   0.9347 maxRho:   1.0662 mass: 2.160000e+06
+	minU: 7.450572e-09 maxU: 2.634733e-02
+
+Kernel    : 0.029090
+Copy      : 0.115937
+Driver    : 0.029090
+Compute   : 0.670645
+CPU/Kernel Overlap: 0.029090
+Timer Wall Time: 0.815722

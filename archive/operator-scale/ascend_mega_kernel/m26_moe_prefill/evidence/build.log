@@ -1,0 +1,229 @@
+-- System processer: x86_64
+-- CMAKE_ASC_COMPILER: /usr/local/Ascend/cann-9.1.0/bin/bisheng
+-- ASCEND_CANN_PACKAGE_LINUX_PATH: /usr/local/Ascend/cann-9.1.0/x86_64-linux
+-- CMAKE_ASC_LLD_LINKER: /usr/local/Ascend/cann-9.1.0/x86_64-linux/ccec_compiler/bin/ld.lld
+-- The CXX compiler identification is GNU 12.3.1
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/build
+[ 25%] Building ASC object CMakeFiles/m26_consts.dir/m26_consts.asc.o
+[ 50%] Building ASC object CMakeFiles/m26_moe_prefill.dir/m26_moe_prefill.asc.o
+In file included from /workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/m26_consts.asc:13:
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_hc_layer.h:740:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+                for (uint16_t c = 0; c < NCH_H; ++c) {
+                                         ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_hc_layer.h:766:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+                for (uint16_t c = 0; c < NCH_H; ++c) {
+                                         ^
+In file included from /workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/m26_consts.asc:14:
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1121:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+In file included from /workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/m26_moe_prefill.asc:40:
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_hc_layer.h:740:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+                for (uint16_t c = 0; c < NCH_H; ++c) {
+                                         ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_hc_layer.h:766:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+                for (uint16_t c = 0; c < NCH_H; ++c) {
+                                         ^
+In file included from /workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/m26_moe_prefill.asc:41:
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1121:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<1>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1375:29: note: in instantiation of member function 'M15MP::UnpermuteP<1>::Run' requested here
+            case 1: unperm1.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<2>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1376:29: note: in instantiation of member function 'M15MP::UnpermuteP<2>::Run' requested here
+            case 2: unperm2.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<3>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1377:29: note: in instantiation of member function 'M15MP::UnpermuteP<3>::Run' requested here
+            case 3: unperm3.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<4>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1378:29: note: in instantiation of member function 'M15MP::UnpermuteP<4>::Run' requested here
+            case 4: unperm4.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<5>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1379:29: note: in instantiation of member function 'M15MP::UnpermuteP<5>::Run' requested here
+            case 5: unperm5.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<6>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1380:29: note: in instantiation of member function 'M15MP::UnpermuteP<6>::Run' requested here
+            case 6: unperm6.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<7>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1381:29: note: in instantiation of member function 'M15MP::UnpermuteP<7>::Run' requested here
+            case 7: unperm7.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<8>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1382:29: note: in instantiation of member function 'M15MP::UnpermuteP<8>::Run' requested here
+            case 8: unperm8.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<9>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1383:29: note: in instantiation of member function 'M15MP::UnpermuteP<9>::Run' requested here
+            case 9: unperm9.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<10>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1384:31: note: in instantiation of member function 'M15MP::UnpermuteP<10>::Run' requested here
+            default: unperm10.Run(bid, nAiv); break;
+                              ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<1>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1375:29: note: in instantiation of member function 'M15MP::UnpermuteP<1>::Run' requested here
+            case 1: unperm1.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<2>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1376:29: note: in instantiation of member function 'M15MP::UnpermuteP<2>::Run' requested here
+            case 2: unperm2.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<3>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1377:29: note: in instantiation of member function 'M15MP::UnpermuteP<3>::Run' requested here
+            case 3: unperm3.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<4>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1378:29: note: in instantiation of member function 'M15MP::UnpermuteP<4>::Run' requested here
+            case 4: unperm4.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<5>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1379:29: note: in instantiation of member function 'M15MP::UnpermuteP<5>::Run' requested here
+            case 5: unperm5.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<6>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1380:29: note: in instantiation of member function 'M15MP::UnpermuteP<6>::Run' requested here
+            case 6: unperm6.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<7>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1381:29: note: in instantiation of member function 'M15MP::UnpermuteP<7>::Run' requested here
+            case 7: unperm7.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<8>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1382:29: note: in instantiation of member function 'M15MP::UnpermuteP<8>::Run' requested here
+            case 8: unperm8.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<9>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1383:29: note: in instantiation of member function 'M15MP::UnpermuteP<9>::Run' requested here
+            case 9: unperm9.Run(bid, nAiv); break;
+                            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1019:38: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (uint16_t c = 0; c < CHUNKS_H; ++c) {
+                                     ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:969:13: note: in instantiation of member function 'M15MP::UnpermuteP<10>::ComputeRow' requested here
+            ComputeRow(stage);
+            ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-118/m26_moe_prefill/../m15_layer_loop/m15_moe_prefill.h:1384:31: note: in instantiation of member function 'M15MP::UnpermuteP<10>::Run' requested here
+            default: unperm10.Run(bid, nAiv); break;
+                              ^
+14 warnings generated.
+[ 75%] Linking ASC executable m26_consts
+[ 75%] Built target m26_consts
+14 warnings generated.
+[100%] Linking ASC executable m26_moe_prefill
+[100%] Built target m26_moe_prefill

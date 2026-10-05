@@ -1,0 +1,18 @@
+{
+  "tensor": "x.bin",
+  "shape": [
+    1,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 5120,
+  "sha256": "1ac7cbbb11eca87c6975b3531fd14c91398f8c36d61c42a05b4ae33f63598b41",
+  "kind": "input",
+  "description": "MoE segment input activations [m, hidden], bf16 (chain mode: m6#1 output, i.e. post-norm \u2014 NOT norm(x_res, gamma1))"
+}

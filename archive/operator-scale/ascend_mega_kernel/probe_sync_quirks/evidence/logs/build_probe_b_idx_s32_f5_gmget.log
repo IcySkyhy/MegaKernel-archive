@@ -1,0 +1,18 @@
+[ 50%] Building ASC object CMakeFiles/probe_b_idx_s32_f5_gmget.dir/probe_b_vec_idx.asc.o
+fatal error: error in backend: Unsupported Inst must be hoisted.
+/usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/dav_3510/../kernel_tensor_impl.h:1184:20 in GetValue
+probe_b_vec_idx.asc:248:29 in _ZN12_GLOBAL__N_111VecIdxProbe6RunAltEv.vector.extracted
+probe_b_vec_idx.asc:241:9 in RunAlt
+probe_b_vec_idx.asc:148:36 in Run
+probe_b_vec_idx.asc:134:9 in Process
+probe_b_vec_idx.asc:362:8 in probe_b_vec_idx_kernel
+
+bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation)
+2026-07-30T20:53:21+08:00 clang version 15.0.5 (clang-5c68a1cb1231 flang-5c68a1cb1231)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/Ascend/cann-9.1.0/bin
+gmake[3]: *** [CMakeFiles/probe_b_idx_s32_f5_gmget.dir/build.make:76: CMakeFiles/probe_b_idx_s32_f5_gmget.dir/probe_b_vec_idx.asc.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:764: CMakeFiles/probe_b_idx_s32_f5_gmget.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:771: CMakeFiles/probe_b_idx_s32_f5_gmget.dir/rule] Error 2
+gmake: *** [Makefile:436: probe_b_idx_s32_f5_gmget] Error 2

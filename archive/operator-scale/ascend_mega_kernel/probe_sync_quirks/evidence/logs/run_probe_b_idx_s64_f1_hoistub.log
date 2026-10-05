@@ -1,0 +1,2 @@
+[probe B] probe_b_idx_s64_f1_hoistub  form=1 idx=int64_t sizeof=8 base=200 n=8 reps=50
+[probe B] probe_b_idx_s64_f1_hoistub  RUN FAIL：8/400 点不符；首个不符 rep=0 i=0 得到 0 期望 300

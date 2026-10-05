@@ -1,0 +1,29 @@
+# M91-#3 的负向对照（变异**只在 /tmp/m91_nc 副本**；仓库文件未动）
+
+== nc4：把写盘掩码的 min() 去掉（E=4 时会写 8 个 lane，覆盖 pad 的 RT_NEG_BIG）==
+$ sed 's|uint32_t ng = (NUM_EXPERTS - e0 < RT_EGRP) ? (NUM_EXPERTS - e0) : RT_EGRP;|uint32_t ng = RT_EGRP;|' m15_layer_loop/m15_moe_layer.h > /tmp/m91_nc/nc4_hdr.h
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_stream.py --header /tmp/m91_nc/nc4_hdr.h | grep -E 'FAIL'
+[check] FAIL  A4 写盘掩码 ng = min(RT_EGRP, NUM_EXPERTS - e0)（不写越界 lane）: 掩码表达式 = 未找到
+[check] ===== 可 FAIL 的判据 15 条（FAIL 1 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+== nc5：把 RT_EGRP 写成 NUM_EXPERTS（让 UB 窗重新随 E 增长）==
+$ sed 's|constexpr uint32_t RT_EGRP = 8;|constexpr uint32_t RT_EGRP = NUM_EXPERTS;|' m15_layer_loop/m15_moe_resources.h > /tmp/m91_nc/nc5_res.h
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_stream.py --res /tmp/m91_nc/nc5_res.h | grep -E 'FAIL'
+[check] FAIL  B1 每一个 UB_RT_* 都与 NUM_EXPERTS 无关（两档读数相同）: UB_RT_* 共 16 项；随 E 变的 = ['UB_RT_END', 'UB_RT_IDS', 'UB_RT_IDX', 'UB_RT_LOG', 'UB_RT_OI', 'UB_RT_OV', 'UB_RT_PAIR', 'UB_RT_SG', 'UB_RT_SGB', 'UB_RT_SGWF', 'UB_RT_VAL', 'UB_RT_WB0', 'UB_RT_WB1', 'UB_RT_WS', 'UB_RT_XB']
+[check] ===== 可 FAIL 的判据 15 条（FAIL 1 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+== nc6：多插一处 Sort32（模拟“归并树已落地”的假形态，用来验 A10 的咬合力）==
+$ sed 's|            Sort32(pairT, valT, idxT, 1);|            Sort32(pairT, valT, idxT, 1);\n            Sort32(pairT, valT, idxT, 1);|' m15_layer_loop/m15_moe_layer.h > /tmp/m91_nc/nc6_hdr.h
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_stream.py --header /tmp/m91_nc/nc6_hdr.h | grep -E 'FAIL'
+[check] FAIL  A10 本段 top-k 仍是单块 Sort32、无归并树（#4 未落地的当前形态）: Sort32 调用 = 2 处；MrgSort 调用 = 0 处（E <= 32 覆盖；E=512 需 16 块 + 4 级归并树 = #4，未做）
+[check] ===== 可 FAIL 的判据 15 条（FAIL 1 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+

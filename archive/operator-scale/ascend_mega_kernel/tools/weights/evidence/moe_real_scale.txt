@@ -1,0 +1,66 @@
+# M93 · MoE 段真规模取证（只读 safetensors 头；无 payload 读）
+# model_dir=/workspace/Qwen3.8-Flash-Next-MXFP4
+# config: num_hidden_layers=48 num_experts=512 num_experts_per_tok=10 moe_intermediate_size=640 hidden_size=2560 shared_expert_intermediate_size=640 group_size=32
+# quant_method=ascend format=mxfp4-pack-quantized-e8m0 packing=uint8-nibble-lohi
+# HBM 口径 = 131072 MiB（真机 npu-smi 读数）
+
+[chk] C0 分片完整性                           PASS  incomplete shards = 0
+[chk] C2 头部 offset 差 == shape×dtype      PASS  576 个 (层,张量) 对；反例 0
+[chk] C5 专家维 shape[0] == num_experts     PASS  反例 0
+[chk] C1 48 层逐层字节数相同                     PASS  全部相同；层 0 各张量 bytes={'router_w': 2621440, 'sgate_w': 5120, 'experts_gate_up': 838860800, 'experts_gate_up_scale': 52428800, 'experts_down': 419430400, 'experts_down_scale': 26214400, 'shared_gate': 819200, 'shared_gate_scale': 51200, 'shared_up': 819200, 'shared_up_scale': 51200, 'shared_down': 819200, 'shared_down_scale': 51200}
+
+## 逐张量：单专家字节 / 全 512 专家段（专家在**最外维**，专家维 = shape[0]）
+role                     dtype                  shape       1 专家 B         N 专家 B         头部全量 B
+router_w                  BF16            [512, 2560]         5120        2621440        2621440
+[chk] C3/C6 router_w                     PASS  1 专家 5120 × 512 = 2621440 vs 头部全量 2621440
+sgate_w                   BF16              [1, 2560]            —              —           5120   （无专家维，整张量）
+experts_gate_up             U8      [512, 1280, 1280]      1638400      838860800      838860800
+[chk] C3/C6 experts_gate_up              PASS  1 专家 1638400 × 512 = 838860800 vs 头部全量 838860800
+experts_gate_up_scale       U8        [512, 1280, 80]       102400       52428800       52428800
+[chk] C3/C6 experts_gate_up_scale        PASS  1 专家 102400 × 512 = 52428800 vs 头部全量 52428800
+experts_down                U8       [512, 2560, 320]       819200      419430400      419430400
+[chk] C3/C6 experts_down                 PASS  1 专家 819200 × 512 = 419430400 vs 头部全量 419430400
+experts_down_scale          U8        [512, 2560, 20]        51200       26214400       26214400
+[chk] C3/C6 experts_down_scale           PASS  1 专家 51200 × 512 = 26214400 vs 头部全量 26214400
+shared_gate                 U8            [640, 1280]            —              —         819200   （无专家维，整张量）
+shared_gate_scale           U8              [640, 80]            —              —          51200   （无专家维，整张量）
+shared_up                   U8            [640, 1280]            —              —         819200   （无专家维，整张量）
+shared_up_scale             U8              [640, 80]            —              —          51200   （无专家维，整张量）
+shared_down                 U8            [2560, 320]            —              —         819200   （无专家维，整张量）
+shared_down_scale           U8             [2560, 20]            —              —          51200   （无专家维，整张量）
+
+[chk] C4 gate_up 打包 K/2                  PASS  gate_up K 打包 1280 ×2 = 2560 == hidden 2560
+[chk] C4 gate_up scale K/group           PASS  gate_up scale 80 ×32 = 2560 == hidden 2560
+[chk] C4 down 打包 K/2                     PASS  down K 打包 320 ×2 = 640 == inter 640
+[chk] C4 down scale K/group              PASS  down scale 20 ×32 = 640 == inter 640
+[chk] C4 gate_up N=2·inter               PASS  gate_up N 1280 == 2×inter 1280
+[chk] C4 down N=hidden                   PASS  down N 2560 == hidden 2560
+
+## 单层 MoE 权重（回答「一层的内存应该不多吧」）
+  routed 专家（512 × 4 张量）        =    1336934400 B =  1275.000 MiB
+  router gate（512×2560 bf16）       =       2621440 B =     2.500 MiB
+  shared expert（gate/up/down + scale）=       2616320 B =     2.495 MiB
+  ---- 单层 MoE 合计                 =    1342172160 B =  1279.995 MiB = 1.2500 GiB
+  （单层占 HBM 131072 MiB 的 0.977%）
+
+## 全 48 层 MoE 常驻预算
+  routed 专家（512 专家 × 48 层）    =   64172851200 B =    61200.00 MiB =   59.766 GiB
+  router + shared 专家                =     251412480 B =      239.77 MiB
+  ---- MoE 段全量                    =   64424263680 B =    61439.77 MiB =   60.000 GiB
+  占 HBM 131072 MiB 的 46.8748%（routed 部分 46.6919%）
+
+## 全模型 HBM 预算（ngram 表在 host，按人类约束不进 HBM）
+  checkpoint 全部张量          =  182234382328 B =  173792.25 MiB =  169.72 GiB
+  ngram 表（host 侧）          =  102400491776 B =   97656.72 MiB =   95.37 GiB（占整模型 56.19%）
+  ---- 非 ngram（需进 HBM）    =   79833890552 B =   76135.53 MiB =   74.35 GiB = HBM 的 58.09%
+     其中 MoE routed 48 层      =   64172851200 B =   59.77 GiB = HBM 的 46.69%
+     其中 MoE routed（mtp 段）  =    5033164800 B =    4.69 GiB
+     其余（GDN/attention/hc/embedding/lm_head/…）=    9.90 GiB
+  ---- 留给 KV / 激活 / 运行时 =   57605062920 B =   53.65 GiB（HBM 的 41.91%）
+[chk] C8 非 ngram 权重可全部常驻 HBM             PASS  非 ngram 74.35 GiB ≤ HBM 128.00 GiB ⇒ 常驻可行，余 53.65 GiB 给 KV/激活
+[chk] C6 experts_gate_up 全量/单专家          PASS  838860800 / 1638400 = 512 == num_experts 512
+[chk] C6 experts_gate_up_scale 全量/单专家    PASS  52428800 / 102400 = 512 == num_experts 512
+[chk] C6 experts_down 全量/单专家             PASS  419430400 / 819200 = 512 == num_experts 512
+[chk] C6 experts_down_scale 全量/单专家       PASS  26214400 / 51200 = 512 == num_experts 512
+
+[summary] checks=20 fails=0

@@ -1,0 +1,7 @@
+[M54-cross] dump=m3_grouped_gemm/evidence/quant_cross rows=128 k=640 group=32 覆盖 40960 pack 字节 + 2560 scale 字节
+[M54-cross] pack vs m13 quant_mxfp4_hw                  : PASS (0/40960 字节不符)
+[M54-cross] scale vs m13 quant_mxfp4_hw                 : PASS (0/2560 字节不符)
+[M54-cross] pack vs tools/golden quantize_ocp           : PASS (0/40960 字节不符)
+[M54-cross] scale vs tools/golden quantize_ocp          : PASS (0/2560 字节不符)
+[M54-cross] 负向对照 vs legacy ceil（必须不一致）                  : PASS (pack 15831/40960、scale 1589/2560 字节不同)
+[M54-cross] ===== 5/5 判定项 PASS (m13 逐位对拍 PASS；独立见证 PASS；负向对照 OK) =====

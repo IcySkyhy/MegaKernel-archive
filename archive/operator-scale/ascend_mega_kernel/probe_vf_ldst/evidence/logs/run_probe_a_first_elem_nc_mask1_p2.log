@@ -1,0 +1,5 @@
+[probe A] probe_a_first_elem_nc  dist=DIST_FIRST_ELEMENT_B32 maskSel=1 altFamily=1 proc=2
+[probe A] 实测: dst[0..7]=100 -999 -999 -999 -999 -999 -999 -999
+[probe A] 落盘位图(.=未触碰 #=被写): #...............................................................
+[probe A] 写出 lane 数=1（偶 1 / 奇 0）
+[probe A] probe_a_first_elem_nc maskSel=1 RUN PASS：写出 1 lane（期望 1）、未触碰 63 lane

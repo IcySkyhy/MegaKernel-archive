@@ -1,0 +1,82 @@
+# M105 · 设备档逐次读数
+
+本文件两段：**§A = 第 2 轮（本轮交付形态：写提前 + 写侧 drain release）**，
+§B = 第 1 轮的读数（上一轮形态：只提前写、释放仍 mode 0；保留作对照与历史）。
+
+口径：每条设备命令 = `flock -w 300 /tmp/npu0.lock /tmp/m105/inner_run2.sh …` —— `-w` 在锁文件之前、
+**一次进锁只放一条设备命令**、锁内先 `npu-smi` 复查、设备命令一律 `timeout 600` 包住、单进程、未并发。
+`moe_cmp_lines` = 本次 `runs=all` 里 `M.moews.L*` 判据被执行的行数（48 层每层 1 条；
+**非空洞见证**：只有它 = 48 时才说明那 4 B 真的被比过），`moe_pass` = 其中 PASS 的条数。
+
+## §A 第 2 轮（本轮形态）
+
+| # | 档（tag） | 二进制/树 | rc | 起止（UTC） | moe_cmp_lines | moe_pass | 汇总行 |
+|---|---|---|---|---|---|---|---|
+| 1 | c9_fix2_dump | c9f97e3+借include / 8310e71df5d8（本轮形态 · 9 层落盘） | 0 | 2026-10-04T07:56:49+00:00 → 2026-10-04T07:57:40+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=291, fails=0）=====` |
+| 2 | c9_racy2 | c9f97e3+借include / 1c0d3a6961e7（反例：写搬回 acquire 之后 + drain release） | 1 | 2026-10-04T07:57:40+00:00 → 2026-10-04T07:58:29+00:00 | 48 | 12 | `===== FAILURES PRESENT（checks=2068, guards=290, fails=36）=====` |
+| 3 | tip3 | 本分支 tip 正常构建 / 1322c0e11d54 | 0 | 2026-10-04T07:58:29+00:00 → 2026-10-04T07:58:57+00:00 | 48 | 48 | `===== ALL PASS（checks=2095, guards=302, fails=0）=====` |
+| 4 | main_now | 当前 main 9296e79 + 本轮 artifact 正常构建 / 8b78c168332d | 0 | 2026-10-04T07:58:57+00:00 → 2026-10-04T07:59:27+00:00 | 48 | 48 | `===== ALL PASS（checks=2095, guards=302, fails=0）=====` |
+| 5 | c9_fix2_probe | c9f97e3+借include / c487fbdf8483（拨值探针：写值 ^0x5A5A5A5A） | 0 | 2026-10-04T07:59:27+00:00 → 2026-10-04T08:00:20+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=291, fails=0）=====` |
+| 6 | d_01 | c9f97e3+借include / 8310e71df5d8（确定性第 1 次） | 0 | 2026-10-04T08:00:20+00:00 → 2026-10-04T08:01:39+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 7 | d_02 | c9f97e3+借include / 8310e71df5d8（确定性第 2 次） | 0 | 2026-10-04T08:01:39+00:00 → 2026-10-04T08:04:17+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 8 | d_03 | c9f97e3+借include / 8310e71df5d8（确定性第 3 次） | 0 | 2026-10-04T08:04:17+00:00 → 2026-10-04T08:04:59+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 9 | d_04 | c9f97e3+借include / 8310e71df5d8（确定性第 4 次） | 0 | 2026-10-04T08:04:59+00:00 → 2026-10-04T08:06:32+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 10 | d_05 | c9f97e3+借include / 8310e71df5d8（确定性第 5 次） | 0 | 2026-10-04T08:06:32+00:00 → 2026-10-04T08:07:06+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 11 | d_06 | c9f97e3+借include / 8310e71df5d8（确定性第 6 次） | 0 | 2026-10-04T08:07:06+00:00 → 2026-10-04T08:07:32+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 12 | d_07 | c9f97e3+借include / 8310e71df5d8（确定性第 7 次） | 0 | 2026-10-04T08:07:32+00:00 → 2026-10-04T08:08:14+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 13 | d_08 | c9f97e3+借include / 8310e71df5d8（确定性第 8 次） | 0 | 2026-10-04T08:08:14+00:00 → 2026-10-04T08:09:03+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 14 | d_09 | c9f97e3+借include / 8310e71df5d8（确定性第 9 次） | 0 | 2026-10-04T08:09:03+00:00 → 2026-10-04T08:11:14+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 15 | d_10 | c9f97e3+借include / 8310e71df5d8（确定性第 10 次） | 0 | 2026-10-04T08:11:14+00:00 → 2026-10-04T08:11:56+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 16 | d_11 | c9f97e3+借include / 8310e71df5d8（确定性第 11 次） | 0 | 2026-10-04T08:11:56+00:00 → 2026-10-04T08:12:56+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 17 | d_12 | c9f97e3+借include / 8310e71df5d8（确定性第 12 次） | 0 | 2026-10-04T08:12:56+00:00 → 2026-10-04T08:13:22+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 18 | d_13 | c9f97e3+借include / 8310e71df5d8（确定性第 13 次） | 0 | 2026-10-04T08:13:22+00:00 → 2026-10-04T08:15:15+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 19 | d_14 | c9f97e3+借include / 8310e71df5d8（确定性第 14 次） | 0 | 2026-10-04T08:15:15+00:00 → 2026-10-04T08:16:33+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 20 | d_15 | c9f97e3+借include / 8310e71df5d8（确定性第 15 次） | 0 | 2026-10-04T08:16:33+00:00 → 2026-10-04T08:17:07+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 21 | d_16 | c9f97e3+借include / 8310e71df5d8（确定性第 16 次） | 0 | 2026-10-04T08:17:07+00:00 → 2026-10-04T08:17:48+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 22 | d_17 | c9f97e3+借include / 8310e71df5d8（确定性第 17 次） | 0 | 2026-10-04T08:17:48+00:00 → 2026-10-04T08:18:29+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 23 | d_18 | c9f97e3+借include / 8310e71df5d8（确定性第 18 次） | 0 | 2026-10-04T08:18:29+00:00 → 2026-10-04T08:20:36+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 24 | d_19 | c9f97e3+借include / 8310e71df5d8（确定性第 19 次） | 0 | 2026-10-04T08:20:36+00:00 → 2026-10-04T08:21:24+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 25 | d_20 | c9f97e3+借include / 8310e71df5d8（确定性第 20 次） | 0 | 2026-10-04T08:21:24+00:00 → 2026-10-04T08:22:12+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+
+## §B 第 1 轮（上一轮形态；读数与对应 `run_*.log` 均随第 1 次送审入库）
+
+| # | 档（tag） | 二进制/树 | 命令 | rc | 起止（UTC） | moe_cmp_lines | moe_pass | 汇总行 |
+|---|---|---|---|---|---|---|---|---|
+| 1 | c9_unf_dump（翻面基座 · 未修 · 落盘 L00,L01） | c9f97e3+借include / a1d431f9a283 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 M15_DUMP=1 M15_DUMP_MOE=0,1 … all` | 1 | 2026-09-27T07:58:03+00:00 → 2026-09-27T07:58:32+00:00 | 48 | 13 | `FAILURES PRESENT（checks=2068, guards=291, fails=35）` |
+| 2 | c9_fix_dump（翻面基座 · 修后 · 落盘 L00,L01） | c9f97e3+借include / 2d279dc01fa5 | `同上（修后 m15_moe_layer.h）` | 0 | 2026-09-27T07:58:43+00:00 → 2026-09-27T07:59:08+00:00 | 48 | 48 | `ALL PASS（checks=2068, guards=291, fails=0）` |
+| 3 | tip_normal（交付形态 · tip 正常构建 · 无借 include） | tip 工作区 / 2be1941861f3 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:29:51+00:00 → 2026-09-27T08:31:14+00:00 | 48 | 48 | `ALL PASS（checks=2095, guards=302, fails=0）` |
+| 4 | mn_unf_dump | 20bd20d+借include / 63ffd4d9e032 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:03:15+00:00 → 2026-09-27T08:03:51+00:00 | 48 | 48 | `===== ALL PASS（checks=2095, guards=303, fails=0）=====` |
+| 5 | mn_fix | 20bd20d+借include / f61800fb35ae | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:03:51+00:00 → 2026-09-27T08:04:21+00:00 | 48 | 48 | `===== ALL PASS（checks=2095, guards=302, fails=0）=====` |
+| 6 | c9_unf_r1 | c9f97e3+借include / a1d431f9a283 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 1 | 2026-09-27T08:04:21+00:00 → 2026-09-27T08:04:50+00:00 | 48 | 12 | `===== FAILURES PRESENT（checks=2068, guards=290, fails=36）=====` |
+| 7 | c9_unf_r2 | c9f97e3+借include / a1d431f9a283 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 1 | 2026-09-27T08:04:50+00:00 → 2026-09-27T08:05:53+00:00 | 48 | 12 | `===== FAILURES PRESENT（checks=2068, guards=290, fails=36）=====` |
+| 8 | c9_unf_r3 | c9f97e3+借include / a1d431f9a283 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 1 | 2026-09-27T08:05:53+00:00 → 2026-09-27T08:06:58+00:00 | 48 | 13 | `===== FAILURES PRESENT（checks=2068, guards=290, fails=35）=====` |
+| 9 | c9_unf_r4 | c9f97e3+借include / a1d431f9a283 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 1 | 2026-09-27T08:06:58+00:00 → 2026-09-27T08:07:52+00:00 | 48 | 12 | `===== FAILURES PRESENT（checks=2068, guards=290, fails=36）=====` |
+| 10 | c9_unf_mldump | c9f97e3+借include / a1d431f9a283（未修，9 层落盘） | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 1 | 2026-09-27T08:07:52+00:00 → 2026-09-27T08:08:55+00:00 | 48 | 12 | `===== FAILURES PRESENT（checks=2068, guards=291, fails=36）=====` |
+| 11 | c9_fix_d01 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:08:55+00:00 → 2026-09-27T08:09:59+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 12 | c9_fix_d02 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:09:59+00:00 → 2026-09-27T08:11:03+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 13 | c9_fix_d03 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:11:03+00:00 → 2026-09-27T08:11:36+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 14 | c9_fix_d04 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:11:36+00:00 → 2026-09-27T08:12:12+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 15 | c9_fix_d05 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:12:12+00:00 → 2026-09-27T08:12:48+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 16 | c9_fix_d06 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:12:48+00:00 → 2026-09-27T08:13:24+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 17 | c9_fix_d07 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:13:24+00:00 → 2026-09-27T08:13:53+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 18 | c9_fix_d08 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:13:53+00:00 → 2026-09-27T08:14:29+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 19 | c9_fix_d09 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:14:29+00:00 → 2026-09-27T08:15:35+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 20 | c9_fix_d10 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:15:35+00:00 → 2026-09-27T08:17:59+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 21 | c9_fix_d11 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:17:59+00:00 → 2026-09-27T08:18:31+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 22 | c9_fix_d12 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:18:31+00:00 → 2026-09-27T08:19:06+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 23 | c9_fix_d13 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:19:06+00:00 → 2026-09-27T08:19:32+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 24 | c9_fix_d14 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:19:32+00:00 → 2026-09-27T08:19:57+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 25 | c9_fix_d15 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:19:57+00:00 → 2026-09-27T08:20:26+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 26 | c9_fix_d16 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:20:26+00:00 → 2026-09-27T08:20:51+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 27 | c9_fix_d17 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:20:51+00:00 → 2026-09-27T08:21:45+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 28 | c9_fix_d18 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:21:45+00:00 → 2026-09-27T08:22:14+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 29 | c9_fix_d19 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:22:14+00:00 → 2026-09-27T08:22:40+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 30 | c9_fix_d20 | c9f97e3+借include / 2d279dc01fa5 | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:22:40+00:00 → 2026-09-27T08:23:06+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 31 | c9_fix_probe_dump | c9f97e3+借include / 34f4ba578874（拨值探针：写值 ^0x5A5A5A5A） | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:23:06+00:00 → 2026-09-27T08:23:34+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=291, fails=0）=====` |
+| 32 | c9_unf_probe_dump | c9f97e3+借include / 2c491307dbe2（拨值探针：写值 ^0x5A5A5A5A） | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:23:34+00:00 → 2026-09-27T08:24:11+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=291, fails=0）=====` |
+| 33 | c9_fix_mldump | c9f97e3+借include / 2d279dc01fa5（修后，9 层落盘） | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:25:02+00:00 → 2026-09-27T08:25:30+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=291, fails=0）=====` |
+| 34 | c9_fix_c | c9f97e3+借include / 2d279dc01fa5（改注释后的 artifact ⇒ 同一二进制） | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:34:40+00:00 → 2026-09-27T08:46:32+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 35 | c9_D1 | c9f97e3+借include / 8310e71df5d8（/tmp 探针：S 侧 drain release + 写提前） | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 0 | 2026-09-27T08:46:32+00:00 → 2026-09-27T08:51:41+00:00 | 48 | 48 | `===== ALL PASS（checks=2068, guards=290, fails=0）=====` |
+| 36 | c9_D2 | c9f97e3+借include / 1c0d3a6961e7（/tmp 探针：S 侧 drain release + 写仍在 acquire 之后） | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 … all` | 1 | 2026-09-27T08:51:41+00:00 → 2026-09-27T08:53:23+00:00 | 48 | 12 | `===== FAILURES PRESENT（checks=2068, guards=290, fails=36）=====` |
+
+（c9_unf_dump / c9_fix_dump / tip_normal 三条是手工跑的，起止取自本会话的 date -Is 读数；其余由批脚本写出。

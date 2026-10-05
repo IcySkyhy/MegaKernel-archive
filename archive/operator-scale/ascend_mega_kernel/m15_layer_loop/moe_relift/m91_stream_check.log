@@ -1,0 +1,18 @@
+[check] PASS  A1 流式权重路径的 6 个函数各定义 1 处: 定义处数 = {'LoadWRow': 1, 'PrecastWRow': 1, 'PrecastSgateW': 1, 'PadLogitsRow': 1, 'SgateRows': 1, 'GemvGroupRow': 1}
+[check] PASS  A2 旧形态（PrecastWeights / RT_NROWS / 索引槽位的全量窗）已不适用的目标串: 仍出现的串 = （三者均未出现）
+[check] PASS  A3 分组循环 = `for e0 < NUM_EXPERTS step RT_EGRP`（E < RT_EGRP 时只跑一组）: 分组循环 = 命中
+[check] PASS  A4 写盘掩码 ng = min(RT_EGRP, NUM_EXPERTS - e0)（不写越界 lane）: 掩码表达式 = 命中
+[check] PASS  A5 槽循环 = 0..RT_EGRP-1，逐槽「预转 + 预取下一槽」: 槽循环体 = 命中
+[check] PASS  A6 权重流式窗的 8 个槽各读 1 处（RT_EGRP = 8）: 槽 0..7 的读点数 = [1, 1, 1, 1, 1, 1, 1, 1]
+[check] PASS  A7 ping/pong token 的 Acquire/Release 配对（MTE2 写与 V 读各 1 对）: MTE2 1/1；V 1/1
+[check] PASS  A8 越界槽用真实行填充（Acquire/Release 必须配对、不读越权重区）: `(e < NUM_EXPERTS) ? e : (e % NUM_EXPERTS)` = 1 处
+[check] PASS  A9 资源表的 MoE AIV token 编号落在已登记的 15..23 内（新增 22/23）: WST0/WST1 = 22/23
+[check] PASS  A10 本段 top-k 仍是单块 Sort32、无归并树（#4 未落地的当前形态）: Sort32 调用 = 1 处；MrgSort 调用 = 0 处（E <= 32 覆盖；E=512 需 16 块 + 4 级归并树 = #4，未做）
+[check] ---- 布局算术：当前档 NUM_EXPERTS=4 / TOPK_MAX=4 ----
+[check] PASS  B1 每一个 UB_RT_* 都与 NUM_EXPERTS 无关（两档读数相同）: UB_RT_* 共 16 项；随 E 变的 = （无一项变化）
+[check] PASS  B2 UB_RT_END <= GDN 相位峰值 UB_RC_END（不抬高融合 UB 峰值）: UB_RT_END = 192544 B ≤ UB_RC_END = 227328 B（余量 34784 B；改前 193600）
+[check] PASS  B3 UB_RT_END <= UB_BYTES_TOTAL（248KB）: UB_RT_END = 192544 B ≤ 253952 B
+[check] PASS  B4 权重流式窗的常驻字节数（诊断读数）: RT_EGRP = 8 行 × HIDDEN × 4 B = 81920 B（改前：全量 (E+1) 行 = 5 × 2560 × 4 = 51200 B；E=512 假设档仍为 81920 B）
+[check] PASS  [E=4] S3 的 IG 区放得进 router x 块窗: IG 需 7520 B ≤ 窗 40960 B（RT_RB = 8 行）
+[check] PASS  [E=512] S3 的 IG 区放得进 router x 块窗: IG 需 18208 B ≤ 窗 40960 B（RT_RB = 8 行）
+[check] ===== 可 FAIL 的判据 15 条（FAIL 0 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====

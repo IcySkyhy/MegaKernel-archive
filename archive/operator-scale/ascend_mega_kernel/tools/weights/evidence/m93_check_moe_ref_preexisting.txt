@@ -1,0 +1,45 @@
+# M93 · check_moe_ref.py 的既有失败与「不是本 mission 引起」的隔离证明
+#
+# 现象：在 tip（0bd80c6）上跑 check_moe_ref.py 报 ValueError，rc=1。
+# 隔离：同一份二进制（sha256 c6ee3ca0…，改前/改后逐字节相同）、同一份 dump（base manifest 产出，
+#       1307 个文件 sha256 与 tip manifest 产出全同），只换 check_moe_ref.py 的版本。
+
+$ (cd /tmp/m93_ck_moe_base && PY /tmp/m93_b26/m15_layer_loop/check_moe_ref.py . --model-dir /workspace/Qwen3.8-Flash-Next-MXFP4)
+rc=0
+[check_moe_ref]   L03 moe_output 绝对残差（报告项）                             maxAbs 4.911e-05，|routed|+|shared| 均值 4.873e-03
+
+[check_moe_ref] ===== ALL PASS （判定 128 + 非空洞 16 = 144 条；参考 16 条不计入）=====
+
+$ (cd /tmp/m93_ck_moe_base && PY <repo>/m15_layer_loop/check_moe_ref.py . --model-dir /workspace/Qwen3.8-Flash-Next-MXFP4)   # <repo> = 0bd80c6
+rc=1
+[check_moe_ref] 布局表 32 个张量，ws 7685472 B/层；E=4 topk_max=4 M_MAX=64（参考链 = m17_moe_real/check_ref.py）
+[check_moe_ref] dump 层：[0, 1, 2, 3]
+Traceback (most recent call last):
+  File "/workspace/ascend_mega_kernel/.tower/worktrees/wt-93/m15_layer_loop/check_moe_ref.py", line 604, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/workspace/ascend_mega_kernel/.tower/worktrees/wt-93/m15_layer_loop/check_moe_ref.py", line 574, in main
+    check_layer(L, ws, layout, rdr, results, refs, nonvac)
+  File "/workspace/ascend_mega_kernel/.tower/worktrees/wt-93/m15_layer_loop/check_moe_ref.py", line 357, in check_layer
+    hd = M17R.dequant(hqx[e], hs[e], t, INTER, INTER // 2, INTER // GROUP)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/ascend_mega_kernel/.tower/worktrees/wt-93/m17_moe_real/check_ref.py", line 219, in dequant
+    s = scale.reshape(-1, s_stride)[:rows, : k // GROUP]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot reshape array of size 32 into shape (20)
+
+# ⇒ 失败由 m15_layer_loop/check_moe_ref.py 在 26d644b..0bd80c6 之间的改写引入（M90），
+#   与本 mission 的 manifest 改动无关（base/tip 两份 manifest 下逐字相同）。
+
+$ git diff --stat 26d644b 0bd80c6 -- m15_layer_loop/check_moe_ref.py
+ m15_layer_loop/check_moe_ref.py | 593 +++++++++++++++++++++++++++-------------
+ 1 file changed, 404 insertions(+), 189 deletions(-)
+
+# 报塔：TowerFinding(bug, high) —— m15_layer_loop/check_moe_ref.py 在 main 上红
+
+# ── 时点注（r3 追加，不改上面的判定内容）──────────────────────────────────────
+# 上面这份记录是 **M96 之前** 的读数（旧基线 `0bd80c6`、二进制 `c6ee3ca0…`），因此两个日志已
+# 改名为 `m93_check_moe_ref_preM96_{base,tip}.log`，以免被当成当前读数。M96（`eca3a44`）修掉
+# 三处口径漂移后已随 main 合入；我在 **rebase 后的 tip** 上重跑得 rc=0 /
+# `RESULT: OK (128 条判定项 + 20 条非空洞全部比较通过)`，见 `m93_check_moe_ref_tip.log`。
+# ⇒ 本文件描述的缺陷**已修**，保留它只为记下「是谁引入的、怎么隔离的」。

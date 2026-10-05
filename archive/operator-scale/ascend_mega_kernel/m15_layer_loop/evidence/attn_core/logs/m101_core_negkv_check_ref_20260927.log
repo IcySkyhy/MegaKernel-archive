@@ -1,0 +1,78 @@
+[check] seq=  256 (seq_pad=256)
+  判定项 A（out 边界感知 ulp，T3）: FAIL | 常规元素 6130 个（判 ≤1 ulp）：越界 6120 | 边界元素 14 个（判 ≤2 ulp + 绝对界）：ulp 越界 14、绝对界越界 14 | max 31509 ulp
+    ε 各项（单位 2^-24；Exp 项 = **官方 Reg 精度规格 1 ulp**，不是设备实测）: S2T 256 + nsplit 1 + 2·nTile 2 + EXP_ULP·nTile 2（nTile=1） = 261·2^-24，ε = 1.556e-05 ⇒ 边界元素 δ = noise_ub/ulp(out) 最大 0.0038（无边界元素时 δ=0）
+    绝对界（仅边界元素）: ε·(Σ|acc·w|/den) + 0.5·ulp(out)，最大 2.458e-04
+     判定项[A. out 边界感知 ulp]: FAIL 常规 6130(越界 6120) / 边界 14(ulp 越界 14、绝对界越界 14)
+  判定项 B（out 结构性，T4）: 非全零 PASS | 非常数 PASS | 每行 256 列非零 PASS (min 256)
+     判定项[B. out 每行 256 列非零]: PASS min 256
+  报告项: 位级一致率 0.0326% | ≤1ulp 0.1628% | ≤2ulp 0.3092% | maxAbsErr 1.392e-01
+  报告项: maxRel 7.031e+03 —— 由相消区元素主导 out[0][10][27]: |ref|=3.263e-06、|dev−ref|=2.295e-02、该行量级 8.936e-02（相消 27381×）；报告项，小分母不由判定项承担
+  报告项: 单一相对累加界 ε·(Σ|acc·w|/den) 覆盖 0/6144 处（不足 6144 处中的 14 个即边界元素/相消区；见 README §6.6）
+  判定 A 首个越界位置 out[0][0][0]: got 0x3c79 expect 0x3c89 (16 ulp, 边界元素=False, absErr 1.514e-03 vs 界 6.130e-05), 共 6134 处
+  guard(host mask 契约): tail=0 全 0（无尾 tile）
+     guard[host mask 契约（自检，恒真）]: OK tail=0
+[p] seq=256: 判据 C/D —— 设备 `gp` 全数组 vs host 从 q/k **独立重算**的 P̃（N1 输入隔离） | 档 T3（Exp + 在线重标定 + mmad k=256）| 逐元素 |Δ| ≤ 1.0·ulp(P̃_ref) + ε_arg·|P̃_ref|，ε_arg=(S2T 256 + Exp 2)·2^-24 = 1.538e-05
+    判据 C（逐元素，T3）: 比较 8192 个元素 / 覆盖 2 个 (unit,slot) × 16 行（含 4 个 q pad 行；pad 行的 q=0 ⇒ P̃=1）| 越界 6017 | 位差 0/1/2/≥3 格点 = 2094/81/64/5953 | 最大界占用 564.8026
+    判据 D（结构性，T4/T1）: 未用槽位非零 0/82（必须 0，咬 unit 索引空间） | 尾 tile 无效列非零 0（必须 0，咬列 mask 契约）
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col0 token0 → 40 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col1 token1 → 20 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col2 token2 → 15 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col3 token3 → 91 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col4 token4 → 5 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col5 token5 → 53 个格点
+    判据 C 首个越界: unit0 token0 row0 |Δ|=1.562e-01 > 界 3.917e-03
+    覆盖范围: 设备 buffer 共 344064 个槽位 = 2 个在用一个(unit,slot)（8192 元素逐元素比） + 82 个未用槽位（按判据 D 必须恒 0，已全查）；无抽样
+     guard[C 判别力对照（分辨率 = 1 个 bf16 格点）]: OK 参考自身当设备 ⇒ 越界 0（须 0）；某元素 +1 格点 ⇒ 0（**须 0**：1.0·ulp 是判据明写的允许差，docs/17 的格点条款）；+2 格点 ⇒ 1（须 1，即 >1 ulp 必须被抓）
+     guard[C 口径负向对照（global max 口径必须被咬）]: OK 换用『全序列行 max』口径后越界 6017（该档全序列只有 1 个 tile ⇒ 两口径**同解、不可判**，如实报）
+    旧 `check_gp` 窄范围（unit0/slot0、前 12 行、单 tile）在本判据内一并覆盖: maxAbsErr 6.367e-01（旧容差 5e-3 → 现为派生的 1.0·ulp+ε_arg，最小 9.796e-04，**更严**）
+     判定项[C. P̃ 全数组逐元素（T3）]: FAIL 比较 8192 元素、越界 6017、最大界占用 564.8026
+     判定项[D. P̃ 位置/掩码结构性（T4/T1）]: PASS 未用槽位非零 0/82、尾 tile 无效列非零 0
+[pv-ref] seq=256: 判据 E —— BMM2 L0C（`dbgc2`）vs **独立重算 P̃**·V（T3） | tol = S2T·u·Σ|P̃V| + Σ_k(1.0·ulp(P̃_k)+ε_arg·P̃_k)|V_kd|（两项都是推导） | 覆盖 2 个 unit 的 tile0、8192 个元素 | 越界 7756 | maxAbsErr 3.144e+01 @ unit0 (row12,col243) | 最大界占用 6.80e+01 | unit0 maxAbsErr 3.144e+01
+     判定项[E. P·V（独立 P，全 unit 的 tile0）]: FAIL 越界 7756/8192，maxAbsErr 3.144e+01，界占用 6.80e+01
+[pv-dev] seq=256: 判据 F（**S1**：输入 = 设备产出的 P̃）—— BMM2 L0C vs P̃_dev·V | tol = S2T·u·Σ|P̃V|（推导）| 覆盖 2 个 unit 的 tile0、8192 个元素 | 越界 8191 | maxAbsErr 3.144e+01 @ unit0 | 最大界占用 2.29e+04 | unit0 maxAbsErr 3.144e+01
+     定位声明：本判据的**被判量**是「给定 P 下 BMM2 的布局/转置」（咬 BMM2 ↔ `gp` 的同一性）；P 本身**不是**本判据的被判量（两侧同一份设备 P̃），P 由判据 C/D 咬。
+     判定项[F. P·V（设备 P，S1 定位声明）]: FAIL 越界 8191/8192，maxAbsErr 3.144e+01，界占用 2.29e+04
+[check] seq=  300 (seq_pad=512)
+  判定项 A（out 边界感知 ulp，T3）: FAIL | 常规元素 6086 个（判 ≤1 ulp）：越界 6069 | 边界元素 58 个（判 ≤2 ulp + 绝对界）：ulp 越界 58、绝对界越界 58 | max 31531 ulp
+    ε 各项（单位 2^-24；Exp 项 = **官方 Reg 精度规格 1 ulp**，不是设备实测）: S2T 256 + nsplit 2 + 2·nTile 2 + EXP_ULP·nTile 2（nTile=1） = 262·2^-24，ε = 1.562e-05 ⇒ 边界元素 δ = noise_ub/ulp(out) 最大 27.2828（无边界元素时 δ=0）
+    绝对界（仅边界元素）: ε·(Σ|acc·w|/den) + 0.5·ulp(out)，最大 2.456e-04
+     判定项[A. out 边界感知 ulp]: FAIL 常规 6086(越界 6069) / 边界 58(ulp 越界 58、绝对界越界 58)
+  判定项 B（out 结构性，T4）: 非全零 PASS | 非常数 PASS | 每行 256 列非零 PASS (min 256)
+     判定项[B. out 每行 256 列非零]: PASS min 256
+  报告项: 位级一致率 0.0977% | ≤1ulp 0.2767% | ≤2ulp 0.4069% | maxAbsErr 1.455e-01
+  报告项: maxRel 1.378e+04 —— 由相消区元素主导 out[1][1][154]: |ref|=1.684e-06、|dev−ref|=2.320e-02、该行量级 7.471e-02（相消 44367×）；报告项，小分母不由判定项承担
+  报告项: 单一相对累加界 ε·(Σ|acc·w|/den) 覆盖 0/6144 处（不足 6144 处中的 58 个即边界元素/相消区；见 README §6.6）
+  判定 A 首个越界位置 out[0][0][0]: got 0xbbc7 expect 0xbcec (293 ulp, 边界元素=False, absErr 2.279e-02 vs 界 6.176e-05), 共 6127 处
+  guard(host mask 契约): tail=44 212 列被屏蔽
+     guard[host mask 契约（自检，恒真）]: OK tail=44
+[p] seq=300: 判据 C/D —— 设备 `gp` 全数组 vs host 从 q/k **独立重算**的 P̃（N1 输入隔离） | 档 T3（Exp + 在线重标定 + mmad k=256）| 逐元素 |Δ| ≤ 1.0·ulp(P̃_ref) + ε_arg·|P̃_ref|，ε_arg=(S2T 256 + Exp 2)·2^-24 = 1.538e-05
+    判据 C（逐元素，T3）: 比较 9600 个元素 / 覆盖 4 个 (unit,slot) × 16 行（含 4 个 q pad 行；pad 行的 q=0 ⇒ P̃=1）| 越界 7008 | 位差 0/1/2/≥3 格点 = 2447/142/107/6904 | 最大界占用 304.0322
+    判据 D（结构性，T4/T1）: 未用槽位非零 0/80（必须 0，咬 unit 索引空间） | 尾 tile 无效列非零 0（必须 0，咬列 mask 契约）
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col0 token0 → 2 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col1 token1 → 13 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col2 token2 → 25 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col3 token3 → 20 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col4 token4 → 72 个格点
+    P̃ 位差（≤1 格点，判据 C 内）: unit0(split0,n20) slot0 row0 col5 token5 → 23 个格点
+    判据 C 首个越界: unit0 token0 row0 |Δ|=3.906e-03 > 界 1.960e-03
+    覆盖范围: 设备 buffer 共 344064 个槽位 = 4 个在用一个(unit,slot)（9600 元素逐元素比） + 80 个未用槽位（按判据 D 必须恒 0，已全查）；无抽样
+     guard[C 判别力对照（分辨率 = 1 个 bf16 格点）]: OK 参考自身当设备 ⇒ 越界 0（须 0）；某元素 +1 格点 ⇒ 0（**须 0**：1.0·ulp 是判据明写的允许差，docs/17 的格点条款）；+2 格点 ⇒ 1（须 1，即 >1 ulp 必须被抓）
+     guard[C 口径负向对照（global max 口径必须被咬）]: OK 换用『全序列行 max』口径后越界 7036（>0 即判据非恒真）
+    旧 `check_gp` 窄范围（unit0/slot0、前 12 行、单 tile）在本判据内一并覆盖: maxAbsErr 7.305e-01（旧容差 5e-3 → 现为派生的 1.0·ulp+ε_arg，最小 1.957e-03，**更严**）
+     判定项[C. P̃ 全数组逐元素（T3）]: FAIL 比较 9600 元素、越界 7008、最大界占用 304.0322
+     判定项[D. P̃ 位置/掩码结构性（T4/T1）]: PASS 未用槽位非零 0/80、尾 tile 无效列非零 0
+[pv-ref] seq=300: 判据 E —— BMM2 L0C（`dbgc2`）vs **独立重算 P̃**·V（T3） | tol = S2T·u·Σ|P̃V| + Σ_k(1.0·ulp(P̃_k)+ε_arg·P̃_k)|V_kd|（两项都是推导） | 覆盖 4 个 unit 的 tile0、16384 个元素 | 越界 15869 | maxAbsErr 3.385e+01 @ unit0 (row12,col129) | 最大界占用 1.75e+02 | unit0 maxAbsErr 3.385e+01
+     判定项[E. P·V（独立 P，全 unit 的 tile0）]: FAIL 越界 15869/16384，maxAbsErr 3.385e+01，界占用 1.75e+02
+[pv-dev] seq=300: 判据 F（**S1**：输入 = 设备产出的 P̃）—— BMM2 L0C vs P̃_dev·V | tol = S2T·u·Σ|P̃V|（推导）| 覆盖 4 个 unit 的 tile0、16384 个元素 | 越界 16384 | maxAbsErr 3.385e+01 @ unit0 | 最大界占用 5.90e+04 | unit0 maxAbsErr 3.385e+01
+     定位声明：本判据的**被判量**是「给定 P 下 BMM2 的布局/转置」（咬 BMM2 ↔ `gp` 的同一性）；P 本身**不是**本判据的被判量（两侧同一份设备 P̃），P 由判据 C/D 咬。
+     判定项[F. P·V（设备 P，S1 定位声明）]: FAIL 越界 16384/16384，maxAbsErr 3.385e+01，界占用 5.90e+04
+[check] seq=256,300 | 判定项 8/16 通过 | 报告项 18 单列 | guard 6/6 | 输入缺失 0 项
+        判定项 FAIL: seq=256 A. out 边界感知 ulp
+        判定项 FAIL: seq=256 C. P̃ 全数组逐元素（T3）
+        判定项 FAIL: seq=256 E. P·V（独立 P，全 unit 的 tile0）
+        判定项 FAIL: seq=256 F. P·V（设备 P，S1 定位声明）
+        判定项 FAIL: seq=300 A. out 边界感知 ulp
+        判定项 FAIL: seq=300 C. P̃ 全数组逐元素（T3）
+        判定项 FAIL: seq=300 E. P·V（独立 P，全 unit 的 tile0）
+        判定项 FAIL: seq=300 F. P·V（设备 P，S1 定位声明）
+RESULT: FAIL (判定项 8/16 通过；判定 FAIL 8 项、guard FAIL 0 项；报告项 18 单列)

@@ -1,0 +1,57 @@
+# M40：融合 per-layer kernel 的段级 msprof 分解（**设计输入**，不是调优；mission task4）
+# 本表是**紧凑专家槽版**（当前交付代码，runs=p）。括号里是扁平槽版（改造前）的同一量，用于看改造的代价。
+#
+# 再生成命令（任一空目录）：
+#   cd /tmp/m40_prof && msprof --output=prof --task-time=l1 --ai-core=on --ascendcl=off --runtime-api=off \
+#       env M15_REPS=3 M15_LAYERS=48 <repo>/m15_layer_loop/build/m15_layer_loop <repo>/m15_layer_loop/weights_manifest.txt p
+#   #   ↑ runs=p = 「验证 P：计时/msprof 最小启动集」（无判据；层间连发不插 host sync）
+#   python3 - <prof/*/mindstudio_profiler_output/op_statistic_*.csv   # 见本文件末尾的一行式聚合
+#
+# ---------------------------------------------------------------------------
+# 为什么是「三种形态相减」而不是「段内打点」：段在同一 kernel 内，msprof 只能按 **kernel 符号**
+# 统计。故发三种形态，用同一层数/同一 input/同一 state：
+#   P1 融合（1 次启动/层）= 相位 A + 相位 B      → m15_layer_kernel_gdn / m15_layer_kernel_attn
+#   P2 子层段（1 次启动/层）                     → m15_gdn_layer_kernel / m15_attn_placeholder_kernel
+#   P3 MoE 段（1 次启动/层）                     → m15_moe_segment_kernel
+# 于是「MoE 段净增量/层 = P1 − P2」，并与 P3（独立启动的 MoE 段）+ 一次启动开销交叉核对。
+# ---------------------------------------------------------------------------
+# 设备真值（msprof op_statistic.csv，48 层 × 3 轮；36 GDN 层 + 12 attention 层的 3:1 划分）
+#
+#   符号                              次数   总耗时(ms)   平均(us/层)
+#   m15_layer_kernel_gdn              108    22.099       204.62      ← 融合：GDN 段 + MoE 段（扁平槽版 183.87）
+#   m15_gdn_layer_kernel              108    15.312       141.78      ← M25 的 GDN 段（对照；扁平槽版 141.93）
+#   m15_layer_kernel_attn              36     2.229        61.93      ← 融合：attention 占位 + MoE 段（扁平槽版 43.31）
+#   m15_attn_placeholder_kernel        36     0.088         2.46      ← M25 的占位直通（对照）
+#   m15_moe_segment_kernel            144     8.490        58.96      ← MoE 段独立启动（对照；扁平槽版 39.06）
+#
+# 段级分解（设备侧）：
+#   GDN 层：MoE 段净增量 = 204.62 − 141.78 = **62.84 us/层**（占融合层的 30.7%；扁平槽版 41.94）
+#   attention 层：MoE 段净增量 = 61.93 − 2.46 = **59.47 us/层**（与 MoE 段独立启动的 58.96 互证）
+#   每 step（48 层，3:1）：融合 = 36×204.62 + 12×61.93 = **8.110 ms**
+#                          M25 基线 = 36×141.78 + 12×2.46 = **5.134 ms**
+#                          ⇒ MoE 段一项带来 **+2.976 ms/step**（+58%）
+#
+# **紧凑槽改造的性能退化（已知、已定位、未修）**：MoE 段 39.06 → 58.96 us/层（+51%）。
+# 根因 = 并行度：改造前扁平工作项 (slot, nb) 按 bid 摊到 28 个 AIC；改造后三重循环里内层 nb
+# 也按 bid 条带，而 GU_NBLK=5 / DN_NBLK=10 < 28 ⇒ 只有 bid < 5 的 AIC 分到活。
+# 修法（一行级）：先把「一个专家内的 (mTile, nb)」展平成 it ∈ [0, mTiles*NBLK) 再按 bid 条带。
+# 本 mission 预算耗尽未做（用户明确现阶段只求正确性）；README §6 同款披露。
+#
+# host 侧（同一次运行内 print，含下发，不含 sync）：
+#   P1 融合 0.1533 ms/层、P2 子层段 0.1076 ms/层、P3 MoE 段 0.0397 ms/层
+#   ⇒ Δ(P1−P2) = 45.7 us/层（与设备侧 41.9 us 的差 = host 下发/同步粒度，量级一致）
+#
+# 带宽口径（沿用 M25 §3.3 的算法）：融合 GDN 层每层搬运 ≈ 116 MB 权重 + 3.2 MB state +
+#   13.1 MB MoE 权重 + MoE 段激活/中间量，183.87 us ⇒ 等效带宽量级与 M25 的 0.86 TB/s 同档；
+#   MoE 段这 39-42 us 里 AIC 的两组 grouped GEMM（gate_up K=2560 N=1280 ×5 槽 + down K=640
+#   N=2560 ×5 槽）在 m=1 下是 **权重带宽支配**（每层 13.1 MB MoE 权重）。
+#
+# 本 mission 不做任何 tile/预取调优（用户明确现阶段只求正确性）：上表只作**后续设计的输入**。
+#
+# 一行式聚合（reviewer 复核用，实测可直接跑）：
+#   python3 -c "import csv,re,sys;rows=list(csv.DictReader(open(sys.argv[1])));\
+#   agg={};\
+#   [agg.__setitem__(m.group(1), (agg.get(m.group(1),(0,0.0))[0]+1, agg.get(m.group(1),(0,0.0))[1]+float(r['Avg Time(us)'])*int(r['Count'])))
+#    for r in rows for m in [re.search(r'(m15_[a-z_]*kernel[a-z_]*)', r['OP Type'])] if m];\
+#   [print(k, v[0], round(v[1]/v[0],2)) for k,v in sorted(agg.items())]" \
+#   prof/*/mindstudio_profiler_output/op_statistic_*.csv

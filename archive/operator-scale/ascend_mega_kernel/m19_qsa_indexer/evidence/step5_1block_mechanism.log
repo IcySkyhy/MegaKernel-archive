@@ -1,0 +1,24 @@
+# M35：radix 三档"恰好少 1 个 block"的机理（最小档 V=256, blkTopk=2）
+#
+# ① 丢的是哪一块？（tower 问 1）—— **含阈值那一块（score == K）**
+#   A_close_2048: 参考 top-2 = [26, 87] (score 29.758 / 26.749)，第 3 名 26.243
+#                 设备选中 = [26]  ⇒ **丢的正是 score == K 的边界块 87**（K 的分数 26.7486）
+#   B_open_2048: 参考 top-2 = [129,147]，设备两块都选中 ⇒ B 丢的不是块而是 **tail 的 2 个 token**
+#                 （B 自检同时报「列 2048 未填 -1」⇒ 收尾少写一槽）
+#   C_small_256: 参考 [255,8]，设备 [8,255] ⇒ 完全一致（select-all 路径，不走 radix）
+#
+# ② 为什么边界块被丢？—— 用 GM 原始计数 dump 与 kernel 侧读数对拍（决定性）：
+#   cntGm[1536..] (cgt 每 AIV 4B) = [1,0,0,...]  合计 1  ✅ 与 stats 的 gtTotal=1 一致
+#   cntGm[1792..] (ceq 每 AIV 4B) = [1,1,0,...]  合计 2  ✅ **GM 里是对的**
+#   但 stats 里 **eqTotal = 56**（= NAIV，即"每个 AIV 都读成 1"）⇒ **ReadTotals 的 ceq 读取有问题**
+#   ⇒ myEqBase 变成"按 AIV 序号每个 +1"（实测 0,1,2,2）⇒ myTieQuota = need - myEqBase 被虚高的前缀吃掉：
+#       A 档 need = blkTopk - gtTotal = 1；拥有边界块 87 的 AIV（myEqBase=2）算得 quota=0
+#       ⇒ 该块永不写出 ⇒ **恰好少 1 个 block** ✅ 与签名完全吻合
+#   （对照：gtTotal 的读取路径正确 ⇒ 同一函数、两个调用只有一个错 ⇒ 指向 ceq 那一路的槽/地址口径）
+#
+# ③ 「列 2048 未填 −1」签名仍在（B 档）⇒ 与"丢一块"不是同一件事：
+#   B 丢的是 tail 的 2 个 token（块集合完全正确），属**收尾那一槽**的处理问题。
+#
+# 结论：两处**同族**收尾缺陷 —— (i) tie(score==K) 配额被虚高的 myEqBase 吃掉 ⇒ 丢边界块（A/D）；
+#       (ii) tail 收尾少写 ⇒ 少 2 token（B）。下一轮各 2~4 行：dump ReadTotals 两路读到的原始向量，
+#       并把 tie 配额改为"全局 need 的前 need 个（按 AIV 序）"而不是依赖被读错的 myEqBase。

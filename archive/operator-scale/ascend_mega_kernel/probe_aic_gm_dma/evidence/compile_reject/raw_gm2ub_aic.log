@@ -1,0 +1,12 @@
+In file included from <built-in>:1:
+In file included from /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_runtime_wrapper.h:37:
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_aicore_functions.h:2874:1: error: function type 'void (__ubuf__ unsigned int *, __gm__ unsigned int *, unsigned char, unsigned int, unsigned int, unsigned char, unsigned char, bool, unsigned char, unsigned long, unsigned int) noexcept' of 'copy_gm_to_ubuf_align_v2' does not support the given target feature
+MOV_OUT_TO_UB(void);
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_aicore_functions.h:2868:5: note: expanded from macro 'MOV_OUT_TO_UB'
+    CCE_SCALAR(copy_gm_to_ubuf_align_v2)                                       \
+    ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_aicore_functions.h:27:26: note: expanded from macro 'CCE_SCALAR'
+#define CCE_SCALAR(FUNC) __cce_scalar::FUNC
+                         ^
+1 error generated.

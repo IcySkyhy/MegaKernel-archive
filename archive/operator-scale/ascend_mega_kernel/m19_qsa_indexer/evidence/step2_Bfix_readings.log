@@ -1,0 +1,28 @@
+# M35 Step2 (B) 修复前后读数 + (C) 截断改造；最小档 V=256 / M19_BUDGET=8 ⇒ blkTopk=2
+# 修复前：statGm 记录 candGT=0, candEQ=-1（= RadixSelect 里 V<=blkTopk 退化分支取值，但 V=256>2）
+#   机理：CountCand(c, 0) 恒写槽 0，而 WriteCountToGm(d-1, UB_CNTS+(d-1)*256) 读槽 d-1
+#         ⇒ d=2,3 读到上一轮的旧值 ⇒ t 恒 ≥ blkTopk ⇒ digit 恒 3 ⇒ base 累加到 0xFFFFFFFF
+#         ⇒ candGT = base+1 = 0（int32 回绕）、candEQ = base = -1 ⇒ GT 掩码变"全部选中"
+#         ⇒ Σcgt=V ≫ blkTopk ⇒ 每子块被整块丢弃 ⇒ 0 token
+# 修复：CountCand(c, d-1)（每个候选写自己那一槽）
+# 修复后（本文件随附读数）：
+== A_close_2048 (candGT=1104543031 candEQ=1104543030 gtTotal=1 blkTopk=2) ==   # ← 键值合理（≈26.3）
+   aiv nvalid localCgt trunc myGtBase myEqBase gtEmit clipped firstRank
+     0     64      1      0      0      0      1      0      0
+     1     64      0      0      0      0      0      0      0
+     2     64      0      0     -1      0      0      0      0     # ← 负数！
+     3     64      0      0     -2      0      0      0      0
+   out[0:10]= [104 105 106 107 348 349 350 351 -1 -1]  count col= 8    # PASS（8/8，两个 block 正确）
+== C_small_256 (candGT=1108745275 candEQ=1108745274 gtTotal=1 blkTopk=2) ==
+     0     64      0 ...  myGtBase=0 ; 1: myGtBase=0 ; 2: myGtBase=0 ; 3: localCgt=1 myGtBase=0
+   out[0:10]= [1020 1021 1022 1023 32 33 34 35 -1 -1]   # 4/8：只写出 1 个 block（期望 2）
+== B_open_2048 (candGT=1107682809 candEQ=1107682808 gtTotal=1 blkTopk=2) ==
+     2: localCgt=1 trunc=1 myGtBase=-2 myEqBase=-1
+   out[0:10]= [-1 ...]  count col= 10                      # 0/10：rank 基为负 ⇒ 写到缓冲区之前
+# 结论
+# (B) 已修复并被读数证实（修复前 candGT=0/candEQ=-1 的退化取值 → 修复后为合理键值）。
+# 剩余 bug（新，有读数）：跨核前缀 myGtBase/myEqBase 实测为 **负数**（-1/-2），而它应当是
+#   互斥前缀和（≥0）。负值使 rank 基为负 ⇒ 写出落在 out 缓冲区**之前**（B 档 0 token、C/D 只出半个）。
+#   且 gtTotal=1 而 blkTopk=2（GT 计数少 1，第二块靠 tie 配额补，口径需一并核）。
+# 下一步精确插桩（2~3 行）：在 ReadTotals 里 dump ①载入的计数向量前 8 个值 ②前缀掩码 ③reduce 结果，
+#   即可判定是"源数组读错"还是"掩码/reduce 口径错"。

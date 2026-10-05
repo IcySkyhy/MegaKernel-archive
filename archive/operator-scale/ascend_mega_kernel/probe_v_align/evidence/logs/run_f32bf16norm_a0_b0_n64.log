@@ -1,0 +1,7 @@
+VARIANT op=f32bf16norm(id=26) a=0 b=0 n=64 model=8 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x82c4dff58a57851b
+HEAD32 a5a53f00 a5a53fc0 a5a54020 a5a54060
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (bitwise model match over 1024 bytes; 1024/1024 bytes compared)

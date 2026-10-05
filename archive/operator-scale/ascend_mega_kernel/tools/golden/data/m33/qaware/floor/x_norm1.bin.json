@@ -1,0 +1,18 @@
+{
+  "tensor": "x_norm1.bin",
+  "shape": [
+    33,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 168960,
+  "sha256": "da0e07f2859367a9d1242d00cd7bd941adff157e819576cabfab2977ca4fa709",
+  "kind": "golden",
+  "description": "m6#1 output on the quant-aware chain (not equal to x.bin)"
+}

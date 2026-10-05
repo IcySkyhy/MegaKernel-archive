@@ -1,0 +1,81 @@
+=== df -h / ===
+overlay         8.7T  8.4T  312G  97% /
+=== 设备槽：flock -w 900 /tmp/npu0.lock ===
+--- npu-smi（进锁后复查）---
+	NPU ID                         : 0
+	Memory Usage Rate(%)           : 0
+	HBM Usage Rate(%)              : 3
+	Aicore Usage Rate(%)           : 0
+[M25FA] aicNum=28 nBlk=28 mode=core
+[M25FA] pre-launch m=4097 posBase=0 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=core      m=4097  posBase=0     ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=4160
+[M25FA] OUT_FNV64=0x75c3a926b776bcd0  out_bytes=50343936
+[M25FA] out[0,0,:4]=0.851562 -0.636719 -0.867188 -0.648438
+[M25FA] pre-launch m=1 posBase=4096 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=core      m=1     posBase=4096  ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=64
+[M25FA] OUT_FNV64=0x7ab5bbcd1488fe70  out_bytes=12288
+[M25FA] out[0,0,:4]=-0.005676 -0.011230 -0.003220 0.000328
+[M25FA] aicNum=28 nBlk=28 mode=negmask
+[M25FA] pre-launch m=4097 posBase=0 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=negmask   m=4097  posBase=0     ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=4160
+[M25FA] OUT_FNV64=0x25a989a041994a07  out_bytes=50343936
+[M25FA] out[0,0,:4]=-0.015503 -0.015747 0.041016 0.002365
+[M25FA] pre-launch m=1 posBase=4096 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=negmask   m=1     posBase=4096  ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=64
+[M25FA] OUT_FNV64=0xff484e01b46a9a95  out_bytes=12288
+[M25FA] out[0,0,:4]=-0.005524 -0.010864 -0.003128 0.000319
+[M25FA] aicNum=28 nBlk=28 mode=negshift
+[M25FA] pre-launch m=4097 posBase=0 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=negshift  m=4097  posBase=0     ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=4160
+[M25FA] OUT_FNV64=0x43fcddb2eccaefee  out_bytes=50343936
+[M25FA] out[0,0,:4]=-0.925781 -0.867188 -0.648438 -0.894531
+[M25FA] pre-launch m=1 posBase=4096 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=negshift  m=1     posBase=4096  ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=64
+[M25FA] OUT_FNV64=0x035ce8c7a8fc5057  out_bytes=12288
+[M25FA] out[0,0,:4]=-0.006653 -0.010681 -0.003998 0.000062
+[M25FA] aicNum=28 nBlk=28 mode=negstart
+[M25FA] pre-launch m=4097 posBase=1 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=negstart  m=4097  posBase=1     ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=4160
+[M25FA] OUT_FNV64=0x605347283c99ae29  out_bytes=50343936
+[M25FA] out[0,0,:4]=0.135742 -0.746094 -0.882812 -0.675781
+[M25FA] pre-launch m=1 posBase=4097 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=negstart  m=1     posBase=4097  ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=64
+[M25FA] OUT_FNV64=0x5d670fcec91ae773  out_bytes=12288
+[M25FA] out[0,0,:4]=-0.005676 -0.011230 -0.003220 0.000328
+
+=== 判定（check_ref.py；core 必须 PASS、三个负向对照必须 FAIL）===
+[core rep1 m=4097] VERDICT=PASS dir=/tmp/m196_runchecks/rep1/m4097_core over=0/25171968 maxratio=0.2962
+[core rep1 m=1] VERDICT=PASS dir=/tmp/m196_runchecks/rep1/m1_core over=0/6144 maxratio=0.0262
+[negmask m=4097] VERDICT=FAIL dir=/tmp/m196_runchecks/negmask/m4097_negmask over=5307050/25171968 maxratio=80.5583
+[negmask m=1] VERDICT=PASS dir=/tmp/m196_runchecks/negmask/m1_negmask over=0/6144 maxratio=0.3227
+  ^^ 负向对照没变红 —— 判据空洞
+[negshift m=4097] VERDICT=FAIL dir=/tmp/m196_runchecks/negshift/m4097_negshift over=4087447/25171968 maxratio=208.5186
+[negshift m=1] VERDICT=PASS dir=/tmp/m196_runchecks/negshift/m1_negshift over=0/6144 maxratio=0.5852
+  ^^ 负向对照没变红 —— 判据空洞
+[negstart m=4097] VERDICT=FAIL dir=/tmp/m196_runchecks/negstart/m4097_negstart over=689610/25171968 maxratio=134.5047
+[negstart m=1] VERDICT=PASS dir=/tmp/m196_runchecks/negstart/m1_negstart over=0/6144 maxratio=0.0262
+  ^^ 负向对照没变红 —— 判据空洞
+
+=== core 档 sha256（确定性：同一 (m) 的多次必须一致）===
+core m=4097 rep1 88237205c6e801d3
+core m=1 rep1 2e4e48cb9e60274c
+m=4097 的不同 sha256 数 = 1（期望 1）
+m=1 的不同 sha256 数 = 1（期望 1）
+
+RUN_CHECKS_RC=1

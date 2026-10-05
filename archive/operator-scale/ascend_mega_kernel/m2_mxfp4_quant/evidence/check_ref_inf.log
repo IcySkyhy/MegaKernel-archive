@@ -1,0 +1,40 @@
+K=640 m=1 seed=0 inf=0: C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=640 m=1 seed=0 inf=1: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=640 m=1 seed=0 inf=2: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=640 m=1 seed=0 inf=3: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=640 m=17 seed=0 inf=0: C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=640 m=17 seed=0 inf=1: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=640 m=17 seed=0 inf=2: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=640 m=17 seed=0 inf=3: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=2560 m=1 seed=0 inf=0: C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=2560 m=1 seed=0 inf=1: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=2560 m=1 seed=0 inf=2: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=2560 m=1 seed=0 inf=3: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=2560 m=17 seed=0 inf=0: C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=2560 m=17 seed=0 inf=1: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=2560 m=17 seed=0 inf=2: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 
+K=2560 m=17 seed=0 inf=3: /workspace/ascend_mega_kernel/.tower/worktrees/wt-32/m2_mxfp4_quant/build/qs_dump/../../check_ref.py:50: RuntimeWarning: invalid value encountered in multiply
+  xs32 = xf.reshape(m, g, 32) * hs_f
+C-ref qx == quant_ref-algorithm qx: True C-ref scale == quant_ref-algorithm scale: True 

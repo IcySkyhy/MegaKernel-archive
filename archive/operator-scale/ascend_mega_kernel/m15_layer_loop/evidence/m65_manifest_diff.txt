@@ -1,0 +1,13 @@
+# M65 manifest 差异证明（weights_manifest.txt）
+# 生成命令：diff <(旧 manifest) <(新 manifest)；旧 = M58 归档版（1284 条 tensor 行）
+# 用途：证明本轮对 manifest 是**纯增量**（只加末层全局 mixer 的 3 行，删除 0 行）
+
+1288a1289,1291
+> tensor layer=48 role=gmixer_norm file=model-00001-of-00131.safetensors offset=39304 bytes=20480 dtype=BF16 rows=1 cols=10240
+> tensor layer=48 role=gmixer_down file=model-00001-of-00131.safetensors offset=59784 bytes=6553600 dtype=BF16 rows=320 cols=10240
+> tensor layer=48 role=gmixer_up file=model-00001-of-00131.safetensors offset=6613384 bytes=6553600 dtype=BF16 rows=10240 cols=320
+# diff 退出码 = 1 （1 = 有差异，符合预期）
+# 行数统计：
+#   旧 tensor 行 = 1284
+#   新 tensor 行 = 1287
+#   新增 = 3，删除 = 0

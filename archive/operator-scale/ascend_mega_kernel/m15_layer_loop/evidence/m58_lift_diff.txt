@@ -1,0 +1,145 @@
+# M58 · lift_hc_segment.py 抽取差异（device 段：m20 原文 → m15_hc_layer.h）
+# 复现：
+#   python3 - <<'EOF'
+#   (从 m20_hyperconn.asc 用内容锚点切出 device 段写到 /tmp/m58_dev_orig.h)
+#   EOF
+#   diff -u /tmp/m58_dev_orig.h m15_layer_loop/m15_hc_layer.h
+#
+# 内容锚点：首个顶格 namespace { 到 m20_hyperconn_kernel 之前最后一个 }  // namespace
+# m20 device 段 sha256 = 57c84acab16245ecb62e7e1db0d38fce944ded884593feae195ffb50efebbf52（833 行）
+# 行号口径：本文件的 + 侧行号 = 入库文件行号（PROLOGUE 在 diff 里也算了进来）
+
+--- /tmp/m58_dev_orig.h	2026-09-26 13:22:38.724500479 +0000
++++ m15_hc_layer.h	2026-09-26 13:39:53.080581713 +0000
+@@ -1,8 +1,54 @@
+-namespace {
++/**
++ * m15_hc_layer.h —— **hc（hyper-connection）边界段 device 代码**，融合进 m15 per-layer kernel
++ *
++ * **本文件由 lift_hc_segment.py 机械生成，不要手改**（改上游 m20 后重跑脚本，再核对 --check
++ * 输出的差异表）。抽取范围 = `m20_hyperconn/m20_hyperconn.asc` 的 **device 段**（内容锚点：首个顶格
++ * `namespace {` 到入口 kernel `m20_hyperconn_kernel` 前最后一个 `}  // namespace`，**不写行号**）
++ * ——入口与其后的 host 段（数据生成 / double 参考 / 判据 / dump）不抽取：融合后 hc 段不再自成
++ * kernel，入口由 `m15_layer_kernel.h` 给出。
++ *
++ * 上游身份（可复核）：文件 sha256 = `4086d4326ef5916f8341567aefcd38c1b5ba24fe9f431a375bbced1a54939a51`
++ * （last touched by `4fe9ac8e38c5d6d5ab382614333f4d7b9853a0ec` = M36 的 §4.1 归因修正 commit）；
++ * **device 段 sha256 = `57c84acab16245ecb62e7e1db0d38fce944ded884593feae195ffb50efebbf52`**（`--check` 的硬断言：device 段一变即失败）。
++ *
++ * 与上游的差异 = **6 类机械替换**（逐条见 `lift_hc_segment.py` 的模块 docstring，`--check`
++ * 会逐条核对）：
++ *   1. 两处 `namespace {` → `namespace M15H {`（单 TU 里与 M15G/M15M 的符号分离）；
++ *   2. 删除 `using namespace M20;`；
++ *   3. `m20_resources.h` → `m15_hc_resources.h`、标识符/注释 `M20` → `M15H`；
++ *   4. `HcPtrs.ijStride` + `InjwStage` 的 IJ 源改为**按行 32B 搬运**（层内 handoff：IJ 取自
++ *      上一个边界的 `OH[:,320:324)`，行距 `OH_W=336`）；
++ *   5. `MODE_COMBINE_ONLY`（第 4 档 mode：只跑 W0+S1；PLE 打断点用）在 `ProcessAiv`/
++ *      `ProcessAic` 段首各加一个分支；
++ *   6. 本 PROLOGUE。
++ *
++ * **一字未动**的部分：段序、同步表、tile 常量、UB/L1/L0 偏移、全部向量/矩阵/搬运语句
++ * （flagId 的**取值**由 `m15_hc_resources.h` 重编，但正文全走 `FLAG_*` 符号 ⇒ 无文本替换）。
++ *
++ * 计算路径合规（docs/05 §6.1 计算路径规则 ⓒ + tower M44 裁决 ①）：段内全部向量 API 要么词法上
++ * 在 `__VEC_SCOPE__` 内，要么在**只被 `__VEC_SCOPE__` 块调用**的 helper
++ * （`NormDonor::LoadRegForDtype` / `ComputeRstdNewtonRaphsonReg` / `SigmoidReg`）里；两个集合
++ * 由 `lift_hc_segment.py` **自动推导并断言**（不写死函数名），且**断言段内 0 处**
++ * `Sort32`/`MrgSort`/经典 `Extract(` —— 即 hc 段**没有需要援引白名单例外的调用点**。
++ * 搬运/矩阵类（`DataCopy`/`Nd2Nz`/`LoadData`/`Mmad`/`Fixpipe`）按标准保留 memory-based。
++ *
++ * 两处 bring-up 披露随代码搬运（删掉等于抹掉结论，故由脚本断言其存在）：
++ *   · `StoreDist::DIST_FIRST_ELEMENT_B32` 只写元素 0 = **误用**（tower 裁定，非平台差异）；
++ *   · 原 S1「从 GM 取 injW 再 BRC」非确定性 = **尚未隔离**，不作为平台行为引用（README §4.1）。
++ */
++
++#include "kernel_operator.h"
++#include "c_api/asc_simd.h"
++#include "reg_compute/kernel_reg_compute_intf.h"
++
++#include <cstdint>
++
++#include "m15_hc_resources.h"
++
++namespace M15H {
+ 
+ using namespace AscendC;
+ using namespace AscendC::Reg;
+-using namespace M20;
+ 
+ // ============================================================
+ // 通用：BufferID 封装 / 显式块拷贝参数 / CrossCore barrier 封装
+@@ -362,7 +408,7 @@
+ // M36 段序实现（单一 __mix__(1,2)）
+ // ============================================================
+ 
+-namespace {
++namespace M15H {
+ 
+ struct HcPtrs {
+     __gm__ uint8_t* hIn;     // 4 路残差流输入 H [M_MAX, HYPER] bf16
+@@ -372,9 +418,14 @@
+     __gm__ uint8_t* wInj;    // block_inject_weight [>=16, HYPER] bf16（checkpoint 为 [INJ_N,HYPER]）
+     __gm__ uint8_t* wUp;     // input_mix_weight_up [UP_N, UP_K] bf16（checkpoint 原样）
+     __gm__ uint8_t* hcNorm;  // hc_norm [HYPER] bf16（per-branch mixed affine）
+-    __gm__ uint8_t* ws;      // GM workspace（偏移见 m20_resources.h §4）
++    __gm__ uint8_t* ws;      // GM workspace（偏移见 m15_hc_resources.h §4）
+     uint32_t m;              // token 数（1..M_MAX）
+-    uint32_t mode;           // MODE_MIX / MODE_COMBINE_MIX / MODE_FINAL_MIX
++    // ---- M58 新增（替换类 4）：IJ 源的行距（元素）----
++    //   独立 [m,16] 平面（m20 的 host 形态）= IJ_STRIDE = 16；
++    //   层内 handoff（IJ 直接取自上一个边界的 OH[:,320:324)）= OH_W = 336。
++    //   两种行距都是 32B 倍数 ⇒ 每行 32B 搬运天然对齐（见 InjwStage 的按行搬运用法）。
++    uint32_t ijStride;
++    uint32_t mode;           // MODE_MIX / MODE_COMBINE_MIX / MODE_FINAL_MIX / MODE_COMBINE_ONLY
+     uint32_t stageLimit;     // 段序截断（bring-up 定位；7 = 全开）
+ };
+ 
+@@ -411,6 +462,20 @@
+         const uint32_t nAiv = AscendC::GetBlockNum() * 2;  // mix(1,2)：AIV 线程数 = 2×AIC 数
+         const bool useCombine = (p.mode != MODE_MIX);
+ 
++        // M58 替换类 5：**第 4 档 mode = combine-only**（`MODE_COMBINE_ONLY`）。
++        // 语义 = 只跑 W0（injW = 2·sigmoid(IJ/HC)）+ S1（H' = bf16(H + BO·injW[s])），
++        // 既不做 GemmaRMSNorm、也不做 mix（S2/S3-S6 全部跳过），AIC 也不跑任何 GEMM。
++        // 用途：层 0→1 被 PLE 打断的边界（docs/14 §4.1）——那个边界上 combine 与 mix 之间插入了
++        // PLE，二者必须分开执行。m20 的三档 mode 都不提供这一档（其 README §8 已披露该缺口）。
++        // 段序 = InjwStage → CombineStage → 到齐 barrier（`FLAG_AV0`，与 combine 档同位置），
++        // 然后返回；不需要 mode-2 交接（本档没有 AIC 参与）。
++        if (p.mode == MODE_COMBINE_ONLY) {
++            InjwStage(bid, nAiv);
++            CombineStage(bid, nAiv);
++            BarrierAiv<PIPE_MTE2, FLAG_AV0>();
++            return;
++        }
++
+         if (p.stageLimit >= 1 && useCombine) {
+             InjwStage(bid, nAiv);
+         }
+@@ -454,6 +519,12 @@
+         const uint32_t bid = AscendC::GetBlockIdx();
+         const uint32_t nAic = AscendC::GetBlockNum();
+ 
++        // M58 替换类 5：combine-only 不含任何 GEMM（S3 down 与 S5 up 都跳过）⇒ AIC 直接返回。
++        // AIV 侧本档也不等待任何 mode-2 flag，故此早退不会造成对侧挂死。
++        if (p.mode == MODE_COMBINE_ONLY) {
++            return;
++        }
++
+         if (p.stageLimit >= 4) {
+             CrossCoreWaitFlag<CC_MODE2, PIPE_S>(FLAG_A2C_XN);   // wait 后紧接 set → 挂 PIPE_S
+             BarrierAic<PIPE_S, PIPE_MTE2, FLAG_AC0>();
+@@ -497,7 +568,13 @@
+ 
+         BufAcquire<PIPE_MTE2>(BUF_AIV_IJ);
+         PipeBarrier<PIPE_MTE2>();
+-        AscendC::DataCopy(ijL, ijGm[0], Block1(M_MAX * IJ_STRIDE * 2));
++        // M58 替换类 4：IJ 源按**行距 p.ijStride** 逐行 32B 搬运（不再是一次整块拷贝）。
++        // 两种行距（独立平面的 16、OH 列 [320,324) 的 336）都是 32B 倍数 ⇒ 每行 32B 天然
++        // 对齐，不引入 DataCopyPad（docs/05 §6.1 的 32B 对齐要求）。
++        for (uint16_t ijRow = 0; ijRow < static_cast<uint16_t>(M_MAX); ++ijRow) {
++            AscendC::DataCopy(ijL[static_cast<uint32_t>(ijRow) * IJ_STRIDE],
++                              ijGm[static_cast<uint32_t>(ijRow) * p.ijStride], Block1(IJ_STRIDE * 2));
++        }
+         BufRelease<PIPE_MTE2>(BUF_AIV_IJ);
+ 
+         const uint16_t mU = static_cast<uint16_t>(p.m);

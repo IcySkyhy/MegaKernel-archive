@@ -1,0 +1,16 @@
+{
+  "tensor": "shared_gate_logits.bin",
+  "shape": [
+    1
+  ],
+  "dtype": "fp32",
+  "strides": [
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 4,
+  "sha256": "926a48d67dd0a0ff7941d217f9936326559c8f4d0406d535292a867751ab729b",
+  "kind": "golden",
+  "description": "shared expert gate raw dot [m], fp32 (sigmoid input, device sgate)"
+}

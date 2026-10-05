@@ -1,0 +1,38 @@
+[W926 11:20:22.294417009 Module.cpp:228] Warning: AclrtGetDeviceInfo failed to get total global memory, error code is 507899. The possible cause is that the driver version is too old or does not match CANN. Fall back to aclrtGetMemInfo. Please upgrade the driver to the matching version. (function operator())
+
+=== versions / build ABI ===
+torch            : 2.10.0+cpu
+torch_npu        : 2.10.0.post4
+torch CXX11 ABI  : True  (ATB on this host: cxx_abi_1)
+python           : 3.12.13
+
+=== device discovery ===
+torch.npu.device_count() = 1
+[PASS] at least one NPU visible
+device name             : Ascend950PR_9579
+device total memory     : 132238016512 bytes (123.2 GiB)
+
+=== init (device context + stream) ===
+npu tensor created and stream synchronised in 0.092s
+[PASS] tensor round trip to host
+
+=== aclnn op round trip: matmul / elementwise / reduction ===
+  matmul (aclnnMatmul)       max_abs_diff=6.2500e-02 rel=4.340e-04
+[PASS] matmul (aclnnMatmul) numerics within fp16 tolerance
+  softmax (aclnnSoftmax)     max_abs_diff=0.0000e+00 rel=0.000e+00
+[PASS] softmax (aclnnSoftmax) numerics within fp16 tolerance
+  sum (aclnnReduceSum)       max_abs_diff=1.0000e+00 rel=4.655e-04
+[PASS] sum (aclnnReduceSum) numerics within fp16 tolerance
+  elementwise mul/add        max_abs_diff=0.0000e+00 rel=0.000e+00
+[PASS] elementwise mul/add numerics within fp16 tolerance
+4 ops (fp16 512x1024x512 matmul + 3 epilogues) round trip in 9.7 ms
+
+=== device memory accounting ===
+memory_allocated = 3.5 MiB, memory_reserved = 28.0 MiB
+[PASS] allocator reports non-zero usage
+
+=== host-side aclnn availability (no device) ===
+acl python bindings importable: yes
+
+=== result ===
+SELF-CHECK PASSED: torch/torch_npu drives the Ascend 950PR with numerically correct ops

@@ -1,0 +1,17 @@
+RESOURCE name=D-V2-256 threads=256 registers=56 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+CLUSTER runtime_cluster=0 dim=1x1x1 active_clusters_device=340 potential_cluster_size=8
+LBM_allocateGrid: allocated 185.2 MByte
+CHECK step=2 role=current-even populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=0 role=inactive populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=4 role=current-even populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=2 role=inactive populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=6 role=current-even populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=4 role=inactive populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=1002 role=current-even populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=1000 role=inactive populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+LBM_showGridStatistics:
+	nObstacleCells:   99248 nAccelCells:   26912 nFluidCells: 2033840
+	minRho:   0.9170 maxRho:   1.0867 mass: 2.159998e+06
+	minU: 3.192798e-06 maxU: 3.304602e-02
+
+PASS physical_steps=1002 kernel_launches=501 final_buffer=B patterned=0

@@ -1,0 +1,18 @@
+[check_ref] dir=/tmp/selfcheck1
+[check_ref] m=37 posBase=0 ctx=64 nh=24 hd=256 eps=7.812e-03
+[check_ref] 判定项 1 条：逐元素 |got-ref| <= tol（共 227328 元素）
+[check_ref]   超界元素 = 0 / 227328
+[check_ref]   口径：max 相对 tol 的比值 = 0.2203（<1 即全部覆盖）
+[check_ref] 报告项：maxRel = 3.889e-03；≤1bf16ulp 比例 = 100.000%
+[check_ref] guard（报告项，不计判定）：std(ref)=0.198464 std(got)=0.198463 out_sha256_16=184f8dfc8ed91c57
+VERDICT=PASS dir=/tmp/selfcheck1 over=0/227328 maxratio=0.2203
+[check_ref] dir=/tmp/selfcheck1
+[check_ref] m=37 posBase=0 ctx=64 nh=24 hd=256 eps=7.812e-03
+[check_ref] 判定项 1 条：逐元素 |got-ref| <= tol（共 227328 元素）
+[check_ref]   超界元素 = 117926 / 227328
+[check_ref]   口径：max 相对 tol 的比值 = 3.0760（<1 即全部覆盖）
+[check_ref] 报告项：maxRel = 5.408e-02；≤1bf16ulp 比例 = 0.000%
+[check_ref] guard（报告项，不计判定）：std(ref)=0.198464 std(got)=0.208382 out_sha256_16=35dd9f1ea4eb7397
+[check_ref] 前 5 个超界下标(展平): [(np.int64(0), np.int64(0), np.int64(0)), (np.int64(0), np.int64(0), np.int64(1)), (np.int64(0), np.int64(0), np.int64(2)), (np.int64(0), np.int64(0), np.int64(3)), (np.int64(0), np.int64(0), np.int64(4))]
+VERDICT=FAIL dir=/tmp/selfcheck1 over=117926/227328 maxratio=3.0760
+--- 现在把 out 弄坏（乘 1.05）---

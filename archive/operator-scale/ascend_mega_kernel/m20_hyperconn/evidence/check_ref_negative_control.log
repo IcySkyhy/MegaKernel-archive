@@ -1,0 +1,32 @@
+# M36 check_ref.py 三态退出码 + 负向对照（tower 规则：SKIPPED/0-1-2；评审 r2 P3③）
+# 目的：证明「我没比」不会被报成「比过通过」，且 FAIL 路径是活的。
+# date: 2026-09-26T13:03:35Z
+
+## 对照 0：正常输入（应 rc=0 且 OK 文案带比较条数）
+
+[chk] 覆盖：判定项 18 条 + guard 10 条（共比较 28 条）；unverified/SKIPPED 0 条（见上，逐条打印）
+[chk] RESULT: OK (28/28 条比较过：判定项 18 + guard 10；SKIPPED 0)
+rc=0  ← 期望 0
+
+## 对照 1：空目录（应 SKIPPED + rc=2，不发合格证）
+[chk] 警告：dump 目录里的 case 是 None，命令行给的是 'real_m1' —— 以命令行/文件名 m20_real_m1_* 为准
+[chk] case=real_m1 m=1 mode=1（数学口径见 README §1.3）
+[chk] RESULT: SKIPPED (缺输入文件：m20_real_m1_hin.bin)
+[chk] 先用 M20_DUMP=1 M20_CASE=<case> 在空目录跑一次 kernel 再复核。
+rc=2  ← 期望 2
+
+## 对照 2：只有部分输入（缺 device 张量）（应 SKIPPED + rc=2）
+[chk] 警告：dump 目录里的 case 是 None，命令行给的是 'real_m1' —— 以命令行/文件名 m20_real_m1_* 为准
+[chk] case=real_m1 m=1 mode=1（数学口径见 README §1.3）
+[chk] RESULT: SKIPPED (缺输入文件：m20_real_m1_ij.bin)
+[chk] 先用 M20_DUMP=1 M20_CASE=<case> 在空目录跑一次 kernel 再复核。
+rc=2  ← 期望 2
+
+## 对照 3：正常输入 + 故意扰动一个「被消费」的字节（应 FAILED + rc=1，证明判据会咬）
+  before[0]=0x3e7a
+  after[0]=0x3efa (bf16 高位尾数位翻转，相对变化 ~50%)
+[chk] guard C blk 取值多样性         dev 取值数=1100     ref 取值数=1100      OK
+
+[chk] 覆盖：判定项 18 条 + guard 10 条（共比较 28 条）；unverified/SKIPPED 0 条（见上，逐条打印）
+[chk] RESULT: FAILED (2 条判定项不符：['blk (gate mix 输出)', 'B8 blk<-dev gate,xn'])
+rc=1  ← 期望 1

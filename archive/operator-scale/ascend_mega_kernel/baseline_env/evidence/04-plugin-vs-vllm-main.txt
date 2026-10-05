@@ -1,0 +1,49 @@
+plugin tree : /workspace/vllm-ascend/vllm_ascend
+vLLM tree   : /workspace/vllm/vllm  (main checkout, v0.30.1rc0-189)
+
+plugin python files scanned            : 449
+resolved vLLM references               : 1860
+references to MODULES that no longer exist in vLLM main : 12
+references to SYMBOLS that no longer exist in vLLM main : 31
+total broken references                 : 73
+
+== top missing symbols (of 31) ==
+  vllm.model_executor.layers.fused_moe.FusedMoE   (used in 6 places, e.g. _310p/quantization/modelslim_config.py)
+  vllm.v1.attention.backends.utils.CommonAttentionMetadata   (used in 6 places, e.g. _310p/spec_decode/llm_base_proposer_310.py)
+  vllm.v1.worker.cp_utils.get_total_cp_world_size   (used in 4 places, e.g. _310p/block_table.py)
+  vllm.model_executor.layers.fused_moe.layer.FusedMoE   (used in 4 places, e.g. _310p/fused_moe/fused_moe.py)
+  vllm.config.compilation.Range   (used in 4 places, e.g. compilation/passes/allreduce_rmsnorm_fusion_pass.py)
+  vllm.v1.worker.utils.extract_layer_index   (used in 4 places, e.g. distributed/kv_transfer/kv_p2p/mooncake_connector.py)
+  vllm.model_executor.layers.fused_moe.layer.UnquantizedFusedMoEMethod   (used in 2 places, e.g. _310p/fused_moe/fused_moe.py)
+  vllm.v1.worker.gpu.spec_decode.autoregressive.cudagraph_utils.PrefillSpeculatorCudaGraphManager   (used in 2 places, e.g. worker/v2/spec_decode/eagle/aclgraph.py)
+  vllm.compilation.passes.vllm_inductor_pass.PatternPrettyPrinter   (used in 1 places, e.g. compilation/passes/sequence_parallelism_moe.py)
+  vllm.distributed.weight_transfer.ipc_engine.IPCTrainerSendWeightsArgs   (used in 1 places, e.g. distributed/weight_transfer/npu_ipc_engine.py)
+  vllm.ModelRegistry   (used in 1 places, e.g. models/__init__.py)
+  vllm.model_executor.models.bailing_moe_linear.BailingMoELinearAttention   (used in 1 places, e.g. ops/bailing_moe_linear_attn.py)
+  vllm.model_executor.layers.linear.QuantizeMethodBase   (used in 1 places, e.g. ops/linear.py)
+  vllm.v1.core.single_type_kv_cache_manager.BlockHashList   (used in 1 places, e.g. patch/platform/patch_mamba_manager.py)
+  vllm.v1.core.single_type_kv_cache_manager.BlockPool   (used in 1 places, e.g. patch/platform/patch_mamba_manager.py)
+  vllm.v1.core.single_type_kv_cache_manager.KVCacheBlock   (used in 1 places, e.g. patch/platform/patch_mamba_manager.py)
+  vllm.v1.core.single_type_kv_cache_manager.KVCacheSpec   (used in 1 places, e.g. patch/platform/patch_mamba_manager.py)
+  vllm.v1.core.single_type_kv_cache_manager.MambaSpec   (used in 1 places, e.g. patch/platform/patch_mamba_manager.py)
+  vllm.tool_parsers.abstract_tool_parser.Tool   (used in 1 places, e.g. patch/platform/patch_minimax_m2_tool_call_parser.py)
+  vllm.model_executor.models.llama_eagle3.get_draft_quant_config   (used in 1 places, e.g. patch/worker/patch_eagle3_init.py)
+  vllm.v1.worker.lora_model_runner_mixin.GPUInputBatch   (used in 1 places, e.g. patch/worker/patch_mamba_utils.py)
+  vllm.v1.worker.utils.defaultdict   (used in 1 places, e.g. patch/worker/patch_qwen3_next_mtp.py)
+  vllm.v1.worker.block_table._compute_slot_mapping_kernel   (used in 1 places, e.g. worker/block_table.py)
+  vllm.v1.outputs.RoutedExpertsLists   (used in 1 places, e.g. worker/model_runner_v1.py)
+  vllm.v1.outputs.RoutedExpertsTensors   (used in 1 places, e.g. worker/model_runner_v1.py)
+
+== missing modules (of 12) ==
+  vllm.model_executor.layers.fla.ops.utils   (used in 3 places, e.g. _310p/ops/fla/idex.py)
+  vllm.entrypoints.openai.engine.protocol   (used in 3 places, e.g. patch/platform/patch_deepseek_v4_tool_call_parser.py)
+  vllm.v1.kv_offload.mediums   (used in 2 places, e.g. kv_offload/cpu_npu.py)
+  vllm.v1.kv_offload.worker.worker   (used in 2 places, e.g. kv_offload/cpu_npu.py)
+  vllm.model_executor.layers.fla.ops.index   (used in 1 places, e.g. _310p/ops/fla/idex.py)
+  vllm.v1.kv_offload.abstract   (used in 1 places, e.g. kv_offload/npu.py)
+  vllm.v1.kv_offload.spec   (used in 1 places, e.g. kv_offload/npu.py)
+  vllm.model_executor.layers.fla.ops.layernorm_guard   (used in 1 places, e.g. ops/bailing_moe_linear_attn.py)
+  vllm.model_executor.layers.fla.ops.l2norm   (used in 1 places, e.g. ops/gdn.py)
+  vllm.tool_parsers.deepseekv4_tool_parser   (used in 1 places, e.g. patch/platform/patch_deepseek_v4_tool_call_parser.py)
+  vllm.entrypoints.openai.engine   (used in 1 places, e.g. patch/platform/patch_minimax_usage_accounting.py)
+  vllm.model_executor.layers.fla.ops   (used in 1 places, e.g. patch/worker/patch_triton.py)

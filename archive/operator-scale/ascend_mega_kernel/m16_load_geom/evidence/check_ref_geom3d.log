@@ -1,0 +1,31 @@
+[geom] conf 00 3d-00 zerofill + NOP-ish (l1H=0) → expect ALL ZERO   解码面积=   0
+[geom] conf 01 3d-01 A l1H=2 l1W=16 ch=32 kExt=32 mExt=16 T1        解码面积=   0
+[geom] conf 02 3d-02 A ... T0 (enTranspose=0) — 文档称 L0B 下无效         解码面积=   0
+[geom] conf 03 3d-03 A kExt=16                                      解码面积=   0
+[geom] conf 04 3d-04 A kExt=64                                      解码面积=   0
+[geom] conf 05 3d-05 A mExt=32                                      解码面积=   0
+[geom] conf 06 3d-06 A mExt=48                                      解码面积=   0
+[geom] conf 07 3d-07 A ch=16                                        解码面积=   0
+[geom] conf 08 3d-08 A ch=64                                        解码面积=   0
+[geom] conf 09 3d-09 A l1H=1                                        解码面积=   0
+[geom] conf 10 3d-10 A l1H=4                                        解码面积=   0
+[geom] conf 11 3d-11 A l1W=32                                       解码面积=   0
+[geom] conf 12 3d-12 A mStartPt=16                                  解码面积=   0
+[geom] conf 13 3d-13 A kStartPt=16                                  解码面积=   0
+[geom] conf 14 3d-14 A srcOff=256                                   解码面积=   0
+[geom] conf 15 3d-15 A srcOff=512                                   解码面积=   0
+[geom] conf 16 3d-16 A strideW=2                                    解码面积=   0
+[geom] conf 17 3d-17 A filterW=2                                    解码面积=   0
+[geom] conf 18 3d-18 A dstOff=512                                   解码面积=   0
+[geom] conf 19 3d-20 NC1HWC0 l1H=2 l1W=32 ch=16 kExt=32 mExt=32 T1  解码面积=   0
+[geom] conf 20 3d-21 NC1HWC0 l1H=2 l1W=32 ch=16 kExt=64 mExt=32 T1  解码面积=   0
+[geom] conf 21 3d-22 l1H=2 l1W=16 ch=16 kExt=32 mExt=32 T1          解码面积=   0
+[geom] conf 22 3d-23 l1H=4 l1W=16 ch=16 kExt=32 mExt=32 T1          解码面积=   0
+[geom] conf 23 3d-24 l1H=2 l1W=32 ch=16 kExt=32 mExt=16 T1          解码面积=   0
+[geom] conf 24 3d-25 l1H=2 l1W=32 ch=32 kExt=32 mExt=32 T1          解码面积=   0
+[geom] conf 25 3d-26 l1H=2 l1W=32 ch=32 kExt=32 mExt=32 T0          解码面积=   0
+[geom] conf 26 3d-27 l1H=2 l1W=32 ch=32 kExt=64 mExt=32 T1          解码面积=   0
+[geom] conf 27 3d-28 l1H=2 l1W=16 ch=32 kExt=32 mExt=16 T1 kS=16    解码面积=   0
+[geom] conf 28 3d-29 l1H=2 l1W=16 ch=32 kExt=32 mExt=16 T1 mS=16    解码面积=   0
+[geom] 合计（只统计模型可判定的槽位）：预测点 0，命中 0，不符 0
+[geom] PASS：README §3 的映射模型在全部 2D conf 上逐点成立

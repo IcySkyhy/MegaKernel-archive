@@ -1,0 +1,42 @@
+# M105（第 2 轮形态）· 生成器守卫的咬合力：四个反例，四条断言各自报错
+
+生成器 `rewrite_index_gen()` 里的四条断言：① 写唯一；② 写侧 **drain release 存在且唯一**、不得残留
+`MutexUnlock<PIPE_S>(BUF_AIV_IDX)`；③ 次序 `写 → MutexLock<PIPE_S> → BufRelease<PIPE_S> → BufAcquire<PIPE_MTE3>`；
+④ 改前特征串消失 + 上游确为抢跑且释放确为 `MutexUnlock`（防空转）。下面各造一个反例（都只在 /tmp）：
+
+```
+A2：删掉「提前的那次写」整段                ⇒ ① 写唯一（0 处）
+B2：在 #6 段里把改前的写（bUb[32]）加回来    ⇒ ④ 改前特征串仍在
+C2：把写搬回 BufAcquire<PIPE_MTE3> 之后      ⇒ ③ 次序（写之后找不到 MutexLock<PIPE_S>）
+D2：把写侧释放的替换做成 no-op（仍 MutexUnlock）⇒ ② drain release 不唯一（0 处）
+```
+
+$ python3 /tmp/m105/mutA2/lift_moe_segment.py; echo rc=$?        # 变体 A2
+```
+    assert text.count(diag_store) == 1, f"[M105] 诊断槽标量写不唯一：{text.count(diag_store)} 处"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [M105] 诊断槽标量写不唯一：0 处
+```
+
+$ python3 /tmp/m105/mutB2/lift_moe_segment.py; echo rc=$?        # 变体 B2
+```
+    assert "bUb[32] = static_cast<int32_t>(oobCountUb);" not in text, "[M105] 改前的诊断槽标量写仍在"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [M105] 改前的诊断槽标量写仍在
+```
+
+$ python3 /tmp/m105/mutC2/lift_moe_segment.py; echo rc=$?        # 变体 C2
+```
+    assert need in tail, f"[M105] 诊断槽标量写之后缺 {need}"
+           ^^^^^^^^^^^^
+AssertionError: [M105] 诊断槽标量写之后缺 MutexLock<PIPE_S>(BUF_AIV_IDX);
+```
+
+$ python3 /tmp/m105/mutD2/lift_moe_segment.py; echo rc=$?        # 变体 D2
+```
+    assert text.count(diag_rls) == 1, f"[M105] 写侧 drain release 不唯一：{text.count(diag_rls)} 处"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [M105] 写侧 drain release 不唯一：0 处
+```
+
+（四个变体都停在 `rewrite_index_gen()` 里、无文件写出 ⇒ 守卫是**前置**的，不是事后核对。）

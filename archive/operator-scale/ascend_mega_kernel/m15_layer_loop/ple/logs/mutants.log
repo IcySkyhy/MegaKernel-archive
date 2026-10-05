@@ -1,0 +1,32 @@
+[mut] 基线（mask=0）
+[mut] 基线判据：14 条，FAIL 0 条
+
+[mut] 变异矩阵（每行：位 / 分歧 / 期望 FAIL 的判据 / 实测 FAIL 集合 / 结论）
+RESULT|mut|0|D5|B1.ids.A|B1.ids.A,B1.ids.B|OK|① 取模方向反转（floor→ceil）
+RESULT|mut|1|D3|B1.ids.A|B1.ids.A|OK|① ctx 列退回与 c 无关
+RESULT|mut|2|D4/P2|B4.gated|B4.gated,B4.normed,B5.out,B5.state|OK|④ 跳过 dot 和的 bf16 物化
+RESULT|mut|3|⑤ 的 tap 序|B5.out|B5.out|OK|⑤ tap 归属反转
+RESULT|mut|4|⑤ 的残差分组|B5.out|B5.out|OK|⑤ 残差加分组反转
+RESULT|mut|5|D6|B4.gated|B4.gated,B4.normed,B5.null.out,B5.out,B5.state|OK|④ value 换成 key 切片
+RESULT|mut|6|D7|B2.emb|B2.emb|OK|② head 落点顺序反转
+RESULT|mut|7|D1|B3.kv|B3.kv|OK|③ key/value 输出块对调
+RESULT|mut|8|D8|B5.state|B5.state|OK|⑤ 状态移位方向反转
+RESULT|mut|9|N1|B5.null.out|B5.null.out,B5.out|OK|⑤ null 槽位整行跳过（漏写 out）
+RESULT|mut|10|① 值域|B1.ids.A.range|B1.ids.A,B1.ids.A.range,B1.ids.B,B1.ids.B.range|OK|① 漏掉取模与偏移（id = mixed）
+RESULT|mut|11|N1 家族|B5.null.state|B5.null.state,B5.state|OK|⑤ null 行也写状态
+RESULT|mut|12|D8 家族|B5.state_evolve|B5.state,B5.state_evolve|OK|⑤ 活跃行不写回状态
+RESULT|mut|13|**D2**（那个取整点本身）|B5.out|B5.out|OK|⑤ 跳过 conv_output 的 bf16 物化
+RESULT|mut|15|② 自身输入值域（结构）|B_dev.fail|B2.emb,B_dev.fail|OK|② 的 id 被推离词表值域（值域守卫）
+
+RESULT|coverage|14|14|(none)|OK
+[mut] 咬合力**被变异演示**过的判据 = 14 / 14；未被演示 = （无）
+
+[mut] ---- M92 host-mapped 真实表（数据 = ple/data_hm，加 M15_PLE_HM=1）----
+[mut] M92 基线判据：10 条，FAIL 0 条
+RESULT|mut_hm|14|id→偏移换算的方向|H2.emb|H2.emb,H3.kv,H4.gated,H4.normed,H5.out,Hd.row_fail|OK|窗口行号按方向反转（row = winRows-1-(id-winBase)）
+RESULT|mut_hm|6|D7（gather 到 head 槽的映射）|H2.emb|H2.emb,H3.kv,H4.gated,H4.normed,H5.out|OK|窗口模式下 head 落点顺序反转
+RESULT|coverage_hm|6|10|H2.emb.nonvac,Hd.cores,Hd.miss,Hd.nonvac|NG
+[mut] M92 咬合力被演示 = 6 / 10；未被演示 = ['H2.emb.nonvac', 'Hd.cores', 'Hd.miss', 'Hd.nonvac']
+[mut] 注：H2.emb.nonvac,Hd.cores,Hd.miss,Hd.nonvac 未被任何 M92 变异咬到属**预期** —— 它们是设备侧结构性守卫（Hd.cores / Hd.nonvac）与窗口范围判定（Hd.miss，bit14 不动它）
+
+[mut] ===== 全部期望满足，且每条基线判据都被变异演示过 =====

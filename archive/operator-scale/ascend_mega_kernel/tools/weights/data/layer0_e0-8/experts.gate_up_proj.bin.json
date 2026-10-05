@@ -1,0 +1,19 @@
+{
+  "tensor": "experts.gate_up_proj.bin",
+  "shape": [
+    8,
+    1280,
+    1280
+  ],
+  "dtype": "uint8",
+  "strides": [
+    1638400,
+    1280,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 13107200,
+  "kind": "input",
+  "description": "MXFP4 packed weights [E, N, K//2], lohi nibbles along K"
+}

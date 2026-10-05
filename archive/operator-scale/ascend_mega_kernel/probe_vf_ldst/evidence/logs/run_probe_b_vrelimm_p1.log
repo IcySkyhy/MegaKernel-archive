@@ -1,0 +1,7 @@
+[probe B] probe_b_vrelimm
+[probe B]   rel=drain(mode=true)  read=LoadAlign<DIST_BRC_B32>  gran=0  mid=0  layout=0  prod=0  off=0  vrel=1  backlog=0
+[probe B]   iters=64 VL=64  一次 launch 只跑一种配置  proc=1
+[probe B] chunk 判读(.=ok p=读到上一chunk n=读到下一chunk X=poison z=读到0 ?=其它): ................................................................
+[probe B] chunk: ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 / 64
+[probe B] lane0 不符点数=0  全 lane 不符=0/4096
+[probe B] probe_b_vrelimm RUN PASS

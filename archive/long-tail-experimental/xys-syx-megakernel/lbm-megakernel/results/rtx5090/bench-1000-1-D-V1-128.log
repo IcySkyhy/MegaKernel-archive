@@ -1,0 +1,23 @@
+RESOURCE name=D-V1-128 threads=128 registers=44 static_shared=0 dynamic_shared=82080 local_bytes=0 active_blocks_per_sm=1 grid=8x15x38 block=128x1x1 steps_per_launch=2 theoretical_occupancy_pct=8.333333
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=149.097671509
+TRIAL 1 us_per_step=149.118148804
+TRIAL 2 us_per_step=149.079162598
+TRIAL 3 us_per_step=149.078170776
+TRIAL 4 us_per_step=149.115005493
+TRIAL 5 us_per_step=149.063293457
+TRIAL 6 us_per_step=149.054595947
+TRIAL 7 us_per_step=149.087234497
+TRIAL 8 us_per_step=149.098526001
+TRIAL 9 us_per_step=149.075454712
+TRIAL 10 us_per_step=149.105819702
+TRIAL 11 us_per_step=149.097061157
+TRIAL 12 us_per_step=149.074111938
+TRIAL 13 us_per_step=149.074951172
+TRIAL 14 us_per_step=149.083328247
+TRIAL 15 us_per_step=149.113983154
+TRIAL 16 us_per_step=149.093536377
+TRIAL 17 us_per_step=149.098693848
+TRIAL 18 us_per_step=149.073089600
+TRIAL 19 us_per_step=149.083129883
+BENCH mode=D-V1-128 warmups=5 trials=20 steps=1000 launches=500 median_us=149.085281372 min_us=149.054595947 p90_us=149.113983154 mlups=14488.351768337 equivalent_population_TB_s=2.202229469

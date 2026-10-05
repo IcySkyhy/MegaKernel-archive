@@ -1,0 +1,9 @@
+# M97：runs=prolog（M88 档）在本分支上的复跑 —— 证明本 mission 没有动到 M88 的探针档
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 48 层，token 3，reps 10，权重=checkpoint，dump=关
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+...
+[m15] 验证 prolog：本段判定项 41 条 + guard 10 条（累计 checks 173 / guards 59 / fails 0）
+[m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Kv 0 + Prolog 41 + AttnWire 0 = 173 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15] guard：59 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 48 + 参考链锚点非空 0 + M65 链 0 + 其余 10
+[m15] ===== ALL PASS（checks=173, guards=59, fails=0）=====

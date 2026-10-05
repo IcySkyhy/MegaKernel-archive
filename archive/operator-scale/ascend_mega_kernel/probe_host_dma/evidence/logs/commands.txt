@@ -1,0 +1,51 @@
+# probe_host_dma 复现记录
+date: 2026-09-27T02:53:41+00:00
+pwd: /workspace/ascend_mega_kernel/.tower/worktrees/wt-86/probe_host_dma
+HEAD_at_run: c126bb62ec440b337aa6af2c96a31ca03bb9d4ec  # 本次跑之前的分支 tip——它可能**早于**把本批证据提交进去的那个 commit
+dirty_at_run: 3 files
+HEAD_dirty_list:
+   M probe_host_dma/README.md
+   M probe_host_dma/evidence/logs/commands.txt
+   M probe_host_dma/run_probes.sh
+CANN: Version=9.1.0 version_dir=cann required_package_runtime_version="9.1" required_package_ge-executor_version="9.1" required_package_metadef_version="9.1" required_package_bisheng-compiler_version="9.1" required_package_tbe-tik_version="9.1" timestamp=20260730_231653901 
+CANN_home: /usr/local/Ascend/cann-9.1.0
+REPS: 5
+
+## 源码内容指纹（与 git tip 无关，内容寻址 ⇒ 可用它核对「本 log 由哪份源码产出」）
+41fc346588bc2b122a453b6d0d14eb2e85a0879c9cee98f6e56eb5069156d6e8  probe_host_dma.asc
+15632cdb5db66ec3a80fe08158ce6c474bcb3864f09b91758c35437f0096cb3d  CMakeLists.txt
+8af328b1bd79addaf3522037ecca93f4ed680609c23c012077fabab0fd1280a8  run_probes.sh
+ba7b1eed78896c7acb955ddabf1a36eda8063b2687cf4b58c9ec5b444be0df13  mmap_ngram_plan.py
+d0e145587e62ae0d5f35fa0c6536fef92858c558b29f7cc31c01832952d507e8  check_locale.sh
+404cc3ad9ac8974524898f386f1408729e546d92c6325a0d1588f59f5980467d  check_fingerprints.sh
+
+## 跑前 npu-smi（并发背景）
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.6                               Version: 25.7.rc1.6                            |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 196.8       58                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          12961 / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| 0                         | 202440        | m15_layer_loop           | 6867                    |
++===========================+===============+=====================================================+
+## 跑后 npu-smi（并发背景）
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.6                               Version: 25.7.rc1.6                            |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 197.9       59                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          12961 / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| 0                         | 207199        | m15_layer_loop           | 6797                    |
++===========================+===============+=====================================================+

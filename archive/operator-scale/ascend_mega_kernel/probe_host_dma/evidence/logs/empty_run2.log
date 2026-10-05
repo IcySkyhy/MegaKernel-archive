@@ -1,0 +1,16 @@
+== probe_host_dma mode=empty tile=8192 repeats=8 launches=20 alignOff=0 ==
+[INIT] aclInit rc=0
+[INIT] aclrtSetDevice(0) rc=0
+[INIT] aclrtCreateStream rc=0
+[DEV ] AICORE=28 VECTOR=56 -> blocks=56
+[PREP] region=3670016 bytes (65536 per block) cyc=1792 blocks=56
+[ATTR] srcHbmDev          ptr=0x12004ca00000 rc=0 location.type=1(DEVICE) id=0 pageSize=2097152
+[PREP] srcKind=HBM(aclrtMalloc) srcForKernel=0x12004ca00000 dst=0x12004c600000 cyc=0x120000017000
+[TIME] launches=20 perLaunch=2488.2 ns aclError_after_last=0
+[ASYNC] aclrtStreamQuery immediately after launch: rc=0 status=1(NOT_READY)
+[ASYNC] aclrtSynchronizeStream rc=0 (device-side MTE2 read loop is back-to-back, no per-tile wait)
+[COPY] aclrtMemcpy(D2H result) rc=0
+[COPY] aclrtMemcpy(D2H cycles) rc=0
+[CYCLE] validBlocks=56 avgSpanPerBlock=501 aggSpan(all blocks)=1109 syscnt
+== done mode=empty overall=OK ==
+rc=0

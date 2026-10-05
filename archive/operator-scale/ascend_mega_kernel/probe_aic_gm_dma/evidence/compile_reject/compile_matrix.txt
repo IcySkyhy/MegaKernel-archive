@@ -1,0 +1,11 @@
+### bisheng: /usr/local/Ascend/cann-9.1.0/bin/bisheng
+2026-07-30T20:53:21+08:00 clang version 15.0.5 (clang-5c68a1cb1231 flang-5c68a1cb1231)
+Target: x86_64-unknown-linux-gnu
+### flags: -DNPU_ARCH_DAV_3510 -std=c++17 --npu-arch=dav-3510 -O3 -DNDEBUG --asc-aicore-lang
+### note: ACCEPT 只表示『编译通过』；运行期是否落盘由 probe_aic_gm_dma 的对应档回答。
+
+raw_ub2gm_aic      REJECT (rc=1) :: raw_ub2gm_aic.asc:11:9: error: function type 'void (__gm__ void *, __ubuf__ void *, unsigned char, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_gm' does n
+raw_ub2l1_aic      REJECT (rc=1) :: raw_ub2l1_aic.asc:12:9: error: function type 'void (__cbuf__ void *, __ubuf__ void *, unsigned char, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_cbuf' do
+raw_gm2ub_aic      REJECT (rc=1) :: /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_aicore_functions.h:2874:1: error: function type 'void (__ubuf__ unsigned int *, __gm__ unsigned int *, unsigned
+raw_l12ub_aic      ACCEPT (rc=0) 
+api_ub2gm_aic      ACCEPT (rc=0) 

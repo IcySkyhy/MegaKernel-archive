@@ -1,0 +1,6 @@
+[Pf.gdn] T=4097 o 元素 25171968  参考=指数差
+  dev 非有限=0（NaN=0）
+  NaN(ref_fp64)=0  NaN(ref_fp32)=0  （参考自洽要求 0）
+  XOR(dev,fp64)=0  XOR(dev,fp32)=0
+  对照：旧式(eg·ig) fp32 的 NaN = 8374272（m>1 时应为大数 ⇒ 旧式溢出；默认参考为指数差、NaN 应 0）
+  ⇒ PASS（设备 NaN 掩码 ≈ 参考；XOR=0 ≤ 25171）

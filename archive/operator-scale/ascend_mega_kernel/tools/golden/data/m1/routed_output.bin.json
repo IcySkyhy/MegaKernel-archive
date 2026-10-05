@@ -1,0 +1,18 @@
+{
+  "tensor": "routed_output.bin",
+  "shape": [
+    1,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 5120,
+  "sha256": "ab25b9f98fa7bd5dcf675dc8f444a8dd18c04665465b6137c15c8cca051ffd45",
+  "kind": "golden",
+  "description": "weighted routed-expert sum before shared expert [m, hidden], bf16"
+}

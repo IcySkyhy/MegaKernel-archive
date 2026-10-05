@@ -1,0 +1,18 @@
+{
+  "tensor": "h_qx_shd.bin",
+  "shape": [
+    33,
+    320
+  ],
+  "dtype": "uint8",
+  "strides": [
+    320,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 10560,
+  "sha256": "febb01c85bcb148f81dd5c8cda5dc558db1ccf5aa43dd81af4e7a33e214c4be6",
+  "kind": "golden",
+  "description": "shared-expert H [m, moe_inter/2]"
+}

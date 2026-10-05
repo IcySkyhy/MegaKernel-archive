@@ -1,0 +1,13 @@
+========= COMPUTE-SANITIZER
+DEVICE name=NVIDIA GeForce RTX 5090 cc=12.0 sms=170
+RESOURCE name=D-V3-Z2-Spread threads=256 registers=64 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+CLUSTER runtime_cluster=1 dim=1x1x2 size=2 policy=Spread active_clusters_device=170 potential_cluster_size=8
+LBM_allocateGrid: allocated 185.2 MByte
+SENTINELS invariant_slots=324236 y_alias_slots=178204
+LBM_showGridStatistics:
+	nObstacleCells:  532167 nAccelCells:   21227 nFluidCells: 1606606
+	minRho:   0.9804 maxRho:   1.0225 mass: 2.160039e+06
+	minU: 1.810814e-06 maxU: 1.950941e-02
+
+DONE physical_steps=6 kernel_launches=3 final_buffer=B patterned=1
+========= ERROR SUMMARY: 0 errors

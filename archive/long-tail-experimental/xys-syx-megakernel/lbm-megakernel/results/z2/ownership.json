@@ -1,0 +1,57 @@
+{
+  "cpu": {
+    "passed": true,
+    "cores": 2160000,
+    "slots": 41040000,
+    "old_candidates": 4924800,
+    "old_valid": 4536000,
+    "counts": [
+      2052000,
+      2052000,
+      1903502,
+      1862998,
+      37988884,
+      2726880,
+      315116,
+      9120,
+      1368000,
+      1368000,
+      640,
+      640
+    ]
+  },
+  "gpu": {
+    "passed": true,
+    "wrong_writers": 0,
+    "wrong_cores": 0,
+    "wrong_producers": 0,
+    "counts": [
+      2052000,
+      2052000,
+      1903502,
+      1862998,
+      37988884,
+      2726880,
+      315116,
+      9120,
+      1368000,
+      1368000,
+      640,
+      640
+    ]
+  },
+  "counts": {
+    "producer_rank0": 2052000,
+    "producer_rank1": 2052000,
+    "valid_rank0": 1903502,
+    "valid_rank1": 1862998,
+    "local": 37988884,
+    "remote": 2726880,
+    "fallback_local": 315116,
+    "fallback_remote": 9120,
+    "remote_rank0": 1368000,
+    "remote_rank1": 1368000,
+    "interior_remote_rank0": 640,
+    "interior_remote_rank1": 640
+  }
+}

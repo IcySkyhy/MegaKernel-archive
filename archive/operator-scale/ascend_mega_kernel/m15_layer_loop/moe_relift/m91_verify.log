@@ -1,0 +1,85 @@
+# M91 命令 -> 输出/rc 表（全部在本 worktree 实跑；本地判据在 LC_ALL=C 与 LC_ALL=C.UTF-8 两档读数一致）
+# 环境：source /usr/local/Ascend/ascend-toolkit/set_env.sh ; Ascend950PR（npu-smi 报 HBM 131072 MB）
+# worktree = /workspace/ascend_mega_kernel/.tower/worktrees/wt-91   base = main tip 26d644b
+#
+# 基线侧（/tmp/m91_base_*.log）的取数时序：① 在 tip 原样构建 → ② 跑 all/chain 存 /tmp/m91_base_*.log，
+#   并把该二进制拷到 /tmp/m91_base/m15_layer_loop_base → ③ 才改 m15_moe_resources.h → ④ 重建。
+#   改前/改后的二进制 sha256 相同（见 §2 与 m91_ab_dump_sha256.log），故两档读数也相同。
+
+## 0) 设备并发背景（跑设备前核实）
+$ npu-smi info | sed -n '4,14p'
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 197.2       58                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5247  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+rc=0
+
+## 1) 抽取规则与生成物一致（--check），两档 locale
+$ LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+
+$ LC_ALL=C.UTF-8 python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+
+## 2) 构建
+$ cmake --build m15_layer_loop/build -j4 2>&1 | tail -3
+[ 50%] Built target m15_layer_loop
+[100%] Built target m15_ple
+rc=0
+
+$ sha256sum m15_layer_loop/build/m15_layer_loop
+c6ee3ca0e2164be7603821bba5a6590274cfdc7500457a3756c24c717bf853c8  m15_layer_loop/build/m15_layer_loop
+rc=0
+
+## 3) 验收 runs=all（48 层 x 3 token，含 M65 链段）
+$ tail -1 /tmp/m91_base_all.log
+[m15] ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+rc=0
+
+$ tail -1 /tmp/m91_c_all.log
+[m15] ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+rc=0
+
+## 4) 验收 runs=chain
+$ tail -1 /tmp/m91_base_chain.log
+[m15] ===== ALL PASS（checks=910, guards=52, fails=0）=====
+rc=0
+
+$ tail -1 /tmp/m91_c_chain.log
+[m15] ===== ALL PASS（checks=910, guards=52, fails=0）=====
+rc=0
+
+## 5) M84 的静态判据（未回归）
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py | tail -1
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+$ LC_ALL=C.UTF-8 python3 m15_layer_loop/moe_relift/check_prep.py | tail -1
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+## 6) M91-C 的静态判据
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_rescale.py | tail -1
+[check] ===== 可 FAIL 的判据 30 条（FAIL 0 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+$ LC_ALL=C.UTF-8 python3 m15_layer_loop/moe_relift/check_rescale.py | tail -1
+[check] ===== 可 FAIL 的判据 30 条（FAIL 0 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+## 7) 两档 locale 的完整读数逐行一致（diff rc=0）
+$ diff /tmp/m91_check_rescale_C.log /tmp/m91_check_rescale_utf8.log
+rc=0
+
+$ diff /tmp/m91_check_prep_C.log /tmp/m91_check_prep_utf8.log
+rc=0
+

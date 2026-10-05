@@ -1,0 +1,110 @@
+// SPDX-License-Identifier: BSD-3-Clause
+#pragma once
+#include <tilemega/Solver/ModelDescription.h>
+#include <tilemega/Codegen/RuntimePlan.h>
+#include <tilemega/Solver/BalancedPlacement.h>
+#include <stdexcept>
+#include <vector>
+
+#ifndef TILEMEGA_PROJECTION_PARTITION_WORKERS
+#define TILEMEGA_PROJECTION_PARTITION_WORKERS 0
+#endif
+#ifndef TILEMEGA_PROJECTION_SPLIT_PERIODS
+#define TILEMEGA_PROJECTION_SPLIT_PERIODS 0
+#endif
+
+namespace tilemega::solver {
+
+struct RuntimeProjectionOptions {
+  int grid = 0;
+  int threads = 0;
+  int kappa = 0;
+  bool force_all_dependencies = false;
+  bool cg_split_task_order = TILEMEGA_CG_SPLIT_TASK_ORDER;
+  bool partition_worker_counts = TILEMEGA_PROJECTION_PARTITION_WORKERS;
+  bool split_count_periods = TILEMEGA_PROJECTION_SPLIT_PERIODS;
+  // Graph-only clients can defer the expensive symbolic wait cardinality.
+  // AttachProjectedEventMetrics rejects a projection with this disabled.
+  bool count_wait_entries = true;
+  /// Per-producer-stage coarsening (§6 B2). Empty keeps every stage on
+  /// `kappa`, which is the shape every client had before the dimension
+  /// existed; a non-empty table must name every projected stage.
+  std::vector<int> stage_kappa;
+};
+
+/// The coarsening one producer stage publishes at. Kept a free function so the
+/// uniform case is the same expression it was and no caller has to know
+/// whether the table is populated.
+inline int ProducerKappa(RuntimeProjectionOptions const& options, int stage) {
+  if (options.stage_kappa.empty()) return options.kappa;
+  if (stage < 0 || stage >= int(options.stage_kappa.size()))
+    throw std::invalid_argument("per-stage kappa table does not cover the stage");
+  return options.stage_kappa[stage];
+}
+
+struct ProjectedStage {
+  int logical_stage = -1;
+  bool combine = false;
+  analysis::QuasiPolynomial task_count;
+  codegen::AttentionPhase attention_phase = codegen::AttentionPhase::kDirect;
+};
+
+struct ProjectedRuntimeWindow {
+  int producer = -1;
+  int consumer = -1;
+  analysis::WaitWindow window;
+  // Split-stage offsets can depend on theta even when the fitted window does
+  // not.  The same expression is used when codegen builds StageDependency.
+  std::string offset_expression = "0";
+};
+
+struct RuntimeProjection {
+  RuntimeProjectionOptions options;
+  std::vector<ProjectedStage> stages;
+  std::vector<ProjectedRuntimeWindow> runtime_windows;
+  analysis::CouplingRelation tasks;
+  analysis::CouplingRelation dependencies;  ///< consumer [stage,task] -> producer
+  analysis::CouplingRelation requested_events;  ///< before local-owner poll elision
+  analysis::CouplingRelation waits;
+  analysis::QuasiPolynomial runtime_task_refs;
+  analysis::QuasiPolynomial runtime_wait_entries;
+  analysis::QuasiPolynomial max_worker_task_refs;
+};
+struct FusedRuntimeProjection {
+  RuntimeProjection projection;
+  analysis::CouplingRelation phase_tasks; ///< new [stage,task] -> old [stage,task]
+};
+struct WrittenFusionProjection {
+  RuntimeProjection projection;
+  std::vector<analysis::CouplingRelation> consumer_to_producer;
+  std::vector<std::pair<int,int>> original_stages;
+};
+WrittenFusionProjection ProjectWrittenFusionQueues(mlir::ModuleOp module,
+    ModelDims dims,RuntimeProjectionOptions options);
+FusedRuntimeProjection FuseProjectedQueues(RuntimeProjection const& original,
+    int producer,int consumer,analysis::CouplingRelation const& consumer_to_producer,
+    RuntimeProjectionOptions options,bool optional_producer=false);
+struct ProjectedPlacement {
+  std::vector<std::vector<long>> task_ids;
+  TaskPlacement placement;
+  long wait_entries = 0;
+};
+ProjectedPlacement BalanceProjectedQueues(RuntimeProjection const& projection,
+    analysis::ParamBinding const& theta, int workers);
+
+/// The current stage-major queues use a bijection of worker labels. Cardinal
+/// totals and maximum length are invariant under those permutations; a new
+/// task-dependent placement must replace the worker projection explicitly.
+RuntimeProjection ProjectRuntimeQueues(ModelDescription const& model,
+                                      codegen::RuntimePlan const& plan,
+                                      RuntimeProjectionOptions options);
+analysis::CouplingRelation ProjectScalarTaskOwnership(ModelTaskSemantics const& semantic,
+    analysis::OperatorNode const& task,ModelStage const& stage,int threads);
+analysis::CouplingRelation ProjectTaskOwnership(ModelTaskSemantics const& semantic,
+    analysis::OperatorNode const& task,ModelStage const& stage,int threads);
+void AttachRuntimeEventMetrics(ModelDescription& model, codegen::RuntimePlan const& plan,
+                               RuntimeProjectionOptions options);
+void AttachProjectedEventMetrics(ModelDescription& model,codegen::RuntimePlan const& plan,
+                               RuntimeProjection const& projection);
+
+}  // namespace tilemega::solver

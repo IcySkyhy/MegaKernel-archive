@@ -1,0 +1,13 @@
+[probe vf nest] tag=nest_o2i0b1_ct4 outer=2 inner=0 body=1 ct_rows=4
+  rows=4 
+    i      : 0 1 2 3
+    cnt    : 0 0 1 2
+    expect : 0 1 2 3
+    tri    : 0 0 1 3
+    MISMATCH i=1 cnt=0 expect=1
+    MISMATCH i=2 cnt=1 expect=2
+    MISMATCH i=3 cnt=2 expect=3
+    acc_maxdiff vs ref(cnt)=0.0  ref(cnt-1)=1008.0  ref(expect)=1200.0   jset_odd=0
+    lane_mismatch=0  tri_odd=0  少一次的行数=3/4  hash=0xc989c651
+    rows=4 verdict=FAIL
+[probe vf nest] tag=nest_o2i0b1_ct4 RUN FAIL  (rows 档位 1，失败 1)

@@ -1,0 +1,13 @@
+--- run 1 (timeout 30s) ---
+[probe] mode=tail variant=neg_skipse3_2id_N1 vi=29 run=1 N=1 handoffs=1 idSame=0 apiV=1 apiE3=1 skipVrel=0 skipE3rel=1 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=neg_skipse3_2id_N1 run=1 N=1 tiles=2 mismatched=1 elems=4096 match=2048 stale=0 zero=2048 histOther=0 rc=1
+TILEFAIL first idx=0 (aiv=0 tile=0)
+exit=1
+--- run 2 (timeout 30s) ---
+[probe] mode=tail variant=neg_skipse3_2id_N1 vi=29 run=2 N=1 handoffs=1 idSame=0 apiV=1 apiE3=1 skipVrel=0 skipE3rel=1 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=neg_skipse3_2id_N1 run=2 N=1 tiles=2 mismatched=0 elems=4096 match=4096 stale=0 zero=0 histOther=0 rc=0
+exit=0
+--- run 3 (timeout 30s) ---
+[probe] mode=tail variant=neg_skipse3_2id_N1 vi=29 run=3 N=1 handoffs=1 idSame=0 apiV=1 apiE3=1 skipVrel=0 skipE3rel=1 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=neg_skipse3_2id_N1 run=3 N=1 tiles=2 mismatched=0 elems=4096 match=4096 stale=0 zero=0 histOther=0 rc=0
+exit=0

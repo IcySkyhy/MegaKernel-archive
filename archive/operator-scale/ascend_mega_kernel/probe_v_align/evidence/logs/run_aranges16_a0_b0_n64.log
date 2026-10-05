@@ -1,0 +1,7 @@
+VARIANT op=aranges16(id=37) a=0 b=0 n=64 model=3 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x3ace5e4072601983
+HEAD32 00010000 00030002 00050004 00070006
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (structural only: model=3; window 256B non-empty, 256 non-sentinel bytes, 0 bytes written outside window)

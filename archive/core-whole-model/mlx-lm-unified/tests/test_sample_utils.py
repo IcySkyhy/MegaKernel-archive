@@ -1,0 +1,338 @@
+import threading
+import unittest
+
+import mlx.core as mx
+
+from mlx_lm.sample_utils import (
+    apply_min_p,
+    apply_top_k,
+    apply_top_p,
+    apply_xtc,
+    make_frequency_penalty,
+    make_logits_processors,
+    make_presence_penalty,
+    make_sampler,
+)
+
+
+class TestSampleUtils(unittest.TestCase):
+    def test_apply_top_p(self):
+        probs = mx.array([0.9, 0.0, 0.0, 0.1])[None]
+        logits = mx.log(probs)
+
+        new_logits = apply_top_p(logits, 0.3)
+        actual_probs = mx.softmax(new_logits.squeeze())
+        self.assertEqual(actual_probs.tolist(), [1.0, 0.0, 0.0, 0.0])
+
+        new_logits = apply_top_p(logits, 0.95)
+        actual_probs = mx.softmax(new_logits.squeeze())
+        self.assertTrue(mx.allclose(probs.squeeze(), actual_probs))
+
+        probs = mx.array([0.0, 0.5, 0.4, 0.1])[None]
+        logits = mx.log(probs)
+        new_logits = apply_top_p(logits, 0.4)
+        actual_probs = mx.softmax(new_logits.squeeze())
+        self.assertEqual(actual_probs.tolist(), [0.0, 1.0, 0.0, 0.0])
+
+        new_logits = apply_top_p(logits, 0.6)
+        actual_probs = mx.softmax(new_logits.squeeze())
+        self.assertEqual(
+            [round(p, 4) for p in actual_probs.tolist()], [0.0, 0.5556, 0.4444, 0.0]
+        )
+
+        new_logits = apply_top_p(logits, 0.95)
+        actual_probs = mx.softmax(new_logits.squeeze())
+        actual_rounded = [round(p, 4) for p in actual_probs.tolist()]
+        expected_rounded = [0.0, 0.5, 0.4, 0.1]
+        self.assertEqual(actual_rounded, expected_rounded)
+        self.assertAlmostEqual(sum(actual_probs.tolist()), 1.0)
+
+        # Batch mode works
+        probs = mx.array([[0.9, 0.0, 0.0, 0.1], [0.0, 0.8, 0.1, 0.1]])
+        logits = mx.log(probs)
+        new_logits = apply_top_p(logits, 0.5)
+        actual_probs = mx.softmax(new_logits, axis=-1)
+        self.assertEqual(
+            actual_probs.tolist(), [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]]
+        )
+
+    def test_apply_min_p(self):
+        probs = mx.array([0.9, 0.0, 0.0, 0.1])[None]
+        logits = mx.log(probs)
+        new_logits = apply_min_p(logits, 0.8)
+        actual_probs = mx.softmax(new_logits.squeeze())
+        self.assertEqual(actual_probs.tolist(), [1.0, 0.0, 0.0, 0.0])
+
+        probs = mx.array([0.9, 0.0, 0.0, 0.1])[None]
+        logits = mx.log(probs)
+        new_logits = apply_min_p(logits, 0.05)
+        actual_probs = mx.softmax(new_logits.squeeze())
+        self.assertTrue(mx.allclose(actual_probs, mx.squeeze(probs)))
+
+        # Batch mode works
+        probs = mx.array([[0.9, 0.0, 0.0, 0.1], [0.0, 0.8, 0.0, 0.1]])
+        logits = mx.log(probs)
+        new_logits = apply_min_p(logits, 0.7)
+        actual_probs = mx.softmax(new_logits, axis=-1)
+        self.assertEqual(
+            actual_probs.tolist(), [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]]
+        )
+
+    def test_apply_top_k(self):
+        probs = mx.array([0.9, 0.0, 0.0, 0.1])[None]
+        logits = mx.log(probs)
+
+        new_logits = apply_top_k(logits, 1)
+        actual_probs = mx.softmax(new_logits.squeeze())
+        self.assertEqual(actual_probs.tolist(), [1.0, 0.0, 0.0, 0.0])
+
+        probs = mx.array([0.6, 0.0, 0.1, 0.3])[None]
+        logits = mx.log(probs)
+        new_logits = apply_top_k(logits, 2)
+        actual_probs = mx.softmax(new_logits.squeeze())
+        self.assertEqual(
+            [round(p, 4) for p in actual_probs.tolist()], [0.6667, 0.0, 0.0, 0.3333]
+        )
+
+        # Batch mode works
+        probs = mx.array([[0.9, 0.0, 0.0, 0.1], [0.0, 0.8, 0.0, 0.1]])
+        logits = mx.log(probs)
+
+        new_logits = apply_top_k(logits, 1)
+        actual_probs = mx.softmax(new_logits, axis=-1)
+        self.assertEqual(
+            actual_probs.tolist(), [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]]
+        )
+
+    def test_apply_xtc(self):
+        # Test the threshold
+        probs = mx.array([[0.4, 0.3, 0.15, 0.15]])
+        new_probs = mx.softmax(apply_xtc(mx.log(probs), 1, 0.2, []), -1)
+        expected = mx.array([[0, 0.5, 0.25, 0.25]])
+        self.assertTrue(mx.allclose(new_probs, expected))
+        probs = mx.array([[0.4, 0.3, 0.15, 0.15]])
+        new_probs = mx.softmax(apply_xtc(mx.log(probs), 1, 0.1, []), -1)
+        expected = mx.array([[0, 0.0, 0.5, 0.5]])
+        self.assertTrue(mx.allclose(new_probs, expected))
+
+        # Test the special tokens
+        probs = mx.array([[0.4, 0.3, 0.15, 0.15]])
+        new_probs = mx.softmax(apply_xtc(mx.log(probs), 1, 0.1, [0]), -1)
+        expected = mx.array([[4 / 7, 0.0, 1.5 / 7, 1.5 / 7]])
+        self.assertTrue(mx.allclose(new_probs, expected))
+
+        # Test that with probability 0 the probs don't change
+        probs = mx.array([[0.4, 0.3, 0.15, 0.15]])
+        new_probs = mx.softmax(apply_xtc(mx.log(probs), 0, 0.1, [0]), -1)
+        self.assertTrue(mx.allclose(new_probs, probs))
+
+        # Test that the threshold is computed per row in a batch
+        probs = mx.array([[0.6, 0.25, 0.1, 0.05], [0.9, 0.05, 0.03, 0.02]])
+        batched = mx.softmax(apply_xtc(mx.log(probs), 1, 0.2, []), -1)
+        for i in range(probs.shape[0]):
+            alone = mx.softmax(apply_xtc(mx.log(probs[i : i + 1]), 1, 0.2, []), -1)
+            self.assertTrue(mx.allclose(batched[i : i + 1], alone))
+
+    def test_presence_penalty(self):
+        # Token appears multiple times - penalty applied once
+        tokens = mx.array([0, 0, 0, 1, 1])
+        logits = mx.zeros((1, 4))
+        processor = make_presence_penalty(0.5, context_size=5)
+        result = processor(tokens, logits)
+        # Token 0 appears 3 times, token 1 appears 2 times - both penalized once
+        self.assertAlmostEqual(result[0, 0].item(), -0.5)
+        self.assertAlmostEqual(result[0, 1].item(), -0.5)
+        # Tokens not in context not penalized
+        self.assertAlmostEqual(result[0, 2].item(), 0.0)
+        self.assertAlmostEqual(result[0, 3].item(), 0.0)
+
+    def test_frequency_penalty(self):
+        # Token appears multiple times - penalty applied proportionally
+        tokens = mx.array([0, 0, 0, 1, 1])
+        logits = mx.zeros((1, 4))
+        processor = make_frequency_penalty(0.5, context_size=5)
+        result = processor(tokens, logits)
+        # Token 0 appears 3 times -> 3 * 0.5 = 1.5 penalty
+        self.assertAlmostEqual(result[0, 0].item(), -1.5)
+        # Token 1 appears 2 times -> 2 * 0.5 = 1.0 penalty
+        self.assertAlmostEqual(result[0, 1].item(), -1.0)
+        # Tokens not in context not penalized
+        self.assertAlmostEqual(result[0, 2].item(), 0.0)
+        self.assertAlmostEqual(result[0, 3].item(), 0.0)
+
+    def test_make_logits_processors(self):
+        # Create processors with all three penalty types
+        tokens = mx.array([0, 0, 0, 1, 1])
+        # Use non-zero logits so repetition penalty has effect
+        logits = mx.array([[1.0, 0.5, 0.0, -0.5]])
+        processors = make_logits_processors(
+            repetition_penalty=1.5,
+            repetition_context_size=5,
+            presence_penalty=0.5,
+            presence_context_size=5,
+            frequency_penalty=0.25,
+            frequency_context_size=5,
+        )
+        # Apply all processors
+        for processor in processors:
+            logits = processor(tokens, logits)
+        # Token 0 (appears 3x): 1.0/1.5 - 0.5 - 0.75 = -0.5833
+        # Token 1 (appears 2x): 0.5/1.5 - 0.5 - 0.5 = -0.6667
+        # Token 2 (not in context): 0.0 (no penalty)
+        # Token 3 (not in context): -0.5 (no penalty)
+        self.assertAlmostEqual(logits[0, 0].item(), -0.5833, places=4)
+        self.assertAlmostEqual(logits[0, 1].item(), -0.6667, places=4)
+        self.assertAlmostEqual(logits[0, 2].item(), 0.0, places=4)
+        self.assertAlmostEqual(logits[0, 3].item(), -0.5, places=4)
+
+    def test_sampler_prng_across_threads(self):
+        sampler = make_sampler(temp=1.0)
+        logits = mx.random.normal((1, 128))
+        mx.eval(logits)
+
+        results = {}
+
+        def worker():
+            tokens = [sampler(logits).item() for _ in range(16)]
+            results["tokens_differ"] = len(set(tokens)) > 1
+
+            mx.random.seed(1234)
+            a = sampler(logits).item()
+            mx.random.seed(1234)
+            b = sampler(logits).item()
+            results["seed_reproducible"] = a == b
+
+            mx.clear_streams()
+
+        t = threading.Thread(target=worker)
+        t.start()
+        t.join()
+
+        self.assertTrue(results["tokens_differ"])
+        self.assertTrue(results["seed_reproducible"])
+
+
+    def test_sampler_seed(self):
+        def sample_with_seeds(out: list[list[int]]) -> None:
+            sampler = make_sampler(temp=1.0)
+            logits = mx.zeros((1024,))  # uniform, so the seed drives the pick
+            tokens = []
+            for seed in [1, 2, 1, 2, 3, 3]:
+                mx.random.seed(seed)
+                token = sampler(logits)
+                mx.eval(token)
+                tokens.append(token.item())
+            out.append(tokens)
+
+        def run_threaded() -> list[int]:
+            out = []
+            t = threading.Thread(target=sample_with_seeds, args=(out,))
+            t.start()
+            t.join()
+            assert len(out) == 1, out
+            return out[0]
+
+        tokens = run_threaded()
+
+        self.assertEqual(tokens[0], tokens[2])
+        self.assertEqual(tokens[1], tokens[3])
+        self.assertEqual(tokens[4], tokens[5])
+        self.assertNotEqual(tokens[1], tokens[2])
+        self.assertNotEqual(tokens[1], tokens[5])
+        self.assertNotEqual(tokens[2], tokens[5])
+        # reproducibility
+        self.assertEqual(tokens, run_threaded())
+
+
+class TestReasoningBudgetSpeculativeRewind(unittest.TestCase):
+    """The stateful reasoning-budget processor must survive speculative
+    rewinds: when ``prev_tokens`` no longer extends the tracked history
+    (rejected draft tokens were consumed), its decisions must match a
+    sequential run over the committed tokens only."""
+
+    CLOSE = 99
+    VOCAB = 128
+
+    def _forced(self, processor, tokens):
+        out = processor(mx.array(tokens, mx.uint32), mx.zeros((1, self.VOCAB)))
+        forced = out[0, self.CLOSE].item() == 0.0 and out[0, 0].item() == float(
+            "-inf"
+        )
+        return bool(forced)
+
+    def test_rewind_of_rejected_draft_tokens_matches_sequential(self):
+        from mlx_lm.sample_utils import make_reasoning_budget
+
+        kwargs = dict(
+            think_close=self.CLOSE, max_think_tokens=20, check_every=10**6
+        )
+        seq_proc = make_reasoning_budget(**kwargs)
+        spec_proc = make_reasoning_budget(**kwargs)
+
+        committed = [1] * 8
+        for i in range(1, len(committed) + 1):
+            self.assertFalse(self._forced(seq_proc, committed[:i]))
+            self.assertFalse(self._forced(spec_proc, committed[:i]))
+
+        # Speculative verify: four draft tokens stacked on the committed
+        # history (as speculative_generate_step's _step does), all rejected.
+        drafts = [31, 32, 33, 34]
+        for j in range(1, len(drafts) + 1):
+            self.assertFalse(self._forced(spec_proc, committed + drafts[:j]))
+
+        # Rewind: the committed history continues with the target's bonus
+        # token instead. Decisions must track the sequential processor at
+        # every committed length.
+        history = committed + [7]
+        seq_forced = spec_forced = False
+        while len(history) <= 24:
+            seq_forced = self._forced(seq_proc, list(history))
+            spec_forced = self._forced(spec_proc, list(history))
+            self.assertEqual(
+                spec_forced,
+                seq_forced,
+                msg=f"decision diverged at committed length {len(history)}",
+            )
+            history.append(1)
+        # Sanity: the budget still trips once genuinely exceeded.
+        self.assertTrue(seq_forced)
+        self.assertTrue(spec_forced)
+
+    def test_equal_length_rewind_over_rejected_close_token(self):
+        # The draft proposes the channel-close token; the target rejects it
+        # and commits a different token at the SAME history length. The
+        # processor must not stay latched out of the think channel.
+        from mlx_lm.sample_utils import make_reasoning_budget
+
+        kwargs = dict(
+            think_close=self.CLOSE, max_think_tokens=8, check_every=10**6
+        )
+        seq_proc = make_reasoning_budget(**kwargs)
+        spec_proc = make_reasoning_budget(**kwargs)
+
+        committed = [1] * 5
+        for i in range(1, len(committed) + 1):
+            self.assertFalse(self._forced(seq_proc, committed[:i]))
+            self.assertFalse(self._forced(spec_proc, committed[:i]))
+
+        # Rejected draft: the close tag never becomes part of the history.
+        self.assertFalse(self._forced(spec_proc, committed + [self.CLOSE]))
+
+        history = committed + [7]
+        seq_forced = spec_forced = False
+        while len(history) <= 12:
+            seq_forced = self._forced(seq_proc, list(history))
+            spec_forced = self._forced(spec_proc, list(history))
+            self.assertEqual(
+                spec_forced,
+                seq_forced,
+                msg=f"decision diverged at committed length {len(history)}",
+            )
+            history.append(2)
+        self.assertTrue(seq_forced)
+        self.assertTrue(spec_forced)
+
+
+
+if __name__ == "__main__":
+    unittest.main()

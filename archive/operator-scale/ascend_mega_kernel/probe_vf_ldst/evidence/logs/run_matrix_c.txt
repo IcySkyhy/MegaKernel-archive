@@ -1,0 +1,35 @@
+probe_c_rt_unordered   p=0 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_unordered   p=1 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_unordered   p=2 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_unordered   p=3 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_unordered   p=4 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_event       p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_event       p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_event       p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_event       p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_event       p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_twotok      p=0 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_twotok      p=1 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_twotok      p=2 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_twotok      p=3 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_twotok      p=4 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_small_unordered p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_unordered p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_unordered p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_unordered p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_unordered p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 

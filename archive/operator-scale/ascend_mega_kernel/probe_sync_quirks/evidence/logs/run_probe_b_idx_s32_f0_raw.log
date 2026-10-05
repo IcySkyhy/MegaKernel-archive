@@ -1,0 +1,2 @@
+[probe B] probe_b_idx_s32_f0_raw  form=0 idx=int32_t sizeof=4 base=200 n=8 reps=50
+[probe B] probe_b_idx_s32_f0_raw  RUN PASS：50 次 × 8 点全部 out[i*VL]==w[base+i]

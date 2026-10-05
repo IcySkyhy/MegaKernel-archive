@@ -1,0 +1,58 @@
+# M50 零回归 / 基线对照（Extract→VF 内联 + 参考量化器修复；命令与输出逐条列出，无手工数字）
+# 基线 = 改动前的同一分支（base commit 55f5e18），二进制 /tmp/m50/base/build；本次 /tmp/m50/fin/build
+
+## 1) 数据集全链（m1 m33）：M50 日志 vs 归档的 M32 日志
+$ grep -c 'PASS (' /tmp/m50/fin/dataset.log
+678
+$ grep -c '内部一致性' /tmp/m50/fin/dataset.log   # 判据行 = 678 + 4 = 682
+4
+$ diff /tmp/m50/fin/dataset.log m13_moe_layer/evidence/run_dataset_after.log   # 与改动前逐字节相同
+(diff 无输出 = 逐字节相同)
+
+## 2) M13_DUMP=1 的 144 个 dump 文件 sha256：改动前（/tmp/m50/base/dump）vs 改动后
+$ diff <(cd /tmp/m50/base/dump && sha256sum * | sort -k2) <(cd /tmp/m50/fin/dump && sha256sum * | sort -k2)
+(diff 无输出 = 144 文件全部逐字节相同)
+
+## 3) 140 个 dump 张量 vs 归档的 dump_manifest.md
+清单条目 140、sha256 不符 0、缺失 0（本次落盘 144 个文件）
+
+## 4) check_ref.py 数据集判据（118 判定 + 32 参考项）
+$ tail -1 /tmp/m50/fin/check_ref.log
+[check_ref] ===== ALL PASS （判定 118 项 / 参考 32 项）=====
+$ diff /tmp/m50/fin/check_ref.log m13_moe_layer/evidence/check_ref_run.log
+(diff 无输出 = 逐字节相同)
+
+## 5) quant-inf 量化段自检：判据数 32 -> 40（M50 新增 kind 4 = 次正规/退化组）
+$ grep -c 'PASS (' /tmp/m50/base/quant_inf_base.log   # 改动前
+32
+$ grep -c 'PASS (' /tmp/m50/fin/quant_inf.log   # 改动后（含 8 条 kind 4）
+40
+$ diff /tmp/m50/base/quant_inf_base.log m13_moe_layer/evidence/quant_inf_after.log  # 改动前的 32 条与归档日志一致
+(diff 无输出 = 32 条逐字节相同，新增 8 条 kind 4 全部 PASS)
+
+## 6) 原始日志 provenance（docs/17 §2.5：reviewer 可用归档数据 + 一条命令重跑）
+$ sha256sum m13_moe_layer/evidence/m50_{dataset_after,check_ref_after,quant_inf_after}.log
+d132e6f40f252d30bcff8cffbcf81733a8119ce7631ca50714ea0ee17fa10361  m50_dataset_after.log
+cde25765314fadafd58926eb95a5ca9cdbb2412318f4eb919b4708ec347a5a96  m50_check_ref_after.log
+dedc01dcff4d0e487218d0b1971526357fb3537856c36baebd64053f16dcdcde  m50_quant_inf_after.log
+内容等价性（避免重复读数）：
+$ diff m13_moe_layer/evidence/m50_dataset_after.log m13_moe_layer/evidence/run_dataset_after.log
+(逐字节相同：M50 的 682 条判据读数 = 已归档的 M32 读数)
+$ diff m13_moe_layer/evidence/m50_check_ref_after.log m13_moe_layer/evidence/check_ref_run.log
+(逐字节相同：118 判定 + 32 参考项)
+$ grep -v 'inf=4' m13_moe_layer/evidence/m50_quant_inf_after.log | diff - <(grep -v 'inf=4\|含 ±Inf/NaN 用例\|含 ±Inf/NaN/次正规 用例' m13_moe_layer/evidence/quant_inf_after.log)
+(去 kind 4 行后与 M32 日志逐字节相同，唯一差异是总结行文案)
+
+## 6b) rebase 到 main（4ba5484）后的再次复核（工作树干净构建，机器输出）
+```
+build rc=0
+dataset rc=0 ; PASS lines=678 ; 内部一致性=4
+dump rc=0 ; files=144
+check_ref rc=0 ; [check_ref] ===== ALL PASS （判定 118 项 / 参考 32 项）=====
+quant-inf rc=0 ; PASS=40
+  dataset.log == run_dataset_after.log : 逐字节相同
+  check_ref.log == check_ref_run.log : 逐字节相同
+  quant_inf.log == m50_quant_inf_after.log : 逐字节相同
+  144 dump 文件 sha256 全同
+```
+读数与本节 §1–§5 逐字节一致（main 到 4ba5484 未改 m13_moe_layer/** 与 tools/golden 的 quantize_ocp；仅 router_topk 增 FTZ 建模，本 kernel 不消费）。

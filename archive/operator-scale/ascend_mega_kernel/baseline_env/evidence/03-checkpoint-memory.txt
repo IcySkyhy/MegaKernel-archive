@@ -1,0 +1,34 @@
+model dir        : /workspace/Qwen3.8-Flash-Next-MXFP4
+shards           : 131
+tensors          : 1898
+total checkpoint : 169.72 GiB (182.23 GB)
+
+== by dtype ==
+  BF16        109.84 GiB  ( 64.7%)
+  U8           59.88 GiB  ( 35.3%)
+  I64           0.00 GiB  (  0.0%)
+
+== by role ==
+  ngram embedding table                  95.37 GiB    130 tensors  ( 56.2%)
+  MoE experts (mxfp4 packed u8)          56.36 GiB    240 tensors  ( 33.2%)
+  MoE experts (unquantised bf16)          4.70 GiB     54 tensors  (  2.8%)
+  GDN / linear attention                  3.89 GiB    325 tensors  (  2.3%)
+  MoE experts (e8m0 scale)                3.52 GiB    240 tensors  (  2.1%)
+  embed / lm_head                         2.37 GiB      2 tensors  (  1.4%)
+  router / hyper-connection / ple         1.37 GiB    341 tensors  (  0.8%)
+  full attention / indexer                1.25 GiB    117 tensors  (  0.7%)
+  vision tower                            0.84 GiB    333 tensors  (  0.5%)
+  MTP head                                0.06 GiB     16 tensors  (  0.0%)
+  norms                                   0.00 GiB    100 tensors  (  0.0%)
+
+== 10 largest tensors ==
+      3.125 GiB  BF16   mtp.layers.0.mlp.experts.gate_up_proj
+      1.562 GiB  BF16   mtp.layers.0.mlp.experts.down_proj
+      1.184 GiB  BF16   model.language_model.embed_tokens.weight
+      1.184 GiB  BF16   lm_head.weight
+      0.781 GiB  U8     model.language_model.layers.9.mlp.experts.gate_up_proj
+      0.781 GiB  U8     model.language_model.layers.8.mlp.experts.gate_up_proj
+      0.781 GiB  U8     model.language_model.layers.7.mlp.experts.gate_up_proj
+      0.781 GiB  U8     model.language_model.layers.6.mlp.experts.gate_up_proj
+      0.781 GiB  U8     model.language_model.layers.5.mlp.experts.gate_up_proj
+      0.781 GiB  U8     model.language_model.layers.47.mlp.experts.gate_up_proj

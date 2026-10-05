@@ -1,0 +1,25 @@
+# M50 判据 2/2（**负向对照，必须 FAIL**）：同一判据换成 M32 修复前的参考实现
+#   被判量化器 = base commit 的原始文件（**不是**本次改动里的开关）：
+#     git show 55f5e18:m13_moe_layer/check_ref.py > /tmp/m50/negctl/check_ref_prefix_nofix.py
+#     sha256 = 7f7185c5d10bc397af0a09ff199a2bbf9af2631ca0ed6d752bde853e32033b0a   （base commit = 55f5e18065adabfef3843c621b866a3cdc8732fc）
+#   命令：/usr/local/python3.12.13/bin/python3 m13_moe_layer/check_ref.py quant-inf m13_moe_layer/evidence/quant_inf_dumps --quantizer /tmp/m50/negctl/check_ref_prefix_nofix.py
+[check_ref] quant-inf：dump 目录 /workspace/ascend_mega_kernel/.tower/worktrees/wt-50/m13_moe_layer/evidence/quant_inf_dumps
+[check_ref] quant-inf：被判量化器 /tmp/m50/fin/check_ref_prefix_nofix.py:quant_mxfp4_hw
+
+[check_ref] FAIL quant-inf A i1 qx 逐字节: 320/1280 字节不符（整组 +Inf）
+[check_ref] FAIL quant-inf A i1 scale 合法区逐字节: 20/80 字节不符
+[check_ref] FAIL quant-inf A i2 qx 逐字节: 224/1280 字节不符（组内部分 ±Inf）
+[check_ref] FAIL quant-inf A i2 scale 合法区逐字节: 20/80 字节不符
+[check_ref] FAIL quant-inf A i3 qx 逐字节: 320/1280 字节不符（NaN 组（+NaN））
+[check_ref] FAIL quant-inf A i3 scale 合法区逐字节: 20/80 字节不符
+[check_ref] FAIL quant-inf A i4 qx 逐字节: 20/1280 字节不符（次正规/退化组（指数域 < 0x0100））
+[check_ref] FAIL quant-inf H i1 qx 逐字节: 80/320 字节不符（整组 +Inf）
+[check_ref] FAIL quant-inf H i1 scale 合法区逐字节: 5/20 字节不符
+[check_ref] FAIL quant-inf H i2 qx 逐字节: 65/320 字节不符（组内部分 ±Inf）
+[check_ref] FAIL quant-inf H i2 scale 合法区逐字节: 5/20 字节不符
+[check_ref] FAIL quant-inf H i3 qx 逐字节: 80/320 字节不符（NaN 组（+NaN））
+[check_ref] FAIL quant-inf H i3 scale 合法区逐字节: 5/20 字节不符
+[check_ref] quant-inf 判定项：40 条，27 PASS / 13 FAIL
+[check_ref] quant-inf 报告项：OK   quant-inf 用例集合完整（2 侧 × 5 kinds，r1/s0）: 实到 10
+[check_ref] quant-inf 报告项：OK   tools/golden 交叉见证（moe_block_ref.quantize_ocp vs device 逐字节）: 0/8500 字节不符，10 个用例
+[check_ref] quant-inf ===== FAILURES PRESENT =====

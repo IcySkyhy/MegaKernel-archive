@@ -1,0 +1,98 @@
+{
+  "upstream": "https://github.com/wsmoses/Enzyme-GPU-Tests",
+  "upstream_checkout_commit": "a1c671dbb2242aabaa773897c8ff9fc6fed31563",
+  "note": "Imports include local hand-optimization work beyond that commit; per-file hashes identify the source snapshot. Temporal shapes are template parameters; launch mapping and benchmark selection are centralized. Debug-only hooks are omitted.",
+  "files": {
+    "include/lbm.h": {
+      "source": "LBM/lbm.h",
+      "source_sha256": "2d48b6bc9e911bb8438e1a31f1134744792eb00f9033188d89af108aaacb2292",
+      "extracted_sha256": "2d48b6bc9e911bb8438e1a31f1134744792eb00f9033188d89af108aaacb2292"
+    },
+    "include/lbm_macros.h": {
+      "source": "LBM/lbm_macros.h",
+      "source_sha256": "5bb7a8a9c303a5dadee24d0a5a895ebe2d102e7403efc396240e3d2a04697104",
+      "extracted_sha256": "5bb7a8a9c303a5dadee24d0a5a895ebe2d102e7403efc396240e3d2a04697104"
+    },
+    "include/layout_config.h": {
+      "source": "LBM/layout_config.h",
+      "source_sha256": "c4759117b23e3353292739756f036a56c7152f1e891e7118eeff2175ac9a05c6",
+      "extracted_sha256": "c4759117b23e3353292739756f036a56c7152f1e891e7118eeff2175ac9a05c6"
+    },
+    "kernels/cell.cuh": {
+      "source": "LBM/opt-c/lbm_kernel.cu",
+      "source_sha256": "7746d30d111a252b4332c8b7b8742c0dbda44d78615471487f7d38dc1b738d43",
+      "extracted_sha256": "11d938d4364de25159d201b3b2f5b37ea28096efe64428117743a363897837e0"
+    },
+    "kernels/collision.cuh": {
+      "source": "LBM/opt-d128/collision.cuh",
+      "source_sha256": "4e6fca903a0c8ccf3d94b6dc282206519e18c5246114f6c959c1c88ce24955cf",
+      "extracted_sha256": "4e6fca903a0c8ccf3d94b6dc282206519e18c5246114f6c959c1c88ce24955cf"
+    },
+    "src/grid.cuh": {
+      "source": "LBM/opt-c/lbm.cu",
+      "source_sha256": "7897f2b350e6d0001681165a6785bc67afd14d16bb3e1cf8b76ae21b418ecd04",
+      "extracted_sha256": "6e9666d4f756423e54f5ba239e9fbf6c5771cfc163f87b3ac302b23fa9544a81"
+    },
+    "kernels/temporal_v1.cuh": {
+      "source": "LBM/opt-d128/temporal.cuh",
+      "source_sha256": "2ccb43f61c12d4de26608f729998196fd333071f983c5c1c363ede57678bddcc",
+      "extracted_sha256": "405cbbed345c2f235fa5a5e7abcdbb4582f8f1fa001ff01ba607c36382ce8480"
+    },
+    "kernels/temporal_v2.cuh": {
+      "source": "LBM/opt-d128-2/temporal.cuh",
+      "source_sha256": "ef487b4b6dd0f89ea2728d958f9e7ecf516fdde465284a200b01f4a71bc5ee1c",
+      "extracted_sha256": "13c451b7d15afa41e2d3369a96ee803a44294835392ade285142dc35682ec33a"
+    },
+    "src/driver.cuh": {
+      "source": "LBM/opt-3044/driver.cuh",
+      "source_sha256": "222f897377d1a4064899c14b8dce0fa6059bcd8327a34063e238c4b7576d64cb",
+      "extracted_sha256": "bf908088ad05558fd3f78cade287996138f46fd3b4e21c0770f6169c8d179fc1"
+    }
+  },
+  "historical_reports": [
+    {
+      "source": "LBM/opt-c/RESULTS.md",
+      "sha256": "2f524952a511d6039264b98f9a34da81239f2993bcb2131bf5584cdda128ab32"
+    },
+    {
+      "source": "LBM/opt-c/STEP2B_RESULTS.md",
+      "sha256": "9efbffa7844bae18a363b307994ee7dfc4416b46a94bc3588788537f3a6cda87"
+    },
+    {
+      "source": "LBM/opt-d128/V1_EXTENDED_RESULTS.md",
+      "sha256": "9ce1ae76da34de4e2b916fff714fbf19759240eb0a04eeca334ab685a46a2f34"
+    },
+    {
+      "source": "LBM/opt-d128-2/V2_RESULTS.md",
+      "sha256": "3e91fc1758b9fa19a03823a7c96a9bb41b811fe2fbaa37af96111a70434b6ad8"
+    },
+    {
+      "source": "LBM/opt-c128/CUBE_RESULTS.md",
+      "sha256": "864b3b0d1431b223f48c665d10328ea9a8ff4949b4026225020e94ea85f43371"
+    },
+    {
+      "source": "LBM/opt-c128-2/V2_RESULTS.md",
+      "sha256": "572ca3ff22eda52a702a9027a9c51e3d89c12e54f25666424ac25c3dbef3aeef"
+    },
+    {
+      "source": "LBM/opt-3044-2/V2_RESULTS.md",
+      "sha256": "2dd20d72aff497a03fae18876f8fd299a82203de7ab8bd6ebb31b7b033ee7c66"
+    }
+  ],
+  "variant_origins": {
+    "B0, C1, C2, C3": "LBM/opt-c/lbm_kernel.cu and retile.h",
+    "S2-C128, S2-C256, S2-D128, S2-D256": "LBM/opt-c/lbm_one_step_tile (in lbm_kernel.cu)",
+    "D-V1": "LBM/opt-d128/temporal.cuh",
+    "D-V2": "LBM/opt-d128-2/temporal.cuh",
+    "C-V1, C-V2": "8x8x8 specializations equivalent to LBM/opt-c128 and opt-c128-2",
+    "T30-S1, T30-V2": "30x4x4 specializations equivalent to LBM/opt-3044 and opt-3044-2"
+  },
+  "extraction_changes": [
+    "One binary selects variants through a shared runtime launch registry.",
+    "Original FP32 cell body and temporal collision expressions are preserved.",
+    "Grid utilities exclude unused legacy CUDA allocation/transfer helpers; no Parboil/OpenCL dependency.",
+    "Temporal tile extents become compile-time template parameters. Debug-only counters and assertions are omitted.",
+    "T30 V2 uses the generic V2 core guard instead of the original core_active helper; resource allocation changes from 56 to 63 registers/thread with this compiler. All performance rows were remeasured.",
+    "The driver retains full-allocation validation, even-step buffer parity, snapshots outside timing, and 5 warmups/20 trials. It adds variant selection and sentinel initialization."
+  ]
+}

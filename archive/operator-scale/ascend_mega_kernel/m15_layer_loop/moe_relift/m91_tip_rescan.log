@@ -1,0 +1,89 @@
+# M91 tip 回扫：本目录每个「命令 -> 输出」对在 tip f6d9727 上重跑（纪律 ⑤）
+# 环境：source /usr/local/Ascend/ascend-toolkit/set_env.sh ; Ascend950PR
+# 本地判据各跑 LC_ALL=C 与 LC_ALL=C.UTF-8（读数逐行一致，见下 §5）
+
+## 0) tip 与并发背景
+$ git rev-parse HEAD
+f6d9727b73893df80138053714f61e33bdda1bd8
+rc=0
+
+$ git status --short
+?? m15_layer_loop/moe_relift/m91_tip_rescan.log
+rc=0
+
+$ npu-smi info | sed -n '11,13p'
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| 0                         | 202440        | m15_layer_loop           | 6867                    |
+rc=0
+
+## 1) 抽取规则 --check（两档 locale）
+$ LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+
+$ LC_ALL=C.UTF-8 python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+
+## 2) 构建可复现（源码未变 ⇒ 二进制 sha 与归档一致 2d42ba86…）
+$ cmake --build m15_layer_loop/build -j4 2>&1 | tail -2
+[ 50%] Built target m15_layer_loop
+[100%] Built target m15_ple
+rc=0
+
+$ sha256sum m15_layer_loop/build/m15_layer_loop
+2d42ba86e2f7d7918230d77f360295a5e12f4bbc2a6841602475e5b85945486c  m15_layer_loop/build/m15_layer_loop
+rc=0
+
+## 3) 验收两档（与改前逐项相同）
+$ ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt all 2>&1 | tail -1
+[m15] ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+rc=0
+
+$ ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt chain 2>&1 | tail -1
+[m15] ===== ALL PASS（checks=910, guards=52, fails=0）=====
+rc=0
+
+## 4) 三条静态判据 + 归档里的 grep 计数在 tip 上重跑
+$ for s in check_prep check_rescale check_stream; do LC_ALL=C python3 m15_layer_loop/moe_relift/$s.py | tail -1; done
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+[check] ===== 可 FAIL 的判据 30 条（FAIL 0 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====
+[check] ===== 可 FAIL 的判据 15 条（FAIL 0 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+$ grep -c 'NUM_EXPERTS \* M_MAX \* GU_N' /tmp/m91_nc/nc1_res.h
+1
+rc=0
+
+$ grep -c 'WS_Y + rowBase' m15_layer_loop/m15_moe_layer.h
+1
+rc=0
+
+$ grep -c 'WS_Y + rowBase' /tmp/m91_nc/nc2_hdr.h
+0
+rc=1
+
+$ grep -c 'Sort32(' m15_layer_loop/m15_moe_layer.h
+1
+rc=0
+
+$ grep -c 'MrgSort(' m15_layer_loop/m15_moe_layer.h
+0
+rc=1
+
+# 行距写死 64 lane 的站点数（本 mission 未动；= #4 的卡点之一）
+$ grep -c 'r \* 64 \* 4' m15_layer_loop/m15_moe_layer.h
+8
+rc=0
+
+## 5) 两档 locale 读数逐行一致
+$ diff /tmp/m91_check_prep_C.log /tmp/m91_check_prep_utf8.log
+rc=0
+
+$ diff /tmp/m91_check_rescale_C.log /tmp/m91_check_rescale_utf8.log
+rc=0
+
+$ diff /tmp/m91_check_stream_C.log /tmp/m91_check_stream_utf8.log
+rc=0
+

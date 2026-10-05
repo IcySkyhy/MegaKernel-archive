@@ -1,0 +1,34 @@
+# M105 · 两个基座之间到底差了什么（翻不翻面的自变量）
+
+$ git diff --stat c9f97e3 20bd20d
+```
+ m15_layer_loop/evidence/attn_cache/GEOMETRY.md     |  181 ++
+ m15_layer_loop/evidence/attn_cache/README.md       |  150 ++
+ .../evidence/attn_cache/m98_runs_all.log           | 2381 ++++++++++++++++++++
+ m15_layer_loop/evidence/attn_cache/m98_runs_kv.log |  352 +++
+ m15_layer_loop/evidence/attn_prolog/README.md      |    4 +-
+ .../evidence/attn_prolog/audit_bare_names.py       |    4 +-
+ m15_layer_loop/m15_attn_cache.h                    |  481 ++++
+ m15_layer_loop/m15_attn_cache_host.h               | 1163 ++++++++++
+ m15_layer_loop/m15_attn_kv.h                       |  129 +-
+ m15_layer_loop/m15_attn_kv_host.h                  |  120 +-
+ m15_layer_loop/m15_attn_kv_probe.h                 |   86 +-
+ m15_layer_loop/m15_attn_prolog_probe.h             |    2 +-
+ 12 files changed, 4965 insertions(+), 88 deletions(-)
+```
+$ git diff --stat c9f97e3 20bd20d -- m15_layer_loop/m15_layer_loop.asc m15_layer_loop/m15_moe_layer.h m13_moe_layer/m13_moe_layer.asc m15_layer_loop/lift_moe_segment.py m15_layer_loop/m15_moe_resources.h
+```
+(空 = 这 5 个文件在两基座间逐字节相同)
+```
+
+⇒ 两基座之间**只有 attention kv/cache 一族文件**不同（另有 evidence 文档），MoE 段自身一字未变。
+  所以「借 include 在 c9f97e3 翻面、在 20bd20d 不翻面」只能归因于**整棵 TU 的调度**。
+
+$ grep -n "KindOf" m15_layer_loop/m15_loop_layout.h
+```
+51:constexpr uint32_t KIND_GDN = 0;
+56:inline uint32_t KindOf(uint32_t layer)
+58:    return ((layer + 1) % ATTN_INTERVAL == 0) ? KIND_ATTN : KIND_GDN;
+65:    if (KindOf(layer) != KIND_GDN) {
+78:    if (KindOf(layer) != KIND_ATTN) {
+```

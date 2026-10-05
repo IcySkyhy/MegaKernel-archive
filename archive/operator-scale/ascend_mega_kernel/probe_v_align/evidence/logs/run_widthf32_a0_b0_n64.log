@@ -1,0 +1,7 @@
+VARIANT op=widthf32(id=32) a=0 b=0 n=64 model=3 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x7b3619974a3ba683
+HEAD32 40e00000 40e00000 40e00000 40e00000
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (structural only: model=3; window 256B non-empty, 256 non-sentinel bytes, 0 bytes written outside window)

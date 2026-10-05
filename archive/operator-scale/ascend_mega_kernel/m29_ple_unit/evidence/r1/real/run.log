@@ -1,0 +1,5 @@
+[m29] M161 PLE 单元 | aic=28 aiv=56 | out=/tmp/m29_repro_r1/real data=/workspace/ascend_mega_kernel/.tower/worktrees/wt-161/m29_ple_unit/data_real neg=0 mut=0
+[m29] multi-slot: n_slots=64 rows=256 win=81920 B | register rc=0 getDevPtr rc=0 win=0x7f020005f000 dev=0x40000000000
+[m29] step 0: 2 tok | dev_oob=0 dev_miss=0 -> s0_*.bin
+[m29] step 1: 2 tok | dev_oob=0 dev_miss=0 -> s1_*.bin
+[m29] ===== kernel-side OK =====

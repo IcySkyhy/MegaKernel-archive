@@ -1,0 +1,612 @@
+{
+  "tiny.safetensors": [
+    {
+      "name": "w_qkv_f32",
+      "dtype": "F32",
+      "shape": [
+        8,
+        16
+      ],
+      "bytes": 512,
+      "seed": 1
+    },
+    {
+      "name": "w_gate_bf16",
+      "dtype": "BF16",
+      "shape": [
+        4,
+        32
+      ],
+      "bytes": 256,
+      "seed": 2
+    },
+    {
+      "name": "w_up_f16",
+      "dtype": "F16",
+      "shape": [
+        16
+      ],
+      "bytes": 32,
+      "seed": 3
+    }
+  ],
+  "sharded/model-00001-of-00002.safetensors": [
+    {
+      "name": "tensor.alpha",
+      "dtype": "F32",
+      "shape": [
+        2,
+        4
+      ],
+      "bytes": 32,
+      "seed": 4
+    }
+  ],
+  "sharded/model-00002-of-00002.safetensors": [
+    {
+      "name": "tensor.beta",
+      "dtype": "BF16",
+      "shape": [
+        3,
+        5
+      ],
+      "bytes": 30,
+      "seed": 5
+    },
+    {
+      "name": "tensor.gamma",
+      "dtype": "F16",
+      "shape": [
+        7
+      ],
+      "bytes": 14,
+      "seed": 6
+    }
+  ],
+  "complete/tiny_model.safetensors": [
+    {
+      "name": "model.language_model.embed_tokens.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 10
+    },
+    {
+      "name": "model.language_model.layers.0.input_layernorm.weight",
+      "dtype": "BF16",
+      "shape": [
+        256
+      ],
+      "bytes": 512,
+      "seed": 11
+    },
+    {
+      "name": "model.language_model.layers.0.linear_attn.in_proj_qkv.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 12
+    },
+    {
+      "name": "model.language_model.layers.0.linear_attn.in_proj_z.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        256
+      ],
+      "bytes": 131072,
+      "seed": 13
+    },
+    {
+      "name": "model.language_model.layers.0.linear_attn.in_proj_b.weight",
+      "dtype": "BF16",
+      "shape": [
+        4,
+        256
+      ],
+      "bytes": 2048,
+      "seed": 14
+    },
+    {
+      "name": "model.language_model.layers.0.linear_attn.in_proj_a.weight",
+      "dtype": "BF16",
+      "shape": [
+        4,
+        256
+      ],
+      "bytes": 2048,
+      "seed": 15
+    },
+    {
+      "name": "model.language_model.layers.0.linear_attn.conv1d.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        1,
+        4
+      ],
+      "bytes": 4096,
+      "seed": 16
+    },
+    {
+      "name": "model.language_model.layers.0.linear_attn.A_log",
+      "dtype": "BF16",
+      "shape": [
+        4
+      ],
+      "bytes": 8,
+      "seed": 17
+    },
+    {
+      "name": "model.language_model.layers.0.linear_attn.dt_bias",
+      "dtype": "BF16",
+      "shape": [
+        4
+      ],
+      "bytes": 8,
+      "seed": 18
+    },
+    {
+      "name": "model.language_model.layers.0.linear_attn.norm.weight",
+      "dtype": "BF16",
+      "shape": [
+        64
+      ],
+      "bytes": 128,
+      "seed": 19
+    },
+    {
+      "name": "model.language_model.layers.0.linear_attn.out_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        256
+      ],
+      "bytes": 131072,
+      "seed": 20
+    },
+    {
+      "name": "model.language_model.layers.0.post_attention_layernorm.weight",
+      "dtype": "BF16",
+      "shape": [
+        256
+      ],
+      "bytes": 512,
+      "seed": 21
+    },
+    {
+      "name": "model.language_model.layers.0.mlp.gate_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 22
+    },
+    {
+      "name": "model.language_model.layers.0.mlp.up_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 23
+    },
+    {
+      "name": "model.language_model.layers.0.mlp.down_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        512
+      ],
+      "bytes": 262144,
+      "seed": 24
+    },
+    {
+      "name": "model.language_model.layers.1.input_layernorm.weight",
+      "dtype": "BF16",
+      "shape": [
+        256
+      ],
+      "bytes": 512,
+      "seed": 25
+    },
+    {
+      "name": "model.language_model.layers.1.linear_attn.in_proj_qkv.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 26
+    },
+    {
+      "name": "model.language_model.layers.1.linear_attn.in_proj_z.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        256
+      ],
+      "bytes": 131072,
+      "seed": 27
+    },
+    {
+      "name": "model.language_model.layers.1.linear_attn.in_proj_b.weight",
+      "dtype": "BF16",
+      "shape": [
+        4,
+        256
+      ],
+      "bytes": 2048,
+      "seed": 28
+    },
+    {
+      "name": "model.language_model.layers.1.linear_attn.in_proj_a.weight",
+      "dtype": "BF16",
+      "shape": [
+        4,
+        256
+      ],
+      "bytes": 2048,
+      "seed": 29
+    },
+    {
+      "name": "model.language_model.layers.1.linear_attn.conv1d.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        1,
+        4
+      ],
+      "bytes": 4096,
+      "seed": 30
+    },
+    {
+      "name": "model.language_model.layers.1.linear_attn.A_log",
+      "dtype": "BF16",
+      "shape": [
+        4
+      ],
+      "bytes": 8,
+      "seed": 31
+    },
+    {
+      "name": "model.language_model.layers.1.linear_attn.dt_bias",
+      "dtype": "BF16",
+      "shape": [
+        4
+      ],
+      "bytes": 8,
+      "seed": 32
+    },
+    {
+      "name": "model.language_model.layers.1.linear_attn.norm.weight",
+      "dtype": "BF16",
+      "shape": [
+        64
+      ],
+      "bytes": 128,
+      "seed": 33
+    },
+    {
+      "name": "model.language_model.layers.1.linear_attn.out_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        256
+      ],
+      "bytes": 131072,
+      "seed": 34
+    },
+    {
+      "name": "model.language_model.layers.1.post_attention_layernorm.weight",
+      "dtype": "BF16",
+      "shape": [
+        256
+      ],
+      "bytes": 512,
+      "seed": 35
+    },
+    {
+      "name": "model.language_model.layers.1.mlp.gate_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 36
+    },
+    {
+      "name": "model.language_model.layers.1.mlp.up_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 37
+    },
+    {
+      "name": "model.language_model.layers.1.mlp.down_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        512
+      ],
+      "bytes": 262144,
+      "seed": 38
+    },
+    {
+      "name": "model.language_model.layers.2.input_layernorm.weight",
+      "dtype": "BF16",
+      "shape": [
+        256
+      ],
+      "bytes": 512,
+      "seed": 39
+    },
+    {
+      "name": "model.language_model.layers.2.linear_attn.in_proj_qkv.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 40
+    },
+    {
+      "name": "model.language_model.layers.2.linear_attn.in_proj_z.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        256
+      ],
+      "bytes": 131072,
+      "seed": 41
+    },
+    {
+      "name": "model.language_model.layers.2.linear_attn.in_proj_b.weight",
+      "dtype": "BF16",
+      "shape": [
+        4,
+        256
+      ],
+      "bytes": 2048,
+      "seed": 42
+    },
+    {
+      "name": "model.language_model.layers.2.linear_attn.in_proj_a.weight",
+      "dtype": "BF16",
+      "shape": [
+        4,
+        256
+      ],
+      "bytes": 2048,
+      "seed": 43
+    },
+    {
+      "name": "model.language_model.layers.2.linear_attn.conv1d.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        1,
+        4
+      ],
+      "bytes": 4096,
+      "seed": 44
+    },
+    {
+      "name": "model.language_model.layers.2.linear_attn.A_log",
+      "dtype": "BF16",
+      "shape": [
+        4
+      ],
+      "bytes": 8,
+      "seed": 45
+    },
+    {
+      "name": "model.language_model.layers.2.linear_attn.dt_bias",
+      "dtype": "BF16",
+      "shape": [
+        4
+      ],
+      "bytes": 8,
+      "seed": 46
+    },
+    {
+      "name": "model.language_model.layers.2.linear_attn.norm.weight",
+      "dtype": "BF16",
+      "shape": [
+        64
+      ],
+      "bytes": 128,
+      "seed": 47
+    },
+    {
+      "name": "model.language_model.layers.2.linear_attn.out_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        256
+      ],
+      "bytes": 131072,
+      "seed": 48
+    },
+    {
+      "name": "model.language_model.layers.2.post_attention_layernorm.weight",
+      "dtype": "BF16",
+      "shape": [
+        256
+      ],
+      "bytes": 512,
+      "seed": 49
+    },
+    {
+      "name": "model.language_model.layers.2.mlp.gate_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 50
+    },
+    {
+      "name": "model.language_model.layers.2.mlp.up_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 51
+    },
+    {
+      "name": "model.language_model.layers.2.mlp.down_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        512
+      ],
+      "bytes": 262144,
+      "seed": 52
+    },
+    {
+      "name": "model.language_model.layers.3.input_layernorm.weight",
+      "dtype": "BF16",
+      "shape": [
+        256
+      ],
+      "bytes": 512,
+      "seed": 53
+    },
+    {
+      "name": "model.language_model.layers.3.self_attn.q_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 54
+    },
+    {
+      "name": "model.language_model.layers.3.self_attn.k_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        128,
+        256
+      ],
+      "bytes": 65536,
+      "seed": 55
+    },
+    {
+      "name": "model.language_model.layers.3.self_attn.v_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        128,
+        256
+      ],
+      "bytes": 65536,
+      "seed": 56
+    },
+    {
+      "name": "model.language_model.layers.3.self_attn.o_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        256
+      ],
+      "bytes": 131072,
+      "seed": 57
+    },
+    {
+      "name": "model.language_model.layers.3.self_attn.q_norm.weight",
+      "dtype": "BF16",
+      "shape": [
+        64
+      ],
+      "bytes": 128,
+      "seed": 58
+    },
+    {
+      "name": "model.language_model.layers.3.self_attn.k_norm.weight",
+      "dtype": "BF16",
+      "shape": [
+        64
+      ],
+      "bytes": 128,
+      "seed": 59
+    },
+    {
+      "name": "model.language_model.layers.3.post_attention_layernorm.weight",
+      "dtype": "BF16",
+      "shape": [
+        256
+      ],
+      "bytes": 512,
+      "seed": 60
+    },
+    {
+      "name": "model.language_model.layers.3.mlp.gate_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 61
+    },
+    {
+      "name": "model.language_model.layers.3.mlp.up_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 62
+    },
+    {
+      "name": "model.language_model.layers.3.mlp.down_proj.weight",
+      "dtype": "BF16",
+      "shape": [
+        256,
+        512
+      ],
+      "bytes": 262144,
+      "seed": 63
+    },
+    {
+      "name": "model.language_model.norm.weight",
+      "dtype": "BF16",
+      "shape": [
+        256
+      ],
+      "bytes": 512,
+      "seed": 64
+    },
+    {
+      "name": "lm_head.weight",
+      "dtype": "BF16",
+      "shape": [
+        512,
+        256
+      ],
+      "bytes": 262144,
+      "seed": 65
+    }
+  ],
+  "pattern": "byte j of tensor with seed s = (j*131 + s*17 + 7) % 256"
+}

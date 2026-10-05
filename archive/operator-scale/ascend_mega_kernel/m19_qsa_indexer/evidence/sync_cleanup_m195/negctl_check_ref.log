@@ -1,0 +1,10 @@
+[A_close_2048] proj   : 与参考 bf16 最大位差 1 （0 = 逐位一致）
+[A_close_2048 q] T3: 违反元素 0/512；maxRel(report) 1.473e-01；≤1ulp 比例(report) 50.00%
+[A_close_2048 ck] T3: 违反元素 0/128；maxRel(report) 1.230e-01；≤1ulp 比例(report) 85.16%
+[A_close_2048 scores] T3: 违反元素 0/2048；maxRel(report) 6.650e-01；≤1ulp 比例(report) 2.34%
+[A_close_2048] blocks : 选中 512 个（期望 512），出现次数异常的 block 0，count 列 2048（期望 2048）
+[A_close_2048] 离散(i): 与「kernel 自身分数」的暴力 top-512 逐块差集 0（漏 0 / 误 0）；logits NaN 0
+[A_close_2048] 离散(ii): 第 512 大 score = 14.8988，>K 的 block 511；参考带宽 ±4.834（Bmax 2.417）⇒ 必选 209 / 必不选 1033 / 不可判 806；必选漏 0，必不选误 0
+                报告项（不做判定，见判据 5 说明）：旧口径 miss 0 / extra 1
+[A_close_2048] tail   : [] 期望 []；padding OK
+[check_ref] ===== FAILURES PRESENT =====

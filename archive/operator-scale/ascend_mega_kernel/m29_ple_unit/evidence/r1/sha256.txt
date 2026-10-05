@@ -1,0 +1,24 @@
+9553d02567b739488432efe2c7c3f897bfba275c2e34c385aa81401bda5d2697  m29_ple_unit/m29_ple_unit.asc
+22cc1f18ff1dc5359665ab7c206b1df57020c5c753b7a4f8362213aa13b4f621  m29_ple_unit/m29_ple_support.h
+599e0f11c4845f95a31dd5b7cb44d1403abd91300ae35a70f559da1cb741bf58  m29_ple_unit/build/m29_ple_unit
+#
+# --- M188 指纹重钉说明【只改本指纹文本；未动任何设备代码/注释，未改任何已提交读数】---
+# 第 1 行 `m29_ple_unit/m29_ple_unit.asc` 已重钉到 M187（release 措辞清扫）之后的源文本：
+#   重钉前（== main dc045ae）: 303b185e66ae26c49082a531a569f5e05cac0f6c8ce85cffc9b085ef252aa863
+#   重钉后（本行现值，== M187 tip 95671e7）: 9553d02567b739488432efe2c7c3f897bfba275c2e34c385aa81401bda5d2697
+# M187（branch feat/m187-release-mode-module-readme-comment, tip 95671e7）只改注释、不进编译
+# ⇒ 二进制与读数不变。
+# 复算（两条等价，M187 合入 main 前/后各适用其一）：
+#   git show feat/m187-release-mode-module-readme-comment:m29_ple_unit/m29_ple_unit.asc | sha256sum
+#   sha256sum m29_ple_unit/m29_ple_unit.asc
+#
+# --- 第 2 行是**与 M187 无关**的既有陈旧（已报塔另派；本轮未改其行值）---
+# m29_ple_unit/m29_ple_support.h 记录 22cc1f18…  实际 2d6fcc7abc0a8e089350c470798a52297aafde6401991896505c30de6a5b36a7（M182 起）
+#
+# 第 3 行 `m29_ple_unit/build/m29_ple_unit` 是构建产物（非源码），不在本轮处置范围。
+#
+# ===== M190 漂移标注（2026-10-05）=====
+# 第 2 行 m29_ple_unit/m29_ple_support.h：记录 22cc1f18ff1dc5359665ab7c206b1df57020c5c753b7a4f8362213aa13b4f621
+#   == f7f9096（M161）时的 blob；其后 9c0179c（M182：独立模块 BufferID 释放模式 true->false）改动；
+#   当前实际 2d6fcc7abc0a8e089350c470798a52297aafde6401991896505c30de6a5b36a7。未改第 2 行记录值。
+# 复算：sha256sum m29_ple_unit/m29_ple_support.h

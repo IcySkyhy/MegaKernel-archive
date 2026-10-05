@@ -1,0 +1,18 @@
+{
+  "tensor": "y_shd.bin",
+  "shape": [
+    33,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 168960,
+  "sha256": "efc209066b7076ae90e702fd92c4dfa11d64e24a1bc93c66b39d477b1ddaa674",
+  "kind": "golden",
+  "description": "shared-expert GMM#2 output (bf16) [m, hidden]"
+}

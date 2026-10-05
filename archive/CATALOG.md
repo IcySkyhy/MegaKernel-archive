@@ -1,6 +1,8 @@
 # MegaKernel 归档总索引
 
-MegaKernel 实现图景快照：2026-08-26；agentic kernel design 扩展：2026-09-01。共 107 个本地 Git 工件，其中 85 个用于实现图景，22 个用于知识蒸馏、agent、评测与数据方法研究。
+MegaKernel 实现图景快照：2026-08-26；agentic kernel design 扩展：2026-09-01；第二轮增补：2026-10-05。现共 **129 个工件**：原107项保持在第1–11节，第二轮22项见第12节。共106项用于实现图景/相邻路线，23项用于知识蒸馏、agent、评测与数据方法研究。工件数不等于独立成熟开源方案数。
+
+最新结论见 [第二轮增量报告](MEGAKERNEL_ROUND2_2026-10-05.md)。以下第1–11节中的日期和分类数量保留第一轮语境，不代表全部上游已更新至10月。
 
 ## 标记规则
 
@@ -194,3 +196,34 @@ MegaKernel 实现图景快照：2026-08-26；agentic kernel design 扩展：2026
 | 多节点 proxy/RDMA fence 工作 | [arXiv 2605.00686](https://arxiv.org/abs/2605.00686) | FlashMoE 通信基础研究，未发现独立开源实现。 |
 
 工业公开思路但未开放核心源码的例子包括 [Kog.ai MI300X single-kernel engine](https://blog.kog.ai/building-a-single-kernel-latency-optimized-llm-inference-engine-on-amd-mi300x-gpus/)。NVIDIA cuDNN frontend 的 [MegaMoE issue/roadmap](https://github.com/NVIDIA/cudnn-frontend/issues/442) 也不应写成已发布实现。
+
+## 12. 第二轮增补（22；2026-10-05）
+
+重点窗口09-05至10-05，同时补收8月底和更早遗漏。下表不将 API 的 pushed_at 当作实质更新时间；下载方式与日期见 [本轮证据](research-rounds/2026-10-05/)。
+
+| 本地工件 | 上游 | 标记 | 核心判断与源码入口 |
+|---|---|---|---|
+| [TileMega](compiler-runtimes/TileMega) | [pengjh0111/TileMega](https://github.com/pengjh0111/TileMega) | S-SOURCE · 无根许可证 | 08-28建仓；ISL/barvinok+MLIR Coupling Graph，L1阶段/barrier、L2任务/event，`include/tilemega`、`lib`、`python/tilemega`。稀疏保留源码，排除大型实验原始结果 |
+| [megakernel-gen](compiler-runtimes/megakernel-gen) | [WilliamZhang20/megakernel-gen](https://github.com/WilliamZhang20/megakernel-gen) | A-OSS · Apache-2.0 | 09-03；HF checkpoint→Rust planner/codegen→cooperative CUDA forward/LM head/sampler；`mkc/src`、`runtime/include/mk`。单GPU/batch1/阶段grid barrier |
+| [amandeepsp-megakernels](compiler-runtimes/amandeepsp-megakernels) | [amandeepsp/megakernels](https://github.com/amandeepsp/megakernels) | C-PARTIAL · 无根许可证 | 09-12；FX/IR原型。`backend.py`仍返回`make_boxed_func(gm.forward)`，没有生成persistent kernel，不计核心实现 |
+| [cohere-megakernel](core-whole-model/cohere-megakernel) | [cohere-ai/cohere-megakernel](https://github.com/cohere-ai/cohere-megakernel) | A-OSS · Apache-2.0 | 09-04建仓/09-08文章；North Mini Code/H100/BF16，tile task+依赖计数器；`src/decode/megakernel.cuh`、`src/serving`。动态服务，prefill分离 |
+| [tpu-megakernels](core-whole-model/tpu-megakernels) | [Inferact/tpu-megakernels](https://github.com/Inferact/tpu-megakernels) | A-OSS · Apache-2.0 | 09-23；Kimi/Qwen Pallas decoder与DSpark/DFlash2。Kimi embedding/LM head在外；Qwen主路径含embedding/LM head/argmax。`kimi/`、`qwen/`、`collectives32.py` |
+| [training-megakernel](core-whole-model/training-megakernel) | [kiddyboots216/training-megakernel](https://github.com/kiddyboots216/training-megakernel) | A-OSS · MIT | 09-01建仓/09-26实质代码；8×H100，一个cooperative CUfunction跨训练steps常驻，forward/backward/梯度通信/clip/AdamW；`kernel/program`。对相同算子Graph基线收益约1% |
+| [latticemk](core-whole-model/latticemk) | [thebasedcapital/latticemk](https://github.com/thebasedcapital/latticemk) | A-OSS · MIT | 10-02；Turing sm75 Qwen3 INT4 decode与实验记录。区分最终persistent路径、早期GEMV和CUDA Graph路径；高度硬件/模型特化 |
+| [lean-cuda-qwen](core-whole-model/lean-cuda-qwen) | [ranvier-labs/lean-cuda-qwen](https://github.com/ranvier-labs/lean-cuda-qwen) | C-PARTIAL · 应用Apache-2.0/工具链部分开放 | 09-09；Lean CUDA应用级常驻推理/训练；`examples/qwen36_megakernel`、`qwen38_chat`、`qwen38_train`。所需compiler为nightly binary，完整backend源码需companion权限；DPO仍Graph |
+| [mlx-lm-unified](core-whole-model/mlx-lm-unified) | [pierre427/mlx-lm-unified](https://github.com/pierre427/mlx-lm-unified) | B-OSS · MIT | 09-10；实验性Metal单dispatch lane，`qwen4_megakernel_{body,runtime,schedule}.py`；embedding/PLE gather在外、层与LM head在内。默认关闭，不是上游MLX正式能力 |
+| [hoid-megakernel-qwen](core-whole-model/hoid-megakernel-qwen) | [hoid-ai/hoid-megakernel-qwen](https://github.com/hoid-ai/hoid-megakernel-qwen) | C-PARTIAL · Apache-2.0外壳/工件 | 10-03；Qwen3-4B/H200 vLLM插件；核心worker发布为cubin，`decoder.py`为validator/reset/worker/finalizer四launch，不能认作完整开源核心 |
+| [dist_moe](distributed-moe/dist_moe) | [meta-pytorch/dist_moe](https://github.com/meta-pytorch/dist_moe) | A-OSS · BSD-3-Clause；仅Mega子路径 | 09-18建仓/10-03实质代码；SM100+前反向MoE API，MXFP8/NVFP4 staged/Mega；核心合并FC1/激活/FC2/peer stores，外围仍有routing/publication/top-k sum。`dist_moe/kernels`、`_blockscaled_ops.py` |
+| [TensorRT-LLM-MegaMoE](distributed-moe/TensorRT-LLM-MegaMoE) | [NVIDIA/TensorRT-LLM](https://github.com/NVIDIA/TensorRT-LLM/tree/main/tensorrt_llm/_torch/cute_dsl_kernels/cutedsl_megamoe) | A-OSS · Apache-2.0 | 09-18官方MegaMoE更新；稀疏归档CuTeDSL MegaMoE子树，persistent FC12+pull dispatch/token-back/可选top-k reduce；router logits/top-k和metadata准备不全在核内。不是MegaFlux论文代码 |
+| [Ascend-DeepEP](distributed-moe/Ascend-DeepEP) | [Ascend/DeepEP](https://gitcode.com/Ascend/DeepEP) | A-OSS · BSD-2-Clause为主 | 09-30源码快照；`experiments/megamoe`，Ascend950/CANN9.2，单`__mix__(1,2)`核融合MoE dispatch/GMM1/activation/GMM2/combine与shared expert；实验性，与DeepSeek上游分开记 |
+| [transformer-megakernels](operator-scale/transformer-megakernels) | [Parth-Badgujar/transformer-megakernels](https://github.com/Parth-Badgujar/transformer-megakernels) | B-OSS · MIT | 06-03建仓、09-06仅元数据推送日期，未检出窗口内主线实质提交；CuTe DSL多层Transformer stack/SM120，`src/transformer_megakernel/{megakernel,scheduler}.py`；更早遗漏，非整套生成服务 |
+| [blackwell-fp4-ffn](operator-scale/blackwell-fp4-ffn) | [theProgrammingBox/blackwell-fp4-ffn](https://github.com/theProgrammingBox/blackwell-fp4-ffn) | B-OSS · MIT/CUTLASS BSD-3 | 09-01；SM120双GEMM persistent fusion，`fp4_fused_chain.cu`等；deployable多层路径仍有requant launch。根LICENSE优于API自动NOASSERTION字段 |
+| [persist-decode](operator-scale/persist-decode) | [anishesg/persist-decode](https://github.com/anishesg/persist-decode) | S-SOURCE · 无根许可证 | 09-01；单CTA共享内存层融合与`persistent_multi_layer.cu`跨层循环，输出hidden state。无LM head/sampling/token loop；不背书README性能解释 |
+| [ascend_mega_kernel](operator-scale/ascend_mega_kernel) | [liruixin_dvc/ascend_mega_kernel](https://gitcode.com/liruixin_dvc/ascend_mega_kernel) | S-SOURCE · 无根许可证 | 09-26及之后开发；m13 MoE/m14 GDN单混合核；m15为48层host loop、逐层launch并同步，attention/QSA/PLE未完成，非整模常驻 |
+| [mpk-apple](alternatives/mpk-apple) | [jiazhihao/mpk-apple](https://github.com/jiazhihao/mpk-apple) | B-OSS · Apache-2.0 | 09-20；lithos-metal，预编码/自推进有限dispatch链、设备生成控制；MPK思想的Metal替代路线，不称一个永驻kernel |
+| [megakernels-vs-cuda-graphs](alternatives/megakernels-vs-cuda-graphs) | [msaroufim/megakernels-vs-cuda-graphs](https://github.com/msaroufim/megakernels-vs-cuda-graphs) | D-BOUNDARY/S-SOURCE · 分子树许可 | 09-15；Llama和DSpark的大核/Graph+PDL可复查对比，含Hazy/DeepSpec派生代码。比对存在数值差异，不能泛化性能结论 |
+| [husky-megakernel](long-tail-experimental/husky-megakernel) | [Beomi/husky-megakernel](https://github.com/Beomi/husky-megakernel) | S-SOURCE · 无根许可证 | 09-23；Swift/Metal Woof4B，`Sources/husky/megakernel.metal`。上游明确单threadgroup实验路径较慢，多group同步未完成；负结果样本 |
+| [xys-syx-megakernel](long-tail-experimental/xys-syx-megakernel) | [xys-syx/megakernel](https://github.com/xys-syx/megakernel) | D-BOUNDARY/S-SOURCE | 09-24；LBM temporal fusion/cluster/transform实验。主结果两步融合仍多次launch，非whole-simulation persistent runtime |
+| [vibe-megakernel](agentic-kernel-design/vibe-megakernel) | [kamahori/vibe-megakernel](https://github.com/kamahori/vibe-megakernel) | agent方法参考 · 无根许可证 | 09-28；`megabench`和第三方`reproductions/ForgeMegakernel`；非作者官方artifact，不进入核心库数量 |
+
+新增论文观察：ForgeMegakernel（09-11）、Weave（09-18）、MegaFlux（09-30）尚未找到正式作者实现；详见增量报告。MonoMoE源码已在原FlashInfer快照中，mKernel与Mixture-of-Kittens本月论文也不增加仓库数。

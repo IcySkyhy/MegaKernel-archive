@@ -1,0 +1,21 @@
+[ALIGN] layer0_chunk_m64 | T=64 H=48 max|core|=0.1152 | 官方 core_out NaN = 0（shape (64, 48, 128)）
+[ALIGN] layer0_chunk_m64 旧式       float64 | NaN=57344 | |chunk−seq|=6.939e-17 | |chunk−官方core|=2.881e-04 (=0.64 bf16ulp @max, 逐元素 max ulp=2.74) | |seq−core|=2.881e-04
+[ALIGN] layer0_chunk_m64 旧式       float32 | NaN=131072 | |chunk−seq|=3.725e-08 | |chunk−官方core|=2.881e-04 (=0.64 bf16ulp @max, 逐元素 max ulp=2.74) | |seq−core|=2.881e-04
+[ALIGN] layer0_chunk_m64 指数差      float64 | NaN=0 | |chunk−seq|=6.939e-17 | |chunk−官方core|=2.881e-04 (=0.64 bf16ulp @max, 逐元素 max ulp=2.93) | |seq−core|=2.881e-04
+[ALIGN] layer0_chunk_m64 指数差      float32 | NaN=0 | |chunk−seq|=2.980e-08 | |chunk−官方core|=2.881e-04 (=0.64 bf16ulp @max, 逐元素 max ulp=2.93) | |seq−core|=2.881e-04
+[ALIGN] m165_layer0_m64 | T=64 H=48 max|core|=0.4902 | 官方 core_out NaN = 0（shape (64, 48, 128)）
+[ALIGN] m165_layer0_m64 旧式       float64 | NaN=73728 | |chunk−seq|=2.776e-16 | |chunk−官方core|=1.252e-03 (=0.65 bf16ulp @max, 逐元素 max ulp=1.69) | |seq−core|=1.252e-03
+[ALIGN] m165_layer0_m64 旧式       float32 | NaN=163840 | |chunk−seq|=2.384e-07 | |chunk−官方core|=1.253e-03 (=0.65 bf16ulp @max, 逐元素 max ulp=1.62) | |seq−core|=1.252e-03
+[ALIGN] m165_layer0_m64 指数差      float64 | NaN=0 | |chunk−seq|=2.776e-16 | |chunk−官方core|=1.252e-03 (=0.65 bf16ulp @max, 逐元素 max ulp=1.69) | |seq−core|=1.252e-03
+[ALIGN] m165_layer0_m64 指数差      float32 | NaN=0 | |chunk−seq|=2.384e-07 | |chunk−官方core|=1.253e-03 (=0.65 bf16ulp @max, 逐元素 max ulp=1.69) | |seq−core|=1.252e-03
+[ALIGN] m165_layer0_m1 | T=1 H=48 max|core|=0.09912 | 官方 core_out NaN = 0（shape (1, 48, 128)）
+[ALIGN] m165_layer0_m1 旧式       float64 | NaN=0 | |chunk−seq|=6.939e-18 | |chunk−官方core|=2.705e-04 (=0.70 bf16ulp @max, 逐元素 max ulp=1.36) | |seq−core|=2.705e-04
+[ALIGN] m165_layer0_m1 旧式       float32 | NaN=0 | |chunk−seq|=4.470e-08 | |chunk−官方core|=2.706e-04 (=0.70 bf16ulp @max, 逐元素 max ulp=1.36) | |seq−core|=2.705e-04
+[ALIGN] m165_layer0_m1 指数差      float64 | NaN=0 | |chunk−seq|=6.939e-18 | |chunk−官方core|=2.705e-04 (=0.70 bf16ulp @max, 逐元素 max ulp=1.36) | |seq−core|=2.705e-04
+[ALIGN] m165_layer0_m1 指数差      float32 | NaN=0 | |chunk−seq|=3.725e-08 | |chunk−官方core|=2.706e-04 (=0.70 bf16ulp @max, 逐元素 max ulp=1.36) | |seq−core|=2.705e-04
+[ALIGN] m165_layer0_m4097 | T=4097 H=48 max|core|=1.953 | 官方 core_out NaN = 0（shape (4097, 48, 128)）
+[ALIGN] m165_layer0_m4097 旧式       float64 | NaN=5235968 | |chunk−seq|=1.665e-14 | |chunk−官方core|=8.981e-03 (=1.18 bf16ulp @max, 逐元素 max ulp=2.02) | |seq−core|=8.981e-03
+[ALIGN] m165_layer0_m4097 旧式       float32 | NaN=11111168 | |chunk−seq|=4.604e-06 | |chunk−官方core|=8.981e-03 (=1.18 bf16ulp @max, 逐元素 max ulp=2.02) | |seq−core|=8.980e-03
+[ALIGN] m165_layer0_m4097 指数差      float64 | NaN=0 | |chunk−seq|=1.621e-14 | |chunk−官方core|=8.981e-03 (=1.18 bf16ulp @max, 逐元素 max ulp=2.36) | |seq−core|=8.981e-03
+[ALIGN] m165_layer0_m4097 指数差      float32 | NaN=0 | |chunk−seq|=4.590e-06 | |chunk−官方core|=8.981e-03 (=1.18 bf16ulp @max, 逐元素 max ulp=2.36) | |seq−core|=8.980e-03
+[ALIGN] rc=0（0=官方与指数差参考均有限、chunk==官方递推、且差在 bf16 舍入量级；1=有判据不符；2=无输入可比）

@@ -1,0 +1,77 @@
+# 官方文档取证（探针 A 的定性依据）
+
+生成时间: 2026-09-26T12:11:53+00:00
+
+## 1. StoreDist —— 连续对齐搬出（StoreAlign）
+来源 A（本机归档，CANN 9.1.0 随包知识库）：
+  /workspace/cannbot-knowledge/knowledge/ops/ascendc/apis/simd_api/basic_api/reg_vector_compute/reg_data_store/store_align_continuous.md
+  sha256: 0ae53eba211db59a8d60c913ccb2b4474105dde8030076e78a209a473c60cf51
+来源 B（昇腾社区在线文档，同一表）：https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/920beta1/API/ascendcopapi/docs/zh/api/SIMD-API/%E5%9F%BA%E7%A1%80API/Reg%E7%9F%A2%E9%87%8F%E8%AE%A1%E7%AE%97/Reg%E6%95%B0%E6%8D%AE%E6%90%AC%E5%87%BA/StoreAlign_continuous.md
+
+表3 StoreDist参数说明（单搬出模式）原文摘录（下表即上列 sha256 所固定的那个版本的原文，
+按**章节/表号**定位，不按行号 —— 行号会漂，sha256 不会）：
+  | | StoreDist | 含义 | 对齐约束（Byte） |
+  | |-----|-----|-----|
+  | | DIST_NORM_B8 | 正常模式，搬运数据量为VL，数据类型为b8。 | 32 |
+  | | DIST_NORM_B16 | 正常模式，搬运数据量为VL，数据类型为b16。 | 32 |
+  | | DIST_NORM_B32 | 正常模式，搬运数据量为VL，数据类型为b32。 | 32 |
+  | | DIST_FIRST_ELEMENT_B8 | 忽略mask，向dst中搬运src第一个元素，数据类型为b8。 | 1 |
+  | | DIST_FIRST_ELEMENT_B16 | 忽略mask，向dst中搬运src第一个元素，数据类型为b16。可参考[图1 数据搬出分布模式图示](#fig-storealign-dist)。 | 2 |
+  | | DIST_FIRST_ELEMENT_B32 | 忽略mask，向dst中搬运src第一个元素，数据类型为b32。 | 4 |
+  | | DIST_PACK_B16 | 压缩模式，数据类型为b16，根据mask，将src中有效元素的低半部分bit数据写入dst中对应的压缩后的位置。<br>例：数据类型为uint16_t：<br>src: [0x3210, 0x7654, 0xBA98, 0xFEDC, ..., 0xFEDC, 0xBA98, 0x7654, 0x3210]。<br>dst: [0x5410, 0xDC98, ... 0x98DC, 0x1054]。 | min(32, VL/2) |
+  | | DIST_PACK_B32 | 压缩模式，数据类型为b32，根据mask，将src中有效元素的低半部分bit数据写入dst中对应的压缩后的位置。可参考[图1 数据搬出分布模式图示](#fig-storealign-dist)。 | min(32, VL/2) |
+  | | DIST_PACK_B64 | 压缩模式，数据类型为b64，根据mask，将src中有效元素的低半部分bit数据写入dst中对应的压缩后的位置。 | min(32, VL/2) |
+  | | DIST_PACK4_B32 | 压缩模式，数据类型为b32，根据mask，将src中有效元素的低8bit（四分之一）数据写入dst中对应的压缩后的位置。 | min(32, VL/4) |
+  | | DIST_NORM | 正常模式，搬运VL数据，支持数据类型b8/b16/b32，系统会根据模板参数T自动选择DIST_NORM_B8、DIST_NORM_B16、DIST_NORM_B32。可参考[图1 数据搬出分布模式图示](#fig-storealign-dist)。 | 32 |
+  | 
+  | **表 4**  模板参数说明（双搬出模式）
+
+## 2. LoadDist —— 连续对齐搬入（LoadAlign）
+来源 A（本机归档）：
+  /workspace/cannbot-knowledge/knowledge/ops/ascendc/apis/simd_api/basic_api/reg_vector_compute/reg_data_load/load_align_continuous.md
+  sha256: a1e4962d18c845c7d51776d33e46f70efd1a7bb828d6303fd04f77cf3004819f
+
+表3 LoadDist参数说明（单搬入模式）原文摘录（同来源 A 的 sha256 固定版本，
+按章节/表号定位）：
+  | | DIST_NORM | 正常模式，搬运VL数据。可参考[图1 连续对齐搬入分布模式图示](#fig-loadalign-dist)。 | 32 |
+  | | DIST_BRC_B8 | 搬运一个b8类型的数据，并Broadcast到所有元素位置。 | 1 |
+  | | DIST_BRC_B16 | 搬运一个b16类型的数据，并Broadcast到所有元素位置。可参考[图1 连续对齐搬入分布模式图示](#fig-loadalign-dist)。 | 2 |
+  | | DIST_BRC_B32 | 搬运一个b32类型的数据，并Broadcast到所有元素位置。 | 4 |
+  | | DIST_US_B8 | 数据2倍上采样，加载数据量为VL/2，每个输入元素重复两次，数据类型为b8。 | min(32, VL/2) |
+  | | DIST_US_B16 | 数据2倍上采样，加载数据量为VL/2，每个输入元素重复两次，数据类型为b16。 | min(32, VL/2) |
+  | | DIST_DS_B8 | 数据2倍下采样，加载数据量为2*VL，数据每隔一个保留，数据类型为b8。 | 32 |
+  | | DIST_DS_B16 | 数据2倍下采样，加载数据量为2*VL，数据每隔一个保留，数据类型为b16。 | 32 |
+  | | DIST_UNPACK_B8 | 解压缩模式，按无符号整型u8加载VL/2数据量，每个元素后会补1个值为0元素，即unpack到VL。<br>例如VL=256B：<br>src: [0x00, 0x01, 0x02, 0x03, ..., 0xFF, ...]。<br>dst: [0x00, 0x00, 0x01, 0x00, 0x02, 0x00, ..., 0x7F, 0x00]。 | min(32, VL/2) |
+  | | DIST_UNPACK_B16 | 解压缩模式，按无符号整型u16加载VL/2数据量，每个元素后会补1个值为0元素，即unpack到VL。可参考[图1 连续对齐搬入分布模式图示](#fig-loadalign-dist)。<br>例如VL=256B：<br>src: [0x0000, 0x0001, 0x0002, 0x0003, ..., 0x007F, ...]。<br>dst: [0x0000, 0x0000, 0x0001, 0x0000, 0x0002, 0x0000, ..., 0x003F, 0x0000]。 | min(32, VL/2) |
+  | | DIST_BLK | 读取一个DataBlock（32B），并广播到VL。 | 32 |
+  | | DIST_E2B_B16 | 加载(VL/DataBlock)个B16的数据，并将每个元素（16bit）广播到一个DataBlock（32B）中。 | VL/16 |
+  | | DIST_E2B_B32 | 加载(VL/DataBlock)个B32的数据，并将每个元素（32bit）广播到一个DataBlock（32B）中。 | VL/8 |
+
+## 3. 头文件里只有枚举、没有任何语义注释（所以必须查文档）
+  头文件 basic_api/reg_compute/kernel_reg_compute_utils.h 里的
+  `enum class LoadDist` / `enum class StoreDist`（**按符号定位，不按行号**）；
+  完整路径 /usr/local/Ascend/cann-9.1.0/x86_64-linux/asc/include/ 下同名文件（CANN 9.1.0 随包）
+  | enum class LoadDist {
+  |     DIST_NORM,
+  |     DIST_BRC_B8,
+  |     DIST_BRC_B16,
+  |     DIST_BRC_B32,
+  |     DIST_US_B8 = 6,
+  |     DIST_US_B16,
+  |     DIST_DS_B8,
+  |     DIST_DS_B16,
+  |     DIST_BDINTLV,
+  |     DIST_DINTLV_B8,
+  |     DIST_DINTLV_B16,
+  |     DIST_UNPACK_B8,
+  |     DIST_UNPACK_B16,
+  |     DIST_BLK,
+  |     DIST_E2B_B16,
+  |     DIST_E2B_B32,
+  |     DIST_UNPACK_B32,
+  |     DIST_DINTLV_B32,
+  |     DIST_UNPACK4_B8,
+  |     DIST_SPLT4CHN_B8,
+  |     DIST_SPLT2CHN_B8,
+  |     DIST_SPLT2CHN_B16,
+  | };

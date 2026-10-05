@@ -1,0 +1,10 @@
+[m9mt_m65_b56_mut1_] m=65 blk=56 mut=1 qs=0 state=FAIL qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[m9mt_m65_b56_mut1_] q   : FAIL maxRelDiff=8.232e+04 maxAbsDiff=4.816e-01
+    worst at (np.int64(9), np.int64(19), np.int64(127)): got 2.35006616e-01 expect 1.85482338e-06
+[m9mt_m65_b56_mut1_] k   : FAIL maxRelDiff=1.969e+04 maxAbsDiff=4.444e-01
+    worst at (np.int64(5), np.int64(32), np.int64(80)): got 7.08655566e-02 expect 2.59923468e-06
+[m9mt_m65_b56_mut1_] v   : FAIL maxRelDiff=1.691e+05 maxAbsDiff=1.335e+00
+    worst at (np.int64(20), np.int64(9), np.int64(95)): got 2.49749735e-01 expect -4.76836931e-07
+[m9mt_m65_b56_mut1_] g   : PASS maxRelDiff=1.650e-05 maxAbsDiff=7.629e-06
+[m9mt_m65_b56_mut1_] beta: PASS maxRelDiff=1.667e-07 maxAbsDiff=1.192e-07
+[M9MT] 反向对照（mut1）：如预期变红 ✓（1 档）

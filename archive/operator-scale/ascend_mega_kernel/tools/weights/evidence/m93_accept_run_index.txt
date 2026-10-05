@@ -1,0 +1,32 @@
+# M93 · runs=all / runs=chain 的四个组合日志索引（r4：基线 = **不可变 fork 点** `40dd6de`，不钉 main）
+#
+# 两个二进制逐字节相同：sha256 958c6f2a6d699537ad7fd6509bf77cd6dc4abe2fd6266e7e22f8e10e4c1fe117
+#   （改前 = main `40dd6de` 的构建；改后 = 本分支的构建。)
+#   hash 的历史：0bd80c6 → c6ee3ca0…；004cab4（M91 并入）→ 2d42ba86…；40dd6de（M95 并入）→ 958c6f2a…。
+#   注（r6）：`main` 之后前移到 `52f46b8`（M94 并入），但 M94 只改 `probe_mask_lanes/**`，
+#   **没有碰 `m15_layer_loop/` 的任何 `.asc`/`.h`** ⇒ 本文件的读数与二进制 hash **仍然成立**
+#   （`git diff --name-only 40dd6de 52f46b8 -- m15_layer_loop/ | grep -E '\.(asc|h)$'` 为空）。
+#   **三次变化都来自别的 mission 改 m15_moe_layer.h / m15_moe_resources.h，不是本 mission**
+#   （本 mission 至今未碰任何 .asc/.h ⇒ 改前/改后永远逐字节相同）。
+# 两份 manifest：
+#   base = /tmp/m93_base/m15_layer_loop/weights_manifest.txt  sha256 258e748f72daff95fd31ab29f1e83e71632cf352d2c40a0e8f7e9365470851c1  （= main 自带那份）
+#   tip  = m15_layer_loop/weights_manifest.txt               sha256 6c0e8e6f15c9b3f5ef8875854044a43deff7c3b33791eb554bea361eb7102cdf  （= base + 247 行 moe512_*）
+#
+# 命令：M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 <bin> <manifest> {all,chain}
+#
+# ⚠ 日志**不是**逐字节可复现的：里面含设备侧耗时行（「中位 X ms」「每次启动 Y us」等，
+#   每次 run 有 18~24 行差异）。**判据是那一行 `ALL PASS（checks=…, guards=…, fails=…）`**，
+#   它是确定性计数、跨 run 稳定。
+#
+# 日志                                       读数                             组合
+# m93_accept_run_all_basebin_base.log          checks=2068, guards=290, fails=0   二进制=改前 manifest=改前 mode=all
+# m93_accept_run_all_basebin_tip.log           checks=2068, guards=290, fails=0   二进制=改前 manifest=改后 mode=all
+# m93_accept_run_all_tipbin_base.log           checks=2068, guards=290, fails=0   二进制=改后 manifest=改前 mode=all
+# m93_accept_run_all_tipbin_tip.log            checks=2068, guards=290, fails=0   二进制=改后 manifest=改后 mode=all
+# m93_accept_run_chain_basebin_base.log        checks=910, guards=52, fails=0     二进制=改前 manifest=改前 mode=chain
+# m93_accept_run_chain_basebin_tip.log         checks=910, guards=52, fails=0     二进制=改前 manifest=改后 mode=chain
+# m93_accept_run_chain_tipbin_base.log         checks=910, guards=52, fails=0     二进制=改后 manifest=改前 mode=chain
+# m93_accept_run_chain_tipbin_tip.log          checks=910, guards=52, fails=0     二进制=改后 manifest=改后 mode=chain
+#
+# 另：check_ref 709/709；check_hc_ref 79/79；check_chain_ref 92；check_moe_ref 128+20（M96 修后转绿）。
+#   dump 逐字节：两侧各 1307 文件、清单摘要同为 dff40e9b…（见 m93_dump_sha256_identity.txt）。

@@ -1,0 +1,4 @@
+# /usr/local/python3.12.13/bin/python3 m23_gdn_prefill/check_ref.py --dir <evidence>/dumps_m4097 --mutant 1
+[REF] Pf.gdn_mut1    H=48 T=4097 nAic=28 rtol=2.0e-03 | o 超界 130298/25171968 max|Δ|=1.981e-02 max|ref|=6.741e-02 | ht 超界 0/786432 max|Δ|=2.080e-07 max|ref|=6.313e-01 | FAIL
+[REF] 反向对照（mut1）：如预期变红 ✓
+exit=0

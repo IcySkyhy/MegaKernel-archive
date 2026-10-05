@@ -1,0 +1,2567 @@
+{
+  "repository": "ranvier-labs/lean-cuda-qwen",
+  "url": "https://github.com/ranvier-labs/lean-cuda-qwen",
+  "created_at": "2026-09-09T00:55:09Z",
+  "pushed_at": "2026-09-09T00:59:50Z",
+  "branch": "main",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "size": 2698
+    },
+    {
+      "path": ".gitignore",
+      "size": 31
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 1563
+    },
+    {
+      "path": "LICENSE",
+      "size": 9131
+    },
+    {
+      "path": "README.md",
+      "size": 4353
+    },
+    {
+      "path": "SECURITY.md",
+      "size": 1190
+    },
+    {
+      "path": "THIRD_PARTY.md",
+      "size": 1466
+    },
+    {
+      "path": "docs/QWEN36_MEGAKERNEL.md",
+      "size": 20821
+    },
+    {
+      "path": "docs/baselines/qwen38_megakernel_pre_optimization.lean",
+      "size": 102972
+    },
+    {
+      "path": "examples/qwen36_megakernel/.gitignore",
+      "size": 878
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36Architecture.lean",
+      "size": 9361
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36AttentionMegakernel.lean",
+      "size": 27269
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36Checkpoint.lean",
+      "size": 13440
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36LinearLayerMegakernel.lean",
+      "size": 31887
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36MLPMegakernel.lean",
+      "size": 21569
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36Megakernel.lean",
+      "size": 22861
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36ModelMegakernel.lean",
+      "size": 43613
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36ProjectionMegakernel.lean",
+      "size": 10512
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36TokenMegakernel.lean",
+      "size": 22390
+    },
+    {
+      "path": "examples/qwen36_megakernel/Qwen36TrainingMegakernel.lean",
+      "size": 42019
+    },
+    {
+      "path": "examples/qwen36_megakernel/README.md",
+      "size": 6542
+    },
+    {
+      "path": "examples/qwen36_megakernel/run-attention.sh",
+      "size": 2733
+    },
+    {
+      "path": "examples/qwen36_megakernel/run-linear-layer.sh",
+      "size": 2851
+    },
+    {
+      "path": "examples/qwen36_megakernel/run-mlp.sh",
+      "size": 2795
+    },
+    {
+      "path": "examples/qwen36_megakernel/run-model.sh",
+      "size": 3327
+    },
+    {
+      "path": "examples/qwen36_megakernel/run-projection.sh",
+      "size": 2712
+    },
+    {
+      "path": "examples/qwen36_megakernel/run-token.sh",
+      "size": 2710
+    },
+    {
+      "path": "examples/qwen36_megakernel/run-training.sh",
+      "size": 2701
+    },
+    {
+      "path": "examples/qwen36_megakernel/run.sh",
+      "size": 2344
+    },
+    {
+      "path": "examples/qwen38_chat/.gitignore",
+      "size": 21
+    },
+    {
+      "path": "examples/qwen38_chat/README.md",
+      "size": 4428
+    },
+    {
+      "path": "examples/qwen38_chat/Worker.lean",
+      "size": 10650
+    },
+    {
+      "path": "examples/qwen38_chat/benchmark_workers.py",
+      "size": 12584
+    },
+    {
+      "path": "examples/qwen38_chat/build_worker.sh",
+      "size": 5647
+    },
+    {
+      "path": "examples/qwen38_chat/cli.py",
+      "size": 6633
+    },
+    {
+      "path": "examples/qwen38_chat/index.html",
+      "size": 15443
+    },
+    {
+      "path": "examples/qwen38_chat/run.sh",
+      "size": 1139
+    },
+    {
+      "path": "examples/qwen38_chat/server.py",
+      "size": 22602
+    },
+    {
+      "path": "examples/qwen38_chat/test_benchmark_workers.py",
+      "size": 2555
+    },
+    {
+      "path": "examples/qwen38_chat/test_cli.py",
+      "size": 2216
+    },
+    {
+      "path": "examples/qwen38_chat/test_server.py",
+      "size": 8193
+    },
+    {
+      "path": "examples/qwen38_train/.gitignore",
+      "size": 8
+    },
+    {
+      "path": "examples/qwen38_train/GRPODataset.lean",
+      "size": 8694
+    },
+    {
+      "path": "examples/qwen38_train/PreferenceDataset.lean",
+      "size": 5929
+    },
+    {
+      "path": "examples/qwen38_train/README.md",
+      "size": 11108
+    },
+    {
+      "path": "examples/qwen38_train/TrainWorker.lean",
+      "size": 31527
+    },
+    {
+      "path": "examples/qwen38_train/build_worker.sh",
+      "size": 10216
+    },
+    {
+      "path": "examples/qwen38_train/grpo_example.jsonl",
+      "size": 107
+    },
+    {
+      "path": "examples/qwen38_train/preference_example.jsonl",
+      "size": 384
+    },
+    {
+      "path": "examples/qwen38_train/prepare_dataset.py",
+      "size": 2995
+    },
+    {
+      "path": "examples/qwen38_train/prepare_grpo_dataset.py",
+      "size": 11193
+    },
+    {
+      "path": "examples/qwen38_train/prepare_preference_dataset.py",
+      "size": 8321
+    },
+    {
+      "path": "examples/qwen38_train/run.sh",
+      "size": 1094
+    },
+    {
+      "path": "examples/qwen38_train/test_prepare_grpo_dataset.py",
+      "size": 5525
+    },
+    {
+      "path": "examples/qwen38_train/test_prepare_preference_dataset.py",
+      "size": 2496
+    },
+    {
+      "path": "lake-manifest.json",
+      "size": 488
+    },
+    {
+      "path": "lakefile.toml",
+      "size": 412
+    },
+    {
+      "path": "lean-toolchain",
+      "size": 36
+    },
+    {
+      "path": "lib/LeanCudaQwen.lean",
+      "size": 316
+    },
+    {
+      "path": "lib/LeanCudaQwen/Foundation.lean",
+      "size": 1396
+    },
+    {
+      "path": "lib/LeanCudaQwen/Optimizer.lean",
+      "size": 8682
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36.lean",
+      "size": 1744
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/Attention.lean",
+      "size": 52323
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/CheckpointLoRA.lean",
+      "size": 91564
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/Config.lean",
+      "size": 9860
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/ConfigProvider.lean",
+      "size": 10926
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/DeltaNet.lean",
+      "size": 77383
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/FullGRPOMegakernel.lean",
+      "size": 4049
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/FullPretrainMegakernel.lean",
+      "size": 3429
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/FullTrainingMegakernelCore.lean",
+      "size": 83563
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/GRPOMegakernel.lean",
+      "size": 4395
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/Linear.lean",
+      "size": 21097
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/LoRA.lean",
+      "size": 35500
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/MLP.lean",
+      "size": 4652
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/Megakernel.lean",
+      "size": 180660
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/Model.lean",
+      "size": 55412
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/PretrainMegakernel.lean",
+      "size": 3546
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/Primitives.lean",
+      "size": 88353
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/Projection.lean",
+      "size": 14210
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/SafeTensors.lean",
+      "size": 32958
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/Training.lean",
+      "size": 49017
+    },
+    {
+      "path": "lib/LeanCudaQwen/Qwen36/TrainingMegakernelCore.lean",
+      "size": 15693
+    },
+    {
+      "path": "scripts/EmitNightlyModule.lean",
+      "size": 1394
+    },
+    {
+      "path": "scripts/backend-env.sh",
+      "size": 3653
+    },
+    {
+      "path": "scripts/build-nightly-worker.sh",
+      "size": 2903
+    },
+    {
+      "path": "scripts/build.sh",
+      "size": 441
+    },
+    {
+      "path": "scripts/install-nightly.sh",
+      "size": 1399
+    },
+    {
+      "path": "scripts/nightly-runtime.cu",
+      "size": 177
+    },
+    {
+      "path": "scripts/qwen-cuda-profile.sh",
+      "size": 1273
+    },
+    {
+      "path": "scripts/setup-backend.sh",
+      "size": 1586
+    },
+    {
+      "path": "scripts/setup-dependencies.sh",
+      "size": 416
+    },
+    {
+      "path": "tests/leantest/.gitignore",
+      "size": 8
+    },
+    {
+      "path": "tests/leantest/Qwen36ArchitectureTests.lean",
+      "size": 2586
+    },
+    {
+      "path": "tests/leantest/Qwen36CheckpointTests.lean",
+      "size": 3094
+    },
+    {
+      "path": "tests/leantest/Qwen36Gpu.lean",
+      "size": 2735
+    },
+    {
+      "path": "tests/leantest/Qwen36PayloadTests.lean",
+      "size": 2046
+    },
+    {
+      "path": "tests/leantest/README.md",
+      "size": 897
+    },
+    {
+      "path": "tests/leantest/TestDriver.lean",
+      "size": 1668
+    },
+    {
+      "path": "tests/leantest/lake-manifest.json",
+      "size": 461
+    },
+    {
+      "path": "tests/leantest/lakefile.lean",
+      "size": 510
+    },
+    {
+      "path": "tests/leantest/run.sh",
+      "size": 600
+    },
+    {
+      "path": "tests/workload_regressions/README.md",
+      "size": 662
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_attention/Cuda.lean",
+      "size": 291
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_attention/Driver.lean",
+      "size": 562
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_attention/Kernel.lean",
+      "size": 13822
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_attention/run_test.sh",
+      "size": 6287
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_config/Driver.lean",
+      "size": 558
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_config/Malformed.json",
+      "size": 995
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_config/Malformed.lean",
+      "size": 479
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_config/MalformedMissing.json",
+      "size": 967
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_config/MalformedMissing.lean",
+      "size": 426
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_config/Test.lean",
+      "size": 5400
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_config/TinyConfig.json",
+      "size": 1233
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_config/config.json",
+      "size": 4312
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_config/run_test.sh",
+      "size": 2220
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_deltanet/Cuda.lean",
+      "size": 289
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_deltanet/Driver.lean",
+      "size": 561
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_deltanet/Kernel.lean",
+      "size": 20468
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_deltanet/run_test.sh",
+      "size": 6348
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_lora/Contract.lean",
+      "size": 1586
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_lora/Cuda.lean",
+      "size": 275
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_lora/Driver.lean",
+      "size": 606
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_lora/Kernel.lean",
+      "size": 14084
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_lora/run_test.sh",
+      "size": 5725
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_megakernel/Cuda.lean",
+      "size": 351
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_megakernel/Driver.lean",
+      "size": 674
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_megakernel/Kernel.lean",
+      "size": 18861
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_megakernel/run_test.sh",
+      "size": 10808
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_megakernel/transformers_parity.py",
+      "size": 11690
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_mlp/Cuda.lean",
+      "size": 279
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_mlp/Driver.lean",
+      "size": 556
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_mlp/Kernel.lean",
+      "size": 6605
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_mlp/run_test.sh",
+      "size": 5577
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_model/Batch.lean",
+      "size": 16181
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_model/Cuda.lean",
+      "size": 322
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_model/Driver.lean",
+      "size": 668
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_model/Kernel.lean",
+      "size": 63821
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_model/run_test.sh",
+      "size": 8290
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/Cuda.lean",
+      "size": 274
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/Driver.lean",
+      "size": 562
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/Kernel.lean",
+      "size": 22554
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/cast_bf16.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/cast_x.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_dstate.3x256.f32.bin",
+      "size": 3072
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_dw.256x4.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_dw_step.256x4.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_dx.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_dxt.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_dy.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_dyt.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_state.3x256.f32.bin",
+      "size": 3072
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_state_out.3x256.f32.bin",
+      "size": 3072
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_w.256x4.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_x.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_xt.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_y.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/conv_yt.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/embed_ids.8.f32.bin",
+      "size": 32
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/embed_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/embed_table.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/gated_dx.8x64.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/gated_dy.8x64.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/gated_dz.8x64.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/gated_inv.8.f32.bin",
+      "size": 32
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/gated_x.8x64.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/gated_y.8x64.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/gated_z.8x64.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/l2_dx.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/l2_dy.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/l2_x.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/l2_y.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/manifest.json",
+      "size": 10264
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rms_dw.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rms_dx.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rms_dy.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rms_inv.8.f32.bin",
+      "size": 32
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rms_w.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rms_x.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rms_y.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rope_dk.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rope_dk_pre.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rope_dq.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rope_dq_pre.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rope_invfreq.8.f32.bin",
+      "size": 32
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rope_k.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rope_k_out.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rope_q.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/rope_q_out.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/silu_dx.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/silu_dy.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/silu_x.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/silu_y.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/swiglu_dgate.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/swiglu_dh.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/swiglu_dup.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/swiglu_gate.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/swiglu_h.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/fixtures/swiglu_up.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/gen_fixtures.py",
+      "size": 8002
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_primitives/run_test.sh",
+      "size": 6071
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/README.md",
+      "size": 10966
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.S_in.4x64x64.f32.bin",
+      "size": 65536
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.S_out.4x64x64.f32.bin",
+      "size": 65536
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.beta.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.conv_state_in.3x512.f32.bin",
+      "size": 6144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.conv_state_out.3x512.f32.bin",
+      "size": 6144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.delta_out.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.g.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.gated_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.hidden_in.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.hidden_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.k_l2.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.k_post_conv.128.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.mixer_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.mlp_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.norm1_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.q_l2.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.q_post_conv.128.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.qkv_pre_conv.512.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.v_heads.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer0.v_post_conv.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.S_in.4x64x64.f32.bin",
+      "size": 65536
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.S_out.4x64x64.f32.bin",
+      "size": 65536
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.beta.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.conv_state_in.3x512.f32.bin",
+      "size": 6144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.conv_state_out.3x512.f32.bin",
+      "size": 6144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.delta_out.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.g.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.gated_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.hidden_in.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.hidden_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.k_l2.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.k_post_conv.128.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.mixer_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.mlp_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.norm1_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.q_l2.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.q_post_conv.128.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.qkv_pre_conv.512.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.v_heads.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer1.v_post_conv.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.S_in.4x64x64.f32.bin",
+      "size": 65536
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.S_out.4x64x64.f32.bin",
+      "size": 65536
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.beta.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.conv_state_in.3x512.f32.bin",
+      "size": 6144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.conv_state_out.3x512.f32.bin",
+      "size": 6144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.delta_out.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.g.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.gated_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.hidden_in.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.hidden_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.k_l2.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.k_post_conv.128.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.mixer_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.mlp_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.norm1_out.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.q_l2.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.q_post_conv.128.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.qkv_pre_conv.512.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.v_heads.4x64.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode.layer2.v_post_conv.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/decode_token.1.f32.bin",
+      "size": 4
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/embed_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/final_hidden.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.embed_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.final_hidden.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_a.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_b.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_beta.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_delta_out.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_g.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_gated_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_input.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_k_l2_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_k_post_conv.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_k_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_norm1.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_output.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_q_l2_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_q_post_conv.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_q_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_qkv_post_conv.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_qkv_pre_conv.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_v_heads.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.deltanet_z.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.mlp_act.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.mlp_gate.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.mlp_input.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.mlp_norm2.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.mlp_output.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer0.mlp_up.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_a.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_b.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_beta.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_delta_out.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_g.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_gated_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_input.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_k_l2_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_k_post_conv.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_k_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_norm1.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_output.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_q_l2_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_q_post_conv.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_q_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_qkv_post_conv.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_qkv_pre_conv.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_v_heads.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.deltanet_z.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.mlp_act.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.mlp_gate.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.mlp_input.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.mlp_norm2.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.mlp_output.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer1.mlp_up.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_a.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_b.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_beta.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_delta_out.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_g.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_gated_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_input.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_k_l2_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_k_post_conv.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_k_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_norm1.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_output.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_q_l2_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_q_post_conv.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_q_repeated.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_qkv_post_conv.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_qkv_pre_conv.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_v_heads.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.deltanet_z.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.mlp_act.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.mlp_gate.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.mlp_input.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.mlp_norm2.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.mlp_output.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer2.mlp_up.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_gate.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_input.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_k_norm.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_k_pre_norm.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_k_rope.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_norm1.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_output.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_post_gate.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_pre_gate.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_probs.4x8x8.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_q_norm.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_q_pre_norm.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_q_rope.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_qg_proj.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_scores.4x8x8.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.attention_v_heads.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.mlp_act.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.mlp_gate.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.mlp_input.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.mlp_norm2.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.mlp_output.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.layer3.mlp_up.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.lm_head.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.logits.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.embed_tokens.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.input_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.linear_attn.A_log.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.linear_attn.conv1d.weight.512x4.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.linear_attn.dt_bias.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.linear_attn.in_proj_a.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.linear_attn.in_proj_b.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.linear_attn.in_proj_qkv.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.linear_attn.in_proj_z.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.linear_attn.norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.linear_attn.out_proj.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.mlp.down_proj.weight.256x512.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.mlp.gate_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.mlp.up_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.0.post_attention_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.input_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.linear_attn.A_log.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.linear_attn.conv1d.weight.512x4.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.linear_attn.dt_bias.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.linear_attn.in_proj_a.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.linear_attn.in_proj_b.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.linear_attn.in_proj_qkv.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.linear_attn.in_proj_z.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.linear_attn.norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.linear_attn.out_proj.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.mlp.down_proj.weight.256x512.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.mlp.gate_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.mlp.up_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.1.post_attention_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.input_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.linear_attn.A_log.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.linear_attn.conv1d.weight.512x4.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.linear_attn.dt_bias.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.linear_attn.in_proj_a.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.linear_attn.in_proj_b.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.linear_attn.in_proj_qkv.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.linear_attn.in_proj_z.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.linear_attn.norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.linear_attn.out_proj.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.mlp.down_proj.weight.256x512.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.mlp.gate_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.mlp.up_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.2.post_attention_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.input_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.mlp.down_proj.weight.256x512.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.mlp.gate_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.mlp.up_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.post_attention_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.self_attn.k_norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.self_attn.k_proj.weight.128x256.f32.bin",
+      "size": 131072
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.self_attn.o_proj.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.self_attn.q_norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.self_attn.q_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.layers.3.self_attn.v_proj.weight.128x256.f32.bin",
+      "size": 131072
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/grad.model.norm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.S_final.4x64x64.f32.bin",
+      "size": 65536
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.beta.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.delta_out.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.g.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.gated_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.hidden_in.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.hidden_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.k_l2.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.k_post_conv.8x128.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.mixer_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.mixer_residual.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.mlp_act.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.mlp_gate.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.mlp_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.mlp_up.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.norm1_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.norm2_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.q_l2.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.q_post_conv.8x128.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.qkv_pre_conv.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.v_heads.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer0.v_post_conv.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.S_final.4x64x64.f32.bin",
+      "size": 65536
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.beta.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.delta_out.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.g.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.gated_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.hidden_in.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.hidden_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.k_l2.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.k_post_conv.8x128.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.mixer_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.mixer_residual.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.mlp_act.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.mlp_gate.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.mlp_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.mlp_up.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.norm1_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.norm2_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.q_l2.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.q_post_conv.8x128.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.qkv_pre_conv.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.v_heads.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer1.v_post_conv.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.S_final.4x64x64.f32.bin",
+      "size": 65536
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.beta.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.delta_out.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.g.8x4.f32.bin",
+      "size": 128
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.gated_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.hidden_in.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.hidden_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.k_l2.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.k_post_conv.8x128.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.mixer_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.mixer_residual.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.mlp_act.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.mlp_gate.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.mlp_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.mlp_up.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.norm1_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.norm2_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.q_l2.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.q_post_conv.8x128.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.qkv_pre_conv.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.v_heads.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer2.v_post_conv.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.attn_out_post_gate.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.attn_out_pre_gate.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.attn_probs.4x8x8.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.gate.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.hidden_in.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.hidden_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.k_norm.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.k_pre_norm.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.k_rope.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.mixer_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.mixer_residual.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.mlp_act.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.mlp_gate.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.mlp_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.mlp_up.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.norm1_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.norm2_out.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.q_norm.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.q_pre_norm.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.q_rope.8x4x64.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.qg_proj.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.v_heads.8x2x64.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/layer3.v_proj.8x128.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lm_head.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/logits.8x512.f32.bin",
+      "size": 16384
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.adapter_a.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.adapter_a_first.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.adapter_a_gradient.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.adapter_a_second.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.adapter_b.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.adapter_b_first.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.adapter_b_gradient.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.adapter_b_second.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.adapter_ids.4.u32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.base.16x16.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.input.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.input_gradient.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.masked_adapter_a_gradient.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.masked_adapter_b_gradient.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.masked_input_gradient.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.masked_output_gradient.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.output.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.output_gradient.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.permuted_adapter_a_gradient.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.permuted_adapter_b_gradient.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.permuted_adapter_ids.4.u32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.permuted_input.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.permuted_input_gradient.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.permuted_output.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.permuted_output_gradient.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.permuted_rank_activation.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.rank_activation.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.sentinel_adapter_ids.4.u32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.sentinel_output.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.sentinel_rank_activation.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.update_mask.2.u32.bin",
+      "size": 8
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.updated_adapter_a.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.updated_adapter_a_first.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.updated_adapter_a_second.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.updated_adapter_b.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.updated_adapter_b_first.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/lora.updated_adapter_b_second.2x16x16.f32.bin",
+      "size": 2048
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/lora/manifest.json",
+      "size": 8445
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/loss.1.f32.bin",
+      "size": 4
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/manifest.json",
+      "size": 87544
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.embed_tokens.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.input_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.linear_attn.A_log.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.linear_attn.conv1d.weight.512x4.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.linear_attn.dt_bias.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.linear_attn.in_proj_a.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.linear_attn.in_proj_b.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.linear_attn.in_proj_qkv.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.linear_attn.in_proj_z.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.linear_attn.norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.linear_attn.out_proj.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.mlp.down_proj.weight.256x512.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.mlp.gate_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.mlp.up_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.0.post_attention_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.input_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.linear_attn.A_log.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.linear_attn.conv1d.weight.512x4.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.linear_attn.dt_bias.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.linear_attn.in_proj_a.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.linear_attn.in_proj_b.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.linear_attn.in_proj_qkv.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.linear_attn.in_proj_z.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.linear_attn.norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.linear_attn.out_proj.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.mlp.down_proj.weight.256x512.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.mlp.gate_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.mlp.up_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.1.post_attention_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.input_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.linear_attn.A_log.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.linear_attn.conv1d.weight.512x4.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.linear_attn.dt_bias.4.f32.bin",
+      "size": 16
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.linear_attn.in_proj_a.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.linear_attn.in_proj_b.weight.4x256.f32.bin",
+      "size": 4096
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.linear_attn.in_proj_qkv.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.linear_attn.in_proj_z.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.linear_attn.norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.linear_attn.out_proj.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.mlp.down_proj.weight.256x512.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.mlp.gate_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.mlp.up_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.2.post_attention_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.input_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.mlp.down_proj.weight.256x512.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.mlp.gate_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.mlp.up_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.post_attention_layernorm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.self_attn.k_norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.self_attn.k_proj.weight.128x256.f32.bin",
+      "size": 131072
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.self_attn.o_proj.weight.256x256.f32.bin",
+      "size": 262144
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.self_attn.q_norm.weight.64.f32.bin",
+      "size": 256
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.self_attn.q_proj.weight.512x256.f32.bin",
+      "size": 524288
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.layers.3.self_attn.v_proj.weight.128x256.f32.bin",
+      "size": 131072
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/model.norm.weight.256.f32.bin",
+      "size": 1024
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/probe_hidden.8x256.f32.bin",
+      "size": 8192
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/rope.cos.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/rope.sin.8x16.f32.bin",
+      "size": 512
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/targets.8.f32.bin",
+      "size": 32
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/fixtures/tokens.8.f32.bin",
+      "size": 32
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/lora_oracle.py",
+      "size": 10429
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/modeling_qwen3_5_excerpt.py",
+      "size": 28847
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/oracle.py",
+      "size": 46383
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/run_test.sh",
+      "size": 1803
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_reference/torch_reference_check.py",
+      "size": 16332
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_training/Contract.lean",
+      "size": 2707
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_training/Cuda.lean",
+      "size": 390
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_training/Driver.lean",
+      "size": 605
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_training/Kernel.lean",
+      "size": 30520
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_training/run_test.sh",
+      "size": 7768
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/Driver.lean",
+      "size": 636
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/Weights.lean",
+      "size": 16420
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/fixtures/complete/tiny_model.safetensors",
+      "size": 5804305
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/fixtures/manifest.json",
+      "size": 11806
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/fixtures/qwen36_27b_index_trimmed.json",
+      "size": 3368
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/fixtures/sharded/model-00001-of-00002.safetensors",
+      "size": 116
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/fixtures/sharded/model-00002-of-00002.safetensors",
+      "size": 202
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/fixtures/sharded/model.safetensors.index.json",
+      "size": 233
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/fixtures/tiny.safetensors",
+      "size": 1070
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/gen_fixtures.py",
+      "size": 6660
+    },
+    {
+      "path": "tests/workload_regressions/cuda_qwen36_weights/run_test.sh",
+      "size": 3608
+    },
+    {
+      "path": "tests/workload_regressions/run.sh",
+      "size": 798
+    },
+    {
+      "path": "toolchain/lean-cuda.env",
+      "size": 672
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-09T00:59:49Z",
+      "subject": "fix(ci): install lld required by the ARM nightly",
+      "url": "https://github.com/ranvier-labs/lean-cuda-qwen/commit/a12c2db0ca2d2ec5fe757a7db6e46354802fd779"
+    },
+    {
+      "date": "2026-09-09T00:55:37Z",
+      "subject": "docs(setup): clarify binary prerequisites and backend setup",
+      "url": "https://github.com/ranvier-labs/lean-cuda-qwen/commit/cec544936431bd7a13fc880f5797b5c692df7285"
+    },
+    {
+      "date": "2026-09-09T00:55:08Z",
+      "subject": "ci(release): build with public Lean CUDA nightly binaries",
+      "url": "https://github.com/ranvier-labs/lean-cuda-qwen/commit/cada6f5c09bc90561a35563ee4d9ca8d0d51772b"
+    }
+  ],
+  "readme": "# Lean CUDA Qwen\n\nLean 4 CUDA model components, persistent kernels, checkpoint loading, LoRA training, reference fixtures, and runnable applications for Qwen3.6 and Qwen3.8. The repository uses a staged CUDA-enabled Lean compiler, CUDA 13, and NVIDIA GPUs for device execution.\n\n## Library\n\n`lib/LeanCudaQwen` contains the application-level components used across examples. The library\nbuilds with Lake against the repository's pinned CUDA-enabled Lean compiler.\n\n| Module | Components |\n| --- | --- |\n| `LeanCudaQwen.Qwen36` | Qwen3.6/3.8 configuration, numerical model, CUDA primitives, LoRA training, checkpoint loading, and persistent execution. |\n\n## Reproducible setup\n\nInstall the pinned public [Lean CUDA nightly binary](https://github.com/ranvier-labs/lean4-cuda-nightly)\non Linux x86-64 or AArch64. No compiler source checkout is needed:\n\n```bash\nbash scripts/install-nightly.sh\n./scripts/build.sh\nQWEN_CUDA_ARCH=sm_90a examples/qwen38_chat/build_worker.sh\n```\n\nThe installer verifies the release SHA-256 checksum and installs under\n`.lake/toolchains/nightly-2026-09-08`. The release tag and version are pinned in\n`toolchain/lean-cuda.env`; `lean-toolchain` points to this local installation.\nThe binary is selected automatically, or explicitly with `LEAN_CUDA_TOOLCHAIN_ROOT`.\n\nPrerequisites: Git, curl, zstd, a C/C++ toolchain, LLVM's `lld` linker, GMP/OpenSSL/libuv development libraries,\nand CUDA 13 for native/device compilation. Building does not require a GPU or model weights.\nFor execution, choose `QWEN_CUDA_ARCH` for your NVIDIA GPU (the default is `sm_121a`)\nand provide a compatible checkpoint.\n\nCI builds the complete Lean library and compiles and links the CUDA chat worker on hosted\nx86-64 and AArch64 runners using only the published binary and CUDA toolkit. It also runs\nPython contract tests. These are build gates, not GPU numerical-parity or training gates.\nThe other regression/training harnesses retain their source-backend build recipes.\n\n## Backend checkout\n\nFor compiler development and the source-based regression/training harnesses, the original\nbackend setup remains available to users with access to the companion compiler repository:\n\n```bash\n./scripts/setup-backend.sh\n```\n\nTo reuse an existing checkout of the pinned source revision, set `LEAN_CUDA_ROOT`\n(and unset `LEAN_CUDA_TOOLCHAIN_ROOT` if previously exported):\n\n```bash\nexport LEAN_CUDA_ROOT=/path/to/lean4-cuda-backend\n./scripts/build.sh\n```\n\nThe harness rejects a different Git revision, a missing staged `lean`/`leanc`/`lake`, or a compiler\nwhose `lean --features` does not report `[CUDA]`. `LEAN_CUDA_ALLOW_UNPINNED=1` is an explicit\ndevelopment-only escape hatch. Sibling checkout discovery remains as a convenience but is subject\nto the same validation.\n\n## Applications\n\n| Example | What it demonstrates |\n| --- | --- |\n| `qwen36_megakernel/` | Exact Qwen3.6-27B recurrent Gated DeltaNet decode geometry in a cooperative-grid persistent launch, checked against separate launches and a host Lean oracle. |\n| `qwen38_chat/` | Persistent real-checkpoint Qwen3.8 chat worker, HTTP bridge, browser client, command-line client, and correctness-gated decode benchmark. |\n| `qwen38_train/` | Projection-wide Qwen3.8-27B LoRA SFT, DPO, and outcome-GRPO over frozen packed BF16 checkpoint buffers, with separate full SFT/GRPO megakernels, a DPO CUDA graph, bounded gradient diagnostics, and exact trainer-state resume. |\n\n\n## Running\n\nBuild the model library and run the pure elaboration configuration gate:\n\n```bash\n./scripts/build.sh\ntests/workload_regressions/run.sh cuda_qwen36_config\n```\n\nRun the complete migrated regression suite:\n\n```bash\ntests/workload_regressions/run.sh\n```\n\nRun the compact megakernel example or the real-checkpoint chat application:\n\n```bash\nexamples/qwen36_megakernel/run.sh\nexamples/qwen38_chat/run.sh\n```\n\nCUDA runners compile without device execution when the required GPU is absent. Generated C, CUDA, binaries, measurements, and local model data are ignored.\n\n## Status\n\nThis repository tracks the Qwen application layer. Backend attributes, the launch ABI, and the build\nrecipe follow the companion CUDA-enabled Lean compiler.\n\n## License\n\nRepository code is licensed under [Apache-2.0](LICENSE). Third-party source notices are\npreserved. Model checkpoints are not distributed here and retain their respective licenses.\n"
+}

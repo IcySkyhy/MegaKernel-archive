@@ -1,0 +1,21 @@
+# [M129] scan_quote_refs.py --selftest（工具层权威）
+# 命令：cd <repo root> && python3 docs/scan_quote_refs.py --selftest ; echo rc=$?
+
+$ python3 docs/scan_quote_refs.py --selftest
+== scan_quote_refs.py --selftest ==
+  [PASS] NC-1 合成引文正确 ⇒ 判绿   (verdict=OK)
+  [PASS] NC-2 合成引文改错 ⇒ 判红   (verdict=FIND-NOTINFILE)
+  [PASS] NC-3 省略号引文按段核（可核时给 OK-PARTIAL）   (verdict=OK-PARTIAL)
+  [PASS] NC-4 裸行号且同行无前置路径 ⇒ unverified（不当通过）   (verdict=UNVERIFIED reason=shorthand-no-path)
+  [PASS] NC-5 外部前缀 ⇒ unverified（不当通过）   (verdict=UNVERIFIED reason=external-prefix)
+  [PASS] NC-6 裸文件名 ⇒ unverified（不按唯一同名猜测，避免 M39 的拿错文件）   (verdict=UNVERIFIED reason=bare-name)
+  [PASS] NC-7 引文无紧邻出处 ⇒ 不抽为成对样本（盲区可见，不是静默通过）   (pairs=6 quote-unpaired=1)
+  [PASS] NC-11 `docs/NN:line` 简写应解析（正确引文判绿，非 unverified）   (verdict=OK)
+  [PASS] NC-12 引文在被引文件里但不在所引行 ⇒ FIND-ELSEWHERE（不误记为 OK）   (verdict=FIND-ELSEWHERE)
+  [PASS] NC-13 源侧跨行引文进入检查（正确判绿、改错判红，不是静默零输出）   (crossline_records=2 ok=1 find=1)
+  [PASS] NC-14 源侧跨行且开行无出处 ⇒ 计入 quote-unpaired 分母（不是零输出）   (crossline=3 bound=2 quote-unpaired=1)
+  [PASS] NC-8 M125 修前版本 ⇒ 判红（引文挂错出处）   (findings=1 由作者下次顺手改 1 行，不需要再走完整复审)
+  [PASS] NC-9 M125 修后版本 ⇒ 判绿（且确有被核的成对样本）   (pairs=2 findings=0)
+  [PASS] NC-10 M125 修后样本的引文确实被核到 l0sync-r5.md:70   (sources=[['.tower/comms/reviews/review-feat-m116-b2-attention-prefill-front-end-and-reviewer-m116-r3.md:107', '.tower/comms/reviews/review-feat-m123-scalar-computation-sweep-reviewer-m123-r2.md:88', '.tower/comms/reviews/review-feat-m115-b1-gdn-prefill-chunk-scan-reviewer-l0sync-r5.md:70'], ['.tower/comms/reviews/review-feat-m116-b2-attention-prefill-front-end-and-reviewer-m116-r3.md:107', '.tower/comms/reviews/review-feat-m123-scalar-computation-sweep-reviewer-m123-r2.md:88', '.tower/comms/reviews/review-feat-m115-b1-gdn-prefill-chunk-scan-reviewer-l0sync-r5.md:70']])
+对照总数=14  成立=14  不成立=0
+rc=0

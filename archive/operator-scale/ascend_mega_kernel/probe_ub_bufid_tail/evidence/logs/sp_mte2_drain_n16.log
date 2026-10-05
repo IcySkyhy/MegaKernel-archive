@@ -1,0 +1,34 @@
+--- run 1 (timeout 40s) ---
+[probe] mode=sp variant=mte2_drain_n16 vi=8 run=1 N=16 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_drain_n16 run=1 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 2 (timeout 40s) ---
+[probe] mode=sp variant=mte2_drain_n16 vi=8 run=2 N=16 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_drain_n16 run=2 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 3 (timeout 40s) ---
+[probe] mode=sp variant=mte2_drain_n16 vi=8 run=3 N=16 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_drain_n16 run=3 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 4 (timeout 40s) ---
+[probe] mode=sp variant=mte2_drain_n16 vi=8 run=4 N=16 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_drain_n16 run=4 N=16 aivs=2 mismatched=1 elems=4096 match=3200 zero=0 histOther=0 rc=1
+HIST mode=sp variant=mte2_drain_n16 run=4 obs=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,896,0] other=0 (下标=第几次 op 的 tag)
+exit=1
+--- run 5 (timeout 40s) ---
+[probe] mode=sp variant=mte2_drain_n16 vi=8 run=5 N=16 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_drain_n16 run=5 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 6 (timeout 40s) ---
+[probe] mode=sp variant=mte2_drain_n16 vi=8 run=6 N=16 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_drain_n16 run=6 N=16 aivs=2 mismatched=1 elems=4096 match=3968 zero=0 histOther=0 rc=1
+HIST mode=sp variant=mte2_drain_n16 run=6 obs=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,128,0] other=0 (下标=第几次 op 的 tag)
+exit=1
+--- run 7 (timeout 40s) ---
+[probe] mode=sp variant=mte2_drain_n16 vi=8 run=7 N=16 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_drain_n16 run=7 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 8 (timeout 40s) ---
+[probe] mode=sp variant=mte2_drain_n16 vi=8 run=8 N=16 pipeSel=1 drainLast=1 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_drain_n16 run=8 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0

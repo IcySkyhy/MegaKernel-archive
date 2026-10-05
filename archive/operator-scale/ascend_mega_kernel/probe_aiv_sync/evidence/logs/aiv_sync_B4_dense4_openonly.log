@@ -1,0 +1,171 @@
+SUMMARY variant=B4_dense4_openonly run=1 vi=30 bk=1 ck=0 dk=2 fk=1 st=1 wl=4 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=5/56 core_round_clean=634/896 rounds_clean=1/16 headOK_min=4 viol=262 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=23078 missing_rows=0 snap=0 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+ROUND variant=B4_dense4_openonly run=1 round=0 headOK_min=6 headOK_max=56 cores_clean=32/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=1 headOK_min=8 headOK_max=56 cores_clean=41/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=2 headOK_min=13 headOK_max=56 cores_clean=43/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=3 headOK_min=4 headOK_max=56 cores_clean=41/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=4 headOK_min=10 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=5 headOK_min=4 headOK_max=56 cores_clean=34/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=6 headOK_min=8 headOK_max=56 cores_clean=35/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=7 headOK_min=8 headOK_max=56 cores_clean=46/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=8 headOK_min=5 headOK_max=56 cores_clean=43/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=9 headOK_min=7 headOK_max=56 cores_clean=42/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=10 headOK_min=4 headOK_max=56 cores_clean=42/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=11 headOK_min=8 headOK_max=56 cores_clean=34/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=12 headOK_min=8 headOK_max=56 cores_clean=46/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=13 headOK_min=4 headOK_max=56 cores_clean=33/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=14 headOK_min=12 headOK_max=56 cores_clean=35/56 converged=0
+ROUND variant=B4_dense4_openonly run=1 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=B4_dense4_openonly run=1 6,6,9,9,1,8,4,8,2,5,0,2,3,2,3,6,0,0,3,1,4,7,10,10,3,5,2,4,2,5,7,15,3,0,6,2,4,10,2,15,2,1,1,7,3,2,5,14,4,0,1,3,2,1,7,15
+CYCLE variant=B4_dense4_openonly run=1 811290996,811291430,811291166,811291810,811291598,811291263,811292048,811292206,811292074,811291957,811291222,811292030,811290901,811291576,811292121,811291694,811291671,811291365,811291292,811291148,811292094,811291386,811290411,811290234,811290359,811291984,811291890,811292240,811290068,811290069,811291678,811291773,811290373,811291582,811291648,811290908,811291172,811291954,811291129,811290963,811291201,811290862,811291908,811292043,811291790,811291885,811291386,811290056,811291363,811291813,811291864,811291936,811290394,811290066,811292013,811291598
+SUMMARY variant=B4_dense4_openonly run=2 vi=30 bk=1 ck=0 dk=2 fk=1 st=1 wl=4 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=6/56 core_round_clean=542/896 rounds_clean=1/16 headOK_min=4 viol=354 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=21510 missing_rows=0 snap=0 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+ROUND variant=B4_dense4_openonly run=2 round=0 headOK_min=9 headOK_max=56 cores_clean=26/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=1 headOK_min=4 headOK_max=56 cores_clean=42/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=2 headOK_min=7 headOK_max=56 cores_clean=41/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=3 headOK_min=7 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=4 headOK_min=4 headOK_max=56 cores_clean=32/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=5 headOK_min=9 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=6 headOK_min=6 headOK_max=56 cores_clean=43/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=7 headOK_min=6 headOK_max=56 cores_clean=22/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=8 headOK_min=5 headOK_max=56 cores_clean=39/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=9 headOK_min=6 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=10 headOK_min=4 headOK_max=56 cores_clean=40/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=11 headOK_min=6 headOK_max=56 cores_clean=35/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=12 headOK_min=6 headOK_max=56 cores_clean=34/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=13 headOK_min=7 headOK_max=56 cores_clean=30/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=14 headOK_min=8 headOK_max=56 cores_clean=29/56 converged=0
+ROUND variant=B4_dense4_openonly run=2 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=B4_dense4_openonly run=2 10,10,10,6,10,13,8,7,14,14,12,13,3,5,4,4,8,10,4,3,9,10,7,8,13,11,4,7,0,1,7,15,0,1,5,2,1,5,2,15,0,1,0,0,1,5,6,15,0,1,2,5,2,7,3,15
+CYCLE variant=B4_dense4_openonly run=2 -1826167581,-1826168963,-1826167998,-1826167525,-1826167465,-1826167512,-1826168251,-1826167764,-1826168334,-1826167413,-1826168374,-1826168161,-1826168397,-1826167911,-1826167546,-1826168292,-1826167748,-1826167629,-1826167596,-1826167785,-1826168129,-1826169027,-1826169210,-1826169406,-1826168182,-1826168417,-1826168734,-1826168051,-1826169660,-1826169377,-1826168443,-1826169085,-1826167794,-1826167889,-1826169170,-1826167931,-1826169456,-1826168718,-1826168530,-1826168766,-1826168304,-1826168091,-1826168127,-1826168575,-1826167829,-1826168373,-1826168030,-1826168337,-1826169614,-1826168964,-1826168679,-1826167750,-1826167977,-1826168874,-1826167870,-1826167917
+SUMMARY variant=B4_dense4_openonly run=3 vi=30 bk=1 ck=0 dk=2 fk=1 st=1 wl=4 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=5/56 core_round_clean=431/896 rounds_clean=1/16 headOK_min=4 viol=465 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=31372 missing_rows=0 snap=0 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+ROUND variant=B4_dense4_openonly run=3 round=0 headOK_min=8 headOK_max=56 cores_clean=29/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=1 headOK_min=8 headOK_max=56 cores_clean=24/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=2 headOK_min=9 headOK_max=56 cores_clean=20/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=3 headOK_min=6 headOK_max=56 cores_clean=26/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=4 headOK_min=8 headOK_max=56 cores_clean=30/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=5 headOK_min=4 headOK_max=56 cores_clean=25/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=6 headOK_min=4 headOK_max=56 cores_clean=15/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=7 headOK_min=6 headOK_max=56 cores_clean=19/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=8 headOK_min=5 headOK_max=56 cores_clean=32/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=9 headOK_min=7 headOK_max=56 cores_clean=25/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=10 headOK_min=7 headOK_max=56 cores_clean=30/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=11 headOK_min=9 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=12 headOK_min=4 headOK_max=56 cores_clean=28/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=13 headOK_min=4 headOK_max=56 cores_clean=20/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=14 headOK_min=10 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=3 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=B4_dense4_openonly run=3 15,15,15,15,13,15,15,15,13,13,6,13,13,14,15,15,12,14,15,15,9,7,15,15,6,6,6,7,0,0,0,13,0,1,3,3,1,1,2,13,5,2,3,3,3,6,6,15,3,1,0,3,3,7,7,14
+CYCLE variant=B4_dense4_openonly run=3 -133362608,-133362810,-133362666,-133362461,-133364160,-133364046,-133362843,-133363146,-133362364,-133362499,-133363421,-133362735,-133362482,-133363921,-133364300,-133364090,-133362633,-133362784,-133362435,-133362973,-133362406,-133362715,-133362356,-133363828,-133362531,-133362861,-133363202,-133363328,-133364731,-133363642,-133363202,-133364224,-133362805,-133363110,-133362699,-133363064,-133362854,-133362748,-133364519,-133363286,-133363971,-133363710,-133362932,-133363442,-133363559,-133362657,-133364319,-133364262,-133364489,-133364076,-133362974,-133364332,-133363121,-133363527,-133364005,-133363260
+SUMMARY variant=B4_dense4_openonly run=4 vi=30 bk=1 ck=0 dk=2 fk=1 st=1 wl=4 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=4/56 core_round_clean=431/896 rounds_clean=1/16 headOK_min=4 viol=465 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=23939 missing_rows=0 snap=0 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+ROUND variant=B4_dense4_openonly run=4 round=0 headOK_min=12 headOK_max=56 cores_clean=23/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=1 headOK_min=5 headOK_max=56 cores_clean=24/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=2 headOK_min=8 headOK_max=56 cores_clean=19/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=3 headOK_min=5 headOK_max=56 cores_clean=26/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=4 headOK_min=7 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=5 headOK_min=4 headOK_max=56 cores_clean=23/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=6 headOK_min=36 headOK_max=56 cores_clean=32/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=7 headOK_min=11 headOK_max=56 cores_clean=29/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=8 headOK_min=7 headOK_max=56 cores_clean=16/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=9 headOK_min=4 headOK_max=56 cores_clean=28/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=10 headOK_min=7 headOK_max=56 cores_clean=29/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=11 headOK_min=8 headOK_max=56 cores_clean=27/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=12 headOK_min=6 headOK_max=56 cores_clean=19/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=13 headOK_min=4 headOK_max=56 cores_clean=30/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=14 headOK_min=8 headOK_max=56 cores_clean=19/56 converged=0
+ROUND variant=B4_dense4_openonly run=4 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=B4_dense4_openonly run=4 14,15,14,15,13,15,15,14,14,13,6,13,12,14,15,15,10,12,14,14,5,8,13,15,5,5,5,6,0,3,1,14,0,0,3,3,2,8,6,14,2,5,4,7,1,5,6,14,3,3,0,5,1,5,6,15
+CYCLE variant=B4_dense4_openonly run=4 -1117704475,-1117704478,-1117704187,-1117702670,-1117703503,-1117703270,-1117703355,-1117702896,-1117703089,-1117702960,-1117704475,-1117704486,-1117702526,-1117703429,-1117702750,-1117702876,-1117703530,-1117704371,-1117704131,-1117703307,-1117704159,-1117702770,-1117704500,-1117704495,-1117702993,-1117704093,-1117702479,-1117702696,-1117703938,-1117704198,-1117703959,-1117703982,-1117702218,-1117703018,-1117702328,-1117702353,-1117702527,-1117702653,-1117702160,-1117703093,-1117703184,-1117702751,-1117702299,-1117702246,-1117702467,-1117702415,-1117703890,-1117703756,-1117703694,-1117703589,-1117702832,-1117702125,-1117704005,-1117703257,-1117703168,-1117702965
+SUMMARY variant=B4_dense4_openonly run=5 vi=30 bk=1 ck=0 dk=2 fk=1 st=1 wl=4 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=4/56 core_round_clean=544/896 rounds_clean=1/16 headOK_min=4 viol=352 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=21205 missing_rows=0 snap=0 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+ROUND variant=B4_dense4_openonly run=5 round=0 headOK_min=8 headOK_max=56 cores_clean=28/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=1 headOK_min=6 headOK_max=56 cores_clean=33/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=2 headOK_min=5 headOK_max=56 cores_clean=34/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=3 headOK_min=6 headOK_max=56 cores_clean=40/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=4 headOK_min=8 headOK_max=56 cores_clean=40/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=5 headOK_min=37 headOK_max=56 cores_clean=44/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=6 headOK_min=8 headOK_max=56 cores_clean=40/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=7 headOK_min=5 headOK_max=56 cores_clean=19/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=8 headOK_min=8 headOK_max=56 cores_clean=39/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=9 headOK_min=8 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=10 headOK_min=9 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=11 headOK_min=4 headOK_max=56 cores_clean=42/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=12 headOK_min=9 headOK_max=56 cores_clean=30/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=13 headOK_min=7 headOK_max=56 cores_clean=35/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=14 headOK_min=7 headOK_max=56 cores_clean=22/56 converged=0
+ROUND variant=B4_dense4_openonly run=5 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=B4_dense4_openonly run=5 10,8,8,8,8,10,5,4,14,14,11,12,5,5,4,5,6,9,6,4,6,7,6,7,13,10,6,9,3,5,8,14,2,3,2,2,1,4,4,14,0,4,0,0,4,5,3,15,0,1,1,3,4,7,9,14
+CYCLE variant=B4_dense4_openonly run=5 1663115159,1663115207,1663115943,1663115966,1663114236,1663115133,1663114817,1663114475,1663115271,1663115011,1663116077,1663116110,1663114841,1663114499,1663115298,1663115631,1663115034,1663115485,1663116009,1663115820,1663115993,1663116064,1663114039,1663114076,1663115870,1663115655,1663115369,1663114939,1663115956,1663115980,1663115815,1663116294,1663117181,1663116828,1663117115,1663117400,1663117566,1663117473,1663117703,1663117155,1663117295,1663117272,1663116540,1663116391,1663116659,1663116614,1663117537,1663117738,1663117253,1663116993,1663117319,1663116940,1663115837,1663115885,1663117489,1663117678
+SUMMARY variant=B4_dense4_openonly run=6 vi=30 bk=1 ck=0 dk=2 fk=1 st=1 wl=4 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=5/56 core_round_clean=508/896 rounds_clean=1/16 headOK_min=4 viol=388 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=21135 missing_rows=0 snap=0 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+ROUND variant=B4_dense4_openonly run=6 round=0 headOK_min=5 headOK_max=56 cores_clean=32/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=1 headOK_min=5 headOK_max=56 cores_clean=29/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=2 headOK_min=4 headOK_max=56 cores_clean=37/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=3 headOK_min=7 headOK_max=56 cores_clean=22/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=4 headOK_min=8 headOK_max=56 cores_clean=32/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=5 headOK_min=4 headOK_max=56 cores_clean=35/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=6 headOK_min=7 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=7 headOK_min=7 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=8 headOK_min=12 headOK_max=56 cores_clean=34/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=9 headOK_min=5 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=10 headOK_min=8 headOK_max=56 cores_clean=37/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=11 headOK_min=4 headOK_max=56 cores_clean=19/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=12 headOK_min=6 headOK_max=56 cores_clean=34/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=13 headOK_min=10 headOK_max=56 cores_clean=34/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=14 headOK_min=8 headOK_max=56 cores_clean=44/56 converged=0
+ROUND variant=B4_dense4_openonly run=6 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=B4_dense4_openonly run=6 11,11,7,11,12,12,7,6,14,14,14,14,7,6,5,6,8,9,5,5,10,11,9,10,14,14,8,7,1,3,9,15,2,0,3,1,2,4,4,15,2,2,0,0,1,1,5,15,0,0,3,1,5,8,4,15
+CYCLE variant=B4_dense4_openonly run=6 1789980128,1789979821,1789980732,1789980557,1789980290,1789980507,1789979224,1789980030,1789979070,1789979344,1789979244,1789978974,1789980265,1789980699,1789978995,1789979842,1789980479,1789980599,1789979790,1789980194,1789980763,1789979990,1789978958,1789979003,1789980219,1789980149,1789978983,1789979296,1789980431,1789980403,1789980830,1789980627,1789981580,1789981651,1789982128,1789982176,1789982249,1789982275,1789981099,1789981553,1789981020,1789981411,1789981886,1789982147,1789980901,1789980724,1789981865,1789982298,1789980975,1789981486,1789981787,1789980776,1789981317,1789981980,1789982352,1789981722
+SUMMARY variant=B4_dense4_openonly run=7 vi=30 bk=1 ck=0 dk=2 fk=1 st=1 wl=4 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=6/56 core_round_clean=499/896 rounds_clean=1/16 headOK_min=4 viol=397 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=22695 missing_rows=0 snap=0 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+ROUND variant=B4_dense4_openonly run=7 round=0 headOK_min=4 headOK_max=56 cores_clean=24/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=1 headOK_min=4 headOK_max=56 cores_clean=22/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=2 headOK_min=4 headOK_max=56 cores_clean=37/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=3 headOK_min=4 headOK_max=56 cores_clean=39/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=4 headOK_min=8 headOK_max=56 cores_clean=20/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=5 headOK_min=5 headOK_max=56 cores_clean=30/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=6 headOK_min=8 headOK_max=56 cores_clean=35/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=7 headOK_min=4 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=8 headOK_min=5 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=9 headOK_min=12 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=10 headOK_min=6 headOK_max=56 cores_clean=42/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=11 headOK_min=8 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=12 headOK_min=8 headOK_max=56 cores_clean=39/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=13 headOK_min=4 headOK_max=56 cores_clean=35/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=14 headOK_min=8 headOK_max=56 cores_clean=36/56 converged=0
+ROUND variant=B4_dense4_openonly run=7 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=B4_dense4_openonly run=7 11,13,7,11,11,14,7,9,14,14,12,13,9,7,6,7,10,9,6,6,10,11,8,11,13,14,7,10,2,6,11,15,0,1,2,2,3,4,1,15,0,0,0,0,4,3,1,15,1,0,2,1,5,7,1,15
+CYCLE variant=B4_dense4_openonly run=7 1766069566,1766069563,1766070341,1766070267,1766071248,1766070706,1766070095,1766070848,1766070393,1766071469,1766070641,1766070995,1766071568,1766070659,1766070511,1766070123,1766071276,1766071654,1766070967,1766071227,1766069927,1766070588,1766070418,1766071040,1766070203,1766069856,1766071185,1766071303,1766071506,1766071422,1766072673,1766073399,1766072340,1766073075,1766071669,1766072454,1766072641,1766073233,1766073190,1766073368,1766072194,1766072433,1766071920,1766071993,1766072360,1766072525,1766072901,1766073257,1766072855,1766071796,1766072409,1766072481,1766073213,1766073335,1766071570,1766071595
+SUMMARY variant=B4_dense4_openonly run=8 vi=30 bk=1 ck=0 dk=2 fk=1 st=1 wl=4 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=2/56 core_round_clean=409/896 rounds_clean=1/16 headOK_min=1 viol=487 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=23135 missing_rows=0 snap=0 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+ROUND variant=B4_dense4_openonly run=8 round=0 headOK_min=5 headOK_max=56 cores_clean=22/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=1 headOK_min=1 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=2 headOK_min=9 headOK_max=56 cores_clean=16/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=3 headOK_min=8 headOK_max=56 cores_clean=27/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=4 headOK_min=5 headOK_max=56 cores_clean=23/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=5 headOK_min=5 headOK_max=56 cores_clean=25/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=6 headOK_min=9 headOK_max=56 cores_clean=26/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=7 headOK_min=4 headOK_max=56 cores_clean=30/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=8 headOK_min=4 headOK_max=56 cores_clean=26/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=9 headOK_min=10 headOK_max=56 cores_clean=16/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=10 headOK_min=5 headOK_max=56 cores_clean=25/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=11 headOK_min=8 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=12 headOK_min=6 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=13 headOK_min=9 headOK_max=56 cores_clean=25/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=14 headOK_min=7 headOK_max=56 cores_clean=19/56 converged=0
+ROUND variant=B4_dense4_openonly run=8 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=B4_dense4_openonly run=8 14,15,15,15,14,14,15,15,15,14,5,12,13,13,15,15,13,13,13,15,4,4,15,15,4,4,4,5,0,6,2,14,0,1,4,3,1,4,6,15,3,3,3,6,6,4,11,15,2,4,5,3,3,8,12,15
+CYCLE variant=B4_dense4_openonly run=8 1629977401,1629977137,1629976985,1629978935,1629978765,1629978587,1629978645,1629978620,1629978531,1629978735,1629978792,1629978104,1629978710,1629978978,1629978007,1629977250,1629978250,1629977551,1629977747,1629978903,1629978334,1629978564,1629976954,1629976980,1629978278,1629978660,1629978872,1629978516,1629977345,1629977159,1629977759,1629978815,1629978569,1629979240,1629979032,1629978676,1629977819,1629978976,1629979101,1629978440,1629978838,1629979198,1629978213,1629977875,1629978891,1629978739,1629978520,1629979158,1629977728,1629977652,1629978028,1629979051,1629977309,1629978637,1629978471,1629978727
+SUMMARY variant=B4_dense4_openonly run=9 vi=30 bk=1 ck=0 dk=2 fk=1 st=1 wl=4 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=1/56 core_round_clean=455/896 rounds_clean=1/16 headOK_min=1 viol=441 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=24214 missing_rows=0 snap=0 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+ROUND variant=B4_dense4_openonly run=9 round=0 headOK_min=5 headOK_max=56 cores_clean=20/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=1 headOK_min=1 headOK_max=56 cores_clean=28/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=2 headOK_min=8 headOK_max=56 cores_clean=23/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=3 headOK_min=6 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=4 headOK_min=7 headOK_max=56 cores_clean=32/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=5 headOK_min=5 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=6 headOK_min=10 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=7 headOK_min=5 headOK_max=56 cores_clean=20/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=8 headOK_min=8 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=9 headOK_min=7 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=10 headOK_min=8 headOK_max=56 cores_clean=23/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=11 headOK_min=8 headOK_max=56 cores_clean=28/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=12 headOK_min=9 headOK_max=56 cores_clean=31/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=13 headOK_min=6 headOK_max=56 cores_clean=30/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=14 headOK_min=5 headOK_max=56 cores_clean=19/56 converged=0
+ROUND variant=B4_dense4_openonly run=9 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=B4_dense4_openonly run=9 14,12,13,15,10,14,15,15,15,15,15,15,7,6,6,10,10,10,5,7,7,11,11,12,14,15,14,15,1,4,2,15,2,2,1,1,3,5,2,14,2,1,0,2,1,1,3,14,3,2,2,1,2,5,7,15
+CYCLE variant=B4_dense4_openonly run=9 -1028298681,-1028297966,-1028298375,-1028298758,-1028298224,-1028298173,-1028298302,-1028299404,-1028298407,-1028298024,-1028297895,-1028298741,-1028299116,-1028297860,-1028297917,-1028299782,-1028298051,-1028298814,-1028298941,-1028299249,-1028298276,-1028297831,-1028299891,-1028299734,-1028299435,-1028299144,-1028299279,-1028299638,-1028298790,-1028298839,-1028297310,-1028297103,-1028297512,-1028297047,-1028298294,-1028298472,-1028296958,-1028297123,-1028298526,-1028298577,-1028298812,-1028298172,-1028298221,-1028298195,-1028297866,-1028297687,-1028297736,-1028297965,-1028298244,-1028298093,-1028297920,-1028297231,-1028297072,-1028297178,-1028297888,-1028297531

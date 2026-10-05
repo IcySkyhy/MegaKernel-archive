@@ -1,0 +1,756 @@
+[check_ref] dump 目录 .：1304 个张量；层数 48，token 3
+
+== 1. 层类型模式（config.json layer_types）与内核派发 ==
+  [PASS] cfg.interval full_attention_interval=4
+  [PASS] cfg.pattern 48 层：12 full_attention
+  [PASS] kind.L00 期望=GDN 计算，实际=计算
+  [PASS] kind.L01 期望=GDN 计算，实际=计算
+  [PASS] kind.L02 期望=GDN 计算，实际=计算
+  [PASS] kind.L03 期望=直通，实际=直通
+  [PASS] kind.L04 期望=GDN 计算，实际=计算
+  [PASS] kind.L05 期望=GDN 计算，实际=计算
+  [PASS] kind.L06 期望=GDN 计算，实际=计算
+  [PASS] kind.L07 期望=直通，实际=直通
+  [PASS] kind.L08 期望=GDN 计算，实际=计算
+  [PASS] kind.L09 期望=GDN 计算，实际=计算
+  [PASS] kind.L10 期望=GDN 计算，实际=计算
+  [PASS] kind.L11 期望=直通，实际=直通
+  [PASS] kind.L12 期望=GDN 计算，实际=计算
+  [PASS] kind.L13 期望=GDN 计算，实际=计算
+  [PASS] kind.L14 期望=GDN 计算，实际=计算
+  [PASS] kind.L15 期望=直通，实际=直通
+  [PASS] kind.L16 期望=GDN 计算，实际=计算
+  [PASS] kind.L17 期望=GDN 计算，实际=计算
+  [PASS] kind.L18 期望=GDN 计算，实际=计算
+  [PASS] kind.L19 期望=直通，实际=直通
+  [PASS] kind.L20 期望=GDN 计算，实际=计算
+  [PASS] kind.L21 期望=GDN 计算，实际=计算
+  [PASS] kind.L22 期望=GDN 计算，实际=计算
+  [PASS] kind.L23 期望=直通，实际=直通
+  [PASS] kind.L24 期望=GDN 计算，实际=计算
+  [PASS] kind.L25 期望=GDN 计算，实际=计算
+  [PASS] kind.L26 期望=GDN 计算，实际=计算
+  [PASS] kind.L27 期望=直通，实际=直通
+  [PASS] kind.L28 期望=GDN 计算，实际=计算
+  [PASS] kind.L29 期望=GDN 计算，实际=计算
+  [PASS] kind.L30 期望=GDN 计算，实际=计算
+  [PASS] kind.L31 期望=直通，实际=直通
+  [PASS] kind.L32 期望=GDN 计算，实际=计算
+  [PASS] kind.L33 期望=GDN 计算，实际=计算
+  [PASS] kind.L34 期望=GDN 计算，实际=计算
+  [PASS] kind.L35 期望=直通，实际=直通
+  [PASS] kind.L36 期望=GDN 计算，实际=计算
+  [PASS] kind.L37 期望=GDN 计算，实际=计算
+  [PASS] kind.L38 期望=GDN 计算，实际=计算
+  [PASS] kind.L39 期望=直通，实际=直通
+  [PASS] kind.L40 期望=GDN 计算，实际=计算
+  [PASS] kind.L41 期望=GDN 计算，实际=计算
+  [PASS] kind.L42 期望=GDN 计算，实际=计算
+  [PASS] kind.L43 期望=直通，实际=直通
+  [PASS] kind.L44 期望=GDN 计算，实际=计算
+  [PASS] kind.L45 期望=GDN 计算，实际=计算
+  [PASS] kind.L46 期望=GDN 计算，实际=计算
+  [PASS] kind.L47 期望=直通，实际=直通
+
+== 2. 残差流交接（层间 / token 间 GM 交接逐字节）==
+  [PASS] A.handoff.L00->L01 
+  [PASS] A.handoff.L01->L02 
+  [PASS] A.handoff.L02->L03 
+  [PASS] A.handoff.L03->L04 
+  [PASS] A.handoff.L04->L05 
+  [PASS] A.handoff.L05->L06 
+  [PASS] A.handoff.L06->L07 
+  [PASS] A.handoff.L07->L08 
+  [PASS] A.handoff.L08->L09 
+  [PASS] A.handoff.L09->L10 
+  [PASS] A.handoff.L10->L11 
+  [PASS] A.handoff.L11->L12 
+  [PASS] A.handoff.L12->L13 
+  [PASS] A.handoff.L13->L14 
+  [PASS] A.handoff.L14->L15 
+  [PASS] A.handoff.L15->L16 
+  [PASS] A.handoff.L16->L17 
+  [PASS] A.handoff.L17->L18 
+  [PASS] A.handoff.L18->L19 
+  [PASS] A.handoff.L19->L20 
+  [PASS] A.handoff.L20->L21 
+  [PASS] A.handoff.L21->L22 
+  [PASS] A.handoff.L22->L23 
+  [PASS] A.handoff.L23->L24 
+  [PASS] A.handoff.L24->L25 
+  [PASS] A.handoff.L25->L26 
+  [PASS] A.handoff.L26->L27 
+  [PASS] A.handoff.L27->L28 
+  [PASS] A.handoff.L28->L29 
+  [PASS] A.handoff.L29->L30 
+  [PASS] A.handoff.L30->L31 
+  [PASS] A.handoff.L31->L32 
+  [PASS] A.handoff.L32->L33 
+  [PASS] A.handoff.L33->L34 
+  [PASS] A.handoff.L34->L35 
+  [PASS] A.handoff.L35->L36 
+  [PASS] A.handoff.L36->L37 
+  [PASS] A.handoff.L37->L38 
+  [PASS] A.handoff.L38->L39 
+  [PASS] A.handoff.L39->L40 
+  [PASS] A.handoff.L40->L41 
+  [PASS] A.handoff.L41->L42 
+  [PASS] A.handoff.L42->L43 
+  [PASS] A.handoff.L43->L44 
+  [PASS] A.handoff.L44->L45 
+  [PASS] A.handoff.L45->L46 
+  [PASS] A.handoff.L46->L47 
+  [PASS] B.entry.t0 
+  [PASS] B.handoff.t0.L00 
+  [PASS] B.handoff.t0.L01 
+  [PASS] B.handoff.t0.L02 
+  [PASS] B.handoff.t0.L03 
+  [PASS] B.handoff.t0.L04 
+  [PASS] B.handoff.t0.L05 
+  [PASS] B.handoff.t0.L06 
+  [PASS] B.handoff.t0.L07 
+  [PASS] B.handoff.t0.L08 
+  [PASS] B.handoff.t0.L09 
+  [PASS] B.handoff.t0.L10 
+  [PASS] B.handoff.t0.L11 
+  [PASS] B.handoff.t0.L12 
+  [PASS] B.handoff.t0.L13 
+  [PASS] B.handoff.t0.L14 
+  [PASS] B.handoff.t0.L15 
+  [PASS] B.handoff.t0.L16 
+  [PASS] B.handoff.t0.L17 
+  [PASS] B.handoff.t0.L18 
+  [PASS] B.handoff.t0.L19 
+  [PASS] B.handoff.t0.L20 
+  [PASS] B.handoff.t0.L21 
+  [PASS] B.handoff.t0.L22 
+  [PASS] B.handoff.t0.L23 
+  [PASS] B.handoff.t0.L24 
+  [PASS] B.handoff.t0.L25 
+  [PASS] B.handoff.t0.L26 
+  [PASS] B.handoff.t0.L27 
+  [PASS] B.handoff.t0.L28 
+  [PASS] B.handoff.t0.L29 
+  [PASS] B.handoff.t0.L30 
+  [PASS] B.handoff.t0.L31 
+  [PASS] B.handoff.t0.L32 
+  [PASS] B.handoff.t0.L33 
+  [PASS] B.handoff.t0.L34 
+  [PASS] B.handoff.t0.L35 
+  [PASS] B.handoff.t0.L36 
+  [PASS] B.handoff.t0.L37 
+  [PASS] B.handoff.t0.L38 
+  [PASS] B.handoff.t0.L39 
+  [PASS] B.handoff.t0.L40 
+  [PASS] B.handoff.t0.L41 
+  [PASS] B.handoff.t0.L42 
+  [PASS] B.handoff.t0.L43 
+  [PASS] B.handoff.t0.L44 
+  [PASS] B.handoff.t0.L45 
+  [PASS] B.handoff.t0.L46 
+  [PASS] B.entry.t1 
+  [PASS] B.handoff.t1.L00 
+  [PASS] B.handoff.t1.L01 
+  [PASS] B.handoff.t1.L02 
+  [PASS] B.handoff.t1.L03 
+  [PASS] B.handoff.t1.L04 
+  [PASS] B.handoff.t1.L05 
+  [PASS] B.handoff.t1.L06 
+  [PASS] B.handoff.t1.L07 
+  [PASS] B.handoff.t1.L08 
+  [PASS] B.handoff.t1.L09 
+  [PASS] B.handoff.t1.L10 
+  [PASS] B.handoff.t1.L11 
+  [PASS] B.handoff.t1.L12 
+  [PASS] B.handoff.t1.L13 
+  [PASS] B.handoff.t1.L14 
+  [PASS] B.handoff.t1.L15 
+  [PASS] B.handoff.t1.L16 
+  [PASS] B.handoff.t1.L17 
+  [PASS] B.handoff.t1.L18 
+  [PASS] B.handoff.t1.L19 
+  [PASS] B.handoff.t1.L20 
+  [PASS] B.handoff.t1.L21 
+  [PASS] B.handoff.t1.L22 
+  [PASS] B.handoff.t1.L23 
+  [PASS] B.handoff.t1.L24 
+  [PASS] B.handoff.t1.L25 
+  [PASS] B.handoff.t1.L26 
+  [PASS] B.handoff.t1.L27 
+  [PASS] B.handoff.t1.L28 
+  [PASS] B.handoff.t1.L29 
+  [PASS] B.handoff.t1.L30 
+  [PASS] B.handoff.t1.L31 
+  [PASS] B.handoff.t1.L32 
+  [PASS] B.handoff.t1.L33 
+  [PASS] B.handoff.t1.L34 
+  [PASS] B.handoff.t1.L35 
+  [PASS] B.handoff.t1.L36 
+  [PASS] B.handoff.t1.L37 
+  [PASS] B.handoff.t1.L38 
+  [PASS] B.handoff.t1.L39 
+  [PASS] B.handoff.t1.L40 
+  [PASS] B.handoff.t1.L41 
+  [PASS] B.handoff.t1.L42 
+  [PASS] B.handoff.t1.L43 
+  [PASS] B.handoff.t1.L44 
+  [PASS] B.handoff.t1.L45 
+  [PASS] B.handoff.t1.L46 
+  [PASS] B.entry.t2 
+  [PASS] B.handoff.t2.L00 
+  [PASS] B.handoff.t2.L01 
+  [PASS] B.handoff.t2.L02 
+  [PASS] B.handoff.t2.L03 
+  [PASS] B.handoff.t2.L04 
+  [PASS] B.handoff.t2.L05 
+  [PASS] B.handoff.t2.L06 
+  [PASS] B.handoff.t2.L07 
+  [PASS] B.handoff.t2.L08 
+  [PASS] B.handoff.t2.L09 
+  [PASS] B.handoff.t2.L10 
+  [PASS] B.handoff.t2.L11 
+  [PASS] B.handoff.t2.L12 
+  [PASS] B.handoff.t2.L13 
+  [PASS] B.handoff.t2.L14 
+  [PASS] B.handoff.t2.L15 
+  [PASS] B.handoff.t2.L16 
+  [PASS] B.handoff.t2.L17 
+  [PASS] B.handoff.t2.L18 
+  [PASS] B.handoff.t2.L19 
+  [PASS] B.handoff.t2.L20 
+  [PASS] B.handoff.t2.L21 
+  [PASS] B.handoff.t2.L22 
+  [PASS] B.handoff.t2.L23 
+  [PASS] B.handoff.t2.L24 
+  [PASS] B.handoff.t2.L25 
+  [PASS] B.handoff.t2.L26 
+  [PASS] B.handoff.t2.L27 
+  [PASS] B.handoff.t2.L28 
+  [PASS] B.handoff.t2.L29 
+  [PASS] B.handoff.t2.L30 
+  [PASS] B.handoff.t2.L31 
+  [PASS] B.handoff.t2.L32 
+  [PASS] B.handoff.t2.L33 
+  [PASS] B.handoff.t2.L34 
+  [PASS] B.handoff.t2.L35 
+  [PASS] B.handoff.t2.L36 
+  [PASS] B.handoff.t2.L37 
+  [PASS] B.handoff.t2.L38 
+  [PASS] B.handoff.t2.L39 
+  [PASS] B.handoff.t2.L40 
+  [PASS] B.handoff.t2.L41 
+  [PASS] B.handoff.t2.L42 
+  [PASS] B.handoff.t2.L43 
+  [PASS] B.handoff.t2.L44 
+  [PASS] B.handoff.t2.L45 
+  [PASS] B.handoff.t2.L46 
+
+== 3. conv_state 位级：移位自洽 + 跨 token 常驻 ==
+  [PASS] cs.cur.t0.L00 
+  [PASS] cs.cur.t0.L01 
+  [PASS] cs.cur.t0.L02 
+  [PASS] cs.cur.t0.L04 
+  [PASS] cs.cur.t0.L05 
+  [PASS] cs.cur.t0.L06 
+  [PASS] cs.cur.t0.L08 
+  [PASS] cs.cur.t0.L09 
+  [PASS] cs.cur.t0.L10 
+  [PASS] cs.cur.t0.L12 
+  [PASS] cs.cur.t0.L13 
+  [PASS] cs.cur.t0.L14 
+  [PASS] cs.cur.t0.L16 
+  [PASS] cs.cur.t0.L17 
+  [PASS] cs.cur.t0.L18 
+  [PASS] cs.cur.t0.L20 
+  [PASS] cs.cur.t0.L21 
+  [PASS] cs.cur.t0.L22 
+  [PASS] cs.cur.t0.L24 
+  [PASS] cs.cur.t0.L25 
+  [PASS] cs.cur.t0.L26 
+  [PASS] cs.cur.t0.L28 
+  [PASS] cs.cur.t0.L29 
+  [PASS] cs.cur.t0.L30 
+  [PASS] cs.cur.t0.L32 
+  [PASS] cs.cur.t0.L33 
+  [PASS] cs.cur.t0.L34 
+  [PASS] cs.cur.t0.L36 
+  [PASS] cs.cur.t0.L37 
+  [PASS] cs.cur.t0.L38 
+  [PASS] cs.cur.t0.L40 
+  [PASS] cs.cur.t0.L41 
+  [PASS] cs.cur.t0.L42 
+  [PASS] cs.cur.t0.L44 
+  [PASS] cs.cur.t0.L45 
+  [PASS] cs.cur.t0.L46 
+  [PASS] cs.cur.t1.L00 
+  [PASS] cs.shift0.t1.L00 
+  [PASS] cs.shift1.t1.L00 
+  [PASS] cs.cur.t1.L01 
+  [PASS] cs.shift0.t1.L01 
+  [PASS] cs.shift1.t1.L01 
+  [PASS] cs.cur.t1.L02 
+  [PASS] cs.shift0.t1.L02 
+  [PASS] cs.shift1.t1.L02 
+  [PASS] cs.cur.t1.L04 
+  [PASS] cs.shift0.t1.L04 
+  [PASS] cs.shift1.t1.L04 
+  [PASS] cs.cur.t1.L05 
+  [PASS] cs.shift0.t1.L05 
+  [PASS] cs.shift1.t1.L05 
+  [PASS] cs.cur.t1.L06 
+  [PASS] cs.shift0.t1.L06 
+  [PASS] cs.shift1.t1.L06 
+  [PASS] cs.cur.t1.L08 
+  [PASS] cs.shift0.t1.L08 
+  [PASS] cs.shift1.t1.L08 
+  [PASS] cs.cur.t1.L09 
+  [PASS] cs.shift0.t1.L09 
+  [PASS] cs.shift1.t1.L09 
+  [PASS] cs.cur.t1.L10 
+  [PASS] cs.shift0.t1.L10 
+  [PASS] cs.shift1.t1.L10 
+  [PASS] cs.cur.t1.L12 
+  [PASS] cs.shift0.t1.L12 
+  [PASS] cs.shift1.t1.L12 
+  [PASS] cs.cur.t1.L13 
+  [PASS] cs.shift0.t1.L13 
+  [PASS] cs.shift1.t1.L13 
+  [PASS] cs.cur.t1.L14 
+  [PASS] cs.shift0.t1.L14 
+  [PASS] cs.shift1.t1.L14 
+  [PASS] cs.cur.t1.L16 
+  [PASS] cs.shift0.t1.L16 
+  [PASS] cs.shift1.t1.L16 
+  [PASS] cs.cur.t1.L17 
+  [PASS] cs.shift0.t1.L17 
+  [PASS] cs.shift1.t1.L17 
+  [PASS] cs.cur.t1.L18 
+  [PASS] cs.shift0.t1.L18 
+  [PASS] cs.shift1.t1.L18 
+  [PASS] cs.cur.t1.L20 
+  [PASS] cs.shift0.t1.L20 
+  [PASS] cs.shift1.t1.L20 
+  [PASS] cs.cur.t1.L21 
+  [PASS] cs.shift0.t1.L21 
+  [PASS] cs.shift1.t1.L21 
+  [PASS] cs.cur.t1.L22 
+  [PASS] cs.shift0.t1.L22 
+  [PASS] cs.shift1.t1.L22 
+  [PASS] cs.cur.t1.L24 
+  [PASS] cs.shift0.t1.L24 
+  [PASS] cs.shift1.t1.L24 
+  [PASS] cs.cur.t1.L25 
+  [PASS] cs.shift0.t1.L25 
+  [PASS] cs.shift1.t1.L25 
+  [PASS] cs.cur.t1.L26 
+  [PASS] cs.shift0.t1.L26 
+  [PASS] cs.shift1.t1.L26 
+  [PASS] cs.cur.t1.L28 
+  [PASS] cs.shift0.t1.L28 
+  [PASS] cs.shift1.t1.L28 
+  [PASS] cs.cur.t1.L29 
+  [PASS] cs.shift0.t1.L29 
+  [PASS] cs.shift1.t1.L29 
+  [PASS] cs.cur.t1.L30 
+  [PASS] cs.shift0.t1.L30 
+  [PASS] cs.shift1.t1.L30 
+  [PASS] cs.cur.t1.L32 
+  [PASS] cs.shift0.t1.L32 
+  [PASS] cs.shift1.t1.L32 
+  [PASS] cs.cur.t1.L33 
+  [PASS] cs.shift0.t1.L33 
+  [PASS] cs.shift1.t1.L33 
+  [PASS] cs.cur.t1.L34 
+  [PASS] cs.shift0.t1.L34 
+  [PASS] cs.shift1.t1.L34 
+  [PASS] cs.cur.t1.L36 
+  [PASS] cs.shift0.t1.L36 
+  [PASS] cs.shift1.t1.L36 
+  [PASS] cs.cur.t1.L37 
+  [PASS] cs.shift0.t1.L37 
+  [PASS] cs.shift1.t1.L37 
+  [PASS] cs.cur.t1.L38 
+  [PASS] cs.shift0.t1.L38 
+  [PASS] cs.shift1.t1.L38 
+  [PASS] cs.cur.t1.L40 
+  [PASS] cs.shift0.t1.L40 
+  [PASS] cs.shift1.t1.L40 
+  [PASS] cs.cur.t1.L41 
+  [PASS] cs.shift0.t1.L41 
+  [PASS] cs.shift1.t1.L41 
+  [PASS] cs.cur.t1.L42 
+  [PASS] cs.shift0.t1.L42 
+  [PASS] cs.shift1.t1.L42 
+  [PASS] cs.cur.t1.L44 
+  [PASS] cs.shift0.t1.L44 
+  [PASS] cs.shift1.t1.L44 
+  [PASS] cs.cur.t1.L45 
+  [PASS] cs.shift0.t1.L45 
+  [PASS] cs.shift1.t1.L45 
+  [PASS] cs.cur.t1.L46 
+  [PASS] cs.shift0.t1.L46 
+  [PASS] cs.shift1.t1.L46 
+  [PASS] cs.cur.t2.L00 
+  [PASS] cs.shift0.t2.L00 
+  [PASS] cs.shift1.t2.L00 
+  [PASS] cs.cur.t2.L01 
+  [PASS] cs.shift0.t2.L01 
+  [PASS] cs.shift1.t2.L01 
+  [PASS] cs.cur.t2.L02 
+  [PASS] cs.shift0.t2.L02 
+  [PASS] cs.shift1.t2.L02 
+  [PASS] cs.cur.t2.L04 
+  [PASS] cs.shift0.t2.L04 
+  [PASS] cs.shift1.t2.L04 
+  [PASS] cs.cur.t2.L05 
+  [PASS] cs.shift0.t2.L05 
+  [PASS] cs.shift1.t2.L05 
+  [PASS] cs.cur.t2.L06 
+  [PASS] cs.shift0.t2.L06 
+  [PASS] cs.shift1.t2.L06 
+  [PASS] cs.cur.t2.L08 
+  [PASS] cs.shift0.t2.L08 
+  [PASS] cs.shift1.t2.L08 
+  [PASS] cs.cur.t2.L09 
+  [PASS] cs.shift0.t2.L09 
+  [PASS] cs.shift1.t2.L09 
+  [PASS] cs.cur.t2.L10 
+  [PASS] cs.shift0.t2.L10 
+  [PASS] cs.shift1.t2.L10 
+  [PASS] cs.cur.t2.L12 
+  [PASS] cs.shift0.t2.L12 
+  [PASS] cs.shift1.t2.L12 
+  [PASS] cs.cur.t2.L13 
+  [PASS] cs.shift0.t2.L13 
+  [PASS] cs.shift1.t2.L13 
+  [PASS] cs.cur.t2.L14 
+  [PASS] cs.shift0.t2.L14 
+  [PASS] cs.shift1.t2.L14 
+  [PASS] cs.cur.t2.L16 
+  [PASS] cs.shift0.t2.L16 
+  [PASS] cs.shift1.t2.L16 
+  [PASS] cs.cur.t2.L17 
+  [PASS] cs.shift0.t2.L17 
+  [PASS] cs.shift1.t2.L17 
+  [PASS] cs.cur.t2.L18 
+  [PASS] cs.shift0.t2.L18 
+  [PASS] cs.shift1.t2.L18 
+  [PASS] cs.cur.t2.L20 
+  [PASS] cs.shift0.t2.L20 
+  [PASS] cs.shift1.t2.L20 
+  [PASS] cs.cur.t2.L21 
+  [PASS] cs.shift0.t2.L21 
+  [PASS] cs.shift1.t2.L21 
+  [PASS] cs.cur.t2.L22 
+  [PASS] cs.shift0.t2.L22 
+  [PASS] cs.shift1.t2.L22 
+  [PASS] cs.cur.t2.L24 
+  [PASS] cs.shift0.t2.L24 
+  [PASS] cs.shift1.t2.L24 
+  [PASS] cs.cur.t2.L25 
+  [PASS] cs.shift0.t2.L25 
+  [PASS] cs.shift1.t2.L25 
+  [PASS] cs.cur.t2.L26 
+  [PASS] cs.shift0.t2.L26 
+  [PASS] cs.shift1.t2.L26 
+  [PASS] cs.cur.t2.L28 
+  [PASS] cs.shift0.t2.L28 
+  [PASS] cs.shift1.t2.L28 
+  [PASS] cs.cur.t2.L29 
+  [PASS] cs.shift0.t2.L29 
+  [PASS] cs.shift1.t2.L29 
+  [PASS] cs.cur.t2.L30 
+  [PASS] cs.shift0.t2.L30 
+  [PASS] cs.shift1.t2.L30 
+  [PASS] cs.cur.t2.L32 
+  [PASS] cs.shift0.t2.L32 
+  [PASS] cs.shift1.t2.L32 
+  [PASS] cs.cur.t2.L33 
+  [PASS] cs.shift0.t2.L33 
+  [PASS] cs.shift1.t2.L33 
+  [PASS] cs.cur.t2.L34 
+  [PASS] cs.shift0.t2.L34 
+  [PASS] cs.shift1.t2.L34 
+  [PASS] cs.cur.t2.L36 
+  [PASS] cs.shift0.t2.L36 
+  [PASS] cs.shift1.t2.L36 
+  [PASS] cs.cur.t2.L37 
+  [PASS] cs.shift0.t2.L37 
+  [PASS] cs.shift1.t2.L37 
+  [PASS] cs.cur.t2.L38 
+  [PASS] cs.shift0.t2.L38 
+  [PASS] cs.shift1.t2.L38 
+  [PASS] cs.cur.t2.L40 
+  [PASS] cs.shift0.t2.L40 
+  [PASS] cs.shift1.t2.L40 
+  [PASS] cs.cur.t2.L41 
+  [PASS] cs.shift0.t2.L41 
+  [PASS] cs.shift1.t2.L41 
+  [PASS] cs.cur.t2.L42 
+  [PASS] cs.shift0.t2.L42 
+  [PASS] cs.shift1.t2.L42 
+  [PASS] cs.cur.t2.L44 
+  [PASS] cs.shift0.t2.L44 
+  [PASS] cs.shift1.t2.L44 
+  [PASS] cs.cur.t2.L45 
+  [PASS] cs.shift0.t2.L45 
+  [PASS] cs.shift1.t2.L45 
+  [PASS] cs.cur.t2.L46 
+  [PASS] cs.shift0.t2.L46 
+  [PASS] cs.shift1.t2.L46 
+  [PASS] cs.evolved.L00 
+  [PASS] cs.evolved.L01 
+  [PASS] cs.evolved.L02 
+  [PASS] cs.evolved.L04 
+  [PASS] cs.evolved.L05 
+  [PASS] cs.evolved.L06 
+  [PASS] cs.evolved.L08 
+  [PASS] cs.evolved.L09 
+  [PASS] cs.evolved.L10 
+  [PASS] cs.evolved.L12 
+  [PASS] cs.evolved.L13 
+  [PASS] cs.evolved.L14 
+  [PASS] cs.evolved.L16 
+  [PASS] cs.evolved.L17 
+  [PASS] cs.evolved.L18 
+  [PASS] cs.evolved.L20 
+  [PASS] cs.evolved.L21 
+  [PASS] cs.evolved.L22 
+  [PASS] cs.evolved.L24 
+  [PASS] cs.evolved.L25 
+  [PASS] cs.evolved.L26 
+  [PASS] cs.evolved.L28 
+  [PASS] cs.evolved.L29 
+  [PASS] cs.evolved.L30 
+  [PASS] cs.evolved.L32 
+  [PASS] cs.evolved.L33 
+  [PASS] cs.evolved.L34 
+  [PASS] cs.evolved.L36 
+  [PASS] cs.evolved.L37 
+  [PASS] cs.evolved.L38 
+  [PASS] cs.evolved.L40 
+  [PASS] cs.evolved.L41 
+  [PASS] cs.evolved.L42 
+  [PASS] cs.evolved.L44 
+  [PASS] cs.evolved.L45 
+  [PASS] cs.evolved.L46 
+
+== 4. 小权重 == checkpoint 对应层切片（逐字节）==
+  [PASS] W.L00.convw 
+  [PASS] W.L00.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L00.dtbias 
+  [PASS] W.L00.gammaG 
+  [PASS] W.L00.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L00.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L01.convw 
+  [PASS] W.L01.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L01.dtbias 
+  [PASS] W.L01.gammaG 
+  [PASS] W.L01.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L01.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L02.convw 
+  [PASS] W.L02.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L02.dtbias 
+  [PASS] W.L02.gammaG 
+  [PASS] W.L02.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L02.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L04.convw 
+  [PASS] W.L04.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L04.dtbias 
+  [PASS] W.L04.gammaG 
+  [PASS] W.L04.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L04.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L05.convw 
+  [PASS] W.L05.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L05.dtbias 
+  [PASS] W.L05.gammaG 
+  [PASS] W.L05.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L05.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L06.convw 
+  [PASS] W.L06.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L06.dtbias 
+  [PASS] W.L06.gammaG 
+  [PASS] W.L06.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L06.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L08.convw 
+  [PASS] W.L08.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L08.dtbias 
+  [PASS] W.L08.gammaG 
+  [PASS] W.L08.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L08.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L09.convw 
+  [PASS] W.L09.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L09.dtbias 
+  [PASS] W.L09.gammaG 
+  [PASS] W.L09.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L09.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L10.convw 
+  [PASS] W.L10.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L10.dtbias 
+  [PASS] W.L10.gammaG 
+  [PASS] W.L10.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L10.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L12.convw 
+  [PASS] W.L12.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L12.dtbias 
+  [PASS] W.L12.gammaG 
+  [PASS] W.L12.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L12.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L13.convw 
+  [PASS] W.L13.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L13.dtbias 
+  [PASS] W.L13.gammaG 
+  [PASS] W.L13.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L13.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L14.convw 
+  [PASS] W.L14.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L14.dtbias 
+  [PASS] W.L14.gammaG 
+  [PASS] W.L14.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L14.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L16.convw 
+  [PASS] W.L16.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L16.dtbias 
+  [PASS] W.L16.gammaG 
+  [PASS] W.L16.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L16.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L17.convw 
+  [PASS] W.L17.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L17.dtbias 
+  [PASS] W.L17.gammaG 
+  [PASS] W.L17.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L17.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L18.convw 
+  [PASS] W.L18.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L18.dtbias 
+  [PASS] W.L18.gammaG 
+  [PASS] W.L18.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L18.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L20.convw 
+  [PASS] W.L20.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L20.dtbias 
+  [PASS] W.L20.gammaG 
+  [PASS] W.L20.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L20.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L21.convw 
+  [PASS] W.L21.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L21.dtbias 
+  [PASS] W.L21.gammaG 
+  [PASS] W.L21.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L21.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L22.convw 
+  [PASS] W.L22.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L22.dtbias 
+  [PASS] W.L22.gammaG 
+  [PASS] W.L22.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L22.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L24.convw 
+  [PASS] W.L24.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L24.dtbias 
+  [PASS] W.L24.gammaG 
+  [PASS] W.L24.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L24.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L25.convw 
+  [PASS] W.L25.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L25.dtbias 
+  [PASS] W.L25.gammaG 
+  [PASS] W.L25.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L25.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L26.convw 
+  [PASS] W.L26.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L26.dtbias 
+  [PASS] W.L26.gammaG 
+  [PASS] W.L26.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L26.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L28.convw 
+  [PASS] W.L28.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L28.dtbias 
+  [PASS] W.L28.gammaG 
+  [PASS] W.L28.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L28.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L29.convw 
+  [PASS] W.L29.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L29.dtbias 
+  [PASS] W.L29.gammaG 
+  [PASS] W.L29.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L29.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L30.convw 
+  [PASS] W.L30.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L30.dtbias 
+  [PASS] W.L30.gammaG 
+  [PASS] W.L30.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L30.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L32.convw 
+  [PASS] W.L32.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L32.dtbias 
+  [PASS] W.L32.gammaG 
+  [PASS] W.L32.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L32.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L33.convw 
+  [PASS] W.L33.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L33.dtbias 
+  [PASS] W.L33.gammaG 
+  [PASS] W.L33.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L33.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L34.convw 
+  [PASS] W.L34.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L34.dtbias 
+  [PASS] W.L34.gammaG 
+  [PASS] W.L34.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L34.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L36.convw 
+  [PASS] W.L36.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L36.dtbias 
+  [PASS] W.L36.gammaG 
+  [PASS] W.L36.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L36.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L37.convw 
+  [PASS] W.L37.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L37.dtbias 
+  [PASS] W.L37.gammaG 
+  [PASS] W.L37.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L37.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L38.convw 
+  [PASS] W.L38.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L38.dtbias 
+  [PASS] W.L38.gammaG 
+  [PASS] W.L38.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L38.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L40.convw 
+  [PASS] W.L40.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L40.dtbias 
+  [PASS] W.L40.gammaG 
+  [PASS] W.L40.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L40.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L41.convw 
+  [PASS] W.L41.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L41.dtbias 
+  [PASS] W.L41.gammaG 
+  [PASS] W.L41.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L41.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L42.convw 
+  [PASS] W.L42.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L42.dtbias 
+  [PASS] W.L42.gammaG 
+  [PASS] W.L42.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L42.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L44.convw 
+  [PASS] W.L44.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L44.dtbias 
+  [PASS] W.L44.gammaG 
+  [PASS] W.L44.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L44.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L45.convw 
+  [PASS] W.L45.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L45.dtbias 
+  [PASS] W.L45.gammaG 
+  [PASS] W.L45.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L45.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+  [PASS] W.L46.convw 
+  [PASS] W.L46.alog (bf16→fp32 上采样 + 尾零)
+  [PASS] W.L46.dtbias 
+  [PASS] W.L46.gammaG 
+  [PASS] W.L46.convbias_zero (checkpoint 无 conv bias → 全零)
+  [report] W.L46.g1_g2 合成 gamma（checkpoint 无 [2560] 层级 norm，见 README §缺口）
+
+[check_ref] ===== 判定项 709 条：PASS 709 / FAIL 0（另有 36 条参考项）=====

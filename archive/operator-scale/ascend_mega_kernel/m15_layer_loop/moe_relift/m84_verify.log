@@ -1,0 +1,82 @@
+# M84 命令 -> 输出/rc 表（全部在本 worktree 实跑；LC_ALL 两档对照）
+# 环境：source /usr/local/Ascend/ascend-toolkit/set_env.sh ; Ascend950PR / HBM 131072 MB
+# 本文件在第 2 轮复审（p2-1items：证据读数不可复现）后重出：所有「命令 -> 输出」对都**在 tip 上重跑过**；
+# 每条本地判据都跑过 LC_ALL=C 与 LC_ALL=C.UTF-8 两档。逐条清单见 m84_evidence_audit.log。
+
+## 1) 抽取规则与生成物一致（--check），LC_ALL=C 与 LC_ALL=C.UTF-8 各一次
+$ LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+$ LC_ALL=C.UTF-8 python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+
+## 2) 重新生成生成物（幂等）
+$ LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py
+[lift] 写出 m15_moe_layer.h（2081 行；内容锚点 asc 行 62..2031，入口第 2033 行）
+rc=0
+
+## 3) 构建
+$ cmake --build m15_layer_loop/build -j4
+rc=0
+$ sha256sum m15_layer_loop/build/m15_layer_loop
+19846b4d83d7afd0f3acc58f81cd635fac2b0ccc68522a04206d9e969d7e1354  m15_layer_loop/build/m15_layer_loop
+# 与第 1 轮（tip 49e2e77）**同一 sha** ⇒ 第 2 轮的修复**未改变可观测行为**（确定性构建复现）。
+# 机制说明：IG_DIAG_SLOT_END 确实进了 offsGm.SetGlobalBuffer 的实参表达式（E=4 时 20 -> 16），
+#   但视图长度只是元数据、不参与寻址，故无可观测差异 —— 措辞是「未改变可观测行为」，不是「未进代码路径」。
+
+## 4) 验收：runs=all（48 层 x 3 token，含 M65 链段）
+$ ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt all
+[m15] ===== ALL PASS（checks=2012, guards=160, fails=0）=====
+rc=0（完整 stdout 见 m84_accept_run_all.log）
+
+## 5) 验收：runs=chain
+$ ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt chain
+[m15] ===== ALL PASS（checks=910, guards=52, fails=0）=====
+rc=0（完整 stdout 见 m84_accept_chain.log）
+
+## 参考：改前基线（**历史读数**，非本 tip 可复跑：它需要一个把源码退回改前的重建）
+# 重建方式（第 1 轮实跑，见 m84_ab_dump_sha256.log 的 A/B 段）：
+#   git stash push -- m15_layer_loop/m15_moe_layer.h m15_layer_loop/lift_moe_segment.py && cmake --build m15_layer_loop/build -j4
+$ ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt all     # 改前二进制 07efbf03…
+[m15] ===== ALL PASS（checks=2012, guards=160, fails=0）=====   # 改前基线二进制（07efbf03…）的归档读数
+# 该读数已被复审在 tip 上**独立重建同源基线二进制**复现（reviewer-m84b r1 Decision 段）。
+
+## 6) 静态判据（check_prep.py），LC_ALL=C 与 LC_ALL=C.UTF-8 读数一致
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py
+[check] PASS  #5 标量栈数组已移除: 残留 = 无（cnt/off/cursor 三处均未见）
+[check] PASS  #5 标量数组已指向 UB 槽位: 命中的槽位符号 = ['UB_IG_SCAL', 'UB_IG_OFF', 'UB_IG_CUR']
+[check] PASS  #6 诊断槽 GM 目的使用 IG_DIAG_GM_SLOT（1 处）且无写死的 offsGm[8]: offsGm[IG_DIAG_GM_SLOT] = 1 处；offsGm[8] = 0 处
+[check] PASS  #6 未退回 offsGm[NUM_EXPERTS + 8] 的字面形态: offsGm[NUM_EXPERTS... = 0 处
+[check] PASS  #7 FmaChunk K 链 = 1..9（k=0 由 Mul 承担 ⇒ 覆盖 TK=10）: FmaChunk 实参 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+[check] PASS  #7 FmaChunk 无 <10>（TK=10 只需 1..9）: 含 <10> = False
+[check] PASS  #7 topk 分发 case = 1..9 + default→10: case = [1, 2, 3, 4, 5, 6, 7, 8, 9]；default→10 = True
+[check] PASS  #7 模板实例 = <1..10>: UnpermuteStage 实参 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[check] PASS  #7 Init 覆盖 1..10: Init 实参 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[check] PASS  #8 Y 视图上界 = TOTAL_MAX（紧凑 Σt_e）: UnpermuteStage 的 yGm 视图行 = yGm.SetGlobalBuffer(reinterpret_cast<__gm__ bfloat16_t*>(ySorted), static_cast<uint64_t>(TOTAL_MAX) * HIDDEN);
+[check] ---- 布局算术：当前档 NUM_EXPERTS=4 / TOPK_MAX=4 ----
+[check] PASS  [E=4] #5 标量槽随 E 定尺且落在 router-x-块窗内: NUM_EXPERTS=4/TOPK_MAX=4: 槽 = 96 B；窗 = UB_IG_SCAL..180224（窗宽 = 81920 B）；UB_IG_SCAL_END = 105824
+[check] PASS  [E=4] #5 栈数组字节数（诊断读数）: 3 × 4 × 4 B = 48 B（AIV 标量栈容量在仓内无登记值，不据此判 PASS/FAIL）
+[check] PASS  [E=4] #6 诊断槽在真 offsets[0..E] 之后: NUM_EXPERTS=4: IG_DIAG_GM_SLOT = 8 ≥ E+1 = 5
+[check] PASS  [E=4] #6 诊断槽 32B 对齐且在 SZ_OFFSETS 内: NUM_EXPERTS=4: 字节 = 32（%32 = 0）；SZ_OFFSETS = 64
+[check] PASS  [E=4] #8 Y 行数上界 TOTAL_MAX vs padded E*M_MAX（诊断读数）: NUM_EXPERTS=4: TOTAL_MAX = 256 行；padded = 256 行
+[check] ---- 布局算术：E=512 假设档（只重算算术；仓库常量未改）----
+[check] PASS  [E=512] #5 标量槽随 E 定尺且落在 router-x-块窗内: NUM_EXPERTS=512/TOPK_MAX=10: 槽 = 6176 B；窗 = UB_IG_SCAL..5382144（窗宽 = 81920 B）；UB_IG_SCAL_END = 5318432
+[check] PASS  [E=512] #5 栈数组字节数（诊断读数）: 3 × 512 × 4 B = 6144 B（AIV 标量栈容量在仓内无登记值，不据此判 PASS/FAIL）
+[check] PASS  [E=512] #6 诊断槽在真 offsets[0..E] 之后: NUM_EXPERTS=512: IG_DIAG_GM_SLOT = 520 ≥ E+1 = 513
+[check] PASS  [E=512] #6 诊断槽 32B 对齐且在 SZ_OFFSETS 内: NUM_EXPERTS=512: 字节 = 2080（%32 = 0）；SZ_OFFSETS = 2112
+[check] PASS  [E=512] #8 Y 行数上界 TOTAL_MAX vs padded E*M_MAX（诊断读数）: NUM_EXPERTS=512: TOTAL_MAX = 640 行；padded = 32768 行
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+
+$ LC_ALL=C.UTF-8 python3 m15_layer_loop/moe_relift/check_prep.py | tail -1   # 完整读数与上一档逐行相同
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+
+## 7) 单档调用（复审观察 2 的用例）：--E 4 --topk 4 只跑当前档
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py --E 4 --topk 4 | tail -1
+[check] ===== 可 FAIL 的判据 13 条（FAIL 0 条） + 诊断读数 2 条（2 个代码点 × 1 档跑，恒真、不计入判据数）=====
+
+## 8) 源码 status 自检（只查两处**源码**：本轮的证据重出不改它们，故在任何时点都应为空）
+$ git status --short -- m15_layer_loop/m15_moe_layer.h m15_layer_loop/lift_moe_segment.py
+（无输出 = 干净）
+# 说明：本日志与其它证据文件在同一批 commit 内入库；生成本文件时 `moe_relift/check_prep.py`
+#   正被本轮编辑，故**不**把 moe_relift/ 放进这条 status 检查（那会打印一条与被编辑状态绑定的读数）。

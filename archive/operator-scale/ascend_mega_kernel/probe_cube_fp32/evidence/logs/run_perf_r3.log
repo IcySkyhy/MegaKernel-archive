@@ -1,0 +1,8 @@
+
+[PCF] Mmad 吞吐：同一 shape M=64 N=64 K=128，连发 2000 次，SYS_CNT 计时
+dtype          C0    cycles(all)      cycles/Mmad      MAC/cycle  dev C[0][0]
+fp32            8        2484816          1242.41        421.993          128
+bf16           16         156471            78.24       6701.408          128
+[PCF] 同 shape 吞吐比 fp32 : bf16 的 cycle 比为 15.880 x（MAC/cycle 比 0.063 x）
+rc=0
+attempts=1 rc_seq=0 

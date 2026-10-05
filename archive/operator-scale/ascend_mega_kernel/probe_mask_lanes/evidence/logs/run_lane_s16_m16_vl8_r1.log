@@ -1,0 +1,8 @@
+VARIANT name=lane_s16_m16_vl8 kind=0 group=lane-enc sd=s16 md=m16 pat=vl8 rows=0 pitchI=0 pitchW=0 im=0
+LAUNCH aclError=0 (sync timeout=120000ms)
+AREABYTES 12288
+WRANGES 0-16,1024-1040
+NZ bytes_written=32 first_off=0 last_off=1040
+FNV 0x8928990cf1d328f3
+OUTCOME: RAN
+rc=0

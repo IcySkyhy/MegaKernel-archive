@@ -1,0 +1,181 @@
+============================================================================================
+判定项 dump 的跨进程一致性（分区；每变体 5 个独立进程）
+============================================================================================
+
+## 探针 A —— 256B 落盘快照（单区，全量初始化 ⇒ 应整体一致）
+   probe_a_first_elem                       mask=0   一致
+   probe_a_first_elem                       mask=1   一致
+   probe_a_first_elem                       mask=8   一致
+   probe_a_first_elem                       mask=64  一致
+   probe_a_norm_b32                         mask=0   一致
+   probe_a_norm_b32                         mask=1   一致
+   probe_a_norm_b32                         mask=8   一致
+   probe_a_norm_b32                         mask=64  一致
+   probe_a_first_elem_nc                    mask=0   一致
+   probe_a_first_elem_nc                    mask=1   一致
+   probe_a_first_elem_nc                    mask=2   一致
+   probe_a_first_elem_nc                    mask=3   一致
+   probe_a_norm_b32_nc                      mask=0   一致
+   probe_a_norm_b32_nc                      mask=1   一致
+   probe_a_norm_b32_nc                      mask=2   一致
+   probe_a_norm_b32_nc                      mask=3   一致
+
+## 探针 B —— 整段 UB 快照（按区分栏）
+   probe_b_rel0_brc               slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel0_brc               out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel0_brc               MID scratch (未写残留)           [ 32768, 33024)  不一致(3 种)
+   probe_b_rel0_brc               BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(3 种)
+   probe_b_rel1_brc               slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_brc               out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_brc               MID scratch (未写残留)           [ 32768, 33024)  不一致(3 种)
+   probe_b_rel1_brc               BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(5 种)
+   probe_b_rel2_brc               slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel2_brc               out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel2_brc               MID scratch (未写残留)           [ 32768, 33024)  不一致(2 种)
+   probe_b_rel2_brc               BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(5 种)
+   probe_b_rel0_norm              slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel0_norm              out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel0_norm              MID scratch (未写残留)           [ 32768, 33024)  不一致(2 种)
+   probe_b_rel0_norm              BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(5 种)
+   probe_b_rel1_norm              slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_norm              out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_norm              MID scratch (未写残留)           [ 32768, 33024)  不一致(3 种)
+   probe_b_rel1_norm              BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(3 种)
+   probe_b_rel2_norm              slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel2_norm              out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel2_norm              MID scratch (未写残留)           [ 32768, 33024)  不一致(3 种)
+   probe_b_rel2_norm              BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(5 种)
+   probe_b_rel0_getval            slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel0_getval            out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel0_getval            MID scratch (未写残留)           [ 32768, 33024)  一致
+   probe_b_rel0_getval            BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(2 种)
+   probe_b_rel1_getval            slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_getval            out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_getval            MID scratch (未写残留)           [ 32768, 33024)  不一致(3 种)
+   probe_b_rel1_getval            BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(4 种)
+   probe_b_rel2_getval            slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel2_getval            out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel2_getval            MID scratch (未写残留)           [ 32768, 33024)  一致
+   probe_b_rel2_getval            BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(2 种)
+   probe_b_rel1_brc_membar        slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_brc_membar        out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_brc_membar        MID scratch (未写残留)           [ 32768, 33024)  不一致(3 种)
+   probe_b_rel1_brc_membar        BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(4 种)
+   probe_b_rel1_brc_mid           slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_brc_mid           out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_brc_mid           MID scratch (未写残留)           [ 32768, 33024)  一致
+   probe_b_rel1_brc_mid           BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(3 种)
+   probe_b_rel1_brc_g32           slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_brc_g32           out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_brc_g32           MID scratch (未写残留)           [ 32768, 33024)  不一致(2 种)
+   probe_b_rel1_brc_g32           BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(2 种)
+   probe_b_rel1_brc_g4            slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_brc_g4            out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_brc_g4            MID scratch (未写残留)           [ 32768, 33024)  不一致(3 种)
+   probe_b_rel1_brc_g4            BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(5 种)
+   probe_b_rel1_brc_perchunk      slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_brc_perchunk      out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_brc_perchunk      MID scratch (未写残留)           [ 32768, 33024)  不一致(3 种)
+   probe_b_rel1_brc_perchunk      BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(4 种)
+   probe_b_rel1_brc_vprod         slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_brc_vprod         out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_brc_vprod         MID scratch (未写残留)           [ 32768, 33024)  不一致(2 种)
+   probe_b_rel1_brc_vprod         BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(3 种)
+   probe_b_rel1_brc_off4          slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel1_brc_off4          out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel1_brc_off4          MID scratch (未写残留)           [ 32768, 33024)  不一致(2 种)
+   probe_b_rel1_brc_off4          BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(3 种)
+   probe_b_noprod                 slot  (判定项)                  [     0, 16384)  一致
+   probe_b_noprod                 out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_noprod                 MID scratch (未写残留)           [ 32768, 33024)  一致
+   probe_b_noprod                 BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(2 种)
+   probe_b_vrelimm                slot  (判定项)                  [     0, 16384)  一致
+   probe_b_vrelimm                out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_vrelimm                MID scratch (未写残留)           [ 32768, 33024)  一致
+   probe_b_vrelimm                BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(2 种)
+   probe_b_rel0_vrelimm           slot  (判定项)                  [     0, 16384)  一致
+   probe_b_rel0_vrelimm           out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_rel0_vrelimm           MID scratch (未写残留)           [ 32768, 33024)  不一致(2 种)
+   probe_b_rel0_vrelimm           BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(3 种)
+   probe_b_backlog_rel1           slot  (判定项)                  [     0, 16384)  一致
+   probe_b_backlog_rel1           out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_backlog_rel1           MID scratch (未写残留)           [ 32768, 33024)  不一致(4 种)
+   probe_b_backlog_rel1           BACKLOG scratch (未写残留)       [ 33024, 49408)  一致
+   probe_b_backlog_rel0           slot  (判定项)                  [     0, 16384)  一致
+   probe_b_backlog_rel0           out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_backlog_rel0           MID scratch (未写残留)           [ 32768, 33024)  不一致(4 种)
+   probe_b_backlog_rel0           BACKLOG scratch (未写残留)       [ 33024, 49408)  一致
+   probe_b_backlog_rel2           slot  (判定项)                  [     0, 16384)  一致
+   probe_b_backlog_rel2           out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_backlog_rel2           MID scratch (未写残留)           [ 32768, 33024)  不一致(2 种)
+   probe_b_backlog_rel2           BACKLOG scratch (未写残留)       [ 33024, 49408)  一致
+   probe_b_prod3_selftest         slot  (判定项)                  [     0, 16384)  一致
+   probe_b_prod3_selftest         out   (判定项)                  [ 16384, 32768)  一致
+   probe_b_prod3_selftest         MID scratch (未写残留)           [ 32768, 33024)  不一致(4 种)
+   probe_b_prod3_selftest         BACKLOG scratch (未写残留)       [ 33024, 49408)  不一致(4 种)
+
+## 探针 B —— 输出缓冲 dump（判定项，单区）
+   probe_b_rel0_brc               out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_brc               out (判定项)                    [     0, 16384)  一致
+   probe_b_rel2_brc               out (判定项)                    [     0, 16384)  一致
+   probe_b_rel0_norm              out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_norm              out (判定项)                    [     0, 16384)  一致
+   probe_b_rel2_norm              out (判定项)                    [     0, 16384)  一致
+   probe_b_rel0_getval            out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_getval            out (判定项)                    [     0, 16384)  一致
+   probe_b_rel2_getval            out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_brc_membar        out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_brc_mid           out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_brc_g32           out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_brc_g4            out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_brc_perchunk      out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_brc_vprod         out (判定项)                    [     0, 16384)  一致
+   probe_b_rel1_brc_off4          out (判定项)                    [     0, 16384)  一致
+   probe_b_noprod                 out (判定项)                    [     0, 16384)  一致
+   probe_b_vrelimm                out (判定项)                    [     0, 16384)  一致
+   probe_b_rel0_vrelimm           out (判定项)                    [     0, 16384)  一致
+   probe_b_backlog_rel1           out (判定项)                    [     0, 16384)  一致
+   probe_b_backlog_rel0           out (判定项)                    [     0, 16384)  一致
+   probe_b_backlog_rel2           out (判定项)                    [     0, 16384)  一致
+   probe_b_prod3_selftest         out (判定项)                    [     0, 16384)  一致
+
+## 探针 C —— 整段 UB 快照（按区分栏）
+   probe_c_rt_unordered           tab   (判定项)                  [     0, 16384)  一致
+   probe_c_rt_unordered           slot  (判定项)                  [ 16384, 16640)  一致
+   probe_c_rt_unordered           out   (判定项)                  [ 16640, 33024)  一致
+   probe_c_rt_event               tab   (判定项)                  [     0, 16384)  一致
+   probe_c_rt_event               slot  (判定项)                  [ 16384, 16640)  一致
+   probe_c_rt_event               out   (判定项)                  [ 16640, 33024)  一致
+   probe_c_rt_bufid               tab   (判定项)                  [     0, 16384)  一致
+   probe_c_rt_bufid               slot  (判定项)                  [ 16384, 16640)  一致
+   probe_c_rt_bufid               out   (判定项)                  [ 16640, 33024)  一致
+   probe_c_rt_twotok              tab   (判定项)                  [     0, 16384)  一致
+   probe_c_rt_twotok              slot  (判定项)                  [ 16384, 16640)  一致
+   probe_c_rt_twotok              out   (判定项)                  [ 16640, 33024)  一致
+   probe_c_rt_small_unordered     tab   (判定项)                  [     0, 16384)  一致
+   probe_c_rt_small_unordered     slot  (判定项)                  [ 16384, 16640)  一致
+   probe_c_rt_small_unordered     out   (判定项)                  [ 16640, 33024)  一致
+   probe_c_rt_small_twotok        tab   (判定项)                  [     0, 16384)  一致
+   probe_c_rt_small_twotok        slot  (判定项)                  [ 16384, 16640)  一致
+   probe_c_rt_small_twotok        out   (判定项)                  [ 16640, 33024)  一致
+   probe_c_rt_small_bufid         tab   (判定项)                  [     0, 16384)  一致
+   probe_c_rt_small_bufid         slot  (判定项)                  [ 16384, 16640)  一致
+   probe_c_rt_small_bufid         out   (判定项)                  [ 16640, 33024)  一致
+
+## 探针 C —— 输出缓冲 dump（判定项，单区）
+   probe_c_rt_unordered           out (判定项)                    [     0, 16384)  一致
+   probe_c_rt_event               out (判定项)                    [     0, 16384)  一致
+   probe_c_rt_bufid               out (判定项)                    [     0, 16384)  一致
+   probe_c_rt_twotok              out (判定项)                    [     0, 16384)  一致
+   probe_c_rt_small_unordered     out (判定项)                    [     0, 16384)  一致
+   probe_c_rt_small_twotok        out (判定项)                    [     0, 16384)  一致
+   probe_c_rt_small_bufid         out (判定项)                    [     0, 16384)  一致
+
+## 小结
+   探针 A 落盘快照：16 个配置，跨进程不一致 0 个
+   探针 B 判定项区（slot/out）：跨进程不一致 0 处
+   探针 C 判定项区（tab/slot/out）：跨进程不一致 0 处
+   ※ 探针 B 的 MID/BACKLOG scratch 在内核未写它们的变体里是 UB 残留，
+     **设计上不做一致性要求**，它们的'不一致'不计入上面的判定项计数。
+
+RESULT: OK（判定项区跨进程全部逐字节一致）

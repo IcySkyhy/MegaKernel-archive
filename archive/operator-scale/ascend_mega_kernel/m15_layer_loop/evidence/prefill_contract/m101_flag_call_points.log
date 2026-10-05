@@ -1,0 +1,63 @@
+# M110：M101（未合入分支）注意力 core 的 cross-core 调用点逐个点名
+# 采集于本 worktree 的 base = d348547；分支 = feat/m101-attention-core-segment-lift-and-o-p（未合入）
+# 命令与输出逐字如下（塔要求：写进仓库的每条命令都必须实跑并看到输出）。
+
+$ git rev-parse --short feat/m101-attention-core-segment-lift-and-o-p
+6e6e649
+
+$ git show feat/m101-attention-core-segment-lift-and-o-p:m15_layer_loop/m15_attn_core.h | grep -c 'CrossCoreSetFlag<\|CrossCoreWaitFlag<'
+35
+
+$ git show feat/...:m15_layer_loop/m15_attn_core.h | grep -n 'CrossCoreSetFlag<\|CrossCoreWaitFlag<' | sed 's/^ *//'
+422:        CrossCoreWaitFlag<0x2, PIPE_S>(CC_AIVDONE);
+423:        CrossCoreSetFlag<0x0, PIPE_FIX>(CC_BAR);
+424:        CrossCoreWaitFlag<0x0, PIPE_S>(CC_BAR);
+425:        CrossCoreSetFlag<0x2, PIPE_FIX>(CC_RDY);
+426:        CrossCoreWaitFlag<0x2, PIPE_S>(CC_ALLDONE);
+439:        CrossCoreSetFlag<0x2, PIPE_FIX>(CC_RDY);
+441:        CrossCoreWaitFlag<0x2, PIPE_S>(CC_AIVDONE);   // 配对 2 AIV 的 partial 已落 GM（链式 wait->set 挂 S）
+442:        CrossCoreSetFlag<0x0, PIPE_FIX>(CC_BAR);      // 全体 AIC 对齐
+443:        CrossCoreWaitFlag<0x0, PIPE_S>(CC_BAR);
+444:        CrossCoreSetFlag<0x2, PIPE_FIX>(CC_RDY);      // 放行配对 AIV 做 combine
+445:        CrossCoreWaitFlag<0x2, PIPE_S>(CC_ALLDONE);   // 等 AIV 收尾
+485:        CrossCoreWaitFlag<0x4, PIPE_FIX>(ccMM);
+486:        CrossCoreWaitFlag<0x4, PIPE_FIX>(ccMM + AIV_CH);
+512:        CrossCoreSetFlag<0x4, PIPE_FIX>(ccMM);        // S(t) 就绪（两通道）
+513:        CrossCoreSetFlag<0x4, PIPE_FIX>(ccMM + AIV_CH);
+578:            CrossCoreWaitFlag<0x4, PIPE_MTE2>(ccP);          // AIV0 的 P(t) 已写入 GM
+579:            CrossCoreWaitFlag<0x4, PIPE_MTE2>(ccP + AIV_CH); // AIV1 的 P(t) 已写入 GM
+581:            CrossCoreWaitFlag<0x4, PIPE_FIX>(ccMM);          // AIV0 已读完 S(t)
+582:            CrossCoreWaitFlag<0x4, PIPE_FIX>(ccMM + AIV_CH); // AIV1 已读完 S(t)
+635:            CrossCoreSetFlag<0x4, PIPE_FIX>(ccMM);         // PV(t) 就绪（两通道）
+636:            CrossCoreSetFlag<0x4, PIPE_FIX>(ccMM + AIV_CH);
+859:        CrossCoreSetFlag<0x2, PIPE_MTE3>(CC_AIVDONE);
+860:        CrossCoreWaitFlag<0x2, PIPE_MTE2>(CC_RDY);
+861:        CrossCoreSetFlag<0x2, PIPE_MTE3>(CC_ALLDONE);
+871:            CrossCoreSetFlag<0x2, PIPE_MTE3>(CC_AIVDONE);
+877:        CrossCoreWaitFlag<0x2, PIPE_MTE2>(CC_RDY);   // 全体 AIC barrier 完成、ws 可读
+884:        CrossCoreSetFlag<0x2, PIPE_MTE3>(CC_ALLDONE);
+939:        CrossCoreSetFlag<0x4, PIPE_V>(CC_MM0);
+940:        CrossCoreSetFlag<0x4, PIPE_V>(CC_MM1);
+952:            CrossCoreWaitFlag<0x4, PIPE_V>(ccMM);
+966:            CrossCoreSetFlag<0x4, PIPE_V>(ccMM);   // S(t) 已消费
+983:            CrossCoreSetFlag<0x4, PIPE_MTE3>((pBuf == 0) ? CC_P0 : (pBuf == 1) ? CC_P1 : CC_P2);  // P 已落 GM
+986:            CrossCoreWaitFlag<0x4, PIPE_V>(ccMM);
+988:            CrossCoreSetFlag<0x4, PIPE_V>(ccMM);
+1013:        CrossCoreSetFlag<0x2, PIPE_MTE3>(CC_AIVDONE);
+
+$ git show feat/...:m15_layer_loop/m15_attn_core.h | grep -n 'constexpr uint16_t CC_\|constexpr uint32_t AIV_CH\|class AttnCore'
+182:constexpr uint16_t CC_MM0 = 0;   // mode4 mmRes buf0（AIC 侧 +16 → AIV1 通道）
+183:constexpr uint16_t CC_MM1 = 1;   // mode4 mmRes buf1
+184:constexpr uint16_t CC_P0  = 5;   // mode4 P L1 buf0
+185:constexpr uint16_t CC_P1  = 6;
+186:constexpr uint16_t CC_P2  = 7;
+187:constexpr uint16_t CC_BAR = 8;   // mode0 全体 AIC barrier
+188:constexpr uint16_t CC_AIVDONE = 9;  // mode2 AIV ws 写完 -> AIC（2 set 配 1 wait）
+189:constexpr uint16_t CC_RDY     = 10; // mode2 AIC 放行 combine -> AIV（1 set 配 2 wait）
+190:constexpr uint16_t CC_ALLDONE = 11; // mode2 AIV 收尾 -> AIC（2 set 配 1 wait）
+191:constexpr uint32_t AIV_CH = 16;     // mode 4 下 AIC 侧 AIV1 通道偏移
+384:class AttnCoreAic {
+818:class AttnCoreAiv {
+
+$ git show feat/...:m15_layer_loop/m15_attn_core.h | grep -c 'Set  mode 0x4\|Wait mode 0x4\|Set  mode 0x2\|Wait mode 0x2'  (= 生成器头部的分布表行数)
+12

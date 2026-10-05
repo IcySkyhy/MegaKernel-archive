@@ -1,0 +1,355 @@
+# `tools/check_symbol_claims.py` 读数归档
+
+**读数工具版本 = `f0cbc7d`**（`fix(M71): check_symbol_claims 死声明口径剥注释 + golden 锚点改符号引用`；
+工具即该 commit 的 `tools/check_symbol_claims.py`）。每个读数另标**源树 commit**（被扫的那棵树）——
+两者是不同的东西：同一份工具扫不同 commit 的树会得到不同的数（读数 A/B/C 就是同一份工具扫三棵不同的 m20 树）。
+
+**规则依据**（M56 起，首次随 `c4b7b0e`）：**凡在文档里对符号的用途/归属下判断，必须引用声明处原文，或附当场计数；
+不许自造用途描述。** 起因是**连续出现的同一形态**——新写的静态文字没有被自身核对。三处实例
+**一律引 commit**（轮次标签不可核）：`tools/scan_stale_runtime_prints.py` 的 `[refused]` 文案（`96e7e96`）、
+`tools/golden/selfcheck.py` 运行注记里的 m13 分解（`96e7e96`）、`m20_hyperconn/README.md` 把
+`BUF_AIV_GJ(8)` 标成「injW 预转」（`cecf0ae`；它声明处的注释写的是 `预转: hc_norm bf16 行 MTE2 -> V（整核一次）`，
+`injW` 是 `BUF_AIV_IW` 的用途）。
+
+| 读数 | 源树 commit | 工具 | 内容 |
+|---|---|---|---|
+| A | `cecf0ae`（m20 修正前的 README） | `f0cbc7d` | 必须咬住 `BUF_AIV_GJ` |
+| B | `1f316b6`（本 mission 的 base = main 当前 tip） | `f0cbc7d` + 旧工具对照 | m20：0 冲突；死声明 9 → 10 |
+| C | `1c7b36d`（M69 的 m20 树，**尚未合进 main**） | `f0cbc7d` + 旧工具对照 | 注释点过名的死声明必须恢复：2 → 10 |
+| D | `1f316b6` | `f0cbc7d` + 旧工具对照 | 全仓口径：死声明 21 → 22 |
+| E | —（合成用例，写临时目录） | `f0cbc7d` | `--self-test` 三段负向对照 |
+| F | 本分支工作树 | `f0cbc7d` | `--numbers`（该模式本次未改） |
+
+## 本文件这一版改了什么（工具 commit `f0cbc7d`）
+
+`collect_decls` 此前**逐行逐 token 计数、不区分注释与代码**，把注释里的提及也算进唯一口径 `decl_refs`。
+后果（same-source 实测，见读数 B/C）：**给死声明补一条 `⚠ 未使用` 注释就会让它们从判据里静默消失** ——
+同一棵 m20 树，加注释前报 9 个死声明，加注释后报 2 个。
+
+修法（`f0cbc7d`）把引用计数拆成两栏（口径与匹配器同源）：
+* `代码引用次数`（`code_refs`）= **按字符位置剥掉注释后**代码内的出现次数，再减去自己声明行那一行；`0` 才判死；
+* `注释提及`（`comment_refs`）= 注释里的提及次数，**不算引用**，单列展示。
+
+剥注释**按字符跨度**做，不是整行 `grep -v`：同一行里常同时躺着注释提及与真引用，按行排除会把真引用一起吃掉。
+字符串/字符字面量里的 `//`、`/*` 不算注释起点；`#` 只在 `.py` 里当注释（C/C++ 的 `#` 是预处理指令）。
+三类形态在输出里可区分：**出现在注释里**（`注释提及 > 0`，仍可能是死声明）、
+**出现在自己的声明行**（`声明处(文件:行)`，只作定位）、**真的被代码引用**（`代码引用次数 > 0`）。
+
+**旧读数已删（不与新值共存）**：旧版读数 A（死声明 9）、B（9）、C（全仓 25）、D（`--self-test` 四例）
+在 `f0cbc7d` 的工具下不再成立，已整段替换。**`--numbers` 那条代码路径本次未改**，其旧读数（修前
+`26a3ae4` / 修后 `6c48163` 两个状态的负向对照）仍然有效，原文见
+`git show f0cbc7d:tools/evidence/symbol_claims_check.log`；本文件读数 F 是它的当下复算。
+
+## 覆盖范围与已知盲区（统计工具必须交代）
+
+* **同源计数**：`代码引用次数` / `注释提及` / 死声明数，与文档符号匹配器**同一遍 token 计数**产出。
+* **三态分栏**：`冲突（借用他符号词汇）` / `一致（词汇包含）` / `需人工核对（无机械信号）`，外加
+  `未覆盖·已知盲区`（文档里**没加反引号**的已声明符号）。**只有「冲突」参与退出码**，其余只并排展示。
+  文档符号只认**反引号 + 长度 ≥ 3** 的名字（短名在别的模块里常是局部量，会造出假阳性）。
+* **一条「已知会被漏掉」的负向对照**：死声明的口径**不解析语法** —— 只被 `#if X`/`#ifdef X` 提及、
+  或只出现在 `#if 0` 关掉的块里、或只出现在字符串字面量里的符号，都算「代码引用」⇒ **不会被判死**
+  （漏判方向，不是误报）。钉住它的合成用例是 `--self-test` 的 `COND_SYM`（读数 E）。
+* 死声明列表**只列前 20 个**，超出时行尾会写明「共 N 个」；不够 20 个时不写后缀。
+
+---
+
+## 读数 A —— 对**修正前**的 `cecf0ae:m20_hyperconn/README.md` 跑：**必须咬住 `BUF_AIV_GJ`**
+
+源树 = `cecf0ae`（那版 README 在这里自造了用途并张冠李戴）；工具 = `f0cbc7d`。复算：
+
+```bash
+cd <本分支 checkout>                       # 工具用 f0cbc7d 的
+mkdir -p /tmp/m71_cecf0ae && git archive cecf0ae | tar -x -C /tmp/m71_cecf0ae
+python3 tools/check_symbol_claims.py --root /tmp/m71_cecf0ae --code m20_hyperconn \
+      --docs m20_hyperconn/README.md --limit 3
+```
+
+```
+[coverage] 文档 1 个；反引号符号出现 452 次（解析到声明 74、未解析 378）
+[coverage] 声明 280 个（来源：m20_hyperconn）；**死声明（剥注释后代码引用 0）10 个**（其中在注释里被点过名的 1 个 —— **注释提及不算引用**，故它们仍是死声明）
+[verdict] 冲突 7 / 一致 16 / 需人工核对 51 —— **只有「冲突」参与判定**
+  [冲突（借用他符号词汇）] BUF_AIV_GJ  ←  m20_hyperconn/README.md:179
+      文档该行      : | 资源声明自查（M56 r3，逐符号核） | 上面两行的「声明 vs 实际」差异来自一次逐符号核对：`m20_resources.h` 里**只有自己声明处引用、kernel 内 0 引用**的还有 `BUF_AIV_IW(3)`、`BUF_AIV_GJ(8)`、`BUF_AIV_AB(13)`（ …
+      声明处(m20_hyperconn/m20_resources.h:208): line 208   // 预转: hc_norm bf16 行 MTE2 -> V（整核一次）
+      代码引用次数  : 0（剥注释后的代码内，已减去声明行；注释提及不计）
+      注释提及      : 0（**不算引用**，只说明这个名字被写过）
+      机械信号      : injW ← 来自同行提到的 BUF_AIV_IW 的声明注释
+  [冲突（借用他符号词汇）] BUF_AIV_AB  ←  m20_hyperconn/README.md:179
+      文档该行      : | 资源声明自查（M56 r3，逐符号核） | 上面两行的「声明 vs 实际」差异来自一次逐符号核对：`m20_resources.h` 里**只有自己声明处引用、kernel 内 0 引用**的还有 `BUF_AIV_IW(3)`、`BUF_AIV_GJ(8)`、`BUF_AIV_AB(13)`（ …
+      声明处(m20_hyperconn/m20_resources.h:213): line 213   // S6: 累加器 V 内私有（无跨 pipe 交接）
+      代码引用次数  : 0（剥注释后的代码内，已减去声明行；注释提及不计）
+      注释提及      : 0（**不算引用**，只说明这个名字被写过）
+      机械信号      : injW ← 来自同行提到的 BUF_AIV_IW 的声明注释
+  [冲突（借用他符号词汇）] NGROUPS  ←  m20_hyperconn/README.md:179
+      文档该行      : | 资源声明自查（M56 r3，逐符号核） | 上面两行的「声明 vs 实际」差异来自一次逐符号核对：`m20_resources.h` 里**只有自己声明处引用、kernel 内 0 引用**的还有 `BUF_AIV_IW(3)`、`BUF_AIV_GJ(8)`、`BUF_AIV_AB(13)`（ …
+      声明处(m20_hyperconn/m20_resources.h:63): line 63   // 每个 token 的 norm 组数 = hc_count
+      代码引用次数  : 0（剥注释后的代码内，已减去声明行；注释提及不计）
+      注释提及      : 0（**不算引用**，只说明这个名字被写过）
+      机械信号      : injW ← 来自同行提到的 BUF_AIV_IW 的声明注释
+  [冲突（借用他符号词汇）] MODE_COUNT  ←  m20_hyperconn/README.md:179
+      文档该行      : | 资源声明自查（M56 r3，逐符号核） | 上面两行的「声明 vs 实际」差异来自一次逐符号核对：`m20_resources.h` 里**只有自己声明处引用、kernel 内 0 引用**的还有 `BUF_AIV_IW(3)`、`BUF_AIV_GJ(8)`、`BUF_AIV_AB(13)`（ …
+      声明处(m20_hyperconn/m20_resources.h:78): line 78   // （无注释）
+      代码引用次数  : 0（剥注释后的代码内，已减去声明行；注释提及不计）
+      注释提及      : 0（**不算引用**，只说明这个名字被写过）
+      机械信号      : injW ← 来自同行提到的 BUF_AIV_IW 的声明注释
+  [冲突（借用他符号词汇）] DN_KLOOP  ←  m20_hyperconn/README.md:179
+      文档该行      : | 资源声明自查（M56 r3，逐符号核） | 上面两行的「声明 vs 实际」差异来自一次逐符号核对：`m20_resources.h` 里**只有自己声明处引用、kernel 内 0 引用**的还有 `BUF_AIV_IW(3)`、`BUF_AIV_GJ(8)`、`BUF_AIV_AB(13)`（ …
+      声明处(m20_hyperconn/m20_resources.h:88): line 88   // 160
+      代码引用次数  : 0（剥注释后的代码内，已减去声明行；注释提及不计）
+      注释提及      : 0（**不算引用**，只说明这个名字被写过）
+      机械信号      : injW ← 来自同行提到的 BUF_AIV_IW 的声明注释
+  [冲突（借用他符号词汇）] UP_KLOOP  ←  m20_hyperconn/README.md:179
+      文档该行      : | 资源声明自查（M56 r3，逐符号核） | 上面两行的「声明 vs 实际」差异来自一次逐符号核对：`m20_resources.h` 里**只有自己声明处引用、kernel 内 0 引用**的还有 `BUF_AIV_IW(3)`、`BUF_AIV_GJ(8)`、`BUF_AIV_AB(13)`（ …
+      声明处(m20_hyperconn/m20_resources.h:91): line 91   // 5
+      代码引用次数  : 0（剥注释后的代码内，已减去声明行；注释提及不计）
+      注释提及      : 0（**不算引用**，只说明这个名字被写过）
+      机械信号      : injW ← 来自同行提到的 BUF_AIV_IW 的声明注释
+  [冲突（借用他符号词汇）] UB_PERSIST  ←  m20_hyperconn/README.md:179
+      文档该行      : | 资源声明自查（M56 r3，逐符号核） | 上面两行的「声明 vs 实际」差异来自一次逐符号核对：`m20_resources.h` 里**只有自己声明处引用、kernel 内 0 引用**的还有 `BUF_AIV_IW(3)`、`BUF_AIV_GJ(8)`、`BUF_AIV_AB(13)`（ …
+      声明处(m20_hyperconn/m20_resources.h:135): line 135   // ---- PERSIST：hc_norm 的 fp32 预转表（每 AIV 一次，整核生命周期）----
+      代码引用次数  : 1（剥注释后的代码内，已减去声明行；注释提及不计）
+      注释提及      : 0（**不算引用**，只说明这个名字被写过）
+      机械信号      : injW ← 来自同行提到的 BUF_AIV_IW 的声明注释
+  [未解析] 378 个（只报数，不判错 —— 可能是别的仓库/库的名字）：ACL_DEV_ATTR_VECTOR_CORE_NUM, Add, Arange, AscendC, BLK, B_DUAL, BarrierAic, BarrierAiv, Bf16Gemm, BufAcquire
+  [死声明] BUF_AIV_AB, BUF_AIV_GJ, BUF_AIV_IW, DN_KLOOP, MODE_COUNT, NGROUPS, UP_KLOOP, V_LENGTH, gScale, pass
+  [死声明·注释点过名] pass —— 它们**仍判死**（注释提及不是引用）
+  [未覆盖·已知盲区] **文档里没加反引号**的已声明符号 38 个 —— 本工具看不见它们旁边的用途说法，必须人工读：
+      EPS                m20_hyperconn/README.md:90
+      HC                 m20_hyperconn/README.md:76, m20_hyperconn/README.md:80, m20_hyperconn/README.md:81, m20_hyperconn/README.md:102
+      HID                m20_hyperconn/README.md:76, m20_hyperconn/README.md:84, m20_hyperconn/README.md:87, m20_hyperconn/README.md:89
+      HYPER              m20_hyperconn/README.md:62, m20_hyperconn/README.md:105, m20_hyperconn/README.md:276, m20_hyperconn/README.md:279
+      LOWRANK            m20_hyperconn/README.md:279
+      MODE_COMBINE_MIX   m20_hyperconn/README.md:285
+      MODE_FINAL_MIX     m20_hyperconn/README.md:285
+      MODE_MIX           m20_hyperconn/README.md:285
+      M_MAX              m20_hyperconn/README.md:276, m20_hyperconn/README.md:277, m20_hyperconn/README.md:278, m20_hyperconn/README.md:284
+      UP_K               m20_hyperconn/README.md:281
+RESULT: CONFLICT (7 个冲突行 / 核了 74 个文档符号出现、280 个声明；其余 16 一致、51 需人工核对、38 个未覆盖)
+```
+（EXIT=1）
+
+`BUF_AIV_GJ` 那行把「文档该行」与「声明处 `m20_resources.h:208`」并排摆出，机械信号
+`injW ← 来自同行提到的 BUF_AIV_IW 的声明注释` ⇒ 一眼可见文档自造的用途与声明不符。同一句还牵动
+`BUF_AIV_AB`/`NGROUPS`/`MODE_COUNT`/`DN_KLOOP`/`UP_KLOOP`/`UB_PERSIST`，共 7 行候选。
+注意 `UB_PERSIST` 的 `代码引用次数 = 1`（偏移链引用），**不是**死声明。
+
+## 读数 B —— 对**修正后**的 `m20_hyperconn/README.md`（main 树）跑：0 冲突、rc=0
+
+源树 = `1f316b6`（本 mission 的 base = main 当前 tip）；工具 = `f0cbc7d`。复算：
+
+```bash
+cd <本分支 checkout>
+mkdir -p /tmp/m71_1f316b6 && git archive 1f316b6 | tar -x -C /tmp/m71_1f316b6
+python3 tools/check_symbol_claims.py --root /tmp/m71_1f316b6 --code m20_hyperconn \
+      --docs m20_hyperconn/README.md
+```
+
+```
+[coverage] 文档 1 个；反引号符号出现 495 次（解析到声明 97、未解析 398）
+[coverage] 声明 280 个（来源：m20_hyperconn）；**死声明（剥注释后代码引用 0）10 个**（其中在注释里被点过名的 1 个 —— **注释提及不算引用**，故它们仍是死声明）
+[verdict] 冲突 0 / 一致 22 / 需人工核对 75 —— **只有「冲突」参与判定**
+  [未解析] 398 个（只报数，不判错 —— 可能是别的仓库/库的名字）：ACL_DEV_ATTR_VECTOR_CORE_NUM, Add, Arange, AscendC, BLK, B_DUAL, BarrierAic, BarrierAiv, Bf16Gemm, BufAcquire
+  [死声明] BUF_AIV_AB, BUF_AIV_GJ, BUF_AIV_IW, DN_KLOOP, MODE_COUNT, NGROUPS, UP_KLOOP, V_LENGTH, gScale, pass
+  [死声明·注释点过名] pass —— 它们**仍判死**（注释提及不是引用）
+  [未覆盖·已知盲区] **文档里没加反引号**的已声明符号 38 个 —— 本工具看不见它们旁边的用途说法，必须人工读：
+      EPS                m20_hyperconn/README.md:90
+      HC                 m20_hyperconn/README.md:76, m20_hyperconn/README.md:80, m20_hyperconn/README.md:81, m20_hyperconn/README.md:102
+      HID                m20_hyperconn/README.md:76, m20_hyperconn/README.md:84, m20_hyperconn/README.md:87, m20_hyperconn/README.md:89
+      HYPER              m20_hyperconn/README.md:62, m20_hyperconn/README.md:105, m20_hyperconn/README.md:317, m20_hyperconn/README.md:320
+      LOWRANK            m20_hyperconn/README.md:320
+      MODE_COMBINE_MIX   m20_hyperconn/README.md:326
+      MODE_FINAL_MIX     m20_hyperconn/README.md:326
+      MODE_MIX           m20_hyperconn/README.md:326
+      M_MAX              m20_hyperconn/README.md:317, m20_hyperconn/README.md:318, m20_hyperconn/README.md:319, m20_hyperconn/README.md:325
+      UP_K               m20_hyperconn/README.md:322
+RESULT: OK (**0 个机械冲突信号** / 核了 97 个文档符号出现、280 个声明；22 一致、75 需人工核对、38 个未覆盖 —— **这不等于用途正确**：需人工核对与未覆盖两类才是判定依据，本工具只把事实并排摆出来)
+```
+（EXIT=0）
+
+同一棵树上、**修复前**的旧工具报 `死声明 9 个`
+（`BUF_AIV_AB, BUF_AIV_GJ, BUF_AIV_IW, DN_KLOOP, MODE_COUNT, NGROUPS, UP_KLOOP, V_LENGTH, gScale`）；
+修复后报 `10 个`：多出的 `pass` 是 `m20_hyperconn.asc` 里 `struct Judge` 的成员 `bool pass = true;`，
+此前只被注释（`// pass A` / `// pass A2` / `// pass B` / `passA→passA2`）提及、**代码里 0 引用** ⇒
+新口径把它正确地判死（数字变大 = 更严格，不是放宽）。复算旧工具：
+
+```bash
+git show 1f316b6:tools/check_symbol_claims.py > /tmp/old_check_symbol_claims.py
+python3 /tmp/old_check_symbol_claims.py --root /tmp/m71_1f316b6 --code m20_hyperconn \
+      --docs m20_hyperconn/README.md        # → 死声明 9；[死声明] 不含 pass
+```
+
+## 读数 C —— 对 **M69 改过注释的那棵 m20 树**（`1c7b36d`）跑：**必须把它们恢复成死声明**
+
+`1c7b36d`（分支 `feat/m69-m20-dead-resource-declarations-and-m...` 的 tip，**尚未合进 main**）给 m20 里一批
+「kernel 内 0 引用」的声明补了 `⚠ 未使用` 注释（**注释里点了名**，值/活地址一律没动）。
+源树 = `1c7b36d`；工具 = `f0cbc7d`。复算：
+
+```bash
+cd <本分支 checkout>
+mkdir -p /tmp/m71_m69 && git archive 1c7b36d | tar -x -C /tmp/m71_m69
+python3 tools/check_symbol_claims.py --root /tmp/m71_m69 --code m20_hyperconn \
+      --docs m20_hyperconn/README.md
+```
+
+```
+[coverage] 文档 1 个；反引号符号出现 543 次（解析到声明 126、未解析 417）
+[coverage] 声明 280 个（来源：m20_hyperconn）；**死声明（剥注释后代码引用 0）10 个**（其中在注释里被点过名的 8 个 —— **注释提及不算引用**，故它们仍是死声明）
+[verdict] 冲突 0 / 一致 27 / 需人工核对 99 —— **只有「冲突」参与判定**
+  [未解析] 417 个（只报数，不判错 —— 可能是别的仓库/库的名字）：ACL_DEV_ATTR_VECTOR_CORE_NUM, Add, Arange, AscendC, BLK, B_DUAL, BarrierAic, BarrierAiv, Bf16Gemm, BufAcquire
+  [死声明] BUF_AIV_AB, BUF_AIV_GJ, BUF_AIV_IW, DN_KLOOP, MODE_COUNT, NGROUPS, UP_KLOOP, V_LENGTH, gScale, pass
+  [死声明·注释点过名] BUF_AIV_AB, BUF_AIV_GJ, BUF_AIV_IW, DN_KLOOP, MODE_COUNT, NGROUPS, UP_KLOOP, pass —— 它们**仍判死**（注释提及不是引用）
+  [未覆盖·已知盲区] **文档里没加反引号**的已声明符号 39 个 —— 本工具看不见它们旁边的用途说法，必须人工读：
+      EPS                m20_hyperconn/README.md:90
+      HC                 m20_hyperconn/README.md:76, m20_hyperconn/README.md:80, m20_hyperconn/README.md:81, m20_hyperconn/README.md:102
+      HID                m20_hyperconn/README.md:76, m20_hyperconn/README.md:84, m20_hyperconn/README.md:87, m20_hyperconn/README.md:89
+      HYPER              m20_hyperconn/README.md:62, m20_hyperconn/README.md:105, m20_hyperconn/README.md:356, m20_hyperconn/README.md:359
+      LOWRANK            m20_hyperconn/README.md:359
+      MODE_COMBINE_MIX   m20_hyperconn/README.md:365
+      MODE_FINAL_MIX     m20_hyperconn/README.md:365
+      MODE_MIX           m20_hyperconn/README.md:365
+      M_MAX              m20_hyperconn/README.md:356, m20_hyperconn/README.md:357, m20_hyperconn/README.md:358, m20_hyperconn/README.md:364
+      UP_K               m20_hyperconn/README.md:361
+RESULT: OK (**0 个机械冲突信号** / 核了 126 个文档符号出现、280 个声明；27 一致、99 需人工核对、39 个未覆盖 —— **这不等于用途正确**：需人工核对与未覆盖两类才是判定依据，本工具只把事实并排摆出来)
+```
+（EXIT=0）
+
+同一棵树上、**修复前**的旧工具报 `死声明 2 个`（只剩 `V_LENGTH, gScale`）—— 那 8 个被「⚠ 未使用」注释
+（注释提及）从判据里抹掉了。修复后报 `10 个`，其中 8 个正是**注释里点过名的**：
+`BUF_AIV_AB, BUF_AIV_GJ, BUF_AIV_IW, DN_KLOOP, MODE_COUNT, NGROUPS, UP_KLOOP, pass`。
+复算旧工具（用读数 B 生成的 `/tmp/old_check_symbol_claims.py`）：
+
+```bash
+python3 /tmp/old_check_symbol_claims.py --root /tmp/m71_m69 --code m20_hyperconn \
+      --docs m20_hyperconn/README.md
+# [coverage] 声明 280 个（来源：m20_hyperconn）；**死声明（代码引用 0）2 个**
+#   [死声明] V_LENGTH, gScale
+```
+
+## 读数 D —— **全仓口径**（源树 `1f316b6` + 工具 `f0cbc7d`）
+
+⚠ 这是**全仓口径**（默认扫仓根下全部 `*.md` + 全部代码）：**任何一次 `.md` 改动都会让它作废**，
+所以它**只在源树 `1f316b6` 上成立**。复算：
+
+```bash
+cd <本分支 checkout>                  # 复用读数 B 建的 /tmp/m71_1f316b6（同一源树 commit）
+python3 tools/check_symbol_claims.py --root /tmp/m71_1f316b6 --limit 3
+```
+
+```
+[coverage] 文档 46 个；反引号符号出现 10306 次（解析到声明 1070、未解析 9236）
+[coverage] 声明 2184 个（来源：.）；**死声明（剥注释后代码引用 0）22 个**（其中在注释里被点过名的 1 个 —— **注释提及不算引用**，故它们仍是死声明）
+[verdict] 冲突 10 / 一致 126 / 需人工核对 934 —— **只有「冲突」参与判定**
+  [冲突（借用他符号词汇）] bid  ←  m10_attn_decode/README.md:621
+  [冲突（借用他符号词汇）] mode  ←  m15_layer_loop/README.md:101
+  [冲突（借用他符号词汇）] nDtiles  ←  m15_layer_loop/README.md:247
+  [冲突（借用他符号词汇）] M_MAX  ←  m15_layer_loop/README.md:1106
+  [冲突（借用他符号词汇）] coreDiv  ←  m19_qsa_indexer/README.md:439
+  [冲突（借用他符号词汇）] coreDiv  ←  m19_qsa_indexer/README.md:439
+  [冲突（借用他符号词汇）] BUF_LOG  ←  m7_router_topk/README.md:204
+  [冲突（借用他符号词汇）] BUF_IN  ←  probe_sync_quirks/README.md:56
+  [冲突（借用他符号词汇）] BUF_AIV_SG  ←  probe_vf_ldst/README.md:12
+  [冲突（借用他符号词汇）] BUF_AIV_IW  ←  probe_vf_ldst/README.md:12
+  [未解析] 9236 个（只报数，不判错 —— 可能是别的仓库/库的名字）：A310, ACL_DEV_ATTR_AICORE_CORE_NUM, ACL_DEV_ATTR_VECTOR_CORE_NUM, AIC, AICore, AIV, AIV0_AIV1_OFFSET, ALL, ALLOWLIST, ARG
+  [死声明] AIV_UB_BYTES, BIGF, BUF_ID_PONG, FLAG_CNT, FLAG_GDN_RESERVED, GQA_N2, H_HalfUlpBf16, L0A_OFF_Q, P_TOT, RADIX_NCAND, RADIX_PASSES, ST_TOTAL_MB, UB_CNTS, UB_MMAT, UB_SMAT, UB_TOT, UB_TOTAL2, UB_WMAT, W_TOTAL_MB, castF32S32（共 22 个，此处只列前 20）
+  [死声明·注释点过名] reuse —— 它们**仍判死**（注释提及不是引用）
+  [未覆盖·已知盲区] **文档里没加反引号**的已声明符号 326 个 —— 本工具看不见它们旁边的用途说法，必须人工读：
+RESULT: CONFLICT (10 个冲突行 / 核了 1070 个文档符号出现、2184 个声明；其余 126 一致、934 需人工核对、326 个未覆盖)
+```
+（EXIT=1）
+
+同一棵树上、**修复前**报 `死声明 21 个`：多出的 `reuse` 只被注释提及过、代码 0 引用 ⇒ 新口径把它判死。
+`冲突` 计数（10）与新口径**无关**（`classify` 未改；旧工具在同一棵树上也是 10）—— 逐条是仓库里既有的
+「一行并列枚举多个符号、各自带注释」形态，需人读（假阳性说明见工具 docstring）。
+复算旧工具：`python3 /tmp/old_check_symbol_claims.py --root /tmp/m71_1f316b6 --limit 3`。
+
+## 读数 E —— `--self-test`（三段：文档 4 例 / `--numbers` 3 例 / 引用计数 6 例）
+
+工具 `f0cbc7d`。复算：`python3 tools/check_symbol_claims.py --self-test`（期望 rc=0）
+
+```
+--self-test（负向对照：四个合成用例）--
+  borrow.md                  判为 冲突（借用他符号词汇）            期望 冲突（借用他符号词汇）            rc=1 OK
+  agree.md                   判为 一致（词汇包含）               期望 一致（词汇包含）               rc=0 OK
+  blindspot_paraphrase.md    判为 需人工核对（无机械信号）           期望 需人工核对（无机械信号）           rc=0 OK
+  blindspot_plain.md         判为 未覆盖                    期望 未覆盖                    rc=2 OK
+RESULT: OK（borrow=机械咬住 / agree=弱正向 / paraphrase=需人工核对 / plain=落进「未覆盖·已知盲区」栏）
+--self-test（--numbers：三个合成用例）--
+  num_hit.md       判为 冲突       期望 冲突       rc=1 OK
+  num_hit2.md      判为 冲突       期望 冲突       rc=1 OK
+  num_blind.md     判为 未覆盖      期望 未覆盖      rc=0 OK
+RESULT: OK（num_hit/num_hit2=同一条线两处数值不一致必须报出 / num_blind=**已知盲区**：标签措辞不同 ⇒ 只进「未覆盖」栏，不许当成通过）
+--self-test（引用计数口径：注释提及 vs 真引用）--
+  ONLY_COMMENT   code_refs=0  comment_refs=1  期望 code=0 comment>=1 OK（只在行注释里点名 ⇒ 仍判死）
+  ONLY_BLOCK     code_refs=0  comment_refs=2  期望 code=0 comment>=2 OK（只在块注释里点名 ⇒ 仍判死）
+  REAL_REF       code_refs=1  comment_refs=0  期望 code=1 comment>=0 OK（真被代码引用 ⇒ 不判死）
+  MIXED          code_refs=1  comment_refs=2  期望 code=1 comment>=1 OK（同行既注释提及又真引用 ⇒ 真引用仍被算到）
+  AFTER_STR      code_refs=1  comment_refs=0  期望 code=1 comment>=0 OK（字符串里的 // 不是注释起点 ⇒ 真引用没被吞）
+  COND_SYM       code_refs=1  comment_refs=0  期望 code=1 comment>=0 OK（**已知盲区**：预处理条件里的提及算引用 ⇒ 不会判死）
+RESULT: OK（ONLY_COMMENT/ONLY_BLOCK=注释提及仍判死 / REAL_REF=真引用不判死 / MIXED/AFTER_STR=同行或字符串里的真引用没被吞 / COND_SYM=**已知会被漏掉**的盲区）
+```
+
+`引用计数` 那一段就是本条修复的负向对照：`ONLY_COMMENT`/`ONLY_BLOCK` 只在注释里被点名 ⇒ **仍判死**（正对照，
+旧口径会把它们算成"有引用"）；`REAL_REF` 真被代码引用 ⇒ 不判死（负对照）；`MIXED` 同一行既注释提及又真引用
+⇒ 真引用仍被算到（证明粒度是字符位置不是整行）；`AFTER_STR` 在字符串里的 `//` 之后 ⇒ 真引用没被吞；
+`COND_SYM` 是**已知会被漏掉**的盲区（`#if` 提及算引用），用来钉住它而不假装它被判死。
+
+## 读数 F —— `--numbers`（这条代码路径本次**未改**）
+
+`numbers_scan` / `report_numbers` 在 `f0cbc7d` 里没有改动，所以这条模式的口径与退出码不变。
+对 `tools/evidence/stale_runtime_print_scan.log` 跑（工作树）：
+
+```bash
+python3 tools/check_symbol_claims.py --numbers --docs tools/evidence/stale_runtime_print_scan.log
+```
+
+```
+[coverage] 文件 1 个 / 186 行；认出读数出现 132 次，按「**同一文件 + 同一节**内的（M1 标签 3-gram / M2 量词对，再加量词）」归成 102 条线；**其中可交叉核对的线 23 条**（≥2 次出现）
+  [冲突] 同一节内同一条线出现不同数值：M1:不匹配:处  ← tools/evidence/stale_runtime_print_scan.log「## 5. M56 修订记录（按 commit，不按轮次）」
+  [冲突] 同一节内同一条线出现不同数值：M1:源文件:个  ← tools/evidence/stale_runtime_print_scan.log「### 2.1 正常扫描（`--exclude` 只用于剔除本文件自身的自指计数）」
+  [冲突] 同一节内同一条线出现不同数值：M1:源文件:个  ← tools/evidence/stale_runtime_print_scan.log「### 2.2 误用对照 A：`--exclude` 指向源文件（真树，`--exclude selfcheck.py`」
+  [冲突] 同一节内同一条线出现不同数值：M1:出调用:个  ← tools/evidence/stale_runtime_print_scan.log「### 2.3 误用对照 B：合成真命中（复现 `reviews/…m56-r2.md` 给的用例，直接证明「真命中不再」
+  [冲突] 同一节内同一条线出现不同数值：M1:源文件:个  ← tools/evidence/stale_runtime_print_scan.log「### 2.3 误用对照 B：合成真命中（复现 `reviews/…m56-r2.md` 给的用例，直接证明「真命中不再」
+  [冲突] 同一节内同一条线出现不同数值：M1:调用点:个  ← tools/evidence/stale_runtime_print_scan.log「### 2.3 误用对照 B：合成真命中（复现 `reviews/…m56-r2.md` 给的用例，直接证明「真命中不再」
+  [冲突] 同一节内同一条线出现不同数值：M1:输出调:个  ← tools/evidence/stale_runtime_print_scan.log「### 2.3 误用对照 B：合成真命中（复现 `reviews/…m56-r2.md` 给的用例，直接证明「真命中不再」
+  [未覆盖·已知盲区] 只出现一次的读数线 79 条（没有兄弟可比）、以及标签措辞完全不同的同义读数（连不上线）—— 本模式都看不见，必须人工读
+RESULT: CONFLICT (7 条线数值不一致 / 交叉核对了 23 条线、132 次读数出现) —— **候选，需人读**
+```
+（EXIT=1）
+
+这 7 条候选与旧读数（`6c48163` 的树）逐栏相同，逐条是「修前 vs 修后两个引文块之间的同名词读数」形态，
+不是同步错误；两种假阳性形态（同一名词不同谓语 / 同一张表不同行）写在工具 docstring 的 `--numbers` 一节里。
+
+## 对本文件自身跑 `--numbers`（自查动作，会看到 1 条候选）
+
+本文刻意把「加注释前 / 加注释后」两个时点的读数并排写在同一节里（要展示的正是这个差），
+所以 `--numbers` 对本文件会报 1 条候选，键是 `M1:加注释:个` —— 属已披露的「同一名词、不同时点」
+形态，**不是同步错误**。复算：
+
+```bash
+python3 tools/check_symbol_claims.py --numbers --docs tools/evidence/symbol_claims_check.log
+```
+
+## 复算（一次跑全；逐条命令在上文都出现过，均已实跑）
+
+```bash
+cd <本分支 checkout>
+python3 tools/check_symbol_claims.py --self-test                                              # 期望 rc=0
+python3 tools/check_symbol_claims.py --code m20_hyperconn --docs m20_hyperconn/README.md      # 期望 rc=0
+mkdir -p /tmp/m71_m69 && git archive 1c7b36d | tar -x -C /tmp/m71_m69
+python3 tools/check_symbol_claims.py --root /tmp/m71_m69 --code m20_hyperconn --docs m20_hyperconn/README.md
+git show 1f316b6:tools/check_symbol_claims.py > /tmp/old_check_symbol_claims.py
+python3 /tmp/old_check_symbol_claims.py --root /tmp/m71_m69 --code m20_hyperconn --docs m20_hyperconn/README.md  # 旧口径：2
+python3 tools/check_symbol_claims.py --numbers --docs tools/evidence/stale_runtime_print_scan.log
+```
+
+退出码（三态）：`0` = 比过且**无机械冲突**（**不等于用途正确**）；`1` = 有 ≥1 个**冲突候选**（需人读）；
+`2` = 没得比/输入缺失。
+
+## 连带影响：`m20_hyperconn/README.md` 的「工具口径死声明 9 个」已过时（本 mission 只上报，不改）
+
+新口径把 `pass` / `reuse` 这类「只被注释点到名、代码 0 引用」的声明正确地判成死声明，因此
+`m20_hyperconn/README.md`（行 179 / 202 / 223）那几处「工具口径死声明 **9 个**」在 `f0cbc7d` 的工具下应为
+**10 个**；多的一个是 `m20_hyperconn.asc` 里 `struct Judge::pass`，它**不在** `m20_resources.h` 的 §3 表内，
+所以 §3 表的逐符号 `decl_refs` 列**不受影响**（在 `1f316b6` 上逐符号复核过：那 14 行的 (b) 值新旧一致，
+1/1/2/1/1/0/0/0/0/0/0/0/0/0）。`m20_hyperconn/**` 不在本 mission 的 scope（M69 正在改那一段），已按流程
+file 给 tower 路由。

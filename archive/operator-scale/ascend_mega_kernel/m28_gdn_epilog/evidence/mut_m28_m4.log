@@ -1,0 +1,5 @@
+[lock] acquired
+[M28] case mut_m28_m4: m=4 mutant=1
+[M28] mut_m28_m4 o first mismatch idx=128 got=0x450b9e7f ref=0xd74629be
+[M28] mut_m28_m4 : FAIL (o vs C-ref 5 bad, z vs C-ref 0 bad, m=4 mutant=1, blk=28)
+[M28] ===== FAILURES PRESENT =====

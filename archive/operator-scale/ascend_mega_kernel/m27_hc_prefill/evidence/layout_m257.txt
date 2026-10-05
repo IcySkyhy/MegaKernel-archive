@@ -1,0 +1,17 @@
+# m257：M119 hc prefill 的 arena 行页布局（由 m15_hc_resources.h 的常量算出）
+mt=8 tile_stride=163840 row_hp=20480 row_hid=5120 row_rstd=16 row_injw=128
+m=257 tiles=33 arena_bytes=9595904 arena_dumped=1
+off_hcp=0 sz_hcp=1310720
+off_xn=1310720 sz_xn=1310720
+off_rstd=2621440 sz_rstd=1024
+off_injw=2622464 sz_injw=8192
+off_oh=2630656 sz_oh=43008
+off_ls=2673664 sz_ls=40960
+off_gate=2714624 sz_gate=1310720
+off_blk=4025344 sz_blk=327680
+ws_bytes=4353024 hyper=10240 hid=2560 lowrank=320 hc=4 inj_n=4 oh_w=336 oh_inj=320 inj_stride=16 injw_slot=8 up_n=10240 up_k=320 m_max=64
+mode=1 ij_stride=16 ij_tile_stride=256 h_in_tile_stride=163840 bo_tile_stride=40960
+chain=1 oh_inj_off=2631296 ij_row_bytes=32
+hin_a2_is_arena1=1
+mutant=none
+reloc_blk=1 reloc_injw=1 reloc_rstd=1

@@ -1,0 +1,18 @@
+{
+  "tensor": "y_final.bin",
+  "shape": [
+    33,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 168960,
+  "sha256": "2a795ec31cb0718c6f78bd9dec85bafb5a830d76be44e711ee3e98f4831ebad0",
+  "kind": "golden",
+  "description": "m6#2 output (bf16) from the quant-aware moe_output"
+}

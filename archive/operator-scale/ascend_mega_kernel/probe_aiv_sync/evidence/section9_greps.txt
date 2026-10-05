@@ -1,0 +1,257 @@
+# §9 核验列 —— 完整原始输出（由 tools/dump_section9_evidence.sh 生成，勿手改）
+# 生成时间      : 2026-09-27T01:25:47+00:00
+# wt-64 工作树   : /workspace/ascend_mega_kernel/.tower/worktrees/wt-64（§9 引用的 m15/m20 文件本 mission 未改动 ⇒ 内容 == 基快照 89ce319d4c87）
+# main checkout : /workspace/ascend_mega_kernel（commit 1c7eb5e3bfec；仅用于基快照里不存在的文件）
+# CANN install  : /usr/local/Ascend/cann-9.1.0（只读；IsSplitCubePipe 规则的权威头文件）
+# 每段格式      : [tag] + tree/commit + LC_ALL + 命令 + 完整 stdout + exit + 输出行数
+# 复现          : LC_ALL=C 与 LC_ALL=C.UTF-8 各跑一次，输出应逐字节相同
+
+=== [m20_processaiv_dws] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n -e ProcessAiv() -e dWS m20_hyperconn/m20_hyperconn.asc
+476:    __aicore__ inline void ProcessAiv()
+928:        op.ProcessAiv();
+1707:                   *dN = nullptr, *dWS = nullptr;
+1716:        if (dWS) aclrtFree(dWS);
+1725:        aclrtMalloc(reinterpret_cast<void**>(&dWS), WS_BYTES + 64, ACL_MEM_MALLOC_HUGE_FIRST) != ACL_SUCCESS) {
+1739:        aclrtMemcpy(dWS, zeroWs.size(), zeroWs.data(), zeroWs.size(), ACL_MEMCPY_HOST_TO_DEVICE);
+1744:    m20_hyperconn_kernel<<<aicNum, 0, stream>>>(dH, dBO, dIJ, dWD, dWI, dWU, dN, dWS, m, cs.mode, stageLimit);
+1753:    aclrtMemcpy(wsHost.data(), wsHost.size(), dWS, wsHost.size(), ACL_MEMCPY_DEVICE_TO_HOST);
+[exit=0] [完整输出行数=8]
+
+=== [m20_barrierAiv_def] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n -A6 inline void BarrierAiv m20_hyperconn/m20_hyperconn.asc
+120:__aicore__ inline void BarrierAiv()
+121-{
+122-    AscendC::CrossCoreSetFlag<CC_MODE0, PIPE_MTE3>(FLAG);
+123-    AscendC::CrossCoreWaitFlag<CC_MODE0, WAIT_PIPE>(FLAG);
+124-}
+125-
+126-// AIC 段内 mode-0 barrier：全体 AIC 到齐；SET_PIPE 取 PIPE_FIX 时表示 FIXP 写 GM 已排空
+[exit=0] [完整输出行数=7]
+
+=== [m20_barrierAiv_calls] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n BarrierAiv< m20_hyperconn/m20_hyperconn.asc
+490:            BarrierAiv<PIPE_MTE2, FLAG_AV0>();
+498:            BarrierAiv<PIPE_MTE2, FLAG_AV1>();   // XN 全量落盘
+506:            BarrierAiv<PIPE_MTE2, FLAG_AV2>();   // LS 全量落盘
+[exit=0] [完整输出行数=3]
+
+=== [m20_barrierAic_def] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n -A5 inline void BarrierAic m20_hyperconn/m20_hyperconn.asc
+128:__aicore__ inline void BarrierAic()
+129-{
+130-    AscendC::CrossCoreSetFlag<CC_MODE0, SET_PIPE>(FLAG);
+131-    AscendC::CrossCoreWaitFlag<CC_MODE0, WAIT_PIPE>(FLAG);
+132-}
+133-
+[exit=0] [完整输出行数=6]
+
+=== [m20_barrierAic_calls] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n BarrierAic< m20_hyperconn/m20_hyperconn.asc
+527:            BarrierAic<PIPE_S, PIPE_MTE2, FLAG_AC0>();
+535:            BarrierAic<PIPE_S, PIPE_FIX, FLAG_AC1>();
+540:            BarrierAic<PIPE_S, PIPE_MTE2, FLAG_AC2>();
+544:            BarrierAic<PIPE_S, PIPE_FIX, FLAG_AC3>();
+[exit=0] [完整输出行数=4]
+
+=== [m15_chain_loop] tree=MAIN commit=1c7eb5e3bfec(main) LC_ALL=<unset>
+$ grep -n -e for (uint32_t L = 0; L < nL -e H_LaunchChainLayer m15_layer_loop/m15_chain_host.h
+206:static void H_LaunchChainLayer(Ctx& C, uint32_t L, void* hIn, void* bo, void* ij, uint32_t ijStride,
+348:    for (uint32_t L = 0; L < nL; ++L) {
+364:        H_LaunchChainLayer(C, L, hInDev, boDev, ijDev, ijStride, yDev, attnMode, M15H::MODE_COMBINE_MIX,
+725:        for (uint32_t L = 0; L < nL; ++L) {
+736:    for (uint32_t L = 0; L < nL; ++L) {
+760:    for (uint32_t L = 0; L < nL; ++L) {
+794:    for (uint32_t L = 0; L < nL; ++L) {
+802:    for (uint32_t L = 0; L < nL; ++L) {
+[exit=0] [完整输出行数=8]
+
+=== [m15_chain_sync_calls] tree=MAIN commit=1c7eb5e3bfec(main) LC_ALL=<unset>
+$ grep -n H_Sync(C m15_layer_loop/m15_chain_host.h
+177:    if (!H_Sync(C, "gm_w_source_backup")) {
+259:    if (!H_Sync(C, tag)) {
+281:        H_Sync(C, tag);
+290:    H_Sync(C, tag);
+366:        if (!H_Sync(C, "ch_layer")) {
+382:        if (!H_Sync(C, "ch_layer_d2h")) {
+397:    if (!H_Sync(C, "ch_gm")) {
+404:    if (!H_Sync(C, "ch_gm_d2h")) {
+453:        if (!H_Sync(C, "ch_m1")) { return false; }
+464:        if (!H_Sync(C, "ch_ple_conly")) { return false; }
+467:        if (!H_Sync(C, "ch_ple_conly_d2h")) { return false; }
+475:        if (!H_Sync(C, "ch_ple_single")) { return false; }
+492:        if (!H_Sync(C, "ch_ple_mix")) { return false; }
+502:        if (!H_Sync(C, "ch_m1")) { return false; }
+530:    if (!H_Sync(C, "ch_m_sub")) { return false; }
+532:    if (!H_Sync(C, "ch_m_attnout_d2h")) { return false; }
+555:    if (!H_Sync(C, "ch_m2")) { return false; }
+572:    if (!H_Sync(C, "ch_m_moe")) { return false; }
+575:    if (!H_Sync(C, "ch_m_moeout_d2h")) { return false; }
+[exit=0] [完整输出行数=19]
+
+=== [m15_nl_def] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n NL = 48 m15_layer_loop/m15_loop_layout.h
+42:constexpr uint32_t NL = 48;                // config: num_hidden_layers
+[exit=0] [完整输出行数=1]
+
+=== [m15_head_loop] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n for (uint32_t h = bid m15_layer_loop/m15_gdn_layer.h
+1098:        for (uint32_t h = bid; h < numHeads_; h += nblk, ++slot) {
+1247:        for (uint32_t h = bid; h < HEADS_; h += nAiv) {
+[exit=0] [完整输出行数=2]
+
+=== [m15_state_access] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n stateGm_ m15_layer_loop/m15_gdn_layer.h
+1066:        stateGm_.SetGlobalBuffer(reinterpret_cast<__gm__ float*>(state));
+1123:        DataCopy(stL, stateGm_[static_cast<uint64_t>(h) * ST_ELEMS], sp);
+1170:        DataCopy(stateGm_[static_cast<uint64_t>(h) * ST_ELEMS], stL, sp);
+1185:    GlobalTensor<float> stateGm_;
+[exit=0] [完整输出行数=4]
+
+=== [m15_head_loop_ctx] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n -B2 -A2 for (uint32_t h = bid m15_layer_loop/m15_gdn_layer.h
+1096-        }
+1097-        uint32_t slot = 0;
+1098:        for (uint32_t h = bid; h < numHeads_; h += nblk, ++slot) {
+1099-            const uint32_t p = slot & 1;
+1100-            const uint32_t hn = h + nblk;
+--
+1245-    __aicore__ inline void Run(uint32_t bid, uint32_t nAiv)
+1246-    {
+1247:        for (uint32_t h = bid; h < HEADS_; h += nAiv) {
+1248-            CopyInHead(h);
+1249-            ComputeHead(h);
+[exit=0] [完整输出行数=11]
+
+=== [m15_phase_boundary] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n M15L_PhaseBoundaryAiv m15_layer_loop/m15_layer_kernel.h
+103:__aicore__ inline void M15L_PhaseBoundaryAiv()
+185:        M15L_PhaseBoundaryAiv();                 // 全体 AIV rendezvous + 本核 MTE3→MTE2 drain
+[exit=0] [完整输出行数=2]
+
+=== [m15_phase_body] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n -A8 inline void M15L_PhaseBoundaryAiv m15_layer_loop/m15_layer_kernel.h
+103:__aicore__ inline void M15L_PhaseBoundaryAiv()
+104-{
+105-    AscendC::CrossCoreSetFlag<M15M::CC_MODE0, PIPE_MTE3>(M15M::FLAG_L0_BOUND_AIV);
+106-    AscendC::CrossCoreWaitFlag<M15M::CC_MODE0, PIPE_MTE2>(M15M::FLAG_L0_BOUND_AIV);
+107-}
+108-
+109-// ============================================================
+110-// 2. 相位 B（MoE 段）的指针组装 —— 融合路径与「MoE-only 对照」共用
+111-// ============================================================
+[exit=0] [完整输出行数=9]
+
+=== [m15_ws_segments] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ sed -n 284,297p m15_layer_loop/m15_gdn_resources.h
+constexpr uint32_t WS_XNORM = 0;
+constexpr uint32_t WS_RES1 = WS_XNORM + SZ_XNORM;
+constexpr uint32_t WS_QKVZBA = WS_RES1 + SZ_RES1;
+constexpr uint32_t WS_Q = WS_QKVZBA + SZ_QKVZBA;
+constexpr uint32_t WS_K = WS_Q + SZ_Q;
+constexpr uint32_t WS_V = WS_K + SZ_K;
+constexpr uint32_t WS_G = WS_V + SZ_V;
+constexpr uint32_t WS_BETA = WS_G + SZ_G;
+constexpr uint32_t WS_O = WS_BETA + SZ_BETA;
+constexpr uint32_t WS_OPIN = WS_O + SZ_O;
+constexpr uint32_t WS_OPOUT = WS_OPIN + SZ_OPIN;
+constexpr uint32_t WS_YFINAL = WS_OPOUT + SZ_OPOUT;
+constexpr uint32_t WS_RES2 = WS_YFINAL + SZ_YFINAL;
+constexpr uint32_t WS_BYTES = WS_RES2 + SZ_RES2;
+[exit=0] [完整输出行数=14]
+
+=== [m15_aic_inline] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n -e CrossCoreSetFlag<CC_MODE0 -e CrossCoreWaitFlag<CC_MODE0 m15_layer_loop/m15_gdn_layer.h
+1751:        CrossCoreSetFlag<CC_MODE0, PIPE_MTE2>(FLAG_AIC_SEG0A);
+1752:        CrossCoreWaitFlag<CC_MODE0, PIPE_S>(FLAG_AIC_SEG0A);
+1758:        CrossCoreSetFlag<CC_MODE0, PIPE_FIX>(FLAG_AIC_SEG0B);   // FIXP 写 GM 排空 + 全体 AIC 对齐
+1759:        CrossCoreWaitFlag<CC_MODE0, PIPE_S>(FLAG_AIC_SEG0B);
+1768:        CrossCoreSetFlag<CC_MODE0, PIPE_MTE2>(FLAG_AIC_SEG1A);
+1769:        CrossCoreWaitFlag<CC_MODE0, PIPE_S>(FLAG_AIC_SEG1A);
+1775:        CrossCoreSetFlag<CC_MODE0, PIPE_FIX>(FLAG_AIC_SEG1B);
+1776:        CrossCoreWaitFlag<CC_MODE0, PIPE_S>(FLAG_AIC_SEG1B);
+1785:        CrossCoreSetFlag<CC_MODE0, PIPE_MTE3>(FLAG);
+1786:        CrossCoreWaitFlag<CC_MODE0, WAIT_PIPE>(FLAG);
+[exit=0] [完整输出行数=10]
+
+=== [aic_splitcube_pipe] tree=CANN commit=(CANN 9.1.0 只读树) LC_ALL=<unset>
+$ grep -n -A8 IsSplitCubePipe asc/impl/basic_api/kernel_event.h
+263:__aicore__ inline constexpr bool IsSplitCubePipe()
+264-{
+265-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 1001 || __NPU_ARCH__ == 2002)
+266-    return pipe == PIPE_S || pipe == PIPE_MTE1 || pipe == PIPE_MTE2 || pipe == PIPE_MTE3 || pipe == PIPE_M;
+267-#elif defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3510)
+268-    return pipe == PIPE_S || pipe == PIPE_MTE1 || pipe == PIPE_MTE2 || pipe == PIPE_FIX || pipe == PIPE_M;
+269-#else
+270-    return pipe == PIPE_S || pipe == PIPE_MTE1 || pipe == PIPE_MTE2 || pipe == PIPE_MTE3 || pipe == PIPE_FIX || pipe == PIPE_M;
+271-#endif
+--
+283:    if constexpr (IsSplitCubePipe<pipe>() || pipe == PIPE_ALL){
+284-        if ASCEND_IS_AIC {
+285-            pipe_barrier(pipe);
+286-        }
+287-    }
+288-#else
+289-#if defined(__NPU_ARCH__) && (__NPU_ARCH__ == 3003 || __NPU_ARCH__ == 3113)
+290-    if constexpr (pipe == PIPE_V) {
+291-        return;
+--
+307:    if constexpr (IsSplitCubePipe<srcPipe>() && IsSplitCubePipe<dstPipe>()){
+308-        if ASCEND_IS_AIC {
+309-            set_flag(srcPipe, dstPipe, evt);
+310-        }
+311-    }
+312-#else
+313-    set_flag(srcPipe, dstPipe, evt);
+314-#endif
+315-}
+--
+327:    if constexpr (IsSplitCubePipe<srcPipe>() && IsSplitCubePipe<dstPipe>()){
+328-        if ASCEND_IS_AIC {
+329-            wait_flag(srcPipe, dstPipe, evt);
+330-        }
+331-    }
+332-#else
+333-    wait_flag(srcPipe, dstPipe, evt);
+334-#endif
+335-}
+--
+703:    if constexpr (IsSplitCubePipe<pipe>()){
+704-        if ASCEND_IS_AIC {
+705-            get_buf(pipe, bufId, mode);
+706-        }
+707-    }
+708-#else
+709-    get_buf(pipe, bufId, mode);
+710-#endif
+711-}
+--
+721:    if constexpr (IsSplitCubePipe<pipe>()){
+722-        if ASCEND_IS_AIC {
+723-            rls_buf(pipe, bufId, mode);
+724-        }
+725-    }
+726-#else
+727-    rls_buf(pipe, bufId, mode);
+728-#endif
+729-}
+[exit=0] [完整输出行数=59]
+
+=== [doc_counter_repo] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n 计数 15 次 docs/05-megakernel-design.md
+110:| CrossCore flagId | **每核 16 个（0-15），模式 4 下 AIC 侧 0-31**；"每 id 计数 15 次" = 每（核,flagId) 一个 4bit 计数器（0-15），未配平累计超 15 报错。SyncAll 占 11-14(+28/29)、Matmul 高阶 API 占 0-7；**本项目不用 SyncAll/高阶 API → 0-15 全可用**（早期资料"0-10"是保守窗口，已修正） | 层内多处同步需规划复用；相邻同步点必须用不同 flagId |
+[exit=0] [完整输出行数=1]
+
+=== [doc_counter_tpl] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n -e 计数范围为0-15 -e 减去1进行还原 /workspace/asc-devkit/docs/zh/api/SIMD-API/basic_api/sync_control/inter_core_sync/CrossCoreSetFlag_ISASI.md
+149:    - 每个flagId都对应一个计数器，当调用[CrossCoreWaitFlag](CrossCoreWaitFlag_ISASI.md)时，若计数器值为0则会阻塞后续指令下发，已下发指令可正常执行；当调度模块感知到所有参与同步的核（具体包含哪些核与设置的核间同步模式有关）完成（调用了CrossCoreSetFlag）同步后，会将与设置的flagId对应的计数器的值增加1。此时，计数器值为非0，阻塞解除，并且将对应计数器的值减去1进行还原。具体执行逻辑与细节可以参考[关键特性说明](key_features.md)。每一个计数器计数范围为0-15。如果调用CrossCoreSetFlag的次数超过15次，计数器的值超出该范围，则会异常报错，中断流程。
+[exit=0] [完整输出行数=1]
+
+=== [doc_counter_keyfeat] tree=WT commit=89ce319d4c87(基快照内容) LC_ALL=<unset>
+$ grep -n -e 计数器值增加为1 -e 计数器值减去1 /workspace/asc-devkit/docs/zh/api/SIMD-API/basic_api/sync_control/inter_core_sync/key_features.md
+135:AIC1的CrossCoreSetFlag执行完后，此时调度模块感知到2个AIC均已执行完CrossCoreSetFlag，因此所有AIC各自的flagId=0的计数器值增加为1。AIC0和AIC1检测到各自对应的flagId=0的计数器变为1，都解除所有流水后续指令的阻塞，继续执行后续指令，并且将计数器值减去1。
+166:AIV0-1的CrossCoreSetFlag执行完后，此时调度模块感知到2个AIV均已执行完CrossCoreSetFlag，因此将AIV0-0和AIV0-1各自的flagId=0的计数器值增加为1。AIV0-0和AIV0-1检测到各自对应的flagId=0的计数器变为1，都解除所有流水后续指令的阻塞，继续执行后续指令，并且将计数器值减去1。
+213:当AIV0-0的Vector指令1、2全部执行完毕后，前置PIPE\_V的指令全部完成，CrossCoreSetFlag生效。此时调度模块感知到2个AIV均已执行完CrossCoreSetFlag，因此将AIC0 flagId=0的计数器值增加为1。AIC0检测到对应的flagId=0的计数器变为1，则AIC0核解除所有流水后续指令的阻塞，继续执行后续指令Matrix指令2，并且将计数器值减去1。
+260:- AIV0-1的PIPE_MTE3指令全部执行完毕后，CrossCoreSetFlag生效。此时调度模块感知1个AIV已执行完CrossCoreSetFlag，因此将AIC0 flagId=16的计数器值增加为1。AIC0检测到对应的flagId=16的计数器变为1，则AIC0核解除由模板参数pipe配置的指定流水后续指令的阻塞，继续执行后续PIPE_FIX的指令，并且将计数器值减去1。
+[exit=0] [完整输出行数=4]
+

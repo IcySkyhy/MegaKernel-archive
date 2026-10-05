@@ -1,0 +1,18 @@
+{
+  "tensor": "gu_shd.bin",
+  "shape": [
+    1,
+    1280
+  ],
+  "dtype": "bf16",
+  "strides": [
+    1280,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 2560,
+  "sha256": "6ddd6a9269441eee4c263395a61b37505a91851fe39bf2ecb10158b8edafee39",
+  "kind": "golden",
+  "description": "shared-expert GMM#1 output (bf16) [m, 2*moe_inter] (gate|up)"
+}

@@ -1,0 +1,24 @@
+# M147 / m9_gdn_prolog m>1 段体 —— 逐字命令（复算用；路径为 worktree 内相对仓库根）
+# 设备纪律：每档各自进一次 flock -w 300；进锁先 npu-smi（快照落 evidence/logs/）；timeout 在锁内。
+# 一键复算： bash m9_gdn_prolog/reproduce.sh
+
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B m9_gdn_prolog/build -S m9_gdn_prolog -DCMAKE_BUILD_TYPE=Release
+cmake --build m9_gdn_prolog/build -j4
+cd m9_gdn_prolog/build
+
+# ---- 逐档（每档一条 flock 会话）----
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info > ../evidence/logs/m1_all_npu_smi.txt 2>&1; M9_ONLY=m1  timeout 280 ./m9_gdn_prolog > ../evidence/logs/m1_all_run.log 2>&1'
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info > ../evidence/logs/mt0_m1_npu_smi.txt 2>&1; M9_ONLY=mt0 timeout 280 ./m9_gdn_prolog > ../evidence/logs/mt0_m1_run.log 2>&1'
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info > ../evidence/logs/mt1_m4_npu_smi.txt 2>&1; M9_ONLY=mt1 timeout 280 ./m9_gdn_prolog > ../evidence/logs/mt1_m4_run.log 2>&1'
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info > ../evidence/logs/mt2_m65_npu_smi.txt 2>&1; M9_ONLY=mt2 timeout 280 ./m9_gdn_prolog > ../evidence/logs/mt2_m65_run.log 2>&1'
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info > ../evidence/logs/mt3_m257_npu_smi.txt 2>&1; M9_ONLY=mt3 timeout 280 ./m9_gdn_prolog > ../evidence/logs/mt3_m257_run.log 2>&1'
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info > ../evidence/logs/mt4_m65_b4_npu_smi.txt 2>&1; M9_ONLY=mt4 timeout 280 ./m9_gdn_prolog > ../evidence/logs/mt4_m65_b4_run.log 2>&1'
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info > ../evidence/logs/mt5_m65_b16_npu_smi.txt 2>&1; M9_ONLY=mt5 timeout 280 ./m9_gdn_prolog > ../evidence/logs/mt5_m65_b16_run.log 2>&1'
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info > ../evidence/logs/mt6_m65_mut1_npu_smi.txt 2>&1; M9_ONLY=mt6 timeout 280 ./m9_gdn_prolog > ../evidence/logs/mt6_m65_mut1_run.log 2>&1'
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info > ../evidence/logs/mt7_m257_mut2_npu_smi.txt 2>&1; M9_ONLY=mt7 timeout 280 ./m9_gdn_prolog > ../evidence/logs/mt7_m257_mut2_run.log 2>&1'
+
+# ---- 判据（零设备）----
+/usr/local/python3.12.13/bin/python3 ../check_ref.py            | tee ../evidence/logs/check_default.log
+/usr/local/python3.12.13/bin/python3 ../check_ref.py --mutant 1 | tee ../evidence/logs/check_mut1.log
+/usr/local/python3.12.13/bin/python3 ../check_ref.py --mutant 2 | tee ../evidence/logs/check_mut2.log

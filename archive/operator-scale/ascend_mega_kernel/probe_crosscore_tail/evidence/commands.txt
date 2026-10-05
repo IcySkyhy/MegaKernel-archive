@@ -1,0 +1,26 @@
+# probe_crosscore_tail 证据生成记录（M134）
+date            : 2026-10-04T12:13:47+00:00
+host            : Linux 6.6.0-132.0.0.111.oe2403sp3.x86_64 x86_64
+本文件由 tools/gen_commands.sh 生成；sha256 段始终反映**生成时的工作树源码**
+
+## 复现命令（本目录执行；每档各自进锁 flock -w 300 + 进锁先 npu-smi + 锁内 timeout）
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j4
+N=16 REPS=3 bash run_probe.sh                                  # N=16 全变体（默认 VARIANTS）
+N=32 REPS=3 VARIANTS="base c_mode4free dbg_nosync dbg_rdyonly c_m2canon" bash run_probe.sh
+N=64 REPS=3 VARIANTS="base c_mode4free dbg_nosync dbg_rdyonly c_m2canon" bash run_probe.sh
+N=4  REPS=3 VARIANTS="base dbg_rdyonly c_mode4free c_m2canon" bash run_probe.sh
+TRACE=1 TAG=_trace N=4 REPS=2 VARIANTS="base a_nowait c_m2mte3 c_m2setonly" bash run_probe.sh
+bash tools/summarize.sh                                        # 从逐次日志机械重算 matrix_N<N>.txt
+
+## 变体清单（默认 VARIANTS）
+base a_nowait b_via_gm c_rotate c_wait1 c_broadcast d_no_acquire dbg_rdyonly dbg_nosync c_mode4free
+c_m2setonly neg_nofree neg_wrongval c_preset c_m2sameid c_m2mte3 dbg_nodata dbg_nobar c_mode4full c_m2canon
+
+## 源码 sha256（生成时工作树）
+2f2ee94799ee9f5a31e784c7ef91bf186ca57a0e457434ab3606e342ef4d4565  probe_crosscore_tail.asc
+a42cae603e8b518264842b159debe177eddc4c7fd387a966ca0d494f0f7559a0  CMakeLists.txt
+81c536b20daf078d393d4114f674a76dcb31d0ac9cd8b2305517dcdddcd82bf7  run_probe.sh
+6328abac4baca05a5f877c7c4e9c0c8619ec3609f8722eecb1ba56749d70313a  tools/gen_commands.sh
+88007af1025df36ef14fd30ab05500e45ada289fd6b2f695b8d46ccb7155dbc1  tools/summarize.sh
+091305ebc0558f8d4701a3fe8a5fe51cab3450deb15905bc03b9e72c448d6888  tools/rerun_r2.sh

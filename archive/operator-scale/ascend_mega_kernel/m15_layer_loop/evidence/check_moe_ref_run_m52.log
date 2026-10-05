@@ -1,0 +1,43 @@
+[check_moe_ref] 布局表 32 个张量，ws 7685472 B/层；E=4 topk_max=4 M_MAX=64
+[check_moe_ref] dump 层：[0, 1, 2, 3]
+
+[check_moe_ref] ===== 非空洞性 / 位置正确性 =====
+[check_moe_ref]   L00 x_sorted 非全零（非空洞）                                PASS  (5118/5120 个非零)
+[check_moe_ref]   L00 topk_ids 落在 [0,E) 且互不相同                          PASS  ([3, 1])
+[check_moe_ref]   L00 counts 之和 == m*topk                              PASS  (Σt_e=2)
+[check_moe_ref]   L00 logits 非常数（输入敏感）                                 PASS  (span=1.051e-01)
+[check_moe_ref]   L01 x_sorted 非全零（非空洞）                                PASS  (5120/5120 个非零)
+[check_moe_ref]   L01 topk_ids 落在 [0,E) 且互不相同                          PASS  ([1, 2])
+[check_moe_ref]   L01 counts 之和 == m*topk                              PASS  (Σt_e=2)
+[check_moe_ref]   L01 logits 非常数（输入敏感）                                 PASS  (span=9.676e-01)
+[check_moe_ref]   L02 x_sorted 非全零（非空洞）                                PASS  (5120/5120 个非零)
+[check_moe_ref]   L02 topk_ids 落在 [0,E) 且互不相同                          PASS  ([1, 3])
+[check_moe_ref]   L02 counts 之和 == m*topk                              PASS  (Σt_e=2)
+[check_moe_ref]   L02 logits 非常数（输入敏感）                                 PASS  (span=2.027e-01)
+[check_moe_ref]   L03 x_sorted 非全零（非空洞）                                PASS  (5120/5120 个非零)
+[check_moe_ref]   L03 topk_ids 落在 [0,E) 且互不相同                          PASS  ([3, 2])
+[check_moe_ref]   L03 counts 之和 == m*topk                              PASS  (Σt_e=2)
+[check_moe_ref]   L03 logits 非常数（输入敏感）                                 PASS  (span=2.454e-01)
+
+[check_moe_ref] ===== 判定项 =====
+[check_moe_ref] 判定项 128 条：128 PASS / 0 FAIL（另有非空洞性 16 条：16 PASS / 0 FAIL）
+
+[check_moe_ref] ===== 参考项（非判定；两套 MXFP4 量化规范的逐字节差异）=====
+[check_moe_ref]   L00 A_qx_shd/golden 规范                               481/1280
+[check_moe_ref]   L00 A_scale_shd/golden 规范                            34/80
+[check_moe_ref]   L00 combine 位级（报告项）                                  shared 位距 max 0/位级一致 2560/2560；moe 位距 max 0/位级一致 2560/2560
+[check_moe_ref]   L00 moe_output 绝对残差（报告项）                             maxAbs 5.668e-05，|routed|+|shared| 均值 4.155e-03
+[check_moe_ref]   L01 A_qx_shd/golden 规范                               372/1280
+[check_moe_ref]   L01 A_scale_shd/golden 规范                            27/80
+[check_moe_ref]   L01 combine 位级（报告项）                                  shared 位距 max 0/位级一致 2560/2560；moe 位距 max 0/位级一致 2560/2560
+[check_moe_ref]   L01 moe_output 绝对残差（报告项）                             maxAbs 3.042e-05，|routed|+|shared| 均值 4.733e-03
+[check_moe_ref]   L02 A_qx_shd/golden 规范                               426/1280
+[check_moe_ref]   L02 A_scale_shd/golden 规范                            31/80
+[check_moe_ref]   L02 combine 位级（报告项）                                  shared 位距 max 0/位级一致 2560/2560；moe 位距 max 0/位级一致 2560/2560
+[check_moe_ref]   L02 moe_output 绝对残差（报告项）                             maxAbs 5.993e-05，|routed|+|shared| 均值 5.181e-03
+[check_moe_ref]   L03 A_qx_shd/golden 规范                               374/1280
+[check_moe_ref]   L03 A_scale_shd/golden 规范                            29/80
+[check_moe_ref]   L03 combine 位级（报告项）                                  shared 位距 max 0/位级一致 2560/2560；moe 位距 max 0/位级一致 2560/2560
+[check_moe_ref]   L03 moe_output 绝对残差（报告项）                             maxAbs 4.911e-05，|routed|+|shared| 均值 4.873e-03
+
+[check_moe_ref] ===== ALL PASS （判定 128 + 非空洞 16 = 144 条；参考 16 条不计入）=====

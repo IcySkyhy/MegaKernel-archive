@@ -1,0 +1,30 @@
+/usr/bin/cmake -S/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -B/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/gmake  -f CMakeFiles/Makefile2 nest_o0i0b2_scal
+gmake[1]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/cmake -S/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -B/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles 2
+/usr/bin/gmake  -f CMakeFiles/Makefile2 CMakeFiles/nest_o0i0b2_scal.dir/all
+gmake[2]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/gmake  -f CMakeFiles/nest_o0i0b2_scal.dir/build.make CMakeFiles/nest_o0i0b2_scal.dir/depend
+gmake[3]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles/nest_o0i0b2_scal.dir/DependInfo.cmake "--color="
+Dependencies file "CMakeFiles/nest_o0i0b2_scal.dir/probe_vf_nest.asc.o.d" is newer than depends file "/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles/nest_o0i0b2_scal.dir/compiler_depend.internal".
+Consolidate compiler generated dependencies of target nest_o0i0b2_scal
+gmake[3]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/gmake  -f CMakeFiles/nest_o0i0b2_scal.dir/build.make CMakeFiles/nest_o0i0b2_scal.dir/build
+gmake[3]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+[ 50%] Building ASC object CMakeFiles/nest_o0i0b2_scal.dir/probe_vf_nest.asc.o
+/usr/local/Ascend/cann-9.1.0/bin/bisheng -DNPU_ARCH_DAV_3510 -DPROBE_BODY=2 -DPROBE_CT_ROWS=0 -DPROBE_INNER=0 -DPROBE_OUTER=0 -DPROBE_TAG=nest_o0i0b2_scal   -std=c++17 --npu-arch=dav-3510 -O3 -DNDEBUG --npu-arch=dav-3510 -MD -MT CMakeFiles/nest_o0i0b2_scal.dir/probe_vf_nest.asc.o -MF CMakeFiles/nest_o0i0b2_scal.dir/probe_vf_nest.asc.o.d -o CMakeFiles/nest_o0i0b2_scal.dir/probe_vf_nest.asc.o -c --asc-aicore-lang /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/probe_vf_nest.asc
+fatal error: error in backend: /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/probe_vf_nest.asc:348:8: Unsupported scalar instruction in AIV loop.
+bisheng: error: clang frontend command failed with exit code 70 (use -v to see invocation)
+2026-07-30T20:53:21+08:00 clang version 15.0.5 (clang-5c68a1cb1231 flang-5c68a1cb1231)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/Ascend/cann-9.1.0/bin
+gmake[3]: *** [CMakeFiles/nest_o0i0b2_scal.dir/build.make:76: CMakeFiles/nest_o0i0b2_scal.dir/probe_vf_nest.asc.o] Error 1
+gmake[3]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+gmake[2]: *** [CMakeFiles/Makefile2:899: CMakeFiles/nest_o0i0b2_scal.dir/all] Error 2
+gmake[2]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+gmake[1]: *** [CMakeFiles/Makefile2:906: CMakeFiles/nest_o0i0b2_scal.dir/rule] Error 2
+gmake[1]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+gmake: *** [Makefile:501: nest_o0i0b2_scal] Error 2

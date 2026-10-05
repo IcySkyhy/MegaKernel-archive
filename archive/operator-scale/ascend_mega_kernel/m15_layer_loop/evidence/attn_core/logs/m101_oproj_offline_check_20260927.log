@@ -1,0 +1,22 @@
+[selfcheck] FNV-1a 64 标准向量通过：fnv1a64(b'')=0xcbf29ce484222325、fnv1a64(b'a')=0xaf63dc4c8601ec8c
+[offline] dir=out_oproj  log=logs/m101_oproj_run_20260927.log  日志里 [M101][fp] **行数=18** / **不同标签个数=9**（两者不同：同一 label 每个 m 各一行）
+[bind] W(full, 31457280 B) fnv1a64=29dd51e39fc752bb log=29dd51e39fc752bb -> 一致
+
+=== m=1 ===
+[bind] input attn               12288 B fnv1a64=0c8e0636a7785231 log=0c8e0636a7785231 -> 一致 | 磁盘 m101op_m1_attn.bin: 逐字节相同
+[bind] input gate               12288 B fnv1a64=8c9db7be1a2a52ce log=8c9db7be1a2a52ce -> 一致 | 磁盘 m101op_m1_gate.bin: 逐字节相同
+[bind] input t (integer)        12288 B fnv1a64=094ee510c7339ff3 log=094ee510c7339ff3 -> 一致 | 磁盘 m101op_m1_tint.bin: 逐字节相同
+[OP-B] n=6144 越界(更正后)=0 越界(第一版·截断口径)=18 越界(第一版·RNE 口径= r1 C++)=11 max|d|=0.00193773 max(dv/tol_new)=0.999834 位差 0/1/>=2 = 6144/0/0
+[OP-A] 契约档：与 RNE(fp64 Σ_k<6144) 逐位相同 2560/2560（须 == 全部）；负向档：与 Σ_k<6080 逐位相同 2560/2560（须 == 全部，即负向 dump 确实是「被弄坏」的那份）
+[OP-C] 契约档：越界 0/2560 max|d|=0.89187 最大界占用 0.241964；负向档：对 K-1 参考越界 0/2560（须 0）、对全 K 参考越界 1744（须 > 0）
+
+=== m=3 ===
+[bind] input attn               36864 B fnv1a64=112ff91a304eba7f log=112ff91a304eba7f -> 一致 | 磁盘 m101op_m3_attn.bin: 逐字节相同
+[bind] input gate               36864 B fnv1a64=edb82614beab6f0c log=edb82614beab6f0c -> 一致 | 磁盘 m101op_m3_gate.bin: 逐字节相同
+[bind] input t (integer)        36864 B fnv1a64=314b4de431b27d3b log=314b4de431b27d3b -> 一致 | 磁盘 m101op_m3_tint.bin: 逐字节相同
+[OP-B] n=18432 越界(更正后)=0 越界(第一版·截断口径)=54 越界(第一版·RNE 口径= r1 C++)=31 max|d|=0.00193773 max(dv/tol_new)=0.999834 位差 0/1/>=2 = 18432/0/0
+[OP-A] 契约档：与 RNE(fp64 Σ_k<6144) 逐位相同 7680/7680（须 == 全部）；负向档：与 Σ_k<6080 逐位相同 7680/7680（须 == 全部，即负向 dump 确实是「被弄坏」的那份）
+[OP-C] 契约档：越界 0/7680 max|d|=0.95138 最大界占用 0.254263；负向档：对 K-1 参考越界 0/7680（须 0）、对全 K 参考越界 5097（须 > 0）
+
+[offline] 判定项 6/6 通过；输入缺失 0 项
+RESULT: OK（离线复算的三条判据与负向档全部与入库读数一致）

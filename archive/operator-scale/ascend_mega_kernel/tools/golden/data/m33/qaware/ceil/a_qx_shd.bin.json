@@ -1,0 +1,18 @@
+{
+  "tensor": "a_qx_shd.bin",
+  "shape": [
+    33,
+    1280
+  ],
+  "dtype": "uint8",
+  "strides": [
+    1280,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 42240,
+  "sha256": "a0dde7da74cc0b6f33478cf99edc79ca4e4b4529a9846cfa76d81c4afbd48724",
+  "kind": "golden",
+  "description": "shared-expert A = MXFP4(x) [m, hidden/2]"
+}

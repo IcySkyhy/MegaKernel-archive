@@ -1,0 +1,7 @@
+variant reps=3 timeout=45s
+fixp_l0c2gm      variant=fixp_l0c2gm rc0=3 rc1=0 rc2=0 hang=0 reps=3
+ub2gm_api        variant=ub2gm_api rc0=3 rc1=0 rc2=0 hang=0 reps=3
+ub2gm_capi       variant=ub2gm_capi rc0=3 rc1=0 rc2=0 hang=0 reps=3
+aiv_ub2gm        variant=aiv_ub2gm rc0=3 rc1=0 rc2=0 hang=0 reps=3
+neg_fixp_short   variant=neg_fixp_short rc0=0 rc1=3 rc2=0 hang=0 reps=3
+aic_scalar_ub    variant=aic_scalar_ub rc0=0 rc1=0 rc2=3 hang=0 reps=3

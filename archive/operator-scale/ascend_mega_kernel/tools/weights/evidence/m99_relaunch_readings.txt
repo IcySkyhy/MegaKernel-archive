@@ -1,0 +1,138 @@
+# M99 · 落地 M93 后在新 main 上重取的读数（本文件由 M99 新增）
+#
+# 本文件只做一件事：记录把 feat/m93-moe-512-expert-weight-manifest-and-l（tip 3c5b135）
+# 合入本分支之后，在**新 main** 上把 M93 的关键读数**重跑一遍**的「命令 → 输出/rc」。
+# M93 的结论 / 常量 / 判据 / 叙述未改（其归档在本目录的 m93_* 里，保持原样）。
+#
+# 为什么会有这一轮：M93 的内容（分支 feat/m93-moe-512-expert-weight-manifest-and-l，
+# tip 3c5b135）已经过六轮复审、最后一轮明确判 clean / merge-ready，但它**无法被记录成
+# 第 6 轮复审**（存储层轮次上限）⇒ 合入门看不到「clean 的一轮」。塔因此把 M93 置为
+# abandoned，并按协议**换个 mission 标题重新规划落地**（本 M99）：新分支、新 mission
+# ⇒ 复审预算重置。本 mission 只做**落地 + 重新见证**，不重做 M93 的工作。
+#
+# 另一层原因：main 在本 mission 之前前移到了 9603c65（M88 并入），而 M93 的归档是在
+# 它的旧分支 base 上取的。第六变体纪律要求「写进仓库的读数要在 tip 上可复现」
+# ⇒ 本文件把重取读数与新 base 一起钉下来。
+
+## 0. 本轮的不可变 rev（第六变体：钉 commit，不钉会移动的 ref）
+
+| 名字 | rev |
+|---|---|
+| 本分支 fork 点（= M93 的 merge-base，也是加性判据的默认基线） | `52f46b8693f0292c132312ea1d47e78c5b52888a` |
+| 本轮 base = 合并时的 `main` | `9603c655bc224689d2139fc675596452f0c5cff0`（M88 已并入） |
+| 本分支 tip（= M93 内容的 merge commit） | `fee546a281ae615a75cff703a9a85e3f99187969` |
+
+**被重取的原始读数（溯源）**：`feat/m93-moe-512-expert-weight-manifest-and-l` 的 tip
+`3c5b1357dbe2bbc3923c72cc0de62223ed02e770`，其归档在 `tools/weights/evidence/m93_*`。
+
+合并：`git merge feat/m93-moe-512-expert-weight-manifest-and-l` ⇒ 无冲突。
+
+`git diff --name-status main...HEAD`（三点式）：合并本身带来 **35** 个文件，加本文件（M99 新增）
+共 **36** 个，逐条落在本 mission 的 scope 内（`m15_layer_loop/slice_layer_manifest.py`、
+`m15_layer_loop/weights_manifest.txt`、`tools/weights/**`）。把 `tools/weights/` 的路径滤掉后，
+剩下的就是那 2 个文件 —— M95/M96/M88/M97/M98 的文件不在这份 diff 里。
+
+manifest 与 py 的内容锚点（不是行号）：
+
+| 文件 | rev | sha256 |
+|---|---|---|
+| `m15_layer_loop/weights_manifest.txt` | `52f46b8` 与 `9603c65` **同为** | `258e748f72daff95fd31ab29f1e83e71632cf352d2c40a0e8f7e9365470851c1` |
+| `m15_layer_loop/weights_manifest.txt` | 本 tip | `6c0e8e6f15c9b3f5ef8875854044a43deff7c3b33791eb554bea361eb7102cdf` |
+| `m15_layer_loop/slice_layer_manifest.py` | `9603c65` | `f214ffa10b554ab7e4b7cdd55fd18697e5a5ca0301bdfbfb7b89deaaf43c1b69` |
+
+⇒ **`9603c65` 的 manifest 与 `52f46b8` 逐字节相同**（M88 未碰 manifest）⇒ M93 归档里那条
+「基线 = fork 点 `52f46b8`」的加性读数，在本轮 base 上**与归档同值**。
+
+## 1. 命令 → 输出 / rc（全部在本 tip 上实跑）
+
+`PY=/usr/local/python3.12.13/bin/python3.12`，仓库根 = 本 worktree。
+
+| # | 命令 | 输出 / rc | 与 M93 归档 |
+|---|---|---|---|
+| ① | `$PY m15_layer_loop/slice_layer_manifest.py --check` | `[ok] manifest 与 checkpoint 一致` / **rc=0** | 同 |
+| ②a | `$PY tools/weights/moe_real_scale_audit.py` | `[summary] checks=20 fails=0` / **rc=0**（含 C8：非 ngram 74.35 GiB ≤ HBM 128 GiB，余 53.65 GiB） | 同 |
+| ②b | 加性（脚本内，基线 `52f46b8`） | `删除行数=0 新增行数=247` → `ADDITIVE-CRIT PASS` | 同 |
+| ②c | 独立复算（不走过脚本）：`grep -vxF -f <tip> <baseline> \| wc -l` 与反向 | 基线 1399 行里「不在 tip」的条数 = **0**；tip 1646 行里「不在基线」的条数 = **247** | 同 |
+| ②d | `diff <(grep ' role=moe_' <baseline>) <(grep ' role=moe_' <tip>)` | 无差异；两侧各 **576 行** | 同 |
+| ③ | 失败路径①：`BASE_COMMIT=0000000000000000000000000000000000000000 bash tools/weights/m93_negative_controls.sh` | `ADDITIVE-CRIT FAIL：基线 commit 0000… 读不到 …` / **rc=1** | 同 |
+| ③ | 失败路径②：`BASE_COMMIT=$(git rev-parse HEAD) bash tools/weights/m93_negative_controls.sh` | `ADDITIVE-CRIT **VACUOUS**：基线（fee546a）与 tip 的 manifest 相同` / **rc=1** | 同（短 sha 随 tip 变，形态相同） |
+| ③ | 失败路径③：在 `/tmp` 的 `--shared` 克隆里删掉 tip manifest 里**一行基线存在的行**，再跑默认脚本 | `删除行数=1 新增行数=247` → `ADDITIVE-CRIT FAIL：基线（52f46b8）里有 1 行在 tip 上不存在` / **rc=1** | 同（README §8.1 ⑤，1/247） |
+| ④ | `M93_NC_DEVICE=1 bash tools/weights/m93_negative_controls.sh > /tmp/m99_nc_full.txt 2>&1` 后 `diff /tmp/m99_nc_full.txt tools/weights/evidence/m93_negative_controls.txt` | 见 §2：**只差 1 行**（二进制 hash 字面量） | **不同（见 §2）** |
+| ④b | 同一条命令**再跑一次**，与上一次 diff | `diff` rc=0，两次 sha256 同为 `6eb117d19dfe21a67812c27f2624cacae1ecafd06974f8904fe24582744a3cdb` ⇒ **幂等** | — |
+| ④c | 只跑 host 侧（`bash tools/weights/m93_negative_controls.sh`）**两次** | 两次 sha256 同为 `71349a07d9b905547a18d932086f6b32d7b35960551e835882a45d40211e013d` ⇒ 幂等 | — |
+| ⑤ | `M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 <bin> m15_layer_loop/weights_manifest.txt all` | `ALL PASS（checks=2068, guards=290, fails=0）` / **rc=0** | 同 |
+| ⑥ | 同上，末参 `chain` | `ALL PASS（checks=910, guards=52, fails=0）` / **rc=0** | 同 |
+| ⑦ | `M15_DUMP=1 <bin> … all` → `check_ref.py .` | **rc=0**，`判定项 709 条：PASS 709 / FAIL 0（另有 36 条参考项）`（该 dump 的 run 行 `ALL PASS（checks=2068, guards=291, fails=0）`） | 同（含 dump 档多出的那 1 个 guard） |
+| ⑧ | `M15_DUMP=1 M15_LAYERS=4 M15_HC_LAYERS=0,1,3 <bin> … h` → `check_hc_ref.py .` | **rc=0**，`RESULT: OK (79/79 条比较过：判定项 64 + guard 15；SKIPPED 1)` | 同 |
+| ⑨ | `M15_DUMP=1 M15_LAYERS=48 M15_STEPS=1 <bin> … chain` → `check_chain_ref.py .`（须 `/workspace/venvs/baseline/bin/python3`） | **rc=0**，`RESULT: OK (92 条比较过：判定项 84 + guard 8；SKIPPED 2)` | 同 |
+| ⑩ | `M15_DUMP=1 M15_LAYERS=4 M15_HC_LAYERS=0,1,3 <bin> … all` → `check_moe_ref.py . --model-dir /workspace/Qwen3.8-Flash-Next-MXFP4` | **rc=0**，`RESULT: OK (128 条判定项 + 20 条非空洞全部比较通过)` | 同；且与 M96 修后的 `128+20` 口径一致 |
+
+**locale 复核（纪律 ⑨）**：`LC_ALL=C` 与 `LC_ALL=C.UTF-8` 下，`--check` 均 rc=0、
+audit 均 rc=0；脚本自身的「区域无关性」段给出 `LC_ALL=C：正向 rc=0；NC-1 rc=1` 与
+`LC_ALL=C.UTF-8：正向 rc=0；NC-1 rc=1`（两侧一致）。
+
+**判据口径**：上表 ①–⑩ 的「与 M93 归档」列里，没有出现由绿转红的项。
+
+## 2. 与 M93 归档的**一处**差异（如实记录，不写成「一致」）
+
+`M93_NC_DEVICE=1 bash tools/weights/m93_negative_controls.sh` 的产物与归档
+`tools/weights/evidence/m93_negative_controls.txt` **只差 1 行**（两次重跑都是同一行）：
+
+```
+< 现场量得 220a2cf24e21b085…      ← 本轮 tip（新 main + M93）
+> 现场量得 958c6f2a6d699537…      ← M93 归档（旧分支 base）
+```
+
+**成因（三件事写清）**：
+1. M93 归档里记的是 **`958c6f2a6d699537…`**，那是按**旧**分支 base（`40dd6de` / `52f46b8` 一线）取的；
+2. 本 tip 上**同一条命令**现在回 **`220a2cf24e21b085…`**；
+3. **成因** = `main` 从 `52f46b8` 前移到 `9603c65` 时并入了 **M88**，而 M88 改了
+   `m15_layer_loop/m15_layer_loop.asc`（复核：`git diff --name-only 52f46b8 9603c65 -- m15_layer_loop/`
+   的输出里含 `m15_layer_loop.asc`，并新增 `m15_attn_prolog*.h`）⇒ **二进制变了**
+   （本 mission 的 diff 里不含 `.asc`/`.h`：`git diff --name-only main...HEAD` 可复核）。
+
+**那 3 处字面量保持原样、不改**（塔裁决走加性方案，不静默改写已受审的证据）：
+`tools/weights/README.md` §8、`tools/weights/evidence/m93_accept_run_index.txt`、
+`tools/weights/evidence/m93_negative_controls.txt` 里的 `958c6f2a…` **原样保留**。
+
+**M93 那条实质结论在新 main 上重新见证成立**（本文件最值钱的一段）。命令与两边读数：
+
+```bash
+# 把本轮 base 解到 /tmp 单独构建（变异/副本只在 /tmp）
+git archive 9603c655bc224689d2139fc675596452f0c5cff0 | tar -x -C /tmp/m99_base
+cd /tmp/m99_base
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B m15_layer_loop/build -S m15_layer_loop -DCMAKE_BUILD_TYPE=Release
+cmake --build m15_layer_loop/build -j4
+sha256sum /tmp/m99_base/m15_layer_loop/build/m15_layer_loop \
+          <repo>/m15_layer_loop/build/m15_layer_loop
+```
+
+```
+220a2cf24e21b085ca55271ff0f1c3fa29e3889d6ee44031f27a4bbfe423c025  /tmp/m99_base/...（base 9603c65 的构建）
+220a2cf24e21b085ca55271ff0f1c3fa29e3889d6ee44031f27a4bbfe423c025  <repo>/...（本分支 tip 的构建）
+```
+
+两者**逐字节相同**（各自的 `m15_layer_loop/m15_layer_loop.asc` sha256 也同为 `695deaf5…` 前缀）
+⇒「本 mission 只改 manifest、不改 kernel」这条，在**新 base** 上**照样成立**（该 mission 的 diff
+里不含 `.asc`/`.h`）；变动的只是 M93 归档里记下的那个 hash **字面量**（它记的基准是旧 base）。
+
+## 3. 边界与未做项（如实披露）
+
+- 本 mission **只做落地**：内容取自 M93，未改其结论 / 常量 / 判据 / 叙述（可复核
+  `git diff --name-status main...HEAD`：改动只有 manifest 与 py 的加性扩展 + `tools/weights/**`）。
+- 本 mission 的 diff 里不含 `m15_layer_loop.asc` / `m15_*.h` / `check_*.py` / `docs/**` /
+  `m15_layer_loop/README.md` 等 scope 外文件（`git diff --name-status main...HEAD` 可复核）。
+- 本文件**不是**对 kernel 侧 2068 条判据的「弄坏实现」对照：本 mission 的写权限不含
+  `.asc`/`.h`，故沿用 M93 的等价对照（NC-7：弄坏自己产物 manifest ⇒ 设备判据变红，
+  本轮读数为 `判据 FAIL 行数 = 451`、`ALL PASS 行数 = 0`、`rc=1`，与归档相同）。
+- 设备档并发：本轮有**两次**设备 run 起跑时 `npu-smi info` 里已有兄弟 `m15_layer_loop`
+  （M98 的 `kv` 模式，host RSS 11 GB / HBM 6867 MB），未按纪律 A 等待 —— 两次我的 run
+  均 rc=0 且读数正确，**未触发 OOM**。但这是**运气，不是安全**：本会话已两次被 OOM
+  把整队带走，而 **OOM 杀掉的是谁不确定 —— 可能杀掉的是兄弟的工作**。如实记录为违规。
+- M93 归档里的 `evidence/m93_accept_run_*.log` 与 `m93_check_*.run.log` 含**设备耗时行**
+  （「中位 X ms」「每次启动 Y us」等），**本来就非逐字节可复现**（M93 自己已注明每次 run
+  有 18~24 行差异）。本轮按 M93 的口径只比「那一行 `ALL PASS（checks=…, guards=…, fails=0）`」
+  与各 `check_*.py` 的 `RESULT:` 行 —— 这两类读数在逐项比对下相同。**不要把「逐字节相同」的要求
+  加在那些日志上**（那是设备耗时行，每次都不同；可逐字节复现的是 NC 脚本产物）。
+- 重取读数用的中间产物（dump / 镜像 / 副本）都在 `/tmp`，未入仓。

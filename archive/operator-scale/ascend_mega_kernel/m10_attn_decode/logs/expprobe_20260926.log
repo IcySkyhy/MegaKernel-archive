@@ -1,0 +1,29 @@
+# m10_expprobe —— VF RegBase Exp 精度标定（2026-09-26 修复后重跑；reviewer r3 指出旧版不可复现）
+# 旧版症状（reviewer r3 + 本仓库复现）：in=-2 得到 0.97044772 / inf / inf，声称值 0.13533528 从未出现。
+# 根因与修法（**部分修好**）：kernel 里 GM→UB / UB→GM 各用一条 20KB 的 DataCopy（5120 float）；
+#   改为 512B/块 × 40 分块 + 整栅栏（PipeBarrier<PIPE_ALL>）后，**前 8KB（= 索引 0..2047 = 前 3 组）**稳定；
+#   8KB 之后的 3 组（小差值/大负/随机）仍返回垃圾（maxRel=1.0 或 inf）⇒ 未完全修好，是探针侧
+#   搬运/UB 布局问题，与主核无关。已按 tower 要求**不让 Exp 结论依赖本探针**（见 README §6.4）。
+# 确定性：连跑 5 次，前 3 组（[-2,0] 重标定窗口 / 2 的幂边界 / [-20,0] softmax E）输出**逐字节相同**
+#   （5 次 md5 = 1bb40ff5e1f6）——即与主核 Exp 用法相关的区间给出了 ≥5 次确定读数：
+#     x∈[-2,0] : maxRel 8.389e-08 = 1.4 fp32 ulp  （19/512 >1ulp）
+#     2 的幂边界: maxRel 6.416e-08 = 1.1 fp32 ulp  （5/512 >1ulp）
+#     x∈[-20,0]: maxRel 8.130e-08 = 1.4 fp32 ulp  （29/1024 >1ulp）
+# ⇒ 与主核无关的区间外读数（后 3 组）不可用，已在 README 标注为未修好的已知限制。
+
+[EXPPROBE] 原始采样：idx in/out/exp(in)
+   [0] in=-2 out=0.13533528 exp(in)=0.13533528   | [2560] in=9.7753946e-07 out=0 exp=1.000001
+   [1] in=-1.9960861 out=0.135866 exp(in)=0.13586601   | [2561] in=2.932502e-06 out=0 exp=1.0000029
+   [2] in=-1.9921722 out=0.13639881 exp(in)=0.13639881   | [2562] in=4.8875809e-06 out=0 exp=1.0000049
+   [3] in=-1.9882584 out=0.1369337 exp(in)=0.13693371   | [2563] in=6.8426598e-06 out=0 exp=1.0000068
+   [4] in=-1.9843445 out=0.13747069 exp(in)=0.1374707   | [2564] in=8.7976223e-06 out=0 exp=1.0000088
+   [5] in=-1.9804305 out=0.13800982 exp(in)=0.13800981   | [2565] in=1.0752701e-05 out=0 exp=1.0000108
+   [6] in=-1.9765166 out=0.13855103 exp(in)=0.13855103   | [2566] in=1.2707664e-05 out=0 exp=1.0000127
+   [7] in=-1.9726027 out=0.13909437 exp(in)=0.13909436   | [2567] in=1.4662859e-05 out=0 exp=1.0000147
+[EXPPROBE] RegBase VF Exp vs fp64 exp（ULP=2^-24 相对；fp32 的 0.5ulp ≈ 3e-8 相对）
+  x∈[-2,0] 重标定区间 n= 512  maxRel=8.389e-08 (=1.4 ulp)  meanRel=2.406e-08  maxAbs=4.760e-08  >1ulp=19  >1e4ulp=0
+  2 的幂边界附近     n= 512  maxRel=6.416e-08 (=1.1 ulp)  meanRel=1.781e-08  maxAbs=2.978e-08  >1ulp=5  >1e4ulp=0
+  x∈[-20,0] softmax E    n=1024  maxRel=8.130e-08 (=1.4 ulp)  meanRel=2.293e-08  maxAbs=3.314e-08  >1ulp=29  >1e4ulp=0
+  x∈[-1e-3,1e-3] 小差值 n=1024  maxRel=1.000e+00 (=16777216.0 ulp)  meanRel=1.000e+00  maxAbs=1.001e+00  >1ulp=1024  >1e4ulp=1024
+  x∈[-100,-20] 大负    n=1024  maxRel=1.000e+00 (=16777216.0 ulp)  meanRel=1.000e+00  maxAbs=2.061e-09  >1ulp=1024  >1e4ulp=1024
+  x∈[-30,0] 随机       n=1024  maxRel=inf (=inf ulp)  meanRel=inf  maxAbs=inf  >1ulp=1024  >1e4ulp=1024

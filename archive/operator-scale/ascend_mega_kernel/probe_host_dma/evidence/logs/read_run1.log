@@ -1,0 +1,23 @@
+== probe_host_dma mode=read tile=8192 repeats=8 launches=20 alignOff=0 ==
+[INIT] aclInit rc=0
+[INIT] aclrtSetDevice(0) rc=0
+[INIT] aclrtCreateStream rc=0
+[DEV ] AICORE=28 VECTOR=56 -> blocks=56
+[PREP] region=3670016 bytes (65536 per block) cyc=1792 blocks=56
+[PREP] aclrtMallocHost(3670016) rc=0 ptr=0x100000400000
+[PREP] aclrtHostRegisterV2(3670016 bytes, full) rc=0
+[PREP] aclrtHostGetDevicePointer rc=0 host=0x100000400000 dev=0x40000000000
+[ATTR] srcMappedDev       ptr=0x40000000000 rc=507899 (aclrtPointerGetAttributes failed)
+[PREP] srcKind=host-mapped(MAPPED) srcForKernel=0x40000000000 dst=0x12004c600000 cyc=0x120000017000
+[TIME] launches=20 perLaunch=164772.9 ns aclError_after_last=0
+[ASYNC] aclrtStreamQuery immediately after launch: rc=0 status=1(NOT_READY)
+[ASYNC] aclrtSynchronizeStream rc=0 (device-side MTE2 read loop is back-to-back, no per-tile wait)
+[COPY] aclrtMemcpy(D2H result) rc=0
+[COPY] aclrtMemcpy(D2H cycles) rc=0
+[VERIFY] bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+[VERIFY] PASS: all bytes match model
+[CYCLE] validBlocks=56 avgSpanPerBlock=635 aggSpan(all blocks)=1279 syscnt
+[BANDWIDTH] host-wall: 22.27 GB/s (bytes=3670016 perLaunch=164772.9 ns)
+[CLEAN] aclrtHostUnregister rc=0
+== done mode=read overall=OK ==
+rc=0

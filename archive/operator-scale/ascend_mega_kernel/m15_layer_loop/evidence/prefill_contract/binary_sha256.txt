@@ -1,0 +1,8 @@
+new binary sha256: 4a22c225a36b4302c230994bce608aeb44910fcea2c6ab0ae438184a11a127d9
+base binary sha256 (d348547, 未改动源码构建): 1596284e0323a30e7c9e691d2b8f0ef0d67e9de02f2593592b15d79b4996d200
+base 构建命令: git checkout d348547 状态下 cmake --build m15_layer_loop/build -j16 --target m15_layer_loop
+base 运行: M15_DUMP=1 <base binary> m15_layer_loop/weights_manifest.txt all  (flock -w 900 /tmp/npu0.lock 内)
+
+r2（r1 复审的两条 p2 + nit 修复后）重建：sha256 = 4a22c225a36b4302c230994bce608aeb44910fcea2c6ab0ae438184a11a127d9
+  ⇒ 与 r1 的 new binary sha256 **逐字节相同**：本轮三处改动是「加断言 / 加注释 / 加登记」，未改契约、常量或判据。
+  r2 读数：runs=prefill ALL PASS 152/58/0（m=1 与 m=4097 均 4097/4097）；M15_PREFILL_WIRE=1 = FAILURES 152/58/1 rc=1；runs=all M15_DUMP=1 = ALL PASS 2095/303/0。

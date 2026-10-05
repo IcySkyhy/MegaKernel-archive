@@ -1,0 +1,208 @@
+{
+  "repository": "Inferact/tpu-megakernels",
+  "url": "https://github.com/Inferact/tpu-megakernels",
+  "created_at": "2026-09-23T00:18:12Z",
+  "pushed_at": "2026-09-25T18:30:19Z",
+  "branch": "main",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 173
+    },
+    {
+      "path": "LICENSE",
+      "size": 11357
+    },
+    {
+      "path": "README.md",
+      "size": 6906
+    },
+    {
+      "path": "assets/figures/batch-decode-throughput.svg",
+      "size": 4513
+    },
+    {
+      "path": "assets/figures/dspark-acceptance-lengths.svg",
+      "size": 3424
+    },
+    {
+      "path": "assets/figures/hero.png",
+      "size": 1055658
+    },
+    {
+      "path": "assets/figures/spec-decode-throughput.svg",
+      "size": 5288
+    },
+    {
+      "path": "bench_openai_stream.py",
+      "size": 3919
+    },
+    {
+      "path": "collectives32.py",
+      "size": 4210
+    },
+    {
+      "path": "demo_kimi_dspark.py",
+      "size": 74655
+    },
+    {
+      "path": "demo_qwen_dflash.py",
+      "size": 24887
+    },
+    {
+      "path": "distributed_entry.py",
+      "size": 1676
+    },
+    {
+      "path": "kimi/__init__.py",
+      "size": 5831
+    },
+    {
+      "path": "kimi/decode_megakernel.py",
+      "size": 221565
+    },
+    {
+      "path": "kimi/dspark.py",
+      "size": 86288
+    },
+    {
+      "path": "kimi/load.py",
+      "size": 43518
+    },
+    {
+      "path": "model_paths.py",
+      "size": 1331
+    },
+    {
+      "path": "openai_server.py",
+      "size": 31001
+    },
+    {
+      "path": "pool_alias.py",
+      "size": 2029
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 522
+    },
+    {
+      "path": "qwen/__init__.py",
+      "size": 20190
+    },
+    {
+      "path": "qwen/decode_megakernel.py",
+      "size": 79644
+    },
+    {
+      "path": "qwen/dflash.py",
+      "size": 66434
+    },
+    {
+      "path": "qwen/load.py",
+      "size": 20825
+    },
+    {
+      "path": "scripts/benchmark_kimi.sh",
+      "size": 6699
+    },
+    {
+      "path": "scripts/benchmark_kimi_dspark.sh",
+      "size": 6689
+    },
+    {
+      "path": "scripts/benchmark_qwen.sh",
+      "size": 3033
+    },
+    {
+      "path": "scripts/benchmark_qwen_dflash.sh",
+      "size": 3209
+    },
+    {
+      "path": "scripts/demo_kimi_dspark.sh",
+      "size": 2608
+    },
+    {
+      "path": "scripts/demo_qwen_dflash.sh",
+      "size": 2276
+    },
+    {
+      "path": "scripts/eval_kimi_gpqa_diamond.sh",
+      "size": 4339
+    },
+    {
+      "path": "scripts/eval_kimi_gsm8k.sh",
+      "size": 3562
+    },
+    {
+      "path": "scripts/eval_qwen_gpqa_diamond.sh",
+      "size": 4056
+    },
+    {
+      "path": "scripts/eval_qwen_gsm8k.sh",
+      "size": 3765
+    },
+    {
+      "path": "scripts/gpqa_diamond_reasoning.yaml",
+      "size": 1248
+    },
+    {
+      "path": "tests/conftest.py",
+      "size": 171
+    },
+    {
+      "path": "tests/test_decode_megakernel_cpu.py",
+      "size": 5175
+    },
+    {
+      "path": "tests/test_dspark_cpu.py",
+      "size": 3049
+    },
+    {
+      "path": "tests/test_dspark_sampling.py",
+      "size": 7577
+    },
+    {
+      "path": "tests/test_kimi_reference.py",
+      "size": 4162
+    },
+    {
+      "path": "tests/test_qwen_decode_cpu.py",
+      "size": 8341
+    },
+    {
+      "path": "tests/test_qwen_dflash_cpu.py",
+      "size": 4446
+    },
+    {
+      "path": "uv.lock",
+      "size": 522974
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-25T00:43:05Z",
+      "subject": "Merge pull request #1 from Inferact/docs/blog-figures-citation",
+      "url": "https://github.com/Inferact/tpu-megakernels/commit/4048f0820aa4ff8787f707ca9d99b2bada9751aa"
+    },
+    {
+      "date": "2026-09-25T00:38:23Z",
+      "subject": "fix: replace HTML entity &times; with &#215; so SVGs are valid XML",
+      "url": "https://github.com/Inferact/tpu-megakernels/commit/6696ed785aae42072fe8b9f2972f3a6834e616e4"
+    },
+    {
+      "date": "2026-09-25T00:00:04Z",
+      "subject": "docs: link blog post, add hero and result figures, add citation section",
+      "url": "https://github.com/Inferact/tpu-megakernels/commit/945f9feee2927f98466e0b506b48151c56a1c3ee"
+    },
+    {
+      "date": "2026-09-23T05:23:09Z",
+      "subject": "add k3 and qwen megakernel implementations",
+      "url": "https://github.com/Inferact/tpu-megakernels/commit/aa0094ef9add6a1f21b1697fc7371ffccf68e8ea"
+    }
+  ],
+  "readme": "# TPU megakernels for Kimi K3 and Qwen3.8-27B\n\n<p align=\"center\">\n  <a href=\"https://inferact.ai/blog/tpu-megakernels\">\n    <img src=\"assets/figures/hero.png\" alt=\"TPU megakernel: 709 tokens per second on Kimi K3, 16x TPU v7 vs 452 on 16x GB200\" width=\"100%\">\n  </a>\n</p>\n\nCompanion code for the blog post\n[700 TPS on Kimi K3: A Case for TPU Megakernels](https://inferact.ai/blog/tpu-megakernels).\n\nThis repository contains fused decode implementations for two models:\n\n- **Kimi K3 + DSpark** runs on 32 TPU devices across four hosts. One megakernel\n  executes the KDA, MLA, MoE, residual, normalization, and collective work for\n  the target model; DSpark provides fused speculative decoding with one anchor\n  and seven draft rows.\n- **Qwen3.8-27B + DFlash2** runs on eight TPU devices on one host. Its dense\n  BF16 megakernel covers the hybrid gated-delta-net and grouped-query-attention\n  stack, with an optional fused DFlash2 speculative-decoding loop.\n\nBoth demos support terminal interaction and an OpenAI-compatible HTTP server.\n\n## Results\n\nWith speculative decoding at an acceptance length of 6, the megakernels reach\n709 accepted tokens per second on Kimi K3 (16× TPU v7 vs 16× GB200, 1.57×) and\n1,515 on Qwen3.8-27B (4× TPU v7 vs 4× GB200, 2.18×):\n\n<p align=\"center\">\n  <img src=\"assets/figures/spec-decode-throughput.svg\" alt=\"Speculative decode throughput at acceptance length 6: Kimi K3 709 vs 452 tokens/s; Qwen3.8-27B 1,515 vs 695 tokens/s\" width=\"720\">\n</p>\n\nDSpark keeps a large lead at shorter acceptance lengths as well:\n\n<p align=\"center\">\n  <img src=\"assets/figures/dspark-acceptance-lengths.svg\" alt=\"Accepted tokens per second with DSpark speculative decoding at acceptance lengths 3 and 6\" width=\"720\">\n</p>\n\nWithout speculative decoding, the megakernels deliver roughly 1.4–2× the\ndecode throughput of the GB200 baseline at batch sizes 1 through 8:\n\n<p align=\"center\">\n  <img src=\"assets/figures/batch-decode-throughput.svg\" alt=\"Aggregate decode throughput at batch sizes 1, 2, 4 and 8, TPU megakernel vs GB200 baseline\" width=\"720\">\n</p>\n\nSee the [blog post](https://inferact.ai/blog/tpu-megakernels) for the full\nanalysis and measurement setup.\n\n## Setup\n\nCreate the environment from the repository root:\n\n```bash\nuv sync\n```\n\nThe launchers run Hugging Face in offline mode, so the model snapshots must\nalready be present in the cache selected by `HF_HOME`, or supplied as explicit\nlocal paths. All scripts automatically load an optional, untracked `.env` file\nfrom the repository root. A typical configuration is:\n\n```bash\nHF_HOME=/path/to/huggingface\nKIMI_PRESHARDED_WEIGHTS=/path/to/kimi-k3-tp32\nKIMI_DRAFT_PRESHARDED_WEIGHTS=/path/to/kimi-k3-tp32/dspark\n```\n\nThe Kimi pre-sharded variables are optional. Without them, the demo prepares\nits kernel layouts from `moonshotai/Kimi-K3` and\n`RedHatAI/Kimi-K3-speculator.dspark`. The Qwen demo loads\n`Qwen/Qwen3.8-27B` and `z-lab/Qwen3.8-27B-DFlash2`; packed weight containers\nunder `checkpoints/qwen38-tp8` (or `$QWEN_PACKED_WEIGHTS` when set) are used\ninstead when present. The optional `KIMI_CHECKPOINT_REVISION`,\n`KIMI_DRAFT_REVISION`, `QWEN_CHECKPOINT_REVISION`, and\n`QWEN_DRAFT_REVISION` variables pin the commits resolved from the `HF_HOME`\ncache for the default repositories. Explicit `--checkpoint`,\n`--draft`, `--weights`, and `--draft-weights` arguments override these\ndefaults.\n\nKimi requires a four-node Slurm allocation with eight TPU devices per host.\nQwen uses one host with eight TPU devices and can run on the first node of any\nallocation containing at least one host.\n\n## CPU correctness tests\n\nRun the fast reference and CPU-interpreter tests with:\n\n```bash\nJAX_PLATFORMS=cpu uv run pytest -m \"not cpu32\"\n```\n\nRun the complete suite, including 32-device integration tests, with 32 virtual CPU\ndevices:\n\n```bash\nJAX_PLATFORMS=cpu \\\nXLA_FLAGS=--xla_force_host_platform_device_count=32 \\\nuv run pytest\n```\n\nThese tests validate numerical behavior, not TPU-specific Mosaic lowering,\nlayouts, VMEM capacity, DMA scheduling, collectives, or performance.\n\n## OpenAI-compatible servers\n\nStart the Kimi K3 + DSpark server on a four-node allocation:\n\n```bash\nJOBID=<four-node-job> bash scripts/demo_kimi_dspark.sh \\\n  --serve 0.0.0.0:8000 --context 4096 --max-tokens 512\n```\n\nStart the Qwen3.8-27B + DFlash2 server on the first host of an allocation:\n\n```bash\nJOBID=<slurm-job> bash scripts/demo_qwen_dflash.sh \\\n  --serve 0.0.0.0:8000 --context 2048 --max-tokens 512\n```\n\nBoth servers expose `GET /health`, `GET /v1/models`, `POST /tokenize`,\n`POST /detokenize`, `POST /v1/completions`, and\n`POST /v1/chat/completions`. Kimi uses DSpark by default and supports greedy\nor temperature/top-p generation; `--target-only` serves the target megakernel\nwithout speculation. Qwen uses DFlash2 by default with greedy generation;\n`--no-spec` selects its plain single-token decoder. Omit `--serve` to use\neither launcher interactively.\n\n## Source layout\n\n- `kimi/decode_megakernel.py`: fused Kimi K3 target decoder, including KDA,\n  MLA, MoE, residual/normalization, and collective communication.\n- `kimi/dspark.py`: DSpark draft model, fused speculation step, cache\n  management, and draft-weight loading.\n- `kimi/load.py`: Kimi tokenizer, checkpoint streaming, and TP32 weight-layout\n  preparation.\n- `qwen/__init__.py`: Qwen model configuration and reference equations.\n- `qwen/load.py`: Qwen tokenizer, checkpoint loading, TP weight packing,\n  packed containers, and device placement.\n- `qwen/decode_megakernel.py`: Qwen TP-sharded prefill, fused decode, and\n  block verification.\n- `qwen/dflash.py`: DFlash2 reference and fused draft/speculation kernels.\n- `demo_kimi_dspark.py` and `demo_qwen_dflash.py`: model loading, compilation,\n  prefill, generation, metrics, and server orchestration.\n- `collectives32.py` and `pool_alias.py`: TPU collective primitives and Pallas\n  VMEM aliasing support used by Kimi.\n- `openai_server.py` and `distributed_entry.py`: shared HTTP protocol support\n  and Kimi multi-host process startup.\n- `model_paths.py`: local-path and Hugging Face repository resolution through\n  `HF_HOME`.\n- `scripts/`: Slurm launchers, correctness evaluations, and performance\n  benchmarks for both model families.\n- `tests/`: CPU reference, packing, Pallas-interpreter, and integration tests.\n\nGenerated weights, checkpoints, compilation caches, evaluation output,\nbenchmark output, and Slurm logs are excluded from version control.\n\n## Citation\n\nIf you use this codebase or build on our results, please cite the companion\nblog post:\n\n```bibtex\n@misc{novack2026tpumegakernels,\n  author       = {Novack, George and Liu, Xuting and Ma, Jeff and Kwon, Woosuk},\n  title        = {700 TPS on Kimi K3: A Case for TPU Megakernels},\n  howpublished = {\\url{https://inferact.ai/blog/tpu-megakernels}},\n  year         = {2026},\n  month        = sep,\n  note         = {Inferact blog post, September 23, 2026},\n}\n```\n"
+}

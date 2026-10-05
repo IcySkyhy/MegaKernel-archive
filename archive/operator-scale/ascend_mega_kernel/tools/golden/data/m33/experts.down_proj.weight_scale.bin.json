@@ -1,0 +1,20 @@
+{
+  "tensor": "experts.down_proj.weight_scale.bin",
+  "shape": [
+    4,
+    2560,
+    20
+  ],
+  "dtype": "uint8",
+  "strides": [
+    51200,
+    20,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 204800,
+  "sha256": "11a6eebcdd6bcafe47528ecd4c9b95f3bf8cf1518692a0953b33e36efd427e3a",
+  "kind": "input",
+  "description": "E8M0 group scales [.., N, K//32], bias 127, group 32 along K"
+}

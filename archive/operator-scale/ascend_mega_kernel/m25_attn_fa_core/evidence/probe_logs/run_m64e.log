@@ -1,0 +1,67 @@
+	HBM Usage Rate(%)              : 3
+	Aicore Usage Rate(%)           : 0
+	Aicore Freq(MHZ)               : 1650
+[M25FA] aicNum=28 nBlk=4 mode=core
+[M25FA] pre-launch m=64 posBase=0 ctx=64 nBlk=4
+[M25FA] launched, waiting sync
+[AIC Block 0/4] [FAP] AIC 0 enter nWork=24 nBlk=4
+[AIC Block 0/4] [FAP] AIC prologue done nTiles=1 nb0=4
+[AIC Block 0/4] [FAP] AIC t=0 begin
+[AIC Block 0/4] [FAP] AIC t=0 S_FREE ok
+[AIC Block 0/4] [FAP] AIC t=0 S_RDY set
+[AIC Block 0/4] [FAP] AIC t=0 P0+PV_FREE ok
+[AIC Block 0/4] [FAP] AIC t=0 PV_RDY set
+[AIC Block 0/4] [FAP] AIC WI 0 done
+[AIC Block 0/4] [FAP] AIC prologue done nTiles=1 nb0=4
+[AIC Block 0/4] [FAP] AIC t=0 begin
+[AIC Block 0/4] [FAP] AIC t=0 S_FREE ok
+[AIC Block 0/4] [FAP] AIC t=0 S_RDY set
+[AIC Block 0/4] [FAP] AIC t=0 P0+PV_FREE ok
+[AIC Block 1/4] [FAP] AIC 1 enter nWork=24 nBlk=4
+[AIV Block 0/8] [FAP] AIV 0 enter nWork=24 nBlk=4
+[AIV Block 0/8] [FAP] AIV t=0 S_RDY ok
+[AIV Block 0/8] [FAP] AIV t=0 softmax+S_FREE
+[AIV Block 0/8] [FAP] AIV t=0 P0 set
+[AIV Block 0/8] [FAP] AIV t=0 PV_RDY ok
+[AIV Block 0/8] [FAP] AIV tail start
+[AIV Block 0/8] [FAP] AIV normalize done
+[AIV Block 0/8] [FAP] AIV MTE3 acq
+[AIV Block 0/8] [FAP] AIV datacopy done
+[AIV Block 0/8] [FAP] AIV WI 0 done
+[AIV Block 0/8] [FAP] AIV t=0 S_RDY ok
+[AIV Block 0/8] [FAP] AIV t=0 softmax+S_FREE
+[AIV Block 0/8] [FAP] AIV t=0 P0 set
+[AIV Block 0/8] [FAP] AIV t=0 PV_RDY ok
+[AIV Block 0/8] [FAP] AIV tail start
+[AIV Block 0/8] [FAP] AIV normalize done
+[AIV Block 0/8] [FAP] AIV MTE3 acq
+[AIV Block 0/8] [FAP] AIV datacopy done
+[AIV Block 0/8] [FAP] AIV WI 4 done
+[AIV Block 1/8] [FAP] AIV 1 enter nWork=24 nBlk=4
+[AIV Block 1/8] [FAP] AIV t=0 S_RDY ok
+[AIV Block 1/8] [FAP] AIV t=0 softmax+S_FREE
+[AIV Block 1/8] [FAP] AIV t=0 P0 set
+[AIV Block 1/8] [FAP] AIV t=0 PV_RDY ok
+[AIV Block 1/8] [FAP] AIV tail start
+[AIV Block 1/8] [FAP] AIV normalize done
+[AIV Block 1/8] [FAP] AIV MTE3 acq
+[AIV Block 1/8] [FAP] AIV datacopy done
+[AIV Block 1/8] [FAP] AIV WI 0 done
+[AIV Block 1/8] [FAP] AIV t=0 S_RDY ok
+[AIV Block 1/8] [FAP] AIV t=0 softmax+S_FREE
+[AIV Block 1/8] [FAP] AIV t=0 P0 set
+[AIV Block 1/8] [FAP] AIV t=0 PV_RDY ok
+[AIV Block 1/8] [FAP] AIV tail start
+[AIV Block 1/8] [FAP] AIV normalize done
+[AIV Block 1/8] [FAP] AIV MTE3 acq
+[AIV Block 1/8] [FAP] AIV datacopy done
+[AIV Block 1/8] [FAP] AIV WI 4 done
+[AIV Block 2/8] [FAP] AIV 2 enter nWork=24 nBlk=4
+[AIV Block 3/8] [FAP] AIV 3 enter nWork=24 nBlk=4
+[AIC Block 2/4] [FAP] AIC 2 enter nWork=24 nBlk=4
+[AIC Block 3/4] [FAP] AIC 3 enter nWork=24 nBlk=4
+[AIV Block 4/8] [FAP] AIV 4 enter nWork=24 nBlk=4
+[AIV Block 5/8] [FAP] AIV 5 enter nWork=24 nBlk=4
+[AIV Block 6/8] [FAP] AIV 6 enter nWork=24 nBlk=4
+[AIV Block 7/8] [FAP] AIV 7 enter nWork=24 nBlk=4
+EXIT1=124

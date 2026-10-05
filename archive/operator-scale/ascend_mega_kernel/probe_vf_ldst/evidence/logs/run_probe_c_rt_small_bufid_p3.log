@@ -1,0 +1,6 @@
+[probe C] probe_c_rt_small_bufid  order=2 (BufferID 同一 token: MTE3 drain 释放 → MTE2 取)  shape=1 (逐 chunk 16B 小 MTE3 ×64)  iters=64  proc=3
+[probe C] chunk 判读(.=ok p=上一chunk n=下一chunk X=poison z=0 ?=其它): ................................................................
+[probe C] chunk: ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 / 64
+[probe C] lane0 不符=0  全 lane 不符=0/4096
+[probe C] probe_c_rt_small_bufid RUN PASS
+[probe C] GM(gmMid) 最终内容逐 chunk 正确数: 64/64

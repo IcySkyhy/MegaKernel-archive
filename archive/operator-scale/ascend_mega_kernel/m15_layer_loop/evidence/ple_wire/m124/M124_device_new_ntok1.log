@@ -1,0 +1,15 @@
+[in-lock] 08:07:39
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+[m15ple] M85 PLE 独立 kernel | aic=28 aiv=56 | out=/tmp/m124_out_new_m1 data=m15_layer_loop/ple/data neg=0
+[m15ple] A    ① ids: 10 tok × 16 head, dev_range_fail=0 -> A_ids.bin
+[m15ple] B    ① ids: 2 tok × 16 head, dev_range_fail=0 -> B_ids.bin
+[m15ple] body ②③④⑤: stage_mask=15 n_tok=1 table_rows=1470 dev_fail=0
+[m15ple] ===== kernel-side OK =====
+run_rc=0
+check_rc=1
+[PASS] B2.emb                       tier=T1  n=2560     bad=0      元素逐位（差 0 元素 / 0 字节）
+RESULT|B2.emb|T1|2560|0|PASS
+[PASS] B3.kv                        tier=T3  n=12800    bad=0      eps=0.000153 maxRel=0.00571 max(d/bound)=0.974 (报告项)
+RESULT|B3.kv|T3|12800|0|PASS
+[out-lock] 08:07:48

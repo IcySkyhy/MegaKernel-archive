@@ -1,0 +1,18 @@
+{
+  "tensor": "topk_weights.bin",
+  "shape": [
+    33,
+    2
+  ],
+  "dtype": "fp32",
+  "strides": [
+    2,
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 264,
+  "sha256": "ca883bc23235e4b1c1694ac08281b5b0ff509bcea9c697b0708dd630cd2c4895",
+  "kind": "golden",
+  "description": "top-k routing weights [m, top_k], renormalized to sum 1"
+}

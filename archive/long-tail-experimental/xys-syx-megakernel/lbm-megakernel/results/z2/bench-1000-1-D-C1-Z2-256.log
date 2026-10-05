@@ -1,0 +1,24 @@
+RESOURCE name=D-C1-Z2-256 threads=256 registers=56 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+CLUSTER runtime_cluster=1 dim=1x1x2 active_clusters_device=170 potential_cluster_size=8
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=146.020416260
+TRIAL 1 us_per_step=146.051193237
+TRIAL 2 us_per_step=146.077789307
+TRIAL 3 us_per_step=146.033752441
+TRIAL 4 us_per_step=146.050109863
+TRIAL 5 us_per_step=146.050079346
+TRIAL 6 us_per_step=146.054306030
+TRIAL 7 us_per_step=146.240646362
+TRIAL 8 us_per_step=146.035812378
+TRIAL 9 us_per_step=146.063491821
+TRIAL 10 us_per_step=146.024444580
+TRIAL 11 us_per_step=146.025604248
+TRIAL 12 us_per_step=146.046081543
+TRIAL 13 us_per_step=146.038940430
+TRIAL 14 us_per_step=146.099197388
+TRIAL 15 us_per_step=146.077255249
+TRIAL 16 us_per_step=146.036895752
+TRIAL 17 us_per_step=146.069534302
+TRIAL 18 us_per_step=146.064422607
+TRIAL 19 us_per_step=146.081954956
+BENCH mode=D-C1-Z2-256 warmups=5 trials=20 steps=1000 launches=500 median_us=146.050651550 min_us=146.020416260 p90_us=146.081954956 mlups=14789.389688249 equivalent_population_TB_s=2.247987233

@@ -1,0 +1,2603 @@
+{
+  "repository": "thebasedcapital/latticemk",
+  "url": "https://github.com/thebasedcapital/latticemk",
+  "created_at": "2026-10-02T00:12:31Z",
+  "pushed_at": "2026-10-02T16:40:41Z",
+  "branch": "main",
+  "license": "MIT",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 647
+    },
+    {
+      "path": "LICENSE",
+      "size": 1072
+    },
+    {
+      "path": "Makefile",
+      "size": 608
+    },
+    {
+      "path": "README.md",
+      "size": 11374
+    },
+    {
+      "path": "bench/lm03/bench.py",
+      "size": 4633
+    },
+    {
+      "path": "bench/lm03/check_correctness.py",
+      "size": 4889
+    },
+    {
+      "path": "bench/lm03/lm03.py",
+      "size": 9991
+    },
+    {
+      "path": "bench/lm03/results.jsonl",
+      "size": 2080
+    },
+    {
+      "path": "bench/lm03b/bench.py",
+      "size": 4766
+    },
+    {
+      "path": "bench/lm03b/check_correctness.py",
+      "size": 4482
+    },
+    {
+      "path": "bench/lm03b/lm03b.py",
+      "size": 4329
+    },
+    {
+      "path": "bench/lm03b/results.jsonl",
+      "size": 3829
+    },
+    {
+      "path": "bench/lm03b/smoke.py",
+      "size": 1982
+    },
+    {
+      "path": "bench/lm03b/stage_gemv.py",
+      "size": 2794
+    },
+    {
+      "path": "bench/lm08/abl.py",
+      "size": 3021
+    },
+    {
+      "path": "bench/lm08/bench.py",
+      "size": 5017
+    },
+    {
+      "path": "bench/lm08/check_correctness.py",
+      "size": 5041
+    },
+    {
+      "path": "bench/lm08/lm03ref.py",
+      "size": 10078
+    },
+    {
+      "path": "bench/lm08/lm08.py",
+      "size": 5919
+    },
+    {
+      "path": "bench/lm08/results.jsonl",
+      "size": 2080
+    },
+    {
+      "path": "bench/lm09/bench.py",
+      "size": 4830
+    },
+    {
+      "path": "bench/lm09/check_correctness.py",
+      "size": 12534
+    },
+    {
+      "path": "bench/lm09/codec_results.jsonl",
+      "size": 3077
+    },
+    {
+      "path": "bench/lm09/eval_codec.py",
+      "size": 2212
+    },
+    {
+      "path": "bench/lm09/lm09.py",
+      "size": 6046
+    },
+    {
+      "path": "bench/lm09/quant_parity.py",
+      "size": 2000
+    },
+    {
+      "path": "bench/lm09/results.jsonl",
+      "size": 2992
+    },
+    {
+      "path": "bench/lm09/screen.sh",
+      "size": 254
+    },
+    {
+      "path": "bench/lm10/bench.py",
+      "size": 4229
+    },
+    {
+      "path": "bench/lm10/check_correctness.py",
+      "size": 6250
+    },
+    {
+      "path": "bench/lm10/lm03b.py",
+      "size": 5361
+    },
+    {
+      "path": "bench/lm10/phase_profile.py",
+      "size": 4217
+    },
+    {
+      "path": "bench/lm10/phases.json",
+      "size": 7303
+    },
+    {
+      "path": "bench/lm10/results.jsonl",
+      "size": 850
+    },
+    {
+      "path": "bench/lm10/smoke.py",
+      "size": 2284
+    },
+    {
+      "path": "bench/lm11/check_correctness_gptq.py",
+      "size": 5528
+    },
+    {
+      "path": "bench/lm11/check_gate_v21.py",
+      "size": 4359
+    },
+    {
+      "path": "bench/lm11/compare_gptq.py",
+      "size": 2831
+    },
+    {
+      "path": "bench/lm11/exllama_try.py",
+      "size": 1811
+    },
+    {
+      "path": "bench/lm11/finalize_results.py",
+      "size": 2553
+    },
+    {
+      "path": "bench/lm11/gate_v21.json",
+      "size": 1457
+    },
+    {
+      "path": "bench/lm11/gptq_pack.py",
+      "size": 7475
+    },
+    {
+      "path": "bench/lm11/hf_worker.py",
+      "size": 3541
+    },
+    {
+      "path": "bench/lm11/interleave.py",
+      "size": 8681
+    },
+    {
+      "path": "bench/lm11/ppl.int4gptq-fake.log",
+      "size": 2676
+    },
+    {
+      "path": "bench/lm11/ppl.json",
+      "size": 655
+    },
+    {
+      "path": "bench/lm11/ppl.q4_0.log",
+      "size": 2676
+    },
+    {
+      "path": "bench/lm11/ppl.q4_k_m.log",
+      "size": 2675
+    },
+    {
+      "path": "bench/lm11/ppl_llama_protocol.py",
+      "size": 4989
+    },
+    {
+      "path": "bench/lm11/results.jsonl",
+      "size": 56801
+    },
+    {
+      "path": "bench/lm11/run_exllama.sh",
+      "size": 668
+    },
+    {
+      "path": "bench/lm11/v2_time.py",
+      "size": 3186
+    },
+    {
+      "path": "bench/lm11/weights_to_gguf.py",
+      "size": 2623
+    },
+    {
+      "path": "bench/lm12/calibrate.py",
+      "size": 3394
+    },
+    {
+      "path": "bench/lm12/check_gate_v21.py",
+      "size": 6174
+    },
+    {
+      "path": "bench/lm12/gate_v21.json",
+      "size": 631
+    },
+    {
+      "path": "bench/lm12/gptq_pack.py",
+      "size": 6030
+    },
+    {
+      "path": "bench/lm12/interleave.py",
+      "size": 7806
+    },
+    {
+      "path": "bench/lm12/measure_ppl.py",
+      "size": 2525
+    },
+    {
+      "path": "bench/lm12/ppl.f16.log",
+      "size": 2653
+    },
+    {
+      "path": "bench/lm12/ppl.gptq.log",
+      "size": 2657
+    },
+    {
+      "path": "bench/lm12/ppl.json",
+      "size": 287
+    },
+    {
+      "path": "bench/lm12/ppl.q4_0.log",
+      "size": 2536
+    },
+    {
+      "path": "bench/lm12/ppl.q4_k_m.log",
+      "size": 2529
+    },
+    {
+      "path": "bench/lm12/prepare_gguf.sh",
+      "size": 788
+    },
+    {
+      "path": "bench/lm12/results.jsonl",
+      "size": 15896
+    },
+    {
+      "path": "bench/lm12/run_calibration.sh",
+      "size": 818
+    },
+    {
+      "path": "bench/lm12/run_ppl.sh",
+      "size": 189
+    },
+    {
+      "path": "bench/lm12/run_timing.sh",
+      "size": 280
+    },
+    {
+      "path": "bench/lm12/scale.py",
+      "size": 5829
+    },
+    {
+      "path": "bench/lm12/weights_to_gguf.py",
+      "size": 2358
+    },
+    {
+      "path": "bench/lm13/aggregate_ppl.py",
+      "size": 1299
+    },
+    {
+      "path": "bench/lm13/convert.py",
+      "size": 852
+    },
+    {
+      "path": "bench/lm13/hf_control.py",
+      "size": 1001
+    },
+    {
+      "path": "bench/lm13/paired.py",
+      "size": 7082
+    },
+    {
+      "path": "bench/lm13/ppl.py",
+      "size": 3387
+    },
+    {
+      "path": "bench/lm13/ppl_parts.jsonl",
+      "size": 2271
+    },
+    {
+      "path": "bench/lm13/results.jsonl",
+      "size": 14991
+    },
+    {
+      "path": "bench/lm13/run.sh",
+      "size": 634
+    },
+    {
+      "path": "bench/lm14/bench.py",
+      "size": 3230
+    },
+    {
+      "path": "bench/lm14/bound.json",
+      "size": 1014
+    },
+    {
+      "path": "bench/lm14/bound.py",
+      "size": 1372
+    },
+    {
+      "path": "bench/lm14/check_gate.py",
+      "size": 4793
+    },
+    {
+      "path": "bench/lm14/choose.json",
+      "size": 5563
+    },
+    {
+      "path": "bench/lm14/choose.py",
+      "size": 1632
+    },
+    {
+      "path": "bench/lm14/decision-128.json",
+      "size": 495
+    },
+    {
+      "path": "bench/lm14/engine.py",
+      "size": 3976
+    },
+    {
+      "path": "bench/lm14/gate.json",
+      "size": 4998
+    },
+    {
+      "path": "bench/lm14/gemv.json",
+      "size": 3218
+    },
+    {
+      "path": "bench/lm14/gemv.py",
+      "size": 1307
+    },
+    {
+      "path": "bench/lm14/initial/choose.json",
+      "size": 4243
+    },
+    {
+      "path": "bench/lm14/initial/decision-128.json",
+      "size": 495
+    },
+    {
+      "path": "bench/lm14/initial/profile.json",
+      "size": 3076
+    },
+    {
+      "path": "bench/lm14/initial/results.jsonl",
+      "size": 12962
+    },
+    {
+      "path": "bench/lm14/initial/sass.json",
+      "size": 11725
+    },
+    {
+      "path": "bench/lm14/profile.json",
+      "size": 12037
+    },
+    {
+      "path": "bench/lm14/profile.py",
+      "size": 2047
+    },
+    {
+      "path": "bench/lm14/reference.py",
+      "size": 909
+    },
+    {
+      "path": "bench/lm14/results.jsonl",
+      "size": 26251
+    },
+    {
+      "path": "bench/lm14/sass.json",
+      "size": 29029
+    },
+    {
+      "path": "bench/lm14/sass.py",
+      "size": 2564
+    },
+    {
+      "path": "bench/lm14/schedules.json",
+      "size": 2715
+    },
+    {
+      "path": "bench/lm18/analyze.py",
+      "size": 3576
+    },
+    {
+      "path": "bench/lm18/attribution.json",
+      "size": 11898
+    },
+    {
+      "path": "bench/lm18/bench.py",
+      "size": 3253
+    },
+    {
+      "path": "bench/lm18/check_contraction.py",
+      "size": 1306
+    },
+    {
+      "path": "bench/lm18/check_gate.py",
+      "size": 4807
+    },
+    {
+      "path": "bench/lm18/check_shapes.py",
+      "size": 1498
+    },
+    {
+      "path": "bench/lm18/choose.json",
+      "size": 11996
+    },
+    {
+      "path": "bench/lm18/choose.py",
+      "size": 1433
+    },
+    {
+      "path": "bench/lm18/contraction-cost.json",
+      "size": 4828
+    },
+    {
+      "path": "bench/lm18/contraction.json",
+      "size": 332
+    },
+    {
+      "path": "bench/lm18/contraction_cost.py",
+      "size": 1321
+    },
+    {
+      "path": "bench/lm18/decision-128.json",
+      "size": 374
+    },
+    {
+      "path": "bench/lm18/detail-profile.json",
+      "size": 36471
+    },
+    {
+      "path": "bench/lm18/detail_profile.py",
+      "size": 2291
+    },
+    {
+      "path": "bench/lm18/engine.py",
+      "size": 3977
+    },
+    {
+      "path": "bench/lm18/gate-contracted.json",
+      "size": 5079
+    },
+    {
+      "path": "bench/lm18/gate.json",
+      "size": 4978
+    },
+    {
+      "path": "bench/lm18/gemv.json",
+      "size": 4881
+    },
+    {
+      "path": "bench/lm18/gemv.py",
+      "size": 1624
+    },
+    {
+      "path": "bench/lm18/profile.json",
+      "size": 19845
+    },
+    {
+      "path": "bench/lm18/profile.py",
+      "size": 2076
+    },
+    {
+      "path": "bench/lm18/results.jsonl",
+      "size": 618339
+    },
+    {
+      "path": "bench/lm18/run_diagnostics.py",
+      "size": 1036
+    },
+    {
+      "path": "bench/lm18/sass-interleaved-m1.txt",
+      "size": 414616
+    },
+    {
+      "path": "bench/lm18/sass-interleaved-m4.txt",
+      "size": 821256
+    },
+    {
+      "path": "bench/lm18/sass-nonvolatile-m1.txt",
+      "size": 414616
+    },
+    {
+      "path": "bench/lm18/sass-nonvolatile-m4.txt",
+      "size": 819416
+    },
+    {
+      "path": "bench/lm18/sass-original-m1.txt",
+      "size": 414616
+    },
+    {
+      "path": "bench/lm18/sass-original-m4.txt",
+      "size": 819416
+    },
+    {
+      "path": "bench/lm18/sass-preload-m1.txt",
+      "size": 734729
+    },
+    {
+      "path": "bench/lm18/sass-preload-m4.txt",
+      "size": 1441449
+    },
+    {
+      "path": "bench/lm18/sass.json",
+      "size": 21479
+    },
+    {
+      "path": "bench/lm18/sass.py",
+      "size": 3286
+    },
+    {
+      "path": "bench/lm18/schedules.json",
+      "size": 4563
+    },
+    {
+      "path": "bench/lm18/shape-correctness.json",
+      "size": 495
+    },
+    {
+      "path": "bench/lm18/shape_probe.py",
+      "size": 3630
+    },
+    {
+      "path": "bench/lm18/stage_profile.py",
+      "size": 2955
+    },
+    {
+      "path": "bench/lm18/stages.json",
+      "size": 46251
+    },
+    {
+      "path": "bench/lm20/analysis.json",
+      "size": 10321
+    },
+    {
+      "path": "bench/lm20/analyze.py",
+      "size": 4553
+    },
+    {
+      "path": "bench/lm20/bench.py",
+      "size": 1671
+    },
+    {
+      "path": "bench/lm20/check_gate.py",
+      "size": 4807
+    },
+    {
+      "path": "bench/lm20/context-128.json",
+      "size": 46630
+    },
+    {
+      "path": "bench/lm20/context-2048.json",
+      "size": 46641
+    },
+    {
+      "path": "bench/lm20/context-8192.json",
+      "size": 46768
+    },
+    {
+      "path": "bench/lm20/context_bench.py",
+      "size": 5313
+    },
+    {
+      "path": "bench/lm20/contiguous-context-2048.json",
+      "size": 46754
+    },
+    {
+      "path": "bench/lm20/contiguous-context-8192.json",
+      "size": 46787
+    },
+    {
+      "path": "bench/lm20/contiguous-detail-profile.json",
+      "size": 72238
+    },
+    {
+      "path": "bench/lm20/contiguous-timing.json",
+      "size": 16473
+    },
+    {
+      "path": "bench/lm20/detail-profile.json",
+      "size": 72233
+    },
+    {
+      "path": "bench/lm20/detail_profile.py",
+      "size": 2335
+    },
+    {
+      "path": "bench/lm20/engine.py",
+      "size": 3978
+    },
+    {
+      "path": "bench/lm20/final-hardened-gate.jsonl",
+      "size": 16423
+    },
+    {
+      "path": "bench/lm20/gate.json",
+      "size": 4978
+    },
+    {
+      "path": "bench/lm20/hardened-gate.jsonl",
+      "size": 11515
+    },
+    {
+      "path": "bench/lm20/results.jsonl",
+      "size": 76705
+    },
+    {
+      "path": "bench/lm20/row-hardened-gate.jsonl",
+      "size": 10299
+    },
+    {
+      "path": "bench/lm20/schedules.json",
+      "size": 4603
+    },
+    {
+      "path": "bench/lm20/timing.json",
+      "size": 16470
+    },
+    {
+      "path": "bench/lm21/bench.py",
+      "size": 1376
+    },
+    {
+      "path": "bench/lm21/build_profile.sh",
+      "size": 591
+    },
+    {
+      "path": "bench/lm21/check_gate.py",
+      "size": 4807
+    },
+    {
+      "path": "bench/lm21/detail-profile.json",
+      "size": 71844
+    },
+    {
+      "path": "bench/lm21/detail_profile.py",
+      "size": 2160
+    },
+    {
+      "path": "bench/lm21/engine.py",
+      "size": 3977
+    },
+    {
+      "path": "bench/lm21/exact-tiers.jsonl",
+      "size": 10460
+    },
+    {
+      "path": "bench/lm21/gate.json",
+      "size": 4978
+    },
+    {
+      "path": "bench/lm21/initial/detail-profile.json",
+      "size": 71853
+    },
+    {
+      "path": "bench/lm21/initial/gate.json",
+      "size": 4978
+    },
+    {
+      "path": "bench/lm21/initial/mega_mt.diff",
+      "size": 12014
+    },
+    {
+      "path": "bench/lm21/initial/summary.json",
+      "size": 5950
+    },
+    {
+      "path": "bench/lm21/initial/tiers-final.jsonl",
+      "size": 10292
+    },
+    {
+      "path": "bench/lm21/initial/timing.json",
+      "size": 11031
+    },
+    {
+      "path": "bench/lm21/summarize.py",
+      "size": 1461
+    },
+    {
+      "path": "bench/lm21/summary.json",
+      "size": 5993
+    },
+    {
+      "path": "bench/lm21/tiers-final.jsonl",
+      "size": 10292
+    },
+    {
+      "path": "bench/lm21/tiers-revised.jsonl",
+      "size": 10292
+    },
+    {
+      "path": "bench/lm21/tiers.jsonl",
+      "size": 1014
+    },
+    {
+      "path": "bench/lm21/timing.json",
+      "size": 11034
+    },
+    {
+      "path": "bench/lm22/builds.json",
+      "size": 6504
+    },
+    {
+      "path": "bench/lm22/check_gate.py",
+      "size": 4807
+    },
+    {
+      "path": "bench/lm22/detail_profile.py",
+      "size": 2291
+    },
+    {
+      "path": "bench/lm22/engine.py",
+      "size": 3977
+    },
+    {
+      "path": "bench/lm22/fragment_check.py",
+      "size": 2406
+    },
+    {
+      "path": "bench/lm22/fragments-split.json",
+      "size": 3630
+    },
+    {
+      "path": "bench/lm22/fragments.json",
+      "size": 3227
+    },
+    {
+      "path": "bench/lm22/sass-counts.json",
+      "size": 599
+    },
+    {
+      "path": "bench/lm22/sass.py",
+      "size": 1783
+    },
+    {
+      "path": "bench/lm22/shape_probe.py",
+      "size": 2803
+    },
+    {
+      "path": "bench/lm22/shapes-dynamic-width.json",
+      "size": 111780
+    },
+    {
+      "path": "bench/lm22/shapes.json",
+      "size": 89480
+    },
+    {
+      "path": "bench/lm23/analysis.json",
+      "size": 25565
+    },
+    {
+      "path": "bench/lm23/analyze.py",
+      "size": 4756
+    },
+    {
+      "path": "bench/lm23/batch-128.json",
+      "size": 20063
+    },
+    {
+      "path": "bench/lm23/batch-2048.json",
+      "size": 19967
+    },
+    {
+      "path": "bench/lm23/bench.py",
+      "size": 4809
+    },
+    {
+      "path": "bench/lm23/build_trade.py",
+      "size": 1925
+    },
+    {
+      "path": "bench/lm23/calibration.json",
+      "size": 31974
+    },
+    {
+      "path": "bench/lm23/causal-128.json",
+      "size": 20087
+    },
+    {
+      "path": "bench/lm23/causal-2048.json",
+      "size": 19968
+    },
+    {
+      "path": "bench/lm23/causal-8192.json",
+      "size": 18342
+    },
+    {
+      "path": "bench/lm23/check_dump.py",
+      "size": 1830
+    },
+    {
+      "path": "bench/lm23/check_gate.py",
+      "size": 4807
+    },
+    {
+      "path": "bench/lm23/contract-smoke.json",
+      "size": 819
+    },
+    {
+      "path": "bench/lm23/contract-tiers.jsonl",
+      "size": 61957
+    },
+    {
+      "path": "bench/lm23/dump-m1.json",
+      "size": 1986
+    },
+    {
+      "path": "bench/lm23/engine.py",
+      "size": 4115
+    },
+    {
+      "path": "bench/lm23/gate.json",
+      "size": 4978
+    },
+    {
+      "path": "bench/lm23/regression-tiers.jsonl",
+      "size": 32813
+    },
+    {
+      "path": "bench/lm23/results.jsonl",
+      "size": 63658
+    },
+    {
+      "path": "bench/lm23/run_gates.py",
+      "size": 966
+    },
+    {
+      "path": "bench/lm23/run_timings.py",
+      "size": 603
+    },
+    {
+      "path": "bench/lm23/schedules.json",
+      "size": 4083
+    },
+    {
+      "path": "bench/lm23/schedules/MANIFEST.json",
+      "size": 3647
+    },
+    {
+      "path": "bench/lm23/tiers.jsonl",
+      "size": 35488
+    },
+    {
+      "path": "bench/lm23/trade-builds.json",
+      "size": 1784
+    },
+    {
+      "path": "bench/lm23/trade.json",
+      "size": 24313
+    },
+    {
+      "path": "bench/lm23/trade.py",
+      "size": 3055
+    },
+    {
+      "path": "bench/lm24/baseline16k.py",
+      "size": 4322
+    },
+    {
+      "path": "bench/lm24/bench.py",
+      "size": 5474
+    },
+    {
+      "path": "bench/lm24/check_correctness.py",
+      "size": 4409
+    },
+    {
+      "path": "bench/lm24/correctness.json",
+      "size": 4893
+    },
+    {
+      "path": "bench/lm24/kvc.py",
+      "size": 6265
+    },
+    {
+      "path": "bench/lm24/reference.py",
+      "size": 4244
+    },
+    {
+      "path": "bench/lm24/session.json",
+      "size": 2628
+    },
+    {
+      "path": "bench/lm24/session.py",
+      "size": 3802
+    },
+    {
+      "path": "bench/lm24/timing.json",
+      "size": 9695
+    },
+    {
+      "path": "gate/.gitignore",
+      "size": 32
+    },
+    {
+      "path": "gate/README.md",
+      "size": 8145
+    },
+    {
+      "path": "gate/calibration.json",
+      "size": 122761
+    },
+    {
+      "path": "gate/campaign-manifest.jsonl",
+      "size": 143266
+    },
+    {
+      "path": "gate/campaign-results.jsonl",
+      "size": 611811
+    },
+    {
+      "path": "gate/campaign.py",
+      "size": 7514
+    },
+    {
+      "path": "gate/contract.py",
+      "size": 2326
+    },
+    {
+      "path": "gate/core.py",
+      "size": 7098
+    },
+    {
+      "path": "gate/debug.py",
+      "size": 13187
+    },
+    {
+      "path": "gate/extra_tests.py",
+      "size": 5500
+    },
+    {
+      "path": "gate/layers.py",
+      "size": 16775
+    },
+    {
+      "path": "gate/mt_bridge.py",
+      "size": 4001
+    },
+    {
+      "path": "gate/mt_build.py",
+      "size": 2814
+    },
+    {
+      "path": "gate/mt_gate.py",
+      "size": 13847
+    },
+    {
+      "path": "gate/prepare_context.py",
+      "size": 2340
+    },
+    {
+      "path": "gate/run.py",
+      "size": 3895
+    },
+    {
+      "path": "gate/smoke.jsonl",
+      "size": 2277
+    },
+    {
+      "path": "gate/suites.py",
+      "size": 6001
+    },
+    {
+      "path": "gate/summarize.py",
+      "size": 14392
+    },
+    {
+      "path": "gate/validate.py",
+      "size": 2134
+    },
+    {
+      "path": "gate/validation-originals.jsonl",
+      "size": 201877
+    },
+    {
+      "path": "hw/hw.json",
+      "size": 1069
+    },
+    {
+      "path": "hw/hwprobe.cu",
+      "size": 5627
+    },
+    {
+      "path": "kernels/fused/fused.cu",
+      "size": 38320
+    },
+    {
+      "path": "kernels/fused/lm03ref.cu",
+      "size": 35690
+    },
+    {
+      "path": "kernels/gemv.cu",
+      "size": 14368
+    },
+    {
+      "path": "kernels/megakernel/mega.cu",
+      "size": 32629
+    },
+    {
+      "path": "kernels/megakernel/sched_gen.py",
+      "size": 13230
+    },
+    {
+      "path": "kernels/megakernel/schedules/mk_ctx128.json",
+      "size": 2373218
+    },
+    {
+      "path": "kernels/megakernel/schedules/mk_ctx2048.json",
+      "size": 3074038
+    },
+    {
+      "path": "kernels/megakernel/schedules/mk_ctx8192.json",
+      "size": 3092292
+    },
+    {
+      "path": "kernels/megakernel_attn/CHANGES.md",
+      "size": 3414
+    },
+    {
+      "path": "kernels/megakernel_attn/build-burst-m4.log",
+      "size": 736
+    },
+    {
+      "path": "kernels/megakernel_attn/build-burst-m5.log",
+      "size": 733
+    },
+    {
+      "path": "kernels/megakernel_attn/build-detail-m1.log",
+      "size": 1016
+    },
+    {
+      "path": "kernels/megakernel_attn/build-detail-m4.log",
+      "size": 1314
+    },
+    {
+      "path": "kernels/megakernel_attn/build-reference-detail-m1.log",
+      "size": 1050
+    },
+    {
+      "path": "kernels/megakernel_attn/build-reference-detail-m4.log",
+      "size": 1056
+    },
+    {
+      "path": "kernels/megakernel_attn/build-selected-m1.log",
+      "size": 681
+    },
+    {
+      "path": "kernels/megakernel_attn/build-selected-m2.log",
+      "size": 813
+    },
+    {
+      "path": "kernels/megakernel_attn/build-selected-m3.log",
+      "size": 814
+    },
+    {
+      "path": "kernels/megakernel_attn/build-selected-m4.log",
+      "size": 831
+    },
+    {
+      "path": "kernels/megakernel_attn/build-selected-m5.log",
+      "size": 831
+    },
+    {
+      "path": "kernels/megakernel_attn/build.sh",
+      "size": 1124
+    },
+    {
+      "path": "kernels/megakernel_attn/build_reference.sh",
+      "size": 487
+    },
+    {
+      "path": "kernels/megakernel_attn/gate_contract.json",
+      "size": 107
+    },
+    {
+      "path": "kernels/megakernel_attn/gemm.cuh",
+      "size": 2061
+    },
+    {
+      "path": "kernels/megakernel_attn/gemm_nv.cuh",
+      "size": 2274
+    },
+    {
+      "path": "kernels/megakernel_attn/gemm_original.cuh",
+      "size": 2391
+    },
+    {
+      "path": "kernels/megakernel_attn/gemm_preload.cuh",
+      "size": 1989
+    },
+    {
+      "path": "kernels/megakernel_attn/mega_detail.cuh",
+      "size": 1645
+    },
+    {
+      "path": "kernels/megakernel_attn/mega_mt.cu",
+      "size": 30008
+    },
+    {
+      "path": "kernels/megakernel_attn/mega_mt.diff",
+      "size": 16576
+    },
+    {
+      "path": "kernels/megakernel_attn/profile_detail.cuh",
+      "size": 293
+    },
+    {
+      "path": "kernels/megakernel_attn/sched_mt.py",
+      "size": 3658
+    },
+    {
+      "path": "kernels/megakernel_attn/schedules/MANIFEST.json",
+      "size": 3647
+    },
+    {
+      "path": "kernels/megakernel_kv/megakv.cu",
+      "size": 43048
+    },
+    {
+      "path": "kernels/megakernel_kv/sched_genkv.py",
+      "size": 10069
+    },
+    {
+      "path": "kernels/megakernel_kv/schedules/mkv_ctx128.json",
+      "size": 2695931
+    },
+    {
+      "path": "kernels/megakernel_kv/schedules/mkv_ctx2048.json",
+      "size": 2698043
+    },
+    {
+      "path": "kernels/megakernel_kv/schedules/mkv_ctx8192.json",
+      "size": 2698267
+    },
+    {
+      "path": "kernels/megakernel_kvc/baseline16k.cu",
+      "size": 31293
+    },
+    {
+      "path": "kernels/megakernel_kvc/build.sh",
+      "size": 478
+    },
+    {
+      "path": "kernels/megakernel_kvc/kvc.cu",
+      "size": 33656
+    },
+    {
+      "path": "kernels/megakernel_kvc/sched_gen.py",
+      "size": 4639
+    },
+    {
+      "path": "kernels/megakernel_kvc/schedules/MANIFEST.json",
+      "size": 1051
+    },
+    {
+      "path": "kernels/megakernel_mma/CHANGES.md",
+      "size": 3177
+    },
+    {
+      "path": "kernels/megakernel_mma/build-mma-m1.log",
+      "size": 700
+    },
+    {
+      "path": "kernels/megakernel_mma/build-mma-m2.log",
+      "size": 700
+    },
+    {
+      "path": "kernels/megakernel_mma/build-mma-m3.log",
+      "size": 701
+    },
+    {
+      "path": "kernels/megakernel_mma/build-mma-m4.log",
+      "size": 738
+    },
+    {
+      "path": "kernels/megakernel_mma/build-mma-m5.log",
+      "size": 776
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-cuda-m1.log",
+      "size": 343
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-cuda-m2.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-cuda-m4.log",
+      "size": 346
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-mma1-m1.log",
+      "size": 343
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-mma1-m2.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-mma1-m4.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-mma4-m1.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-mma4-m2.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-mma4-m4.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-mma8-m1.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-mma8-m2.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-mma8-m4.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw1-m1.log",
+      "size": 344
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw1-m2.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw1-m3.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw1-m4.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw1-m5.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw1-m6.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw1-m7.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw1-m8.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw4-m1.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw4-m2.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw4-m4.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw8-m1.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw8-m2.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build-shape-sw8-m4.log",
+      "size": 345
+    },
+    {
+      "path": "kernels/megakernel_mma/build.sh",
+      "size": 1276
+    },
+    {
+      "path": "kernels/megakernel_mma/build_probe.sh",
+      "size": 711
+    },
+    {
+      "path": "kernels/megakernel_mma/gate_contract.json",
+      "size": 129
+    },
+    {
+      "path": "kernels/megakernel_mma/gemm.cuh",
+      "size": 2061
+    },
+    {
+      "path": "kernels/megakernel_mma/gemm_mma.cuh",
+      "size": 4156
+    },
+    {
+      "path": "kernels/megakernel_mma/gemm_nv.cuh",
+      "size": 2274
+    },
+    {
+      "path": "kernels/megakernel_mma/gemm_original.cuh",
+      "size": 2391
+    },
+    {
+      "path": "kernels/megakernel_mma/gemm_preload.cuh",
+      "size": 1989
+    },
+    {
+      "path": "kernels/megakernel_mma/gemm_probe.cu",
+      "size": 1382
+    },
+    {
+      "path": "kernels/megakernel_mma/mega_detail.cuh",
+      "size": 1875
+    },
+    {
+      "path": "kernels/megakernel_mma/mega_mt.cu",
+      "size": 25903
+    },
+    {
+      "path": "kernels/megakernel_mma/mega_mt.diff",
+      "size": 468
+    },
+    {
+      "path": "kernels/megakernel_mma/profile_detail.cuh",
+      "size": 293
+    },
+    {
+      "path": "kernels/megakernel_mma/sched_mt.py",
+      "size": 3225
+    },
+    {
+      "path": "kernels/megakernel_mt/build-fp32-m4.log",
+      "size": 731
+    },
+    {
+      "path": "kernels/megakernel_mt/build-initial-m4.log",
+      "size": 373
+    },
+    {
+      "path": "kernels/megakernel_mt/build-m1.log",
+      "size": 697
+    },
+    {
+      "path": "kernels/megakernel_mt/build-m2.log",
+      "size": 699
+    },
+    {
+      "path": "kernels/megakernel_mt/build-m3.log",
+      "size": 699
+    },
+    {
+      "path": "kernels/megakernel_mt/build-m4.log",
+      "size": 700
+    },
+    {
+      "path": "kernels/megakernel_mt/build-m5.log",
+      "size": 701
+    },
+    {
+      "path": "kernels/megakernel_mt/build-mma-m4.log",
+      "size": 698
+    },
+    {
+      "path": "kernels/megakernel_mt/build-profile-m1.log",
+      "size": 698
+    },
+    {
+      "path": "kernels/megakernel_mt/build-profile-m4.log",
+      "size": 731
+    },
+    {
+      "path": "kernels/megakernel_mt/build-t1024-m4.log",
+      "size": 409
+    },
+    {
+      "path": "kernels/megakernel_mt/build.sh",
+      "size": 1563
+    },
+    {
+      "path": "kernels/megakernel_mt/gemm.cuh",
+      "size": 2391
+    },
+    {
+      "path": "kernels/megakernel_mt/gemm_fp32.cuh",
+      "size": 2092
+    },
+    {
+      "path": "kernels/megakernel_mt/gemm_mma.cuh",
+      "size": 2495
+    },
+    {
+      "path": "kernels/megakernel_mt/initial/build-m1.log",
+      "size": 370
+    },
+    {
+      "path": "kernels/megakernel_mt/initial/build-m4.log",
+      "size": 373
+    },
+    {
+      "path": "kernels/megakernel_mt/initial/build-t1024-m4.log",
+      "size": 409
+    },
+    {
+      "path": "kernels/megakernel_mt/initial/gemm.cuh",
+      "size": 2174
+    },
+    {
+      "path": "kernels/megakernel_mt/initial/mega_mt.cu",
+      "size": 24402
+    },
+    {
+      "path": "kernels/megakernel_mt/mega_mt.cu",
+      "size": 25602
+    },
+    {
+      "path": "kernels/megakernel_mt/sched_mt.py",
+      "size": 3221
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/batch_m1_ctx128.json",
+      "size": 1490657
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/batch_m1_ctx2048.json",
+      "size": 1497831
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/batch_m2_ctx128.json",
+      "size": 2457618
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/batch_m2_ctx2048.json",
+      "size": 2472860
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/batch_m4_ctx128.json",
+      "size": 3989680
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/batch_m4_ctx2048.json",
+      "size": 4020162
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/causal_m1_ctx128.json",
+      "size": 1486174
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/causal_m1_ctx2048.json",
+      "size": 1493348
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/causal_m2_ctx128.json",
+      "size": 2448587
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/causal_m2_ctx2048.json",
+      "size": 2463825
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/causal_m4_ctx128.json",
+      "size": 3971553
+    },
+    {
+      "path": "kernels/megakernel_mt/schedules/causal_m4_ctx2048.json",
+      "size": 4002023
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-detail-m1.log",
+      "size": 1050
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-detail-m4.log",
+      "size": 1056
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-interleaved-m1.log",
+      "size": 698
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-interleaved-m4.log",
+      "size": 731
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-nocontract-m1.log",
+      "size": 698
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-nocontract-m4.log",
+      "size": 702
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-nonvolatile-m1.log",
+      "size": 698
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-nonvolatile-m4.log",
+      "size": 700
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-original-m1.log",
+      "size": 698
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-original-m4.log",
+      "size": 700
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-preload-m1.log",
+      "size": 697
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-preload-m4.log",
+      "size": 702
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-profile-m1.log",
+      "size": 698
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-profile-m4.log",
+      "size": 702
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-selected-m1.log",
+      "size": 697
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-selected-m2.log",
+      "size": 700
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-selected-m3.log",
+      "size": 701
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-selected-m4.log",
+      "size": 702
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-selected-m5.log",
+      "size": 702
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-interleaved-m1.log",
+      "size": 665
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-interleaved-m2.log",
+      "size": 669
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-interleaved-m3.log",
+      "size": 669
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-interleaved-m4.log",
+      "size": 669
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-nonvolatile-m1.log",
+      "size": 665
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-nonvolatile-m2.log",
+      "size": 668
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-nonvolatile-m3.log",
+      "size": 669
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-nonvolatile-m4.log",
+      "size": 669
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-original-m1.log",
+      "size": 666
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-original-m2.log",
+      "size": 668
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-original-m3.log",
+      "size": 669
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-original-m4.log",
+      "size": 669
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-preload-m1.log",
+      "size": 999
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-preload-m2.log",
+      "size": 1003
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-preload-m3.log",
+      "size": 1005
+    },
+    {
+      "path": "kernels/megakernel_mt2/build-shape-preload-m4.log",
+      "size": 1007
+    },
+    {
+      "path": "kernels/megakernel_mt2/build.sh",
+      "size": 1138
+    },
+    {
+      "path": "kernels/megakernel_mt2/build_probe.sh",
+      "size": 702
+    },
+    {
+      "path": "kernels/megakernel_mt2/gate_contract.json",
+      "size": 208
+    },
+    {
+      "path": "kernels/megakernel_mt2/gemm.cuh",
+      "size": 2061
+    },
+    {
+      "path": "kernels/megakernel_mt2/gemm_nv.cuh",
+      "size": 2274
+    },
+    {
+      "path": "kernels/megakernel_mt2/gemm_original.cuh",
+      "size": 2391
+    },
+    {
+      "path": "kernels/megakernel_mt2/gemm_preload.cuh",
+      "size": 1989
+    },
+    {
+      "path": "kernels/megakernel_mt2/mega_detail.cuh",
+      "size": 1875
+    },
+    {
+      "path": "kernels/megakernel_mt2/mega_mt.cu",
+      "size": 25854
+    },
+    {
+      "path": "kernels/megakernel_mt2/profile_detail.cuh",
+      "size": 293
+    },
+    {
+      "path": "kernels/megakernel_mt2/sched_mt.py",
+      "size": 3225
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m1_ctx128.json",
+      "size": 1490657
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m1_ctx2048.json",
+      "size": 1497831
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m2_ctx128.json",
+      "size": 2457618
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m2_ctx2048.json",
+      "size": 2472860
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m3_ctx128.json",
+      "size": 3223649
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m3_ctx2048.json",
+      "size": 3246511
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m4_ctx128.json",
+      "size": 3989680
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m4_ctx2048.json",
+      "size": 4020162
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m5_ctx128.json",
+      "size": 4755711
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/batch_m5_ctx2048.json",
+      "size": 4793813
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m1_ctx128.json",
+      "size": 1486174
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m1_ctx2048.json",
+      "size": 1493348
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m2_ctx128.json",
+      "size": 2448587
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m2_ctx2048.json",
+      "size": 2463825
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m3_ctx128.json",
+      "size": 3210070
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m3_ctx2048.json",
+      "size": 3232924
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m4_ctx128.json",
+      "size": 3971553
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m4_ctx2048.json",
+      "size": 4002023
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m5_ctx128.json",
+      "size": 4733036
+    },
+    {
+      "path": "kernels/megakernel_mt2/schedules/causal_m5_ctx2048.json",
+      "size": 4771122
+    },
+    {
+      "path": "kernels/megakernel_mt2/shape_probe.cu",
+      "size": 4733
+    },
+    {
+      "path": "kernels/megakernel_mt2/shape_profile_best.cuh",
+      "size": 3774
+    },
+    {
+      "path": "kernels/megakernel_mt3/CHANGES.md",
+      "size": 3197
+    },
+    {
+      "path": "kernels/megakernel_mt3/MERGE.md",
+      "size": 3471
+    },
+    {
+      "path": "kernels/megakernel_mt3/build-selected-m1.log",
+      "size": 807
+    },
+    {
+      "path": "kernels/megakernel_mt3/build-selected-m2.log",
+      "size": 813
+    },
+    {
+      "path": "kernels/megakernel_mt3/build-selected-m3.log",
+      "size": 814
+    },
+    {
+      "path": "kernels/megakernel_mt3/build-selected-m4.log",
+      "size": 814
+    },
+    {
+      "path": "kernels/megakernel_mt3/build-selected-m5.log",
+      "size": 943
+    },
+    {
+      "path": "kernels/megakernel_mt3/build.sh",
+      "size": 1124
+    },
+    {
+      "path": "kernels/megakernel_mt3/gate_contract.json",
+      "size": 208
+    },
+    {
+      "path": "kernels/megakernel_mt3/gemm.cuh",
+      "size": 2061
+    },
+    {
+      "path": "kernels/megakernel_mt3/gemm_nv.cuh",
+      "size": 2274
+    },
+    {
+      "path": "kernels/megakernel_mt3/gemm_original.cuh",
+      "size": 2391
+    },
+    {
+      "path": "kernels/megakernel_mt3/gemm_preload.cuh",
+      "size": 1989
+    },
+    {
+      "path": "kernels/megakernel_mt3/mega_detail.cuh",
+      "size": 1330
+    },
+    {
+      "path": "kernels/megakernel_mt3/mega_mt.cu",
+      "size": 30219
+    },
+    {
+      "path": "kernels/megakernel_mt3/profile_detail.cuh",
+      "size": 293
+    },
+    {
+      "path": "kernels/megakernel_mt3/sched_mt.py",
+      "size": 3648
+    },
+    {
+      "path": "kernels/megakernel_pro/CHANGES.md",
+      "size": 2371
+    },
+    {
+      "path": "kernels/megakernel_pro/build-baseline-detail-m1.log",
+      "size": 1050
+    },
+    {
+      "path": "kernels/megakernel_pro/build-baseline-detail-m4.log",
+      "size": 1056
+    },
+    {
+      "path": "kernels/megakernel_pro/build-detail-m1.log",
+      "size": 1050
+    },
+    {
+      "path": "kernels/megakernel_pro/build-detail-m4.log",
+      "size": 1054
+    },
+    {
+      "path": "kernels/megakernel_pro/build-selected-m1.log",
+      "size": 697
+    },
+    {
+      "path": "kernels/megakernel_pro/build-selected-m2.log",
+      "size": 700
+    },
+    {
+      "path": "kernels/megakernel_pro/build-selected-m3.log",
+      "size": 701
+    },
+    {
+      "path": "kernels/megakernel_pro/build-selected-m4.log",
+      "size": 701
+    },
+    {
+      "path": "kernels/megakernel_pro/build-selected-m5.log",
+      "size": 701
+    },
+    {
+      "path": "kernels/megakernel_pro/build.sh",
+      "size": 1164
+    },
+    {
+      "path": "kernels/megakernel_pro/gate_contract.json",
+      "size": 129
+    },
+    {
+      "path": "kernels/megakernel_pro/gemm.cuh",
+      "size": 2061
+    },
+    {
+      "path": "kernels/megakernel_pro/gemm_nv.cuh",
+      "size": 2274
+    },
+    {
+      "path": "kernels/megakernel_pro/gemm_original.cuh",
+      "size": 2391
+    },
+    {
+      "path": "kernels/megakernel_pro/gemm_preload.cuh",
+      "size": 1989
+    },
+    {
+      "path": "kernels/megakernel_pro/mega_detail.cuh",
+      "size": 1560
+    },
+    {
+      "path": "kernels/megakernel_pro/mega_mt.cu",
+      "size": 25955
+    },
+    {
+      "path": "kernels/megakernel_pro/mega_mt.diff",
+      "size": 12705
+    },
+    {
+      "path": "kernels/megakernel_pro/profile_detail.cuh",
+      "size": 293
+    },
+    {
+      "path": "kernels/megakernel_pro/sched_mt.py",
+      "size": 3225
+    },
+    {
+      "path": "kernels/megakernel_scale/build.sh",
+      "size": 839
+    },
+    {
+      "path": "kernels/megakernel_scale/mega_scale.cu",
+      "size": 31628
+    },
+    {
+      "path": "kernels/megakernel_scale/sched_scale.py",
+      "size": 8156
+    },
+    {
+      "path": "kernels/megakernel_scale/schedules/scale_ctx128.json",
+      "size": 2529358
+    },
+    {
+      "path": "kernels/megakernel_scale/schedules/scale_ctx2048.json",
+      "size": 2531278
+    },
+    {
+      "path": "kernels/megakernel_scale/schedules/scale_ctx8192.json",
+      "size": 2531406
+    },
+    {
+      "path": "kernels/megakernel_sync/mega2prof.cu",
+      "size": 33023
+    },
+    {
+      "path": "kernels/megakernel_sync/mega3.cu",
+      "size": 34839
+    },
+    {
+      "path": "kernels/megakernel_sync/sched_gen3.py",
+      "size": 7897
+    },
+    {
+      "path": "kernels/megakernel_sync/schedules/mk3_ctx128.json",
+      "size": 2881185
+    },
+    {
+      "path": "kernels/megakernel_sync/schedules/mk3_ctx2048.json",
+      "size": 2883105
+    },
+    {
+      "path": "kernels/megakernel_sync/schedules/mk3_ctx8192.json",
+      "size": 2883233
+    },
+    {
+      "path": "kernels/megakernel_v2/mega2.cu",
+      "size": 31292
+    },
+    {
+      "path": "kernels/megakernel_v2/sched_gen2.py",
+      "size": 8233
+    },
+    {
+      "path": "kernels/megakernel_v2/schedules/mk2_ctx128.json",
+      "size": 2525470
+    },
+    {
+      "path": "kernels/megakernel_v2/schedules/mk2_ctx2048.json",
+      "size": 2527390
+    },
+    {
+      "path": "kernels/megakernel_v2/schedules/mk2_ctx8192.json",
+      "size": 2527518
+    },
+    {
+      "path": "kernels/vqenc.cu",
+      "size": 1793
+    },
+    {
+      "path": "kvcodec/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "kvcodec/byte_model.py",
+      "size": 2120
+    },
+    {
+      "path": "kvcodec/capture.py",
+      "size": 2522
+    },
+    {
+      "path": "kvcodec/codec.py",
+      "size": 8064
+    },
+    {
+      "path": "kvcodec/codec_lm09.py",
+      "size": 9676
+    },
+    {
+      "path": "kvcodec/common.py",
+      "size": 5597
+    },
+    {
+      "path": "kvcodec/eval.py",
+      "size": 8529
+    },
+    {
+      "path": "kvcodec/results.jsonl",
+      "size": 4199
+    },
+    {
+      "path": "kvcodec/stats.json",
+      "size": 3267
+    },
+    {
+      "path": "kvcodec/stats.py",
+      "size": 5162
+    },
+    {
+      "path": "lmk/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "lmk/codebooks.py",
+      "size": 3313
+    },
+    {
+      "path": "lmk/gptq.py",
+      "size": 5362
+    },
+    {
+      "path": "lmk/model.py",
+      "size": 890
+    },
+    {
+      "path": "lmk/pack.py",
+      "size": 4584
+    },
+    {
+      "path": "lmk/quant.py",
+      "size": 5199
+    },
+    {
+      "path": "mutation/.gitignore",
+      "size": 42
+    },
+    {
+      "path": "mutation/extra_tests.py",
+      "size": 7738
+    },
+    {
+      "path": "mutation/gate.py",
+      "size": 25421
+    },
+    {
+      "path": "mutation/manifest-0.6B.jsonl",
+      "size": 92004
+    },
+    {
+      "path": "mutation/manifest-1.7B.jsonl",
+      "size": 53814
+    },
+    {
+      "path": "mutation/mutate.py",
+      "size": 27492
+    },
+    {
+      "path": "mutation/reference-0.6B.json",
+      "size": 3602
+    },
+    {
+      "path": "mutation/reference-1.7B.json",
+      "size": 3019
+    },
+    {
+      "path": "mutation/results.jsonl",
+      "size": 613439
+    },
+    {
+      "path": "mutation/summarize.py",
+      "size": 3252
+    },
+    {
+      "path": "ppt/.gitignore",
+      "size": 34
+    },
+    {
+      "path": "ppt/check_engine.py",
+      "size": 2649
+    },
+    {
+      "path": "ppt/checkpoint-1.7B-566.json",
+      "size": 1572103
+    },
+    {
+      "path": "ppt/checkpoint-before-microbatch.json",
+      "size": 1062668
+    },
+    {
+      "path": "ppt/checkpoint-inspection.json",
+      "size": 19298
+    },
+    {
+      "path": "ppt/chunks.jsonl",
+      "size": 1744
+    },
+    {
+      "path": "ppt/controls.py",
+      "size": 4054
+    },
+    {
+      "path": "ppt/engine-proof.json",
+      "size": 1479
+    },
+    {
+      "path": "ppt/experiment.json",
+      "size": 2120
+    },
+    {
+      "path": "ppt/feasibility.json",
+      "size": 28368
+    },
+    {
+      "path": "ppt/feasibility.py",
+      "size": 8946
+    },
+    {
+      "path": "ppt/finish_pilot.py",
+      "size": 1992
+    },
+    {
+      "path": "ppt/gsm8k.json",
+      "size": 61319
+    },
+    {
+      "path": "ppt/inspect_checkpoint.py",
+      "size": 939
+    },
+    {
+      "path": "ppt/oom.json",
+      "size": 1260
+    },
+    {
+      "path": "ppt/pilot.jsonl",
+      "size": 26833
+    },
+    {
+      "path": "ppt/pilot_baselines.py",
+      "size": 1530
+    },
+    {
+      "path": "ppt/pilot_single.py",
+      "size": 3646
+    },
+    {
+      "path": "ppt/results.jsonl",
+      "size": 0
+    },
+    {
+      "path": "ppt/results.summary.json",
+      "size": 48
+    },
+    {
+      "path": "ppt/run.py",
+      "size": 9907
+    },
+    {
+      "path": "ppt/sampler-proof.json",
+      "size": 608
+    },
+    {
+      "path": "ppt/sampler.py",
+      "size": 8236
+    },
+    {
+      "path": "ppt/summarize.py",
+      "size": 3127
+    },
+    {
+      "path": "ppt/test_sampler.py",
+      "size": 6399
+    },
+    {
+      "path": "publish/WRAPUP.md",
+      "size": 7817
+    },
+    {
+      "path": "publish/charts/compaction.png",
+      "size": 235739
+    },
+    {
+      "path": "publish/charts/multitoken.png",
+      "size": 219877
+    },
+    {
+      "path": "publish/charts/ppl_vs_speed.png",
+      "size": 193819
+    },
+    {
+      "path": "publish/charts/roofline.png",
+      "size": 160149
+    },
+    {
+      "path": "publish/charts/speculative.png",
+      "size": 229113
+    },
+    {
+      "path": "publish/charts/speed_vs_llamacpp.png",
+      "size": 169244
+    },
+    {
+      "path": "publish/charts/waves.png",
+      "size": 415146
+    },
+    {
+      "path": "publish/check_thread.py",
+      "size": 701
+    },
+    {
+      "path": "publish/claims_check.md",
+      "size": 12394
+    },
+    {
+      "path": "publish/make_charts.py",
+      "size": 21045
+    },
+    {
+      "path": "publish/make_posted_thread.py",
+      "size": 1486
+    },
+    {
+      "path": "publish/reproduction/bench/lm20/schedules.json",
+      "size": 4603
+    },
+    {
+      "path": "publish/reproduction/bench/lm23/causal-128.json",
+      "size": 19160
+    },
+    {
+      "path": "publish/reproduction/bench/lm23/results.jsonl",
+      "size": 12450
+    },
+    {
+      "path": "publish/reproduction/bench/lm23/schedules.json",
+      "size": 4083
+    },
+    {
+      "path": "publish/reproduction/bench/lm24/correctness.json",
+      "size": 4892
+    },
+    {
+      "path": "publish/reproduction/bench/lm24/session.json",
+      "size": 2621
+    },
+    {
+      "path": "publish/reproduction/bench/lm24/timing.json",
+      "size": 9706
+    },
+    {
+      "path": "publish/reproduction/gate-tiers.jsonl",
+      "size": 58551
+    },
+    {
+      "path": "publish/reproduction/spec.jsonl",
+      "size": 372109
+    },
+    {
+      "path": "publish/reproduction_times.jsonl",
+      "size": 937
+    },
+    {
+      "path": "publish/research_note.md",
+      "size": 14839
+    },
+    {
+      "path": "publish/results.md",
+      "size": 19208
+    },
+    {
+      "path": "publish/x_thread.md",
+      "size": 3533
+    },
+    {
+      "path": "publish/x_thread_2.md",
+      "size": 2986
+    },
+    {
+      "path": "publish/x_thread_posted.json",
+      "size": 3479
+    },
+    {
+      "path": "reports/wave-1.md",
+      "size": 6778
+    },
+    {
+      "path": "reports/wave-2.md",
+      "size": 5145
+    },
+    {
+      "path": "reports/wave-2/LM-03.md",
+      "size": 4726
+    },
+    {
+      "path": "reports/wave-2/LM-05.md",
+      "size": 5969
+    },
+    {
+      "path": "reports/wave-2/LM-07.md",
+      "size": 8412
+    },
+    {
+      "path": "reports/wave-3.md",
+      "size": 3784
+    },
+    {
+      "path": "reports/wave-3/LM-03b.md",
+      "size": 6860
+    },
+    {
+      "path": "reports/wave-3/LM-08.md",
+      "size": 6523
+    },
+    {
+      "path": "reports/wave-4.md",
+      "size": 3591
+    },
+    {
+      "path": "reports/wave-4/LM-09.md",
+      "size": 8580
+    },
+    {
+      "path": "reports/wave-4/LM-10.md",
+      "size": 9831
+    },
+    {
+      "path": "reports/wave-4/LM-11.md",
+      "size": 11371
+    },
+    {
+      "path": "reports/wave-5.md",
+      "size": 3470
+    },
+    {
+      "path": "reports/wave-5/LM-12.md",
+      "size": 9458
+    },
+    {
+      "path": "reports/wave-5/LM-13.md",
+      "size": 10209
+    },
+    {
+      "path": "reports/wave-6.md",
+      "size": 4302
+    },
+    {
+      "path": "reports/wave-6/LM-14.md",
+      "size": 16113
+    },
+    {
+      "path": "reports/wave-6/LM-16.md",
+      "size": 6477
+    },
+    {
+      "path": "reports/wave-7.md",
+      "size": 4683
+    },
+    {
+      "path": "reports/wave-7/LM-17.md",
+      "size": 15069
+    },
+    {
+      "path": "reports/wave-7/LM-18.md",
+      "size": 22760
+    },
+    {
+      "path": "reports/wave-7/LM-19.md",
+      "size": 20159
+    },
+    {
+      "path": "reports/wave-8.md",
+      "size": 4653
+    },
+    {
+      "path": "reports/wave-8/LM-20.md",
+      "size": 12306
+    },
+    {
+      "path": "reports/wave-8/LM-21.md",
+      "size": 9081
+    },
+    {
+      "path": "reports/wave-8/LM-22.md",
+      "size": 11787
+    },
+    {
+      "path": "reports/wave-8/LM-23.md",
+      "size": 18518
+    },
+    {
+      "path": "reports/wave-8/LM-24.md",
+      "size": 8783
+    },
+    {
+      "path": "reports/wave-9.md",
+      "size": 3074
+    },
+    {
+      "path": "reports/wave-9/LM-25.md",
+      "size": 17408
+    },
+    {
+      "path": "reproduce.sh",
+      "size": 13015
+    },
+    {
+      "path": "scripts/bench_gemv.py",
+      "size": 5291
+    },
+    {
+      "path": "scripts/check_kernels.py",
+      "size": 1881
+    },
+    {
+      "path": "scripts/eval_ppl.py",
+      "size": 4214
+    },
+    {
+      "path": "scripts/gpu.sh",
+      "size": 737
+    },
+    {
+      "path": "scripts/rate_bound.py",
+      "size": 2226
+    },
+    {
+      "path": "scripts/reproduce_capture.py",
+      "size": 2281
+    },
+    {
+      "path": "scripts/schedule_manifest.py",
+      "size": 2289
+    },
+    {
+      "path": "scripts/sweep_mse.py",
+      "size": 1651
+    },
+    {
+      "path": "spec/CORPUS-NOTICE",
+      "size": 1527
+    },
+    {
+      "path": "spec/CPYTHON-LICENSE",
+      "size": 14044
+    },
+    {
+      "path": "spec/analysis.json",
+      "size": 15171
+    },
+    {
+      "path": "spec/analyze.py",
+      "size": 8501
+    },
+    {
+      "path": "spec/divergence.jsonl",
+      "size": 15935
+    },
+    {
+      "path": "spec/divergence.py",
+      "size": 2680
+    },
+    {
+      "path": "spec/gate.jsonl",
+      "size": 4171
+    },
+    {
+      "path": "spec/prompts.jsonl",
+      "size": 741106
+    },
+    {
+      "path": "spec/results.jsonl",
+      "size": 6968206
+    },
+    {
+      "path": "spec/run.py",
+      "size": 4629
+    },
+    {
+      "path": "spec/runtime.py",
+      "size": 6135
+    },
+    {
+      "path": "spec/test_lookup.py",
+      "size": 946
+    },
+    {
+      "path": "spec/workloads.py",
+      "size": 4068
+    },
+    {
+      "path": "validator/Cargo.lock",
+      "size": 2666
+    },
+    {
+      "path": "validator/Cargo.toml",
+      "size": 373
+    },
+    {
+      "path": "validator/bench_50k.py",
+      "size": 1242
+    },
+    {
+      "path": "validator/src/bin/fuzz.rs",
+      "size": 3673
+    },
+    {
+      "path": "validator/src/bin/schedcheck.rs",
+      "size": 1429
+    },
+    {
+      "path": "validator/src/gen.rs",
+      "size": 12491
+    },
+    {
+      "path": "validator/src/lib.rs",
+      "size": 25829
+    },
+    {
+      "path": "validator/tests/contracts.rs",
+      "size": 8532
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-10-02T16:40:39Z",
+      "subject": "Wrap-up: reproduce.sh for waves 6-9, new charts, results, second thread draft",
+      "url": "https://github.com/thebasedcapital/latticemk/commit/f73deba05d816d5e96ac68ead78d1624007fe55f"
+    },
+    {
+      "date": "2026-10-02T15:47:32Z",
+      "subject": "Wave 9: lossless speculative decoding on mt3 (prompt-lookup drafting)",
+      "url": "https://github.com/thebasedcapital/latticemk/commit/6da192085fafeba2c4645548ce858f994552f415"
+    },
+    {
+      "date": "2026-10-02T12:51:03Z",
+      "subject": "Wave 8: multi-token swarm + merge (mt3), KV compaction (kvc), gate build contracts",
+      "url": "https://github.com/thebasedcapital/latticemk/commit/e9391ff7cc6138a96351a01a54e847b2093dddba"
+    },
+    {
+      "date": "2026-10-02T10:07:03Z",
+      "subject": "Wave 7: three-tier correctness gate, multi-token stall diagnosis, PPT compute feasibility",
+      "url": "https://github.com/thebasedcapital/latticemk/commit/4648deeb1880f6fafba0917c3efd41ed37824e5a"
+    },
+    {
+      "date": "2026-10-02T07:12:12Z",
+      "subject": "Add MIT license",
+      "url": "https://github.com/thebasedcapital/latticemk/commit/2bd248eadf4b478a8c507871172d3dc5dd83c100"
+    },
+    {
+      "date": "2026-10-02T06:54:46Z",
+      "subject": "Wave 6: multi-token pass (killed at 2.59x for M=4) and correctness-gate mutation analysis",
+      "url": "https://github.com/thebasedcapital/latticemk/commit/4fab1bcbccae902078e27affbed824ab994c983c"
+    },
+    {
+      "date": "2026-10-02T00:12:30Z",
+      "subject": "latticemk: batch-1 INT4 decode megakernel on a 2018 Quadro RTX 4000",
+      "url": "https://github.com/thebasedcapital/latticemk/commit/6b9fa511f7506ada1fb0bcf6c57ba8c6ae5d756f"
+    }
+  ],
+  "readme": "# latticemk — phase 0 gate: lattice-coded weights vs INT4 in a batch-1 matvec\n\nProject goal: a decode megakernel that streams lattice-compressed weights (simplex/A_n codes, LUT-decoded in\nregisters) and pins hot weights on-chip. This directory holds the gate experiment that decides whether the\ncompression lever is worth building: a fused batch-1 GEMV, lattice-coded vs INT4, on Qwen3-0.6B-Base.\n\nHardware (`hw/hw.json`, read from the device): **Quadro RTX 4000, Turing sm_75**, 36 SMs, 64 KB SMEM/SM, 4 MB L2,\n416 GB/s spec, **406.7 GB/s measured read roofline** (copy 358–361 GB/s). Clocks cannot be locked without root.\nNot Ada: Ada-MK targets Ada (100 KB SMEM) and MPK is evaluated on A100/H100/B200, so neither is a drop-in baseline\non this card. Phase reports against the agent build spec: `reports/wave-1.md` … `reports/wave-9.md`.\n\n## Results\n\nOn the Quadro RTX 4000, the GPTQ INT4-g128 decode megakernel outpaced llama.cpp Q4_0 with flash attention at all three tested contexts. Qwen3-0.6B reached 578.6 / 416.6 / 221.6 tokens/s against 352.7 / 284.3 / 187.6 at contexts 128 / 2048 / 8192. Qwen3-1.7B reached 250.0 / 211.4 / 145.7 against 197.5 / 173.7 / 133.2. The paired gain shrinks from 1.64x to 1.09x as the model and context grow. GPTQ perplexity is better than Q4_0 in both models, but worse than Q4_K_M. No speed comparison to Q4_K_M is called quality-matched.\n\nThe abandoned ideas matter here. Lattice weight codes could not meet INT4 error at the hoped-for rate, the first persistent kernel lost to CUDA graphs, and compressed KV plus finer synchronization both slowed v2 down. The occupancy fix was the one that stuck. See [sourced tables](publish/results.md) and the [speed](publish/charts/speed_vs_llamacpp.png), [quality/speed](publish/charts/ppl_vs_speed.png), [experiment](publish/charts/waves.png), and [byte-model roofline](publish/charts/roofline.png) charts.\n\nTurn-aware KV compaction raised decode from 216.4 to 405.8 tokens/s by reducing 8192 live rows to 2048, a +87.6% gain. A 16384-token session including eight compactions fell from 79.3 to 44.8 s, 1.77x. These are cache-eviction timings, not a full-history quality guarantee. Sources: `bench/lm24/timing.json`, `decode[name=\"v2-long\"|\"kvc-compacted\"]`; `bench/lm24/session.json`, `tokens`, `compactions`, `totals_wall_s`, `speedup`; [details](publish/results.md#wave-8-turn-aware-kv-compaction), [chart](publish/charts/compaction.png).\n\nCPU prompt-lookup speculation reached 1.412x [1.252, 1.565] on code and 1.436x [1.322, 1.563] on RAG versus v2. Summarization lost at 0.919x; the continuation control is repetitive, not evidence of a chat gain. Output is lossless to mt3 M=1 greedy, not v2. Sources: `spec/analysis.json`, `categories.code|rag|summarization.speedup_v2`, `.speedup_v2_ci95`, `identity_reference`; [details](publish/results.md#wave-9-lossless-prompt-lookup-speculation), [chart](publish/charts/speculative.png).\n\n## Quickstart\n\nUse a Turing sm_75 CUDA 13.3 host with Python, Rust, CMake and a CUDA compiler. Set `LLAMA_CPP_DIR` to a llama.cpp checkout at commit `6011c34ce6099646ccdf0d39a61c6e681477c178`, or leave it unset and let the script clone that commit into `~/llama.cpp`. The script builds its CUDA backend with `-DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=75`, `-allow-unsupported-compiler`, and headers and libraries from the `nvidia-cublas==13.3.0.5` wheel because the local CUDA toolkit lacked cuBLAS. It downloads Qwen3-0.6B-Base, Qwen3-1.7B-Base and WikiText-2, then reuses cached GPTQ weights if available.\n\n```sh\n./reproduce.sh all\n```\n\nFor shorter runs, select a stage:\n\n| Command | Scope |\n|---|---|\n| `./reproduce.sh gate` | Original correctness gates |\n| `./reproduce.sh gate-tiers` | Cumulative gate tiers on accepted kernels |\n| `./reproduce.sh multitoken` | Accepted mt3 correctness and multi-token timings |\n| `./reproduce.sh compaction` | KV compaction correctness, timings and session |\n| `./reproduce.sh spec` | Fixed speculative subset described below |\n| `./reproduce.sh schedules` | Regenerate and validate static schedules |\n| `./reproduce.sh validate` | Validate generated schedule JSONs |\n| `./reproduce.sh bench` / `ppl` | Paired baseline timing / WikiText-2 quality |\n| `./reproduce.sh all` | Run the reproduction stages and regenerate analysis/charts |\n\nThe speculative reproduction subset uses the first prompt in each category, code, RAG, summarization and `chat`, with three interleaved repeats. `chat` is the open-continuation control, not instruct chat. Selection is equivalent to `spec/run.py --category <category> --start 0 --count 1 --repeats 3`, using `spec/prompts.jsonl`, `category` and file order. It writes `publish/reproduction/spec.jsonl` separately from the committed full run in `spec/results.jsonl`. The subset is a runtime/identity check, not a replacement for the category estimates or CIs.\n\nAnalysis and charts regenerate from the committed full data, including `spec/analyze.py` over `spec/results.jsonl`; subset output must not overwrite it. Each GPU job uses `scripts/gpu.sh`, with `--timing` for benchmarks. Calibration and model downloads can take substantial time when uncached. `.venv/bin/python publish/make_charts.py` regenerates charts alone from recorded JSONL/JSON data. These commands describe the reproduction interface; the result tables above remain sourced to the recorded research runs.\n\n## Layout\n\n| path | role |\n|---|---|\n| `lmk/codebooks.py` | A_n truncated-ball codebooks (2^k lattice points nearest the origin), Lloyd/k-means Gaussian codebooks, exact CUDA nearest-codeword encoder |\n| `lmk/quant.py` | group-128 quantizers: asymmetric INT RTN (clip search), VQ with per-group fp16 scale (scale search); block randomized Hadamard (RHT, 1024) |\n| `lmk/gptq.py` | Hessian collection + block LDLQ (GPTQ generalised to d-dim codes: `W_R -= E_B U_BB^-1 U_BR`) |\n| `lmk/pack.py` | packs codes into the kernel layouts; ctypes bridge to `libgemv.so` |\n| `kernels/gemv.cu` | fp16 / INT4-g128 / VQ (A2, A4; k = 4..10) GEMV, optional fused FWHT prologue, CUDA-graph timer, read roofline |\n| `kernels/vqenc.cu` | offline exact VQ encoder |\n| `scripts/sweep_mse.py` | weight SQNR vs bits on 22 real matrices |\n| `scripts/eval_ppl.py` | wikitext-2 test perplexity (146 x 2048 tokens), all linears incl. an untied lm_head fake-quantized |\n| `scripts/bench_gemv.py` | per-token matvec sequence on real quantized weights: 28 x [qkv 4096x1024, o 1024x2048, gate_up 6144x1024, down 1024x3072] + lm_head 151936x1024 = 113 kernels in one CUDA graph; 7 interleaved rounds, medians |\n| `scripts/check_kernels.py` | kernel correctness gate: every format x NC 1/2/3 x RHT vs torch |\n| `scripts/rate_bound.py` | Shannon lower bound on bits/weight to match a target SQNR on the real weights |\n| `hw/hwprobe.cu` | LM-00: device facts, copy/read roofline, launch and graph-node overhead -> `hw/hw.json` |\n\n```sh\nmake                                   # nvcc 13.3; gcc 16 needs -allow-unsupported-compiler (set in Makefile)\n.venv/bin/python scripts/check_kernels.py\n.venv/bin/python scripts/sweep_mse.py\n.venv/bin/python scripts/eval_ppl.py fp int4+rht+gptq A4-k9+rht+gptq\n.venv/bin/python scripts/bench_gemv.py int4 A2-k4 A2-k5 A4-k9 A4-k10\n```\n\nBits/weight include group metadata: INT4 = 4 + (fp16 scale + fp16 offset)/128 = 4.25; VQ `Ad-kK` = K/d + 16/128.\n\n## Results (2026-09-29)\n\n### Quality: wikitext-2 perplexity (fp32 baseline 12.66)\n\n| config | bits/w | RTN | +RHT | +LDLQ | +RHT+LDLQ |\n|---|---|---|---|---|---|\n| int4 | 4.25 | 16.53 | — | 14.08 | **13.43** |\n| int3 | 3.25 | 41.40 | — | 21.99 | **16.40** |\n| A4-k11 | 2.875 | 279.8 | 102.6 | 29.67 | **17.23** |\n| A4-k10 | 2.625 | 1458 | — | 35.06 | **19.97** |\n| A2-k5 | 2.625 | — | — | 52.32 | **21.38** |\n| A4-k9 | 2.375 | 3756 | 19251 | 59.57 | **25.41** |\n| int2 | 2.25 | — | — | — | 138.7 |\n| A2-k4 | 2.125 | — | — | 424.6 | — |\n| lloyd4-k10 | 2.625 | 348.9 | 193.9 | — | — |\n\nWeight SQNR (energy-weighted, 22 matrices, RTN): int4 20.3 dB, int3 14.5, A4-k11 13.9, A4-k10 12.6, A2-k5 12.1,\nA4-k9 11.3, int2 8.5. At equal rate A4 beats scalar by ~2 dB; Lloyd tables beat A4 by ~0.5 dB (a LUT-decoded code\ngains nothing from lattice structure); RHT adds ~0.1 dB SQNR but is decisive for perplexity once LDLQ is used.\n\n### Speed: per-token matvec sequence (113 kernels, CUDA graph), median of 7 interleaved rounds\n\n| config | bits/w | MB/tok | ms/tok | matvec tok/s | lm_head % roofline | small matrices % roofline |\n|---|---|---|---|---|---|---|\n| f16 | 16 | 1192.0 | 3.449 | 290 | 98.3 | 81.0 |\n| int4 | 4.25 | 316.6 | 1.318 | 759 | 94.9 | 50.8 |\n| A2-k4 | 2.125 | 158.3 | 1.145 | 874 | 66.0 | 28.3 |\n| A2-k5 | 2.625 | 195.6 | 1.221 | 819 | 72.4 | 32.1 |\n| A4-k9 | 2.375 | 176.9 | 1.777 | 563 | 38.3 | 22.1 |\n| A4-k10 | 2.625 | 195.6 | 1.777 | 563 | 41.9 | 23.5 |\n| int4 + fused RHT | 4.25 | 316.6 | 1.690 | 592 | 93.7 | 39.0 |\n| A2-k5 + fused RHT | 2.625 | 195.6 | 1.686 | 593 | 68.2 | 23.4 |\n| A4-k9 + fused RHT | 2.375 | 176.9 | 2.368 | 422 | 33.8 | 16.0 |\n| A4-k10 + fused RHT | 2.625 | 195.6 | 2.386 | 419 | 36.9 | 17.4 |\n\n\"matvec tok/s\" excludes attention, norms and sampling. The VQ kernels are issue-bound and track the SM boost clock,\nwhich varies run to run and cannot be locked here (no power/thermal capping was recorded); a single-config\nA2-k5+RHT run gave 1.517 ms vs 1.686 interleaved. INT4 is memory-bound and stable to ±1%. Fused RHT is recomputed by\nevery block; a megakernel would do it once per activation.\n\n### Why the VQ kernels are slower than their byte count\n\nINT4 reaches the roofline on lm_head, so the baseline is not a strawman. The VQ decode is the limiter:\n\n- same instructions per weight as INT4 (~3.7–4.1 in the SASS loop), but 1.8–2x more weights per DRAM byte;\n- each LUT read is a random SMEM access. A 16/32-entry half2 table (A2) puts one entry per bank and is\n  conflict-free (66–72% of roofline). A4's 512–2048-entry uint2 tables conflict (~38–42%). Per-lane conflict-free\n  replication of an A4-k9 table would need 64 KB, all of Turing's SMEM;\n- ruled out: more rows in flight (RPW 2/4/8: no gain, RPW 8 spills), 4 independent HFMA2 chains (accuracy gain\n  only), a 256-entry pair LUT for A2-k4 (half the LDS count, 1.7x slower from conflicts).\n\n## Gate verdict\n\n**Fails as posed on this card.** No lattice config beats INT4 on tok/s at INT4-level quality:\n\n- Where it is faster (A2-k4 +15%, A2-k5 +8%, no RHT), perplexity is 30x and 3.7x worse than int4+LDLQ.\n- The best lattice point (A4-k11 + RHT + LDLQ, 2.875 b, PPL 17.23) is still 28% worse than int4+RHT+LDLQ (13.43),\n  and A4 kernels run at 0.74x INT4 speed.\n- At about 2.4 b the best result is A4-k9 + RHT + LDLQ at PPL 25.41, 1.9x INT4. The \"2.41 b ≈ INT4\" result from\n  KV vectors does not transfer to weights. A4 does dominate scalar at equal rate (int2+RHT+LDLQ: 138.7).\n\nLevers that stay open, by evidence:\n\n1. **Megakernel on INT4.** Small matrices stream at 50.8% of roofline vs 94.9% for lm_head. Bringing all\n   316.6 MB/token to 95% is 0.82 ms, about 1220 matvec tok/s (+60%); this is a roofline calculation, not measured.\n2. **INT3 + RHT + LDLQ** (3.25 b, PPL 16.40) streams 24% fewer bytes than INT4 with scalar, LUT-free decode.\n   No kernel exists yet.\n3. Lattice codes are worth revisiting only with LUT-free, algebraically decoded codes, where the decode cost\n   would move from SMEM to ALU.\n"
+}

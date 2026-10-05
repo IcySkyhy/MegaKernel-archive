@@ -1,0 +1,74 @@
+{
+  "repository": "amandeepsp/megakernels",
+  "url": "https://github.com/amandeepsp/megakernels",
+  "created_at": "2026-09-12T14:59:56Z",
+  "pushed_at": "2026-09-22T02:30:49Z",
+  "branch": "main",
+  "license": null,
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 128
+    },
+    {
+      "path": ".python-version",
+      "size": 5
+    },
+    {
+      "path": "README.md",
+      "size": 0
+    },
+    {
+      "path": "examples/gpt2.py",
+      "size": 1240
+    },
+    {
+      "path": "examples/two_stage.py",
+      "size": 2024
+    },
+    {
+      "path": "megakernels/__init__.py",
+      "size": 72
+    },
+    {
+      "path": "megakernels/backend.py",
+      "size": 1407
+    },
+    {
+      "path": "megakernels/debug.py",
+      "size": 915
+    },
+    {
+      "path": "megakernels/graph_ops.py",
+      "size": 5093
+    },
+    {
+      "path": "megakernels/ir.py",
+      "size": 393
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 905
+    },
+    {
+      "path": "uv.lock",
+      "size": 179673
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-22T02:28:31Z",
+      "subject": "fix: graph outputs were not resolved",
+      "url": "https://github.com/amandeepsp/megakernels/commit/7d9981be43560768ebbb7b9fff505b6ae542aff7"
+    },
+    {
+      "date": "2026-09-20T07:35:13Z",
+      "subject": "init: build some basic graph state",
+      "url": "https://github.com/amandeepsp/megakernels/commit/0ba7e0e9536c54f19b7b99b5bb86f3b3c9e23b56"
+    }
+  ],
+  "readme": ""
+}

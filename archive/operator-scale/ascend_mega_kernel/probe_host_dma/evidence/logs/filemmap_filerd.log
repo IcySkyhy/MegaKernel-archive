@@ -1,0 +1,14 @@
+== probe_host_dma mode=filemmap tile=8192 repeats=8 launches=5 alignOff=0 ==
+[INIT] aclInit rc=0
+[INIT] aclrtSetDevice(0) rc=0
+[INIT] aclrtCreateStream rc=0
+[DEV ] AICORE=28 VECTOR=56 -> blocks=56
+[PREP] region=3670016 bytes (65536 per block) cyc=1792 blocks=56
+[PREP] mmap(FILE MAP_SHARED PROT_READ) ptr=0x7f9bf49ae000 pageAligned=1
+[PREP] mapping is read-only -> skip FillModel (file already holds the model)
+[PREP] RSS: before-mmap=113356 kB | after-touch(before-register)=113548 kB | region=3670016 B
+[PREP] aclrtHostRegisterV2(mapmode=filerd region, MAPPED) rc=507899
+[PREP] RSS: after-register=113548 kB (delta vs after-touch = 0 kB)
+[PREP] HostRegisterV2 FAILED (rc=507899) for mapmode=filerd -> this host-memory type is NOT registerable here; probe aborts cleanly.
+== done mode=filemmap overall=REGISTER-REJECTED ==
+rc=3

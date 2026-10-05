@@ -1,0 +1,18 @@
+{
+  "tensor": "res2.bin",
+  "shape": [
+    1,
+    2560
+  ],
+  "dtype": "fp32",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 10240,
+  "sha256": "a789bca24fcb2f7e7a2c4ec058a2ea9a78a5d982651be629c86163f8ba12b779",
+  "kind": "golden",
+  "description": "m6#2 residual out (fp32) = f32(moe_output) + res1 [m, hidden] \u2014 the residual stream handed to the next layer"
+}

@@ -1,0 +1,209 @@
+# M133 设备槽驱动输出（原样复制，仅把工作树绝对路径替换为 <WORKTREE>；每行 "=== [时刻] <mode> <变体> ===" 是驱动进入该档的时刻，"date=" 行是进锁成功的时刻）
+=== [2026-10-04T10:07:35+00:00] tail neg_skipse3_N1 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 198.9       62                0     / 0             |
+date=2026-10-04T10:07:36+00:00 mode=tail filter=^neg_skipse3_N1$ reps=3 timeout=30s
+== tail 变体 ==
+tail:neg_skipse3_N1                rc==0 3/3  hang=0  SUMMARY mode=tail variant=neg_skipse3_N1 run=1 N=1 tiles=2 mismatched=0 elems=4096 match=4096 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:07:57+00:00] tail neg_skipse3_2id_N1 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 264.0       63                0     / 0             |
+date=2026-10-04T10:09:38+00:00 mode=tail filter=^neg_skipse3_2id_N1$ reps=3 timeout=30s
+== tail 变体 ==
+tail:neg_skipse3_2id_N1            rc==0 2/3  hang=0  SUMMARY mode=tail variant=neg_skipse3_2id_N1 run=1 N=1 tiles=2 mismatched=1 elems=4096 match=2048 stale=0 zero=2048 histOther=0 rc=1
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:09:58+00:00] tail ctrl_e3rls_m3 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.9       63                0     / 0             |
+date=2026-10-04T10:11:15+00:00 mode=tail filter=^ctrl_e3rls_m3$ reps=3 timeout=30s
+== tail 变体 ==
+tail:ctrl_e3rls_m3                 rc==0 3/3  hang=0  SUMMARY mode=tail variant=ctrl_e3rls_m3 run=1 N=1 tiles=6 mismatched=0 elems=12288 match=12288 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:11:35+00:00] tail neg_skipse3_m3 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 264.2       63                0     / 0             |
+date=2026-10-04T10:13:28+00:00 mode=tail filter=^neg_skipse3_m3$ reps=3 timeout=20s
+== tail 变体 ==
+tail:neg_skipse3_m3                rc==0 0/3  hang=3  SUMMARY mode=tail variant=neg_skipse3_m3 run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:14:28+00:00] tail neg_skipse3 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 264.0       63                0     / 0             |
+date=2026-10-04T10:18:21+00:00 mode=tail filter=^neg_skipse3$ reps=3 timeout=20s
+== tail 变体 ==
+tail:neg_skipse3                   rc==0 0/3  hang=3  SUMMARY mode=tail variant=neg_skipse3 run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:19:21+00:00] tail neg_skipse3_2id ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 264.2       63                0     / 0             |
+date=2026-10-04T10:21:51+00:00 mode=tail filter=^neg_skipse3_2id$ reps=3 timeout=20s
+== tail 变体 ==
+tail:neg_skipse3_2id               rc==0 0/3  hang=3  SUMMARY mode=tail variant=neg_skipse3_2id run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:22:52+00:00] tail ctrl_e3rls ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.8       63                0     / 0             |
+date=2026-10-04T10:24:07+00:00 mode=tail filter=^ctrl_e3rls$ reps=3 timeout=30s
+== tail 变体 ==
+tail:ctrl_e3rls                    rc==0 3/3  hang=0  SUMMARY mode=tail variant=ctrl_e3rls run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:24:27+00:00] tail base_N8 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.8       62                0     / 0             |
+date=2026-10-04T10:25:44+00:00 mode=tail filter=^base_N8$ reps=3 timeout=30s
+== tail 变体 ==
+tail:base_N8                       rc==0 3/3  hang=0  SUMMARY mode=tail variant=base_N8 run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:26:05+00:00] tail neg_skipvrel ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 262.3       61                0     / 0             |
+date=2026-10-04T10:26:40+00:00 mode=tail filter=^neg_skipvrel$ reps=2 timeout=20s
+== tail 变体 ==
+tail:neg_skipvrel                  rc==0 0/2  hang=2  SUMMARY mode=tail variant=neg_skipvrel run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:27:21+00:00] tail rel_base ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.7       62                0     / 0             |
+date=2026-10-04T10:28:22+00:00 mode=tail filter=^rel_base$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rel_base                      rc==0 4/4  hang=0  SUMMARY mode=tail variant=rel_base run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:28:49+00:00] tail relv_imm ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 198.3       61                0     / 0             |
+date=2026-10-04T10:29:37+00:00 mode=tail filter=^relv_imm$ reps=4 timeout=30s
+== tail 变体 ==
+tail:relv_imm                      rc==0 4/4  hang=0  SUMMARY mode=tail variant=relv_imm run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:30:05+00:00] tail relv_unlockB ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.5       62                0     / 0             |
+date=2026-10-04T10:32:22+00:00 mode=tail filter=^relv_unlockB$ reps=4 timeout=30s
+== tail 变体 ==
+tail:relv_unlockB                  rc==0 4/4  hang=0  SUMMARY mode=tail variant=relv_unlockB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:32:49+00:00] tail relv_unlockNB ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 197.8       60                0     / 0             |
+date=2026-10-04T10:32:50+00:00 mode=tail filter=^relv_unlockNB$ reps=4 timeout=30s
+== tail 变体 ==
+tail:relv_unlockNB                 rc==0 4/4  hang=0  SUMMARY mode=tail variant=relv_unlockNB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:33:19+00:00] tail rele_imm ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 197.0       58                0     / 0             |
+date=2026-10-04T10:33:41+00:00 mode=tail filter=^rele_imm$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rele_imm                      rc==0 4/4  hang=0  SUMMARY mode=tail variant=rele_imm run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:34:09+00:00] tail rele_unlockB ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 262.5       61                0     / 0             |
+date=2026-10-04T10:35:19+00:00 mode=tail filter=^rele_unlockB$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rele_unlockB                  rc==0 4/4  hang=0  SUMMARY mode=tail variant=rele_unlockB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:35:46+00:00] tail rele_unlockNB ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 262.7       61                0     / 0             |
+date=2026-10-04T10:36:49+00:00 mode=tail filter=^rele_unlockNB$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rele_unlockNB                 rc==0 4/4  hang=0  SUMMARY mode=tail variant=rele_unlockNB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:37:15+00:00] tail rel_neg_twoids ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 262.6       60                0     / 0             |
+date=2026-10-04T10:38:17+00:00 mode=tail filter=^rel_neg_twoids$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rel_neg_twoids                rc==0 0/4  hang=0  SUMMARY mode=tail variant=rel_neg_twoids run=1 N=32 tiles=64 mismatched=61 elems=131072 match=6848 stale=0 zero=0 histOther=0 rc=1
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:38:44+00:00] tail rel_neg_shift ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 262.8       61                0     / 0             |
+date=2026-10-04T10:39:46+00:00 mode=tail filter=^rel_neg_shift$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rel_neg_shift                 rc==0 0/4  hang=0  SUMMARY mode=tail variant=rel_neg_shift run=1 N=32 tiles=64 mismatched=64 elems=131072 match=0 stale=0 zero=0 histOther=4096 rc=1
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:40:14+00:00] sp mte2_drain_8 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 262.7       62                0     / 0             |
+date=2026-10-04T10:41:16+00:00 mode=sp filter=^mte2_drain_8$ reps=4 timeout=30s
+== sp 变体 ==
+sp:mte2_drain_8                    rc==0 2/4  hang=0  SUMMARY mode=sp variant=mte2_drain_8 run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:41:43+00:00] sp mte2_tail_imm ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 262.7       62                0     / 0             |
+date=2026-10-04T10:42:45+00:00 mode=sp filter=^mte2_tail_imm$ reps=4 timeout=30s
+== sp 变体 ==
+sp:mte2_tail_imm                   rc==0 4/4  hang=0  SUMMARY mode=sp variant=mte2_tail_imm run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:43:12+00:00] sp mte2_tail_unlockB ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 262.7       60                0     / 0             |
+date=2026-10-04T10:44:14+00:00 mode=sp filter=^mte2_tail_unlockB$ reps=4 timeout=30s
+== sp 变体 ==
+sp:mte2_tail_unlockB               rc==0 3/4  hang=0  SUMMARY mode=sp variant=mte2_tail_unlockB run=1 N=8 aivs=2 mismatched=1 elems=4096 match=3968 zero=0 histOther=0 rc=1
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:44:42+00:00] sp mte2_tail_unlockNB ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 196.9       58                0     / 0             |
+date=2026-10-04T10:45:06+00:00 mode=sp filter=^mte2_tail_unlockNB$ reps=4 timeout=30s
+== sp 变体 ==
+sp:mte2_tail_unlockNB              rc==0 3/4  hang=0  SUMMARY mode=sp variant=mte2_tail_unlockNB run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:45:33+00:00] sp v_tail_imm ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 196.2       58                0     / 0             |
+date=2026-10-04T10:45:56+00:00 mode=sp filter=^v_tail_imm$ reps=4 timeout=30s
+== sp 变体 ==
+sp:v_tail_imm                      rc==0 4/4  hang=0  SUMMARY mode=sp variant=v_tail_imm run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== ALL DONE 2026-10-04T10:46:25+00:00 ===

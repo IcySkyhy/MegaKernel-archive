@@ -1,0 +1,7 @@
+VARIANT op=ldbrc(id=3) a=8 b=0 n=64 model=4 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0xc12e0ef61455a683
+HEAD32 40200000 40200000 40200000 40200000
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (bitwise model match over 1024 bytes; 1024/1024 bytes compared)

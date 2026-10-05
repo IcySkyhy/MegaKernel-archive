@@ -1,0 +1,18 @@
+{
+  "tensor": "router_logits.bin",
+  "shape": [
+    33,
+    4
+  ],
+  "dtype": "fp32",
+  "strides": [
+    4,
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 528,
+  "sha256": "80e260964117f043712161e1fdb869de0f1c31987d0f5fe28b475e6c49f723e7",
+  "kind": "golden",
+  "description": "router logits [m, num_experts], fp32 (softmax input, max-shifted)"
+}

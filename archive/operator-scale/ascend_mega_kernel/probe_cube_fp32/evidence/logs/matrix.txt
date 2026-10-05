@@ -1,0 +1,12 @@
+prec_r1          rc=0    attempts=1   bytes=1464    
+hf32_r1          rc=0    attempts=1   bytes=1465    
+perf_r1          rc=0    attempts=1   bytes=436     
+perf_r2          rc=0    attempts=1   bytes=436     
+perf_r3          rc=0    attempts=1   bytes=436     
+perf_hf32_r1     rc=0    attempts=1   bytes=435     
+perf_hf32_r2     rc=0    attempts=1   bytes=435     
+perf_hf32_r3     rc=0    attempts=1   bytes=435     
+dump_r1          rc=0    attempts=2   bytes=1584    
+check_ref        rc=0   
+negctl_d6        rc=1     (期望 1：判据抓住了)
+negctl_d3        rc=1     (期望 1：判据抓住了)

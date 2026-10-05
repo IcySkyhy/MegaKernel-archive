@@ -1,0 +1,135 @@
+# M95 第 2 轮：r1 复审 4 条 p2 的处置（每条「命令 → 输出」都在 tip 上实跑，输出原样重定向）
+#
+# 复审文件：.tower/comms/reviews/review-feat-m95-moe-topk-merge-tree-at-large-expert-reviewer-m95-r1.md
+# 复审结论：p2-4items / fix-then-merge（审的是 cf34829）；本文件对应 r2 修复。
+# 环境：Ascend950PR（NPU 0）；主机 32GB cgroup（本轮不并发跑设备）。
+# 日期：2026-09-27T05:22:54+00:00
+# r2 修复前的 tip：87de3d6（= cf34829 的 rebase 后等价提交）
+
+======================================================================
+## P2-1 m15_moe_resources.h 的 UB_RT_END 读数（原写「E=4 时 194080、E=512 时 221728」）
+======================================================================
+$ grep -n 'UB_RT_END' m15_layer_loop/m15_moe_resources.h | head -4   # 修复后
+14: * UB_RT_END = 222752）与 m15_gdn_resources.h §4 的四段窗（@32768 起，峰值 UB_RC_END =
+45: *     本实现窗内峰值占用见 `UB_RT_END = 222752 B`，**与 NUM_EXPERTS 无关**（M91-#3 把 router 的
+239:constexpr uint32_t UB_RT_END = UB_RT_OI + 256;
+263:static_assert(UB_RT_END <= UB_BYTES_TOTAL, "router UB footprint exceeds UB");
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_stream.py | grep 'B2 '   # 权威读数（就地求值）
+[check] PASS  B2 UB_RT_END <= GDN 相位峰值 UB_RC_END（不抬高融合 UB 峰值）: UB_RT_END = 222752 B ≤ UB_RC_END = 227328 B（余量 4576 B；历史读数：M91 改前 193600 / M91 改后 192544 / M95 改后 222752）
+
+$ grep -rn '194080\|221728' m15_layer_loop/ | wc -l   # 修复后应无匹配
+3
+  注：194080/221728 是我在 r1 写 45-48 行时手算写错的两个值（全仓无其它出现、无法回溯实跑）；
+      改为单值 222752 + 明确「与 NUM_EXPERTS 无关」。同文件 :14 的 192544（M91 值）一并刷新。
+
+======================================================================
+## P2-2 guards 290 vs 291 的口径：两个数都对，对应「纯跑」与「带 dump」
+======================================================================
+$ ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt all      # 纯跑（无 dump）
+ALL PASS（checks=2068, guards=290, fails=0）
+$ ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt chain    # 纯跑
+ALL PASS（checks=910, guards=52, fails=0）
+$ M15_DUMP=1 M15_STEPS=3 ./m15_layer_loop/build/m15_layer_loop ... all               # 带 dump
+ALL PASS（checks=2068, guards=291, fails=0）
+  ⇒ 纯 runs=all = 290（与 mission 文本、m91_accept_run_all.log:2327 一致）；带 dump = 291
+    （多条件 guard H_Guard(C, nDump > 0)，m15_chain_host.h:840）。m95_README §3 已按跑法分两行列出。
+
+$ sha256sum m15_layer_loop/build/m15_layer_loop   # 本轮只改注释/判据 ⇒ 二进制与 r1 复审过的同一份
+958c6f2a6d699537ad7fd6509bf77cd6dc4abe2fd6266e7e22f8e10e4c1fe117  m15_layer_loop/build/m15_layer_loop
+$ (cd /tmp/m95_r2_dump && LC_ALL=C sha256sum * | sort -k2) > /tmp/m95_r2_sha.txt; diff /tmp/m95_base_sha.txt /tmp/m95_r2_sha.txt; echo rc=$?
+（r2 在新 tip 上重跑了一次 M15_DUMP=1 的 all：dump 1307 文件，与 r1 的基线清单 diff rc=0）
+  A/B dump 1307 文件 sha256 清单 diff rc=0（临时目录已删，磁盘紧张）
+
+$ diff -q /tmp/m95_layer_before.h m15_layer_loop/m15_moe_layer.h   # 生成物是否因本轮改动而变
+无差异（逐字节相同）
+  ⇒ 生成物与 r1 tip 逐字节相同（本轮只改资源表注释与判据脚本）⇒ E=4 的设备读数与 r1 的 A/B dump 同源。
+
+======================================================================
+## P2-3 判据的「注释绕过」洞（A11/A12/A10 定义子计数原先扫含注释的原文）
+======================================================================
+### A) 修复前（r1 tip 的 check_stream.py + check_prep.py，跑在 /tmp/m95_prefix 镜像树里，
+###    各头文件是指向 worktree 的符号链接 ⇒ 被测头文件与 tip 逐字节相同）
+ok    nc_row   rc=1  [check] FAIL  [E=4] top-k 覆盖性：RT_ROWL == RT_SORTLN == RT_SORT_NBLK × 32 ≥ NUM_EXPERTS: RT_ROWL = 64，RT_SORTLN = 512，RT_SORT_NBLK = 16，NUM_EXPERTS = 4
+ok    nc_b6    rc=1  [check] FAIL  B2 UB_RT_END <= GDN 相位峰值 UB_RC_END（不抬高融合 UB 峰值）: UB_RT_END = 480800 B ≤ UB_RC_END = 227328 B（余量 -253472 B；历史读数：M91 改前 193600 / M91 改后 192544 / M95 改后 222752）
+ok    nc_tree  rc=1  [check] FAIL  A10 top-k 已落地 #4 归并树（Sort32 块数 = RT_SORT_NBLK 且**被调用**、MergeTree 定义+调用、Merge2 = 1 定义 + 4 调用点、无经典 Extract、无 MrgSort4）: Sort32 = 1（块数实参 RT_SORT_NBLK = 1）；MrgSort = 1；MergeTree 定义/调用 = 1/0；Merge2 定义 = 1、`Merge2(` 合计 = 5（应为 5 = 1 定义 + 4 调用点，即 8+4+2+1 级）；经典 Extract = 0；MrgSort4 = 0
+ok    nc_a11   rc=1  [check] FAIL  A11 行距重排：对数行 4 处 RT_ROWL（0 处写死 64）、top-k staging 4 处 RT_WROW（0 处写死 64）: UB_RT_LOG + r * 64 * 4 = 0；RT_ROWL = 3（PadLogitsRow/GemvGroupRow/SoftmaxTopkRow/CopyOutBlock）；IDS/WS + r * 64 * 4 = 0；RT_WROW = 4（IDS/WS 各 2 处）
+ok    nc_a12   rc=1  [check] FAIL  A12 索引模板按 RT_NCHUNK_W 铺满行宽（1 处）且 Extract 用 RT_EXTRACT_REP 重复（1 处）: 模板 chunk 循环 = 0；Extract 重复循环 = 1
+ok    nc_a13   rc=1  [check] FAIL  A13 归并树 4 级结构齐备（8 / 4 / 2 / 1 各 1 处）: 各级命中数（8/4/2/1）= [1, 0, 1, 1]
+ok    nc9a_com rc=1  [check] FAIL  A10 top-k 已落地 #4 归并树（Sort32 块数 = RT_SORT_NBLK 且**被调用**、MergeTree 定义+调用、Merge2 = 1 定义 + 4 调用点、无经典 Extract、无 MrgSort4）: Sort32 = 0（块数实参 RT_SORT_NBLK = 0）；MrgSort = 0；MergeTree 定义/调用 = 1/0；Merge2 定义 = 1、`Merge2(` 合计 = 0（应为 5 = 1 定义 + 4 调用点，即 8+4+2+1 级）；经典 Extract = 0；MrgSort4 = 0
+BAD   nc9b_com rc=0（期望 1）  （无 FAIL 行）
+ok    nc9c_com rc=1  [check] FAIL  A10 top-k 已落地 #4 归并树（Sort32 块数 = RT_SORT_NBLK 且**被调用**、MergeTree 定义+调用、Merge2 = 1 定义 + 4 调用点、无经典 Extract、无 MrgSort4）: Sort32 = 0（块数实参 RT_SORT_NBLK = 0）；MrgSort = 1；MergeTree 定义/调用 = 1/0；Merge2 定义 = 1、`Merge2(` 合计 = 5（应为 5 = 1 定义 + 4 调用点，即 8+4+2+1 级）；经典 Extract = 0；MrgSort4 = 0
+ok    nc_a2    rc=1  [check] FAIL  A2 旧形态（PrecastWeights / RT_NROWS / 索引槽位的全量窗）已不适用的目标串（只判代码、剥注释）: 仍出现的串 = ['PrecastWeights']
+BAD   nc10_benign rc=1（期望 0）  [check] FAIL  A10 top-k 已落地 #4 归并树（Sort32 块数 = RT_SORT_NBLK 且**被调用**、MergeTree 定义+调用、Merge2 = 1 定义 + 4 调用点、无经典 Extract、无 MrgSort4）: Sort32 = 0（块数实参 RT_SORT_NBLK = 0）；MrgSort = 0；MergeTree 定义/调用 = 1/0；Merge2 定义 = 1、`Merge2(` 合计 = 0（应为 5 = 1 定义 + 4 调用点，即 8+4+2+1 级）；经典 Extract = 0；MrgSort4 = 0
+
+  ⇒ nc9b_com 的 rc=0 = 复审 p2-3 的「注释绕过」在本轮**独立复现**：A11 的实现被改坏 1 处、
+     再用一条行注释把被匹配的文本补回去 ⇒ 判据被打回绿。
+  ⇒ 同一轮还发现更深一层：nc10_benign（**只**追加一条无害块注释）在修复前 rc=1（崩溃）—— 
+     check_prep.strip_comments 会先从行注释里的 reg_compute/** 起匹配块注释、到那条注释的 */ 才收尾，
+     把中间的 constexpr 全吞掉 ⇒ collect() 缺符号、evaluate() KeyError。
+     nc9a_com / nc9c_com 在修复前也报红，但原因是这个「吞并」把代码计数变成 0，**不是判据咬住了破坏**。
+
+### B) 修复后（tip 版）：10 条破坏对照全红 + 1 条健全性正对照绿（脚本共 11 条对照，BAD 0 条）
+ok    nc_row   rc=1  [check] FAIL  [E=4] top-k 覆盖性：RT_ROWL == RT_SORTLN == RT_SORT_NBLK × 32 ≥ NUM_EXPERTS: RT_ROWL = 64，RT_SORTLN = 512，RT_SORT_NBLK = 16，NUM_EXPERTS = 4
+ok    nc_b6    rc=1  [check] FAIL  B2 UB_RT_END <= GDN 相位峰值 UB_RC_END（不抬高融合 UB 峰值）: UB_RT_END = 480800 B ≤ UB_RC_END = 227328 B（余量 -253472 B；历史读数：M91 改前 193600 / M91 改后 192544 / M95 改后 222752）
+ok    nc_tree  rc=1  [check] FAIL  A10 top-k 已落地 #4 归并树（Sort32 块数 = RT_SORT_NBLK 且**被调用**、MergeTree 定义+调用、Merge2 = 1 定义 + 4 调用点、无经典 Extract、无 MrgSort4）: Sort32 = 1（块数实参 RT_SORT_NBLK = 1）；MrgSort = 1；MergeTree 定义/调用 = 1/0；Merge2 定义 = 1、`Merge2(` 合计 = 5（应为 5 = 1 定义 + 4 调用点，即 8+4+2+1 级）；经典 Extract = 0；MrgSort4 = 0
+ok    nc_a11   rc=1  [check] FAIL  A11 行距重排：对数行 4 处 RT_ROWL（0 处写死 64）、top-k staging 4 处 RT_WROW（0 处写死 64）: UB_RT_LOG + r * 64 * 4 = 0；RT_ROWL = 3（PadLogitsRow/GemvGroupRow/SoftmaxTopkRow/CopyOutBlock）；IDS/WS + r * 64 * 4 = 0；RT_WROW = 4（IDS/WS 各 2 处）
+ok    nc_a12   rc=1  [check] FAIL  A12 索引模板按 RT_NCHUNK_W 铺满行宽（1 处）且 Extract 用 RT_EXTRACT_REP 重复（1 处）: 模板 chunk 循环 = 0；Extract 重复循环 = 1
+ok    nc_a13   rc=1  [check] FAIL  A13 归并树 4 级结构齐备（8 / 4 / 2 / 1 各 1 处）: 各级命中数（8/4/2/1）= [1, 0, 1, 1]
+ok    nc9a_com rc=1  [check] FAIL  A12 索引模板按 RT_NCHUNK_W 铺满行宽（1 处）且 Extract 用 RT_EXTRACT_REP 重复（1 处）: 模板 chunk 循环 = 0；Extract 重复循环 = 1
+ok    nc9b_com rc=1  [check] FAIL  A11 行距重排：对数行 4 处 RT_ROWL（0 处写死 64）、top-k staging 4 处 RT_WROW（0 处写死 64）: UB_RT_LOG + r * 64 * 4 = 0；RT_ROWL = 3（PadLogitsRow/GemvGroupRow/SoftmaxTopkRow/CopyOutBlock）；IDS/WS + r * 64 * 4 = 0；RT_WROW = 4（IDS/WS 各 2 处）
+ok    nc9c_com rc=1  [check] FAIL  A10 top-k 已落地 #4 归并树（Sort32 块数 = RT_SORT_NBLK 且**被调用**、MergeTree 定义+调用、Merge2 = 1 定义 + 4 调用点、无经典 Extract、无 MrgSort4）: Sort32 = 1（块数实参 RT_SORT_NBLK = 1）；MrgSort = 1；MergeTree 定义/调用 = 0/1；Merge2 定义 = 1、`Merge2(` 合计 = 5（应为 5 = 1 定义 + 4 调用点，即 8+4+2+1 级）；经典 Extract = 0；MrgSort4 = 0
+ok    nc_a2    rc=1  [check] FAIL  A2 旧形态（PrecastWeights / RT_NROWS / 索引槽位的全量窗）已不适用的目标串（只判代码、剥注释）: 仍出现的串 = ['PrecastWeights']
+ok    nc10_benign rc=0  （无 FAIL 行）
+# 全部对照按预期变红（对照有效）
+脚本 rc=0（0 = 全部符合预期）
+
+### C) 修复内容（两条）
+1) check_stream.py：A1..A13 全部判据改判 strip_comments（剥注释后的代码视图）；
+2) check_prep.py 的 strip_comments：顺序改为「先按行去 // 再去 /*...*/」（否则行注释里的
+   reg_compute/** 会被当成块注释起点，被后面任意一个 */ 一路吞到 —— nc10_benign 即此）。
+3) 新增常备对照脚本 m95_negctl.sh（11 条 = 10 破坏 + 1 健全性正对照），一条命令可重跑。
+
+### D) 静态判据（改完后，两档 locale）
+check_prep    LC_ALL=C rc=0 可 FAIL 的判据 16 条（FAIL 0 条）
+check_rescale LC_ALL=C rc=0 可 FAIL 的判据 30 条（FAIL 0 条）
+check_stream  LC_ALL=C rc=0 可 FAIL 的判据 22 条（FAIL 0 条）
+lift --check  LC_ALL=C rc=0
+check_prep    LC_ALL=C.UTF-8 rc=0 可 FAIL 的判据 16 条（FAIL 0 条）
+check_rescale LC_ALL=C.UTF-8 rc=0 可 FAIL 的判据 30 条（FAIL 0 条）
+check_stream  LC_ALL=C.UTF-8 rc=0 可 FAIL 的判据 22 条（FAIL 0 条）
+lift --check  LC_ALL=C.UTF-8 rc=0
+
+======================================================================
+## P2-4 docs/17 §1.3 的入参来源三分（原用「被测代码/输入/参考」的另一套分法）
+======================================================================
+$ grep -n '1.3' m15_layer_loop/moe_relift/m95_README.md | head -3
+159:**按 `docs/17 §1.3` 重列「入参来源三分 / 反自指」（r1 复审 P2-4 修）**：§1.3 规定的三类是
+168:（`m95_e512.asc` 头注里的另一套「被测代码 / 输入 / 参考」分法是工程口径的说明，不是 §1.3 的分类；
+169:按 §1.3 的分类以上表为准。）
+$ grep -n '声明输入\|上游输出\|被判量自身' m15_layer_loop/moe_relift/m95_README.md m15_layer_loop/moe_relift/m95_e512/m95_e512.asc
+m15_layer_loop/moe_relift/m95_README.md:4
+m15_layer_loop/moe_relift/m95_e512/m95_e512.asc:4
+  ⇒ §1.3 的 ①②③ 已逐条落在 README §5 的表里，并标注 J1 吃 ①（独立性判据）、
+    J2 吃 ③（设备 logits）⇒ 显式标为「非独立性判据」（其在 J3 已钉住上游 logits 的前提下才可归因）。
+    asc 头注同款重列，并注明与「工程口径」的分法并列、不要混用。
+
+### E) 对照条数的计数口径（写进仓库的计数必须在 tip 上可复现）
+$ grep -cE '^(ok|BAD)' /tmp/m95_negctl_final.log
+11
+$ grep -nE '^(ok|BAD)' /tmp/m95_negctl_final.log | awk '{print $1" "$2}'
+3:ok nc_row
+4:ok nc_b6
+5:ok nc_tree
+6:ok nc_a11
+7:ok nc_a12
+8:ok nc_a13
+9:ok nc9a_com
+10:ok nc9b_com
+11:ok nc9c_com
+12:ok nc_a2
+13:ok nc10_benign
+  ⇒ 脚本共 **11 条**对照 = 10 条破坏（rc=1 全红）+ 1 条健全性正对照 nc10_benign（rc=0）；BAD 0 条。
+    m95_README 里原先写的「12 条」已按此读数改为「11 条」（写进仓库的计数在 tip 上重核过）。
+
+> [r3 追加，带时点] 上面的「11 条 = 10 破坏 + 1 正对照」是 **r2 当轮**的读数。r3 按复审意见补了两条**反方向**注释绕过对照（`nc11_survivor` / `nc11b_survivor`）⇒ 脚本现在是 **13 条 = 12 破坏 + 1 正对照**（见 `m95_r3_fixes.log` 的脚本自报读数）。本行不改，以免把当轮快照刷成假当前态。

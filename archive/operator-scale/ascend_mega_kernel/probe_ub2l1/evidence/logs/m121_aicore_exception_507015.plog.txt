@@ -1,0 +1,35 @@
+# M121 §8 —— 首轮 aicore exception 的逐字 runtime 记录（从 plog 归档）
+#
+# 为什么单独归档（r2 复审后自查发现）：README §0 第 11 行原写"逐字 runtime 日志留在
+# `evidence/logs/` 的 `capi_*` 档里"——**不成立**：`<name>.log` 只收本探针自己的 stdout，
+# runtime 的异常行落在 CANN 的 plog 里（仓外）。本文件把那几行**逐字**抄进来，让这句话有产物。
+#
+# 来源（外部路径，本仓不持有；抄录时用 grep 逐行取，未改动文字）：
+#   /root/ascend/log/debug/plog/plog-466880_20260927101105492.log   （2026-09-27 10:11，进程名 probe_ub2l1）
+#   /root/ascend/log/debug/plog/plog-466944_20260927101107710.log   （同日 10:11，另一档）
+# 这两行里的 `_Z11capi_kernelPDhS_PfPhS1_Pliijj` = capi_kernel(uint8*,uint8*,float*,uint8*,uint8*,int64*,int,int,uint,int)
+# —— 即当时那版 C-API 探针核（源码随后改过，那一版二进制未保留）。
+
+## plog-466880（aicore error / aivec error 263）
+
+[ERROR] RUNTIME(466880,probe_ub2l1):2026-09-27-10:11:05.482.845 [task_recycle_cqrpt_base.cc:68]466907 PrintTaskErrorMsg:Task run failed, stream_id=61, pos=0, task_sn=2, sqe_type=0(aic), errType=0x1(task exception), sqSwStatus=0.
+[ERROR] RUNTIME(466880,probe_ub2l1):2026-09-27-10:11:05.491.078 [device_error_proc_c.cc:716]466907 ProcessDavidStarsCoreErrorInfo:The error from device(chipId:0, dieId:0), serial number is 1208, there is an aicore error exception, core id is 0, error code = 0, dump info: pc start: 0x120041000000, current: 0x1200410000cc, sc error info: 0xffffffffffff, su error info: 0xfbbddff31d34ffee,0xfd74f2afd800ffff, mte error info: 0x13d10000000202ce, vec error info: 0, cube error info: 0, l1 error info: 0x29700001810, aic error mask: 0x395856, para base: 0x120000200000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+[ERROR] RUNTIME(466880,probe_ub2l1):2026-09-27-10:11:05.491.148 [device_error_proc_c.cc:716]466907 ProcessDavidStarsCoreErrorInfo:The error from device(chipId:0, dieId:0), serial number is 1209, there is an aivec error exception, core id is 0, error code = 263, dump info: pc start: 0x1200410003d8, current: 0x120041000774, sc error info: 0xffffffffffff, su error info: 0xeffbd7fd0fd80133,0xc00000585800eeb9, mte error info: 0x8508d800000235cb, vec error info: 0x410062180031126e, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x120000200000, mte error: 0, aic cond: 0.
+The extend info: errcode:(263) errorStr: The address for scalar to use is unaligned or out of bounds The GM address exceeds 48 bits, or the on-chip buffer address exceeds the size of the buffer. subErrType: 0x4.
+[ERROR] RUNTIME(466880,probe_ub2l1):2026-09-27-10:11:05.491.160 [device_error_proc_c.cc:716]466907 ProcessDavidStarsCoreErrorInfo:The error from device(chipId:0, dieId:0), serial number is 1209, there is an aivec error exception, core id is 1, error code = 263, dump info: pc start: 0x1200410003d8, current: 0x120041000800, sc error info: 0xffffffffffff, su error info: 0xbbfff7ff2c9a013b,0xc0000058b8009c72, mte error info: 0x8508e00000020043, vec error info: 0x410062180031126e, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x120000200000, mte error: 0, aic cond: 0.
+The extend info: errcode:(263) errorStr: The address for scalar to use is unaligned or out of bounds The GM address exceeds 48 bits, or the on-chip buffer address exceeds the size of the buffer. subErrType: 0x4.
+[ERROR] RUNTIME(466880,probe_ub2l1):2026-09-27-10:11:05.491.233 [davinci_kernel_task.cc:1076]466907 GetArgsInfo:[AIC_INFO] args(0 to 7) after execute:0x120000017000, 0x120000018000, 0x12000001a000, 0x12000001c000, 0x12000001e000, 0x120000020000, 0x1, 0xc800010000.
+[ERROR] RUNTIME(466880,probe_ub2l1):2026-09-27-10:11:05.492.733 [davinci_kernel_task.cc:1210]466907 PrintErrorInfoForDavinciTask:[DFX_INFO]AI Core kernel execution failed, device_id=0, stream_id=61, report_stream_id=61, task_id=0, flip_num=0, fault kernel_name=_Z11capi_kernelPDhS_PfPhS1_Pliijj, fault kernel info ext=none, program id=0, hash=14641012744649554644.
+
+## plog-466944（同一核、另一档，同形）
+
+[ERROR] RUNTIME(466944,probe_ub2l1):2026-09-27-10:11:07.709.680 [device_error_proc_c.cc:716]466953 ProcessDavidStarsCoreErrorInfo:The error from device(chipId:0, dieId:0), serial number is 1210, there is an aicore error exception, core id is 0, error code = 0, dump info: pc start: 0x120041000000, current: 0x1200410001dc, sc error info: 0xffffffffffff, su error info: 0xfbbddff31d34ffee,0xfd74f2afd800ffff, mte error info: 0x13d10000000202ce, vec error info: 0, cube error info: 0, l1 error info: 0x29700001810, aic error mask: 0x395856, para base: 0x120000200000, mte error: 0, aic cond: 0.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+[ERROR] RUNTIME(466944,probe_ub2l1):2026-09-27-10:11:07.709.806 [device_error_proc_c.cc:716]466953 ProcessDavidStarsCoreErrorInfo:The error from device(chipId:0, dieId:0), serial number is 1211, there is an aivec error exception, core id is 0, error code = 263, dump info: pc start: 0x1200410003d8, current: 0x120041000774, sc error info: 0xffffffffffff, su error info: 0xeffbd7fd0fd80133,0xc00000585800eeb9, mte error info: 0x8508d800000235cb, vec error info: 0x410062180031126e, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x120000200000, mte error: 0, aic cond: 0.
+The extend info: errcode:(263) errorStr: The address for scalar to use is unaligned or out of bounds The GM address exceeds 48 bits, or the on-chip buffer address exceeds the size of the buffer. subErrType: 0x4.
+[ERROR] RUNTIME(466944,probe_ub2l1):2026-09-27-10:11:07.710.457 [davinci_kernel_task.cc:1210]466953 PrintErrorInfoForDavinciTask:[DFX_INFO]AI Core kernel execution failed, device_id=0, stream_id=61, report_stream_id=61, task_id=0, flip_num=0, fault kernel_name=_Z11capi_kernelPDhS_PfPhS1_Pliijj, fault kernel info ext=none, program id=0, hash=14641012744649554644.
+
+## 抄录命令（可复算）
+# sed -n '1p;5,6p;11,12p;15,16p;20p;25p' /root/ascend/log/debug/plog/plog-466880_20260927101105492.log
+# sed -n '5,6p;11,12p;25p' /root/ascend/log/debug/plog/plog-466944_20260927101107710.log

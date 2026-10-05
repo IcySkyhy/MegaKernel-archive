@@ -1,0 +1,10 @@
+[probe vf nest] tag=nest_o2i0b1_ct1 outer=2 inner=0 body=1 ct_rows=1
+  rows=1 
+    i      : 0
+    cnt    : 0
+    expect : 0
+    tri    : 0
+    acc_maxdiff vs ref(cnt)=0.0  ref(cnt-1)=0.0  ref(expect)=0.0   jset_odd=0
+    lane_mismatch=0  tri_odd=0  少一次的行数=0/1  hash=0x5e509dc5
+    rows=1 verdict=PASS
+[probe vf nest] tag=nest_o2i0b1_ct1 RUN PASS  (rows 档位 1，失败 0)

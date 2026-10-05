@@ -1,0 +1,23 @@
+# M17 MoE block 真实权重 manifest —— 由 gen_weight_manifest.py 生成，勿手改
+# 张量一律字节原样（不做离线转换）；MXFP4 = packed u8(e2m1 lohi) + e8m0 scale，group 32 沿 K
+model_dir=/workspace/Qwen3.8-Flash-Next-MXFP4
+layer=0
+hidden=2560
+inter=640
+group=32
+tensor role=router_w file=model-00003-of-00131.safetensors offset=3689 bytes=2621440 dtype=BF16 rows=512 cols=2560 sha256=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6
+tensor role=sgate_w file=model-00003-of-00131.safetensors offset=2625129 bytes=5120 dtype=BF16 rows=1 cols=2560 sha256=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45
+tensor role=gu_packed file=model-00002-of-00131.safetensors offset=278 bytes=838860800 dtype=U8 rows=512 cols=1638400 sha256=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b
+tensor role=gu_scale file=model-00002-of-00131.safetensors offset=838861078 bytes=52428800 dtype=U8 rows=512 cols=102400 sha256=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e
+tensor role=dn_packed file=model-00003-of-00131.safetensors offset=144966697 bytes=419430400 dtype=U8 rows=512 cols=819200 sha256=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79
+tensor role=dn_scale file=model-00003-of-00131.safetensors offset=564397097 bytes=26214400 dtype=U8 rows=512 cols=51200 sha256=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8
+tensor role=shd_gate file=model-00003-of-00131.safetensors offset=591481897 bytes=819200 dtype=U8 rows=640 cols=1280 sha256=cc947b2961c7f60beadd71bc5039002481a87772541f4cba35745e0dd5c4bb65
+tensor role=shd_gate_scale file=model-00003-of-00131.safetensors offset=592301097 bytes=51200 dtype=U8 rows=640 cols=80 sha256=f5f74fa7ea0d3e45efc1499e812ab32d64b4075ebc948ebcf41fbd65eded7941
+tensor role=shd_up file=model-00003-of-00131.safetensors offset=592352297 bytes=819200 dtype=U8 rows=640 cols=1280 sha256=d239874f7581e3614be86051a8b9df20ad75deaff8915d61442f02b3c28b15d6
+tensor role=shd_up_scale file=model-00003-of-00131.safetensors offset=593171497 bytes=51200 dtype=U8 rows=640 cols=80 sha256=6ec21ee39472b16931c3d02218833b69398e4b1b4af7b9592b23412e9079150f
+tensor role=shd_down file=model-00003-of-00131.safetensors offset=590611497 bytes=819200 dtype=U8 rows=2560 cols=320 sha256=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531
+tensor role=shd_down_scale file=model-00003-of-00131.safetensors offset=591430697 bytes=51200 dtype=U8 rows=2560 cols=20 sha256=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4
+tensor role=x_embed file=model-00130-of-00131.safetensors offset=2110 bytes=1271398400 dtype=BF16 rows=248320 cols=2560 sha256=-
+tensor role=hc_norm file=model-00003-of-00131.safetensors offset=2712169 bytes=20480 dtype=BF16 rows=10240 cols=1 sha256=e1da29c3232c056fb6869275c5cbbe527d591b88dd967e747716e23f1a89a5bb
+tensor role=gamma1 file=model-00003-of-00131.safetensors offset=2712169 bytes=5120 dtype=BF16 rows=2560 cols=1 row0=0 nrows=2560 sha256=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d
+tensor role=gamma2 file=model-00003-of-00131.safetensors offset=2717289 bytes=5120 dtype=BF16 rows=2560 cols=1 row0=2560 nrows=2560 sha256=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4

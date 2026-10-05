@@ -1,0 +1,21 @@
+## summarize.py verify —— 覆盖范围自述
+
+- LOGS 目录：`/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/evidence/logs`
+- nest target：找到 **27** 个，比对 **135** 个 rep 日志（每个 target 期望 ≥5）
+- gather 档位日志：**47** 个（仅做存在性检查，判据在 README §5② 表里）
+- 跳过/无法比对：**0** 条
+
+## 判据列跨 rep 一致性（期望 0 条差异）
+
+- ✅ 全部 target 的判据列（cnt/expect/tri/MISMATCH/lane_mismatch/verdict）在找到的 rep 之间逐字符一致
+
+## 数据面列跨 rep 差异（**不是判据**；读越界 UB 的病态变体会天然不同）
+
+- ⚠ nest_o0i1b1 rep3：数据面列（acc_maxdiff/hash）与 rep1 不同
+- ⚠ nest_o0i1b1 rep4：数据面列（acc_maxdiff/hash）与 rep1 不同
+
+## 判据列独立复算（工具侧重算 expect / verdict / tri 自洽）
+
+- ✅ 全部可比对的 rows 块都通过（expect 与工具复算相同、verdict 与复算一致、tri = t(t+1)/2）
+
+退出码：**0**（0=通过 / 1=有差异 / 2=没得比）

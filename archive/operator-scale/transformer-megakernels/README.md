@@ -1,0 +1,233 @@
+## Megakernel for Transformer 
+
+Implemented a megakernel for LLama3/Qwen2.5 like transformer which has SwiGLU in feed forward network and RMSNorm for pre-attention and pre-feedforward normalization for `sm120` architecture GPUs. The complete architecture details and pipelineing techniques can be found in my [blog](https://parth-badgujar.github.io/blog/2026/beating-torch-compile-with-megakernels/). 
+
+### Usage 
+```bash
+git clone https://github.com/Parth-Badgujar/transformer-megakernels.git
+cd transformer-megakernels
+uv sync --all-extras
+```
+#### Run Benchmarks (locally)
+
+Runs the full ablation sweep (Llama-3 presets, sequence length, layer count, embedding width) against `mega`, `torch.compile` (default + max-autotune), TensorRT, and eager, then plots the results. Both scripts take an explicit input/output path so results never overwrite a previous run by accident.
+
+```bash
+uv run python benchmarks/run_ablation_benchmarks.py --output benchmarks/results/results.csv
+uv run python benchmarks/plot_ablation_results.py --input benchmarks/results/results.csv --output-dir benchmarks/results
+```
+
+#### Run Benchmarks (on modal.com serverless GPUs)
+
+Same sweep, run on a Modal GPU (default: `RTX-PRO-6000`). The remote run writes the CSV and plots itself; `--output-dir` controls where both land, on the Modal volume and after downloading with `modal volume get`.
+
+```bash
+uv run modal run benchmarks/modal_run_ablation.py --output-dir benchmarks/results
+```
+
+#### Benchmarks
+
+Measured on two GPUs — a local **RTX 5070 Ti** (`sm_120a`, consumer) and a **RTX PRO 6000** (`sm_120a`, workstation-class, rented on Modal) — 200 timed iterations, 20 warmup iterations, one run per config on each GPU. `megakernel` is the fused CuTe/CUTLASS kernel, compared against `torch.compile` (inductor), `torch.compile` (TensorRT), and eager PyTorch (`torch.compile` max-autotune is measured by the sweep but left out below — it was consistently the slowest compiled backend by a wide margin). Each ablation axis has a throughput plot (TFLOP/s — dense forward-pass FLOP count / measured time, comparable across configs of different sizes) and a time plot (ms/iter, raw wall-clock), followed by a table for each.
+
+### RTX 5070 Ti
+
+`megakernel` is the fastest backend in **18/18** of these configs.
+
+**Sequence length** (embed_dim=1024, num_layers=8, 8 heads):
+
+<p>
+  <img src="benchmarks/results/tokens_tflops.png" width="49%" />
+  <img src="benchmarks/results/tokens_time.png" width="49%" />
+</p>
+
+TFLOP/s:
+
+| seq len | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 256  | 89.9 | 82.2 | 84.6 | 72.5 |
+| 512  | 93.3 | 81.2 | 85.0 | 72.2 |
+| 1024 | 95.5 | 83.0 | 86.8 | 73.9 |
+| 2048 | 97.6 | 86.0 | 90.5 | 77.3 |
+| 4096 | 97.8 | 91.6 | 96.4 | 83.2 |
+
+ms/iter:
+
+| seq len | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 256  | 6.30  | 6.90  | 6.70  | 7.82  |
+| 512  | 12.53 | 14.39 | 13.75 | 16.17 |
+| 1024 | 12.95 | 14.90 | 14.24 | 16.74 |
+| 2048 | 14.08 | 15.99 | 15.19 | 17.77 |
+| 4096 | 16.86 | 18.01 | 17.11 | 19.81 |
+
+**Number of layers** (embed_dim=1024, q_len=256, 8 heads):
+
+<p>
+  <img src="benchmarks/results/layers_tflops.png" width="49%" />
+  <img src="benchmarks/results/layers_time.png" width="49%" />
+</p>
+
+TFLOP/s:
+
+| layers | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 1  | 88.9 | 82.3 | 83.9 | 72.6 |
+| 2  | 89.7 | 82.4 | 84.3 | 72.6 |
+| 4  | 89.9 | 82.3 | 84.2 | 72.4 |
+| 8  | 89.5 | 82.0 | 84.5 | 72.2 |
+| 16 | 89.7 | 82.0 | 84.4 | 72.1 |
+
+ms/iter:
+
+| layers | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 1  | 0.80  | 0.86  | 0.84  | 0.98  |
+| 2  | 1.58  | 1.72  | 1.68  | 1.95  |
+| 4  | 3.15  | 3.44  | 3.37  | 3.92  |
+| 8  | 6.33  | 6.92  | 6.71  | 7.86  |
+| 16 | 12.63 | 13.83 | 13.43 | 15.73 |
+
+**Embedding width** (1 layer, bs=8, q_len=256, head_dim=128 fixed):
+
+<p>
+  <img src="benchmarks/results/width_tflops.png" width="49%" />
+  <img src="benchmarks/results/width_time.png" width="49%" />
+</p>
+
+TFLOP/s:
+
+| embed_dim (heads) | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 1280 (10) | 87.9 | 81.8 | 84.8 | 73.3 |
+| 1536 (12) | 89.2 | 83.5 | 79.9 | 75.8 |
+| 1792 (14) | 89.2 | 84.4 | 81.2 | 76.7 |
+| 2048 (16) | 90.8 | 86.4 | 82.3 | 79.5 |
+| 3072 (24) | 90.9 | 89.8 | 85.1 | 83.1 |
+| 4096 (32) | 93.0 | 91.8 | 86.4 | 83.2 |
+
+ms/iter:
+
+| embed_dim (heads) | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 1280 (10) | 1.07 | 1.15 | 1.11 | 1.28 |
+| 1536 (12) | 1.34 | 1.43 | 1.49 | 1.57 |
+| 1792 (14) | 1.64 | 1.74 | 1.81 | 1.91 |
+| 2048 (16) | 1.94 | 2.04 | 2.14 | 2.21 |
+| 3072 (24) | 3.47 | 3.52 | 3.71 | 3.80 |
+| 4096 (32) | 5.26 | 5.33 | 5.66 | 5.88 |
+
+### RTX PRO 6000
+
+`megakernel` is the fastest backend in every one of these configs except two, and within 1–3% on those.
+
+**Sequence length** (embed_dim=1024, num_layers=8, 8 heads):
+
+<p>
+  <img src="benchmarks/results/pro6000/tokens_tflops.png" width="49%" />
+  <img src="benchmarks/results/pro6000/tokens_time.png" width="49%" />
+</p>
+
+TFLOP/s:
+
+| seq len | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 256  | 292.1 | 240.4 | 282.6 | 195.2 |
+| 512  | 349.9 | 288.8 | 306.7 | 234.3 |
+| 1024 | 354.1 | 291.8 | 309.1 | 239.7 |
+| 2048 | 342.3 | 298.7 | 315.4 | 248.6 |
+| 4096 | 326.3 | 310.7 | 328.3 | 264.6 |
+
+ms/iter:
+
+| seq len | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 256  | 1.94 | 2.36 | 2.01 | 2.90 |
+| 512  | 3.34 | 4.04 | 3.81 | 4.99 |
+| 1024 | 3.49 | 4.24 | 4.00 | 5.16 |
+| 2048 | 4.01 | 4.60 | 4.36 | 5.53 |
+| 4096 | 5.05 | 5.31 | 5.02 | 6.23 |
+
+**Number of layers** (embed_dim=1024, q_len=256, 8 heads):
+
+<p>
+  <img src="benchmarks/results/pro6000/layers_tflops.png" width="49%" />
+  <img src="benchmarks/results/pro6000/layers_time.png" width="49%" />
+</p>
+
+TFLOP/s:
+
+| layers | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 1  | 266.4 | 234.7 | 269.5 | 190.5 |
+| 2  | 282.3 | 234.3 | 273.1 | 192.8 |
+| 4  | 288.7 | 237.8 | 277.1 | 194.3 |
+| 8  | 291.9 | 240.3 | 283.2 | 195.0 |
+| 16 | 293.5 | 241.0 | 284.7 | 194.4 |
+
+ms/iter:
+
+| layers | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 1  | 0.27 | 0.30 | 0.26 | 0.37 |
+| 2  | 0.50 | 0.60 | 0.52 | 0.73 |
+| 4  | 0.98 | 1.19 | 1.02 | 1.46 |
+| 8  | 1.94 | 2.36 | 2.00 | 2.91 |
+| 16 | 3.86 | 4.70 | 3.98 | 5.83 |
+
+**Embedding width** (1 layer, bs=8, q_len=256, head_dim=128 fixed):
+
+<p>
+  <img src="benchmarks/results/pro6000/width_tflops.png" width="49%" />
+  <img src="benchmarks/results/pro6000/width_time.png" width="49%" />
+</p>
+
+TFLOP/s:
+
+| embed_dim (heads) | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 1280 (10) | 302.1 | 264.7 | 290.9 | 215.5 |
+| 1536 (12) | 290.0 | 263.7 | 242.2 | 221.1 |
+| 1792 (14) | 322.8 | 293.1 | 266.0 | 243.9 |
+| 2048 (16) | 318.4 | 291.1 | 280.0 | 244.6 |
+| 3072 (24) | 328.8 | 308.6 | 289.1 | 268.2 |
+| 4096 (32) | 351.2 | 346.0 | 317.3 | 304.5 |
+
+ms/iter:
+
+| embed_dim (heads) | megakernel | torch.compile (inductor) | torch.compile (tensorrt) | eager |
+|---|---|---|---|---|
+| 1280 (10) | 0.31 | 0.35 | 0.32 | 0.44 |
+| 1536 (12) | 0.41 | 0.45 | 0.49 | 0.54 |
+| 1792 (14) | 0.45 | 0.50 | 0.55 | 0.60 |
+| 2048 (16) | 0.55 | 0.60 | 0.63 | 0.72 |
+| 3072 (24) | 0.96 | 1.02 | 1.09 | 1.18 |
+| 4096 (32) | 1.39 | 1.42 | 1.54 | 1.61 |
+
+Regenerate the RTX 5070 Ti set with the plotting command above; the RTX PRO 6000 set was produced the same way, pointed at a results CSV from a Modal run.
+
+## License
+
+```
+MIT License
+
+Copyright (c) 2026 Parth Badgujar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+```

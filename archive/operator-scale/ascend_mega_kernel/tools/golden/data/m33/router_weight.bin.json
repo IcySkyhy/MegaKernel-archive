@@ -1,0 +1,18 @@
+{
+  "tensor": "router_weight.bin",
+  "shape": [
+    4,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 20480,
+  "sha256": "cde2f67aa74175e118c2fd91b2876ae357255d0a738cf7ca1cc59de88ee37827",
+  "kind": "input",
+  "description": "router gate weight [num_experts, hidden], bf16"
+}

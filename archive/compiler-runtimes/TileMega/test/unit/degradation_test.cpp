@@ -1,0 +1,61 @@
+// SPDX-License-Identifier: BSD-3-Clause
+#include <tilemega/Analysis/ISLContext.h>
+//
+// Skeleton §0.1: an operator no rule covers degrades to one conservative task
+// space and is reported; it does not stop the import.
+#include <tilemega/Dialect/CouplingGraph/CGOps.h>
+#include <tilemega/Frontend/TorchExportImporter.h>
+
+#include <mlir/IR/MLIRContext.h>
+
+#include <cassert>
+#include <cstdio>
+#include <string>
+
+namespace tilemega::tests::degradation_test {
+
+int TestDegradation(int argc, char** argv) {
+  tilemega::analysis::IslContext isl_context;
+  mlir::MLIRContext context;
+  tilemega::frontend::ImportSummary summary;
+  auto module = tilemega::frontend::TorchExportImporter{}.Import(
+      std::string(TILEMEGA_SOURCE_DIR) + "/test/fixtures/export_unsupported.json",
+      context, &summary);
+  assert(summary.degraded.size() == 1);
+  assert(summary.degraded.front() == "aten.imaginary.default");
+  assert(summary.task_spaces == 2);  // one per operator, nothing grouped
+  assert(summary.stages == 0);       // no decoder layer, so no model plan
+  assert(!module->getOperation()->getAttr("tilemega.model_plan"));
+
+  int generic = 0, spaces = 0;
+  for (auto task : module->getOps<tilemega::dialect::TileSpaceOp>()) {
+    ++spaces;
+    generic += task.getWriteMap().getFields().getAs<mlir::StringAttr>("kind")
+                   .getValue() == "generic";
+  }
+  // Both, not one.  The kind used to come from the FX target string, so
+  // `aten.mul.Tensor` printed as `elementwise` while only the unknown operator
+  // printed as `generic`.  A task space now names the role the semantic
+  // lifting recognised, and without a decoder layer there is no plan to
+  // recognise anything from: both operators are modelled by
+  // GenericSemantics, so both must say so.  Naming one of them `elementwise`
+  // while carrying no indexing map for it is the placeholder this change
+  // exists to remove.
+  assert(spaces == 2 && generic == 2);
+
+  // A degraded operator's coupling relaxes to Tier 3: no rule established an
+  // index, so the edge may not claim the affine tier.
+  int couplings = 0;
+  for (auto coupling : module->getOps<tilemega::dialect::CouplingOp>()) {
+    ++couplings;
+    assert(coupling.getTier().getValue() == 3);
+  }
+  assert(couplings == 1);
+  std::printf("DEGRADED ops=%zu task_spaces=%d generic=%d\n",
+              summary.degraded.size(), spaces, generic);
+  return 0;
+
+  return 0;
+}
+
+}  // namespace tilemega::tests::degradation_test

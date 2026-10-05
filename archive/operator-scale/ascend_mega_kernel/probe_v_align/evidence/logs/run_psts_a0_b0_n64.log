@@ -1,0 +1,7 @@
+VARIANT op=psts(id=42) a=0 b=0 n=64 model=3 window=32
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x36717a672c297b43
+HEAD32 11111111 11111111 11111111 11111111
+COMPARE window_bytes=32 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (structural only: model=3; window 32B non-empty, 32 non-sentinel bytes, 0 bytes written outside window)

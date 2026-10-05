@@ -1,0 +1,143 @@
+{
+  "deferred_gpu_matrix": {
+    "hard_gates": [
+      "exact target output against recompute/eager control",
+      "nonzero mechanism counters for every experimental arm",
+      "one build per stable phase key followed by replay",
+      "no acceptance regression outside interleaved run variation",
+      "no throughput promotion without repeated thermal brackets"
+    ],
+    "phase_variant_arms": [
+      "eager_control",
+      "phase_separated_compiled"
+    ],
+    "preconditions": [
+      "claim CPG GPU lease and /Users/Shared/mlxuag/gpu.lock",
+      "verify no competing model or benchmark owns the GPU",
+      "record interpreter and MLX build identity",
+      "settle thermals before and between interleaved blocks"
+    ],
+    "qsa_arms": [
+      {
+        "amend": false,
+        "name": "recompute_control",
+        "share_qsa_indices": false
+      },
+      {
+        "amend": false,
+        "name": "frozen_reuse",
+        "share_qsa_indices": true
+      },
+      {
+        "amend": true,
+        "name": "amended_reuse",
+        "share_qsa_indices": true
+      }
+    ],
+    "qsa_geometry": {
+      "batch_sizes": [
+        1,
+        2,
+        4
+      ],
+      "contexts": [
+        16384,
+        32768,
+        65536
+      ],
+      "draft_depths": [
+        2,
+        3,
+        4
+      ],
+      "order": "balanced interleaving with reverse bracket"
+    },
+    "required_metrics": [
+      "target output digest",
+      "accepted draft length distribution",
+      "decode tokens_per_second only",
+      "prefill tokens_per_second reported separately",
+      "trace builds/replays/evictions/fallbacks by phase",
+      "QSA amendment attempts/amendments/blocks_appended",
+      "thermal and swap sentinels"
+    ]
+  },
+  "evidence_level": "cpu_contract_only",
+  "gpu_used": false,
+  "mtp_phase_variants": {
+    "backend_binding": "deferred; registry accepts a backend-owned builder",
+    "build_order": [
+      "draft_output",
+      "catchup_no_output",
+      "target_verify"
+    ],
+    "default_enabled": false,
+    "registry": {
+      "fallbacks": {},
+      "max_variants_per_phase": 1,
+      "phases": {
+        "catchup_no_output": {
+          "build_failures": 0,
+          "builds": 1,
+          "evictions": 0,
+          "live_variants": 1,
+          "replays": 9
+        },
+        "draft_output": {
+          "build_failures": 0,
+          "builds": 1,
+          "evictions": 0,
+          "live_variants": 1,
+          "replays": 9
+        },
+        "target_verify": {
+          "build_failures": 0,
+          "builds": 1,
+          "evictions": 0,
+          "live_variants": 1,
+          "replays": 0
+        }
+      },
+      "schema": "mlx-lm.speculative-phase-variants/v1"
+    }
+  },
+  "qsa_group_amendment": {
+    "cases": [
+      {
+        "append_block_ids": [],
+        "captured_blocks": 3,
+        "current_blocks": 3
+      },
+      {
+        "append_block_ids": [
+          3
+        ],
+        "captured_blocks": 3,
+        "current_blocks": 4
+      },
+      {
+        "append_block_ids": [
+          8,
+          9,
+          10
+        ],
+        "captured_blocks": 8,
+        "current_blocks": 11
+      }
+    ],
+    "default_enabled": false,
+    "mlx2_compatibility": "matches existing _mtp_shared_topk_n_blocks contract; no mlx2 change made",
+    "rewind_failed_closed": true,
+    "unified_gate": "MLX_QWEN4_QSA_MTP_AMEND_COMPLETE_GROUPS=1"
+  },
+  "qualification_state": {
+    "cpu_contract_qualified": true,
+    "gpu_correctness_qualified": false,
+    "gpu_performance_qualified": false,
+    "implemented": true,
+    "observed_in_serving": false,
+    "selected_in_serving": false
+  },
+  "schema": "mlx-lm.speculative-prototypes-qualification/v1",
+  "service_changed": false
+}

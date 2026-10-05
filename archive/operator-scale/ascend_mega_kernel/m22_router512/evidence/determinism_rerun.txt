@@ -1,0 +1,45 @@
+# 跨编译 / 跨进程确定性 + host 脚手架 hygiene（review round-1 P2-5 的回归证据）
+
+## 1. dump 逐字节确定性
+
+对照范围：10 档 × 9 张量 × 2 棵归并树 = 180 个对象（`real_m4097/{x.bin,router_logits.bin}`
+未入库，不在对照内）。
+
+| 对照 | 结果 |
+|---|---|
+| 首轮运行（/tmp/m22out*） vs 归档 evidence/ | **0 处不同** |
+| clean rebuild 后重跑（/tmp/m22fin*） vs 归档 | **0 处不同** |
+| 再重跑（/tmp/m22fix*，本轮 P2-5 改动后） vs 归档 | **0 处不同** |
+
+命令：
+
+```bash
+for c in real_m1 real_m2 real_m16 real_m33 real_m64 nu_m1 nu_m7 nu_m33 nu_m64; do
+  for f in router_logits.bin topk_ids.bin topk_weights.bin expert_counts.bin expert_slot_base.bin \
+           perm_src_token.bin perm_expert.bin group_list_i64.bin route_scalars.bin; do
+    cmp -s /tmp/m22fix/$c/$f evidence/mode2/$c/$f || echo "DIFF $c/$f"
+  done
+done
+```
+
+未入库大张量的 sha256 跨 3 次运行恒定（见 `dump_sha256.txt`）：
+`real_m4097/x.bin` = `539ec35f6a931afbb8a1286df4ba6cae447e162324c2f14b1c3c5d2393d8d4b9`。
+
+## 2. host dump 目录创建不再走 shell（P2-5 回归）
+
+`m22_router512.asc` 的 host 侧原用 `snprintf(cmd,…,"mkdir -p %s",dir); system(cmd)`，
+`M22_OUT` 含 shell 元字符时会被解释。现改为逐级 `mkdir(2)`（`MakeDirs()`，`<sys/stat.h>`）。
+
+回归自测：
+
+```bash
+M22_OUT='/tmp/m22fix_x; touch /tmp/m22_pwned' ./m22_router512/build/m22_router512
+```
+
+| 观测 | 结果 |
+|---|---|
+| `/tmp/m22_pwned` 是否被创建 | **不存在**（旧写法会创建它） |
+| 字面目录 `/tmp/m22fix_x; touch /tmp/m22_pwned` | **被创建**（元字符按字面处理） |
+| 该次运行的判定 | judged 100/100，退出码 0 |
+
+（`host` dump 是验收脚手架而非产品路径；此处按 review 建议 2 行修掉。）

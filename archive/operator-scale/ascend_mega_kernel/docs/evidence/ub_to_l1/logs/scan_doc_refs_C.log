@@ -1,0 +1,7 @@
+docs scanned=17  doc refs=224 (unresolved=0)  section refs=217 (unresolved=0)
+in-repo path refs=350  gating=0 (distinct=0)  allowlisted=2 (distinct=2)
+    1  tools/bisheng_compiler/lib/clang/15.0.5/include/cce_aicore_intrinsics.h
+       ↳ 依据：外部快照：Bisheng 编译器自带头（随 ASC 工具链分发在 /usr/local/Ascend 下），本仓不持有；docs/13 引它是为了指出 clang 内置宏的定义处
+    1  tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_defines.h
+       ↳ 依据：外部快照：同上（docs/18 引它指出 `__clang_cce_*` 宏的定义处）
+RESULT: OK (17 files scanned, 224 doc refs, 217 section refs, 350 path refs, 2 allowlisted, 0 out-of-range)

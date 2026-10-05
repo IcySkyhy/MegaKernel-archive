@@ -1,0 +1,8 @@
+VARIANT name=row_m16_cur kind=3 group=row sd=s32 md=m32 pat=all rows=16 pitchI=256 pitchW=256 im=0
+LAUNCH aclError=0 (sync timeout=120000ms)
+AREABYTES 12288
+WRANGES 0-8192
+NZ bytes_written=8192 first_off=0 last_off=8192
+FNV 0xc04ca12f9151c383
+OUTCOME: RAN
+rc=0

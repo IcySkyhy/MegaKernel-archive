@@ -1,0 +1,32 @@
+=== A/B/A: what one competing GPU process does to these timings ===
+baseline, unlocked, iterations=10: 566.1 / 566.9 / 566.2
+
+--- A: quiet GPU, 3 runs (repeat baseline in this same script) ---
+  g1   1.4452 ms  665.7 TFLOPS  (gate+up N=28672 K=4096)
+  SUM  2.5275 ms   BLOCK 2.5405 ms  568.0 TFLOPS(gemm)
+  g1   1.4367 ms  669.7 TFLOPS  (gate+up N=28672 K=4096)
+  SUM  2.5207 ms   BLOCK 2.5402 ms  568.1 TFLOPS(gemm)
+  g1   1.4354 ms  670.3 TFLOPS  (gate+up N=28672 K=4096)
+  SUM  2.5151 ms   BLOCK 2.5449 ms  567.1 TFLOPS(gemm)
+
+--- B: identical runs with ONE competing GPU job (dense chain looping) ---
+    competing pid 1887960; nvidia-smi apps: 1887971 
+  g1   1.4338 ms  671.0 TFLOPS  (gate+up N=28672 K=4096)
+  SUM  2.5196 ms   BLOCK 2.5497 ms  566.0 TFLOPS(gemm)
+    sample: 2580 MHz, 124.63 W, 100 %
+  g1   3.1099 ms  309.4 TFLOPS  (gate+up N=28672 K=4096)
+  SUM  4.4524 ms   BLOCK 2.6121 ms  552.5 TFLOPS(gemm)
+    sample: 2565 MHz, 127.06 W, 68 %
+  g1   1.4378 ms  669.1 TFLOPS  (gate+up N=28672 K=4096)
+  SUM  2.5263 ms   BLOCK 2.5576 ms  564.2 TFLOPS(gemm)
+    sample: 2985 MHz, 134.92 W, 54 %
+
+--- C: quiet GPU again, to prove the effect is the contention and not drift ---
+  g1   1.4278 ms  673.8 TFLOPS  (gate+up N=28672 K=4096)
+  SUM  2.5136 ms   BLOCK 2.5549 ms  564.8 TFLOPS(gemm)
+  g1   1.4326 ms  671.6 TFLOPS  (gate+up N=28672 K=4096)
+  SUM  2.5130 ms   BLOCK 2.5487 ms  566.2 TFLOPS(gemm)
+  g1   1.4377 ms  669.2 TFLOPS  (gate+up N=28672 K=4096)
+  SUM  2.5226 ms   BLOCK 2.5499 ms  565.9 TFLOPS(gemm)
+DONE 2026-08-31T14:21:38-07:00
+EXIT=0

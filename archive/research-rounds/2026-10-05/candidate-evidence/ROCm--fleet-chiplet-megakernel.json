@@ -1,0 +1,2685 @@
+{
+  "repository": "ROCm/fleet-chiplet-megakernel",
+  "url": "https://github.com/ROCm/fleet-chiplet-megakernel",
+  "created_at": "2026-07-21T02:16:32Z",
+  "pushed_at": "2026-09-28T15:11:06Z",
+  "branch": "amd_mi350",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".clang-format",
+      "size": 5041
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "size": 419
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/1_Report_Bug.yml",
+      "size": 895
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/2_Request_Feature.yml",
+      "size": 388
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/3_Installation.yml",
+      "size": 948
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/4_Call_For_Comment.yml",
+      "size": 388
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/5_General.yml",
+      "size": 367
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "size": 117
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "size": 653
+    },
+    {
+      "path": ".github/runs-on.yml",
+      "size": 230
+    },
+    {
+      "path": ".github/scan_tools_configs/bandit.yml",
+      "size": 567
+    },
+    {
+      "path": ".github/scan_tools_configs/gitleaks.toml",
+      "size": 2777
+    },
+    {
+      "path": ".github/scan_tools_configs/trivy.yml",
+      "size": 635
+    },
+    {
+      "path": ".github/scan_tools_configs/zizmor.yml",
+      "size": 702
+    },
+    {
+      "path": ".github/workflows/build-test.yml",
+      "size": 1426
+    },
+    {
+      "path": ".github/workflows/ci-tests-qwen3.yml",
+      "size": 1457
+    },
+    {
+      "path": ".github/workflows/code-format.yml",
+      "size": 627
+    },
+    {
+      "path": ".github/workflows/gpu-tests.yml",
+      "size": 1607
+    },
+    {
+      "path": ".github/workflows/helpers/build_mirage_from_source.sh",
+      "size": 1269
+    },
+    {
+      "path": ".github/workflows/helpers/free_space_on_runner.sh",
+      "size": 832
+    },
+    {
+      "path": ".github/workflows/helpers/install_dependencies.sh",
+      "size": 1667
+    },
+    {
+      "path": ".github/workflows/helpers/set_env.sh",
+      "size": 1996
+    },
+    {
+      "path": ".github/workflows/pr-security-scan.yml",
+      "size": 1424
+    },
+    {
+      "path": ".github/workflows/pypi-deploy.yml",
+      "size": 1886
+    },
+    {
+      "path": ".github/workflows/shell-check.yml",
+      "size": 335
+    },
+    {
+      "path": ".github/workflows/weekly-security-scan.yml",
+      "size": 1349
+    },
+    {
+      "path": ".gitignore",
+      "size": 837
+    },
+    {
+      "path": ".gitmodules",
+      "size": 380
+    },
+    {
+      "path": ".readthedocs.yaml",
+      "size": 821
+    },
+    {
+      "path": ".tools/clang-format-15-master-1d7ec53d",
+      "size": 3813968
+    },
+    {
+      "path": "CMakeLists.txt",
+      "size": 8509
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 4261
+    },
+    {
+      "path": "INSTALL.md",
+      "size": 2758
+    },
+    {
+      "path": "LICENSE",
+      "size": 11357
+    },
+    {
+      "path": "MANIFEST.in",
+      "size": 589
+    },
+    {
+      "path": "NCU_Usage_Manual.md",
+      "size": 2218
+    },
+    {
+      "path": "README.md",
+      "size": 7769
+    },
+    {
+      "path": "analyze.sh",
+      "size": 1627
+    },
+    {
+      "path": "cmake/cuda.cmake",
+      "size": 2823
+    },
+    {
+      "path": "conda/mirage.yml",
+      "size": 469
+    },
+    {
+      "path": "config.cmake",
+      "size": 254
+    },
+    {
+      "path": "cpp_examples/chameleon.cc",
+      "size": 6506
+    },
+    {
+      "path": "cpp_examples/common.h",
+      "size": 110
+    },
+    {
+      "path": "cpp_examples/dnn.cc",
+      "size": 5346
+    },
+    {
+      "path": "cpp_examples/egg_tests.cc",
+      "size": 1596
+    },
+    {
+      "path": "cpp_examples/gated_mlp.cc",
+      "size": 3433
+    },
+    {
+      "path": "cpp_examples/group_query_attn_inc_decode.cc",
+      "size": 6154
+    },
+    {
+      "path": "cpp_examples/group_query_attn_prefill.cc",
+      "size": 6236
+    },
+    {
+      "path": "cpp_examples/group_query_attn_spec_decode.cc",
+      "size": 6541
+    },
+    {
+      "path": "cpp_examples/lora.cc",
+      "size": 3772
+    },
+    {
+      "path": "cpp_examples/mlp.cc",
+      "size": 3861
+    },
+    {
+      "path": "cpp_examples/moe.cc",
+      "size": 4278
+    },
+    {
+      "path": "cpp_examples/multi_head_attn_inc_decode.cc",
+      "size": 5878
+    },
+    {
+      "path": "cpp_examples/multi_head_attn_prefill.cc",
+      "size": 5895
+    },
+    {
+      "path": "cpp_examples/multi_head_attn_spec_decode.cc",
+      "size": 5784
+    },
+    {
+      "path": "cpp_examples/multi_query_attn_inc_decode.cc",
+      "size": 5675
+    },
+    {
+      "path": "cpp_examples/multi_query_attn_prefill.cc",
+      "size": 6138
+    },
+    {
+      "path": "cpp_examples/multi_query_attn_spec_decode.cc",
+      "size": 6024
+    },
+    {
+      "path": "cpp_examples/profile.cc",
+      "size": 751
+    },
+    {
+      "path": "cpp_examples/rms.cc",
+      "size": 2751
+    },
+    {
+      "path": "demo/checkpoint_lora.json",
+      "size": 67455
+    },
+    {
+      "path": "demo/demo_blackwell/matmul-256x4096x4096.py",
+      "size": 1258
+    },
+    {
+      "path": "demo/demo_blackwell/matmul-512x1024x256.py",
+      "size": 2423
+    },
+    {
+      "path": "demo/demo_blackwell/rmsnorm.py",
+      "size": 1329
+    },
+    {
+      "path": "demo/demo_chameleon_attn.py",
+      "size": 1226
+    },
+    {
+      "path": "demo/demo_gated_mlp.py",
+      "size": 1191
+    },
+    {
+      "path": "demo/demo_group_query_attention.py",
+      "size": 1421
+    },
+    {
+      "path": "demo/demo_hopper/linear.py",
+      "size": 2233
+    },
+    {
+      "path": "demo/demo_hopper/main.py",
+      "size": 1987
+    },
+    {
+      "path": "demo/demo_hopper/mirage_hopper_matmul.py",
+      "size": 1566
+    },
+    {
+      "path": "demo/demo_hopper/utils.py",
+      "size": 620
+    },
+    {
+      "path": "demo/demo_jit.py",
+      "size": 1179
+    },
+    {
+      "path": "demo/demo_llama3-8b.py",
+      "size": 2707
+    },
+    {
+      "path": "demo/demo_lora.py",
+      "size": 1279
+    },
+    {
+      "path": "demo/demo_rms_norm.py",
+      "size": 1445
+    },
+    {
+      "path": "demo/llama3/demo.py",
+      "size": 34049
+    },
+    {
+      "path": "demo/llama3/models/configuration_llama3.py",
+      "size": 11399
+    },
+    {
+      "path": "demo/llama3/models/modeling_llama3.py",
+      "size": 16746
+    },
+    {
+      "path": "demo/llama3/models/rope.py",
+      "size": 5460
+    },
+    {
+      "path": "demo/nki_rms_norm.py",
+      "size": 541
+    },
+    {
+      "path": "demo/profiler/profile_rmsnorm.py",
+      "size": 1254
+    },
+    {
+      "path": "demo/pytorch/chameleon-7b.py",
+      "size": 2351
+    },
+    {
+      "path": "demo/pytorch/llama3-8b.py",
+      "size": 2295
+    },
+    {
+      "path": "demo/pytorch/lora.py",
+      "size": 2980
+    },
+    {
+      "path": "demo/pytorch/ngpt.py",
+      "size": 2600
+    },
+    {
+      "path": "demo/qwen2.5/demo.py",
+      "size": 4028
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_64644b2e7bbffb94.json",
+      "size": 61409
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_647dd41aeaf656b4.json",
+      "size": 48363
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_6508b4ab6af4f866.json",
+      "size": 78867
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_659704256b064506.json",
+      "size": 184015
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_659774a49fe1cbf2.json",
+      "size": 174071
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_659774eb06d5ca86.json",
+      "size": 427323
+    },
+    {
+      "path": "demo/qwen2.5/models/configuration_qwen2.py",
+      "size": 10050
+    },
+    {
+      "path": "demo/qwen2.5/models/modeling_qwen2.py",
+      "size": 21246
+    },
+    {
+      "path": "demo/qwen2.5/models/rope.py",
+      "size": 4952
+    },
+    {
+      "path": "demo/qwen3/demo.py",
+      "size": 59671
+    },
+    {
+      "path": "demo/qwen3/demo_30B_A3B.py",
+      "size": 37876
+    },
+    {
+      "path": "demo/qwen3/demo_chat.py",
+      "size": 15330
+    },
+    {
+      "path": "demo/qwen3/demo_dsl.py",
+      "size": 20463
+    },
+    {
+      "path": "demo/qwen3/demo_mpk_wrapper.py",
+      "size": 6495
+    },
+    {
+      "path": "demo/qwen3/demo_sampling.py",
+      "size": 27575
+    },
+    {
+      "path": "demo/qwen3/models/configuration_qwen3.py",
+      "size": 11149
+    },
+    {
+      "path": "demo/qwen3/models/convert.py",
+      "size": 4090
+    },
+    {
+      "path": "demo/qwen3/models/modeling_qwen3.py",
+      "size": 20050
+    },
+    {
+      "path": "demo/qwen3/models/rope.py",
+      "size": 5460
+    },
+    {
+      "path": "demo/reference_mugraphs/chameleon-7b.py",
+      "size": 5704
+    },
+    {
+      "path": "demo/reference_mugraphs/chameleon.py",
+      "size": 2937
+    },
+    {
+      "path": "demo/reference_mugraphs/gated_mlp.py",
+      "size": 2345
+    },
+    {
+      "path": "demo/reference_mugraphs/group_query_attention.py",
+      "size": 2519
+    },
+    {
+      "path": "demo/reference_mugraphs/group_query_attention_customized.py",
+      "size": 3712
+    },
+    {
+      "path": "demo/reference_mugraphs/group_query_attention_online.py",
+      "size": 3011
+    },
+    {
+      "path": "demo/reference_mugraphs/llama3-8b.py",
+      "size": 3949
+    },
+    {
+      "path": "demo/reference_mugraphs/lora.py",
+      "size": 1826
+    },
+    {
+      "path": "demo/reference_mugraphs/qwen_mlp.py",
+      "size": 2254
+    },
+    {
+      "path": "demo/reference_mugraphs/qwen_mlp_part2.py",
+      "size": 1559
+    },
+    {
+      "path": "demo/reference_mugraphs/qwen_prenorm.py",
+      "size": 1192
+    },
+    {
+      "path": "demo/reference_mugraphs/rms_norm.py",
+      "size": 1984
+    },
+    {
+      "path": "demo/runtime/runtime.py",
+      "size": 464
+    },
+    {
+      "path": "demo/triton_rms_norm.py",
+      "size": 1515
+    },
+    {
+      "path": "deps/rocblas/README.md",
+      "size": 909
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/array.h",
+      "size": 361
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/coord.h",
+      "size": 1963
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/cutlass.h",
+      "size": 4597
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/epilogue/thread/linear_combination.h",
+      "size": 619
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/epilogue/threadblock/epilogue_smem_accumulator.h",
+      "size": 597
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/epilogue/warp/fragment_iterator_tensor_op.h",
+      "size": 438
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/epilogue/warp/tile_iterator_tensor_op.h",
+      "size": 658
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/fast_math.h",
+      "size": 1105
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/gemm/gemm.h",
+      "size": 189
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/gemm/warp/default_mma_tensor_op.h",
+      "size": 1155
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/gemm/warp/mma_tensor_op.h",
+      "size": 1100
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/layout/layout.h",
+      "size": 220
+    },
+    {
+      "path": "deps/rocblas/include/cutlass/matrix_coord.h",
+      "size": 1107
+    },
+    {
+      "path": "docker-build/Dockerfile",
+      "size": 2299
+    },
+    {
+      "path": "docker-build/build_wheel.sh",
+      "size": 1199
+    },
+    {
+      "path": "docker/Dockerfile",
+      "size": 1633
+    },
+    {
+      "path": "docker/install_mirage.sh",
+      "size": 1028
+    },
+    {
+      "path": "docker/run_docker.sh",
+      "size": 844
+    },
+    {
+      "path": "docs/Makefile",
+      "size": 771
+    },
+    {
+      "path": "docs/doxygen/Doxyfile",
+      "size": 117912
+    },
+    {
+      "path": "docs/doxygen/README.md",
+      "size": 676
+    },
+    {
+      "path": "docs/doxygen/theme/rust_customdoxygen.css",
+      "size": 33776
+    },
+    {
+      "path": "docs/doxygen/theme/rust_footer.html",
+      "size": 987
+    },
+    {
+      "path": "docs/doxygen/theme/rust_header.html",
+      "size": 2064
+    },
+    {
+      "path": "docs/make.bat",
+      "size": 799
+    },
+    {
+      "path": "docs/mpk/tma.md",
+      "size": 6183
+    },
+    {
+      "path": "docs/requirements.txt",
+      "size": 80
+    },
+    {
+      "path": "docs/source/conf.py",
+      "size": 5261
+    },
+    {
+      "path": "docs/source/cuda-transpiler.rst",
+      "size": 27578
+    },
+    {
+      "path": "docs/source/images/gated_mlp.png",
+      "size": 212901
+    },
+    {
+      "path": "docs/source/images/gpu_hierarchy.png",
+      "size": 200222
+    },
+    {
+      "path": "docs/source/images/mma-non-divisible-example.drawio.svg",
+      "size": 13115
+    },
+    {
+      "path": "docs/source/images/mma-thr-layout-example.drawio.svg",
+      "size": 131155
+    },
+    {
+      "path": "docs/source/images/mugraph_gqa.png",
+      "size": 1215082
+    },
+    {
+      "path": "docs/source/images/swizzle-shift-example.drawio.svg",
+      "size": 32723
+    },
+    {
+      "path": "docs/source/images/swizzle-xor-example.drawio.svg",
+      "size": 32802
+    },
+    {
+      "path": "docs/source/images/tb-fusion-chain.drawio.svg",
+      "size": 18918
+    },
+    {
+      "path": "docs/source/images/tb-sched-conflict-example.drawio.svg",
+      "size": 29216
+    },
+    {
+      "path": "docs/source/images/tensor-lifecycle.drawio.svg",
+      "size": 16920
+    },
+    {
+      "path": "docs/source/index.rst",
+      "size": 1299
+    },
+    {
+      "path": "docs/source/installation.rst",
+      "size": 113
+    },
+    {
+      "path": "docs/source/linear_kernel.rst",
+      "size": 23109
+    },
+    {
+      "path": "docs/source/mugraph.rst",
+      "size": 6917
+    },
+    {
+      "path": "docs/source/triton-transpiler.rst",
+      "size": 4593
+    },
+    {
+      "path": "docs/source/tutorials/attention-with-kv-norm.rst",
+      "size": 1213
+    },
+    {
+      "path": "docs/source/tutorials/gated-mlp.rst",
+      "size": 1407
+    },
+    {
+      "path": "docs/source/tutorials/group-query-attention.rst",
+      "size": 2674
+    },
+    {
+      "path": "docs/source/tutorials/images/lora_kernel_graph.png",
+      "size": 145479
+    },
+    {
+      "path": "docs/source/tutorials/images/lora_performance.png",
+      "size": 21121
+    },
+    {
+      "path": "docs/source/tutorials/images/lora_ugraph.png",
+      "size": 555654
+    },
+    {
+      "path": "docs/source/tutorials/images/rms_norm_linear_original.png",
+      "size": 60131
+    },
+    {
+      "path": "docs/source/tutorials/images/rms_norm_linear_performance.png",
+      "size": 24835
+    },
+    {
+      "path": "docs/source/tutorials/images/rms_norm_linear_ugraph.png",
+      "size": 445065
+    },
+    {
+      "path": "docs/source/tutorials/index.rst",
+      "size": 227
+    },
+    {
+      "path": "docs/source/tutorials/lora.rst",
+      "size": 2052
+    },
+    {
+      "path": "docs/source/tutorials/multi-latent-attention.rst",
+      "size": 643
+    },
+    {
+      "path": "docs/source/tutorials/rms-norm-linear.rst",
+      "size": 2530
+    },
+    {
+      "path": "docs/source/visualizer.rst",
+      "size": 6141
+    },
+    {
+      "path": "docs/source/welcome.rst",
+      "size": 100
+    },
+    {
+      "path": "docs/transpiler/mma-non-divisible-example.drawio.svg",
+      "size": 13115
+    },
+    {
+      "path": "docs/transpiler/mma-thr-layout-example.drawio.svg",
+      "size": 131155
+    },
+    {
+      "path": "docs/transpiler/nki_transpiler.md",
+      "size": 3086
+    },
+    {
+      "path": "docs/transpiler/swizzle-shift-example.drawio.svg",
+      "size": 32723
+    },
+    {
+      "path": "docs/transpiler/swizzle-xor-example.drawio.svg",
+      "size": 32802
+    },
+    {
+      "path": "docs/transpiler/tb-fusion-chain.drawio.svg",
+      "size": 18918
+    },
+    {
+      "path": "docs/transpiler/tb-sched-conflict-example.drawio.svg",
+      "size": 29216
+    },
+    {
+      "path": "docs/transpiler/tensor-lifecycle.drawio.svg",
+      "size": 16920
+    },
+    {
+      "path": "docs/transpiler/transpiler.md",
+      "size": 26627
+    },
+    {
+      "path": "docs/transpiler/triton_transpiler.md",
+      "size": 4207
+    },
+    {
+      "path": "include/mirage/config.h",
+      "size": 4303
+    },
+    {
+      "path": "include/mirage/cpu/cmem_tensor.h",
+      "size": 2221
+    },
+    {
+      "path": "include/mirage/hip_platform.h",
+      "size": 1694
+    },
+    {
+      "path": "include/mirage/kernel/all_reduce.h",
+      "size": 1028
+    },
+    {
+      "path": "include/mirage/kernel/chunk.h",
+      "size": 1036
+    },
+    {
+      "path": "include/mirage/kernel/customized.h",
+      "size": 1366
+    },
+    {
+      "path": "include/mirage/kernel/device_memory_manager.h",
+      "size": 1996
+    },
+    {
+      "path": "include/mirage/kernel/device_tensor.h",
+      "size": 3673
+    },
+    {
+      "path": "include/mirage/kernel/element_binary.h",
+      "size": 1069
+    },
+    {
+      "path": "include/mirage/kernel/element_unary.h",
+      "size": 1260
+    },
+    {
+      "path": "include/mirage/kernel/graph.h",
+      "size": 9975
+    },
+    {
+      "path": "include/mirage/kernel/matmul.h",
+      "size": 991
+    },
+    {
+      "path": "include/mirage/kernel/operator.h",
+      "size": 2508
+    },
+    {
+      "path": "include/mirage/kernel/reduction.h",
+      "size": 1011
+    },
+    {
+      "path": "include/mirage/kernel/rms_norm.h",
+      "size": 1034
+    },
+    {
+      "path": "include/mirage/kernel/runtime.h",
+      "size": 1355
+    },
+    {
+      "path": "include/mirage/kernel/task_register.h",
+      "size": 10921
+    },
+    {
+      "path": "include/mirage/layout.h",
+      "size": 2610
+    },
+    {
+      "path": "include/mirage/nki_transpiler/helper_function.h",
+      "size": 522
+    },
+    {
+      "path": "include/mirage/nki_transpiler/transpile.h",
+      "size": 4033
+    },
+    {
+      "path": "include/mirage/nki_transpiler/utils.h",
+      "size": 3202
+    },
+    {
+      "path": "include/mirage/persistent_kernel/mpk_atoms.cuh",
+      "size": 13400
+    },
+    {
+      "path": "include/mirage/persistent_kernel/persistent_kernel.cuh",
+      "size": 102152
+    },
+    {
+      "path": "include/mirage/persistent_kernel/profiler.h",
+      "size": 7933
+    },
+    {
+      "path": "include/mirage/persistent_kernel/runtime_header.h",
+      "size": 14715
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/argmax.cuh",
+      "size": 5291
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/element_binary.cuh",
+      "size": 2212
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/element_unary.cuh",
+      "size": 3708
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/embedding.cuh",
+      "size": 2746
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/identity.cuh",
+      "size": 1421
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/linear.cuh",
+      "size": 17018
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/linear_cutlass.cuh",
+      "size": 24015
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/merge_splitkv.cuh",
+      "size": 9388
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/mma.cuh",
+      "size": 6697
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/moe_linear.cuh",
+      "size": 32252
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention.cuh",
+      "size": 3683
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_32_64.cuh",
+      "size": 27535
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_32_64_split_kv.cuh",
+      "size": 31852
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_4_16.cuh",
+      "size": 26406
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_4_16_split_kv.cuh",
+      "size": 29260
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_scalar.cuh",
+      "size": 18423
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_split_kv.cuh",
+      "size": 4562
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/norm.cuh",
+      "size": 4799
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/norm_linear.cuh",
+      "size": 18893
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/norm_linear_new.cuh",
+      "size": 18408
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/reduction.cuh",
+      "size": 6236
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/rmsnorm.cuh",
+      "size": 5532
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/rotary_embedding.cuh",
+      "size": 2894
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/silu_mul.cuh",
+      "size": 1655
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/silu_mul_linear.cuh",
+      "size": 14488
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/single_batch_decoding.cuh",
+      "size": 15836
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/single_batch_extend.cuh",
+      "size": 25572
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/single_batch_gqa.cuh",
+      "size": 11739
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/smem_layout.cuh",
+      "size": 18495
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/task_header.cuh",
+      "size": 474
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/argmax_sm100.cuh",
+      "size": 5731
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/attention_sm100.cuh",
+      "size": 27935
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_sm100_mpk.cuh",
+      "size": 29728
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/moe_linear_sm100.cuh",
+      "size": 32349
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mul_sum_add_sm100.cuh",
+      "size": 1984
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/norm_sm100.cuh",
+      "size": 5194
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/rotary_embedding_sm100.cuh",
+      "size": 2874
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/storage.cuh",
+      "size": 4673
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/task_header.cuh",
+      "size": 932
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/tensor_init.cuh",
+      "size": 1153
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/topk_softmax_sm100.cuh",
+      "size": 12485
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/bfloat16.h",
+      "size": 10024
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/common_header.cuh",
+      "size": 810
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/copy_sm80.cuh",
+      "size": 10598
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/dmem_layout.cuh",
+      "size": 3734
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/sampling.cuh",
+      "size": 7338
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/utils.cuh",
+      "size": 5112
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/worker_config.h",
+      "size": 1913
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/epilogue.cuh",
+      "size": 15583
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/gemm_ws.cuh",
+      "size": 11587
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/gemm_ws_cooperative.cuh",
+      "size": 19055
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/gemm_ws_mpk.cuh",
+      "size": 22151
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/kernel_traits.cuh",
+      "size": 7791
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/mma_tma_ws_mainloop.cuh",
+      "size": 18627
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/deprecated/paged_attention.cuh",
+      "size": 18218
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/barrier.cuh",
+      "size": 3848
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/embedding_hopper.cuh",
+      "size": 1858
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/linear_hopper.cuh",
+      "size": 13808
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/linear_swapAB_hopper.cuh",
+      "size": 14812
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/matmul_demo_hopper.cuh",
+      "size": 9709
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/moe_linear_swapAB_hopper.cuh",
+      "size": 23610
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/multitoken_paged_attention_hopper.cuh",
+      "size": 30715
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/norm_hopper.cuh",
+      "size": 4758
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/norm_linear_hopper.cuh",
+      "size": 14119
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/rmsnorm_hopper.cuh",
+      "size": 6344
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/rotary_embedding_hopper.cuh",
+      "size": 2717
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/silu_mul_hopper.cuh",
+      "size": 1660
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/smem_layout_tma.cuh",
+      "size": 4968
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/task_header.cuh",
+      "size": 885
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/tma.cuh",
+      "size": 1390
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/tma_2d.cuh",
+      "size": 15444
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/tma_3d.cuh",
+      "size": 14312
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/tma_4d.cuh",
+      "size": 14534
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/utils.cuh",
+      "size": 1612
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/wgmma.cuh",
+      "size": 67447
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/argmax_mi300.cuh",
+      "size": 5660
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/ck_tile/attention.cuh",
+      "size": 9597
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/ck_tile/common.cuh",
+      "size": 1916
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/ck_tile/linear.cuh",
+      "size": 8859
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/gang_attention_merge_mi300.cuh",
+      "size": 2005
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/gang_attention_mi300.cuh",
+      "size": 5313
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/gang_ksplit_linear_mi300.cuh",
+      "size": 7116
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/gang_linear_mi300.cuh",
+      "size": 27043
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/gang_moe_linear_mi300.cuh",
+      "size": 15094
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/gang_rmsnorm_linear_mi300.cuh",
+      "size": 5162
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/gang_splitk_linear_mi300.cuh",
+      "size": 7603
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/gemm_handtuned_mi300.cuh",
+      "size": 7908
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/kv_cache_update_mi300.cuh",
+      "size": 14273
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/linear_ck_mi300.cuh",
+      "size": 43599
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/linear_mi300.cuh",
+      "size": 5087
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/moe_linear_mi300.cuh",
+      "size": 12413
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/moe_mul_sum_add_mi300.cuh",
+      "size": 2137
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/moe_topk_softmax_mi300.cuh",
+      "size": 8405
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/multitoken_paged_attention_ck_mi300.cuh",
+      "size": 23543
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/multitoken_paged_attention_ck_pagedkv_mi300.cuh",
+      "size": 16927
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/multitoken_paged_attention_ck_split_kv_mi300.cuh",
+      "size": 30408
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/multitoken_paged_attention_mfma_mi300.cuh",
+      "size": 15100
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/multitoken_paged_attention_mfma_opt_mi300.cuh",
+      "size": 19025
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/multitoken_paged_attention_mi300.cuh",
+      "size": 2621
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/multitoken_paged_attention_split_kv_mi300.cuh",
+      "size": 3176
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/norm_mi300.cuh",
+      "size": 4573
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/paged_attention_ck_fmha_split_kv_mi300.cuh",
+      "size": 26105
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/paged_attention_decode_minimal_mi300.cuh",
+      "size": 13573
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/rmsnorm_mi300.cuh",
+      "size": 11504
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/rotary_embedding_mi300.cuh",
+      "size": 3107
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/silu_mul_linear_mi300.cuh",
+      "size": 19993
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/silu_mul_mi300.cuh",
+      "size": 7397
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/mi300/task_header.cuh",
+      "size": 1983
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/speculative_decoding/prompt_lookup.cuh",
+      "size": 5076
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/speculative_decoding/target_verify.cuh",
+      "size": 2155
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tma.cuh",
+      "size": 47253
+    },
+    {
+      "path": "include/mirage/search/abstract_expr/abstract_expr.h",
+      "size": 7232
+    },
+    {
+      "path": "include/mirage/search/abstract_expr/abstract_expr_eval.h",
+      "size": 820
+    },
+    {
+      "path": "include/mirage/search/abstract_expr/abstract_expr_for_ops.h",
+      "size": 1148
+    },
+    {
+      "path": "include/mirage/search/config.h",
+      "size": 2990
+    },
+    {
+      "path": "include/mirage/search/dim_strategy.h",
+      "size": 2472
+    },
+    {
+      "path": "include/mirage/search/op_utils.h",
+      "size": 2179
+    },
+    {
+      "path": "include/mirage/search/order.h",
+      "size": 293
+    },
+    {
+      "path": "include/mirage/search/range_propagation/irange.h",
+      "size": 6116
+    },
+    {
+      "path": "include/mirage/search/range_propagation/propagation_path.h",
+      "size": 772
+    },
+    {
+      "path": "include/mirage/search/range_propagation/range.h",
+      "size": 1532
+    },
+    {
+      "path": "include/mirage/search/range_propagation/range_set.h",
+      "size": 3136
+    },
+    {
+      "path": "include/mirage/search/range_propagation/tbrange.h",
+      "size": 910
+    },
+    {
+      "path": "include/mirage/search/search.h",
+      "size": 2931
+    },
+    {
+      "path": "include/mirage/search/search_c.h",
+      "size": 1097
+    },
+    {
+      "path": "include/mirage/search/search_context.h",
+      "size": 658
+    },
+    {
+      "path": "include/mirage/search/search_state_manager.h",
+      "size": 2228
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/dim_var_assignments.h",
+      "size": 889
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/op_args.h",
+      "size": 2778
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_graph.h",
+      "size": 3267
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_map.h",
+      "size": 875
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_op.h",
+      "size": 742
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_tensor.h",
+      "size": 569
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_tensor_dim.h",
+      "size": 847
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/tensor_dim_constraint.h",
+      "size": 2223
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/tensor_dim_constraints.h",
+      "size": 1775
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/tensor_dim_expr.h",
+      "size": 6920
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/types.h",
+      "size": 139
+    },
+    {
+      "path": "include/mirage/search/verification/formal_verifier.h",
+      "size": 776
+    },
+    {
+      "path": "include/mirage/search/verification/output_match.h",
+      "size": 437
+    },
+    {
+      "path": "include/mirage/search/verification/probabilistic_verifier.h",
+      "size": 445
+    },
+    {
+      "path": "include/mirage/search/verification/verifier.h",
+      "size": 332
+    },
+    {
+      "path": "include/mirage/threadblock/concat.h",
+      "size": 949
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/concat.h",
+      "size": 2242
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/element_binary.h",
+      "size": 3457
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/element_unary.h",
+      "size": 3278
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/forloop_accum.h",
+      "size": 4978
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/input_loader.h",
+      "size": 2178
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/matmul.h",
+      "size": 2474
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/output_saver.h",
+      "size": 2248
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/reduction.h",
+      "size": 2259
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/rms_norm.h",
+      "size": 2693
+    },
+    {
+      "path": "include/mirage/threadblock/element_binary.h",
+      "size": 1062
+    },
+    {
+      "path": "include/mirage/threadblock/element_unary.h",
+      "size": 1350
+    },
+    {
+      "path": "include/mirage/threadblock/forloop_accum.h",
+      "size": 1157
+    },
+    {
+      "path": "include/mirage/threadblock/graph.h",
+      "size": 8788
+    },
+    {
+      "path": "include/mirage/threadblock/matmul.h",
+      "size": 996
+    },
+    {
+      "path": "include/mirage/threadblock/operator.h",
+      "size": 2603
+    },
+    {
+      "path": "include/mirage/threadblock/reduction.h",
+      "size": 1049
+    },
+    {
+      "path": "include/mirage/threadblock/rms_norm.h",
+      "size": 923
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/concat_serializer.h",
+      "size": 2587
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/element_binary_serializer.h",
+      "size": 2647
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/element_unary_serializer.h",
+      "size": 1604
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/forloop_accum_serializer.h",
+      "size": 2360
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/input_loader_serializer.h",
+      "size": 4181
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/kernel_params.h",
+      "size": 2527
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/matmul_serializer.h",
+      "size": 2217
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/output_saver_serializer.h",
+      "size": 4432
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/reduction_serializer.h",
+      "size": 2233
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/rms_norm_serializer.h",
+      "size": 2082
+    },
+    {
+      "path": "include/mirage/threadblock/smem_tensor.h",
+      "size": 5256
+    },
+    {
+      "path": "include/mirage/transpiler/common.h",
+      "size": 519
+    },
+    {
+      "path": "include/mirage/transpiler/error_types.h",
+      "size": 863
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/README.md",
+      "size": 420
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/config.h",
+      "size": 393
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/kernel/element_binary.h",
+      "size": 3572
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/kernel/element_unary.h",
+      "size": 3201
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/kernel/matmul.h",
+      "size": 4574
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/kernel/reduction.h",
+      "size": 3277
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/nvshmem.h",
+      "size": 145
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/runtime.h",
+      "size": 2110
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/blackwell_matmul.h",
+      "size": 8364
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/blackwell_pipeline.h",
+      "size": 3490
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/element_binary.h",
+      "size": 3730
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/element_unary.h",
+      "size": 2702
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/epilogues.h",
+      "size": 4488
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/forloop_accum.h",
+      "size": 4003
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/hopper_matmul.h",
+      "size": 9026
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/input.h",
+      "size": 14552
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/matmul.h",
+      "size": 19374
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/output.h",
+      "size": 989
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/pipeline.h",
+      "size": 3070
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/profiler.h",
+      "size": 6957
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/reduction.h",
+      "size": 5878
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/threadblock.h",
+      "size": 520
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/utils.h",
+      "size": 4025
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/triton_kernels.py",
+      "size": 2063
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/utils.h",
+      "size": 2684
+    },
+    {
+      "path": "include/mirage/transpiler/sched_tb_graph.h",
+      "size": 1596
+    },
+    {
+      "path": "include/mirage/transpiler/structs.h",
+      "size": 8678
+    },
+    {
+      "path": "include/mirage/transpiler/transpile.h",
+      "size": 971
+    },
+    {
+      "path": "include/mirage/transpiler/transpiler.h",
+      "size": 4984
+    },
+    {
+      "path": "include/mirage/transpiler/utils.h",
+      "size": 13373
+    },
+    {
+      "path": "include/mirage/triton_transpiler/runtime/triton_kernels.py",
+      "size": 2061
+    },
+    {
+      "path": "include/mirage/triton_transpiler/transpile.h",
+      "size": 2454
+    },
+    {
+      "path": "include/mirage/type.h",
+      "size": 10871
+    },
+    {
+      "path": "include/mirage/utils/containers.h",
+      "size": 2706
+    },
+    {
+      "path": "include/mirage/utils/cuda_helper.h",
+      "size": 5834
+    },
+    {
+      "path": "include/mirage/utils/device_macros.h",
+      "size": 2729
+    },
+    {
+      "path": "include/mirage/utils/fingerprint_functions.h",
+      "size": 7564
+    },
+    {
+      "path": "include/mirage/utils/hash_utils.h",
+      "size": 2347
+    },
+    {
+      "path": "include/mirage/utils/json_utils.h",
+      "size": 409
+    },
+    {
+      "path": "include/mirage/utils/math_utils.h",
+      "size": 600
+    },
+    {
+      "path": "include/mirage/utils/rocblas_helper.h",
+      "size": 9576
+    },
+    {
+      "path": "include/mirage/utils/rocm_helper.h",
+      "size": 5961
+    },
+    {
+      "path": "include/mirage/utils/static_switch.h",
+      "size": 5727
+    },
+    {
+      "path": "include/mirage/utils/z3_utils.h",
+      "size": 919
+    },
+    {
+      "path": "include/mirage/vector_types.h",
+      "size": 1230
+    },
+    {
+      "path": "include/mirage/warp/cuda/matmul.h",
+      "size": 7855
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 128
+    },
+    {
+      "path": "python/cython_setup.py",
+      "size": 3230
+    },
+    {
+      "path": "python/mirage/__init__.py",
+      "size": 1938
+    },
+    {
+      "path": "python/mirage/_cython/CCore.pxd",
+      "size": 15364
+    },
+    {
+      "path": "python/mirage/_cython/core.pyx",
+      "size": 48083
+    },
+    {
+      "path": "python/mirage/global_config.py",
+      "size": 304
+    },
+    {
+      "path": "python/mirage/graph_dataset.py",
+      "size": 2055
+    },
+    {
+      "path": "python/mirage/kernel.py",
+      "size": 32436
+    },
+    {
+      "path": "python/mirage/mpk/__init__.py",
+      "size": 201
+    },
+    {
+      "path": "python/mirage/mpk/dsl/__init__.py",
+      "size": 1092
+    },
+    {
+      "path": "python/mirage/mpk/dsl/cost_model.py",
+      "size": 1604
+    },
+    {
+      "path": "python/mirage/mpk/dsl/decorators.py",
+      "size": 5523
+    },
+    {
+      "path": "python/mirage/mpk/dsl/graph.py",
+      "size": 3489
+    },
+    {
+      "path": "python/mirage/mpk/dsl/ops.py",
+      "size": 16524
+    },
+    {
+      "path": "python/mirage/mpk/dsl/types.py",
+      "size": 1570
+    },
+    {
+      "path": "python/mirage/mpk/fleet.py",
+      "size": 1684
+    },
+    {
+      "path": "python/mirage/mpk/gang.py",
+      "size": 135
+    },
+    {
+      "path": "python/mirage/mpk/model_registry.py",
+      "size": 876
+    },
+    {
+      "path": "python/mirage/mpk/models/__init__.py",
+      "size": 471
+    },
+    {
+      "path": "python/mirage/mpk/models/graph_builder.py",
+      "size": 2380
+    },
+    {
+      "path": "python/mirage/mpk/models/qwen3/builder.py",
+      "size": 42049
+    },
+    {
+      "path": "python/mirage/mpk/models/utils.py",
+      "size": 5925
+    },
+    {
+      "path": "python/mirage/mpk/mpk.py",
+      "size": 19594
+    },
+    {
+      "path": "python/mirage/mpk/persistent_kernel.py",
+      "size": 121598
+    },
+    {
+      "path": "python/mirage/mpk/profiler_persistent.py",
+      "size": 5269
+    },
+    {
+      "path": "python/mirage/mpk/speculative.py",
+      "size": 956
+    },
+    {
+      "path": "python/mirage/mpk/split_linear_tasks.py",
+      "size": 5395
+    },
+    {
+      "path": "python/mirage/profiler.py",
+      "size": 3823
+    },
+    {
+      "path": "python/mirage/threadblock.py",
+      "size": 2275
+    },
+    {
+      "path": "python/mirage/triton_profiler.py",
+      "size": 9024
+    },
+    {
+      "path": "python/mirage/utils.py",
+      "size": 3615
+    },
+    {
+      "path": "python/mirage/version.py",
+      "size": 57
+    },
+    {
+      "path": "python/mirage/visualizer.py",
+      "size": 24551
+    },
+    {
+      "path": "requirements.txt",
+      "size": 187
+    },
+    {
+      "path": "scripts/bench_vllm_moe.py",
+      "size": 2040
+    },
+    {
+      "path": "scripts/display_task_graph.py",
+      "size": 5175
+    },
+    {
+      "path": "scripts/draw_graph.py",
+      "size": 4344
+    },
+    {
+      "path": "scripts/format.sh",
+      "size": 1504
+    },
+    {
+      "path": "scripts/partition_graph.py",
+      "size": 5138
+    },
+    {
+      "path": "setup.py",
+      "size": 13898
+    },
+    {
+      "path": "src/base/data_type.cc",
+      "size": 1877
+    },
+    {
+      "path": "src/base/layout.cc",
+      "size": 1008
+    },
+    {
+      "path": "src/kernel/all_reduce.cc",
+      "size": 2615
+    },
+    {
+      "path": "src/kernel/chunk.cc",
+      "size": 2970
+    },
+    {
+      "path": "src/kernel/cuda/all_reduce_kernel.cu",
+      "size": 2631
+    },
+    {
+      "path": "src/kernel/cuda/customized_kernel.cu",
+      "size": 46622
+    },
+    {
+      "path": "src/kernel/cuda/device_tensor_kernel.cu",
+      "size": 5452
+    },
+    {
+      "path": "src/kernel/cuda/element_binary_kernel.cu",
+      "size": 11914
+    },
+    {
+      "path": "src/kernel/cuda/element_unary_kernel.cu",
+      "size": 6981
+    },
+    {
+      "path": "src/kernel/cuda/input_kernel.cu",
+      "size": 4483
+    },
+    {
+      "path": "src/kernel/cuda/matmul_kernel.cu",
+      "size": 6897
+    },
+    {
+      "path": "src/kernel/cuda/output_kernel.cu",
+      "size": 1102
+    },
+    {
+      "path": "src/kernel/cuda/reduction_kernel.cu",
+      "size": 5946
+    },
+    {
+      "path": "src/kernel/cuda/rms_norm_kernel.cu",
+      "size": 6589
+    },
+    {
+      "path": "src/kernel/customized.cc",
+      "size": 20551
+    },
+    {
+      "path": "src/kernel/device_memory_manager.cc",
+      "size": 2371
+    },
+    {
+      "path": "src/kernel/device_memory_manager.cu",
+      "size": 10814
+    },
+    {
+      "path": "src/kernel/device_tensor.cc",
+      "size": 3734
+    },
+    {
+      "path": "src/kernel/element_binary.cc",
+      "size": 4757
+    },
+    {
+      "path": "src/kernel/element_unary.cc",
+      "size": 5940
+    },
+    {
+      "path": "src/kernel/graph.cc",
+      "size": 36706
+    },
+    {
+      "path": "src/kernel/input.cc",
+      "size": 3867
+    },
+    {
+      "path": "src/kernel/matmul.cc",
+      "size": 4293
+    },
+    {
+      "path": "src/kernel/operator.cc",
+      "size": 2464
+    },
+    {
+      "path": "src/kernel/output.cc",
+      "size": 2615
+    },
+    {
+      "path": "src/kernel/reduction.cc",
+      "size": 2854
+    },
+    {
+      "path": "src/kernel/rms_norm.cc",
+      "size": 5190
+    },
+    {
+      "path": "src/kernel/runtime.cc",
+      "size": 76403
+    },
+    {
+      "path": "src/kernel/task_register.cc",
+      "size": 182176
+    },
+    {
+      "path": "src/kernel/triton_code_gen.cc",
+      "size": 23152
+    },
+    {
+      "path": "src/layout.cc",
+      "size": 416
+    },
+    {
+      "path": "src/nki_transpiler/helper_function.cc",
+      "size": 5213
+    },
+    {
+      "path": "src/nki_transpiler/transpile.cc",
+      "size": 26995
+    },
+    {
+      "path": "src/nki_transpiler/transpile_tb.cc",
+      "size": 29435
+    },
+    {
+      "path": "src/nki_transpiler/utils.cc",
+      "size": 1394
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_expr.cc",
+      "size": 9459
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_expr_eval.cc",
+      "size": 7183
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_expr_for_ops.cc",
+      "size": 12510
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_subexpr/Cargo.toml",
+      "size": 255
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_subexpr/src/lib.rs",
+      "size": 6159
+    },
+    {
+      "path": "src/search/config.cc",
+      "size": 5210
+    },
+    {
+      "path": "src/search/dim_strategy.cc",
+      "size": 17990
+    },
+    {
+      "path": "src/search/op_utils.cc",
+      "size": 9959
+    },
+    {
+      "path": "src/search/order.cc",
+      "size": 685
+    },
+    {
+      "path": "src/search/range_propagation/irange.cc",
+      "size": 41804
+    },
+    {
+      "path": "src/search/range_propagation/range.cc",
+      "size": 2644
+    },
+    {
+      "path": "src/search/range_propagation/tbrange.cc",
+      "size": 2056
+    },
+    {
+      "path": "src/search/search.cc",
+      "size": 33637
+    },
+    {
+      "path": "src/search/search_c.cc",
+      "size": 4369
+    },
+    {
+      "path": "src/search/search_context.cc",
+      "size": 1605
+    },
+    {
+      "path": "src/search/symbolic_graph/dim_var_assignments.cc",
+      "size": 1447
+    },
+    {
+      "path": "src/search/symbolic_graph/op_args.cc",
+      "size": 3192
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_graph.cc",
+      "size": 25805
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_map.cc",
+      "size": 1199
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_op.cc",
+      "size": 976
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_tensor.cc",
+      "size": 617
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_tensor_dim.cc",
+      "size": 1334
+    },
+    {
+      "path": "src/search/symbolic_graph/tensor_dim_constraint.cc",
+      "size": 5577
+    },
+    {
+      "path": "src/search/symbolic_graph/tensor_dim_constraints.cc",
+      "size": 1451
+    },
+    {
+      "path": "src/search/symbolic_graph/tensor_dim_expr.cc",
+      "size": 12344
+    },
+    {
+      "path": "src/search/verification/formal_verifier.cc",
+      "size": 19882
+    },
+    {
+      "path": "src/search/verification/formal_verifier_equiv/Cargo.toml",
+      "size": 253
+    },
+    {
+      "path": "src/search/verification/formal_verifier_equiv/src/lib.rs",
+      "size": 17666
+    },
+    {
+      "path": "src/search/verification/output_match.cc",
+      "size": 766
+    },
+    {
+      "path": "src/search/verification/probabilistic_verifier.cc",
+      "size": 2062
+    },
+    {
+      "path": "src/threadblock/concat.cc",
+      "size": 2945
+    },
+    {
+      "path": "src/threadblock/cuda/element_unary.cu",
+      "size": 713
+    },
+    {
+      "path": "src/threadblock/cuda/input_executor.cu",
+      "size": 723
+    },
+    {
+      "path": "src/threadblock/cuda/matmul.cu",
+      "size": 923
+    },
+    {
+      "path": "src/threadblock/element_binary.cc",
+      "size": 4796
+    },
+    {
+      "path": "src/threadblock/element_unary.cc",
+      "size": 6107
+    },
+    {
+      "path": "src/threadblock/forloop_accum.cc",
+      "size": 6774
+    },
+    {
+      "path": "src/threadblock/graph.cc",
+      "size": 39645
+    },
+    {
+      "path": "src/threadblock/input_loader.cc",
+      "size": 4665
+    },
+    {
+      "path": "src/threadblock/matmul.cc",
+      "size": 2947
+    },
+    {
+      "path": "src/threadblock/operator.cc",
+      "size": 1799
+    },
+    {
+      "path": "src/threadblock/output.cc",
+      "size": 3950
+    },
+    {
+      "path": "src/threadblock/reduction.cc",
+      "size": 4681
+    },
+    {
+      "path": "src/threadblock/rms_norm.cc",
+      "size": 2133
+    },
+    {
+      "path": "src/threadblock/smem_tensor.cc",
+      "size": 1378
+    },
+    {
+      "path": "src/transpiler/plan_dtensor_memory.cc",
+      "size": 1944
+    },
+    {
+      "path": "src/transpiler/plan_stensor_memory.cc",
+      "size": 20926
+    },
+    {
+      "path": "src/transpiler/plan_tb_swizzle.cc",
+      "size": 7057
+    },
+    {
+      "path": "src/transpiler/plan_tb_swizzle_blackwell.cc",
+      "size": 7026
+    },
+    {
+      "path": "src/transpiler/plan_tb_swizzle_hopper.cc",
+      "size": 6490
+    },
+    {
+      "path": "src/transpiler/resolve_dtensor_meta.cc",
+      "size": 2012
+    },
+    {
+      "path": "src/transpiler/resolve_tb_fusion.cc",
+      "size": 3592
+    },
+    {
+      "path": "src/transpiler/resolve_tensor_layout.cc",
+      "size": 35321
+    },
+    {
+      "path": "src/transpiler/sched_tb_graph.cc",
+      "size": 16593
+    },
+    {
+      "path": "src/transpiler/transpile.cc",
+      "size": 34355
+    },
+    {
+      "path": "src/transpiler/transpiler_kn.cc",
+      "size": 35940
+    },
+    {
+      "path": "src/transpiler/transpiler_tb.cc",
+      "size": 62436
+    },
+    {
+      "path": "src/transpiler/transpiler_tb_blackwell.cc",
+      "size": 61787
+    },
+    {
+      "path": "src/transpiler/transpiler_tb_hopper.cc",
+      "size": 59993
+    },
+    {
+      "path": "src/triton_transpiler/transpile.cc",
+      "size": 22108
+    },
+    {
+      "path": "src/triton_transpiler/transpile_tb.cc",
+      "size": 21743
+    },
+    {
+      "path": "src/utils/containers.cc",
+      "size": 423
+    },
+    {
+      "path": "src/utils/cuda_helper.cu",
+      "size": 1255
+    },
+    {
+      "path": "src/utils/json_utils.cc",
+      "size": 455
+    },
+    {
+      "path": "src/utils/rocm_helper.cu",
+      "size": 1308
+    },
+    {
+      "path": "src/utils/z3_utils.cc",
+      "size": 886
+    },
+    {
+      "path": "tests/CMakeLists.txt",
+      "size": 29
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/demo.py",
+      "size": 4907
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_64644b2e7bbffb94.json",
+      "size": 61409
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_647dd41aeaf656b4.json",
+      "size": 48363
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_6508b4ab6af4f866.json",
+      "size": 78867
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_659704256b064506.json",
+      "size": 184015
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_659774a49fe1cbf2.json",
+      "size": 174071
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_659774eb06d5ca86.json",
+      "size": 427323
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_search_checkpoint.json",
+      "size": 174071
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/models/configuration_qwen2.py",
+      "size": 10050
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/models/modeling_qwen2.py",
+      "size": 22055
+    },
+    {
+      "path": "tests/ci-tests/run_ci_tests_qwen3.sh",
+      "size": 428
+    },
+    {
+      "path": "tests/ci-tests/run_python_tests.sh",
+      "size": 3591
+    },
+    {
+      "path": "tests/ci-tests/test_inference_output.py",
+      "size": 1549
+    },
+    {
+      "path": "tests/python/test_tensor_program.py",
+      "size": 10701
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear/runtime_kernel_wrapper_sm100.cu",
+      "size": 26145
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear/setup.py",
+      "size": 2025
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear/test_matmul_mpk.py",
+      "size": 2060
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear/test_matmul_splitk.py",
+      "size": 2030
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/runtime_kernel_wrapper_sm100.cu",
+      "size": 28970
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/setup.py",
+      "size": 2279
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_gate_topk.py",
+      "size": 4249
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_silu_mul.py",
+      "size": 1829
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_w13_linear.py",
+      "size": 4452
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_w2_linear.py",
+      "size": 4449
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_weighted_sum.py",
+      "size": 2088
+    },
+    {
+      "path": "tests/runtime_python/cute/hopper/gemm.cu",
+      "size": 24515
+    },
+    {
+      "path": "tests/runtime_python/cute/hopper/setup.py",
+      "size": 1694
+    },
+    {
+      "path": "tests/runtime_python/cute/hopper/test_matmul_ws_hopper.py",
+      "size": 961
+    },
+    {
+      "path": "tests/runtime_python/cute/hopper/test_matmul_ws_mpk.py",
+      "size": 965
+    },
+    {
+      "path": "tests/runtime_python/hopper-moe/runtime_kernel_wrapper_moe_hopper.cu",
+      "size": 21173
+    },
+    {
+      "path": "tests/runtime_python/hopper-moe/setup.py",
+      "size": 2115
+    },
+    {
+      "path": "tests/runtime_python/hopper-moe/test_moe_w13_linear_hopper.py",
+      "size": 4368
+    },
+    {
+      "path": "tests/runtime_python/hopper-moe/test_moe_w2_linear_hopper.py",
+      "size": 4366
+    },
+    {
+      "path": "tests/runtime_python/hopper/runtime_kernel_wrapper_hopper.cu",
+      "size": 62303
+    },
+    {
+      "path": "tests/runtime_python/hopper/setup.py",
+      "size": 1881
+    },
+    {
+      "path": "tests/runtime_python/hopper/test_linear_hopper.py",
+      "size": 1862
+    },
+    {
+      "path": "tests/runtime_python/hopper/test_multitoken_paged_attention_hopper.py",
+      "size": 7026
+    },
+    {
+      "path": "tests/runtime_python/hopper/test_norm_linear_hopper.py",
+      "size": 1713
+    },
+    {
+      "path": "tests/runtime_python/runtime_kernel_wrapper.cu",
+      "size": 79553
+    },
+    {
+      "path": "tests/runtime_python/setup.py",
+      "size": 1890
+    },
+    {
+      "path": "tests/runtime_python/test_alignment_norm_linear.py",
+      "size": 2715
+    },
+    {
+      "path": "tests/runtime_python/test_argmax.py",
+      "size": 1828
+    },
+    {
+      "path": "tests/runtime_python/test_attention/runtime_kernel_wrapper.cu",
+      "size": 30652
+    },
+    {
+      "path": "tests/runtime_python/test_attention/setup.py",
+      "size": 2695
+    },
+    {
+      "path": "tests/runtime_python/test_attention/test_decoding_flash.py",
+      "size": 4520
+    },
+    {
+      "path": "tests/runtime_python/test_attention/test_multitoken_paged_attention.py",
+      "size": 9361
+    },
+    {
+      "path": "tests/runtime_python/test_decoding_flash.py",
+      "size": 2049
+    },
+    {
+      "path": "tests/runtime_python/test_decoding_no_qknorm.py",
+      "size": 4516
+    },
+    {
+      "path": "tests/runtime_python/test_decoding_no_sfm.py",
+      "size": 1958
+    },
+    {
+      "path": "tests/runtime_python/test_decoding_w_norm.py",
+      "size": 4383
+    },
+    {
+      "path": "tests/runtime_python/test_embedding.py",
+      "size": 1397
+    },
+    {
+      "path": "tests/runtime_python/test_extend_w_norm.py",
+      "size": 15886
+    },
+    {
+      "path": "tests/runtime_python/test_linear.py",
+      "size": 2872
+    },
+    {
+      "path": "tests/runtime_python/test_linear/pyproject.toml",
+      "size": 98
+    },
+    {
+      "path": "tests/runtime_python/test_linear/runtime_kernel_wrapper.cu",
+      "size": 2217
+    },
+    {
+      "path": "tests/runtime_python/test_linear/setup.py",
+      "size": 2567
+    },
+    {
+      "path": "tests/runtime_python/test_linear/test_linear_cutlass.py",
+      "size": 1761
+    },
+    {
+      "path": "tests/runtime_python/test_moe_linear.py",
+      "size": 4439
+    },
+    {
+      "path": "tests/runtime_python/test_multitoken_paged_attention.py",
+      "size": 6831
+    },
+    {
+      "path": "tests/runtime_python/test_norm_linear.py",
+      "size": 3694
+    },
+    {
+      "path": "tests/runtime_python/test_paged_attention.py",
+      "size": 4716
+    },
+    {
+      "path": "tests/runtime_python/test_prompt_lookup.py",
+      "size": 2967
+    },
+    {
+      "path": "tests/runtime_python/test_rmsnorm.py",
+      "size": 4748
+    },
+    {
+      "path": "tests/runtime_python/test_rotary_embedding.py",
+      "size": 5021
+    },
+    {
+      "path": "tests/runtime_python/test_sampling.py",
+      "size": 7783
+    },
+    {
+      "path": "tests/runtime_python/test_silu_mul_linear.py",
+      "size": 3399
+    },
+    {
+      "path": "tests/runtime_python/test_verify.py",
+      "size": 2195
+    },
+    {
+      "path": "tests/standalone/CMakeLists.txt",
+      "size": 1013
+    },
+    {
+      "path": "tests/standalone/build.sh",
+      "size": 295
+    },
+    {
+      "path": "tests/standalone/test_ck_attention",
+      "size": 53456
+    },
+    {
+      "path": "tests/standalone/test_ck_attention.hip",
+      "size": 16139
+    },
+    {
+      "path": "tests/standalone/test_ck_attention_full",
+      "size": 43448
+    },
+    {
+      "path": "tests/standalone/test_ck_attention_full.hip",
+      "size": 13467
+    },
+    {
+      "path": "tests/standalone/test_ck_attention_online",
+      "size": 46136
+    },
+    {
+      "path": "tests/standalone/test_ck_attention_online.hip",
+      "size": 13673
+    },
+    {
+      "path": "tests/standalone/test_kernels.cpp",
+      "size": 10038
+    },
+    {
+      "path": "tests/standalone/test_mfma_simple",
+      "size": 36616
+    },
+    {
+      "path": "tests/standalone/test_mfma_simple.hip",
+      "size": 10160
+    },
+    {
+      "path": "tests/transpiler/CMakeLists.txt",
+      "size": 360
+    },
+    {
+      "path": "tests/transpiler/all_testcases.h",
+      "size": 377
+    },
+    {
+      "path": "tests/transpiler/config.h",
+      "size": 3353
+    },
+    {
+      "path": "tests/transpiler/lib.h",
+      "size": 22583
+    },
+    {
+      "path": "tests/transpiler/test_cuda_transpiler.cc",
+      "size": 3056
+    },
+    {
+      "path": "tests/transpiler/testcases/kernel/elemwise.h",
+      "size": 6662
+    },
+    {
+      "path": "tests/transpiler/testcases/kernel/matmul.h",
+      "size": 1672
+    },
+    {
+      "path": "tests/transpiler/testcases/kernel/reduction.h",
+      "size": 828
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/elemwise.h",
+      "size": 4324
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/elemwise_bcast.h",
+      "size": 3619
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/io.h",
+      "size": 4632
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/matmul.h",
+      "size": 5727
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/reduction.h",
+      "size": 3852
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-28T15:09:40Z",
+      "subject": "chore: add security scanning workflows (#10)",
+      "url": "https://github.com/ROCm/fleet-chiplet-megakernel/commit/0275d466c89bc3158e19118b62ad9b02d7f2a364"
+    }
+  ],
+  "readme": "# Fleet: Cooperative Scheduling for Megakernels on Multi-Die GPUs\n\nFleet is a cooperative task scheduling system for LLM inference on AMD MI350 GPUs. It extends the [Mirage Persistent Kernel (MPK)](https://arxiv.org/abs/2512.22219) framework with XCD-aware chiplet scheduling, enabling workers on the same execution core die (XCD) to cooperate on shared tasks for better L2 cache reuse and reduced memory bandwidth pressure.\n\n**Paper**: [Fleet: Hierarchical Task-based Abstraction for Megakernels on Multi-Die GPUs](https://arxiv.org/abs/2604.15379) (submitted to ASPLOS 2027)\n\n## Key Ideas\n\nModern multi-die GPUs like the AMD MI350 have 8 XCDs, each with its own 4 MB L2 cache. Traditional megakernel schedulers dispatch tasks to workers without regard for die topology, causing L2 thrashing when multiple XCDs read the same weights simultaneously.\n\nFleet solves this with **chiplet scheduling**: all ~30 workers on an XCD process tiles of the same GEMM together, keeping weights in the local L2 cache. Subsequent decode iterations reuse cached weights instead of re-reading from HBM. Fleet also introduces **hierarchical synchronization** that scopes signaling to L2-local counters within each XCD, reducing cross-chiplet fence traffic by 14.5x.\n\n### Results (Qwen3-8B, bf16, AMD MI350)\n\n| Batch Size | Mirage (ms) | Fleet M-tile (ms) | Fleet M-split (ms) | Speedup |\n|:----------:|:-----------:|:------------------:|:------------------:|:-------:|\n| 1          | 7.993       | 7.076              | 7.012              | 1.13x   |\n| 32         | 15.186      | 12.357             | 12.923             | 1.23x   |\n| 64         | 23.343      | 18.176             | 21.923             | 1.28x   |\n\nFleet achieves up to **1.28x** speedup over Mirage MPK on dense models.\n\n## Hardware Requirements\n\n- AMD Instinct MI350 (gfx950)\n  - 248 CUs organized into 8 XCDs\n  - 4 MB L2 cache per XCD, 256 MB MALL\n  - HBM3 bandwidth: 5.3 TB/s\n- ROCm 7.0+\n\n## Installation\n\n```bash\n# Clone the repository\ngit clone git@github.com:AMD-RAD/fleet.git\ncd fleet\ngit checkout amd_mi350\n\n# Build from source\npip install -e . -v\nexport MIRAGE_HOME=$(pwd)\n```\n\n### Prerequisites\n\n- Python 3.8+\n- PyTorch 2.4+ (ROCm build)\n- ROCm 7.0+ with hipcc compiler\n- CMake 3.24+\n\n### Download the Model\n\n```bash\n# Qwen3-8B (required for Figure 6)\npython3 -c \"from huggingface_hub import snapshot_download; snapshot_download('Qwen/Qwen3-8B')\"\n```\n\n## Reproducing Figure 6: Decode Latency\n\nFigure 6 compares decode-only time per output token (TPOT) across batch sizes for four configurations on Qwen3-8B (bf16).\n\n### Configurations\n\n| Mode | Description | Environment Variables |\n|------|-------------|----------------------|\n| `mirage_mpk` | Baseline persistent kernel (no cooperative scheduling) | `USE_CK_FMHA=1 USE_FUSED_SILU=1` |\n| `fleet` | Fleet with M-tile cooperative scheduling | `USE_GANG=1 USE_CK_FMHA=1 USE_FUSED_SILU=1 GANG_M_TILES_GATEUP=1` |\n| `fleet_msplit` | Fleet with M-split (disjoint M-tile assignment) | `USE_GANG=1 USE_GANG_M_SPLIT=1 USE_CK_FMHA=1 USE_FUSED_SILU=1` |\n\n### Step 1: Verify Setup\n\nMake sure `MIRAGE_HOME` is set and the model is downloaded:\n\n```bash\nexport MIRAGE_HOME=$(pwd)\npython3 -c \"import mirage; print('Mirage OK')\"\npython3 -c \"from huggingface_hub import snapshot_download; snapshot_download('Qwen/Qwen3-8B')\"\n```\n\n### Step 2: Run a Single Configuration\n\nTo run one mode at a specific batch size (e.g., Fleet M-tile at BS=1):\n\n```bash\n# Delete cached kernel to force recompilation with new flags\nrm -rf permanent_output_dir\n\n# Run Fleet M-tile at batch size 1\nHIP_VISIBLE_DEVICES=0 USE_GANG=1 USE_CK_FMHA=1 USE_FUSED_SILU=1 GANG_M_TILES_GATEUP=1 \\\n  python3 demo/qwen3/demo.py --use-mirage \\\n  --model Qwen/Qwen3-8B \\\n  --max-num-batched-tokens 1 --max-num-batched-requests 1 \\\n  --max-seq-length 1200 --max-new-tokens 1024 \\\n  --ignore-eos \\\n  --prompt \"Explain the key differences between RISC and CISC processor architectures, including their instruction set design philosophies, pipeline implementations, memory access patterns, register file organization, microcode usage, and how modern processors have evolved to blur the traditional boundaries between these two approaches in terms of performance, power efficiency, and overall transistor utilization.\"\n```\n\nThe output will include a line like:\n```\nDecode: 1141 tokens in 1141 iterations ≈ 7783.2ms total (6.820ms/token)\n```\n\nThe **decode-only TPOT** (ms/token) is the metric reported in Figure 6.\n\n**Important**: You must delete `permanent_output_dir/` before switching between modes, as the megakernel is compiled with mode-specific flags.\n\nTo sweep all modes and batch sizes, repeat Step 2 for each configuration in the table above, deleting `permanent_output_dir/` between runs. Each mode x batch size takes 3-10 minutes (including kernel compilation).\n\n### Expected Results\n\nReproduced results (AMD MI350, single GPU):\n\n| BS | Mirage (ms) | Fleet M-tile (ms) | Fleet M-split (ms) | Speedup (M-tile) |\n|:--:|:-----------:|:------------------:|:------------------:|:----------------:|\n| 1  | 7.993       | 7.076              | 7.012              | 1.13x            |\n| 2  | 8.505       | 7.597              | 7.486              | 1.12x            |\n| 4  | 9.100       | 8.064              | 7.972              | 1.13x            |\n| 8  | 9.833       | 8.587              | 8.554              | 1.15x            |\n| 16 | 10.824      | 9.357              | 9.317              | 1.16x            |\n| 32 | 15.186      | 12.357             | 12.923             | 1.23x            |\n| 64 | 23.343      | 18.176             | 21.923             | 1.28x            |\n\nPaper reference values: Mirage 7.83ms, Fleet M-tile 6.82ms, Fleet M-split 6.73ms at BS=1.\nReproduced numbers may vary by ~5-15% depending on GPU thermal state, HBM bandwidth, and silicon revision.\n\n## How Fleet Works\n\nFleet builds on Mirage MPK's persistent megakernel architecture. The key additions:\n\n1. **Chiplet scheduling**: Workers on the same XCD cooperatively process tiles of the same GEMM. This keeps weight data in the XCD's 4 MB L2 cache instead of re-reading from HBM on every iteration.\n\n2. **Hierarchical synchronization**: Fleet matches signaling to memory scopes to minimize cross-chiplet coherence traffic. Within a chiplet task, workers increment XCD-local L2 counters without fences. Only the last worker on each XCD issues a single `buffer_wbl2` fence and updates the global HBM counter. Schedulers poll the global counter to dispatch downstream tasks. This reduces total signals from 25,200 (naive per-tile) to 1,830 (per-event per-XCD) — a **14.5x reduction** — and confines most coordination to the local L2 cache, avoiding expensive device-scope atomics across the inter-chiplet fabric.\n\n3. **M-tile windowed traversal**: Each XCD walks through M-tiles of the output matrix in a windowed pattern, maximizing temporal L2 reuse of weight columns.\n\n4. **Chiplet SiLU fusion**: The SiLU activation and element-wise multiply are fused into the gate_up projection task, eliminating an intermediate buffer write.\n\n## Citation\n\n```bibtex\n@inproceedings{chowdhary2027fleet,\n  title={Fleet: Hierarchical Task-based Abstraction for Megakernels on Multi-Die GPUs},\n  author={Sangeeta Chowdhary and Xinhao Cheng and Zhihao Zhang and Yu Zhou and Jianan Ji and Jinchen Jiang and Zepeng Zhao and Ziruo Xiao and Zihao Ye and Yingyi Huang and Ruihang Lai and Hongyi Jin and Bohan Hou and Mengdi Wu and Yixin Dong and Anthony Yip and Zihao Ye and Songting Wang and Wenqin Yang and Xupeng Miao and Tianqi Chen and Zhihao Jia},\n  year={2027},\n  booktitle={Proceedings of the 32nd ACM International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS)},\n}\n```\n\n## License\n\nApache License 2.0.\n"
+}

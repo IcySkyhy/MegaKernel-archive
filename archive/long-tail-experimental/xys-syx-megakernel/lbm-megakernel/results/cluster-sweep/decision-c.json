@@ -1,0 +1,14 @@
+{
+  "stage": "C",
+  "selected": "XZ4",
+  "policy": "LoadBalancing",
+  "event_medians_1000": {
+    "D-V2-256": 136.574081421,
+    "D-C0-Z2-LoadBalancing": 138.0915985105,
+    "D-C0-XZ4-LoadBalancing": 138.628746033,
+    "D-C0-YZ6-LoadBalancing": 140.1114654545
+  },
+  "xz4_vs_z2_c0_ratio": 1.0038897914738756,
+  "reason": "XZ4 C0 cost is close to Z2 and below YZ6, with greater prospective halo savings than Z2; use the guide's default XZ4 ownership partition.",
+  "next": "D: implement XZ4 C1 and dedup, then run full ownership/numerical gates and fresh matched measurements."
+}

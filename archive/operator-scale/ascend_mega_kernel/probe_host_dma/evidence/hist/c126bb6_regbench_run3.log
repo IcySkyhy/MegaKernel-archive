@@ -1,0 +1,10 @@
+== probe_host_dma mode=regbench tile=8192 repeats=8 launches=20 alignOff=0 ==
+[INIT] aclInit rc=0
+[INIT] aclrtSetDevice(0) rc=0
+[INIT] aclrtCreateStream rc=0
+[DEV ] AICORE=28 VECTOR=56 -> blocks=56
+[REGBENCH] size=     4 MB register rc=0 53.445 ms | getDevPtr rc=0 0.010 ms | unregister rc=0 0.573 ms
+[REGBENCH] size=    64 MB register rc=0 783.469 ms | getDevPtr rc=0 0.003 ms | unregister rc=0 2.333 ms
+[REGBENCH] size=   256 MB register rc=0 38300.140 ms | getDevPtr rc=0 0.014 ms | unregister rc=0 15.991 ms
+== done mode=regbench ==
+rc=0

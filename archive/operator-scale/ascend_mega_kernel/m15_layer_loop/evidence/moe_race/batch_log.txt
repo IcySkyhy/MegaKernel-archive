@@ -1,0 +1,26 @@
+c9_fix2_dump rc=0 2026-10-04T07:56:49+00:00 -> 2026-10-04T07:57:40+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=291, fails=0）=====
+c9_racy2 rc=1 2026-10-04T07:57:40+00:00 -> 2026-10-04T07:58:29+00:00 moe_cmp_lines=48 moe_pass=12 ===== FAILURES PRESENT（checks=2068, guards=290, fails=36）=====
+tip3 rc=0 2026-10-04T07:58:29+00:00 -> 2026-10-04T07:58:57+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2095, guards=302, fails=0）=====
+main_now rc=0 2026-10-04T07:58:57+00:00 -> 2026-10-04T07:59:27+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2095, guards=302, fails=0）=====
+c9_fix2_probe rc=0 2026-10-04T07:59:27+00:00 -> 2026-10-04T08:00:20+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=291, fails=0）=====
+d_01 rc=0 2026-10-04T08:00:20+00:00 -> 2026-10-04T08:01:39+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_02 rc=0 2026-10-04T08:01:39+00:00 -> 2026-10-04T08:04:17+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_03 rc=0 2026-10-04T08:04:17+00:00 -> 2026-10-04T08:04:59+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_04 rc=0 2026-10-04T08:04:59+00:00 -> 2026-10-04T08:06:32+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_05 rc=0 2026-10-04T08:06:32+00:00 -> 2026-10-04T08:07:06+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_06 rc=0 2026-10-04T08:07:06+00:00 -> 2026-10-04T08:07:32+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_07 rc=0 2026-10-04T08:07:32+00:00 -> 2026-10-04T08:08:14+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_08 rc=0 2026-10-04T08:08:14+00:00 -> 2026-10-04T08:09:03+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_09 rc=0 2026-10-04T08:09:03+00:00 -> 2026-10-04T08:11:14+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_10 rc=0 2026-10-04T08:11:14+00:00 -> 2026-10-04T08:11:56+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_11 rc=0 2026-10-04T08:11:56+00:00 -> 2026-10-04T08:12:56+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_12 rc=0 2026-10-04T08:12:56+00:00 -> 2026-10-04T08:13:22+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_13 rc=0 2026-10-04T08:13:22+00:00 -> 2026-10-04T08:15:15+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_14 rc=0 2026-10-04T08:15:15+00:00 -> 2026-10-04T08:16:33+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_15 rc=0 2026-10-04T08:16:33+00:00 -> 2026-10-04T08:17:07+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_16 rc=0 2026-10-04T08:17:07+00:00 -> 2026-10-04T08:17:48+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_17 rc=0 2026-10-04T08:17:48+00:00 -> 2026-10-04T08:18:29+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_18 rc=0 2026-10-04T08:18:29+00:00 -> 2026-10-04T08:20:36+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_19 rc=0 2026-10-04T08:20:36+00:00 -> 2026-10-04T08:21:24+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+d_20 rc=0 2026-10-04T08:21:24+00:00 -> 2026-10-04T08:22:12+00:00 moe_cmp_lines=48 moe_pass=48 ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+batch4 done 2026-10-04T08:22:12+00:00

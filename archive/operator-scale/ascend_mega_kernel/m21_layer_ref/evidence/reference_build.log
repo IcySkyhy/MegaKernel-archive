@@ -1,0 +1,207 @@
+### --layer 0 --m 1 --warmup 8 --input embed --pending none --tag layer0_decode_m1
+[run_reference] tag=layer0_decode_m1 layer=0 type=linear_attention m=1
+  input=embed pending=none moe=fp32 build=0.03s run=1.61s [wall clock, shared box -> qualitative only, NOT a manifest field (this stdout line IS tee'd into evidence/reference_build.log)]
+  30 segments -> reference/layer0_decode_m1
+    attn.out                           bfloat16 [1, 2560]          1202f94d3a7f
+    attn_hc.block_input                bfloat16 [1, 2560]          0c9a12701c33
+    attn_hc.hidden                     bfloat16 [1, 10240]         0738f73cc7d2
+    attn_hc.injection                  bfloat16 [1, 4]             a706b8c06a98
+    gdn.ba                             bfloat16 [1, 96]            6d63d9606122
+    gdn.beta                           float32  [1, 48]            4bafa4cbdf36
+    gdn.conv_out                       bfloat16 [1, 10240]         83813ad7f67f
+    gdn.core_out                       bfloat16 [1, 48, 128]       839e9ae98232
+    gdn.g                              float32  [1, 48]            48a2546a874b
+    gdn.k                              bfloat16 [1, 16, 128]       199666f48567
+    gdn.mixed_qkvz                     bfloat16 [1, 16384]         6f33d400d279
+    gdn.normed                         float32  [1, 48, 128]       d50fc8f7c8ef
+    gdn.q                              bfloat16 [1, 16, 128]       68f717342841
+    gdn.v                              bfloat16 [1, 48, 128]       6e67426f4d99
+    layer.input.hidden                 bfloat16 [1, 10240]         0738f73cc7d2
+    layer.out.block_output             bfloat16 [1, 2560]          20f439e77594
+    layer.out.hidden                   bfloat16 [1, 10240]         06182273cadf
+    layer.out.injection                bfloat16 [1, 4]             47b819a3c8a3
+    layer.state.conv_state             bfloat16 [10240, 3]         301e36e1fe92
+    layer.state.ssm_state              float32  [48, 128, 128]     1df7536cedfc
+    mlp_hc.block_input                 bfloat16 [1, 2560]          c0d27e90e435
+    mlp_hc.hidden                      bfloat16 [1, 10240]         06182273cadf
+    mlp_hc.injection                   bfloat16 [1, 4]             47b819a3c8a3
+    moe.block_input                    bfloat16 [1, 2560]          c0d27e90e435
+    moe.out                            bfloat16 [1, 2560]          20f439e77594
+    moe.routed_out                     bfloat16 [1, 2560]          84a21c253d9b
+    moe.router_logits                  bfloat16 [1, 512]           adb0a8f364e4
+    moe.shared_out                     bfloat16 [1, 2560]          61a2956a92f8
+    moe.topk_ids                       int32    [1, 10]            b86036c7e909
+    moe.topk_weights                   float32  [1, 10]            7428d02b3518
+### --layer 0 --m 1 --warmup 8 --input embed --pending synth --tag layer0_decode_m1_pending
+[run_reference] tag=layer0_decode_m1_pending layer=0 type=linear_attention m=1
+  input=embed pending=synth moe=fp32 build=0.03s run=1.38s [wall clock, shared box -> qualitative only, NOT a manifest field (this stdout line IS tee'd into evidence/reference_build.log)]
+  32 segments -> reference/layer0_decode_m1_pending
+    attn.out                           bfloat16 [1, 2560]          ba139038599a
+    attn_hc.block_input                bfloat16 [1, 2560]          c58158a93f71
+    attn_hc.hidden                     bfloat16 [1, 10240]         fc5f53c8674e
+    attn_hc.injection                  bfloat16 [1, 4]             fff6989639df
+    gdn.ba                             bfloat16 [1, 96]            c73b8c350069
+    gdn.beta                           float32  [1, 48]            a7760b72959f
+    gdn.conv_out                       bfloat16 [1, 10240]         33ede9c64e52
+    gdn.core_out                       bfloat16 [1, 48, 128]       aba4aeaf296e
+    gdn.g                              float32  [1, 48]            68cfee8407f7
+    gdn.k                              bfloat16 [1, 16, 128]       88aed98e1a8b
+    gdn.mixed_qkvz                     bfloat16 [1, 16384]         2a653bcbb273
+    gdn.normed                         float32  [1, 48, 128]       1779120f38a8
+    gdn.q                              bfloat16 [1, 16, 128]       31e0a5be51cf
+    gdn.v                              bfloat16 [1, 48, 128]       7ad06694313f
+    layer.input.hidden                 bfloat16 [1, 10240]         0738f73cc7d2
+    layer.input.prev_block_output      bfloat16 [1, 2560]          737a585cbde4
+    layer.input.prev_injection         bfloat16 [1, 4]             3126d7be994d
+    layer.out.block_output             bfloat16 [1, 2560]          889bddc38e7e
+    layer.out.hidden                   bfloat16 [1, 10240]         bc4024f31d49
+    layer.out.injection                bfloat16 [1, 4]             9379fefa87a3
+    layer.state.conv_state             bfloat16 [10240, 3]         5b2ae40fda5d
+    layer.state.ssm_state              float32  [48, 128, 128]     24f47e2656a1
+    mlp_hc.block_input                 bfloat16 [1, 2560]          bac879e41aa6
+    mlp_hc.hidden                      bfloat16 [1, 10240]         bc4024f31d49
+    mlp_hc.injection                   bfloat16 [1, 4]             9379fefa87a3
+    moe.block_input                    bfloat16 [1, 2560]          bac879e41aa6
+    moe.out                            bfloat16 [1, 2560]          889bddc38e7e
+    moe.routed_out                     bfloat16 [1, 2560]          d15881241c70
+    moe.router_logits                  bfloat16 [1, 512]           80b78f6223f7
+    moe.shared_out                     bfloat16 [1, 2560]          ef218df16751
+    moe.topk_ids                       int32    [1, 10]            77bc23e1c9ae
+    moe.topk_weights                   float32  [1, 10]            06c9b51c6604
+### --layer 3 --m 1 --warmup 2100 --input synthetic --pending synth --tag layer3_decode_m1
+[run_reference] tag=layer3_decode_m1 layer=3 type=full_attention m=1
+  input=synthetic pending=synth moe=fp32 build=0.03s run=5.09s [wall clock, shared box -> qualitative only, NOT a manifest field (this stdout line IS tee'd into evidence/reference_build.log)]
+  31 segments -> reference/layer3_decode_m1
+    attn.out                           bfloat16 [1, 2560]          72b3c1248d86
+    attn_hc.block_input                bfloat16 [1, 2560]          cebf9f050291
+    attn_hc.hidden                     bfloat16 [1, 10240]         ff2582a16c59
+    attn_hc.injection                  bfloat16 [1, 4]             1deba473c332
+    layer.input.hidden                 bfloat16 [1, 10240]         8b6ecaeac171
+    layer.input.prev_block_output      bfloat16 [1, 2560]          4b428dab1e56
+    layer.input.prev_injection         bfloat16 [1, 4]             00e9208dc190
+    layer.out.block_output             bfloat16 [1, 2560]          8539cc12d8ed
+    layer.out.hidden                   bfloat16 [1, 10240]         14c249ca7791
+    layer.out.injection                bfloat16 [1, 4]             1ded531364b5
+    mlp_hc.block_input                 bfloat16 [1, 2560]          dc8ff53c83fe
+    mlp_hc.hidden                      bfloat16 [1, 10240]         14c249ca7791
+    mlp_hc.injection                   bfloat16 [1, 4]             1ded531364b5
+    moe.block_input                    bfloat16 [1, 2560]          dc8ff53c83fe
+    moe.out                            bfloat16 [1, 2560]          8539cc12d8ed
+    moe.routed_out                     bfloat16 [1, 2560]          063519d1bab5
+    moe.router_logits                  bfloat16 [1, 512]           9d8f000784c0
+    moe.shared_out                     bfloat16 [1, 2560]          e990f3f29e8f
+    moe.topk_ids                       int32    [1, 10]            62287fed3c04
+    moe.topk_weights                   float32  [1, 10]            ced5cf58dd25
+    qsa.attn_out                       bfloat16 [1, 24, 256]       c3f18cc66279
+    qsa.block_indices                  int32    [1, 512]           75319fdf4ac6
+    qsa.compressed_key                 bfloat16 [525, 128]         41d713e488a7
+    qsa.gate                           bfloat16 [1, 24, 256]       7a7792c57153
+    qsa.index_k                        bfloat16 [1, 128]           b60e305c182a
+    qsa.index_logits                   float32  [1, 525]           77307e3a0c92
+    qsa.index_q                        bfloat16 [1, 4, 128]        750a01c342da
+    qsa.k                              bfloat16 [1, 2, 256]        d04cd0175fe7
+    qsa.q                              bfloat16 [1, 24, 256]       4347d698447d
+    qsa.token_indices                  int32    [1, 2052]          c1de031629af
+    qsa.v                              bfloat16 [1, 2, 256]        6a0d8bea39b6
+### --layer 0 --m 64 --input embed --pending synth --tag layer0_chunk_m64
+[run_reference] tag=layer0_chunk_m64 layer=0 type=linear_attention m=64
+  input=embed pending=synth moe=fp32 build=0.03s run=1.83s [wall clock, shared box -> qualitative only, NOT a manifest field (this stdout line IS tee'd into evidence/reference_build.log)]
+  32 segments -> reference/layer0_chunk_m64
+    attn.out                           bfloat16 [64, 2560]         e21d7178b1e0
+    attn_hc.block_input                bfloat16 [64, 2560]         3081767981a2
+    attn_hc.hidden                     bfloat16 [64, 10240]        a179ac3d78fe
+    attn_hc.injection                  bfloat16 [64, 4]            051aef3c2ed9
+    gdn.ba                             bfloat16 [64, 96]           2762222044d0
+    gdn.beta                           float32  [64, 48]           b16424ea2b0a
+    gdn.conv_out                       bfloat16 [64, 10240]        01bc2bf6f85a
+    gdn.core_out                       bfloat16 [64, 48, 128]      3fbd1eed1dea
+    gdn.g                              float32  [64, 48]           f95d7c4d17b6
+    gdn.k                              bfloat16 [64, 16, 128]      0b09d3bb9332
+    gdn.mixed_qkvz                     bfloat16 [64, 16384]        61468946cfce
+    gdn.normed                         float32  [64, 48, 128]      b5ee1aa32103
+    gdn.q                              bfloat16 [64, 16, 128]      d32f7243671c
+    gdn.v                              bfloat16 [64, 48, 128]      296b4e4499c2
+    layer.input.hidden                 bfloat16 [64, 10240]        b6d30d9e7c35
+    layer.input.prev_block_output      bfloat16 [64, 2560]         a63926f50b56
+    layer.input.prev_injection         bfloat16 [64, 4]            04a02cf88bd3
+    layer.out.block_output             bfloat16 [64, 2560]         c8898a744a72
+    layer.out.hidden                   bfloat16 [64, 10240]        84b9da5e63cc
+    layer.out.injection                bfloat16 [64, 4]            e7f21075bcaf
+    layer.state.conv_state             bfloat16 [10240, 3]         cd8343f89989
+    layer.state.ssm_state              float32  [48, 128, 128]     4aa7814dd45f
+    mlp_hc.block_input                 bfloat16 [64, 2560]         1377564ce5b0
+    mlp_hc.hidden                      bfloat16 [64, 10240]        84b9da5e63cc
+    mlp_hc.injection                   bfloat16 [64, 4]            e7f21075bcaf
+    moe.block_input                    bfloat16 [64, 2560]         1377564ce5b0
+    moe.out                            bfloat16 [64, 2560]         c8898a744a72
+    moe.routed_out                     bfloat16 [64, 2560]         2da6430f2e5d
+    moe.router_logits                  bfloat16 [64, 512]          fa1ffb7244d6
+    moe.shared_out                     bfloat16 [64, 2560]         2785a6270464
+    moe.topk_ids                       int32    [64, 10]           d17b2f9430ed
+    moe.topk_weights                   float32  [64, 10]           59607ed380ab
+### --layer 3 --m 64 --input synthetic --pending none --tag layer3_chunk_m64
+[run_reference] tag=layer3_chunk_m64 layer=3 type=full_attention m=64
+  input=synthetic pending=none moe=fp32 build=0.03s run=2.2s [wall clock, shared box -> qualitative only, NOT a manifest field (this stdout line IS tee'd into evidence/reference_build.log)]
+  29 segments -> reference/layer3_chunk_m64
+    attn.out                           bfloat16 [64, 2560]         16f189ed6ebf
+    attn_hc.block_input                bfloat16 [64, 2560]         9a96abf66bea
+    attn_hc.hidden                     bfloat16 [64, 10240]        ece968a25469
+    attn_hc.injection                  bfloat16 [64, 4]            c67aec91d690
+    layer.input.hidden                 bfloat16 [64, 10240]        ece968a25469
+    layer.out.block_output             bfloat16 [64, 2560]         1e784a84914f
+    layer.out.hidden                   bfloat16 [64, 10240]        587284e1a04a
+    layer.out.injection                bfloat16 [64, 4]            5e95682e291f
+    mlp_hc.block_input                 bfloat16 [64, 2560]         864f537fe3ce
+    mlp_hc.hidden                      bfloat16 [64, 10240]        587284e1a04a
+    mlp_hc.injection                   bfloat16 [64, 4]            5e95682e291f
+    moe.block_input                    bfloat16 [64, 2560]         864f537fe3ce
+    moe.out                            bfloat16 [64, 2560]         1e784a84914f
+    moe.routed_out                     bfloat16 [64, 2560]         7a07aad45f23
+    moe.router_logits                  bfloat16 [64, 512]          91b5ed95800b
+    moe.shared_out                     bfloat16 [64, 2560]         f63f3cc7dce2
+    moe.topk_ids                       int32    [64, 10]           c13d4650bf20
+    moe.topk_weights                   float32  [64, 10]           aa257dbf4cb4
+    qsa.attn_out                       bfloat16 [64, 24, 256]      334779f68d58
+    qsa.block_indices                  int32    [64, 512]          acc2d5ec712f
+    qsa.compressed_key                 bfloat16 [16, 128]          df8049384df9
+    qsa.gate                           bfloat16 [64, 24, 256]      c00308b7c008
+    qsa.index_k                        bfloat16 [64, 128]          bcf84674d14e
+    qsa.index_logits                   float32  [64, 16]           7963d4654e9e
+    qsa.index_q                        bfloat16 [64, 4, 128]       de892ad0c899
+    qsa.k                              bfloat16 [64, 2, 256]       4538e7ce1a04
+    qsa.q                              bfloat16 [64, 24, 256]      bf9f65fd0212
+    qsa.token_indices                  int32    [64, 2052]         8515fe18885a
+    qsa.v                              bfloat16 [64, 2, 256]       729cd673af5b
+### --layer 3 --m 64 --input synthetic --seed 1 --pending none --tag layer3_chunk_m64_seed1
+[run_reference] tag=layer3_chunk_m64_seed1 layer=3 type=full_attention m=64
+  input=synthetic pending=none moe=fp32 build=0.09s run=4.48s [wall clock, shared box -> qualitative only, NOT a manifest field (this stdout line IS tee'd into evidence/reference_build.log)]
+  29 segments -> reference/layer3_chunk_m64_seed1
+    attn.out                           bfloat16 [64, 2560]         80aa9dc7fce3
+    attn_hc.block_input                bfloat16 [64, 2560]         9c469f33fdfe
+    attn_hc.hidden                     bfloat16 [64, 10240]        183aeee41bd1
+    attn_hc.injection                  bfloat16 [64, 4]            1de5aa65cfb8
+    layer.input.hidden                 bfloat16 [64, 10240]        183aeee41bd1
+    layer.out.block_output             bfloat16 [64, 2560]         389075b1a629
+    layer.out.hidden                   bfloat16 [64, 10240]        7e76ce39894b
+    layer.out.injection                bfloat16 [64, 4]            46ac15df8f30
+    mlp_hc.block_input                 bfloat16 [64, 2560]         9d530c925e6c
+    mlp_hc.hidden                      bfloat16 [64, 10240]        7e76ce39894b
+    mlp_hc.injection                   bfloat16 [64, 4]            46ac15df8f30
+    moe.block_input                    bfloat16 [64, 2560]         9d530c925e6c
+    moe.out                            bfloat16 [64, 2560]         389075b1a629
+    moe.routed_out                     bfloat16 [64, 2560]         5a52757df09d
+    moe.router_logits                  bfloat16 [64, 512]          05c3db65f4f8
+    moe.shared_out                     bfloat16 [64, 2560]         6915c8a816be
+    moe.topk_ids                       int32    [64, 10]           458cbe493160
+    moe.topk_weights                   float32  [64, 10]           38909effc23e
+    qsa.attn_out                       bfloat16 [64, 24, 256]      be0a4e9b1d36
+    qsa.block_indices                  int32    [64, 512]          949edb724434
+    qsa.compressed_key                 bfloat16 [16, 128]          732be86916a7
+    qsa.gate                           bfloat16 [64, 24, 256]      ed9d40dd697d
+    qsa.index_k                        bfloat16 [64, 128]          364393a8aebd
+    qsa.index_logits                   float32  [64, 16]           4017945ff641
+    qsa.index_q                        bfloat16 [64, 4, 128]       1c4360c3d41a
+    qsa.k                              bfloat16 [64, 2, 256]       e2773767710a
+    qsa.q                              bfloat16 [64, 24, 256]      f02e59b8f8e0
+    qsa.token_indices                  int32    [64, 2052]         b9dc6536be2a
+    qsa.v                              bfloat16 [64, 2, 256]       b4e7a07477fa

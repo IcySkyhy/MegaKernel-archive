@@ -1,0 +1,296 @@
+{
+  "repository": "hoid-ai/hoid-megakernel-qwen",
+  "url": "https://github.com/hoid-ai/hoid-megakernel-qwen",
+  "created_at": "2026-10-03T18:27:10Z",
+  "pushed_at": "2026-10-03T18:47:01Z",
+  "branch": "main",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 81
+    },
+    {
+      "path": "LICENSE",
+      "size": 11358
+    },
+    {
+      "path": "README.md",
+      "size": 2276
+    },
+    {
+      "path": "bench/envs/sglang.lock",
+      "size": 5067
+    },
+    {
+      "path": "bench/envs/trtllm.lock",
+      "size": 3730
+    },
+    {
+      "path": "bench/envs/vllm.lock",
+      "size": 4272
+    },
+    {
+      "path": "bench/peer_configs.json",
+      "size": 489
+    },
+    {
+      "path": "bench/reference.py",
+      "size": 3878
+    },
+    {
+      "path": "bench/run_all.py",
+      "size": 8947
+    },
+    {
+      "path": "bench/run_one.py",
+      "size": 9548
+    },
+    {
+      "path": "bench/run_peer.py",
+      "size": 14877
+    },
+    {
+      "path": "bench/summarize.py",
+      "size": 6131
+    },
+    {
+      "path": "bench/workload.py",
+      "size": 6141
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 6028
+    },
+    {
+      "path": "results/h200-8k-interactivity.svg",
+      "size": 21285
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-01/RESULTS.md",
+      "size": 2090
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-01/gpu.csv",
+      "size": 76
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-01/reference.json",
+      "size": 14362
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-01/reference.log",
+      "size": 4185
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-01/summary.json",
+      "size": 8917
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-03/RESULTS.md",
+      "size": 2090
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-03/gpu.csv",
+      "size": 76
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-03/reference.json",
+      "size": 14362
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-03/reference.log",
+      "size": 5277
+    },
+    {
+      "path": "results/h200-peers-8k-2026-10-03/summary.json",
+      "size": 8932
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/__init__.py",
+      "size": 83
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/adapter.py",
+      "size": 23138
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/artifacts.py",
+      "size": 3203
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/bench.py",
+      "size": 429
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/bundle.py",
+      "size": 2017
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/config.py",
+      "size": 14453
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b1/controls.cubin",
+      "size": 29616
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b1/execution.bin",
+      "size": 90613
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b1/worker.cubin",
+      "size": 257560
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b2/controls.cubin",
+      "size": 31280
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b2/execution.bin",
+      "size": 90795
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b2/worker.cubin",
+      "size": 138376
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b4/controls.cubin",
+      "size": 32176
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b4/execution.bin",
+      "size": 90796
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b4/worker.cubin",
+      "size": 142472
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b8/controls.cubin",
+      "size": 34736
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b8/execution.bin",
+      "size": 90832
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/b8/worker.cubin",
+      "size": 160904
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/cubins/index.json",
+      "size": 1744
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/decoder.py",
+      "size": 15111
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/delivery.py",
+      "size": 3594
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/execution.py",
+      "size": 9609
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/generation.py",
+      "size": 3405
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/gpu.py",
+      "size": 2072
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/graphs.py",
+      "size": 1521
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/model.py",
+      "size": 1888
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/native.py",
+      "size": 14426
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/ops.py",
+      "size": 1011
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/plugin.py",
+      "size": 487
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/scheduler.py",
+      "size": 4483
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/serve.py",
+      "size": 1738
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/stock_norm.py",
+      "size": 2293
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/weights.py",
+      "size": 677
+    },
+    {
+      "path": "src/vllm_qwen3_megakernel/worker.py",
+      "size": 12890
+    },
+    {
+      "path": "uv.lock",
+      "size": 371034
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-10-03T18:47:00Z",
+      "subject": "Plot the full 2026-10-03 run in the README chart",
+      "url": "https://github.com/hoid-ai/hoid-megakernel-qwen/commit/cb8d2b90075fcc832486cfc645ae17b0c54cf79e"
+    },
+    {
+      "date": "2026-10-03T18:44:14Z",
+      "subject": "License the repository under Apache 2.0",
+      "url": "https://github.com/hoid-ai/hoid-megakernel-qwen/commit/2e6476b76c8da0f17f199e6a2d22ce6b86d47e18"
+    },
+    {
+      "date": "2026-10-03T18:43:00Z",
+      "subject": "Point the README at results/ for the published runs",
+      "url": "https://github.com/hoid-ai/hoid-megakernel-qwen/commit/77e4c415aab12382677675af0ced0eb3082e6fc2"
+    },
+    {
+      "date": "2026-10-03T18:41:09Z",
+      "subject": "Update README.md",
+      "url": "https://github.com/hoid-ai/hoid-megakernel-qwen/commit/b2ad8282df5a221964e23a2a74bfbf397abe1e90"
+    },
+    {
+      "date": "2026-10-03T18:39:33Z",
+      "subject": "Update README.md",
+      "url": "https://github.com/hoid-ai/hoid-megakernel-qwen/commit/d23ee52e628b3931f3cc9e93e94b21410414d3dd"
+    },
+    {
+      "date": "2026-10-03T18:39:10Z",
+      "subject": "Update README.md",
+      "url": "https://github.com/hoid-ai/hoid-megakernel-qwen/commit/79a806925a3188ff9cbb0a4e1855d5e7927f9fee"
+    },
+    {
+      "date": "2026-10-03T18:35:53Z",
+      "subject": "Show the 8K results as a grouped bar chart in the README",
+      "url": "https://github.com/hoid-ai/hoid-megakernel-qwen/commit/b30e30ac80bda146e0d31bfbca505f3c3ee63643"
+    },
+    {
+      "date": "2026-10-03T18:27:09Z",
+      "subject": "Qwen3-4B on vLLM with the Hoid decode megakernel",
+      "url": "https://github.com/hoid-ai/hoid-megakernel-qwen/commit/8ad53c14abf140e25b37b7ea9a4b9950bd86921f"
+    }
+  ],
+  "readme": "# Hoid megakernel for Qwen3 4b\n\n## TL;DR \nWe've built a megakernel for qwen3 4b model that beats SOTA inference engines on LLM decode. This repo holds the code for 1. reproducing the results 2. running a vLLM server instance with hoid's megakernel as a plugin. For fair comparison, all measurements have been done with hoid's megakernel integrated into vLLM, to normalize for scheduling overhead. \n\n![Grouped bar chart of decode interactivity in tokens per second per user at batch sizes 1, 2, 4 and 8. Hoid megakernel: 317, 283, 237, 176. vLLM 0.29.0: 255, 236, 208, 166. SGLang 0.5.21: 270, 241, 209, 169. TensorRT-LLM 1.2.1: 219, 198, 178, 143. Hoid is fastest at every batch size.](results/h200-8k-interactivity.svg)\n\n\n## Requirements\n\n- One NVIDIA H200 (141 GB, 132 SMs). The megakernel is built for exactly this GPU:\n  `hoid-serve` and `hoid-bench` check the first visible GPU and refuse to run on any other.\n- An NVIDIA driver for CUDA 13 (580 or newer), Linux x86-64.\n- [uv](https://docs.astral.sh/uv/): `curl -LsSf https://astral.sh/uv/install.sh | sh`\n\n## Run the server\n\n```sh\nuv sync\nuv run hoid-serve\n```\n\nThe first start downloads the checkpoint (8 GB) at its pinned revision. The server\nlistens on port 8000 and serves the model as `Qwen/Qwen3-4B-Instruct-2507`:\n\n```sh\ncurl localhost:8000/v1/chat/completions -H 'Content-Type: application/json' -d '{\n  \"model\": \"Qwen/Qwen3-4B-Instruct-2507\",\n  \"messages\": [{\"role\": \"user\", \"content\": \"Why is the sky blue?\"}]\n}'\n```\n\nAny extra arguments go to `vllm serve`, for example `uv run hoid-serve --port 9000`.\n\n## Reproduce the benchmark\n\n```sh\nuv run hoid-bench\n```\n\nThis reproduces the chart above. It builds the stock vLLM, SGLang and TensorRT-LLM\nenvironments from the lock files in `bench/envs/`, computes the FP32 reference, and runs\n64 measurements. Each is a fresh process, so the run takes about 1.5 hours. The results\nland in `results/latest/RESULTS.md`; the published runs are in `results/`.\n\n- **Subsets:** `--engines hoid,stock`, `--batches 1,8` and `--repeats 2` run part of the matrix.\n- **Resuming:** rerunning resumes in the same `--out` directory, keeping finished reports.\n- **Shared GPU:** `--lock FILE` holds an exclusive `flock` around every GPU process.\n\n\n\n## License\n\nSee [LICENSE](LICENSE).\n"
+}

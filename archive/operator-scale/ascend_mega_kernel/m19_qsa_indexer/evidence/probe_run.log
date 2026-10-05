@@ -1,0 +1,15 @@
+[probe] launch: OK
+[probe] S0 slice-lane          PASS (首个不符 slice=-1 lane=-1 实测 0.00000)
+[probe] S1a lane-sq            FAIL (32 bad) 
+[probe] S1b rstd: 实测 0.437500000 期望 0.215245550（lanes1..3 = 0.4688 -0.2578 -0.2266）
+[probe] S1b rstd               FAIL (1 bad) 
+[probe] S1c norm               FAIL (1 bad) (max rel 4.678e+00 @ dim 0)
+[probe] S2 rope                FAIL (1 bad) (max rel 2.687e+08 @ dim 78)
+[probe] S3 pooled-RNE          PASS (首个不符 dim=-1 实测 0x00000000)
+[probe] S4 fp32-norm-rope      FAIL (1 bad) (max rel 6.047e+01 @ dim 74)
+[probe] S4b finite             PASS (0/128 非有限)
+[probe] S5 packbf16            FAIL (72 bad) (首个不符 dim=5 实测 0xFFFF 期望 0xBCF9)
+[probe] S6 round-boundary      PASS 
+[probe] guard: S6 输入回写不一致 0/32
+[probe] ===== 判定项 10，失败 6；报告项 guard 1 =====
+[probe] ===== FAILURES PRESENT =====

@@ -1,0 +1,125 @@
+# M60 §3「已知会被漏掉」的负向对照：篡改 dump 实验（`check_ref.py` 的完整输出）
+
+本文件是 `evidence/m60_quant_rule_witness.log` §3 的**仓内输入**（提取器 `gen_witness_log.py`
+的默认第 4 个参数就是它）—— 这样 §3 不必依赖仓外的 `/tmp` 日志即可复算。
+
+## 复现步骤（在 worktree 根；不需要 device）
+
+```bash
+D=/tmp/m60_tamper && rm -rf $D && mkdir -p $D
+cp /tmp/m17_accept/ws_layer0_tok1000_m1.bin /tmp/m17_accept/ws_meta_layer0_tok1000_m1.txt $D/
+python3 - <<'EOF'   # 按 ws_meta 的 seg offset/size 定位后 raw[off] ^= 0x01
+# (a) 空槽位 e=0（该 case 的活动槽 = {41,74,138,167,188,266,277,320,444,462}）的 H_qx 首字节
+#     off = seg["hq"].off + 0*(MM*(INTER/2))            # 134014784
+# (b) 活动槽 e=41、第 0 行的 H_scale **行距尾部**字节 hs[41][0][20]
+#     off = seg["hs"].off + 41*(MM*32) + 0*32 + 20      # 144584532
+#     device 只写前 20 个（INTER/32），20..31 是行距 padding，任何**内容**判据都不读
+# 两处各 ^= 0x01
+EOF
+sha256sum $D/ws_layer0_tok1000_m1.bin
+#   → fdb6721bda9492d3ca54c1c63e9a391fafe6bcd730c7b49b53d9668faa8132d2   （归档值 1a0f4883…）
+python3 m17_moe_real/check_ref.py /tmp/m60_tamper layer0_tok1000_m1      # 退出码 1
+```
+
+## 期望读数（两条一起看才完整）
+
+- `W0`（整段 sha256 pin）**FAIL** —— 它在 M60 起会让「在归档 dump 上改过字节」必然暴露；
+- **其余 73 条内容判据全 PASS** —— 被改的两处字节（空槽位 `hq`、活动行 `hs` 行距尾部）不在任何
+  **内容**判据的比较范围内 ⇒ 这是**已披露的覆盖边界**，要按「除 `W0` 外全 PASS」读；
+- `RESULT: FAIL (1/74 条判定项越界)`、`exit=1`。
+
+以下是 `check_ref.py` 在该篡改 dump 上的完整输出（原样，未编辑）：
+
+[check_ref] dump=/tmp/m60_tamper tag=layer0_tok1000_m1
+[check_ref] layer=0 token=1000 m=1
+[check_ref] 真实权重装载完成（独立 safetensors 路径）：E=512 专家，gate_up packed 0.781 GiB
+[check_ref][guard] 非空洞性：Σt_e=10 == m·topk=10；perm/counts/inv 数组非空
+[check_ref][报告] e2e A/B 链差（S1 残差放大）：moe max=0.000e+00 y_final max=0.000e+00
+[check_ref][报告] W6b 值域往返的 **S1-free 变体**：h_ref 取 §5.4 的 A 链（输入 = 真实 x，全程不取 device 中间量）⇒ n=7040 | |Δ| p50=8.057e-03 p99=6.369e-02 max=3.281e-01 | 同预算下最差占预算=0.947 越界=0/7040 | 相对误差 p50/max=2.427e-01/1.000e+00
+[check_ref][报告] W6/W4/W5 的自指形态：W4/W5/W6 的**输入**都含 device 中间量（`x_sorted` / `bf16 GU` / `xnorm`）⇒ 按 M59 §1 记为 **S1（隔离判据）**，**不得计入「独立端到端」**；W4 的规则来自 `quantize_ocp` ⇒ **同源转录**（非两处独立）。规则不敏感的那一半是 W1/W5/W6 的「方向 + 值域」口径 —— 它们只引用 MXFP4 group32 的数学（量化实现只以「两份转写并列」的形式出现，不拿其一当基准）。
+[check_ref][参考] A_qx(routed): device 字节 vs「golden 权重 ceil 规范」量化器 4880/12800 不同 = 38.1%
+[check_ref][参考] A_scale(routed): device 字节 vs「golden 权重 ceil 规范」量化器 320/800 不同 = 40.0%
+[check_ref][参考] IG 诊断槽(offsets[E+8]) = 0（0 = 无越界 ids）
+
+[check_ref] FAIL W0 dump 身份 pin：本轮的 ws_*.bin 整段 sha256 == evidence/dump_manifest.md: fdb6721bda9492d3ca54c1c63e9a391fafe6bcd730c7b49b53d9668faa8132d2 vs 1a0f4883c38d4455701cef9b1d817ccf1a270b77e6e91788445200a0815f51a5（≠ 归档字节！W4/W5/W6 判的不是归档 dump）
+[check_ref] PASS S1 x_norm (RMSNorm#1, gamma=真实 hc_norm): n=2560 越界=0（非有限 0） | dev-ref| mean=7.053e-04 p50=3.799e-04 p90=1.752e-03 p99=3.894e-03 max=7.805e-03 | 最差占预算=0.330 (tol = 3.79×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 2560 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S1 res1 (残差 = bf16 层输入, fp32 逐位): 0/2560 元素不符
+[check_ref] PASS S2 logits (x_norm·Wᵀ, max-shift): n=512 越界=0（非有限 0） | dev-ref| mean=1.753e-07 p50=1.616e-07 p90=2.999e-07 p99=5.708e-07 max=1.011e-06 | 最差占预算=0.012 (tol = 0.0255×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 467 / 边界 45（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S2 topk_ids (降序/并列取小 id): 0/10 元素不符
+[check_ref] PASS S2 topk_weights (renorm): n=10 越界=0（非有限 0） | dev-ref| mean=8.038e-09 p50=6.182e-09 p90=1.846e-08 p99=1.856e-08 max=1.857e-08 | 最差占预算=0.000 (tol = 4.2×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 10 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S2 sgate (共享门裸点积): n=1 越界=0（非有限 0） | dev-ref| mean=1.492e-08 p50=1.492e-08 p90=1.492e-08 p99=1.492e-08 max=1.492e-08 | 最差占预算=0.001 (tol = 0.0598×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 1 / 边界 0（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S3 perm_src (计数排序, 稳定): 0/10 元素不符
+[check_ref] PASS S3 perm_expert: 0/10 元素不符
+[check_ref] PASS S3 counts: 0/512 元素不符
+[check_ref] PASS S3 inv_slot (=e*M_MAX+槽位行号): 0/10 元素不符
+[check_ref] PASS S3 w_tk_packed (低16位=bf16(权重)): 0/10 元素不符
+[check_ref] PASS S4 x_sorted = gather(x_norm, perm_src): 0/25600 元素不符
+[check_ref] PASS S5 A_qx 逐字节 vs numpy(MxQuant 硬件规范): 0/12800 字节不符
+[check_ref] PASS S5 A_scale 逐字节 vs numpy(MxQuant 硬件规范): 0/800 字节不符
+[check_ref] PASS S5 A_shd_qx 逐字节 vs numpy: 0/1280
+[check_ref] PASS S5 A_shd_scale 逐字节 vs numpy: 0/80
+[check_ref] PASS S6 GU slot41 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=5.219e-04 p50=3.662e-04 p90=1.343e-03 p99=2.518e-03 max=3.906e-03 | 最差占预算=0.478 (tol = 5.36×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot41: n=640 越界=0（非有限 0） | dev-ref| mean=9.750e-05 p50=3.751e-05 p90=2.332e-04 p99=8.457e-04 max=1.713e-03 | 最差占预算=0.320 (tol = 3.81×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot41: n=2560 越界=0（非有限 0） | dev-ref| mean=4.829e-05 p50=3.052e-05 p90=1.221e-04 p99=2.441e-04 max=4.883e-04 | 最差占预算=0.887 (tol = 1.53×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 490 / 边界 2070（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S6 GU slot74 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=5.357e-04 p50=3.662e-04 p90=1.343e-03 p99=2.493e-03 max=3.662e-03 | 最差占预算=0.442 (tol = 5.37×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot74: n=640 越界=0（非有限 0） | dev-ref| mean=1.291e-04 p50=4.170e-05 p90=3.341e-04 p99=1.337e-03 max=2.873e-03 | 最差占预算=0.328 (tol = 3.91×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot74: n=2560 越界=0（非有限 0） | dev-ref| mean=6.074e-05 p50=3.052e-05 p90=1.526e-04 p99=2.692e-04 max=7.935e-04 | 最差占预算=0.903 (tol = 1.42×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 698 / 边界 1862（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S6 GU slot138 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=4.946e-04 p50=2.441e-04 p90=1.221e-03 p99=2.686e-03 max=3.906e-03 | 最差占预算=0.482 (tol = 5.31×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot138: n=640 越界=0（非有限 0） | dev-ref| mean=8.681e-05 p50=3.399e-05 p90=2.251e-04 p99=5.144e-04 max=2.209e-03 | 最差占预算=0.327 (tol = 3.9×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot138: n=2560 越界=0（非有限 0） | dev-ref| mean=4.275e-05 p50=3.052e-05 p90=1.083e-04 p99=2.199e-04 max=3.967e-04 | 最差占预算=0.887 (tol = 1.49×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 631 / 边界 1929（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S6 GU slot167 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=4.993e-04 p50=2.441e-04 p90=1.233e-03 p99=2.737e-03 max=3.784e-03 | 最差占预算=0.464 (tol = 5.38×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot167: n=640 越界=0（非有限 0） | dev-ref| mean=9.250e-05 p50=3.432e-05 p90=2.281e-04 p99=8.190e-04 max=2.233e-03 | 最差占预算=0.327 (tol = 3.86×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot167: n=2560 越界=0（非有限 0） | dev-ref| mean=4.209e-05 p50=3.052e-05 p90=9.155e-05 p99=2.441e-04 max=4.578e-04 | 最差占预算=0.903 (tol = 1.48×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 656 / 边界 1904（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S6 GU slot188 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=5.491e-04 p50=3.662e-04 p90=1.465e-03 p99=2.930e-03 max=3.784e-03 | 最差占预算=0.499 (tol = 5.35×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot188: n=640 越界=0（非有限 0） | dev-ref| mean=1.295e-04 p50=4.074e-05 p90=3.210e-04 p99=1.428e-03 max=3.287e-03 | 最差占预算=0.328 (tol = 3.81×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot188: n=2560 越界=0（非有限 0） | dev-ref| mean=5.352e-05 p50=6.104e-05 p90=1.221e-04 p99=2.441e-04 max=4.883e-04 | 最差占预算=0.906 (tol = 1.41×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 785 / 边界 1775（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S6 GU slot266 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=5.142e-04 p50=2.441e-04 p90=1.343e-03 p99=2.249e-03 max=3.662e-03 | 最差占预算=0.464 (tol = 5.3×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot266: n=640 越界=0（非有限 0） | dev-ref| mean=8.800e-05 p50=3.495e-05 p90=2.179e-04 p99=8.090e-04 max=1.627e-03 | 最差占预算=0.331 (tol = 3.83×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot266: n=2560 越界=0（非有限 0） | dev-ref| mean=4.302e-05 p50=3.052e-05 p90=1.221e-04 p99=2.136e-04 max=4.578e-04 | 最差占预算=0.898 (tol = 1.52×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 551 / 边界 2009（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S6 GU slot277 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=5.313e-04 p50=3.662e-04 p90=1.343e-03 p99=1.953e-03 max=3.418e-03 | 最差占预算=0.422 (tol = 5.39×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot277: n=640 越界=0（非有限 0） | dev-ref| mean=1.111e-04 p50=4.795e-05 p90=2.847e-04 p99=8.335e-04 max=2.852e-03 | 最差占预算=0.317 (tol = 3.81×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot277: n=2560 越界=0（非有限 0） | dev-ref| mean=4.231e-05 p50=3.052e-05 p90=1.221e-04 p99=2.136e-04 max=3.662e-04 | 最差占预算=0.897 (tol = 1.57×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 465 / 边界 2095（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S6 GU slot320 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=5.064e-04 p50=2.441e-04 p90=1.221e-03 p99=2.589e-03 max=3.906e-03 | 最差占预算=0.475 (tol = 5.4×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot320: n=640 越界=0（非有限 0） | dev-ref| mean=9.607e-05 p50=4.242e-05 p90=2.233e-04 p99=8.776e-04 max=1.576e-03 | 最差占预算=0.323 (tol = 3.87×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot320: n=2560 越界=0（非有限 0） | dev-ref| mean=4.356e-05 p50=3.052e-05 p90=1.221e-04 p99=2.261e-04 max=4.578e-04 | 最差占预算=0.901 (tol = 1.52×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 542 / 边界 2018（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S6 GU slot444 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=5.343e-04 p50=3.662e-04 p90=1.465e-03 p99=2.686e-03 max=3.906e-03 | 最差占预算=0.476 (tol = 5.37×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot444: n=640 越界=0（非有限 0） | dev-ref| mean=1.086e-04 p50=4.038e-05 p90=2.380e-04 p99=9.257e-04 max=3.302e-03 | 最差占预算=0.314 (tol = 3.82×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot444: n=2560 越界=0（非有限 0） | dev-ref| mean=4.485e-05 p50=3.052e-05 p90=1.221e-04 p99=2.441e-04 max=4.883e-04 | 最差占预算=0.899 (tol = 1.54×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 472 / 边界 2088（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S6 GU slot462 (t=1): n=1280 越界=0（非有限 0） | dev-ref| mean=5.426e-04 p50=3.662e-04 p90=1.465e-03 p99=2.930e-03 max=3.906e-03 | 最差占预算=0.477 (tol = 5.36×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_swiglu slot462: n=640 越界=0（非有限 0） | dev-ref| mean=1.029e-04 p50=3.975e-05 p90=2.462e-04 p99=8.309e-04 max=2.580e-03 | 最差占预算=0.331 (tol = 3.86×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 640 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S8 Y slot462: n=2560 越界=0（非有限 0） | dev-ref| mean=4.660e-05 p50=3.052e-05 p90=1.221e-04 p99=2.441e-04 max=4.883e-04 | 最差占预算=0.922 (tol = 1.49×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 771 / 边界 1789（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S7 H_qx 逐字节 vs numpy(MxQuant 硬件规范): 0/3200 字节不符
+[check_ref] PASS S7 H_scale 逐字节 vs numpy(MxQuant 硬件规范): 0/200 字节不符
+[check_ref] PASS S6 GU_shd (真实共享专家): n=1280 越界=0（非有限 0） | dev-ref| mean=4.007e-04 p50=2.441e-04 p90=9.766e-04 p99=1.953e-03 max=3.662e-03 | 最差占预算=0.494 (tol = 6.14×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 1280 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS S7 H_shd: n=640 越界=0（非有限 0） | dev-ref| mean=6.976e-05 p50=2.136e-05 p90=1.691e-04 p99=7.916e-04 max=1.905e-03 | 最差占预算=0.322 (tol = 3.8×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 1 / 边界 639（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S7 H_shd_qx 逐字节 vs numpy: 0/320
+[check_ref] PASS S7 H_shd_scale 逐字节 vs numpy: 0/20
+[check_ref] PASS S8 Y_shd: n=2560 越界=0（非有限 0） | dev-ref| mean=2.049e-05 p50=1.526e-05 p90=5.341e-05 p99=1.144e-04 max=5.035e-04 | 最差占预算=0.924 (tol = 1.44×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 836 / 边界 1724（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S9a routed_output (加权折叠): n=2560 越界=0（非有限 0） | dev-ref| mean=1.670e-05 p50=1.038e-05 p90=4.337e-05 p99=9.338e-05 max=1.963e-04 | 最差占预算=0.999 (tol = 1×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 2524 / 边界 36（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S9b shared_output (sigmoid(g)·Y_shd): n=2560 越界=0（非有限 0） | dev-ref| mean=8.907e-06 p50=5.453e-06 p90=2.226e-05 p99=4.986e-05 max=3.988e-04 | 最差占预算=0.307 (tol = 3.85×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 1 / 边界 2559（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S9b moe_output (routed + 未取整 gated shared): n=2560 越界=0（非有限 0） | dev-ref| mean=1.997e-05 p50=1.233e-05 p90=4.954e-05 p99=1.095e-04 max=2.323e-04 | 最差占预算=0.941 (tol = 2.27×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 303 / 边界 2257（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S10 y_final (RMSNorm#2 over res2, gamma=真实 hc_norm): n=2560 越界=0（非有限 0） | dev-ref| mean=5.113e-04 p50=2.529e-04 p90=1.384e-03 p99=3.398e-03 max=7.644e-03 | 最差占预算=0.324 (tol = 3.78×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 2 / 边界 2558（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS S10 res2 (fp32(res1+bf16(moe)) 逐位): 0/2560 不符
+[check_ref] PASS e2e router ids == device topk_ids（链上重算）: 0/10 元素不符
+[check_ref] PASS e2e counts == device counts: 0/512 元素不符
+[check_ref] PASS e2e 链上量化字节 == device 字节（A_qx/A_scale/H_qx/H_scale）: 0/17000 字节不符（A 侧应 0：x_sorted 逐位一致；H 侧差异来自 GU 的舍入）
+[check_ref] PASS e2e moe_output（A 链，输入=真实 x）: n=2560 越界=0（非有限 0） | dev-ref| mean=0.000e+00 p50=0.000e+00 p90=0.000e+00 p99=0.000e+00 max=0.000e+00 | 最差占预算=0.000 (tol = 3.84×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | δ=noise ≥ spacing/2 ⇒ 全部 2560 个元素记为「边界元素」（非舍入噪声大于网格步长，分类退化）⇒ 判定用绝对界（网格项 + 非舍入项）
+[check_ref] PASS e2e y_final（A 链，输入=真实 x）: n=2560 越界=0（非有限 0） | dev-ref| mean=0.000e+00 p50=0.000e+00 p90=0.000e+00 p99=0.000e+00 max=0.000e+00 | 最差占预算=0.000 (tol = 3.78×spacing(x)（中位等效倍数；= nulp×spacing + noise，noise 来源见调用点注释与 README §5.3）) | 常规 2 / 边界 2558（δ=noise；绝对界已覆盖方向翻转）
+[check_ref] PASS W1 量化规则方向定点（amax∈{0.5,1,2} ⇒ scale 字节 124/125/126、code 6、反量化回 amax；设备无关、规则不敏感）: quant_hw: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0) | quantize_ocp: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0)
+[check_ref] PASS 自检-W2 负向对照：方向反的 legacy 规则必须在定点上分叉（code ≠ 6）: 方向反（x × 2^(byte−127)）：code=(0, 1, 2)，而 scale 字节与正确规则**逐字节相同** = (124, 125, 126) ⇒ 只比 scale 字节的 vf-probe 对 data 侧翻转完全无感（M59 §6 第 3 步）
+[check_ref] PASS W3 角落平价：quant_hw == tools/golden::quantize_ocp（±Inf/NaN / 次正规 / 全零，逐字节；设备无关）: ±Inf/NaN 组: byte=(255, 255) code=((0, 0, 0, 0), (0, 0, 0, 0)) == quantize_ocp | 次正规/最小正规组: byte=(0, 0) code=((0, 0, 0, 0), (8, 0, 0, 0)) == quantize_ocp | 全零组: byte=(0,) code=((0, 0, 0, 0),) == quantize_ocp
+[check_ref] PASS 自检-W3n 负向对照：M60 修复前的镜像必须在角落上与官方分叉: f0286f6:m17_moe_real/check_ref.py::quant_hw：与 quantize_ocp 失配 5/85 字节（+Inf 组给 scale 253/code 7，官方 255/code 0；`amax=2⁻¹²⁶` 组给 code 4，官方 code 0）⇒ M29 以来既有判据从未覆盖这两个角落（真实数据 0 个这样的组）
+[check_ref] PASS W4 device 量化字节 == tools/golden::quantize_ocp（A/H routed + 共享，含 scale 与 nibble，逐字节；S1 输入 + 同源转录规则）: 0/18700 字节不符
+[check_ref] PASS 自检-W4n 负向对照：方向反的 legacy 规则 vs device 字节必须失配: 16490/18700 字节不符 = 88.2%（M59 在 m3 上的归档同类读数 94.8%、在 m1 golden 上 44.2%）
+[check_ref] PASS W5 设备侧方向定点：每个活动组的 |amax| 元素码必须 ∈ {6,7}（= 值 4.0/6.0）: 违反 0/1100 组（A/H routed + 共享；分母 = 全部活动组）
+[check_ref] PASS 自检-W5n 负向对照：方向反的规则在同一统计上必须违反: 违反 1089/1100 组 ⇒ 该统计对方向翻转是活的
+[check_ref] PASS W6 值域往返：|dequant(device H 字节) − h_ref| ≤ 2·scale + (1×spacing + EPS_FAST·|h_ref|)（h_ref = host double SwiGLU，**不由 device 字节反推**）: n=7040 越界=0 | |Δ| p50=8.089e-03 p99=6.372e-02 max=3.310e-01 | 预算 max=5.182e-01 最差占预算=0.953 | 相对误差（h_ref ≠ 0，p50/p99/max）=2.447e-01/1.000e+00/1.003e+00
+[check_ref] PASS 自检-W6n 负向对照：方向反的编码在同一判据上必须越界: 越界=1123/7040 | 相对误差 p50/max=1.000e+00/1.000e+00（同口径下 M59 在 m3 上的归档读数 = p50 142 / max 5.79e76；本数据组的尺度更小，方向反后码被压到 0，相对误差饱和在 1.0 —— 这也是本判据用**绝对界 + 预算比**而不是相对误差作判定的原因）
+[check_ref] ===== 判定项 74 条，73 PASS / 1 FAIL （分段 58 + e2e 5 + 量化规则见证 11，其中负向自检 5）=====
+[check_ref][coverage] 本次实际比较：判定项 74（分段 58 + e2e 5 + 量化规则见证 11，其中负向自检 5）；guard 1（单列）
+[check_ref][coverage]   全量比较：x_norm/res1/logits(全部 512 个专家)/topk_ids/topk_weights/perm_src/perm_expert/inv_slot/w_tk_packed/sgate/x_sorted(前 10 行)/routed/shared/moe/y_final/res2（m=1 行全部元素）
+[check_ref][coverage]   部分比较：A/H 量化字节与 GU/h_swiglu/Y/共享四段只比**非空槽位的前 t_e 行**（活动槽 10/512，跳过 502 个空槽）
+[check_ref][coverage]   不在本脚本范围（各由 host 不变量 / guard / device 日志见证）：counts 与 offsets 的前缀和一致性、t_e∈[0,64]、ids 范围与行内唯一、perm 分组有序、inv_slot 自洽、w_tk 低 16 位、全体有限、topk 行和≈1、offsets[E+1] 之后的诊断槽
+[check_ref][coverage]   量化规则见证（M60）的三态分栏：**W1/W2/W3/W3n 设备无关**（只吃合成输入，不读 dump；可与装置无关地复跑）；**W0/W4/W4n/W5/W5n/W6/W6n 吃已归档 dump**（`W0` 读整段 `ws_*.bin` 的 sha256，其余读段内字节；身份与 `evidence/dump_manifest.md` 逐份核对），覆盖 = 全部 10 个活动槽（A/H routed + 共享）的**前 t_e 行**，即 18700 个 A/H 量化字节与 1100 个活动组 —— 计数与匹配器同源（同一循环，不另写数字）；**不在覆盖内**：空槽（502 个）与各行 padding、scale 行距尾部字节（`hs[:, :, 20:]` 等 device 不写或不用的槽位）、`W6` 的 h_ref 自身误差（由 S7 判据见证，本判据只把它的界并入预算）
+[check_ref][coverage]   ⇒ **本脚本的 OK 不等于「整个 workspace 都比过了」**：空槽位/各段 padding 行/上述 host 侧项不在**内容**判据的比较范围（负向对照见 README §5.3.1：**在归档 dump 上篡改空槽位或行距尾部的字节 ⇒ 内容判据仍全 OK，但 `W0` 会因整段 sha 变化而 FAIL** —— 此时要按「**除 W0 外全 PASS**」读；内容是覆盖边界、不是漏判。历史口径：M29 时这条篡改只报「内容判据 OK」，M60 新增的 `W0`（整段身份 pin）把它变成「内容 OK + 身份 FAIL」，逐条对照见 README §5.3.1 的「M29 → M60 的一处行为变化」注）
+[check_ref] RESULT: FAIL (1/74 条判定项越界) —— 退出码 1

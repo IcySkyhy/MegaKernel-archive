@@ -1,0 +1,26 @@
+=== lock acquired 2026-10-04T11:44:53+00:00 variant=aic_scalar_ub reps=3 timeout=45s ===
+--- npu-smi (lock entry) ---
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.10                              Version: 25.7.rc1.10                           |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 198.3       61                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5242  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+--- run 1 (timeout 45s) ---
+SUMMARY variant=aic_scalar_ub run=1 launch=FAILED err=507015 rc=2
+exit=2
+--- run 2 (timeout 45s) ---
+SUMMARY variant=aic_scalar_ub run=2 launch=FAILED err=507015 rc=2
+exit=2
+--- run 3 (timeout 45s) ---
+SUMMARY variant=aic_scalar_ub run=3 launch=FAILED err=507015 rc=2
+exit=2
+AGG variant=aic_scalar_ub rc0=0 rc1=0 rc2=3 hang=0 reps=3

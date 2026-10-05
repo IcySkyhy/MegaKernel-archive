@@ -1,0 +1,41 @@
+[project]
+name = "megakernels"
+version = "0.1.0"
+description = "A megakernel compiler backend for pytorch"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "accelerate>=1.15.0",
+    "nvidia-cutlass-dsl>=4.7.1",
+    "quack-kernels[cu13]>=0.6.5",
+    "torch>=2.14.0",
+    "transformers>=5.17.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pyrefly]
+project-includes = ["megakernels", "examples"]
+
+[tool.pyrefly.errors]
+# Catch common GPU synchronization and device-placement performance pitfalls.
+pytorch-efficiency-lints = "warn"
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[dependency-groups]
+dev = [
+    "pydot>=4.0.1",
+    "pyrefly>=1.3.1",
+    "ruff>=0.16.7",
+    "tabulate>=0.10.0",
+    "types-tabulate>=0.10.0.20260508",
+]

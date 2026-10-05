@@ -1,0 +1,5 @@
+[Pf.gdn] T=4097 o 元素 25171968  参考=naive(eg·ig)
+  dev 非有限=0（NaN=0）
+  NaN(ref_fp64)=3670912  NaN(ref_fp32)=8374272  （参考自洽要求 0）
+  XOR(dev,fp64)=3670912  XOR(dev,fp32)=8374272
+  ⇒ FAIL（参考自身含 NaN ⇒ 参考口径有问题）

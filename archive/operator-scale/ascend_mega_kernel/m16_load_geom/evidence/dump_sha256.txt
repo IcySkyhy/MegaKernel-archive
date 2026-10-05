@@ -1,0 +1,22 @@
+# M27 归档校验和（复核：cd m16_load_geom && sha256sum -c evidence/dump_sha256.txt）
+#
+# 覆盖范围 = 数据产物（切片 / raw dump / sidecar / m16_pv 的 .bin 产物）。
+# 不含 *.log：日志含 §2.3 记录的 9 个非确定 conf 的越界槽位内容，且 reproduce_run.log
+# 每次运行都会变 ⇒ 纳入校验和会让校验和本身不稳定。日志里的稳定数字见 README §2.3/§4。
+#
+# 两个 M24 切片是唯一的跨分支输入（提取命令见 README §4.1）；wt-24 源文件不变则 sha 恒定。
+
+# --- 跨分支输入：M24 切片 ---
+38d4893a579373281211acd1b796a75d0eae9a119fdca2029c8cbb08b1a35e0d  evidence/m24_s256_P_unit0_par0.bin
+bf085046de67b6c27ed39aafda3600bb7057623597647b4dc0e9695c22fd297a  evidence/m24_s256_V_n2_0.bin
+
+# --- 归档数据产物 ---
+29969cffc33d7b5e9c33f160a3c53a42823962ecc9ea01068dc1285405029725  evidence/m16_geom_2d_raw_run1.bin
+4fc65a0a3d87c9bb75d91a1b14a125b3e020685c9748e250d3c0d74fc7a37db6  evidence/m16_geom_2d_raw_run1.bin.tsv
+3645a04b3f853f324732ffb9779ee1c95b01f6e5f68c6a07968ecbedaad552c1  evidence/m16_geom_3d_raw.bin
+fe903fdde13c83675557b2e7d42102337ead182d3cb602b1eaba94b44e99d6ed  evidence/m16_geom_3d_raw.bin.tsv
+b24aac6afc47fb783a4cd58768cac139bcbaa7194c6e43787b98260084722f71  evidence/m16_pv_map_device.bin
+fa6b666d46ef6c039f349a9ffa20449e2504773fc03f5805ea5b1ac3a8b6177f  evidence/m16_pv_real_c_device.bin
+fa6b666d46ef6c039f349a9ffa20449e2504773fc03f5805ea5b1ac3a8b6177f  evidence/m16_pv_real_c_ref.bin
+9fa479f2d9482ba7b9958bf7a918019479250f2065bcb27ca5581e51af45a734  evidence/m16_pv_synth_c_device.bin
+9fa479f2d9482ba7b9958bf7a918019479250f2065bcb27ca5581e51af45a734  evidence/m16_pv_synth_c_ref.bin

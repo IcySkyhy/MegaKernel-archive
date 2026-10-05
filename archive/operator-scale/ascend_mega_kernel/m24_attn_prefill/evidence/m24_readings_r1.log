@@ -1,0 +1,58 @@
+# M116（Wave B2）设备读数 r1 —— m24 全档 + M98 零回归档
+# 二进制 sha256 = c0839e66b2ab7808fcf3c4b25316d0e39b2c378c163f334bf7aa8cb9f82a58ae
+# 该 sha 与当前源码重编出来的二进制逐字节一致（sha256sum 复核）
+# 命令：flock -w 1800 /tmp/npu0.lock bash m24_attn_prefill/evidence/run_evidence.sh <wt-root>
+# 入口复查（flock 内）：NPU 0 无进程 / util 0%；df / 余 308G；详见 m24_aborted_1set_pairing.log 的同一段
+# 说明（**人工注 vs 运行输出**标清）：
+#   · 本文件第 1–4 行 + 本节这段是**人工写的注释**（sha / 命令 / 口径），不是运行输出。
+#   · 从空行之后的 `outer rc=0` 起是**原样运行输出**（那次命令末尾的 grep 截取，逐行与 stdout 相同）：
+#     `outer rc=0` = **flock 的 rc**；**m24 自己的 rc 不在本文件里**（当时命令没打印它）。
+#   · 那次运行（二进制 sha c0839e66…）的 m24 rc **按构造必然是 1**：`big4097_seq` 是契约档却红 11 条 ⇒
+#     末行是 FAILURES PRESENT。本轮起 `run_evidence.sh` 固定打印 `m24 rc=` 字段（下一份读数里会有）。
+#   · **本文件在 `MUT_ac_nocompstore` 的档头之后被截断**（49 行、带尾换行）⇒ 仓内只有 **8/12** 个变异档的
+#     读数，缺 ac_nocompstore / ac_sumnotmean / ac_offbyone / ac_noringread 四档（**未取到**）。
+#   · 设备读数**全部来自二进制 c0839e66…**；复审返工后源码已改（m24 新 sha = 1cd4efab…，
+#     融合 TU 仍 = aa01a4fb…），改动**未做设备复跑**（设备档冻结），详见 README §4 开头一段。
+
+
+outer rc=0
+=== [1/2] m24 全档（契约档 + 变异档）===
+[M24] ==== 案例 big4097_step（rows=4097 @0, chunk=128 × 33, mut=0x0, acMode=0, 逐 chunk 发射）====
+[M24]   big4097_step：checks=327 fails=3 guards=0(guardFails=0)
+[M24] ==== 案例 big4097_seq（rows=4097 @0, chunk=128 × 33, mut=0x0, acMode=0, 单次发射）====
+[M24]   big4097_seq：checks=20 fails=11 guards=0(guardFails=0)
+[M24] ==== 案例 m1ctx4097（rows=1 @4096, chunk=1 × 1, mut=0x0, acMode=0, 逐 chunk 发射）====
+[M24]   m1ctx4097：checks=23 fails=0 guards=0(guardFails=0)
+[M24] ==== 案例 rag65_step（rows=393 @0, chunk=65 × 7, mut=0x0, acMode=0, 逐 chunk 发射）====
+[M24]   rag65_step：checks=93 fails=0 guards=0(guardFails=0)
+[M24] ==== 案例 m128（rows=128 @0, chunk=128 × 1, mut=0x0, acMode=0, 逐 chunk 发射）====
+[M24]   m128：checks=31 fails=0 guards=0(guardFails=0)
+[M24] ==== 案例 m64（rows=64 @0, chunk=64 × 1, mut=0x0, acMode=0, 逐 chunk 发射）====
+[M24]   m64：checks=23 fails=0 guards=0(guardFails=0)
+[M24] ==== 案例 m2（rows=2 @0, chunk=2 × 1, mut=0x0, acMode=0, 逐 chunk 发射）====
+[M24]   m2：checks=23 fails=0 guards=0(guardFails=0)
+[M24] ==== 案例 MUT_plaimnorm（rows=64 @0, chunk=64 × 1, mut=0x1, acMode=0, 逐 chunk 发射）====
+[M24]   MUT_plaimnorm：checks=23 fails=7 guards=0(guardFails=0)
+[M24]   MUT_plaimnorm 变异档：PASS（判据咬住了）（变红判据数=7）
+[M24] ==== 案例 MUT_ropesign（rows=64 @0, chunk=64 × 1, mut=0x2, acMode=0, 逐 chunk 发射）====
+[M24]   MUT_ropesign：checks=23 fails=5 guards=0(guardFails=0)
+[M24]   MUT_ropesign 变异档：PASS（判据咬住了）（变红判据数=5）
+[M24] ==== 案例 MUT_norope（rows=64 @0, chunk=64 × 1, mut=0x3, acMode=0, 逐 chunk 发射）====
+[M24]   MUT_norope：checks=23 fails=5 guards=0(guardFails=0)
+[M24]   MUT_norope 变异档：PASS（判据咬住了）（变红判据数=5）
+[M24] ==== 案例 MUT_nogemm（rows=64 @0, chunk=64 × 1, mut=0x800, acMode=0, 逐 chunk 发射）====
+[M24]   MUT_nogemm：checks=23 fails=14 guards=0(guardFails=0)
+[M24]   MUT_nogemm 变异档：PASS（判据咬住了）（变红判据数=14）
+[M24] ==== 案例 MUT_nokv（rows=64 @0, chunk=64 × 1, mut=0x200, acMode=0, 逐 chunk 发射）====
+[M24]   MUT_nokv：checks=23 fails=3 guards=0(guardFails=0)
+[M24]   MUT_nokv 变异档：PASS（判据咬住了）（变红判据数=3）
+[M24] ==== 案例 MUT_norawk（rows=64 @0, chunk=64 × 1, mut=0x400, acMode=0, 逐 chunk 发射）====
+[M24]   MUT_norawk：checks=23 fails=6 guards=0(guardFails=0)
+[M24]   MUT_norawk 变异档：PASS（判据咬住了）（变红判据数=6）
+[M24] ==== 案例 MUT_noqidx（rows=64 @0, chunk=64 × 1, mut=0x100, acMode=0, 逐 chunk 发射）====
+[M24]   MUT_noqidx：checks=23 fails=2 guards=0(guardFails=0)
+[M24]   MUT_noqidx 变异档：PASS（判据咬住了）（变红判据数=2）
+[M24] ==== 案例 MUT_ac_noringstore（rows=64 @0, chunk=64 × 1, mut=0x0, acMode=5, 逐 chunk 发射）====
+[M24]   MUT_ac_noringstore：checks=23 fails=3 guards=0(guardFails=0)
+[M24]   MUT_ac_noringstore 变异档：PASS（判据咬住了）（变红判据数=3）
+[M24] ==== 案例 MUT_ac_nocompstore（rows=64 @0, chunk=64 × 1, mut=0x0, acMode=6, 逐 chunk 发射）====

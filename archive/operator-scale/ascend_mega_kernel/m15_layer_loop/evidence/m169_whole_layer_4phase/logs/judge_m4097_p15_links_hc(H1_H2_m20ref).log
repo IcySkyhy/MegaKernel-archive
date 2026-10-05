@@ -1,0 +1,12 @@
+[chk] M140 hc 四相位交叉校验：dump=/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m4097_p15_links tag=Pf.gdn m=4097 phases=0xF（参考 = m20 独立 numpy float64）
+[chk] 判定 h1.hcp                   n=41953280 逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=4.525e-03  PASS
+[chk] 判定 h1.blk                   n=10488320 逐位=0.9949 良态逐位=0.9985 ulpMax=1   归一maxAbs=1.543e-03  PASS
+[chk] 判定 h2.hcp                   n=41953280 逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=1.894e-03  PASS
+[chk] 判定 h2.blk                   n=10488320 逐位=0.9785 良态逐位=0.9900 ulpMax=9   归一maxAbs=4.184e-03  FAIL
+[chk] guard h1_hin 非常量             OK
+[chk] guard h1_hcp 非常量             OK
+[chk] guard h1_hcp != h1_hin       OK
+[chk] guard h1_blk 非常量             OK
+[chk] guard h2_blk 非常量             OK
+[chk] 判定项 4 条，FAIL 1 条：h2.blk；guard 失败 0 条
+RESULT: FAILED

@@ -1,0 +1,29 @@
+# The virtualenv lives outside the repo on purpose (see README.md §4):
+#   /workspace/venvs/baseline
+# Only sources, scripts and evidence belong in this directory.
+# NOTE: the evidence files themselves are NEVER listed here -- they are deliverables, and a
+# missing one must show up as a diff instead of being hidden by an ignore rule.
+venv/
+*.whl
+__pycache__/
+*.pyc
+*.pyo
+
+# Temp / backup / editor leftovers.
+# The evidence collectors write "<name>.tmp" next to the target and only move it into place
+# when the run completed (temp+sentinel), so a failed or interrupted run legitimately leaves
+# a *.tmp behind: it must never be committed. A stray evidence/.02-version-matrix.tmp did get
+# committed once (caught by the r4 merge gate); these rules are what stop it from happening
+# again. Both forms are listed: "*.tmp" for plain names and ".*.tmp" for the dot-prefixed
+# temp the collectors actually produce.
+*.tmp
+.*.tmp
+*.temp
+*~
+*.bak
+*.orig
+*.rej
+*.swp
+*.swo
+.DS_Store
+.nfs*

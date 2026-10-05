@@ -1,0 +1,213 @@
+# M119（B5）证据指纹（2026-10-04T08:40:03Z UTC）
+# 复现：bash m27_hc_prefill/tools/fingerprint.sh <dump 目录…>
+
+## A. 源码与 read-only 依赖
+m15_layer_loop/m15_hc_prefill.h                      86758008aeb2d13b03abbb32b8f0bfb3199a41eaa102d2281adbcd1298a65b6b
+m15_layer_loop/m15_hc_prefill_host.h                 05544c286ea0489ee5d89c3bbb89f396b2c681aefd8b488cdb4c24c3383d0dd3
+m15_layer_loop/m15_hc_layer.h                        b5b79e7d9a254c036c47b7ab6a7757680155f31d9032391833ed4b3b2cb7649c
+m15_layer_loop/m15_hc_resources.h                    81a7ec119557032b1ea4ad15de1fb954d6c37e8e2140c3ecd1d91792739b195a
+m20_hyperconn/check_ref.py                           ab56de0a7649ce623593b6900ae60dbd3f6d33eedc032097036446c6e0d575f2
+m15_layer_loop/weights_manifest.txt                  7f0225792b6914fc9ae78f843a9d1917e65e38a0507e90449d09d06f3da0196e
+m27_hc_prefill/m27_hc_prefill.asc                    68a3e9afe6ef8551bae5d8ef6e07248ed8ef96ba52a299645d99c2c597ac2e32
+m27_hc_prefill/check_ref.py                          ac1457acc2107de2da5cf622cbe642516b56158f72fb8b82653dc9617b342597
+m27_hc_prefill/CMakeLists.txt                        9b193d584b6dcc71e0238848a15f11d2c04c8baeee1c3a18af28bc7589ef0ca6
+m27_hc_prefill/reproduce.sh                          4209e06ef354d915346409aca1b3ca104e25f249c7868e3786ecc232730b1200
+m27_hc_prefill/tools/selftest_dump.py                e39b0f19e91caa65e67b524dc9a0b463014446d4af2063655e74878721fc6163
+
+## B. 二进制
+m27_hc_prefill/build/m27_hc_prefill                  00213bb9c89d0b59b0f477bad571e3b39d18ae6414de0776f0fa5678f3996cc0
+m27_hc_prefill/build/m27_hc_prefill_mt12             ae1c2ed45e958608ddb6cfac95dc4529fa073bfa2a011b913a92fcadb342642c
+
+## C. dump 产物（<目录> <文件> <字节> <sha256>）
+### /tmp/m27_out
+check.log                               16856 203c4296cdd2a47b3e117a961bad68dcda2cd44d6e1a36e7a36155a5d831fc84
+m1_a1_blk.bin                            5120 196950f14531f297bfd68b3c34b36818544e30f68ea6078055a5886d1b518fd0
+m1_a1_bo.bin                             5120 9c33344a782e55ba13d5a79600cb520dbc79e3b01bc243932c4bdc69217f0e7b
+m1_a1_hcp.bin                           20480 5192cf80fa115ff819ce67eb8575bf5ac690493a131a051dfb5cbb56e02b2065
+m1_a1_hin.bin                           20480 d938335a22175e8e4e2abcaa863da8a62db108e0b54f3e5c027333b6c0c30f58
+m1_a1_ij.bin                               32 5c9d8431895653736cf285610b8345a08b4814521683fedaab5131c40ba49c0f
+m1_a1_ij_handoff.bin                       32 b73fcdd8cebd418db81d043387e0038c78f15ae6bc991f624965ddd14e4397b5
+m1_a1_injw.bin                            128 40644351200c40cfed66fac2821ad8eab70795b2b40ceb5a201d55417ecd7a75
+m1_a1_rstd.bin                             16 a9df51d073647c953d97afef24b0a8a7a4520030a680e0abb65c8f134916e5c9
+m1_a2_blk.bin                            5120 3c34f50f26d98ad0597fac1076eb82c59d3f1cc228c59dc833a81fc4a5f4e72b
+m1_a2_bo.bin                             5120 5b256e480e06ae45a050ebbe2b05e8479f808dca2d10a8822fa491a9edfe9da2
+m1_a2_hcp.bin                           20480 f97e032e409afc4027a0befdd10a99b109939f8556af420c5375e5cd5f0c76f8
+m1_a2_hin.bin                           20480 5192cf80fa115ff819ce67eb8575bf5ac690493a131a051dfb5cbb56e02b2065
+m1_a2_injw.bin                            128 5d07f23e71f54bcd72ab1080681c42fb60da4d6b782ddc8f78e3795601a973a7
+m1_a2_rstd.bin                             16 ab7680fabb4efe8b42e985b3dfd98c1bd9ac0a5c7ca81c3ac734338e998b258d
+m1_arena1.bin                         4353024 30534658a4860caf5aa144b7e9f1bd911e295075c3f9d86b80474cee9ef791cb
+m1_arena2.bin                         4353024 b05f104ebea856614d33667914f1fdb8ae7e10d62333825b9155a73ee11f2bf1
+m1_conly_a1_blk.bin                      5120 a11937f356a9b0ba592c82f5290bac8016cb33a3f9bc68d3490147c158ebb10d
+m1_conly_a1_bo.bin                       5120 9c33344a782e55ba13d5a79600cb520dbc79e3b01bc243932c4bdc69217f0e7b
+m1_conly_a1_hcp.bin                     20480 5192cf80fa115ff819ce67eb8575bf5ac690493a131a051dfb5cbb56e02b2065
+m1_conly_a1_hin.bin                     20480 d938335a22175e8e4e2abcaa863da8a62db108e0b54f3e5c027333b6c0c30f58
+m1_conly_a1_ij.bin                         32 5c9d8431895653736cf285610b8345a08b4814521683fedaab5131c40ba49c0f
+m1_conly_a1_ij_handoff.bin                 32 66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925
+m1_conly_a1_injw.bin                      128 40644351200c40cfed66fac2821ad8eab70795b2b40ceb5a201d55417ecd7a75
+m1_conly_a1_rstd.bin                       16 374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb
+m1_conly_a2_blk.bin                      5120 07944230519d90ebdd2d3777665e9275ff97cb661ff30e96396492f8bc17ad39
+m1_conly_a2_bo.bin                       5120 5b256e480e06ae45a050ebbe2b05e8479f808dca2d10a8822fa491a9edfe9da2
+m1_conly_a2_hcp.bin                     20480 cc61635da46b2c9974335ea37e0b5fd660a5c8a42a89b271fa7ec2ac4b8b26f6
+m1_conly_a2_hin.bin                     20480 5192cf80fa115ff819ce67eb8575bf5ac690493a131a051dfb5cbb56e02b2065
+m1_conly_a2_injw.bin                      128 885ef0783ff857466de0f1464fa28cf1fd9a9abaed41a330068966c6e3525505
+m1_conly_a2_rstd.bin                       16 c0a265d5eaedd3be7ff118927bfcc5d53723bca9443650383a2a47223843ed87
+m1_conly_arena1.bin                   4353024 8930033769f238a14f422d7257d421aa509669b328632626c5e51928cfa73122
+m1_conly_arena2.bin                   4353024 4db59741f40a8f14020f80002b15a7f2c810227844d9a9f1a71f638e8c7cad0e
+m1_mix_a1_blk.bin                        5120 4f05c907ff435ff5bce5592ff95ce4595c865a2495b11a29917765bb9d98c0bd
+m1_mix_a1_bo.bin                         5120 9c33344a782e55ba13d5a79600cb520dbc79e3b01bc243932c4bdc69217f0e7b
+m1_mix_a1_hcp.bin                       20480 cc61635da46b2c9974335ea37e0b5fd660a5c8a42a89b271fa7ec2ac4b8b26f6
+m1_mix_a1_hin.bin                       20480 d938335a22175e8e4e2abcaa863da8a62db108e0b54f3e5c027333b6c0c30f58
+m1_mix_a1_ij.bin                           32 5c9d8431895653736cf285610b8345a08b4814521683fedaab5131c40ba49c0f
+m1_mix_a1_ij_handoff.bin                   32 ad4668a922aa0d26ec645196754604a838881d7e3ef3c96228884715992b9b08
+m1_mix_a1_injw.bin                        128 38723a2e5e8a17aa7950dc008209944e898f69a7bd10a23c839d341e935fd5ca
+m1_mix_a1_rstd.bin                         16 19aa507521a8cc538a8f7c3bf72bed608f8210d94402e92028c2031266f560ae
+m1_mix_a2_blk.bin                        5120 07944230519d90ebdd2d3777665e9275ff97cb661ff30e96396492f8bc17ad39
+m1_mix_a2_bo.bin                         5120 5b256e480e06ae45a050ebbe2b05e8479f808dca2d10a8822fa491a9edfe9da2
+m1_mix_a2_hcp.bin                       20480 cc61635da46b2c9974335ea37e0b5fd660a5c8a42a89b271fa7ec2ac4b8b26f6
+m1_mix_a2_hin.bin                       20480 cc61635da46b2c9974335ea37e0b5fd660a5c8a42a89b271fa7ec2ac4b8b26f6
+m1_mix_a2_injw.bin                        128 885ef0783ff857466de0f1464fa28cf1fd9a9abaed41a330068966c6e3525505
+m1_mix_a2_rstd.bin                         16 c0a265d5eaedd3be7ff118927bfcc5d53723bca9443650383a2a47223843ed87
+m1_mix_arena1.bin                     4353024 32c51543d76113004d3b3a69f474a19d96a857c710a002270a2b2b643b27a54b
+m1_mix_arena2.bin                     4353024 4db59741f40a8f14020f80002b15a7f2c810227844d9a9f1a71f638e8c7cad0e
+m257_a1_blk.bin                       1315840 2a0bcf6fe3257734bcb75477053be5fe4495539af8fe38e320f308d2fe5e3f3e
+m257_a1_bo.bin                        1315840 e26d03486c0d5ed997878fe8b17ad412a30562788f663cd4e3965e32409d749c
+m257_a1_hcp.bin                       5263360 96434d66dbf4f82fd1fd27fe469baffa41f393ebc7f200a0c17450e2fc20dd3c
+m257_a1_hin.bin                       5263360 310cd858d285693a830034fe999e6767c14bf8854b8f9ac9e9d9848001bcb50c
+m257_a1_ij.bin                           8224 62b22f8ae572c61af28219b3a465fb90a7356eb566410736d2515f8ccb228d6e
+m257_a1_ij_handoff.bin                   8224 dc68d5cbdbd7c3664abc3b29d7a6136d3fa754d064a0eb32c57642b2315d3866
+m257_a1_injw.bin                        32896 7831be9f83a6e1815b04aa1b8a2bd4a71035ebd4d8839a9d80d8043e23eb537d
+m257_a1_rstd.bin                         4112 2eeeeae755f1f56fe1423d1d51033da6287a215b0db7e2feabf279882a4da8b0
+m257_a2_blk.bin                       1315840 9cf46c79f05706d0c860e87e9d01a54bedeec0c5c9b7c4202aa573b1e30ccf79
+m257_a2_bo.bin                        1315840 23dd70163ecb621eab9c81d946e31c44045e1b0cc385617e29e103c278546dec
+m257_a2_hcp.bin                       5263360 766ba2f3576978bf00c3bb305e9efa10600ed843180706eec6b67236dcafd7be
+m257_a2_hin.bin                       5263360 96434d66dbf4f82fd1fd27fe469baffa41f393ebc7f200a0c17450e2fc20dd3c
+m257_a2_injw.bin                        32896 7fd18f66892089e5cde88da2f7d89a4cbe5e49b1f067e5f314b6ee67fe072575
+m257_a2_rstd.bin                         4112 fc152733306e018668d1245f81f7b05318574422a490e8e992e890087af2f5e2
+m257_arena1.bin                       9595904 6f5b97035b3e838bbeb460a72a50611b9fdcce353cb2f51a44d7a1a73fa87d9e
+m257_arena2.bin                       9595904 a8804bf6357c41674d41f91841967cc15aa9aca6e4373d78335d3b96f9dd53bc
+m27_case_m1.txt                           113 de10ae93dbd853433130df96cd1a6ba198b49aa0ac8cca925c3f0cf30050c5db
+m27_case_m1_conly.txt                     119 05af1b1780ae2d07872213f739849519c5dc7775d23182a5de3c4c2681e9d13f
+m27_case_m1_mix.txt                       117 b9a2e490829b48240ed3054f64de6ec09b25def2a2e2ef5b4f5a5c8dc217eae1
+m27_case_m257.txt                         118 0c75892320b5162e0eab9a7331f2ff14986f41c8a6628665f3529b1644fb2f0d
+m27_case_m33.txt                          115 8c0c5216443f949befaaabcb8b3292dfd9c56536eb8036eb0a3186397aa4e3eb
+m27_case_m4097.txt                        243 59bccf2769fef8c187a77646a09c77538df81f123b350ce33131a3be7fb1a01e
+m27_case_m4097_mix.txt                    251 c23ad6dc6b20f4cacda2987ec6339eb15e759b87bb0ea0ce351a47058e5c4d7c
+m27_case_m64.txt                          115 7ede6e4fcbe631a9566ac5fd587d1ce881d9009afecfd9368a92a74a0935383f
+m27_case_m9.txt                           113 856efaba3773f4670535df433afc9f35c8468ee1fb22a914ed5a065e9b7be087
+m27_cases.txt                              96 dee206c923d48d0b3165ae8b08bd62ca8f6b9ca3f06791be55229d8faa803f95
+m27_layout_m1.txt                         777 547dc63db070f84432e4db482cd99db9b9eaba6395b2c2a0565677a5a71ff91c
+m27_layout_m1_conly.txt                   783 3e9c377023f92cca357026cc10df31e71d9f70d3ef24fe66330eaa36abba8dcc
+m27_layout_m1_mix.txt                     781 15e8daa4c22ef1897ff6247f4cfdd7e7321092c6e0fc10d623659d5028430236
+m27_layout_m257.txt                       782 d8035ffa0edf5726c0b28033ccbeeb6227b9a2652a1dcedd6c7f83e9cc91d3a0
+m27_layout_m33.txt                        779 6d6f7ad5cfb1c5671c0291325f9672f4bd91ab1e5ebdae9b3ecd014284ca757d
+m27_layout_m4097.txt                      786 83d00653171de3c32097d2fef742bcb6c941bda5d7730725fec972922522af4e
+m27_layout_m4097_mix.txt                  790 81f6ab6dfec9f7a70d0e25178d75ba25495e30e6e8bfc1c501d64c6889ebc676
+m27_layout_m64.txt                        779 f1a50f0562e5d87425dc42cf145c3dcaae955a6a003453d7f6943af839d183fa
+m27_layout_m9.txt                         777 116ebbbbb3927b44a6dcff187105f2c8e8e2366460d354661ad41f705732c615
+m33_a1_blk.bin                         168960 9a933f21b7d626e42620387c79f13b60c3d780abddd645ee91d20556d043c83b
+m33_a1_bo.bin                          168960 80ffeaf8f2b212310891b5b77278842e0b55d661f504b9508dabe1951fae7619
+m33_a1_hcp.bin                         675840 82abc09231631ca32b63765c32563124e888a14419932427f85b215c5a40cc54
+m33_a1_hin.bin                         675840 383552382c5157999b2cb4113a2a824691abce67112c8ae52a2dd6b978f86abf
+m33_a1_ij.bin                            1056 35e6c6adc7ff517cadf99d6131e23d02ee62a0199138c810afdf83cfd849431a
+m33_a1_ij_handoff.bin                    1056 a8290a7bfae544609a8f5cb2eecdfc914c4971a0234d91e2e6a9b818ce8d9038
+m33_a1_injw.bin                          4224 296fa2b5d00ae08359aefbc23e90b53b1a47ac9a3b1f898f7bf90f73ba8d02b7
+m33_a1_rstd.bin                           528 ea427e0881c87a704c4cc3abb29da7f692a1d1d650ef348e30f012df99507ab0
+m33_a2_blk.bin                         168960 3021673e8d90cadb18e1032d97206148094213e876e9859547d7d35303d416c2
+m33_a2_bo.bin                          168960 bd93a3098f7a044d05f4f8965755638d583dd32f2555402d1ea73f4891d877f8
+m33_a2_hcp.bin                         675840 a928752f018c58eecadf5dae1bc2b49134d0a93eb533db66ee45466e934229e3
+m33_a2_hin.bin                         675840 82abc09231631ca32b63765c32563124e888a14419932427f85b215c5a40cc54
+m33_a2_injw.bin                          4224 1120a9cca78d77ba580e8feb8fa9bd7438c6635f242c34ecf6b7a5c322c0309e
+m33_a2_rstd.bin                           528 b11ca05bed587b45e7056d4534d6343d37cd6de460e36dee59606a2122cacd89
+m33_arena1.bin                        5008384 0ffcdf192c27ddd8c1852c18bcd4198c7f05851e43b6015c044cfa29fb3dfe87
+m33_arena2.bin                        5008384 38de7ed549ee7e7868452ddf47a3eaea9916a76113c1e16d52977b5e98e32473
+m4097_a1_blk.bin                     20976640 ac388a584497dcf955142b85f2bf0546482d35d7829f3a6c0c5668404dff6cf7
+m4097_a1_bo.bin                      20976640 03b76a4a8ad78d2cea4e31dca7a8bb8e5574b376847d6c39229e46022c394ab6
+m4097_a1_hcp.bin                     83906560 72d9326be98f1c4823b5264341c34a6a7b9b82d93b77ce083e745922d0683ac3
+m4097_a1_hin.bin                     83906560 09426b7deaf2e1fe643bdddaa88ddde1d30f1bea657e731d656fd3e3d841a975
+m4097_a1_ij.bin                        131104 e840fe15de8539e7ea056dc2542364cbd7941f965159fa886971bf13be1074ab
+m4097_a1_ij_handoff.bin                131104 3e7dfffc1cb800021383e3d020c04a9c9a4d726f218347941c562eed7f58fb03
+m4097_a1_injw.bin                      524416 3935c38c9c478d5c217ce014ffba733f8105b3b59140d1b504dcfd11125027f5
+m4097_a1_rstd.bin                       65552 4d409539adfddc31ccf71f604bcbb958bcd6991264f55b3219da59da34820e00
+m4097_a2_blk.bin                     20976640 f91e83513171010e71c0199d8da57dc9af716732dbebd012f0a99f9b11881c90
+m4097_a2_bo.bin                      20976640 ea8f02ca084f8f9cce3ba1cab125bb00e665c641b4a14d10833fd94b8a008141
+m4097_a2_hcp.bin                     83906560 df4a66b5148920af7a1163c53e32e5fbc2ef2b184b72ae984d621b1025c908a1
+m4097_a2_hin.bin                     83906560 72d9326be98f1c4823b5264341c34a6a7b9b82d93b77ce083e745922d0683ac3
+m4097_a2_injw.bin                      524416 6096e606a2d4138bbb55f37a6334bd22920cfba0f49f1a028c8ad3f9124cf809
+m4097_a2_rstd.bin                       65552 9d0eb595e1db5657ca27a312ef489acbf48600ba2bcb611f48d55d4901f557d7
+m4097_mix_a1_blk.bin                 20976640 0c6e890f0c60136b06f74f89da6af6173a2f6b66db9f78f51bd0cdb7e16476b9
+m4097_mix_a1_bo.bin                  20976640 03b76a4a8ad78d2cea4e31dca7a8bb8e5574b376847d6c39229e46022c394ab6
+m4097_mix_a1_hcp.bin                 83906560 c516184cdac82e7d56142bb27334dfff6f117d99dca3aa2d3cbbd1efeac613df
+m4097_mix_a1_hin.bin                 83906560 09426b7deaf2e1fe643bdddaa88ddde1d30f1bea657e731d656fd3e3d841a975
+m4097_mix_a1_ij.bin                    131104 e840fe15de8539e7ea056dc2542364cbd7941f965159fa886971bf13be1074ab
+m4097_mix_a1_ij_handoff.bin            131104 5009e1f460dac65d52186da811f1fe70d5be79d7959045534bc9688f35c9c1b5
+m4097_mix_a1_injw.bin                  524416 32db475759c07bfd93865056d5feda276c1bd38321a88707e337fcd0567ee1fe
+m4097_mix_a1_rstd.bin                   65552 cf4d5923b1b0a5f5969d30a7761dde2ac1cd93b478316e96e90777bcd8f89642
+m4097_mix_a2_blk.bin                 20976640 f0bdc859bae76f315ba30935eab86413412b3aba28c351c710aadef93da97501
+m4097_mix_a2_bo.bin                  20976640 ea8f02ca084f8f9cce3ba1cab125bb00e665c641b4a14d10833fd94b8a008141
+m4097_mix_a2_hcp.bin                 83906560 b9527cc0171f2d25239f367353f43c7382f274ab0edc9522d4da21abc3d11a6b
+m4097_mix_a2_hin.bin                 83906560 c516184cdac82e7d56142bb27334dfff6f117d99dca3aa2d3cbbd1efeac613df
+m4097_mix_a2_injw.bin                  524416 d55b8a2a7cadfc45f22ab1062bb8a6c51473b9caf6d920ecee1f74bdee06fd05
+m4097_mix_a2_rstd.bin                   65552 ac1d2bed99b587b88b7e4272dabb78ea4e0afbeb08f800fb6c54cc3b237311c1
+m64_a1_blk.bin                         327680 c2f28c9e0dea6a8d3c2fe7ee205feb92fbf7d34d9cfe6739495ae07b06075ef5
+m64_a1_bo.bin                          327680 3ce74f4c29bc68e29aec8419a996b6a5cad88b0e10be47d441b2937ebe9afb4a
+m64_a1_hcp.bin                        1310720 09563864503126b7ce0e2bdb668e2cc573c6eb90d041f3c0c61cca614e10cf38
+m64_a1_hin.bin                        1310720 08e313a6d05261a51565f0b60698f3902d8e15a0bd333beb3ef34f736ddfb768
+m64_a1_ij.bin                            2048 6df2aae13dca3538465e5eeef4a3348a58a0eced21ca2b7a0cf635d666152831
+m64_a1_ij_handoff.bin                    2048 d4a53fde906682761a10407295098fdad0c7d7b00d7438a3559f934f290592b3
+m64_a1_injw.bin                          8192 21c05f5e2215b88c4a6be189d1041fe7c00a0e00f96b39e8d89667b1653ee390
+m64_a1_rstd.bin                          1024 ae27000fd4374aae7f97774616ccec2774ee426e4ba79b15795f38127c19bc75
+m64_a2_blk.bin                         327680 e5ee367471d642bfdeba8bfbecb47916f86459b1088e9fdc4fdec9fff1c3acb9
+m64_a2_bo.bin                          327680 2c973951d739b0ddb9deb94e143b0fce88aa8e2dc8d7a644e848bef0b25ec092
+m64_a2_hcp.bin                        1310720 ac0ec1dd79e07548323400206483bfb5802ad96d639d15b4a17a239cc51068b6
+m64_a2_hin.bin                        1310720 09563864503126b7ce0e2bdb668e2cc573c6eb90d041f3c0c61cca614e10cf38
+m64_a2_injw.bin                          8192 3b716762eabd70bc65bd8c4ce9a2ea07de67068877f552fdb10f4332a16d08e2
+m64_a2_rstd.bin                          1024 f11d093525d4ba87fb9479870cea963ecd1cc244f94bde03a028937f97655d45
+m64_arena1.bin                        5499904 ad20b14d40f28b28f56429cb44f955e6abf7a65e5a4a2175b553b602ac0c2182
+m64_arena2.bin                        5499904 a393af3ed5bb4a11dcb30e0e8267feb8fac93fa111885a43b194156d8f945c59
+m9_a1_blk.bin                           46080 b40fc4c517b98928bcf7dad2eb3aa9de70fa4f0ff9a587cd448fee18549bf85c
+m9_a1_bo.bin                            46080 c0d475e11045eeb3ad7b036008d58184163a2568ab56a1bffaa9a3e9d5c1576b
+m9_a1_hcp.bin                          184320 9ed20486e2df8e283e61ced49b718f0871daaca80bb9b8e7621b75adf40a122d
+m9_a1_hin.bin                          184320 6e7812c93896ca4af479c41fbe6039310c4ce5db90f6e0641cedda7da2ce66b3
+m9_a1_ij.bin                              288 80695671f822df6fcce86f9759cbe04a0b561168ba60d909c6da3b8110850c4f
+m9_a1_ij_handoff.bin                      288 cab3e6052ff263b2c73f487eb289e66c79ea77553884ae514b79d6d6a778e23b
+m9_a1_injw.bin                           1152 0668773aeebcbbd1e7ddb2d867727cd52eab705be90c21884cfe79e5c65df6b8
+m9_a1_rstd.bin                            144 ceab73c9a37b19b9b8db5779c1279c768decf5d94d539579f83b8b0cd6c5f332
+m9_a2_blk.bin                           46080 28d7eaa42d6ee432121b217a2388b9ede940c651b317a10c74dabe3226dfb7aa
+m9_a2_bo.bin                            46080 0d45fb24c59c0cbfdc591de931efcd52588e0154a03b6f87c333e0a7310c9817
+m9_a2_hcp.bin                          184320 994ad9766129427c320138eba23b5e465ea23ba4b7688a336ff0460210346589
+m9_a2_hin.bin                          184320 9ed20486e2df8e283e61ced49b718f0871daaca80bb9b8e7621b75adf40a122d
+m9_a2_injw.bin                           1152 eb23bfba41936b64f052d2bd7574235292ee6465f70640471c62d1d5303b3797
+m9_a2_rstd.bin                            144 44c6476d894a619630936f7e0f522256001de079bdda27530c00281cff4dca4a
+m9_arena1.bin                         4516864 92e843931cd77c34ae443801a56ed1cb50e2ae49082de5a475bf26e11b1f0aaa
+m9_arena2.bin                         4516864 99e91dbe3b7bafaef926c6b2d7f06203bc82a49e705204181a6668d1a11040bf
+w_a1_down.bin                         6553600 0cf47e5bf283e8974c8d24bb3dfc1aef536b7d0daff9ac69f9ae8f214e6aed6a
+w_a1_inj.bin                           327680 cfad778260084adbe04b21534992cfa43b60a3d57f8c0d57cf02e9a86ec3e9f8
+w_a1_norm.bin                           20480 0a3213d5fbfe4043a4800e3ca12cd05c3e7ced745f5aca03fc67ada75d169f98
+w_a1_up.bin                           6553600 6e87eb16e95e4e24cb83f3852d4200bdff7da87d8e8989022fe8012b88c2f978
+w_a2_down.bin                         6553600 9e1587dc09770060822aea6d122ad6be1653e5e8bbddc08f7f87f32e2b3e3785
+w_a2_inj.bin                           327680 9a78972b336c402a1a8ada3ec985a9f94bc7884896c21a4889869f9209048ead
+w_a2_norm.bin                           20480 e1da29c3232c056fb6869275c5cbbe527d591b88dd967e747716e23f1a89a5bb
+w_a2_up.bin                           6553600 83b4b781daafd109692f877649268ab9a3a4b503c343f3d3b981f099cfa5b992
+
+#
+# ===== M190 漂移标注（2026-10-05）=====
+# 范围：本文件「A. 源码与 read-only 依赖」中与当前 main 不一致的记录行。记录值一律保留原样，
+# 仅在此标注「记录值所对应的历史 blob」与「当前 main 实际值」。未改上方任何行值、任何设备代码/注释。
+#   :5  m15_layer_loop/m15_hc_prefill.h
+#       记录 86758008aeb2d13b03abbb32b8f0bfb3199a41eaa102d2281adbcd1298a65b6b == 521ef12（M119 B5 r2）时的 blob
+#       其后 19b0839 / a0cc986（m138 措辞）、95671e7（M187 release 措辞清扫，仅注释）先后改动
+#       当前实际 0fd694737f9ed36d462be82e9782512abae6ffcb267fcd4eed0fdd9da3e2ec31
+#   :7  m15_layer_loop/m15_hc_layer.h
+#       记录 b5b79e7d9a254c036c47b7ab6a7757680155f31d9032391833ed4b3b2cb7649c == 89fe4f6（M58）时的 blob
+#       其后 808fe25 / a0996eb / 021960b / 3d4847d（M181 hc 生成器 donor->re-lift + BufferID 释放模式统一）先后改动
+#       当前实际 4765b8223ca1fb672cb41f0e0259ee965f9430028fc7ce29bd7c6eb6a39e66b0
+#   :9  m20_hyperconn/check_ref.py
+#       记录 ab56de0a7649ce623593b6900ae60dbd3f6d33eedc032097036446c6e0d575f2 == 0fb048c（M72）时的 blob
+#       其后 92d9c7c（M174 h2.blk 判据门限改分位口径）改动
+#       当前实际 c518c15dfa9682cab49fdfc9a1c8dd064eff3ad628df80a9207c3dcc6059e8c8
+# 复算（当前 main，整文件）：
+#   sha256sum m15_layer_loop/m15_hc_prefill.h m15_layer_loop/m15_hc_layer.h m20_hyperconn/check_ref.py
+# 复算（核对记录值本身，对历史 rev）：
+#   git show 521ef12:m15_layer_loop/m15_hc_prefill.h | sha256sum
+#   git show 89fe4f6:m15_layer_loop/m15_hc_layer.h   | sha256sum
+#   git show 0fb048c:m20_hyperconn/check_ref.py      | sha256sum

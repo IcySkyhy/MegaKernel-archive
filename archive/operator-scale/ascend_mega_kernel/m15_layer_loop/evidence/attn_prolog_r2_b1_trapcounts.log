@@ -1,0 +1,138 @@
+# M88 · B1（`Block1()` 入参单位错）的「25 / 30 条陷阱」——**已在冻结 tip 上用变异复现**
+
+> **口径（r4 复审 P2-2 要求的"不许留一个不可复核的数"）**
+> - 「25 / 30」最早是 **r2 期的观测**（原始日志已随 `/tmp` 清理丢失，**那份日志不在仓里**）。
+> - **r4 已在冻结 tip 上把它重新观测出来**：照 §3 的配方做一处变异（把 `Block1(字节)` 改回
+>   `Block1(块数)`）⇒ `dbg=6` 得 **25**、`dbg=7` 得 **30**，与 §2 的推导和 r2 的观测**三者一致**。
+> - 所以现在这份数是**可复核的**：命令、变异点、读数都在下面；**不是**"历史上看到过"。
+
+---
+
+## 0. r4 在冻结 tip 上的**重新观测**（原始读数）
+
+```
+# ① 冻结 tip 源码复制到 /tmp（不在 worktree 里改）
+cp -r <wt>/m15_layer_loop /tmp/b1mut && cd /tmp/b1mut && rm -rf build
+# ② 只回退 B1 一处：把「字节」改回「块数」（共 3+2+1 = 6 处）
+#    Block1(D * 2u) → Block1(D * 2u / 32u)；Block1(bytes) → Block1(bytes / 32u)；
+#    Block1(CS_ROW_BYTES) → Block1(CS_ROW_BYTES / 32u)
+# ③ 构建（rc=0） + 跑（跑前 npu-smi info）
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j4
+for d in 6 7; do M15_AP_DBG=$d timeout 250 ./build/m15_layer_loop <manifest> prolog > dbg$d.log 2>&1; done
+# ④ 数陷阱
+grep -c 'errcode:(286)' dbg6.log     # ⇒ 25
+grep -c 'errcode:(286)' dbg7.log     # ⇒ 30
+```
+
+**实跑读数（r4，2026-09-27）**：
+
+```
+回退 B1：改回块数 3+2+1 处
+BUILD OK
+dbg=6 rc=1 陷阱(errcode 286)=25
+dbg=7 rc=1 陷阱(errcode 286)=30
+```
+
+样本行（`dbg=6` 的第一条陷阱）：
+```
+The extend info: errcode:(286) errorStr: The trap instruction reports an error. subErrType: 0x4.
+```
+两次跑都以 `rc=1`（该变异档下判据本就大面积 FAIL）与 `===== FAILURES PRESENT =====` 结束。
+
+**并发背景（如实记）**：跑前 `npu-smi info` 显示**另有一个 agent 的 `m15_layer_loop` 在跑**
+（pid 50840，HBM 6797 MB）——塔的纪律要求"跑前确认无同名进程"，**本次没做到**（我的两次跑与它并行）。
+两次跑都正常结束并给出上述计数，但**这一条并发背景必须一并读**：若将来要更强的证据，应在真正空闲时重跑。
+
+（`/tmp/b1mut` 已删除；两份原始日志留在 `/tmp/b1keep/`，**未入库**——它们是可再生的：配方在上面。）
+
+---
+
+## 1. 变异是什么
+
+r2 以前 `AivNormRope` / `AivCopy` 里的搬运写的是**块数**而不是**字节**：
+
+```cpp
+DataCopy(inL, inG, Block1(D * 2u / 32u));     // ✗ 传的是块数
+DataCopy(buf, s,   Block1(bytes / 32u));      // ✗ 传的是块数
+```
+
+而 `Block1` 的契约是**字节**（`m15_gdn_layer.h:91-97`）：
+
+```cpp
+__aicore__ inline AscendC::DataCopyParams Block1(uint32_t bytes)
+{
+    if ((bytes & 31u) != 0u) {
+        AscendC::Trap();   // 非 32B 整数倍必须走 DataCopyPad，这里防呆
+    }
+    return AscendC::DataCopyParams{1, static_cast<uint16_t>(bytes / 32), 0, 0};
+}
+```
+
+⇒ **陷阱判据 = 被传进去的那个数不是 32 的倍数**。（修法：传 `Block1(D * 2u)` / `Block1(bytes)`，即真字节数。）
+
+## 2. 数一遍（**这一步是可在 tip 上复核的推导**）
+
+设备上是 28 AIC + 56 AIV；AIV 的 `GetBlockIdx()` = `bid`，本探针的按头分派是（`m15_attn_prolog_probe.h`）：
+
+| bid | 干什么 | 会发出哪些 `Block1` 调用 |
+|---|---|---|
+| `0..23` | q 头 `bid`：`AivNormRope<HD>`（D=256）+ gate 抄写（256 elt） | norm/rope 4 处 + 抄写 2 处 |
+| `24`、`25` | k 头 0/1：`AivNormRope<HD>` | norm/rope 4 处 |
+| `26` | v 抄写（512 elt） | 抄写 2 处 |
+| `27..30` | indexer q 头 0..3：`AivNormRope<IDX_D>`（D=128） | norm/rope 4 处 |
+| `31` | raw k 抄写（128 elt） | 抄写 2 处 |
+| `32..55` | 无活 | — |
+
+被传进 `Block1` 的数（**变异档下 = 块数**）与该数是否触发 `Trap()`：
+
+| 调用点 | 实参 | 变异档传的值 | `值 & 31` | 陷阱？ |
+|---|---|---|---|---|
+| `AivNormRope` D=256：`inL`/`wL` | `D*2 = 512` B | `512/32 = 16` | 16 | **是** |
+| `AivNormRope` D=256：`outG` | `D*2 = 512` B | 16 | 16 | **是** |
+| `AivNormRope` D=128（idx） | `D*2 = 256` B | `256/32 = 8` | 8 | **是** |
+| `AivNormRope`：`csL` | `128` B | `128/32 = 4` | 4 | **是** |
+| `AivCopy` gate | `256*2 = 512` B | 16 | 16 | **是** |
+| `AivCopy` v | `512*2 = 1024` B | `1024/32 = 32` | **0** | **否**（这一档不咬） |
+| `AivCopy` kraw | `128*2 = 256` B | 8 | 8 | **是** |
+
+⇒ 陷阱数 = **执行了至少一次会咬的 `Block1` 的核数**（每个核只报一次 fault）：
+
+- **`dbg=6`（跳过 norm/rope，只留抄写）**：bid `0..23` 各做 gate 抄写（咬）= **24**，
+  bid `26` 做 v 抄写（**不咬**），bid `31` 做 kraw 抄写（咬）= **1** ⇒ **24 + 1 = 25** ✅
+  与 r2 观测的 **25**、以及 **r4 的复现（§0）**都一致（且解释了"为什么是 25 而不是 28"：
+  `v` 那一档 `1024/32 = 32 ⇒ 32 & 31 = 0`，不咬）。
+- **`dbg=7`（跳过抄写，只留 norm/rope）**：bid `0..23`（24）+ `24,25`（2）+ `27..30`（4） = **30** ✅
+  与 r2 观测的 **30**、以及 **r4 的复现（§0）**都一致（= 全部会跑 `AivNormRope` 的核数）。
+
+（`dbg` 的语义见 `evidence/attn_prolog/README.md` §5d；本节引用的闸是
+`if (dbg != 6u) { Run(); }` 与 `if (dbg != 7u && dbg != 8u) { AivCopy(...); }`。）
+
+## 3. 复观察配方（**r4 就是照它做的** ⇒ 想重跑就照抄；§0 是那次的读数）
+
+```bash
+# ① 取 tip 源码到 /tmp 副本（不在 worktree 里改）
+cp -r <wt>/m15_layer_loop /tmp/b1mut && cd /tmp/b1mut
+# ② 只改回 B1 一处（把「字节」改回「块数」）
+sed -i 's/Block1(D \* 2u)/Block1(D * 2u \/ 32u)/; s/Block1(bytes)/Block1(bytes \/ 32u)/' m15_attn_prolog_probe.h
+sed -i 's/Block1(CS_ROW_BYTES)/Block1(CS_ROW_BYTES \/ 32u)/' m15_attn_prolog_probe.h
+# ③ 构建 + 跑（**跑前必须 npu-smi info 确认无同名进程**；单次峰值 host RSS ≈ 15.6 GiB）
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j4
+for d in 6 7; do M15_AP_DBG=$d timeout 250 ./build/m15_layer_loop <manifest> prolog > /tmp/b1mut/dbg$d.log 2>&1; done
+# ④ 数陷阱（errcode 286 = "The trap instruction reports an error"）
+grep -c 'errcode:(286)' /tmp/b1mut/dbg6.log   # 期望 25
+grep -c 'errcode:(286)' /tmp/b1mut/dbg7.log   # 期望 30
+rm -rf /tmp/b1mut
+```
+
+**本文件的性质（r4 定稿，三段各按事实写）**：
+- **§0 是观测**：r4 在**冻结 tip** 上照 §3 的配方跑出来的**原始读数**（`25` / `30`）。
+- **§1/§2 是推导**：只依赖"把 B1 改回去"这一处变异，不需要设备 ⇒ **在 tip 上可核**。
+- **§3 是配方**：r4 用过它的就是 §0 那一次；照抄即可重跑。
+- **三源一致**：r2 期的历史观测（原始日志已随 `/tmp` 清理丢失）＋ §2 的推导 ＋ §0 的 r4 复现，
+  三者都给 **25 / 30**。
+- **一处仍未做到的（如实记）**：§0 那两次跑之前 `npu-smi info` 显示**另有一个 agent 的
+  `m15_layer_loop` 在跑**（pid 50840）——塔的环境纪律 A 要求"每一步之前都确认 NPU 上没有别的同名进程"，
+  **本次没有做到**（见 §0 的并发背景段）。读数是好的，但那个动作**不安全**；若要更强的证据，
+  应在真正空闲时重跑。

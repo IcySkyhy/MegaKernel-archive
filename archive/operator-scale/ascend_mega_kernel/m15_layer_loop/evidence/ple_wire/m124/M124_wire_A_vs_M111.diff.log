@@ -1,0 +1,12 @@
+# M124：层路径 A 档（`M15_PLE_WIRE=1 M15_PLE_STAGE=15`）与 M111 归档读数的逐行对比
+# 归档侧 = `m15_layer_loop/evidence/ple_wire/A_body_stage15.log`（M111 tip）
+# 本侧   = `M124_wire_A.log`（M124 tip，③ 已改 cube）
+# 命令： grep -E "^\[m15\]   Pw\.|Pw\.wired\.delta|判定项" <log>
+
+13c13
+< [m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Pw 10 + Kv 0 + Prolog 0 + AttnWire 0 = 142 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+---
+> [m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Pw 10 + Kv 0 + Prolog 0 + AttnWire 0 + Pf 0 = 142 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+
+⇒ 10 条 Pw 判定行 + Pw.wired.delta 读数**逐行相同**；唯一差异是判据分账行里的 `+ Pf 0`
+   —— 那是 M110（prefill 契约，晚于 M111 合入）新增的**计数器**，与本 mission 的改动无关。

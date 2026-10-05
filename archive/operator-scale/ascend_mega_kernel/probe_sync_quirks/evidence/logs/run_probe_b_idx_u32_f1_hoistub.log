@@ -1,0 +1,2 @@
+[probe B] probe_b_idx_u32_f1_hoistub  form=1 idx=uint32_t sizeof=4 base=200 n=8 reps=50
+[probe B] probe_b_idx_u32_f1_hoistub  RUN FAIL：8/400 点不符；首个不符 rep=0 i=0 得到 0.883777 期望 300

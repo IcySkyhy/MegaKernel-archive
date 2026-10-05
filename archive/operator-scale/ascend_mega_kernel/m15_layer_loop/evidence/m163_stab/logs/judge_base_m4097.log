@@ -1,0 +1,7 @@
+[Pf.gdn] T=4097 o元素 25171968 ht元素 786432
+  dev  o 非有限 8374400 / ht 非有限 262144（其中 NaN：o=8374400 ht=262144）
+  ref_stab(fp64) 非有限 0（自洽要求 0）
+  ref_naive(fp32) o NaN = 8374272；XOR(NaN(dev),NaN(naive_fp32)) = 128
+  XOR(NaN(dev),NaN(ref_stab_fp64)) = 8374400
+  有限元素 |Δ|(dev,ref_stab): o 超界 0/25171968 max=7.203e-04 | ht 超界 0/786432 max=5.543e-07
+  ⇒ FAIL

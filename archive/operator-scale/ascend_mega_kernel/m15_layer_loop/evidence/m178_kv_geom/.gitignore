@@ -1,0 +1,15 @@
+# M178 evidence —— 只入日志与脚本；挡掉 dump / 大二进制 / 中间产物
+*.bin
+*.dump
+*.dat
+*.npy
+*.npz
+*.pt
+*.onnx
+*.o
+*.so
+*.a
+core
+core.*
+out/
+tmp/

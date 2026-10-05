@@ -1,0 +1,87 @@
+diff --git a/m15_layer_loop/m15_layer_kernel.h b/m15_layer_loop/m15_layer_kernel.h
+index aaeaee9..51d8f3b 100644
+--- a/m15_layer_loop/m15_layer_kernel.h
++++ b/m15_layer_loop/m15_layer_kernel.h
+@@ -57,6 +57,9 @@
+  *      PIPE_MTE2（挡本核后续读），于是「本核写完成 → 全体到齐 → 本核才开始读」三条同时成立。
+  *      AIC 侧不需要相位边界同步：AIC 在相位之间没有数据依赖（各段的 A 操作数由 AIV 产出，
+  *      走各段自己的 mode-2 交接），核内只需第 1 条的 PipeBarrier。
++ *      **例外（M164/M1）**：H2 → 相位 B 的 **MoE router 输入** `pfHcBlk1` 是本段的**段输入**
++ *      （全体 AIV 写、每个 AIC 读 = 跨类型 all-to-all），不经过 MoE 段自带的 mode-2 交接 ⇒
++ *      该边界对 AIC 补一条 mode2 + 全体 AIC mode0 的握手（见 §1b `M15L_H2ToBHandshake`）。
+  *
+  * 入口符号（docs/15 §5 方案 B：单 TU、mode 由 host 选符号、kernel 内无 m 分叉）：
+  *   m15_layer_kernel_gdn / m15_layer_kernel_attn          —— 两相位（M40 交付形态）
+@@ -361,6 +364,60 @@ __aicore__ inline void M15L_PhaseBoundaryAiv()
+     AscendC::CrossCoreWaitFlag<M15M::CC_MODE0, PIPE_MTE2>(FLAG);
+ }
+ 
++// ============================================================
++// 1b. M164：H2 → 相位 B 的 **跨类型 all-to-all** 握手（AIV→AIC）
++// ============================================================
++// 为什么必须有（M1，M152 的主候选机理）：H2 的产出 `pfHcBlk1` 由**全体 AIV** 在
++// `M15H::HcPF::RelocatePass` 里以 MTE3 写 GM；相位 B 的 AIC router（`M15MP::MoePrefillChain::
++// ProcessAic` 开头的 `router.RunTile`，其 x = `mp.xLayer` = `A.pfHcBlk1`）读**整块** x
++// （全部 m 行）⇒ 依赖是 **all-AIV → 每个 AIC**（all-to-all）。而相位边界
++// `M15L_PhaseBoundaryAiv<FLAG_HC2_BOUND_AIV>` 是**只含 AIV 的 mode-0 屏障**，AIC 不参与
++// ⇒ AIC 可在 AIV 尚未写下 `pfHcBlk1` 时读到 host memset 的 0xCD 毒值。
++// （§1 顶部「AIC 侧不需要相位边界同步」那句只对**段内自带**的 mode-2 交接成立：MoE 段自带的
++//   AIV→AIC 交接从 S5（quantA → GEMM）起；router 的输入是**段输入**，不经过它。）
++//
++// 形态（人类口径 + `docs/05 §2` 硬规矩，逐字）：
++//   「mode 0 仅同类型……跨类型 all-to-all 的标准组合：**AIVs→AIC（mode 2）→ 全体 AIC barrier
++//     （mode 0）**」。故：
++//     · AIV：写完 `pfHcBlk1`（相位边界已把本核 MTE3 写排空）→ set mode2；
++//     · AIC：先 mode2 wait（每个 AIC 等它**配对的 2 个 AIV**：2 set ↔ 1 wait）→ 再全体 AIC
++//       mode0 barrier（保证所有 AIC 都收到各自配对 AIV 的信号 ⇒ 全体 AIV 都写完）。
++//   只用 `CrossCoreSet/WaitFlag`（"set cross core" 系列），**不用 SetFlag/WaitFlag**；核内生命周期
++//   一律 BufferID（本函数不碰）。
++//
++// flagId（**权威登记待落 `m15_layer_resources.h` §4/§4e；本头先就地定义 + 断言**，M164 已报塔）：
++//   6 = mode2 握手；7 = 全体 AIC mode0 barrier。
++//   相邻性（同核相邻同步点必须不同号）：
++//     AIV mode2：H2 的 10/11（m15_hc_layer.h:506-507）→ **6** → MoE 的 0（m15_moe_prefill.h:1227）
++//     AIC mode2：H2 的 10/11 → **6** → MoE 的 0（m15_moe_prefill.h:1293）
++//     AIC mode0：H2 的 0/1/2/3（m15_hc_layer.h:530-547）→ **7** → MoE 的 8（m15_moe_prefill.h:1291）
++//   空闲性：prefill 入口（KIND_GDN，H1/A/H2/B）里 AIV 占 {0-5,8-15}、AIC 占 {0-5,8-11}
++//   ⇒ 两核同时空闲的只有 {6,7}；6/7 现仅被 **decode** GDN 用（m15_gdn_resources.h:156-157）。
++//   ⚠ 若 attn-prefill 的 B3 接线（AIC mode2 会用 4/6/7，m15_layer_resources.h:981-983），到那时需重审。
++constexpr uint16_t FLAG_H2B_A2C_M2 = 6;      // AIV → 配对 AIC：H2 的 BLK（pfHcBlk1）已写完
++constexpr uint16_t FLAG_H2B_AIC_BAR = 7;     // 全体 AIC mode-0 barrier
++static_assert(FLAG_H2B_A2C_M2 < 16u && FLAG_H2B_AIC_BAR < 16u, "flagId 池是 0..15");
++static_assert(FLAG_H2B_A2C_M2 != FLAG_H2B_AIC_BAR, "mode2 握手与 AIC barrier 不得同号");
++static_assert(FLAG_H2B_A2C_M2 != FLAG_HC0_BOUND_AIV && FLAG_H2B_A2C_M2 != FLAG_HC1_BOUND_AIV &&
++                  FLAG_H2B_A2C_M2 != FLAG_HC2_BOUND_AIV && FLAG_H2B_AIC_BAR != FLAG_HC2_BOUND_AIV &&
++                  FLAG_H2B_AIC_BAR != FLAG_HC0_BOUND_AIV && FLAG_H2B_AIC_BAR != FLAG_HC1_BOUND_AIV,
++              "H2→B 握手与相邻的相位边界（AIV mode0 8/9）不得同号（同核相邻）");
++
++template <uint16_t M2_FLAG, uint16_t AIC_BAR_FLAG>
++__aicore__ inline void M15L_H2ToBHandshake()
++{
++    if ASCEND_IS_AIV {
++        AscendC::CrossCoreSetFlag<M15M::CC_MODE2, PIPE_MTE3>(M2_FLAG);
++    }
++    if ASCEND_IS_AIC {
++        // wait 挂 PIPE_S：其后紧接 `CrossCoreSetFlag`（本次接入后紧接的是 AIC 的 MoE 段 S2 set），
++        // 触发 docs/05 §2 的「链式 wait→set 必须挂 PIPE_S」例外（与 m15_moe_prefill.h:1292 同款）。
++        AscendC::CrossCoreWaitFlag<M15M::CC_MODE2, PIPE_S>(M2_FLAG);
++        AscendC::CrossCoreSetFlag<M15M::CC_MODE0, PIPE_MTE2>(AIC_BAR_FLAG);
++        AscendC::CrossCoreWaitFlag<M15M::CC_MODE0, PIPE_S>(AIC_BAR_FLAG);
++    }
++}
++
+ // ============================================================
+ // 2. 相位 B（MoE 段）的指针组装 —— 融合路径与「MoE-only 对照」共用
+ // ============================================================
+@@ -757,6 +814,11 @@ __aicore__ inline void M15L_PrefillPhaseB(const LayerArgs& A)
+     const uint32_t stP = (A.pfStageMask == 0u) ? PF_STAGE_ALL : A.pfStageMask;
+     const bool h2On = (stP & PF_STAGE_H2) != 0u;
+     __gm__ uint8_t* const moeIn = (h2On && A.pfHcBlk1 != nullptr) ? A.pfHcBlk1 : A.xLayer;
++    // M164（M1 修法）：H2→B 的相位边界只同步 AIV，AIC 的 router 会读 `moeIn`（H2 的产出，
++    // 全体 AIV 写、每个 AIC 读 = 跨类型 all-to-all）⇒ 必须先握手再让 AIC 进 `ProcessAic`。
++    // 放在块循环**之前**：整个 `pfHcBlk1` 在上面 `M15L_HcPrefillBoundary(1u, A)` 里已写全，
++    // 这里只需一次（H2 未开时 `moeIn` 不依赖 AIV，握手仍按两核配平照做、无副作用）。
++    M15L_H2ToBHandshake<FLAG_H2B_A2C_M2, FLAG_H2B_AIC_BAR>();
+     // M140：`MoePrefillChain` 按 `MT = 64` 行单块编排 ⇒ m > MT 时在这里按块循环（m26 README §5.4 的
+     // 「m > MT 的按块循环」由本挂载点承担）。每块行指针按 `MT*HIDDEN*2` 推进、`m` = 本块行数；
+     // 块间一条 `PipeBarrier<PIPE_ALL>` 排空本核两 pipe（段体自己的核间 set/wait 在一个块内配平）。

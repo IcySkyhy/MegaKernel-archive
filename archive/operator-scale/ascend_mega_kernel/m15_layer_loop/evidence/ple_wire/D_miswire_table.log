@@ -1,0 +1,246 @@
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 48 层，token 3，reps 10，权重=checkpoint，dump=关
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+[m15] device 缓冲：weights 4174.15 MB（36 层 × 115.95 MB）+ states 115.5 MB + ws 5.3 MB + MoE 权重 628.4 MB（48 层 × 13.09 MB）+ 融合 ws 12.94 MB（GDN 5.26 + MoE 7.69）
+[m15] M58 hc 缓冲：权重 1318.63 MB（49 槽 × 26.91 MB/槽；49 = 48 个层槽（每层 2 个边界子槽 × 13.46 MB）+ 1 个全局 mixer 槽，该槽只用到 13.13 MB（norm+down+up），槽 stride 仍为 26.91 MB）+ hc ws 452.71 MB（52 槽 × 8.71 MB/槽 = 每层 2 块 + 3 块 scratch + 1 块全局 mixer ws）
+[m15] M65 层链缓冲：pending BO 双缓冲 0.66 MB（2 块 × 327680 B）；三态入口平面复用 hc_hin
+[m15] M82 attention cache 平面（跨 12 个 attention 层长寿，按第 k 层编址 k=0..11）：主 KV 101.06 MB（12 层 × 8.421 MB/层 = 257 页/层 × 32768 B）；compressed 3.16 MB（12 层 × 0.263 MB/层 = 1028 行/层 × 256 B）；raw ring 0.01344 MB（12 层 × 1120 B = 4 行/层 × 280 B）；packed 33.63 MB（4097 行 × 8208 B，**层间复用一块**）
+[m15] 权重装载完成（真实 checkpoint 切片）：前 48 层内 36 个 GDN 层，4174.15 MB → device，耗时 7706.9 ms
+[m15] MoE 段权重装载完成（真实 checkpoint 4 专家切片 + 真实共享专家）：48 层 × 13.09 MB = 628.4 MB → device，耗时 735.9 ms
+[m15] hc 段权重装载完成（真实 checkpoint（hc 权重不量化、原样消费））：本 run H2D 49 槽 × 26.91 MB/槽 = 1318.6 MB（48 个层槽，每层 2 个边界子槽 × 13.46 MB，+ 1 个全局 mixer 槽）；权重区分配 49 槽 × 26.91 MB/槽 = 1318.6 MB → device，耗时 1545.4 ms
+[m15] sha256 自检（NIST 向量："abc" 与 1e6×'a'）：PASS
+
+[m15] ===== 权重来源校验（review P2-1：in_proj/out_proj 独立字节级来源）=====
+[m15]   W.src.L00 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=4be850f53b884949b3b9cb74675f0066d78e53e1ff3a58b117dcda5d125c205d  ckpt-source sha256=4be850f53b884949b3b9cb74675f0066d78e53e1ff3a58b117dcda5d125c205d
+[m15]        out_proj slot sha256=61faf46f03e25a68c83cd45860b97bb50d834b30a200474b1a4d3de1aae5bcfe  ckpt-source sha256=61faf46f03e25a68c83cd45860b97bb50d834b30a200474b1a4d3de1aae5bcfe
+[m15]   W.src.L01 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=7f1a59c50b2c5cc8f5b5d6faff984ea80f76210a90bd28579f60887be90d9249  ckpt-source sha256=7f1a59c50b2c5cc8f5b5d6faff984ea80f76210a90bd28579f60887be90d9249
+[m15]        out_proj slot sha256=6718f11ec1b33d23be15e7bc83d84723f4ddff7cf485d015bfcff43d296a8034  ckpt-source sha256=6718f11ec1b33d23be15e7bc83d84723f4ddff7cf485d015bfcff43d296a8034
+[m15]   W.src.L02 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=c3bcf921144e862eddccf7970b7e47de5106716d0ddf4bf542a18cd6ae883bb7  ckpt-source sha256=c3bcf921144e862eddccf7970b7e47de5106716d0ddf4bf542a18cd6ae883bb7
+[m15]        out_proj slot sha256=ed42e0885ac9f2b73d0ede58ebdc126e1e9a22278c397e556836102a13bb4613  ckpt-source sha256=ed42e0885ac9f2b73d0ede58ebdc126e1e9a22278c397e556836102a13bb4613
+[m15]   W.src.L04 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=5e0c066d40326c18f938197c48338df9d1d5132a8bd715860854989406b07e2a  ckpt-source sha256=5e0c066d40326c18f938197c48338df9d1d5132a8bd715860854989406b07e2a
+[m15]        out_proj slot sha256=9c1ce966b07544cc46b3750315799c97dffdc97074bee6e08a495c5ffa94483a  ckpt-source sha256=9c1ce966b07544cc46b3750315799c97dffdc97074bee6e08a495c5ffa94483a
+[m15]   W.src.L05 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=a23abd015d441f9ef5b55ef80a9748b712b92e5c13e48ef130e644b3eb1852b8  ckpt-source sha256=a23abd015d441f9ef5b55ef80a9748b712b92e5c13e48ef130e644b3eb1852b8
+[m15]        out_proj slot sha256=c914dd9180a2933e4780f6689e225d7ea9b44d16c80ecf862c92760e73d8e375  ckpt-source sha256=c914dd9180a2933e4780f6689e225d7ea9b44d16c80ecf862c92760e73d8e375
+[m15]   W.src.L06 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=c2248c9cf3ef7b45d3ab4dea182ffb3b9b82c2e7af12dd09e7eb15d71de89e66  ckpt-source sha256=c2248c9cf3ef7b45d3ab4dea182ffb3b9b82c2e7af12dd09e7eb15d71de89e66
+[m15]        out_proj slot sha256=e941947ef26c77ff5063e03563eedf5bcfe42357ff7ed71b8cda1fe4eb7744b4  ckpt-source sha256=e941947ef26c77ff5063e03563eedf5bcfe42357ff7ed71b8cda1fe4eb7744b4
+[m15]   W.src.L08 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=97a1f31d369ac59b5602fc3b7a8102ec48b8bc3b7c9876b0b3833c5a36365826  ckpt-source sha256=97a1f31d369ac59b5602fc3b7a8102ec48b8bc3b7c9876b0b3833c5a36365826
+[m15]        out_proj slot sha256=3652f0ce3e64dac9d1f768e0d9e196635cfde510418c427ccf0e56a90f840798  ckpt-source sha256=3652f0ce3e64dac9d1f768e0d9e196635cfde510418c427ccf0e56a90f840798
+[m15]   W.src.L09 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=328a18cad7f46021c66c6137907ff00626b936b9c6af6c7107a62fcfd73c4e0c  ckpt-source sha256=328a18cad7f46021c66c6137907ff00626b936b9c6af6c7107a62fcfd73c4e0c
+[m15]        out_proj slot sha256=3055ac719dd134a7be532b384d782ebca73c6c718b2823453de26e02994203c9  ckpt-source sha256=3055ac719dd134a7be532b384d782ebca73c6c718b2823453de26e02994203c9
+[m15]   W.src.L10 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=5ce0077adb5a6cc03c3aba76b7836956a0e2a6413bd4bf996ac79e2537ce542e  ckpt-source sha256=5ce0077adb5a6cc03c3aba76b7836956a0e2a6413bd4bf996ac79e2537ce542e
+[m15]        out_proj slot sha256=05111637e656d121f82cef0eb155331f68cbc21c141489b2c94f7d467207097c  ckpt-source sha256=05111637e656d121f82cef0eb155331f68cbc21c141489b2c94f7d467207097c
+[m15]   W.src.L12 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=214801c9c01f099178ee2eb90650534c3dd6c0529f7a99f2790f7bb2918cce75  ckpt-source sha256=214801c9c01f099178ee2eb90650534c3dd6c0529f7a99f2790f7bb2918cce75
+[m15]        out_proj slot sha256=0050f54b7c2829a11141b6e3eb0458c3058b226d5c286bd512e0171b5a3930f9  ckpt-source sha256=0050f54b7c2829a11141b6e3eb0458c3058b226d5c286bd512e0171b5a3930f9
+[m15]   W.src.L13 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=3048fb07a6c2b2036e5768654334a9cd9642d4ce5421feb6e68523f8888a4159  ckpt-source sha256=3048fb07a6c2b2036e5768654334a9cd9642d4ce5421feb6e68523f8888a4159
+[m15]        out_proj slot sha256=618dc185fe4596ff8b78950db12aa182dfa43f46ebb2e9212166f859c436f503  ckpt-source sha256=618dc185fe4596ff8b78950db12aa182dfa43f46ebb2e9212166f859c436f503
+[m15]   W.src.L14 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=811a70cea3e48cde0c0772efee7cf374cfa30170eb292a1a2adef747514db81a  ckpt-source sha256=811a70cea3e48cde0c0772efee7cf374cfa30170eb292a1a2adef747514db81a
+[m15]        out_proj slot sha256=dc8c8df1a81a7b3dc43ebc87a6bcc6e873864f77df9f9c303bbb4c8bb5e7c8be  ckpt-source sha256=dc8c8df1a81a7b3dc43ebc87a6bcc6e873864f77df9f9c303bbb4c8bb5e7c8be
+[m15]   W.src.L16 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=61fb9584af7b5d3d821826754e2c72d3464b7ce4719dcaa1b414b8c1bf8c514d  ckpt-source sha256=61fb9584af7b5d3d821826754e2c72d3464b7ce4719dcaa1b414b8c1bf8c514d
+[m15]        out_proj slot sha256=59b886e5cb3f169274785e2d049597a906d23f52b272acd79a5b45ebfca6bd3b  ckpt-source sha256=59b886e5cb3f169274785e2d049597a906d23f52b272acd79a5b45ebfca6bd3b
+[m15]   W.src.L17 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=dbd1755fb7a8bbcd90c88e7f7823c8c38a32c93a0071bb88ac21d9a16fe976f0  ckpt-source sha256=dbd1755fb7a8bbcd90c88e7f7823c8c38a32c93a0071bb88ac21d9a16fe976f0
+[m15]        out_proj slot sha256=cc1aa36106edb7c909a20f0f855db852659bf4ff5a15e74e29cd72359d224b9a  ckpt-source sha256=cc1aa36106edb7c909a20f0f855db852659bf4ff5a15e74e29cd72359d224b9a
+[m15]   W.src.L18 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=935a0a23c473c8194b602c2678a98c9f19a066a4f485f4a09c30223cd6446fcb  ckpt-source sha256=935a0a23c473c8194b602c2678a98c9f19a066a4f485f4a09c30223cd6446fcb
+[m15]        out_proj slot sha256=b0cab47e6cf34954adc0221fbef1e395474b1617339d12d648c64033d28d723d  ckpt-source sha256=b0cab47e6cf34954adc0221fbef1e395474b1617339d12d648c64033d28d723d
+[m15]   W.src.L20 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=d8f641e1aaf9afced87b8a36dee072bf320ed4117795af4ed9ed22b953172cfb  ckpt-source sha256=d8f641e1aaf9afced87b8a36dee072bf320ed4117795af4ed9ed22b953172cfb
+[m15]        out_proj slot sha256=08a82cdfda8dfd645be7924f505942d55e780b9d2445b092b447b0c2925816ec  ckpt-source sha256=08a82cdfda8dfd645be7924f505942d55e780b9d2445b092b447b0c2925816ec
+[m15]   W.src.L21 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=37d4446fadc5916871108a7655999e80d985023ba31b24f7863f2e0660b3f4e7  ckpt-source sha256=37d4446fadc5916871108a7655999e80d985023ba31b24f7863f2e0660b3f4e7
+[m15]        out_proj slot sha256=7733353cbacc7938a4d11635f20402efa4ac0f6c219745e028801d09b8dcba1f  ckpt-source sha256=7733353cbacc7938a4d11635f20402efa4ac0f6c219745e028801d09b8dcba1f
+[m15]   W.src.L22 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=7ec52c63ffb5bf1d0d7bcc04b43fa4e21875c65742a634d9273e8c9a371a3f3b  ckpt-source sha256=7ec52c63ffb5bf1d0d7bcc04b43fa4e21875c65742a634d9273e8c9a371a3f3b
+[m15]        out_proj slot sha256=609f8a7be7a7f6c4d8185edb13785c88099198195eb25a6a52c37f88f2ff30c6  ckpt-source sha256=609f8a7be7a7f6c4d8185edb13785c88099198195eb25a6a52c37f88f2ff30c6
+[m15]   W.src.L24 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=edb3777a1c361d4a693153f72638ba5ad0d2c3cf84c37d5b264fffa146baa61c  ckpt-source sha256=edb3777a1c361d4a693153f72638ba5ad0d2c3cf84c37d5b264fffa146baa61c
+[m15]        out_proj slot sha256=4244769a401abb5c0005c8aa83b96b4c9db3dfa4f33de794cdfe1a067300028e  ckpt-source sha256=4244769a401abb5c0005c8aa83b96b4c9db3dfa4f33de794cdfe1a067300028e
+[m15]   W.src.L25 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=9d56e0edb49081ffaf293c164ada0cdb2eb2ca280b7f20e5c68419157f486764  ckpt-source sha256=9d56e0edb49081ffaf293c164ada0cdb2eb2ca280b7f20e5c68419157f486764
+[m15]        out_proj slot sha256=14ae226c6f80d3902254d8b59fcd84a1d20c2f91597e4d86e2a1444025890b05  ckpt-source sha256=14ae226c6f80d3902254d8b59fcd84a1d20c2f91597e4d86e2a1444025890b05
+[m15]   W.src.L26 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=c401e3f64e82561b8e4b3a4555056c5a4f14442ab406a6026fe4ac33f93f7ddb  ckpt-source sha256=c401e3f64e82561b8e4b3a4555056c5a4f14442ab406a6026fe4ac33f93f7ddb
+[m15]        out_proj slot sha256=918b7a263987706b5c0741f90e716f56432fe95e0566dbf9ae54895314e88e4a  ckpt-source sha256=918b7a263987706b5c0741f90e716f56432fe95e0566dbf9ae54895314e88e4a
+[m15]   W.src.L28 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=73d96131fe7933678b0c01ad6fd8d194dc74a1b93cb5eab9b9a223f6805f175a  ckpt-source sha256=73d96131fe7933678b0c01ad6fd8d194dc74a1b93cb5eab9b9a223f6805f175a
+[m15]        out_proj slot sha256=98b35deda3fe809993b33cdd386d08d2a94856adc97b057a525bc9b9d8c34881  ckpt-source sha256=98b35deda3fe809993b33cdd386d08d2a94856adc97b057a525bc9b9d8c34881
+[m15]   W.src.L29 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=d6f42686403d63911729d04c66cb3e43ea4f1580105954ffae35df373b7204ad  ckpt-source sha256=d6f42686403d63911729d04c66cb3e43ea4f1580105954ffae35df373b7204ad
+[m15]        out_proj slot sha256=58fe0b5f6a9e67dccc853205d1abdd6134d9fbc463038155bc3e50e50235caf5  ckpt-source sha256=58fe0b5f6a9e67dccc853205d1abdd6134d9fbc463038155bc3e50e50235caf5
+[m15]   W.src.L30 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=758d5428b0d6fa6b600c05188b43bb9726e979e414a1909670e876523395092d  ckpt-source sha256=758d5428b0d6fa6b600c05188b43bb9726e979e414a1909670e876523395092d
+[m15]        out_proj slot sha256=03e513d91e45563f92829bb08ae353f98464aec6088ef029b1126c88911b4daa  ckpt-source sha256=03e513d91e45563f92829bb08ae353f98464aec6088ef029b1126c88911b4daa
+[m15]   W.src.L32 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=09ef786ce08a91ef869e2e26e8fce728bea84864d852dea5afd7793696d29809  ckpt-source sha256=09ef786ce08a91ef869e2e26e8fce728bea84864d852dea5afd7793696d29809
+[m15]        out_proj slot sha256=2a976a93955d147a4326ae771069328ceb06edb6d82bff34f1ad4d6415edd6a0  ckpt-source sha256=2a976a93955d147a4326ae771069328ceb06edb6d82bff34f1ad4d6415edd6a0
+[m15]   W.src.L33 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=d25718d2648aad3f05e9bc08030ef722a6d43de572f178b3ad48ceb3241fa0fb  ckpt-source sha256=d25718d2648aad3f05e9bc08030ef722a6d43de572f178b3ad48ceb3241fa0fb
+[m15]        out_proj slot sha256=5998275244b2aefb95cbb7d7a937ab1b5c2d5acbef5413274eff6de74105a52b  ckpt-source sha256=5998275244b2aefb95cbb7d7a937ab1b5c2d5acbef5413274eff6de74105a52b
+[m15]   W.src.L34 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=e7983c02fc7313cb899c9296355d568d511a47bf597b95ae7d7e557d45193c14  ckpt-source sha256=e7983c02fc7313cb899c9296355d568d511a47bf597b95ae7d7e557d45193c14
+[m15]        out_proj slot sha256=c1806072dc8613d507910e040e777be25c023f8152bfe7cfd4148cc43c64ae38  ckpt-source sha256=c1806072dc8613d507910e040e777be25c023f8152bfe7cfd4148cc43c64ae38
+[m15]   W.src.L36 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=2a58804633a4df0fa3097c8f9bc339975d8315bdf5785e350f031ab875a5ce42  ckpt-source sha256=2a58804633a4df0fa3097c8f9bc339975d8315bdf5785e350f031ab875a5ce42
+[m15]        out_proj slot sha256=fbce590a766bb9ab453f040327958c85718e3b3f80b242f035b66b9c942b2a03  ckpt-source sha256=fbce590a766bb9ab453f040327958c85718e3b3f80b242f035b66b9c942b2a03
+[m15]   W.src.L37 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=f8f6e28d195c0ef17cd51c830880429c684a92e08475e99fded205d56bd7efd9  ckpt-source sha256=f8f6e28d195c0ef17cd51c830880429c684a92e08475e99fded205d56bd7efd9
+[m15]        out_proj slot sha256=2cedf0765434e9db5e1d10ce991fedfc7983a0d65699ddbab75756dc03b922aa  ckpt-source sha256=2cedf0765434e9db5e1d10ce991fedfc7983a0d65699ddbab75756dc03b922aa
+[m15]   W.src.L38 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=c76d7e8baa92e42c998751f93ffb96d019110a4aaea2e6a75a9f3df142b27e05  ckpt-source sha256=c76d7e8baa92e42c998751f93ffb96d019110a4aaea2e6a75a9f3df142b27e05
+[m15]        out_proj slot sha256=0e174be143f5a08bdd143d2bd1b0ef70afe8cc1126b3fe8df0bf8c0ac00d38d6  ckpt-source sha256=0e174be143f5a08bdd143d2bd1b0ef70afe8cc1126b3fe8df0bf8c0ac00d38d6
+[m15]   W.src.L40 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=d2498af1588e6bb889d12e2e19b831125734b51c2742040cf05ad1d2221abe7a  ckpt-source sha256=d2498af1588e6bb889d12e2e19b831125734b51c2742040cf05ad1d2221abe7a
+[m15]        out_proj slot sha256=62cf6f2085129b8714c2fb8abb8190538176699870804f6a02e24a8ae669e2e9  ckpt-source sha256=62cf6f2085129b8714c2fb8abb8190538176699870804f6a02e24a8ae669e2e9
+[m15]   W.src.L41 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=790abbf7567431fb6058e8e41f55612fbc937f0c737ad2716348d1b828e559c3  ckpt-source sha256=790abbf7567431fb6058e8e41f55612fbc937f0c737ad2716348d1b828e559c3
+[m15]        out_proj slot sha256=65a14b03a43bf9d9ec74155172bc486019cada2961adeb3716e73058171d5284  ckpt-source sha256=65a14b03a43bf9d9ec74155172bc486019cada2961adeb3716e73058171d5284
+[m15]   W.src.L42 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=4aa6a3af33fe55ba48d3477a2cedd6e7e9e702d34b23faeb3009152e51e195ed  ckpt-source sha256=4aa6a3af33fe55ba48d3477a2cedd6e7e9e702d34b23faeb3009152e51e195ed
+[m15]        out_proj slot sha256=896ba39aa0d778ac79d91d3d88ad58cdbf5cc47780297ce908314e7cef28dee3  ckpt-source sha256=896ba39aa0d778ac79d91d3d88ad58cdbf5cc47780297ce908314e7cef28dee3
+[m15]   W.src.L44 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=d1b992cd8ef253e43a17b2f2b884dea929a49209880a8df58ba354dde0a6a497  ckpt-source sha256=d1b992cd8ef253e43a17b2f2b884dea929a49209880a8df58ba354dde0a6a497
+[m15]        out_proj slot sha256=db11bc907d528e7e39de828b882f99472ebc2e60a78d609426be943b150355ae  ckpt-source sha256=db11bc907d528e7e39de828b882f99472ebc2e60a78d609426be943b150355ae
+[m15]   W.src.L45 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=05588b0fac60ff315c7e8314d7c2c6d97a145477136f5a991d7741e25bbf1952  ckpt-source sha256=05588b0fac60ff315c7e8314d7c2c6d97a145477136f5a991d7741e25bbf1952
+[m15]        out_proj slot sha256=e81ba24fc4180ea221b38c65371173b1a0f9528326106be55d9ab068f3329ab9  ckpt-source sha256=e81ba24fc4180ea221b38c65371173b1a0f9528326106be55d9ab068f3329ab9
+[m15]   W.src.L46 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=b6f0c49e31ba26d1c7323539e9f9e02ac9c73f38f89b73253ca2c4e9cd5382db  ckpt-source sha256=b6f0c49e31ba26d1c7323539e9f9e02ac9c73f38f89b73253ca2c4e9cd5382db
+[m15]        out_proj slot sha256=12473e2f114b5fba827dbc0a5d7bec3c2dec8da8776989e6ed23b3e73ecd205f  ckpt-source sha256=12473e2f114b5fba827dbc0a5d7bec3c2dec8da8776989e6ed23b3e73ecd205f
+[m15] 权重来源校验（对照 checkpoint 独立来源）：36 个 GDN 层，slot 逐字节 36 / in_proj 36 / out_proj 36；耗时 3619.0 ms
+
+[m15] ===== MoE 段权重来源校验（独立 pread vs 设备槽位，逐字节 + sha256）=====
+[m15]   M.wsrc.L00                     PASS  slot sha256 dev=131543a0cb7956e72e5091c93a963296666fbc674ce8d5dda5510a08b4428714 ckpt=131543a0cb7956e72e5091c93a963296666fbc674ce8d5dda5510a08b4428714
+[m15]   M.wsrc.L01                     PASS  slot sha256 dev=b235d8ad9ff6697bcc2cfe6b9299339325c7168cd6bdb55c2366155571e08c42 ckpt=b235d8ad9ff6697bcc2cfe6b9299339325c7168cd6bdb55c2366155571e08c42
+[m15]   M.wsrc.L02                     PASS  slot sha256 dev=afbbea25d9fe13f7975f172b1ef2bf7944405d801fda6b9eb3b6f9701b9533d9 ckpt=afbbea25d9fe13f7975f172b1ef2bf7944405d801fda6b9eb3b6f9701b9533d9
+[m15]   M.wsrc.L03                     PASS  slot sha256 dev=086129776c5576c8c3ceda1eba0ca3e041227a14cc9c486fbb8be928a3b0d07c ckpt=086129776c5576c8c3ceda1eba0ca3e041227a14cc9c486fbb8be928a3b0d07c
+[m15]   M.wsrc.L04                     PASS  slot sha256 dev=a11b0af49eeb5b7769d17dbebc846e71653c531fc4e14b37671140618e3cd725 ckpt=a11b0af49eeb5b7769d17dbebc846e71653c531fc4e14b37671140618e3cd725
+[m15]   M.wsrc.L05                     PASS  slot sha256 dev=1bfb14e085e9dbfe875d9aa6f013cce4141704b19ec868ffacdeb284a1c3ac92 ckpt=1bfb14e085e9dbfe875d9aa6f013cce4141704b19ec868ffacdeb284a1c3ac92
+[m15]   M.wsrc.L06                     PASS  slot sha256 dev=8b7b1ec69fe44d045da42b976520f1d68766241e48b1bd4f3ec16e9cb05a5e27 ckpt=8b7b1ec69fe44d045da42b976520f1d68766241e48b1bd4f3ec16e9cb05a5e27
+[m15]   M.wsrc.L07                     PASS  slot sha256 dev=a33e0263e181e33ad49cdd65d3d0634e4448927435ea2ab49f4d31b506b1d52d ckpt=a33e0263e181e33ad49cdd65d3d0634e4448927435ea2ab49f4d31b506b1d52d
+[m15]   M.wsrc.L08                     PASS  slot sha256 dev=253a0d501af8f9c0367be719dda3932412e822cd57189c0dff3d72c676e4c9cc ckpt=253a0d501af8f9c0367be719dda3932412e822cd57189c0dff3d72c676e4c9cc
+[m15]   M.wsrc.L09                     PASS  slot sha256 dev=e9e7e5d939dad03556f4be55ecb5660c3a18bb8a7abd0af513e501bedb066aa3 ckpt=e9e7e5d939dad03556f4be55ecb5660c3a18bb8a7abd0af513e501bedb066aa3
+[m15]   M.wsrc.L10                     PASS  slot sha256 dev=52e6039517fe3c2e83c23a2b856a1424cf8dc8b9a27737b9e09bb7267a31a0be ckpt=52e6039517fe3c2e83c23a2b856a1424cf8dc8b9a27737b9e09bb7267a31a0be
+[m15]   M.wsrc.L11                     PASS  slot sha256 dev=2215f2d250ebc5943bca50bb4a2c3f05309bb908c204e1f09848bf58a4d80bf2 ckpt=2215f2d250ebc5943bca50bb4a2c3f05309bb908c204e1f09848bf58a4d80bf2
+[m15]   M.wsrc.L12                     PASS  slot sha256 dev=f5576c01c5b5bfeee96cd54ac4f65341f064b3a32c40554192d191100c259c03 ckpt=f5576c01c5b5bfeee96cd54ac4f65341f064b3a32c40554192d191100c259c03
+[m15]   M.wsrc.L13                     PASS  slot sha256 dev=6eec93211e1a7103720fb2c3c78a39b3574404618e5ea4aa2fe447fe500d3ed8 ckpt=6eec93211e1a7103720fb2c3c78a39b3574404618e5ea4aa2fe447fe500d3ed8
+[m15]   M.wsrc.L14                     PASS  slot sha256 dev=44dbba761ca337a6244614ec402d5a2cd029f6f919a6c0446ffaf5286debf9ad ckpt=44dbba761ca337a6244614ec402d5a2cd029f6f919a6c0446ffaf5286debf9ad
+[m15]   M.wsrc.L15                     PASS  slot sha256 dev=b99b49c2a1f6a99578ef3d38793e14127f1dfa8adfa5a86b215c0bc843763a0f ckpt=b99b49c2a1f6a99578ef3d38793e14127f1dfa8adfa5a86b215c0bc843763a0f
+[m15]   M.wsrc.L16                     PASS  slot sha256 dev=56a0b917f5be69a24396b340b5c7162679e621d7d98fbecf8788e20eb5569109 ckpt=56a0b917f5be69a24396b340b5c7162679e621d7d98fbecf8788e20eb5569109
+[m15]   M.wsrc.L17                     PASS  slot sha256 dev=11b784cf759b0a45124b1ee99fb58a0fb8e6114453865c19b660de6d170beb10 ckpt=11b784cf759b0a45124b1ee99fb58a0fb8e6114453865c19b660de6d170beb10
+[m15]   M.wsrc.L18                     PASS  slot sha256 dev=cf192e3ef6b471d22157b834ac9688056aa37c60916686e3f7f456437921c438 ckpt=cf192e3ef6b471d22157b834ac9688056aa37c60916686e3f7f456437921c438
+[m15]   M.wsrc.L19                     PASS  slot sha256 dev=cf9d012a86906892efc803ded7b44dc176d6244a51c3c4a66a918b2af1fdf5f6 ckpt=cf9d012a86906892efc803ded7b44dc176d6244a51c3c4a66a918b2af1fdf5f6
+[m15]   M.wsrc.L20                     PASS  slot sha256 dev=4dae71a367a8ad0481c404e8cf17f35e5dc1568412cbc3bb6798cc8ece1405be ckpt=4dae71a367a8ad0481c404e8cf17f35e5dc1568412cbc3bb6798cc8ece1405be
+[m15]   M.wsrc.L21                     PASS  slot sha256 dev=15ef96761ada859dd7d60f8e68755788c2c2f2474a8b00931bf059f425fc4aef ckpt=15ef96761ada859dd7d60f8e68755788c2c2f2474a8b00931bf059f425fc4aef
+[m15]   M.wsrc.L22                     PASS  slot sha256 dev=3a82207cf3f487a9f80d7fa71046c1eff82b8d0295eebaf7b8f8a966f91a9e5d ckpt=3a82207cf3f487a9f80d7fa71046c1eff82b8d0295eebaf7b8f8a966f91a9e5d
+[m15]   M.wsrc.L23                     PASS  slot sha256 dev=1c7c1898eb739f6d76ac51a7710c0165093bfd9ee905d72b7e645ea12e457e3a ckpt=1c7c1898eb739f6d76ac51a7710c0165093bfd9ee905d72b7e645ea12e457e3a
+[m15]   M.wsrc.L24                     PASS  slot sha256 dev=a323b3b5bd7a02f6674716f8e7f24e2af2851f0738dab458f859b5508bcd5186 ckpt=a323b3b5bd7a02f6674716f8e7f24e2af2851f0738dab458f859b5508bcd5186
+[m15]   M.wsrc.L25                     PASS  slot sha256 dev=d3f7f7dbcd99db8555d83abf0136f6e14f42455d56573676075ba83248c60272 ckpt=d3f7f7dbcd99db8555d83abf0136f6e14f42455d56573676075ba83248c60272
+[m15]   M.wsrc.L26                     PASS  slot sha256 dev=3757ea6bba3c7d0ffb7c807dd0102077d2e61d2cb36cface72bdd4ee411f08a3 ckpt=3757ea6bba3c7d0ffb7c807dd0102077d2e61d2cb36cface72bdd4ee411f08a3
+[m15]   M.wsrc.L27                     PASS  slot sha256 dev=315a017fdece55a5b0860ce0fdd390bdb24f2dfa6a9afc993d65bdf690a455d3 ckpt=315a017fdece55a5b0860ce0fdd390bdb24f2dfa6a9afc993d65bdf690a455d3
+[m15]   M.wsrc.L28                     PASS  slot sha256 dev=3e048f7dd70ad2f38464700fc28a9b431a0a3a9f1f124e2ec87e4a9ae0f7d5dd ckpt=3e048f7dd70ad2f38464700fc28a9b431a0a3a9f1f124e2ec87e4a9ae0f7d5dd
+[m15]   M.wsrc.L29                     PASS  slot sha256 dev=23a61e5a94081a33b20564316278d0d59379d3c8b6d2df21eaa5d85a27ab02bd ckpt=23a61e5a94081a33b20564316278d0d59379d3c8b6d2df21eaa5d85a27ab02bd
+[m15]   M.wsrc.L30                     PASS  slot sha256 dev=26ea621f3d1cec64aa900829f12859dc33f83764d0065d3e3f7648d9090dac4f ckpt=26ea621f3d1cec64aa900829f12859dc33f83764d0065d3e3f7648d9090dac4f
+[m15]   M.wsrc.L31                     PASS  slot sha256 dev=cb1d86cf12b2cc1a8223a193e78ba8822a572a0b43e9c40c2935c7fb7de04218 ckpt=cb1d86cf12b2cc1a8223a193e78ba8822a572a0b43e9c40c2935c7fb7de04218
+[m15]   M.wsrc.L32                     PASS  slot sha256 dev=03424f017668b1b2538314d2fd74208cf6e39704386f3febfdf8cacdf7245985 ckpt=03424f017668b1b2538314d2fd74208cf6e39704386f3febfdf8cacdf7245985
+[m15]   M.wsrc.L33                     PASS  slot sha256 dev=b22e1695c1dcb7cbf44408950c362a47015c316b0d8fae64697d0d30eea9b382 ckpt=b22e1695c1dcb7cbf44408950c362a47015c316b0d8fae64697d0d30eea9b382
+[m15]   M.wsrc.L34                     PASS  slot sha256 dev=fc6de9414cfc3ac5f6c32de11f1fbbd4ff4f3bf5cfc345e5097cc0bb1fa35389 ckpt=fc6de9414cfc3ac5f6c32de11f1fbbd4ff4f3bf5cfc345e5097cc0bb1fa35389
+[m15]   M.wsrc.L35                     PASS  slot sha256 dev=d169312cca01a746eff0df0c7a71b34f9d27af4f473f588111a51ccfc20f1b09 ckpt=d169312cca01a746eff0df0c7a71b34f9d27af4f473f588111a51ccfc20f1b09
+[m15]   M.wsrc.L36                     PASS  slot sha256 dev=1867b797630c930ae93a48b481e2c5152d552352fc24912d1d0c403a56224fd7 ckpt=1867b797630c930ae93a48b481e2c5152d552352fc24912d1d0c403a56224fd7
+[m15]   M.wsrc.L37                     PASS  slot sha256 dev=7aca0cfc4d5aca4672d2172085d4d6bb3a8cbb8aa7eeb3c3acdc4098c963c046 ckpt=7aca0cfc4d5aca4672d2172085d4d6bb3a8cbb8aa7eeb3c3acdc4098c963c046
+[m15]   M.wsrc.L38                     PASS  slot sha256 dev=8112659193f3687bbeb8af43858a0c9600cdddead4f906db8fe88ff56c010fb2 ckpt=8112659193f3687bbeb8af43858a0c9600cdddead4f906db8fe88ff56c010fb2
+[m15]   M.wsrc.L39                     PASS  slot sha256 dev=5d06118dd58d57b2a09fc199347c57a7f6883d7ed3b26aca8a57c6c10d2cba42 ckpt=5d06118dd58d57b2a09fc199347c57a7f6883d7ed3b26aca8a57c6c10d2cba42
+[m15]   M.wsrc.L40                     PASS  slot sha256 dev=86c8fc57dff4de45cb3711cfad2ec1a94e3551586486731b6627ff040cb69473 ckpt=86c8fc57dff4de45cb3711cfad2ec1a94e3551586486731b6627ff040cb69473
+[m15]   M.wsrc.L41                     PASS  slot sha256 dev=2598cd00388085ca7d5769def0d502d3e3c40fa2843707a572a5597552ee3f66 ckpt=2598cd00388085ca7d5769def0d502d3e3c40fa2843707a572a5597552ee3f66
+[m15]   M.wsrc.L42                     PASS  slot sha256 dev=14dac19b3f9dbc0835356aba0271d3032667e978ed94ca095ca644f6efb0b38d ckpt=14dac19b3f9dbc0835356aba0271d3032667e978ed94ca095ca644f6efb0b38d
+[m15]   M.wsrc.L43                     PASS  slot sha256 dev=e82763933a06b6b7935531b2d1a33f8b477c40338cdf2a190b7e8a2a6aaff280 ckpt=e82763933a06b6b7935531b2d1a33f8b477c40338cdf2a190b7e8a2a6aaff280
+[m15]   M.wsrc.L44                     PASS  slot sha256 dev=e1363b5e7000cb4cbfb2ab7e67af32a53581f154b7b991ded0a9227ca9b97542 ckpt=e1363b5e7000cb4cbfb2ab7e67af32a53581f154b7b991ded0a9227ca9b97542
+[m15]   M.wsrc.L45                     PASS  slot sha256 dev=e47a7b027d41d145b67e261f6f5f9928080c3fef9af2440972ca6e2eadd359f5 ckpt=e47a7b027d41d145b67e261f6f5f9928080c3fef9af2440972ca6e2eadd359f5
+[m15]   M.wsrc.L46                     PASS  slot sha256 dev=2184942d2b9f1b60d0cb053f3caebcaeae4af5d5578ea0590c93df3e05d7bca2 ckpt=2184942d2b9f1b60d0cb053f3caebcaeae4af5d5578ea0590c93df3e05d7bca2
+[m15]   M.wsrc.L47                     PASS  slot sha256 dev=05b70ea1530c06084661679a79d10f97b5afbf2188a159394619b3a886d42f93 ckpt=05b70ea1530c06084661679a79d10f97b5afbf2188a159394619b3a886d42f93
+[m15]   MoE 权重来源：48 层逐字节一致（slot 13.092 MB/层）
+[m15]   Hc.ws.L00                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L01                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L02                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L03                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L04                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L05                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L06                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L07                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L08                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L09                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L10                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L11                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L12                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L13                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L14                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L15                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L16                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L17                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L18                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L19                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L20                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L21                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L22                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L23                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L24                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L25                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L26                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L27                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L28                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L29                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L30                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L31                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L32                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L33                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L34                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L35                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L36                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L37                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L38                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L39                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L40                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L41                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L42                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L43                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L44                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L45                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L46                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L47                      PASS (逐字节一致, n=26910720)
+[m15] hc 段权重来源判据：48 层 × 2 边界，逐字节 memcmp（含注入行 [4,16) 全零见证）
+
+[m15] ===== 验证 Pw：PLE 段接进融合 kernel 的**真实挂接路径**（层 1）=====
+[m15]   段序：hc(H1a combine-only) → ①ids → PLE_IN barrier → ②③④⑤ → PLE_OUT barrier → hc(H1b mix-only) → 子层段 → hc(H2) → MoE
+[m15]   M15_PLE_WIRE=1（0 = 接线关：同一断点结构上空操作）M15_PLE_LAYER=1 M15_PLE_VOCAB=reduced M15_PLE_STAGE=0xF M15_PLE_NEG=0x0 M15_PLE_MISWIRE=1
+[m15]   PLE 窗口：shard 0 行 [0,65536) = 20.00 MiB（model-00005-of-00131.safetensors @ 68329314）→ host 注册 rc=0、device=0x40000000000；winBase=0 winRows=65536
+[m15]   [档] M15_PLE_STAGE 不含 ① ⇒ ids 由 host 参考直接灌入 S_IDS（② 独跑）
+[m15]   Pw.wired.nonvac                FAIL 层入口多流态（ws0+WS_HCP）接线开 ≠ 关
+[m15]   Pw.wired.finite                PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   Pw.ids.T1                      PASS bad=0/16
+[m15]   Pw.emb.T1                      FAIL bad=16 miss=0/16
+[m15]   Pw.win.dev                     FAIL row_fail=16 miss=0 非空洞核=56 见窗核=56
+[m15]   Pw.fail                        PASS ① 值域坏 id=0、②③④⑤ 坏值=0
+[m15]   Pw.state.evolve                FAIL 状态输出 ≠ 输入（活跃行确实演化）
+[m15]   Pw.state.shift                 PASS new[i]=old[i+1] 且 new[8]=normed 逐字节
+[m15]   Pw.planes.nonvac               FAIL gated/normed 非常量
+[m15]   Pw.det                         PASS 两次接线跑逐字节相同（六项：ids/emb/hcp/stout/hmbad/failb）
+[m15]   Pw.wired.delta           读数：0/10240 个 bf16 元素被 PLE 改动，max|Δ| = 0
+[m15] 验证 Pw：判定项 10 条 / FAIL 5 条（累计 checks 142 / fails 5）
+
+[m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Pw 10 + Kv 0 + Prolog 0 + AttnWire 0 = 142 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15]   ④ 与 M39 官方单层参考对拍的判据**不在这个数里**：它在 `check_chain_ref.py`（torch，独立三态退出码与计数），由本程序的 dump 驱动；运行方式见 README。
+[m15] guard：49 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 48 + 参考链锚点非空 0 + M65 链 0 + 其余 0
+[m15] ===== FAILURES PRESENT（checks=142, guards=49, fails=5）=====
+rc=1

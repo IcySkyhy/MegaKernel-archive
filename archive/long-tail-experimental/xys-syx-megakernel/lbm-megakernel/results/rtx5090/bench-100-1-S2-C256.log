@@ -1,0 +1,23 @@
+RESOURCE name=S2-C256 threads=256 registers=48 static_shared=0 dynamic_shared=0 local_bytes=0 active_blocks_per_sm=5 grid=15x15x19 block=256x1x1 steps_per_launch=1 theoretical_occupancy_pct=83.333333
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=292.210559845
+TRIAL 1 us_per_step=292.119674683
+TRIAL 2 us_per_step=292.201595306
+TRIAL 3 us_per_step=292.311363220
+TRIAL 4 us_per_step=291.800003052
+TRIAL 5 us_per_step=292.036476135
+TRIAL 6 us_per_step=292.395191193
+TRIAL 7 us_per_step=292.240962982
+TRIAL 8 us_per_step=292.004165649
+TRIAL 9 us_per_step=292.302398682
+TRIAL 10 us_per_step=292.330875397
+TRIAL 11 us_per_step=292.116489410
+TRIAL 12 us_per_step=292.239036560
+TRIAL 13 us_per_step=292.219848633
+TRIAL 14 us_per_step=291.892471313
+TRIAL 15 us_per_step=292.087039948
+TRIAL 16 us_per_step=292.148799896
+TRIAL 17 us_per_step=292.086086273
+TRIAL 18 us_per_step=292.168312073
+TRIAL 19 us_per_step=292.118396759
+BENCH mode=S2-C256 warmups=5 trials=20 steps=100 launches=100 median_us=292.158555984 min_us=291.800003052 p90_us=292.311363220 mlups=7393.245741927 equivalent_population_TB_s=1.123773353

@@ -1,0 +1,649 @@
+{
+  "format_version": 1,
+  "name": "ceil",
+  "rule": "ceil",
+  "m": 33,
+  "num_experts": 4,
+  "top_k": 2,
+  "hidden": 2560,
+  "moe_intermediate": 640,
+  "shared_expert_intermediate": 640,
+  "group_size": 32,
+  "seed": 20260927,
+  "precision": {
+    "accumulate": "float64",
+    "weights": "dataset MXFP4 bytes (checkpoint layout, ceil packing) \u2014 not re-quantized",
+    "round_points": "GU / H / Y / outputs rounded to bf16 (RNE) where the device stores bf16",
+    "combine": "bf16 Y folded with bf16 top-k weights (w_tk_packed); gate on the f32 raw dot"
+  },
+  "activation_scale_rule": "LEGACY: e8m0 byte = 127 + ceil(log2(amax / 6)), i.e. scale = 2**ceil(log2(amax/6)) \u2014 the replaced m3 scalar quantizer rule and this directory's synthetic weight-packing rule; kept for reproducing pre-ruling goldens, not for grading device kernels.",
+  "activation_data_rounding": "nearest E2M1 level, ties to even code (legacy)",
+  "deviation_budget": {
+    "rule": "ceil",
+    "source_budget": {
+      "a_routed": {
+        "analytic_max": 1.0,
+        "measured_max": 0.90625,
+        "max_utilization": 1.0,
+        "violations": 0
+      },
+      "a_shared": {
+        "analytic_max": 1.0,
+        "measured_max": 0.90625,
+        "max_utilization": 1.0,
+        "violations": 0
+      },
+      "h_routed": {
+        "analytic_max": 4.0,
+        "measured_max": 3.25,
+        "max_utilization": 1.0,
+        "violations": 0
+      },
+      "h_shared": {
+        "analytic_max": 4.0,
+        "measured_max": 2.0,
+        "max_utilization": 1.0,
+        "violations": 0
+      }
+    },
+    "ceiling": {
+      "gu": {
+        "analytic_max": 6.034760177354734,
+        "violations": 0,
+        "max_utilization": 0.14012009221665614
+      },
+      "gu_shd": {
+        "analytic_max": 6.039777820758005,
+        "violations": 0,
+        "max_utilization": 0.13307303423359176
+      },
+      "y_sorted": {
+        "analytic_max": 10.27011999164933,
+        "violations": 0,
+        "max_utilization": 0.1596054314634035
+      },
+      "y_shd": {
+        "analytic_max": 10.235246060028752,
+        "violations": 0,
+        "max_utilization": 0.1796293480417793
+      },
+      "routed_output": {
+        "analytic_max": 9.874425115093098,
+        "violations": 0,
+        "max_utilization": 0.13476829406097637
+      },
+      "shared_output": {
+        "analytic_max": 7.445945454218491,
+        "violations": 0,
+        "max_utilization": 0.17963410344971112
+      },
+      "moe_output": {
+        "analytic_max": 15.40302861992645,
+        "violations": 0,
+        "max_utilization": 0.09324571938478968
+      },
+      "y_final": {
+        "analytic_max": 14.442820921994313,
+        "violations": 0,
+        "max_utilization": 0.09367442113927668
+      },
+      "res2": {
+        "analytic_max": 15.403028991524158,
+        "violations": 0,
+        "max_utilization": 0.09329445401649587
+      }
+    },
+    "measured": {
+      "a_dq": {
+        "n": 168960,
+        "max_abs": 0.90625,
+        "rms_abs": 0.11520397262469761,
+        "n_rel": 168310,
+        "rel_threshold": 0.00490625,
+        "max_rel": 1.0,
+        "p99_rel": 1.0,
+        "frac_rel_gt_10pct": 0.581058760620284
+      },
+      "a_dq_shd": {
+        "n": 84480,
+        "max_abs": 0.90625,
+        "rms_abs": 0.11520397262469761,
+        "n_rel": 84155,
+        "rel_threshold": 0.00490625,
+        "max_rel": 1.0,
+        "p99_rel": 1.0,
+        "frac_rel_gt_10pct": 0.581058760620284
+      },
+      "h_dq": {
+        "n": 42240,
+        "max_abs": 3.25,
+        "rms_abs": 0.22502227223972007,
+        "n_rel": 39364,
+        "rel_threshold": 0.02075,
+        "max_rel": 1.0,
+        "p99_rel": 1.0,
+        "frac_rel_gt_10pct": 0.8134335941469363
+      },
+      "h_dq_shd": {
+        "n": 21120,
+        "max_abs": 2.0,
+        "rms_abs": 0.22524788697426976,
+        "n_rel": 19865,
+        "rel_threshold": 0.01725,
+        "max_rel": 1.0,
+        "p99_rel": 1.0,
+        "frac_rel_gt_10pct": 0.8149005789076265
+      },
+      "gu": {
+        "n": 84480,
+        "max_abs": 0.7765211462974548,
+        "rms_abs": 0.1749517389577338,
+        "n_rel": 84172,
+        "rel_threshold": 0.006534940958023072,
+        "max_rel": 63.6162917667613,
+        "p99_rel": 5.453123629374989,
+        "frac_rel_gt_10pct": 0.5430428170888182
+      },
+      "gu_shd": {
+        "n": 42240,
+        "max_abs": 0.7349542081356049,
+        "rms_abs": 0.17382889438610816,
+        "n_rel": 42088,
+        "rel_threshold": 0.006731817662715912,
+        "max_rel": 51.65398565076838,
+        "p99_rel": 5.703717522195472,
+        "frac_rel_gt_10pct": 0.5413657099410758
+      },
+      "h_swiglu": {
+        "n": 42240,
+        "max_abs": 2.7530435323843676,
+        "rms_abs": 0.24292064408303418,
+        "n_rel": 39105,
+        "rel_threshold": 0.023503043532384367,
+        "max_rel": 24.855440747186094,
+        "p99_rel": 3.7510470026835967,
+        "frac_rel_gt_10pct": 0.7035417465797212
+      },
+      "h_swiglu_shd": {
+        "n": 21120,
+        "max_abs": 2.554608402233444,
+        "rms_abs": 0.24402838427598814,
+        "n_rel": 19910,
+        "rel_threshold": 0.016425654815915826,
+        "max_rel": 42.91967734331382,
+        "p99_rel": 4.207236400989123,
+        "frac_rel_gt_10pct": 0.7084379708689101
+      },
+      "y_sorted": {
+        "n": 168960,
+        "max_abs": 1.1726224682033235,
+        "rms_abs": 0.2505179320418527,
+        "n_rel": 168251,
+        "rel_threshold": 0.005899942956742763,
+        "max_rel": 144.14623158615427,
+        "p99_rel": 10.241825621291486,
+        "frac_rel_gt_10pct": 0.7340639877326137
+      },
+      "y_shd": {
+        "n": 84480,
+        "max_abs": 1.193303191445038,
+        "rms_abs": 0.24818633127022421,
+        "n_rel": 84154,
+        "rel_threshold": 0.005050854073675834,
+        "max_rel": 102.08568052663972,
+        "p99_rel": 10.56068143836316,
+        "frac_rel_gt_10pct": 0.7341065190008793
+      },
+      "routed_output": {
+        "n": 84480,
+        "max_abs": 0.9981441497802734,
+        "rms_abs": 0.1919265283104913,
+        "n_rel": 84103,
+        "rel_threshold": 0.004756912231445313,
+        "max_rel": 78.59225542250906,
+        "p99_rel": 10.147916190453818,
+        "frac_rel_gt_10pct": 0.7354553345302783
+      },
+      "shared_output": {
+        "n": 84480,
+        "max_abs": 0.8319539427757263,
+        "rms_abs": 0.1298576408920789,
+        "n_rel": 83846,
+        "rel_threshold": 0.003468965291976929,
+        "max_rel": 102.18532896838241,
+        "p99_rel": 9.091862144886468,
+        "frac_rel_gt_10pct": 0.7335472175178304
+      },
+      "moe_output": {
+        "n": 84480,
+        "max_abs": 1.3247368335723877,
+        "rms_abs": 0.23177329598679267,
+        "n_rel": 84051,
+        "rel_threshold": 0.005768143177032471,
+        "max_rel": 109.04465028204442,
+        "p99_rel": 9.679877035803614,
+        "frac_rel_gt_10pct": 0.7335308324707618
+      },
+      "y_final": {
+        "n": 84480,
+        "max_abs": 0.984375,
+        "rms_abs": 0.20168548419574184,
+        "n_rel": 84083,
+        "rel_threshold": 0.0073437500000000005,
+        "max_rel": 86.9349593495935,
+        "p99_rel": 7.280156402737025,
+        "frac_rel_gt_10pct": 0.6377151148270161
+      },
+      "res2": {
+        "n": 84480,
+        "max_abs": 1.328125,
+        "rms_abs": 0.23177924629382587,
+        "n_rel": 84201,
+        "rel_threshold": 0.006859375,
+        "max_rel": 88.19047619047619,
+        "p99_rel": 7.75,
+        "frac_rel_gt_10pct": 0.6393985819645848
+      }
+    },
+    "f32_chain_gap": {
+      "routed_output": {
+        "max_abs": 0.009265398561193905,
+        "max_utilization_vs_ceiling": 0.0010702714079571837
+      },
+      "shared_output": {
+        "max_abs": 2.3450643817923833e-06,
+        "max_utilization_vs_ceiling": 3.9463383846844096e-07
+      },
+      "moe_output": {
+        "max_abs": 0.009265418715854068,
+        "max_utilization_vs_ceiling": 0.0008650367149735644
+      },
+      "res2": {
+        "max_abs": 0.020829821246840297,
+        "max_utilization_vs_ceiling": 0.0016025400412622687
+      }
+    },
+    "criterion": "layer-chain acceptance (m13 style): |device - float golden| must be explained by the quant-aware reference -- ad <= 1.5*|qaware - float| + 0.02*|float| + 5e-3",
+    "note": "Blocks: source_budget = analytic per-element bound on the quantizer itself (tight, operative); ceiling = worst-case bound propagated with absolute weights (conservative by the K-sum sign-cancellation factor); measured = the per-element q-aware deviations a layer-chain kernel is graded against; f32_chain_gap = |f32 float golden - f64 chain|, i.e. the float golden's own accumulation error. ceiling is *rigorous* against the f64 chain (gu/gu_shd/y_sorted/y_shd compare two f64 computations) but only an *empirical* bound against the stored f32 float golden for the three outputs (and res2): f32 accumulation is not in the envelope (see f32_chain_gap), so there the criterion's slack -- 1.5x oracle + 0.02*|gold| + 5e-3 -- is what carries the margin.  All absolute values; relative stats are vs the float golden."
+  },
+  "files": [
+    {
+      "tensor": "a_qx.bin",
+      "shape": [
+        66,
+        1280
+      ],
+      "dtype": "uint8",
+      "strides": [
+        1280,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 84480,
+      "sha256": "4d33f207b51b66ba41638adeecc4b884dd31eecc3cde971786c8a112ceab308e",
+      "kind": "golden",
+      "description": "routed A = MXFP4(x_sorted), compact rows [m*top_k, hidden/2], lohi along K (row r = perm slot r)"
+    },
+    {
+      "tensor": "a_scale.bin",
+      "shape": [
+        66,
+        80
+      ],
+      "dtype": "uint8",
+      "strides": [
+        80,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 5280,
+      "sha256": "a8ec03618502901932a021cabeaf4a986b166e866545814ebd3f54c5330fcb1f",
+      "kind": "golden",
+      "description": "routed A E8M0 group scales [m*top_k, hidden/32]"
+    },
+    {
+      "tensor": "a_qx_shd.bin",
+      "shape": [
+        33,
+        1280
+      ],
+      "dtype": "uint8",
+      "strides": [
+        1280,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 42240,
+      "sha256": "a0dde7da74cc0b6f33478cf99edc79ca4e4b4529a9846cfa76d81c4afbd48724",
+      "kind": "golden",
+      "description": "shared-expert A = MXFP4(x) [m, hidden/2]"
+    },
+    {
+      "tensor": "a_scale_shd.bin",
+      "shape": [
+        33,
+        80
+      ],
+      "dtype": "uint8",
+      "strides": [
+        80,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 2640,
+      "sha256": "c105fea78ff4c6df31525249e8d591c3ec2755bdf01b3993c151036bb0a75b05",
+      "kind": "golden",
+      "description": "shared-expert A E8M0 group scales [m, hidden/32]"
+    },
+    {
+      "tensor": "gu.bin",
+      "shape": [
+        66,
+        1280
+      ],
+      "dtype": "bf16",
+      "strides": [
+        1280,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 168960,
+      "sha256": "61f137529e8d78cffd619bf3a45f321a1e655ad6e4900c4cb23ecb4c5292b2d0",
+      "kind": "golden",
+      "description": "GMM#1 output (bf16), compact rows [m*top_k, 2*moe_inter] (gate|up)"
+    },
+    {
+      "tensor": "gu_shd.bin",
+      "shape": [
+        33,
+        1280
+      ],
+      "dtype": "bf16",
+      "strides": [
+        1280,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 84480,
+      "sha256": "bab066a10ec4f1dc81b1086b7094140e63339de013b799f505f13e88e51d99b7",
+      "kind": "golden",
+      "description": "shared-expert GMM#1 output (bf16) [m, 2*moe_inter] (gate|up)"
+    },
+    {
+      "tensor": "h_swiglu.bin",
+      "shape": [
+        66,
+        640
+      ],
+      "dtype": "bf16",
+      "strides": [
+        640,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 84480,
+      "sha256": "0d168653fb01ea3968313b74e4da62754ca5b72f63af4dcf4d10612af15de754",
+      "kind": "golden",
+      "description": "SwiGLU output before the H quantizer [m*top_k, moe_inter]"
+    },
+    {
+      "tensor": "h_swiglu_shd.bin",
+      "shape": [
+        33,
+        640
+      ],
+      "dtype": "bf16",
+      "strides": [
+        640,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 42240,
+      "sha256": "a80389b797ccee33a5234a0e3a4557ec5f88f3c62cee742d353023a8bf9322e1",
+      "kind": "golden",
+      "description": "shared-expert SwiGLU output [m, moe_inter]"
+    },
+    {
+      "tensor": "h_qx.bin",
+      "shape": [
+        66,
+        320
+      ],
+      "dtype": "uint8",
+      "strides": [
+        320,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 21120,
+      "sha256": "7c78ee7c14b3f01842ec5c2ebf232b90ff67f6a894662a5d5191bb19958f9075",
+      "kind": "golden",
+      "description": "routed H = MXFP4(h_swiglu) [m*top_k, moe_inter/2]"
+    },
+    {
+      "tensor": "h_scale.bin",
+      "shape": [
+        66,
+        20
+      ],
+      "dtype": "uint8",
+      "strides": [
+        20,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 1320,
+      "sha256": "3da851a70189b3df3215e060e76eae5b35078037fcbd641f50be0579916e60ad",
+      "kind": "golden",
+      "description": "routed H E8M0 group scales [m*top_k, moe_inter/32]"
+    },
+    {
+      "tensor": "h_qx_shd.bin",
+      "shape": [
+        33,
+        320
+      ],
+      "dtype": "uint8",
+      "strides": [
+        320,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 10560,
+      "sha256": "febb01c85bcb148f81dd5c8cda5dc558db1ccf5aa43dd81af4e7a33e214c4be6",
+      "kind": "golden",
+      "description": "shared-expert H [m, moe_inter/2]"
+    },
+    {
+      "tensor": "h_scale_shd.bin",
+      "shape": [
+        33,
+        20
+      ],
+      "dtype": "uint8",
+      "strides": [
+        20,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 660,
+      "sha256": "c334e17eafa306d5b1d2c53759212ba9f0a187b50a338bb5edf561105d614d9e",
+      "kind": "golden",
+      "description": "shared-expert H E8M0 group scales [m, moe_inter/32]"
+    },
+    {
+      "tensor": "y_sorted.bin",
+      "shape": [
+        66,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 337920,
+      "sha256": "f7de13c7568cb84e84f1d5731b5a170183c41b2214edd39c507df0cf9a05c473",
+      "kind": "golden",
+      "description": "GMM#2 output (bf16), compact rows [m*top_k, hidden]"
+    },
+    {
+      "tensor": "y_shd.bin",
+      "shape": [
+        33,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 168960,
+      "sha256": "efc209066b7076ae90e702fd92c4dfa11d64e24a1bc93c66b39d477b1ddaa674",
+      "kind": "golden",
+      "description": "shared-expert GMM#2 output (bf16) [m, hidden]"
+    },
+    {
+      "tensor": "routed_output.bin",
+      "shape": [
+        33,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 168960,
+      "sha256": "eade3268fe7fb33f9020fbccb1581e6f5bc0d7b341f839bf50810a1a3f7b4a8b",
+      "kind": "golden",
+      "description": "weighted routed-expert combine before the shared expert [m, hidden]"
+    },
+    {
+      "tensor": "shared_output.bin",
+      "shape": [
+        33,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 168960,
+      "sha256": "bdcc67068fba04277a48fea1b465cb18bb188d4e7e6a55f2ed8f556ebc3cc855",
+      "kind": "golden",
+      "description": "shared expert output (sigmoid gate) [m, hidden]"
+    },
+    {
+      "tensor": "moe_output.bin",
+      "shape": [
+        33,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 168960,
+      "sha256": "9c37b5fdb7f9a607c7c67d1bd1eb0f97900f7052fccbe88de0973d9f6f22a0b4",
+      "kind": "golden",
+      "description": "MoE block output = routed + shared [m, hidden]"
+    },
+    {
+      "tensor": "x_norm1.bin",
+      "shape": [
+        33,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 168960,
+      "sha256": "da0e07f2859367a9d1242d00cd7bd941adff157e819576cabfab2977ca4fa709",
+      "kind": "golden",
+      "description": "m6#1 output on the quant-aware chain (not equal to x.bin)"
+    },
+    {
+      "tensor": "res1.bin",
+      "shape": [
+        33,
+        2560
+      ],
+      "dtype": "fp32",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 337920,
+      "sha256": "e427342f4b33e934150e37a925d7073b09bcbfdd6c933f84e718f240427cacab",
+      "kind": "golden",
+      "description": "m6#1 residual out (fp32)"
+    },
+    {
+      "tensor": "y_final.bin",
+      "shape": [
+        33,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 168960,
+      "sha256": "2a795ec31cb0718c6f78bd9dec85bafb5a830d76be44e711ee3e98f4831ebad0",
+      "kind": "golden",
+      "description": "m6#2 output (bf16) from the quant-aware moe_output"
+    },
+    {
+      "tensor": "res2.bin",
+      "shape": [
+        33,
+        2560
+      ],
+      "dtype": "fp32",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 337920,
+      "sha256": "34d09ee8fb474e8091931936f45235c6dcd08633ce9e83e9606a003d9a02c801",
+      "kind": "golden",
+      "description": "m6#2 residual out (fp32) from the quant-aware moe_output"
+    }
+  ]
+}

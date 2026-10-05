@@ -1,0 +1,37 @@
+probe A（MrgSort 变体矩阵）UB dump 逐元素判读 —— 由 tools/decode_mrgsort_dump.py 生成
+对 = {fp32 value, u32 index}；输入块 b/j -> value=1000-4j-b, index=1000b+j
+
+[A00] A00_2way_v3_base         dst@1024   写出= 64（自洽= 64 非法=  0）sentinel=192 零=  0  PASS（64 对全序与期望逐项一致）
+[A01] A01_2way_tree_v3         dst@3072   写出=128（自洽=128 非法=  0）sentinel=  0 零=  0  PASS（128 对全序与期望逐项一致）
+[A02] A02_4way_v15             dst@1024   写出=128（自洽=128 非法=  0）sentinel=128 零=  0  PASS（128 对全序与期望逐项一致）
+[A03] A03_4way_v15_zero        dst@1024   写出=128（自洽=128 非法=  0）sentinel=  0 零=128  PASS（128 对全序与期望逐项一致）
+[A04] A04_4way_v15_nopreset    dst@1024   写出=128（自洽=128 非法=  0）sentinel=  0 零=128  PASS（128 对全序与期望逐项一致）
+[A05] A05_4way_v15_dst2        dst@3072   写出=128（自洽=128 非法=  0）sentinel=  0 零=  0  PASS（128 对全序与期望逐项一致）
+[A06] A06_3way_v7              dst@1024   写出= 96（自洽= 96 非法=  0）sentinel=160 零=  0  PASS（96 对全序与期望逐项一致）
+[A07] A07_4way_v15_ph34_l0     dst@1024   写出=  0（自洽=  0 非法=  0）sentinel=256 零=  0  FAIL 首个不符 pos=0
+[A08] A08_4way_v15_ph34_l32    dst@1024   写出=128（自洽=128 非法=  0）sentinel=128 零=  0  PASS（128 对全序与期望逐项一致）
+[A09] A09_4way_v15_noncontig   dst@1024   写出=128（自洽=128 非法=  0）sentinel=128 零=  0  PASS（128 对全序与期望逐项一致）
+[A10] A10_2way_v3_len16        dst@1024   写出= 32（自洽= 32 非法=  0）sentinel=224 零=  0  PASS（32 对全序与期望逐项一致）
+[A11] A11_4way_v15_len16       dst@1024   写出= 64（自洽= 64 非法=  0）sentinel=192 零=  0  PASS（64 对全序与期望逐项一致）
+[A12] A12_4way_v15_rep2        dst@1024   写出=128（自洽=128 非法=  0）sentinel=128 零=  0  （不判序；与规范 4 路归并逐项一致的位点 = 128/128）
+        参考对比：pos0 得到   b0 j0  (value/index 自洽)
+[A13] A13_4way_v15_exhtrue     dst@1024   写出=125（自洽=125 非法=  0）sentinel=131 零=  0  FAIL 首个不符 pos=125
+        VMS4_SR（4 个队列已完成元素数）= [32, 31, 31, 31]
+[A14] A14_sort32_layout        dst@4096   写出=128（自洽=128 非法=  0）sentinel=  0 零=  0  PASS（128 对全序与期望逐项一致）
+[A15] A15_4way_v15_sort32src   dst@1024   写出=128（自洽=128 非法=  0）sentinel=128 零=  0  PASS（128 对全序与期望逐项一致）
+[A16] A16_4way_v15_allb0       dst@1024   写出=128（自洽=128 非法=  0）sentinel=128 零=  0  PASS（128 对全序与期望逐项一致）
+[A17] A17_4way_v15_len4        dst@1024   写出= 16（自洽= 16 非法=  0）sentinel=240 零=  0  PASS（16 对全序与期望逐项一致）
+[A18] A18_dst_alias_src1       dst@0      写出=128（自洽=128 非法=  0）sentinel=  0 零=  0  （不判序；与规范 4 路归并逐项一致的位点 = 128/128）
+        参考对比：pos0 得到   b0 j0  (value/index 自洽)
+[A19] A19_dst_alias_src3       dst@512    写出=128（自洽=128 非法=  0）sentinel=  0 零=  0  （不判序；与规范 4 路归并逐项一致的位点 = 128/128）
+        参考对比：pos0 得到   b0 j0  (value/index 自洽)
+[A20] A20_sort32_nobar         dst@1024   写出=128（自洽=128 非法=  0）sentinel=128 零=  0  PASS（128 对全序与期望逐项一致）
+[A21] A21_4way_v15_rep0        dst@1024   写出=  0（自洽=  0 非法=  0）sentinel=256 零=  0  （不判序；与规范 4 路归并逐项一致的位点 = 0/128，首个不符 pos=0）
+        参考对比：pos0 得到   <sentinel 未写>
+[A22] A22_2way_v3_len4x32      dst@1024   写出= 64（自洽= 64 非法=  0）sentinel=192 零=  0  （不判序；与规范 4 路归并逐项一致的位点 = 2/128，首个不符 pos=2）
+        参考对比：pos0 得到   b0 j0  (value/index 自洽)
+[A23] A23_4way_v15_len0_all    dst@1024   写出=  0（自洽=  0 非法=  0）sentinel=256 零=  0  （不判序；与规范 4 路归并逐项一致的位点 = 0/128，首个不符 pos=0）
+        参考对比：pos0 得到   <sentinel 未写>
+[A24] A24_4way_v15_rep2_len8   dst@1024   写出= 64（自洽= 64 非法=  0）sentinel=192 零=  0  （不判序；与规范 4 路归并逐项一致的位点 = 1/128，首个不符 pos=1）
+        参考对比：pos0 得到   b0 j0  (value/index 自洽)
+[A25] A25_4way_v15_len8        dst@1024   写出= 32（自洽= 32 非法=  0）sentinel=224 零=  0  PASS（32 对全序与期望逐项一致）

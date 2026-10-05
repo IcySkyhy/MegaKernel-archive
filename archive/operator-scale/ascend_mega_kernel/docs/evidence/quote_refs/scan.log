@@ -1,0 +1,53 @@
+# [M129] docs 引文保真主扫描（语料层）
+# 命令：cd <repo root> && python3 docs/scan_quote_refs.py ; echo rc=$?
+
+$ python3 docs/scan_quote_refs.py
+== docs 引文保真扫描（scan_quote_refs.py） ==
+docs scanned=19  read-fail=0
+成对样本(pairs)=31  verified=11  unverified=12  finding=8
+引文「…」总数=952  其中成对受检=30  未成对(计入 quote-unpaired)=922
+源侧跨行引文(开闭不在同一行)=31 ｜ 开行有出处→成对检查=8 ｜ 无→计入 quote-unpaired=23
+文件:行 总数=2001  其中成对受检=23  未成对(计入 cite-unpaired)=1978
+-- 分类计数（分母 = 上面的成对样本 31） --
+   finding:FIND-NOTINFILE             6
+   finding:FIND-PARTIAL               2
+   ok:OK                              5
+   ok:OK-EMPH                         3
+   ok:OK-PARTIAL                      3
+   unverified:bare-name               3
+   unverified:external-prefix         1
+   unverified:shorthand-no-path       8
+-- finding（逐条：判据 + 出处） --
+   FIND 17-verification-standard.md:672 [FIND-NOTINFILE]
+        引文：`docs/17` §9.5、§8.1
+        所引：docs/05:379
+        判据：所引行与被引文件里都找不到该引文
+   FIND 17-verification-standard.md:678 [FIND-NOTINFILE]
+        引文：`docs/17` §9.5、§8.1
+        所引：docs/05:379
+        判据：所引行与被引文件里都找不到该引文
+   FIND 18-vector-api-audit.md:52 [FIND-NOTINFILE]
+        引文：Reg API 必须在 vector function（`__VEC_SCOPE__`）内使用
+        所引：docs/05:114
+        判据：所引行与被引文件里都找不到该引文
+   FIND 18-vector-api-audit.md:459 [FIND-NOTINFILE]
+        引文：halfScale 非有限覆盖 = 缺失
+        所引：docs/13:117
+        判据：所引行与被引文件里都找不到该引文
+   FIND 18-vector-api-audit.md:459 [FIND-PARTIAL]
+        引文：已立 mission…修复前不要声称位级一致
+        所引：(裸行号):139
+        判据：省略号切段后有所引行里找不到的段  ｜裸行号→docs/13
+   FIND 20-kernel-compliance-sweep.md:522 [FIND-NOTINFILE]
+        引文：unlock 之前的 S 写对 MTE3 可见
+        所引：docs/05:19/135/143
+        判据：所引行与被引文件里都找不到该引文
+   FIND 20-kernel-compliance-sweep.md:593 [FIND-NOTINFILE]
+        引文：事件 **或** drain BufferID
+        所引：docs/06:76
+        判据：所引行与被引文件里都找不到该引文
+   FIND 20-kernel-compliance-sweep.md:673 [FIND-PARTIAL]  20-kernel-compliance-sweep.md:673-675（源侧跨行引文，按拼接后核）
+        引文：跨 pipe 的 UB 数据交接**必须走\n> `SetFlag/WaitFlag` 事件 或 **drain BufferI…
+        所引：docs/06:76
+        判据：省略号切段后有所引行里找不到的段
+rc=1

@@ -1,0 +1,7 @@
+numpy fp32 ref == device C: False
+mismatches: 624, first 5:
+  C[4][0]: got 0xc2be expect 0xc2bf
+  C[5][0]: got 0xc3a4 expect 0xc3a3
+  C[11][0]: got 0xc3e2 expect 0xc3e3
+  C[25][0]: got 0x44b2 expect 0x44b3
+  C[29][0]: got 0x4436 expect 0x4437

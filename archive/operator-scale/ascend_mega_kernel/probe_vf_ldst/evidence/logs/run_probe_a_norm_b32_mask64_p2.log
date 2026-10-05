@@ -1,0 +1,5 @@
+[probe A] probe_a_norm_b32  dist=DIST_NORM_B32 maskSel=64 altFamily=0 proc=2
+[probe A] 实测: dst[0..7]=100 101 102 103 104 105 106 107
+[probe A] 落盘位图(.=未触碰 #=被写): ################################################################
+[probe A] 写出 lane 数=64（偶 32 / 奇 32）
+[probe A] probe_a_norm_b32 maskSel=64 RUN PASS：写出 64 lane（期望 64）、未触碰 0 lane

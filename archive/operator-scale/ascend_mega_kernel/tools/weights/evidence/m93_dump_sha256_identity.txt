@@ -1,0 +1,28 @@
+# M93 · 零回归的 dump 逐字节证据（base manifest vs tip manifest，同一二进制）
+#
+# 配置：M15_DUMP=1 M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 <bin> <manifest> all
+#
+# ── r4（rebase 到 main `40dd6de` 之后重取）────────────────────────────────
+#   <bin>          sha256 958c6f2a6d699537ad7fd6509bf77cd6dc4abe2fd6266e7e22f8e10e4c1fe117
+#                  （改前 = main `40dd6de` 的构建；改后 = 本分支的构建 —— **两者逐字节相同**）
+#   改前 manifest  = /tmp/m93_base/m15_layer_loop/weights_manifest.txt  sha256 258e748f72daff95fd31ab29f1e83e71632cf352d2c40a0e8f7e9365470851c1
+#   改后 manifest  = m15_layer_loop/weights_manifest.txt               sha256 6c0e8e6f15c9b3f5ef8875854044a43deff7c3b33791eb554bea361eb7102cdf
+#   读数：两侧各 1307 个 dump 文件；两份 sha256 清单**摘要相同**；`diff` **0 行**
+#     dff40e9b064cf04422f8f6a12202368a85f786252b635da60f96675082283444  base 清单
+#     dff40e9b064cf04422f8f6a12202368a85f786252b635da60f96675082283444  tip  清单
+#
+#   **清单摘要的历史（三份基线得同一个 dff40e9b…）**：
+#     main 0bd80c6（二进制 c6ee3ca0…）→ dff40e9b…
+#     main 004cab4（二进制 2d42ba86…，M91 已并入）→ dff40e9b…
+#     main 40dd6de（二进制 958c6f2a…，M95 已并入）→ dff40e9b…
+#   ⇒ 不仅 base/tip 两份 manifest 产出同样的 dump，**M91 与 M95 这两轮改 m15_moe_layer.h /
+#     m15_moe_resources.h 也都没有改变 runs=all 的 dump**（二进制 hash 变了三次、dump 没变）。
+#
+# 复现（两个 dump 目录各做一次，然后比对）：
+#   (cd <dumpdir> && M15_DUMP=1 M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 <bin> <manifest> all)
+#   (cd <dumpdir> && sha256sum * | sort -k2 > sha.txt)
+#   diff sha_base.txt sha_tip.txt          # 期望：0 行
+#   sha256sum sha_base.txt sha_tip.txt     # 期望：两个清单文件的摘要相同
+#
+# 逐文件清单不重复落盘（1307 行 × 2 会白占体积）：上面两个清单文件的 sha256 相同 + diff 为空
+# 即等价于「1307 个文件逐字节相同」，且清单可由上面的复现命令现取。

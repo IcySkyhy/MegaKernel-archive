@@ -1,0 +1,13 @@
+[in-lock] 08:06:32
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+[m15ple] M85 PLE 独立 kernel | aic=28 aiv=56 | out=/tmp/m124_out_new_m1 data=m15_layer_loop/ple/data neg=0
+[m15ple] A    ① ids: 10 tok × 16 head, dev_range_fail=0 -> A_ids.bin
+[m15ple] B    ① ids: 2 tok × 16 head, dev_range_fail=0 -> B_ids.bin
+[m15ple][FAIL] body: H2D
+[m15ple] ===== FAILURES PRESENT =====
+run_rc=1
+check_rc=0
+===== 判据合计 4 条 = 判定项 4 + 对照项 0；FAIL 0 条 =====
+===== ALL PASS =====
+[out-lock] 08:06:40

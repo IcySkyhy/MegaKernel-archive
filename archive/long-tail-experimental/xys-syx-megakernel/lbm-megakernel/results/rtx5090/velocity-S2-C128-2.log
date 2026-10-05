@@ -1,0 +1,8 @@
+RESOURCE name=S2-C128 threads=128 registers=48 static_shared=0 dynamic_shared=0 local_bytes=0 active_blocks_per_sm=10 grid=15x15x19 block=128x1x1 steps_per_launch=1 theoretical_occupancy_pct=83.333333
+LBM_allocateGrid: allocated 185.2 MByte
+LBM_showGridStatistics:
+	nObstacleCells:   99248 nAccelCells:   26912 nFluidCells: 2033840
+	minRho:   0.9961 maxRho:   1.0039 mass: 2.160000e+06
+	minU: 0.000000e+00 maxU: 4.025421e-03
+
+DONE physical_steps=2 kernel_launches=2 final_buffer=A patterned=0

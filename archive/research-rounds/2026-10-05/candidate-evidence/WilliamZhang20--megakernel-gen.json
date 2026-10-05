@@ -1,0 +1,247 @@
+{
+  "repository": "WilliamZhang20/megakernel-gen",
+  "url": "https://github.com/WilliamZhang20/megakernel-gen",
+  "created_at": "2026-09-03T01:34:18Z",
+  "pushed_at": "2026-09-03T01:34:30Z",
+  "branch": "main",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 85
+    },
+    {
+      "path": "CLAUDE.md",
+      "size": 18690
+    },
+    {
+      "path": "LICENSE",
+      "size": 11357
+    },
+    {
+      "path": "README.md",
+      "size": 20915
+    },
+    {
+      "path": "bench/bench_sglang.py",
+      "size": 1539
+    },
+    {
+      "path": "bench/bench_vllm.py",
+      "size": 1557
+    },
+    {
+      "path": "bench/common.py",
+      "size": 1113
+    },
+    {
+      "path": "calib/bar_probe.cu",
+      "size": 9890
+    },
+    {
+      "path": "calib/calib.cu",
+      "size": 35938
+    },
+    {
+      "path": "calib/tp_probe.cu",
+      "size": 8156
+    },
+    {
+      "path": "docs/DESIGN.md",
+      "size": 16448
+    },
+    {
+      "path": "docs/EXTENDING.md",
+      "size": 7141
+    },
+    {
+      "path": "docs/RESULTS.md",
+      "size": 16680
+    },
+    {
+      "path": "env.local.sh.example",
+      "size": 1516
+    },
+    {
+      "path": "env.sh",
+      "size": 5380
+    },
+    {
+      "path": "harness/generate.py",
+      "size": 3693
+    },
+    {
+      "path": "harness/mkguard.py",
+      "size": 7958
+    },
+    {
+      "path": "harness/mkprofile.py",
+      "size": 4898
+    },
+    {
+      "path": "harness/mkrun.py",
+      "size": 16809
+    },
+    {
+      "path": "harness/ncu_stage.py",
+      "size": 884
+    },
+    {
+      "path": "harness/ref_cpu.py",
+      "size": 1046
+    },
+    {
+      "path": "harness/run.py",
+      "size": 7220
+    },
+    {
+      "path": "hw/nvidia_h100_80gb_hbm3.json",
+      "size": 87872
+    },
+    {
+      "path": "mkc/Cargo.lock",
+      "size": 3302
+    },
+    {
+      "path": "mkc/Cargo.toml",
+      "size": 377
+    },
+    {
+      "path": "mkc/src/arch.rs",
+      "size": 35949
+    },
+    {
+      "path": "mkc/src/codegen.rs",
+      "size": 51878
+    },
+    {
+      "path": "mkc/src/emit.rs",
+      "size": 45138
+    },
+    {
+      "path": "mkc/src/hf.rs",
+      "size": 7092
+    },
+    {
+      "path": "mkc/src/hw.rs",
+      "size": 8698
+    },
+    {
+      "path": "mkc/src/ir.rs",
+      "size": 14800
+    },
+    {
+      "path": "mkc/src/layout.rs",
+      "size": 11166
+    },
+    {
+      "path": "mkc/src/main.rs",
+      "size": 10924
+    },
+    {
+      "path": "mkc/src/plan.rs",
+      "size": 33443
+    },
+    {
+      "path": "mkc/src/quant.rs",
+      "size": 9855
+    },
+    {
+      "path": "mkc/src/report.rs",
+      "size": 5245
+    },
+    {
+      "path": "mkc/src/search.rs",
+      "size": 14137
+    },
+    {
+      "path": "mkc/src/validate.rs",
+      "size": 5648
+    },
+    {
+      "path": "runtime/include/mk/attn.cuh",
+      "size": 5713
+    },
+    {
+      "path": "runtime/include/mk/common.cuh",
+      "size": 10037
+    },
+    {
+      "path": "runtime/include/mk/gemv.cuh",
+      "size": 16276
+    },
+    {
+      "path": "runtime/include/mk/moe.cuh",
+      "size": 4534
+    },
+    {
+      "path": "runtime/include/mk/norm.cuh",
+      "size": 6632
+    },
+    {
+      "path": "runtime/include/mk/rope.cuh",
+      "size": 4488
+    },
+    {
+      "path": "scripts/delta.py",
+      "size": 2727
+    },
+    {
+      "path": "scripts/full_guard.sh",
+      "size": 506
+    },
+    {
+      "path": "scripts/h2h.py",
+      "size": 2811
+    },
+    {
+      "path": "scripts/row.py",
+      "size": 1558
+    },
+    {
+      "path": "scripts/slurm_bar.sh",
+      "size": 561
+    },
+    {
+      "path": "scripts/slurm_base.sh",
+      "size": 2540
+    },
+    {
+      "path": "scripts/slurm_calib.sh",
+      "size": 1101
+    },
+    {
+      "path": "scripts/slurm_final.sh",
+      "size": 4517
+    },
+    {
+      "path": "scripts/slurm_occ.sh",
+      "size": 2071
+    },
+    {
+      "path": "scripts/slurm_tp.sh",
+      "size": 930
+    },
+    {
+      "path": "scripts/table.py",
+      "size": 3385
+    },
+    {
+      "path": "scripts/zoo.sh",
+      "size": 3113
+    },
+    {
+      "path": "tests/run_tests.sh",
+      "size": 4800
+    },
+    {
+      "path": "tests/test_prims.cu",
+      "size": 10767
+    }
+  ],
+  "recent_commits": [],
+  "readme": "# mkc — a megakernel compiler\n\n`mkc` turns a HuggingFace checkpoint into a **single persistent CUDA kernel** that\nruns the model's entire forward pass — every layer, the LM head and the sampler —\nin one cooperative launch.\n\n```\nmkc build /path/to/model -o out/model     # HF checkpoint -> megakernel, one shot\n```\n\nNo search over timings, no per-model tuning, no tokens burned. Compiling a model\nis a **pure function** of the checkpoint and a machine file that is measured once\nper GPU type. The same inputs always produce byte-identical CUDA.\n\n## Scope, and what this is not\n\nRead this before the numbers below, because it decides what they mean.\n\n* **One GPU.** No tensor, pipeline or expert parallelism. The largest model here\n  (gpt-oss-120b, MXFP4) fits on a single 80 GB card; nothing larger runs at all.\n* **Batch 1, decode.** This is a latency system, not a throughput one. There is\n  no paged KV cache, no continuous batching, no prefix caching, no speculative\n  decoding, and no scheduler. A serving engine is a different program.\n* **Prefill is not optimised and vLLM wins it decisively.** Prompt processing\n  runs the decode kernel once per prompt token, so a 1024-token prompt reads\n  every weight 1024 times -- roughly 35x worse TTFT. Every latency number in this\n  README is steady-state decode with prefill differenced out, and that\n  measurement is the only one this project has ever tried to win.\n* **A research artifact.** One person, one cluster, one GPU type calibrated.\n\n### Prior art\n\nThis is not the first megakernel compiler, and it is worth being precise about\nwho got there first. [**Mirage Persistent Kernel**](https://github.com/mirage-project/mirage)\n([arXiv 2512.22219](https://arxiv.org/abs/2512.22219)) is the reference point:\nit compiles a tensor program into a megakernel automatically, it is *multi-GPU*,\nand it replaces global barriers entirely with an event-driven task graph\nscheduled at SM granularity, which lets communication overlap computation instead\nof serialising behind a barrier. On all three of those axes MPK is ahead of this\nproject, and the third is a genuine architectural difference rather than a\nmissing feature: `mkc` decomposes a token into stages separated by grid-wide\nbarriers, which is simpler to reason about and strictly less general.\n\nWhat is less usual here, and is the reason this repository exists separately:\n\n* the input is a **HuggingFace checkpoint directory**, not a traced program, and\n  the compiler either emits a kernel or refuses and names the feature it lacks;\n* **five weight formats** are calibrated end to end -- bf16, f16, MXFP4, FP8\n  e4m3 (block and per-channel), INT4 AWQ -- rather than one;\n* compilation is a **pure function** of (checkpoint, machine file): the same\n  inputs produce byte-identical CUDA, which `tests/run_tests.sh` checks;\n* correctness is defended by an **adversarial guard**, not only a comparison --\n  see the last section. That part is independent of this compiler and would work\n  against any megakernel exposing the same ABI.\n\n## Why a megakernel\n\nAt batch 1 every projection in a transformer is a matrix-*vector* product. Weights\nhave zero reuse, nothing is compute bound, and the entire forward pass is pure\nstreaming: the floor is *bytes that must be read / achievable bandwidth*. A normal\nengine spends the gap on 100–350 kernel launches per token, each with a ramp-up\nand a drain during which the memory system idles. A megakernel deletes the\nlaunches and lets stages that used to be separate kernels share shared memory.\n\n## What it does\n\n```\n      HuggingFace checkpoint                  hw/<gpu>.json   (measured once)\n      config.json + *.safetensors                   |\n               |                                    |\n        [ architecture frontend ]                   |\n               |  Model IR                          |\n        [ planner ] <------------------------------ +\n               |  Plan: stages, barriers, row blocking, occupancy, arena\n        [ codegen ]\n               |\n   megakernel.cu  stages.cu  runtime.cu  weights.h  model.h  Makefile\n```\n\n* **frontend** — one generic decoder-only reader, not a family of per-model ones.\n  Config keys, tensor names and numerical conventions are all *probed*, so a model\n  it has never seen lands if it follows the house style, and fails loudly naming\n  the missing role if it does not.\n* **planner** — every decision a human would reach by sweeping compiled binaries:\n  block size, row blocking per stage, how many ways to split the key axis, how many\n  expert gemvs to interleave, occupancy, where the barriers fall, arena size. Each\n  one is a closed-form evaluation over *measured* primitive rates — with one\n  honest exception, marked as such: the cost model cannot rank block size against\n  occupancy (its predictions span 10% where the machine spans 60%), so `--verify`\n  settles that one by timing every schedule the assembler accepted. See §4.\n* **codegen** — emits the composition only. Every gemv core, norm, rotation and\n  softmax lives in a hand-written, individually tested runtime library\n  (`runtime/include/mk`), so a generated kernel can be wrong in its schedule but\n  never in its arithmetic.\n* **weights.h** — the weight table, resolved at compile time: which bytes of which\n  safetensors file become which device rows. The loader does no name lookup and\n  makes no layout decision at run time.\n\n## What it covers\n\nOne generic frontend, one planner, one backend. Nothing below is special-cased:\nthey are fields in the IR that the templates read.\n\n| | |\n|---|---|\n| architectures | Llama, Qwen2, Qwen3, Qwen2-MoE, Qwen3-MoE, Phi-3, Gemma-2, gpt-oss, and anything else that follows the same tensor-naming conventions |\n| attention | MHA, GQA at any ratio, sliding-window (uniform, alternating, or per-layer), attention sinks, logit soft-capping, per-head QK-norm |\n| rotary | plain, linear, YaRN, Llama-3; head dims 64 / 96 / 128 / 256; halves and interleaved layouts |\n| FFN | dense SwiGLU / GeGLU, mixture-of-experts with softmax or sigmoid routing, softmax-after-topk, shared experts (gated and ungated) |\n| norms | RMSNorm, Gemma's `1 + w` variant, LayerNorm, Gemma's four-norms-per-layer placement |\n| weights | bf16, f16, **MXFP4**, **FP8 e4m3** (128x128 block scales and per-output-channel), **INT4 AWQ** |\n| layout | split or fused qkv, split or fused gate/up, per-expert or fused expert tensors, tied or untied embeddings |\n\nTwo combinations are refused rather than lowered, and named as such: a\nmixture-of-experts model whose weights are FP8 or INT4 (the top-k expert gemv\ninterleaves several matrices in one loop and only the bf16/f16 and MXFP4 cores\nhave that form), and a mixture-of-experts model with a post-FFN norm (the expert\ndown-projection adds straight into the residual, so there is nowhere to\nnormalise between).\n\nThe contract is that mkc either produces a kernel that passes the gate, or it\n**refuses and names the feature it lacks** — never a third thing. `validate.rs`\nenforces that, and `tests/run_tests.sh` checks both directions.\n\n## Results\n\nOne `mkc build --verify` per model, no tuning, no per-model code. H100 80GB\nHBM3, batch 1, 1024-token prompt, 128 decode steps, prefill removed by N-vs-1\ndifferencing, on an exclusive node. `bw util` is bytes-that-must-be-read per\ntoken over **that node's own measured** streaming ceiling — which is not the\n3350 GB/s on the spec sheet, and is not even the same on two nodes: three runs of\nthis table measured 3190, 3095 and 3189 GB/s on identical H100 SXM cards, so the\ncalibration travels with the job.\n\nThe table is generated from the measurements by `scripts/table.py`; it is not\ntranscribed.\n\n<!-- BEGIN RESULTS TABLE -->\n| model | arch | MB/token | weights | ms/token | tok/s | bw util | vs roofline | gate | guard |\n|---|---|---|---|---|---|---|---|---|---|\n| Qwen3-0.6B-FP8 | Qwen3 | 869 | fp8 block | 0.9455 | 1057.7 | 28.8% | 3.47x | PASS | PASS |\n| Qwen3-0.6B | Qwen3 | 1310 | bf16 | 1.0440 | 957.9 | 39.3% | 2.54x | PASS | PASS |\n| TinyLlama-1.1B | Llama | 2092 | bf16 | 1.2049 | 830.0 | 54.4% | 1.84x | PASS | PASS |\n| Qwen2.5-1.5B-AWQ | Qwen2 | 1192 | int4 awq | 1.4555 | 687.0 | 25.7% | 3.89x | PASS | PASS |\n| Qwen2.5-1.5B | Qwen2 | 3117 | bf16 | 1.7418 | 574.1 | 56.1% | 1.78x | PASS | PASS |\n| Qwen3-1.7B | Qwen3 | 3559 | bf16 | 1.7834 | 560.7 | 62.6% | 1.60x | PASS | PASS |\n| Qwen3-1.7B-FP8 | Qwen3 | 2152 | fp8 channel | 1.4604 | 684.7 | 46.2% | 2.16x | PASS | PASS |\n| SmolLM2-1.7B | Llama (MHA) | 3624 | bf16 | 1.7406 | 574.5 | 65.3% | 1.53x | PASS | PASS |\n| gemma-2-2b | Gemma-2 | 5338 | bf16 | 2.7612 | 362.2 | 60.6% | 1.65x | PASS | PASS |\n| gpt-oss-20b | GptOss MoE | 3735 | mxfp4 | 2.1834 | 458.0 | 53.6% | 1.86x | PASS | PASS |\n| Phi-3-mini | Phi-3 | 7848 | bf16 | 3.2988 | 303.1 | 74.6% | 1.34x | PASS | PASS |\n| Qwen1.5-MoE-A2.7B | Qwen2-MoE + shared | 4957 | bf16 | 2.4706 | 404.8 | 62.9% | 1.59x | PASS | PASS |\n| Qwen3-8B | Qwen3 | 15288 | bf16 | 5.8859 | 169.9 | 81.4% | 1.23x | PASS | PASS |\n| Qwen3-30B-A3B | Qwen3-MoE | 6185 | bf16 | 3.9489 | 253.2 | 49.1% | 2.04x | — | PASS |\n| gpt-oss-120b | GptOss MoE | 5043 | mxfp4 | **3.1378** | 318.7 | 50.4% | 1.98x | — | PASS |\n<!-- END RESULTS TABLE -->\n\nThe gate column is a teacher-forced comparison against `transformers` on the same\ncheckpoint, and the two largest models have no entry rather than a claim.\n\nThe reference and the engine both want the whole model resident, and above about\n8 B parameters they stop fitting side by side. For Qwen3-30B-A3B that is\nsolvable — `harness/run.py --ref-first` computes the reference and frees it\n*before* the engine loads — and the next run will carry it. For gpt-oss-120b it\nis not solvable on this machine at all: dequantised to bf16 for the reference it\nis 240 GB, more than the card and more than the node's memory. Both get the full\nguard, and both architectures are gated on their smaller siblings — gpt-oss-20b\nis the same code path end to end (same MXFP4 core, same fused expert tensors,\nsame attention sinks, same YaRN rope, same sliding-window pattern) at 5.9 ulp.\nWriting \"PASS\" in those two cells would have been a claim about a measurement\nnobody took.\n\nThe pattern is the one the roofline predicts: utilisation rises with model size,\nbecause a bigger model means longer streams per stage, and a stage that is one\npartial wave of warps cannot reach steady-state bandwidth. Qwen3-8B, whose MLP\nstages are 100–200 MB, runs at 81% of the measured ceiling; Qwen3-0.6B, whose\nstages are 4–12 MB, runs at 39%. The mixture-of-experts models sit in between for\nthe same reason — a 48-layer MoE with a small hidden dimension reads only\n20–50 MB per stage — which is exactly what a per-stage profile shows.\n\n### Head to head\n\nSame GPU, same 1024-token prompt, same 128 decode steps, batch 1, prefill removed\nby N-vs-1 differencing so that nothing in the measurement is prefill or a prefix\ncache. The last column is the engine's latency over the megakernel's.\n\n<!-- BEGIN H2H TABLE -->\n| model | engine | ms/token | tok/s | |\n|---|---|---|---|---|\n| Qwen3-8B  *dense, bf16* | vLLM | 6.5016 | 153.8 | 1.10× |\n|  | SGLang | 6.4358 | 155.4 | 1.09× |\n|  | **mkc** | **5.8859** | **169.9** | — |\n| gpt-oss-20b  *MoE, MXFP4* | vLLM | 3.3019 | 302.9 | 1.51× |\n|  | SGLang | 3.2932 | 303.7 | 1.51× |\n|  | **mkc** | **2.1834** | **458.0** | — |\n| gpt-oss-120b  *MoE, MXFP4* | vLLM | 4.7433 | 210.8 | 1.51× |\n|  | SGLang | 4.7671 | 209.8 | 1.52× |\n|  | **mkc** | **3.1378** | **318.7** | — |\n<!-- END H2H TABLE -->\n\nTwo engines, two models, two independent runs each: vLLM and SGLang land within\n0.1% of themselves across runs, which is the check that the N-vs-1 differencing\nis sound. The one number that moves is vLLM on gpt-oss-120b — 4.74 ms on these\nnodes at two different memory fractions, 4.46 ms on another node in an earlier\nrun — so the honest range against it is **1.42–1.51×**, and the conservative\nfigure is the one to quote.\n\nFor gpt-oss-120b there is also a longer history, because this compiler\ngeneralises a hand-written megakernel for exactly that model:\n\n| engine | ms/token | tok/s | notes |\n|---|---|---|---|\n| PyTorch reference | 113.37 | 8.8 | recomputes the sequence every token |\n| hand-written per-op CUDA kernels | 4.31 | 232 | ~320 launches per token |\n| hand-tuned megakernel | 3.68 | 272 | weeks of sweeping, this model only |\n| **mkc, one shot** | **3.14** | **319** | `mkc build --verify`, no model-specific work |\n\nThe comparison is not apples to apples and it is not in mkc's favour to pretend\notherwise: vLLM is a general serving engine with paged KV, continuous batching\nand arbitrary sampling, and this is a fixed batch-1 greedy decode path. Giving up\nthat generality is the entire point of a megakernel. Prefill here is *not*\noptimised — it runs the decode kernel once per prompt token — and vLLM wins it\ndecisively. The rows that matter for the claim are the last two: a generated\nkernel matching, and slightly beating, a hand-tuned one on the model the\nhand-tuning was done for.\n\n## Layout\n\n```\nmkc/            the compiler (Rust, serde only)\n  hf.rs           safetensors + config ingestion\n  arch.rs         HuggingFace -> Model IR\n  ir.rs           the architecture-neutral IR\n  hw.rs           the machine model and its cost interpolation\n  plan.rs         the planner: cost model + schedule\n  search.rs       `mkc build`: which schedules the assembler will place\n  codegen.rs      CUDA emission\n  layout.rs       the weight table: file bytes -> device rows, at compile time\n  emit.rs         output tree: host runtime, Makefile, bench driver\nruntime/include/mk/   the primitive library the generated code calls\ncalib/                the only places measurement enters:\n  calib.cu              the machine model -- run once per GPU type\n  bar_probe.cu          is the grid barrier as cheap as it can be?\n  tp_probe.cu           what a cross-GPU rendezvous would cost\nharness/              the frozen correctness gate, the benchmark, the guard\nbench/                vLLM and SGLang on the identical workload\nhw/                   machine files, one per GPU type\nscripts/              zoo.sh (compile+gate+bench a list of models), table.py\n                      (rewrites the table above from the TSV), delta.py\n                      (compares two runs), and the slurm jobs that produce every\n                      number: slurm_calib, slurm_final, slurm_occ, slurm_bar,\n                      slurm_tp\n```\n\nNothing that will be reported is ever timed on a shared GPU: the local cards\nhave other people's work on them, and a neighbour at 50% occupancy moves every\nnumber. That is what the slurm scripts are for.\n\n## Running\n\n```bash\ncp env.local.sh.example env.local.sh   # set MKGEN_WORK; nothing else is site-specific\nsource env.sh\ncargo build --release --manifest-path mkc/Cargo.toml\n\n# once per GPU type\nnvcc -O3 -arch=sm_90a -Iruntime/include -o calib calib/calib.cu\n./calib hw/nvidia_h100_80gb_hbm3.json\n\nmkc analyze $MKGEN_MODELS/Qwen3-8B                      # parse + roofline, no GPU\nmkc build   $MKGEN_MODELS/Qwen3-8B -o out/Qwen3-8B      # compile; register fixpoint\nmkc build   $MKGEN_MODELS/Qwen3-8B -o out/Qwen3-8B --verify   # + time every candidate\n\npython harness/run.py out/Qwen3-8B --model $MKGEN_MODELS/Qwen3-8B --guard\npython harness/mkprofile.py out/Qwen3-8B --model $MKGEN_MODELS/Qwen3-8B   # per-stage schedule\ntests/run_tests.sh\n\n# every stage is ALSO emitted as an ordinary kernel, so a profiler can see one\n# in isolation instead of a single 6 ms launch:\nncu --set full --kernel-name kst_mlp1 \\\n    python harness/ncu_stage.py out/Qwen3-8B --model $MKGEN_MODELS/Qwen3-8B --stages mlp1\n```\n\n`mkc build` never runs a kernel; it compiles candidate schedules only to learn\nwhat the assembler gives them in registers. `--verify` additionally times each of\nthem on *synthetic* weights — timing depends on the layout, not the values, so it\nneeds no checkpoint and costs seconds — and keeps the measured winner.\n\nThat flag is where the compiler admits the limit of its cost model, and the size\nof the admission is worth stating: across (block size, blocks per SM) the\npredicted cost spans about 10% while the measured cost spans 60%. A bytes-and-\nitems model cannot see why one block per SM at 128 registers beats two at 64, or\nwhy omitting `minBlocksPerMultiprocessor` entirely — letting the assembler pick\nthe occupancy — beats every explicit choice on three of four models measured. So\nthe search enumerates those schedules, the assembler decides which are legal, and\n`--verify` decides which is fastest. Bounded, deterministic, and still one shot.\n\n## End to end\n\nThe gate is teacher-forced, which is the right way to measure numerical\nagreement but never exercises the sampler or the token feedback path.\n`harness/generate.py` does: it tokenises a prompt, runs the megakernel with\ngreedy sampling so that each step's argmax becomes the next step's input\nentirely on the GPU, and detokenises.\n\n```\n$ python harness/generate.py out/Qwen2.5-1.5B-AWQ --model $MKGEN_MODELS/Qwen2.5-1.5B-Instruct-AWQ \\\n      --chat --prompt \"Write one sentence about the ocean.\" --n 28\nprompt   : '<|im_start|>system\\nYou are Qwen ... <|im_start|>assistant\\n'\ngenerated: \"The ocean is a vast and mysterious expanse of water covering most of the\n            Earth's surface, supporting diverse ecosystems and shaping the planet's climate\"\n36 prompt + 28 decode tokens in 88 ms\n```\n\n`--compare` also decodes greedily with `transformers` and reports where the two\nstreams diverge. On Qwen1.5-MoE they are token-identical for the whole\ngeneration. That is a demonstration, not a gate: a single near-tied argmax sends\nfree-running decoders down different paths, which is exactly why the gate is\nteacher-forced.\n\n## Documentation\n\n| | |\n|---|---|\n| [docs/DESIGN.md](docs/DESIGN.md) | how it works, and why each decision is where it is |\n| [docs/EXTENDING.md](docs/EXTENDING.md) | adding an architecture, a weight format, a stage, or a GPU |\n| [docs/RESULTS.md](docs/RESULTS.md) | measurement method, and what the gate, guard and profiler each caught |\n\n## Correctness, and why it is not negotiable\n\nLatency is trivially cheatable: the fastest kernel is the one that computes\nnothing. So the metric is guarded twice.\n\n**The gate.** Teacher-forced logit comparison against HuggingFace `transformers`\nrunning the same checkpoint — third-party code this compiler did not write and\ncannot influence. Both are fed the *same* fixed token sequence, drawn randomly and\nseeded from the clock, and their logits are compared step by step. Free-running\ngreedy decode is not a gate: one near-tied argmax on step 3 makes every later token\ndiffer and reports catastrophic failure for a 1-ulp difference.\n\n**The guard** (`harness/mkguard.py`) attacks the ways a fast kernel could pass the\ngate without doing the work:\n\n| check | what it would catch |\n|---|---|\n| `weight_sensitivity` | zeroes each weight tensor in turn and requires the output to move — a layer that is never read, an expert branch that is skipped |\n| `history_sensitivity` | the KV cache is actually consulted |\n| `rope_applied` | zeroes the rotary tables, requires the output to move, and requires the model back bit-for-bit when they are rebuilt |\n| `input_sensitivity` | no memoisation |\n| `determinism` | bit-identical across runs; a difference means a race, and a race means the correctness result was luck |\n| `timing_floor` | measured ms/token cannot be below the roofline of the bytes the model must read |\n| `no_reference_link` | the shared object links no torch/transformers and the sources contain no captured output |\n\nThe weight probe restores the bytes by re-reading them from the checkpoint and\nasserts the restored model is bit-identical, so the check cannot corrupt the run\nit is checking.\n\n## The one measurement\n\n`mkc calibrate` runs once per GPU type and writes `hw/<gpu>.json`:\n\n1. **streaming read vs cold footprint** — every repetition reads memory it has not\n   just read, because this GPU has a 52 MB L2 and a naive loop over a 32 MB\n   footprint measures the cache, not the memory.\n2. **every gemv core at every (block size, row blocking)** — its ceiling.\n3. **the same cores in the shape a megakernel runs them**: inside a persistent\n   cooperative grid, one stage of B bytes and N items, ending at a grid barrier,\n   at two reduction lengths. A stage is usually one partial wave, where the limit\n   is memory-level parallelism rather than bandwidth; conflating the two\n   mispredicts by 4x.\n4. **cooperative grid barrier cost vs grid size** — barriers × stages × layers is a\n   fixed tax that decides how coarse the stages must be.\n5. **kernel launch overhead** — the thing a megakernel exists to delete.\n\nAfter that file exists, compiling a model touches no GPU.\n\n## License\n\nApache-2.0. See [LICENSE](LICENSE).\n"
+}

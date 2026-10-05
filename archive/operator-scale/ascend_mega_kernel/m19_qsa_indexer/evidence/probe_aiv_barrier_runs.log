@@ -1,0 +1,43 @@
+# M53 探针重复运行归档（probe_aiv_barrier.asc，独立 4 次）——用来支撑 README §3.4「已记录运行」的数字口径
+# 命令：for i in 1 2 3 4; do ./m19_qsa_indexer/build/probe_aiv_barrier; done
+# 生成 commit：b2a6f2d（本次新增本文件；同一命令可复现）
+
+--- run1 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56；变体数 6（最多 6），每变体轮数 4（v1/v4 单发 1 轮）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障（对照，4 轮）                                 核 56/56；违规核 56（合计 222，单核最大 4）；最少见到的槽数 3 ⇒ VIOLATION
+[probe_bar] v1 **单发** 1 轮：Set<0,MTE3>(1)+Wait<0,MTE2>（主 kernel 交接段用法） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v2 循环 4 轮复用同片槽：Set<0,MTE3>(1+r%8)+Wait<0,MTE2> 核 56/56；违规核 38（合计 71，单核最大 3）；最少见到的槽数 20 ⇒ VIOLATION
+[probe_bar] v3 循环 4 轮 + set 前 MTE3_S 排空（docs/06 §5.2 规则 6） 核 56/56；违规核 32（合计 44，单核最大 3）；最少见到的槽数 16 ⇒ VIOLATION
+[probe_bar] v4 **单发** 1 轮 + SyncAll<true>()（框架 AIV-only 全核屏障，wait 挂 PIPE_S） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v5 循环 4 轮 + SyncAll<true>()                                核 56/56；违规核 45（合计 65，单核最大 3）；最少见到的槽数 3 ⇒ VIOLATION
+
+--- run2 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56；变体数 6（最多 6），每变体轮数 4（v1/v4 单发 1 轮）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障（对照，4 轮）                                 核 56/56；违规核 56（合计 218，单核最大 4）；最少见到的槽数 2 ⇒ VIOLATION
+[probe_bar] v1 **单发** 1 轮：Set<0,MTE3>(1)+Wait<0,MTE2>（主 kernel 交接段用法） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v2 循环 4 轮复用同片槽：Set<0,MTE3>(1+r%8)+Wait<0,MTE2> 核 56/56；违规核 44（合计 62，单核最大 3）；最少见到的槽数 2 ⇒ VIOLATION
+[probe_bar] v3 循环 4 轮 + set 前 MTE3_S 排空（docs/06 §5.2 规则 6） 核 56/56；违规核 52（合计 86，单核最大 3）；最少见到的槽数 1 ⇒ VIOLATION
+[probe_bar] v4 **单发** 1 轮 + SyncAll<true>()（框架 AIV-only 全核屏障，wait 挂 PIPE_S） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v5 循环 4 轮 + SyncAll<true>()                                核 56/56；违规核 37（合计 61，单核最大 3）；最少见到的槽数 22 ⇒ VIOLATION
+
+--- run3 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56；变体数 6（最多 6），每变体轮数 4（v1/v4 单发 1 轮）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障（对照，4 轮）                                 核 56/56；违规核 56（合计 222，单核最大 4）；最少见到的槽数 1 ⇒ VIOLATION
+[probe_bar] v1 **单发** 1 轮：Set<0,MTE3>(1)+Wait<0,MTE2>（主 kernel 交接段用法） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v2 循环 4 轮复用同片槽：Set<0,MTE3>(1+r%8)+Wait<0,MTE2> 核 56/56；违规核 30（合计 42，单核最大 3）；最少见到的槽数 12 ⇒ VIOLATION
+[probe_bar] v3 循环 4 轮 + set 前 MTE3_S 排空（docs/06 §5.2 规则 6） 核 56/56；违规核 31（合计 66，单核最大 3）；最少见到的槽数 20 ⇒ VIOLATION
+[probe_bar] v4 **单发** 1 轮 + SyncAll<true>()（框架 AIV-only 全核屏障，wait 挂 PIPE_S） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v5 循环 4 轮 + SyncAll<true>()                                核 56/56；违规核 32（合计 48，单核最大 3）；最少见到的槽数 4 ⇒ VIOLATION
+
+--- run4 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56；变体数 6（最多 6），每变体轮数 4（v1/v4 单发 1 轮）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障（对照，4 轮）                                 核 56/56；违规核 56（合计 216，单核最大 4）；最少见到的槽数 1 ⇒ VIOLATION
+[probe_bar] v1 **单发** 1 轮：Set<0,MTE3>(1)+Wait<0,MTE2>（主 kernel 交接段用法） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v2 循环 4 轮复用同片槽：Set<0,MTE3>(1+r%8)+Wait<0,MTE2> 核 56/56；违规核 48（合计 68，单核最大 3）；最少见到的槽数 2 ⇒ VIOLATION
+[probe_bar] v3 循环 4 轮 + set 前 MTE3_S 排空（docs/06 §5.2 规则 6） 核 56/56；违规核 36（合计 58，单核最大 3）；最少见到的槽数 4 ⇒ VIOLATION
+[probe_bar] v4 **单发** 1 轮 + SyncAll<true>()（框架 AIV-only 全核屏障，wait 挂 PIPE_S） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v5 循环 4 轮 + SyncAll<true>()                                核 56/56；违规核 46（合计 85，单核最大 3）；最少见到的槽数 18 ⇒ VIOLATION

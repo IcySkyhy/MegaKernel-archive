@@ -1,0 +1,185 @@
+# tools/** 运行时打印过期断言扫描（M56 归档）
+
+**规则依据**（tower 广播 2026-09-26）：**脚本/内核在运行时打印、写盘或落进 dump/日志的断言性文字，
+也是证据的一部分，必须与同 commit 的事实一致**。过期结论一律改写成**可核对的现状陈述**
+（不是删掉 —— 删掉会让"曾经缺过"这段历史消失）；**归档证据**（`evidence/*.log` 等）里的同句
+按规则 4 保留为"那一刻的记录"。
+
+**WHY**：M56 任务 4 —— 清掉 `tools/golden` 里 4 处过期的「M32 is fixing it」（其中 `selfcheck.py`
+那处位于**运行时打印语句**，会随每次运行把过期断言写进新日志），随后对全 `tools/**` 做一次同样的
+扫描，给出扫描命令与命中计数。
+
+## 1. 清掉/改写的过期断言（改写，未删除历史）
+
+| # | 位置 | 原句（过期） | 现句（可核对） |
+|---|---|---|---|
+| 1 | `tools/golden/selfcheck.py`（check 3 的 `[note]`，**运行时打印**） | `the current device kernels (m2/m5/m13) miss only the :413 halfScale override, so they return ±6 for the Inf corner; M32 is fixing that.` | 现场核对设备侧，**全部由当场计数支撑**（`0c163b5` 原始句 → `96e7e96` → `daf3344` 修净）：`Duplicate(nanRegTensor, NAN_CUSTOMIZATION)` = 各 1 处（**真正的设备侧覆盖点，在 `MxQuantComputeScale` 内**）、`NAN_CUSTOMIZATION` = 各 3 处、`grep 0x7F81`（大写）= 各 3 处**但都不在设备路径上**、`grep 0x7f81`（小写）= 各 1 处（定义处）。**刻意不做逐文件分解** —— 那种静态分解正是会过期的东西（`96e7e96` 的分解只对 m2/m5 成立，m13 没有文件头那处、host 参考叫 `H_RefQuantMxfp4`） |
+| 2 | `tools/golden/qaware_ref.py`（模块 docstring） | `byte-identical apart from the documented Inf corner that M32 is fixing` | 该角落**已在设备侧实现**（M32，2026-09-26）：设备侧是 `Duplicate(nanRegTensor, NAN_CUSTOMIZATION)` + 小写 `0x7f81`，在 `MxQuantComputeScale` 内；并明确写出**大小写敏感的 `grep 0x7F81` 找不到它**、其 3 处命中不在设备路径上（同样不做逐文件分解） |
+| 3 | `tools/golden/README.md`（"与设备的关系"段） | `m2/m5/m13 的 VEC 路径缺官方 :413 那一句 Select … M32 正在修` | 「**已具备**该句（核对于 2026-09-26）」；旧句明确标注为"修复前的状态记录" |
+| 4 | `tools/golden/README.md`（已知限制 1） | `m2/m5/m13 缺官方 :413 的 halfScale 非有限覆盖 … 本目录的 golden 按官方实现（M32 在修）` | 「设备侧 **:413 halfScale 非有限覆盖：已无差异**（M32 已落地）」+ 含 Inf 组设备/官方都给 0、NaN 组两边都 0 |
+| 5 | `tools/golden/moe_block_ref.py`（`quantize_ocp` docstring 里对 selfcheck 注记的引用） | `The archived tools/golden/evidence/*.log and the selfcheck.py note still print the pre-fix sentence` | selfcheck 的注记已改为**现场核对**；归档 `evidence/*.log` 的同句仍保留为当时记录（这句现在只指归档） |
+
+> 判据（可复算）：`grep -rn "M32 is fixing\|M32 正在修\|M32 在修" tools/` ⇒ 剩余命中**全部**是
+> 上述表里的"历史引用"（注释/README 里明确写着"此前…那是修复前的记录"）与 `evidence/` 归档，**没有**活的断言。
+
+## 2. 全 tools/** 扫描：命令与命中计数
+
+工具：`tools/scan_stale_runtime_prints.py`（本 mission 新增）。它**交代自己的覆盖范围**（三态分栏 +
+`archived`/`excluded`/`refused` 分列），并带 `--self-test` 负向对照。
+
+**§2 的读数一律原样整段粘贴（不裁剪）** —— 评审（`reviews/…m56-r2.md`）的 P2-1 指出：上一版把「误用对照」裁剪成只剩
+`[refused]` 与 `RESULT` 两段，**恰好省掉了**能暴露问题的 `[coverage] 扫描源文件 N 个` 与
+`[non_output] 命中 …`，于是把「源文件被剔出扫描」这个未修复行为记成了已修复。现全部原样。
+
+### 2.1 正常扫描（`--exclude` 只用于剔除本文件自身的自指计数）
+
+```
+$ cd <repo>
+$ /usr/local/python3.12.13/bin/python3 tools/scan_stale_runtime_prints.py \
+      --exclude tools/evidence/stale_runtime_print_scan.log
+[coverage] 扫描源文件 8 个（*.py 8 / *.sh 0）；跳过非源文件 330 个
+[coverage] 排除 2 个（本扫描器自身 1 个 + --exclude 命中的 archived 类 1 个；前者因标记表/自测夹具必然自命中，后者用于剔除自指的归档读数）
+[coverage] 抽出输出调用点 155 个（print/输出助手 / echo/printf）
+[coverage] 归档 evidence/ 下扫了 18 个文本文件、命中 9 处（规则 4 豁免：归档记录的是「那一刻的事实」，单独报数、不参与判定）
+[runtime] 命中 0 处（**这些是运行时打印，必须与同 commit 事实一致**）
+[non_output] 命中 1 处（注释/docstring/普通字符串；不是运行时打印，供人工判断）
+    tools/golden/selfcheck.py:239  [is fixing]  # 旧句「device kernels miss the :413 override … M32 is fixing that」在 M32 落地后即成过期断言，
+[undecided] 0 处（解析失败 / 可能是间接打印 —— **不当作通过**）
+RESULT: OK (runtime 0 命中 / 扫了 8 个文件、155 个输出调用点；非输出 1、未判定 0、归档 9 —— 后三者不参与判定)
+EXIT=0
+```
+
+### 2.2 误用对照 A：`--exclude` 指向源文件（真树，`--exclude selfcheck.py`）
+
+（同时 `--exclude` 掉本文件自身，使 `archived` 计数不受这份 log 自身内容长度影响 ⇒ 读数可稳定复算。）
+
+```
+$ /usr/local/python3.12.13/bin/python3 tools/scan_stale_runtime_prints.py \
+      --exclude selfcheck.py --exclude tools/evidence/stale_runtime_print_scan.log
+[coverage] 扫描源文件 8 个（*.py 8 / *.sh 0）；跳过非源文件 330 个
+[coverage] 排除 2 个（本扫描器自身 1 个 + --exclude 命中的 archived 类 1 个；前者因标记表/自测夹具必然自命中，后者用于剔除自指的归档读数）
+[refused] **--exclude 只允许用于 archived 类（evidence/ 下）**；以下 2 个**源文件**的排除被拒绝 —— 它们**仍按原样扫描**（命中会照常列出，见下面的 runtime/non_output 栏）：
+    tools/golden/selfcheck.py
+    tools/weights/selfcheck.py
+[coverage] 抽出输出调用点 155 个（print/输出助手 / echo/printf）
+[coverage] 归档 evidence/ 下扫了 18 个文本文件、命中 9 处（规则 4 豁免：归档记录的是「那一刻的事实」，单独报数、不参与判定）
+[runtime] 命中 0 处（**这些是运行时打印，必须与同 commit 事实一致**）
+[non_output] 命中 1 处（注释/docstring/普通字符串；不是运行时打印，供人工判断）
+    tools/golden/selfcheck.py:239  [is fixing]  # 旧句「device kernels miss the :413 override … M32 is fixing that」在 M32 落地后即成过期断言，
+[undecided] 0 处（解析失败 / 可能是间接打印 —— **不当作通过**）
+RESULT: OK (runtime 0 命中 / 扫了 8 个文件、155 个输出调用点；非输出 1、未判定 0、归档 9 —— 后三者不参与判定；--exclude 的 2 个源文件排除被拒、仍已扫描)
+EXIT=0
+```
+
+关键读数：**源文件仍是 8 个、`non_output` 仍是 1 处（`selfcheck.py:239` 那条仍在）** ⇒ 排除被拒后文件
+照样参与扫描，命中不会被抹掉。
+
+### 2.3 误用对照 B：合成真命中（复现 `reviews/…m56-r2.md` 给的用例，直接证明「真命中不再消失」）
+
+**副本构造（随 `c4b7b0e` 补写，便于复算）**：
+```bash
+mkdir -p /tmp/scan_repro && cp -r <repo>/tools /tmp/scan_repro/ \
+  && rm -rf /tmp/scan_repro/tools/evidence \
+  && printf 'def probe():\n    print("M32 正在修该角落")\n' > /tmp/scan_repro/tools/zz_stale_probe.py
+```
+即：tools 的**完整副本**减去 `evidence/`（这样 `archived` 栏与该目录无关），再加一个**含真命中的源文件**。
+下面两条命令都从 `/tmp/scan_repro` 下跑（副本里没有本 log，故无需 `--exclude` 本文件）：
+
+```
+$ cd /tmp/scan_repro && /usr/local/python3.12.13/bin/python3 tools/scan_stale_runtime_prints.py
+[coverage] 扫描源文件 9 个（*.py 9 / *.sh 0）；跳过非源文件 330 个
+[coverage] 排除 1 个（本扫描器自身 1 个 + --exclude 命中的 archived 类 0 个；前者因标记表/自测夹具必然自命中，后者用于剔除自指的归档读数）
+[coverage] 抽出输出调用点 156 个（print/输出助手 / echo/printf）
+[coverage] 归档 evidence/ 下扫了 17 个文本文件、命中 8 处（规则 4 豁免：归档记录的是「那一刻的事实」，单独报数、不参与判定）
+[runtime] 命中 1 处（**这些是运行时打印，必须与同 commit 事实一致**）
+    tools/zz_stale_probe.py:2  [正在修]  print("M32 正在修该角落")
+[non_output] 命中 1 处（注释/docstring/普通字符串；不是运行时打印，供人工判断）
+    tools/golden/selfcheck.py:239  [is fixing]  # 旧句「device kernels miss the :413 override … M32 is fixing that」在 M32 落地后即成过期断言，
+[undecided] 0 处（解析失败 / 可能是间接打印 —— **不当作通过**）
+RESULT: STALE (runtime 1 命中 / 扫了 9 个文件、156 个输出调用点)
+EXIT=1
+
+$ /usr/local/python3.12.13/bin/python3 tools/scan_stale_runtime_prints.py --exclude zz_stale_probe.py
+[coverage] 扫描源文件 9 个（*.py 9 / *.sh 0）；跳过非源文件 330 个
+[coverage] 排除 1 个（本扫描器自身 1 个 + --exclude 命中的 archived 类 0 个；前者因标记表/自测夹具必然自命中，后者用于剔除自指的归档读数）
+[refused] **--exclude 只允许用于 archived 类（evidence/ 下）**；以下 1 个**源文件**的排除被拒绝 —— 它们**仍按原样扫描**（命中会照常列出，见下面的 runtime/non_output 栏）：
+    tools/zz_stale_probe.py
+[coverage] 抽出输出调用点 156 个（print/输出助手 / echo/printf）
+[coverage] 归档 evidence/ 下扫了 17 个文本文件、命中 8 处（规则 4 豁免：归档记录的是「那一刻的事实」，单独报数、不参与判定）
+[runtime] 命中 1 处（**这些是运行时打印，必须与同 commit 事实一致**）
+    tools/zz_stale_probe.py:2  [正在修]  print("M32 正在修该角落")
+[non_output] 命中 1 处（注释/docstring/普通字符串；不是运行时打印，供人工判断）
+    tools/golden/selfcheck.py:239  [is fixing]  # 旧句「device kernels miss the :413 override … M32 is fixing that」在 M32 落地后即成过期断言，
+[undecided] 0 处（解析失败 / 可能是间接打印 —— **不当作通过**）
+RESULT: STALE (runtime 1 命中 / 扫了 9 个文件、156 个输出调用点；--exclude 的 1 个源文件排除被拒、仍已扫描)
+EXIT=1
+```
+
+两次读数**逐栏相同**（9 个源文件 / 156 个输出调用点 / `runtime` 1 处 / rc=1），差别只有那行 `[refused]`
+与结论行里的计数说明。**`96e7e96` 那版在这里会退化**为 `7 个源文件 / runtime 0 处 / rc=2`（正是评审复现的失败）。
+
+### 2.4 `--self-test`
+
+```
+$ /usr/local/python3.12.13/bin/python3 tools/scan_stale_runtime_prints.py --self-test
+--self-test（负向对照：三个合成用例）--
+  direct.py        判为 runtime    期望 runtime     OK
+  comment_only.py  判为 non_output 期望 non_output  OK
+  indirect.py      判为 undecided  期望 undecided   OK
+RESULT: OK（direct=会被打印 / comment_only=不是运行时打印 / indirect=**已知盲区** 会被报成 undecided 而不是静默通过）
+EXIT=0
+```
+
+### 2.5 命中计数小结
+
+| 栏 | 计数 | 说明 |
+|---|---|---|
+| 源文件 | 8 | `*.py` 8 / `*.sh` 0（另有 330 个非源文件被跳过，全是数据/权重二进制与文档） |
+| 输出调用点 | 155 | `print` 等输出助手 / shell `echo`/`printf` |
+| **`runtime`（要改的）** | **0** | 现在没有任何运行时打印还在写过期断言 |
+| `non_output` | 1 | `selfcheck.py:239` 的**历史说明注释**（"旧句…在 M32 落地后即成过期断言"），按规则刻意保留 |
+| `undecided` | 0 | 无解析失败、无"可能是间接打印"的文件 |
+| `archived`（规则 4 豁免） | **9 处 / 18 个文本文件** | 修复前的同句留在 `tools/golden/evidence/*.log`、`*.txt` 里（已排除本文件自身的自指计数） |
+| `excluded` | 2 | 本扫描器自身 1 个 + `--exclude` 命中的**本文件**（archived 类）1 个 |
+| `refused` | 0（正常） | 误用时为 2（2.2）/ 1（2.3）；**被拒的源文件仍照常扫描**，判定不被它削掉覆盖 |
+
+**关于自指**：本文件原文引用了那些过期句，若不加 `--exclude`，扫描会把本文件自身的命中也计入
+`archived`（**该数字随本文件内容变化，故不在此写死**）。上面给出的 `9 处 / 18 个文件` 是**剔除自指后**
+的真实归档命中，且 `--exclude` 写在命令里 ⇒ 任何人复算都会得到同一个数。
+
+## 3. 负向对照（判据自己要会咬）
+
+`--self-test` 用三个合成用例钉住"看得见/看不见"的边界：
+
+| 用例 | 期望判定 | 含义 |
+|---|---|---|
+| `print("M32 正在修该角落")` | `runtime` | 真的会被打印 ⇒ 必须报出来 |
+| 仅注释 `# M32 正在修该角落` | `non_output` | 不是运行时打印 ⇒ 不能误报为 runtime |
+| `MSG = "M32 正在修该角落"` 后 `print(MSG)` | **`undecided`** | **已知盲区**：标记由变量拼出，脚本看不见 ⇒ 必须报成"无法判定"，**不许静默当通过** |
+
+三例全部符合预期（rc=0）。
+
+## 4. 复算
+
+```bash
+cd <repo>
+/usr/local/python3.12.13/bin/python3 tools/scan_stale_runtime_prints.py --exclude tools/evidence/stale_runtime_print_scan.log  # 期望 rc=0
+/usr/local/python3.12.13/bin/python3 tools/scan_stale_runtime_prints.py --self-test # 期望 rc=0
+grep -rn "M32 is fixing\|M32 正在修\|M32 在修" tools/                              # 剩余命中应全为历史引用/归档
+```
+
+退出码（三态）：`0` = 扫到了且 runtime 命中为 0；`1` = runtime 命中 > 0（有要改的）；
+`2` = 没得扫（`tools/` 下没有可解析源文件 / 扫描根不存在）。
+**`--exclude` 的误用不改变这三态**：被拒的源文件照样被扫描，判定反映的是**完整扫描**的结果
+（误用只多打一行 `[refused]` 与结论行里的计数说明）。
+
+## 5. M56 修订记录（按 commit，不按轮次）
+
+| # | 评审项 | 改动 |
+|---|---|---|
+| 1 | **`0c163b5` 的原始句 → `96e7e96` 的版本**（评审 `reviews/…m56-r1.md` P2-1）：本文件第 1 节表里沿用了「`grep 0x7F81` 各 3 处、都在 `MxQuantComputeScale` 内」这句**假定位**（与 `selfcheck.py` 运行时注记同源） | 已按实测改写：设备侧真正用的是**小写** `NAN_CUSTOMIZATION = 0x7f81`（`grep 0x7F81` 不匹配）；大写 3 处命中**都不在设备路径上**。`selfcheck.py` / `qaware_ref.py` / `tools/golden/README.md`（两处）同步改写 |
+| 2 | **`96e7e96` 的错误版 → `daf3344` 修净**（评审 `reviews/…m56-r1.md` P2-5 / `…m56-r2.md` P2-1）：`--exclude` 是纯子串过滤，能把源文件的命中从报告里抹掉。**`96e7e96` 那一版只做了一半**：文案与 docstring 都声称「仍按原样扫描、命中仍会列出」，但 `walk()` 把被拒文件塞进 `refused` 而**没进 `code`** ⇒ 它们根本没被扫描；更糟的是本文件当时的"误用对照"块**裁剪**掉了能暴露这一点的 `[coverage]`/`[non_output]` 行，等于把未修复的行为记成了已修复 | **`daf3344` 修净**：被拒的源文件**仍加入 `code` 照常扫描**（行为与文案一致）；判定不再因 `--exclude` 削掉覆盖；本文件第 2 节改为**原样整段**给出四份读数（含 2.3 的合成真命中对照），不再裁剪 |
+| 3 | **`96e7e96`（含分解）→ `daf3344`（删分解）**（评审 `reviews/…m56-r2.md` P2-2）：`selfcheck.py` 新注记里 (c) 的**逐文件分解**只对 m2/m5 成立（m13 没有文件头那处、host 参考叫 `H_RefQuantMxfp4`） | 采纳评审建议②：**删掉逐文件分解**，只留「大写命中都不在设备路径上；设备侧用的是小写 `NAN_CUSTOMIZATION`，本 grep 不匹配」（并补一栏小写计数）。同源 5 处（`selfcheck.py`、`qaware_ref.py`、`tools/golden/README.md` ×2、本文件）同步 |
+| 4 | **`26a3ae4`**（评审 `reviews/…m56-r3.md` P3）：§2.3 的两条命令没写清副本构造（评审建议加 `--exclude` 本 log **或**写明副本构造） | 采纳「写明副本构造」：§2.3 补出完整的三行构造命令（`cp -r tools` → `rm -rf …/evidence` → 写入 `zz_stale_probe.py`），并说明"副本里没有本 log，故无需 `--exclude` 本文件" |
+
+（本表各行均导致本文件内容变化 ⇒ 每次 review-request 里都说明了这份归档 log 被更新。）

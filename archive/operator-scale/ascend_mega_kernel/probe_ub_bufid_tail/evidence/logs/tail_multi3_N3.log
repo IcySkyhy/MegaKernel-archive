@@ -1,0 +1,12 @@
+--- run 1 (timeout 40s) ---
+[probe] mode=tail variant=multi3_N3 vi=5 run=1 N=3 handoffs=3 idSame=1 drainV=1 drainE3=1 skipVrel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=multi3_N3 run=1 N=3 tiles=18 mismatched=0 elems=36864 match=36864 stale=0 zero=0 histOther=0 rc=0
+exit=0
+--- run 2 (timeout 40s) ---
+[probe] mode=tail variant=multi3_N3 vi=5 run=2 N=3 handoffs=3 idSame=1 drainV=1 drainE3=1 skipVrel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=multi3_N3 run=2 N=3 tiles=18 mismatched=0 elems=36864 match=36864 stale=0 zero=0 histOther=0 rc=0
+exit=0
+--- run 3 (timeout 40s) ---
+[probe] mode=tail variant=multi3_N3 vi=5 run=3 N=3 handoffs=3 idSame=1 drainV=1 drainE3=1 skipVrel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=multi3_N3 run=3 N=3 tiles=18 mismatched=0 elems=36864 match=36864 stale=0 zero=0 histOther=0 rc=0
+exit=0

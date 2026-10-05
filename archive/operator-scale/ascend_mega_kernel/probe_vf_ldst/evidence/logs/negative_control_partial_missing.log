@@ -1,0 +1,97 @@
+# 负向对照：删掉两个整组变体的日志 ⇒ 必须报缺组而不是 OK
+date    : 2026-09-26T14:37:32+00:00
+命令    : python3 tools/summarize.py /tmp/m45_neg_controls/partial_missing 5
+期望    : RESULT 非 OK 且退出码 1
+
+============================================================================================
+probe_vf_ldst 跨进程汇总（每变体应有 5 个独立进程）
+============================================================================================
+
+## 覆盖（三态分栏）
+   声明集(declared_groups.txt) : 46 组
+   实到集(存在 run_*.log)      : 44 组
+   缺组(声明了但没跑)          : 2 组 ['probe_b_rel0_brc', 'probe_b_rel1_brc']
+   多出(跑了但没声明)          : 0 组 
+   进程数不足的组              : 0 组
+
+## 探针 A —— StoreDist 掩码语义（含非连续/交替掩码族）
+   组                                判读       进程        判定项 dump sha 期待        读数
+   first_elem mask=0                PASS     5/5       无 dump     PASS      written=1 untouched=63
+   first_elem mask=1                PASS     5/5       无 dump     PASS      written=1 untouched=63
+   first_elem mask=64               PASS     5/5       无 dump     PASS      written=1 untouched=63
+   first_elem mask=8                PASS     5/5       无 dump     PASS      written=1 untouched=63
+   first_elem_nc mask=0             PASS     5/5       无 dump     PASS      written=1 untouched=63
+   first_elem_nc mask=1             PASS     5/5       无 dump     PASS      written=1 untouched=63
+   first_elem_nc mask=2             PASS     5/5       无 dump     PASS      written=1 untouched=63
+   first_elem_nc mask=3             PASS     5/5       无 dump     PASS      written=1 untouched=63
+   norm_b32 mask=0                  PASS     5/5       无 dump     PASS      written=0 untouched=64
+   norm_b32 mask=1                  PASS     5/5       无 dump     PASS      written=1 untouched=63
+   norm_b32 mask=64                 PASS     5/5       无 dump     PASS      written=64 untouched=0
+   norm_b32 mask=8                  PASS     5/5       无 dump     PASS      written=8 untouched=56
+   norm_b32_nc mask=0               PASS     5/5       无 dump     PASS      written=16 untouched=48
+   norm_b32_nc mask=1               PASS     5/5       无 dump     PASS      written=22 untouched=42
+   norm_b32_nc mask=2               PASS     5/5       无 dump     PASS      written=32 parity=偶
+   norm_b32_nc mask=3               PASS     5/5       无 dump     PASS      written=32 parity=奇
+
+## 探针 B —— MTE2→V 交接可见性
+   分类：ok / stale_prev(上一 chunk) / ahead(下一 chunk) / poison(未被写) / zero(读到 0) / other
+   组                                判读       进程        判定项 dump sha 期待        读数
+   backlog_rel0                     PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   backlog_rel1                     PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   backlog_rel2                     PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   noprod                           PASS     5/5       无 dump     PASS      ok=0 stale_prev=0 ahead=0 poison=64 zero=0 other=0
+   prod3_selftest                   FAIL     5/5       无 dump     FAIL      ok=1 stale_prev=63 ahead=0 poison=0 zero=0 other=0
+   rel0_getval                      PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel0_norm                        PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel0_vrelimm                     PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel1_brc_g32                     PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel1_brc_g4                      PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel1_brc_membar                  PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel1_brc_mid                     PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel1_brc_off4                    PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel1_brc_perchunk                PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel1_brc_vprod                   PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel1_getval                      PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel1_norm                        PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel2_brc                         PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel2_getval                      PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rel2_norm                        PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   vrelimm                          PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+
+## 探针 C —— 同核 GM 回环（MTE3: UB→GM 紧接 MTE2: GM→UB）
+   组                                判读       进程        判定项 dump sha 期待        读数
+   rt_bufid                         PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rt_event                         PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rt_small_bufid                   PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rt_small_twotok                  PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rt_small_unordered               PASS     5/5       无 dump     PASS      ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0
+   rt_twotok                        FAIL     5/5       无 dump     FAIL      ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0
+   rt_unordered                     FAIL     5/5       无 dump     FAIL      ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0
+
+## 对照自检（PASS 不是空洞的）
+   OK       probe_b_noprod                 [PASS] 生产者关闭 ⇒ 64/64 poison
+   OK       probe_b_prod3_selftest         [FAIL] 生产者写旧值 ⇒ 判读器报 stale_prev
+   OK       probe_c_rt_unordered           [FAIL] GM 回环无排序 ⇒ FAIL 且读到尚未写回的值
+   OK       probe_c_rt_event               [PASS] GM 回环 + SetFlag/WaitFlag ⇒ PASS
+   OK       probe_c_rt_bufid               [PASS] GM 回环 + 同一 token drain 交接 ⇒ PASS
+   OK       probe_c_rt_twotok              [FAIL] 两个不同 BufferID（drain 释放无人取）= M36 事实形态 ⇒ FAIL
+   OK       probe_c_rt_small_bufid         [PASS] 逐 chunk 小回写 + 有排序 ⇒ PASS
+   OK       probe_a_norm_b32_nc mask=0     [PASS] 非连续掩码 M4（周期 4）⇒ NORM 只写 16 个 lane（非前缀）
+   OK       probe_a_norm_b32_nc mask=1     [PASS] 非连续掩码 M3（周期 3）⇒ NORM 只写 22 个 lane（非前缀）
+   OK       probe_a_norm_b32_nc mask=2     [PASS] 交替掩码（MaskGenWithRegTensor）⇒ NORM 只写同奇偶的 32 lane
+   OK       probe_a_norm_b32_nc mask=3     [PASS] 交替掩码反相 ⇒ NORM 只写同奇偶的 32 lane
+   OK       probe_a_first_elem_nc mask=0   [PASS] FIRST_ELEMENT 遇非连续掩码 M4 ⇒ 仍只写 1 lane
+   OK       probe_a_first_elem_nc mask=1   [PASS] FIRST_ELEMENT 遇非连续掩码 M3 ⇒ 仍只写 1 lane
+   OK       probe_a_first_elem_nc mask=2   [PASS] FIRST_ELEMENT 遇交替掩码 ⇒ 仍只写 1 lane
+   OK       probe_a_first_elem_nc mask=3   [PASS] FIRST_ELEMENT 遇交替掩码反相 ⇒ 仍只写 1 lane
+   对照自检: 15/15
+
+## 结论口径
+   * 判定项 = 声明集全到齐 + 每组 5 个独立进程 + 跨进程判读一致 + 等于设计预期 + 对照自检。
+   * 报告项 = 判定项 dump 跨进程 sha256（`a_*_p*.bin` / `*_out.bin`）；
+     `b_*_ub.bin` 中的 `UB_MID`/`UB_BACKLOG` scratch 是 UB 残留，设计上不做一致性要求。
+   DIFF  缺组 2 个（声明了但没跑）：['probe_b_rel0_brc', 'probe_b_rel1_brc']
+
+RESULT: DIFF（比过 44/46 个组，其中 44 个跨进程一致且符合预期、实测最小进程数 5/5、对照自检 15/15）
+退出码  : 1（期望 1）
+判定    : 对照通过

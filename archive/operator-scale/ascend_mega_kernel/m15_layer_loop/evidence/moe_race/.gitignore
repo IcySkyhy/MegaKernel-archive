@@ -1,0 +1,8 @@
+# 本目录只放**文本**证据（日志 / 脚本 / README）。
+# 设备档落下的 dump（`L*_moe_ws.bin`、`dump_manifest.txt`、`moe_layout.txt`）一律不入库：
+#   · 单层 ws = 7,685,472 B（WS_MOE_BYTES），跑一层就 7.6 MB；
+#   · 它们是可复现的（`reproduce_host.sh` + README §4③ 的落盘档命令），没必要进 git。
+*.bin
+dump_manifest.txt
+moe_layout.txt
+__pycache__/

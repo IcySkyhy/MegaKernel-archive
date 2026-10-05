@@ -1,0 +1,46 @@
+{
+  "schema": "mlx-uag.mtp-phase-variant-graph-gate/v1",
+  "created_at_utc": "2026-09-16T17:42:13+00:00",
+  "evidence_level": "real_mlx_component_graph",
+  "model_graph_qualified": false,
+  "mlx_version": "0.32.2.dev20260915+2a817ad94",
+  "cycles": 100,
+  "width": 256,
+  "elapsed_s": 0.5567380839929683,
+  "phase_calls_per_second": 538.8530237564798,
+  "max_abs_error": 0.0,
+  "trace_build_order": [
+    "draft_output",
+    "catchup_no_output",
+    "target_verify"
+  ],
+  "registry": {
+    "schema": "mlx-lm.speculative-phase-variants/v1",
+    "max_variants_per_phase": 1,
+    "phases": {
+      "draft_output": {
+        "live_variants": 1,
+        "builds": 1,
+        "replays": 99,
+        "evictions": 0,
+        "build_failures": 0
+      },
+      "catchup_no_output": {
+        "live_variants": 1,
+        "builds": 1,
+        "replays": 99,
+        "evictions": 0,
+        "build_failures": 0
+      },
+      "target_verify": {
+        "live_variants": 1,
+        "builds": 1,
+        "replays": 99,
+        "evictions": 0,
+        "build_failures": 0
+      }
+    },
+    "fallbacks": {}
+  },
+  "integration_note": "Current unified self-MTP invokes model.mtp_step as an output-producing draft step and folds teacher-forcing catch-up into the next draft input; there is no separate no-output model graph to bind yet."
+}

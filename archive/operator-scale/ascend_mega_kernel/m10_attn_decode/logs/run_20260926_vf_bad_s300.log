@@ -1,0 +1,1195 @@
+# ⚠ 证据：一次 seq=300 数值不稳定的运行（本轮 2026-09-26 在 fresh build 目录观测到 1 次）
+# 现象：同一次三档运行里 s256/s4096 的 out.bin 与归档逐位相同，**只有 s300_out.bin 不同**
+#        （sha256 与归档不符；check_ref 300 判定项 FAIL：常规元素越界 1011、边界 13、max 366 ulp、maxRel 6.0）
+#        m10_case_s256_dbgc2.bin: FAILED open or read
+m10_case_s256_dbgs.bin: FAILED open or read
+m10_case_s256_gp.bin: FAILED open or read
+m10_case_s256_k.bin: FAILED open or read
+m10_case_s256_out.bin: FAILED open or read
+m10_case_s256_q.bin: FAILED open or read
+m10_case_s256_v.bin: FAILED open or read
+m10_case_s256_wsm.bin: FAILED open or read
+m10_case_s256_wss.bin: FAILED open or read
+m10_case_s300_dbgc2.bin: FAILED open or read
+m10_case_s300_dbgs.bin: FAILED open or read
+m10_case_s300_gp.bin: FAILED open or read
+m10_case_s300_k.bin: FAILED open or read
+m10_case_s300_out.bin: FAILED open or read
+m10_case_s300_q.bin: FAILED open or read
+m10_case_s300_v.bin: FAILED open or read
+m10_case_s300_wsm.bin: FAILED open or read
+m10_case_s300_wss.bin: FAILED open or read
+m10_case_s4096_dbgc2.bin: FAILED open or read
+m10_case_s4096_gp.bin: FAILED open or read
+m10_case_s4096_out.bin: FAILED open or read
+m10_case_s4096_q.bin: FAILED open or read
+m10_case_s4096_wsacc.bin: FAILED open or read
+m10_case_s4096_wsm.bin: FAILED open or read
+m10_case_s4096_wss.bin: FAILED open or read 只报 s300_out.bin 一个失败 ⇒ 输入 k/v/q 与其余 dump 全一致
+#        ⇒ 不是输入/参考问题，是**设备侧时序相关的数值不稳定**（控制流 trace 与正常 run 完全相同）
+# 复现状态：此后 300 单独跑 3 次、三档连跑 5 次均复现为**正确值**（d6867f185ad5054f）⇒ 低频、疑与卡上负载/时序有关
+# 归档变量：本次运行的完整设备 trace（含每 AIV 的 wait RDY/got RDY/done 与 combine nsplit 打印）如下；
+# 下一步建议（交给续跑者/tower）：把 s300_out.bin 的错值逐行与 256 档的行结果比（是否为跨 case 残留/部分行错），
+# 并针对 nsplit=2 + 尾 tile（44/256 有效列）这条路径做定向压测（连跑 N 次统计频率）。
+
+[M10] numBlocks(AIC) = 28
+[M10] case seq=256 dumped (m10_case_s256_)
+[AIC Block 0/28] [M10K] AIC 0 enter tiles=1
+[AIC Block 0/28] [M10K] AIC 0 tile loop done
+[AIC Block 0/28] [M10K] AIC 0 reach FD sync
+[AIC Block 1/28] [M10K] AIC 1 enter tiles=1
+[AIC Block 1/28] [M10K] AIC 1 tile loop done
+[AIC Block 1/28] [M10K] AIC 1 reach FD sync
+[AIC Block 2/28] [M10K] AIC 2 reach FD sync
+[AIC Block 3/28] [M10K] AIC 3 reach FD sync
+[AIC Block 4/28] [M10K] AIC 4 reach FD sync
+[AIC Block 5/28] [M10K] AIC 5 reach FD sync
+[AIC Block 6/28] [M10K] AIC 6 reach FD sync
+[AIC Block 7/28] [M10K] AIC 7 reach FD sync
+[AIC Block 8/28] [M10K] AIC 8 reach FD sync
+[AIC Block 9/28] [M10K] AIC 9 reach FD sync
+[AIC Block 10/28] [M10K] AIC 10 reach FD sync
+[AIC Block 11/28] [M10K] AIC 11 reach FD sync
+[AIC Block 12/28] [M10K] AIC 12 reach FD sync
+[AIC Block 13/28] [M10K] AIC 13 reach FD sync
+[AIV Block 0/56] [M10K] AIV 0 enter aic=0 half=0 hasWork=1 tiles=1
+[AIV Block 0/56] [M10K] AIV 0 vec done
+[AIV Block 0/56] [M10K] AIV 0 partial done
+[AIV Block 0/56] [M10K] AIV 0 wait RDY
+[AIV Block 0/56] [M10K] AIV 0 got RDY
+[AIV Block 0/56] [M10K] combine enter n2=0 half=0 nsplit=1
+[AIV Block 0/56] [M10K] combine got CIN mte2
+[AIV Block 0/56] [M10K] combine m/s copied
+[AIV Block 0/56] [M10K] combine got CIN v
+[AIV Block 0/56] [M10K] combine weights done
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=0 den=161.640198
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=1 den=142.362167
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=2 den=152.890564
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=3 den=147.147385
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=4 den=134.080872
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=5 den=155.308167
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=6 den=116.842766
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=7 den=155.586243
+[AIV Block 0/56] [M10K] combine done n2=0 half=0
+[AIV Block 0/56] [M10K] AIV 0 done
+[AIV Block 1/56] [M10K] AIV 1 enter aic=0 half=1 hasWork=1 tiles=1
+[AIV Block 1/56] [M10K] AIV 1 vec done
+[AIV Block 1/56] [M10K] AIV 1 partial done
+[AIV Block 1/56] [M10K] AIV 1 wait RDY
+[AIV Block 1/56] [M10K] AIV 1 got RDY
+[AIV Block 1/56] [M10K] combine enter n2=1 half=0 nsplit=1
+[AIV Block 1/56] [M10K] combine got CIN mte2
+[AIV Block 1/56] [M10K] combine m/s copied
+[AIV Block 1/56] [M10K] combine got CIN v
+[AIV Block 1/56] [M10K] combine weights done
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=0 den=115.668365
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=1 den=150.487213
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=2 den=122.719193
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=3 den=115.595016
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=4 den=137.739609
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=5 den=145.967163
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=6 den=144.843140
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=7 den=135.951080
+[AIV Block 1/56] [M10K] combine done n2=1 half=0
+[AIV Block 1/56] [M10K] AIV 1 done
+[AIV Block 2/56] [M10K] AIV 2 enter aic=1 half=0 hasWork=1 tiles=1
+[AIV Block 2/56] [M10K] AIV 2 vec done
+[AIV Block 2/56] [M10K] AIV 2 partial done
+[AIV Block 2/56] [M10K] AIV 2 wait RDY
+[AIV Block 2/56] [M10K] AIV 2 got RDY
+[AIV Block 2/56] [M10K] combine enter n2=0 half=1 nsplit=1
+[AIV Block 2/56] [M10K] combine got CIN mte2
+[AIV Block 2/56] [M10K] combine m/s copied
+[AIV Block 2/56] [M10K] combine got CIN v
+[AIV Block 2/56] [M10K] combine weights done
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=8 den=153.401443
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=9 den=155.242706
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=10 den=115.338898
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=11 den=138.936646
+[AIV Block 2/56] [M10K] combine done n2=0 half=1
+[AIV Block 2/56] [M10K] AIV 2 done
+[AIV Block 3/56] [M10K] AIV 3 enter aic=1 half=1 hasWork=1 tiles=1
+[AIV Block 3/56] [M10K] AIV 3 vec done
+[AIV Block 3/56] [M10K] AIV 3 partial done
+[AIV Block 3/56] [M10K] AIV 3 wait RDY
+[AIV Block 3/56] [M10K] AIV 3 got RDY
+[AIV Block 3/56] [M10K] combine enter n2=1 half=1 nsplit=1
+[AIV Block 3/56] [M10K] combine got CIN mte2
+[AIV Block 3/56] [M10K] combine m/s copied
+[AIV Block 3/56] [M10K] combine got CIN v
+[AIV Block 3/56] [M10K] combine weights done
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=8 den=121.031723
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=9 den=145.239960
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=10 den=153.529129
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=11 den=147.882629
+[AIV Block 3/56] [M10K] combine done n2=1 half=1
+[AIV Block 3/56] [M10K] AIV 3 done
+[AIV Block 4/56] [M10K] AIV 4 enter aic=2 half=0 hasWork=0 tiles=0
+[AIV Block 4/56] [M10K] AIV 4 idle signalled
+[AIV Block 4/56] [M10K] AIV 4 wait RDY
+[AIV Block 4/56] [M10K] AIV 4 got RDY
+[AIV Block 4/56] [M10K] AIV 4 done
+[AIV Block 5/56] [M10K] AIV 5 enter aic=2 half=1 hasWork=0 tiles=0
+[AIV Block 5/56] [M10K] AIV 5 idle signalled
+[AIV Block 5/56] [M10K] AIV 5 wait RDY
+[AIV Block 5/56] [M10K] AIV 5 got RDY
+[AIV Block 5/56] [M10K] AIV 5 done
+[AIV Block 6/56] [M10K] AIV 6 enter aic=3 half=0 hasWork=0 tiles=0
+[AIV Block 6/56] [M10K] AIV 6 idle signalled
+[AIV Block 6/56] [M10K] AIV 6 wait RDY
+[AIV Block 6/56] [M10K] AIV 6 got RDY
+[AIV Block 6/56] [M10K] AIV 6 done
+[AIV Block 7/56] [M10K] AIV 7 enter aic=3 half=1 hasWork=0 tiles=0
+[AIV Block 7/56] [M10K] AIV 7 idle signalled
+[AIV Block 7/56] [M10K] AIV 7 wait RDY
+[AIV Block 7/56] [M10K] AIV 7 got RDY
+[AIV Block 7/56] [M10K] AIV 7 done
+[AIV Block 8/56] [M10K] AIV 8 enter aic=4 half=0 hasWork=0 tiles=0
+[AIV Block 8/56] [M10K] AIV 8 idle signalled
+[AIV Block 8/56] [M10K] AIV 8 wait RDY
+[AIV Block 8/56] [M10K] AIV 8 got RDY
+[AIV Block 8/56] [M10K] AIV 8 done
+[AIV Block 9/56] [M10K] AIV 9 enter aic=4 half=1 hasWork=0 tiles=0
+[AIV Block 9/56] [M10K] AIV 9 idle signalled
+[AIV Block 9/56] [M10K] AIV 9 wait RDY
+[AIV Block 9/56] [M10K] AIV 9 got RDY
+[AIV Block 9/56] [M10K] AIV 9 done
+[AIV Block 10/56] [M10K] AIV 10 enter aic=5 half=0 hasWork=0 tiles=0
+[AIV Block 10/56] [M10K] AIV 10 idle signalled
+[AIV Block 10/56] [M10K] AIV 10 wait RDY
+[AIV Block 10/56] [M10K] AIV 10 got RDY
+[AIV Block 10/56] [M10K] AIV 10 done
+[AIV Block 11/56] [M10K] AIV 11 enter aic=5 half=1 hasWork=0 tiles=0
+[AIV Block 11/56] [M10K] AIV 11 idle signalled
+[AIV Block 11/56] [M10K] AIV 11 wait RDY
+[AIV Block 11/56] [M10K] AIV 11 got RDY
+[AIV Block 11/56] [M10K] AIV 11 done
+[AIV Block 12/56] [M10K] AIV 12 enter aic=6 half=0 hasWork=0 tiles=0
+[AIV Block 12/56] [M10K] AIV 12 idle signalled
+[AIV Block 12/56] [M10K] AIV 12 wait RDY
+[AIV Block 12/56] [M10K] AIV 12 got RDY
+[AIV Block 12/56] [M10K] AIV 12 done
+[AIV Block 13/56] [M10K] AIV 13 enter aic=6 half=1 hasWork=0 tiles=0
+[AIV Block 13/56] [M10K] AIV 13 idle signalled
+[AIV Block 13/56] [M10K] AIV 13 wait RDY
+[AIV Block 13/56] [M10K] AIV 13 got RDY
+[AIV Block 13/56] [M10K] AIV 13 done
+[AIV Block 14/56] [M10K] AIV 14 enter aic=7 half=0 hasWork=0 tiles=0
+[AIV Block 14/56] [M10K] AIV 14 idle signalled
+[AIV Block 14/56] [M10K] AIV 14 wait RDY
+[AIV Block 14/56] [M10K] AIV 14 got RDY
+[AIV Block 14/56] [M10K] AIV 14 done
+[AIV Block 15/56] [M10K] AIV 15 enter aic=7 half=1 hasWork=0 tiles=0
+[AIV Block 15/56] [M10K] AIV 15 idle signalled
+[AIV Block 15/56] [M10K] AIV 15 wait RDY
+[AIV Block 15/56] [M10K] AIV 15 got RDY
+[AIV Block 15/56] [M10K] AIV 15 done
+[AIV Block 16/56] [M10K] AIV 16 enter aic=8 half=0 hasWork=0 tiles=0
+[AIV Block 16/56] [M10K] AIV 16 idle signalled
+[AIV Block 16/56] [M10K] AIV 16 wait RDY
+[AIV Block 16/56] [M10K] AIV 16 got RDY
+[AIV Block 16/56] [M10K] AIV 16 done
+[AIV Block 17/56] [M10K] AIV 17 enter aic=8 half=1 hasWork=0 tiles=0
+[AIV Block 17/56] [M10K] AIV 17 idle signalled
+[AIV Block 17/56] [M10K] AIV 17 wait RDY
+[AIV Block 17/56] [M10K] AIV 17 got RDY
+[AIV Block 17/56] [M10K] AIV 17 done
+[AIV Block 18/56] [M10K] AIV 18 enter aic=9 half=0 hasWork=0 tiles=0
+[AIV Block 18/56] [M10K] AIV 18 idle signalled
+[AIV Block 18/56] [M10K] AIV 18 wait RDY
+[AIV Block 18/56] [M10K] AIV 18 got RDY
+[AIV Block 18/56] [M10K] AIV 18 done
+[AIV Block 19/56] [M10K] AIV 19 enter aic=9 half=1 hasWork=0 tiles=0
+[AIV Block 19/56] [M10K] AIV 19 idle signalled
+[AIV Block 19/56] [M10K] AIV 19 wait RDY
+[AIV Block 19/56] [M10K] AIV 19 got RDY
+[AIV Block 19/56] [M10K] AIV 19 done
+[AIV Block 20/56] [M10K] AIV 20 enter aic=10 half=0 hasWork=0 tiles=0
+[AIV Block 20/56] [M10K] AIV 20 idle signalled
+[AIV Block 20/56] [M10K] AIV 20 wait RDY
+[AIV Block 20/56] [M10K] AIV 20 got RDY
+[AIV Block 20/56] [M10K] AIV 20 done
+[AIV Block 21/56] [M10K] AIV 21 enter aic=10 half=1 hasWork=0 tiles=0
+[AIV Block 21/56] [M10K] AIV 21 idle signalled
+[AIV Block 21/56] [M10K] AIV 21 wait RDY
+[AIV Block 21/56] [M10K] AIV 21 got RDY
+[AIV Block 21/56] [M10K] AIV 21 done
+[AIV Block 22/56] [M10K] AIV 22 enter aic=11 half=0 hasWork=0 tiles=0
+[AIV Block 22/56] [M10K] AIV 22 idle signalled
+[AIV Block 22/56] [M10K] AIV 22 wait RDY
+[AIV Block 22/56] [M10K] AIV 22 got RDY
+[AIV Block 22/56] [M10K] AIV 22 done
+[AIV Block 23/56] [M10K] AIV 23 enter aic=11 half=1 hasWork=0 tiles=0
+[AIV Block 23/56] [M10K] AIV 23 idle signalled
+[AIV Block 23/56] [M10K] AIV 23 wait RDY
+[AIV Block 23/56] [M10K] AIV 23 got RDY
+[AIV Block 23/56] [M10K] AIV 23 done
+[AIV Block 24/56] [M10K] AIV 24 enter aic=12 half=0 hasWork=0 tiles=0
+[AIV Block 24/56] [M10K] AIV 24 idle signalled
+[AIV Block 24/56] [M10K] AIV 24 wait RDY
+[AIV Block 24/56] [M10K] AIV 24 got RDY
+[AIV Block 24/56] [M10K] AIV 24 done
+[AIV Block 25/56] [M10K] AIV 25 enter aic=12 half=1 hasWork=0 tiles=0
+[AIV Block 25/56] [M10K] AIV 25 idle signalled
+[AIV Block 25/56] [M10K] AIV 25 wait RDY
+[AIV Block 25/56] [M10K] AIV 25 got RDY
+[AIV Block 25/56] [M10K] AIV 25 done
+[AIV Block 26/56] [M10K] AIV 26 enter aic=13 half=0 hasWork=0 tiles=0
+[AIV Block 26/56] [M10K] AIV 26 idle signalled
+[AIV Block 26/56] [M10K] AIV 26 wait RDY
+[AIV Block 26/56] [M10K] AIV 26 got RDY
+[AIV Block 26/56] [M10K] AIV 26 done
+[AIV Block 27/56] [M10K] AIV 27 enter aic=13 half=1 hasWork=0 tiles=0
+[AIV Block 27/56] [M10K] AIV 27 idle signalled
+[AIV Block 27/56] [M10K] AIV 27 wait RDY
+[AIV Block 27/56] [M10K] AIV 27 got RDY
+[AIV Block 27/56] [M10K] AIV 27 done
+[AIC Block 14/28] [M10K] AIC 14 reach FD sync
+[AIC Block 15/28] [M10K] AIC 15 reach FD sync
+[AIC Block 16/28] [M10K] AIC 16 reach FD sync
+[AIC Block 17/28] [M10K] AIC 17 reach FD sync
+[AIC Block 18/28] [M10K] AIC 18 reach FD sync
+[AIC Block 19/28] [M10K] AIC 19 reach FD sync
+[AIC Block 20/28] [M10K] AIC 20 reach FD sync
+[AIC Block 21/28] [M10K] AIC 21 reach FD sync
+[AIC Block 22/28] [M10K] AIC 22 reach FD sync
+[AIC Block 23/28] [M10K] AIC 23 reach FD sync
+[AIC Block 24/28] [M10K] AIC 24 reach FD sync
+[AIC Block 25/28] [M10K] AIC 25 reach FD sync
+[AIC Block 26/28] [M10K] AIC 26 reach FD sync
+[AIC Block 27/28] [M10K] AIC 27 reach FD sync
+[AIV Block 28/56] [M10K] AIV 28 enter aic=14 half=0 hasWork=0 tiles=0
+[AIV Block 28/56] [M10K] AIV 28 idle signalled
+[AIV Block 28/56] [M10K] AIV 28 wait RDY
+[AIV Block 28/56] [M10K] AIV 28 got RDY
+[AIV Block 28/56] [M10K] AIV 28 done
+[AIV Block 29/56] [M10K] AIV 29 enter aic=14 half=1 hasWork=0 tiles=0
+[AIV Block 29/56] [M10K] AIV 29 idle signalled
+[AIV Block 29/56] [M10K] AIV 29 wait RDY
+[AIV Block 29/56] [M10K] AIV 29 got RDY
+[AIV Block 29/56] [M10K] AIV 29 done
+[AIV Block 30/56] [M10K] AIV 30 enter aic=15 half=0 hasWork=0 tiles=0
+[AIV Block 30/56] [M10K] AIV 30 idle signalled
+[AIV Block 30/56] [M10K] AIV 30 wait RDY
+[AIV Block 30/56] [M10K] AIV 30 got RDY
+[AIV Block 30/56] [M10K] AIV 30 done
+[AIV Block 31/56] [M10K] AIV 31 enter aic=15 half=1 hasWork=0 tiles=0
+[AIV Block 31/56] [M10K] AIV 31 idle signalled
+[AIV Block 31/56] [M10K] AIV 31 wait RDY
+[AIV Block 31/56] [M10K] AIV 31 got RDY
+[AIV Block 31/56] [M10K] AIV 31 done
+[AIV Block 32/56] [M10K] AIV 32 enter aic=16 half=0 hasWork=0 tiles=0
+[AIV Block 32/56] [M10K] AIV 32 idle signalled
+[AIV Block 32/56] [M10K] AIV 32 wait RDY
+[AIV Block 32/56] [M10K] AIV 32 got RDY
+[AIV Block 32/56] [M10K] AIV 32 done
+[AIV Block 33/56] [M10K] AIV 33 enter aic=16 half=1 hasWork=0 tiles=0
+[AIV Block 33/56] [M10K] AIV 33 idle signalled
+[AIV Block 33/56] [M10K] AIV 33 wait RDY
+[AIV Block 33/56] [M10K] AIV 33 got RDY
+[AIV Block 33/56] [M10K] AIV 33 done
+[AIV Block 34/56] [M10K] AIV 34 enter aic=17 half=0 hasWork=0 tiles=0
+[AIV Block 34/56] [M10K] AIV 34 idle signalled
+[AIV Block 34/56] [M10K] AIV 34 wait RDY
+[AIV Block 34/56] [M10K] AIV 34 got RDY
+[AIV Block 34/56] [M10K] AIV 34 done
+[AIV Block 35/56] [M10K] AIV 35 enter aic=17 half=1 hasWork=0 tiles=0
+[AIV Block 35/56] [M10K] AIV 35 idle signalled
+[AIV Block 35/56] [M10K] AIV 35 wait RDY
+[AIV Block 35/56] [M10K] AIV 35 got RDY
+[AIV Block 35/56] [M10K] AIV 35 done
+[AIV Block 36/56] [M10K] AIV 36 enter aic=18 half=0 hasWork=0 tiles=0
+[AIV Block 36/56] [M10K] AIV 36 idle signalled
+[AIV Block 36/56] [M10K] AIV 36 wait RDY
+[AIV Block 36/56] [M10K] AIV 36 got RDY
+[AIV Block 36/56] [M10K] AIV 36 done
+[AIV Block 37/56] [M10K] AIV 37 enter aic=18 half=1 hasWork=0 tiles=0
+[AIV Block 37/56] [M10K] AIV 37 idle signalled
+[AIV Block 37/56] [M10K] AIV 37 wait RDY
+[AIV Block 37/56] [M10K] AIV 37 got RDY
+[AIV Block 37/56] [M10K] AIV 37 done
+[AIV Block 38/56] [M10K] AIV 38 enter aic=19 half=0 hasWork=0 tiles=0
+[AIV Block 38/56] [M10K] AIV 38 idle signalled
+[AIV Block 38/56] [M10K] AIV 38 wait RDY
+[AIV Block 38/56] [M10K] AIV 38 got RDY
+[AIV Block 38/56] [M10K] AIV 38 done
+[AIV Block 39/56] [M10K] AIV 39 enter aic=19 half=1 hasWork=0 tiles=0
+[AIV Block 39/56] [M10K] AIV 39 idle signalled
+[AIV Block 39/56] [M10K] AIV 39 wait RDY
+[AIV Block 39/56] [M10K] AIV 39 got RDY
+[AIV Block 39/56] [M10K] AIV 39 done
+[AIV Block 40/56] [M10K] AIV 40 enter aic=20 half=0 hasWork=0 tiles=0
+[AIV Block 40/56] [M10K] AIV 40 idle signalled
+[AIV Block 40/56] [M10K] AIV 40 wait RDY
+[AIV Block 40/56] [M10K] AIV 40 got RDY
+[AIV Block 40/56] [M10K] AIV 40 done
+[AIV Block 41/56] [M10K] AIV 41 enter aic=20 half=1 hasWork=0 tiles=0
+[AIV Block 41/56] [M10K] AIV 41 idle signalled
+[AIV Block 41/56] [M10K] AIV 41 wait RDY
+[AIV Block 41/56] [M10K] AIV 41 got RDY
+[AIV Block 41/56] [M10K] AIV 41 done
+[AIV Block 42/56] [M10K] AIV 42 enter aic=21 half=0 hasWork=0 tiles=0
+[AIV Block 42/56] [M10K] AIV 42 idle signalled
+[AIV Block 42/56] [M10K] AIV 42 wait RDY
+[AIV Block 42/56] [M10K] AIV 42 got RDY
+[AIV Block 42/56] [M10K] AIV 42 done
+[AIV Block 43/56] [M10K] AIV 43 enter aic=21 half=1 hasWork=0 tiles=0
+[AIV Block 43/56] [M10K] AIV 43 idle signalled
+[AIV Block 43/56] [M10K] AIV 43 wait RDY
+[AIV Block 43/56] [M10K] AIV 43 got RDY
+[AIV Block 43/56] [M10K] AIV 43 done
+[AIV Block 44/56] [M10K] AIV 44 enter aic=22 half=0 hasWork=0 tiles=0
+[AIV Block 44/56] [M10K] AIV 44 idle signalled
+[AIV Block 44/56] [M10K] AIV 44 wait RDY
+[AIV Block 44/56] [M10K] AIV 44 got RDY
+[AIV Block 44/56] [M10K] AIV 44 done
+[AIV Block 45/56] [M10K] AIV 45 enter aic=22 half=1 hasWork=0 tiles=0
+[AIV Block 45/56] [M10K] AIV 45 idle signalled
+[AIV Block 45/56] [M10K] AIV 45 wait RDY
+[AIV Block 45/56] [M10K] AIV 45 got RDY
+[AIV Block 45/56] [M10K] AIV 45 done
+[AIV Block 46/56] [M10K] AIV 46 enter aic=23 half=0 hasWork=0 tiles=0
+[AIV Block 46/56] [M10K] AIV 46 idle signalled
+[AIV Block 46/56] [M10K] AIV 46 wait RDY
+[AIV Block 46/56] [M10K] AIV 46 got RDY
+[AIV Block 46/56] [M10K] AIV 46 done
+[AIV Block 47/56] [M10K] AIV 47 enter aic=23 half=1 hasWork=0 tiles=0
+[AIV Block 47/56] [M10K] AIV 47 idle signalled
+[AIV Block 47/56] [M10K] AIV 47 wait RDY
+[AIV Block 47/56] [M10K] AIV 47 got RDY
+[AIV Block 47/56] [M10K] AIV 47 done
+[AIV Block 48/56] [M10K] AIV 48 enter aic=24 half=0 hasWork=0 tiles=0
+[AIV Block 48/56] [M10K] AIV 48 idle signalled
+[AIV Block 48/56] [M10K] AIV 48 wait RDY
+[AIV Block 48/56] [M10K] AIV 48 got RDY
+[AIV Block 48/56] [M10K] AIV 48 done
+[AIV Block 49/56] [M10K] AIV 49 enter aic=24 half=1 hasWork=0 tiles=0
+[AIV Block 49/56] [M10K] AIV 49 idle signalled
+[AIV Block 49/56] [M10K] AIV 49 wait RDY
+[AIV Block 49/56] [M10K] AIV 49 got RDY
+[AIV Block 49/56] [M10K] AIV 49 done
+[AIV Block 50/56] [M10K] AIV 50 enter aic=25 half=0 hasWork=0 tiles=0
+[AIV Block 50/56] [M10K] AIV 50 idle signalled
+[AIV Block 50/56] [M10K] AIV 50 wait RDY
+[AIV Block 50/56] [M10K] AIV 50 got RDY
+[AIV Block 50/56] [M10K] AIV 50 done
+[AIV Block 51/56] [M10K] AIV 51 enter aic=25 half=1 hasWork=0 tiles=0
+[AIV Block 51/56] [M10K] AIV 51 idle signalled
+[AIV Block 51/56] [M10K] AIV 51 wait RDY
+[AIV Block 51/56] [M10K] AIV 51 got RDY
+[AIV Block 51/56] [M10K] AIV 51 done
+[AIV Block 52/56] [M10K] AIV 52 enter aic=26 half=0 hasWork=0 tiles=0
+[AIV Block 52/56] [M10K] AIV 52 idle signalled
+[AIV Block 52/56] [M10K] AIV 52 wait RDY
+[AIV Block 52/56] [M10K] AIV 52 got RDY
+[AIV Block 52/56] [M10K] AIV 52 done
+[AIV Block 53/56] [M10K] AIV 53 enter aic=26 half=1 hasWork=0 tiles=0
+[AIV Block 53/56] [M10K] AIV 53 idle signalled
+[AIV Block 53/56] [M10K] AIV 53 wait RDY
+[AIV Block 53/56] [M10K] AIV 53 got RDY
+[AIV Block 53/56] [M10K] AIV 53 done
+[AIV Block 54/56] [M10K] AIV 54 enter aic=27 half=0 hasWork=0 tiles=0
+[AIV Block 54/56] [M10K] AIV 54 idle signalled
+[AIV Block 54/56] [M10K] AIV 54 wait RDY
+[AIV Block 54/56] [M10K] AIV 54 got RDY
+[AIV Block 54/56] [M10K] AIV 54 done
+[AIV Block 55/56] [M10K] AIV 55 enter aic=27 half=1 hasWork=0 tiles=0
+[AIV Block 55/56] [M10K] AIV 55 idle signalled
+[AIV Block 55/56] [M10K] AIV 55 wait RDY
+[AIV Block 55/56] [M10K] AIV 55 got RDY
+[AIV Block 55/56] [M10K] AIV 55 done
+[M10] case seq=300 dumped (m10_case_s300_)
+[M10] case seq=4096 dumped (m10_case_s4096_)
+[M10] host done; run check_ref.py for numpy fp32 reference validation
+[AIC Block 11/28] [M10K] AIC 11 reach FD sync
+[AIC Block 0/28] [M10K] AIC 0 enter tiles=2
+[AIC Block 0/28] [M10K] AIC 0 tile loop done
+[AIC Block 0/28] [M10K] AIC 0 reach FD sync
+[AIC Block 12/28] [M10K] AIC 12 reach FD sync
+[AIC Block 1/28] [M10K] AIC 1 enter tiles=2
+[AIC Block 1/28] [M10K] AIC 1 tile loop done
+[AIC Block 1/28] [M10K] AIC 1 reach FD sync
+[AIC Block 13/28] [M10K] AIC 13 reach FD sync
+[AIC Block 2/28] [M10K] AIC 2 enter tiles=2
+[AIC Block 2/28] [M10K] AIC 2 tile loop done
+[AIC Block 2/28] [M10K] AIC 2 reach FD sync
+[AIC Block 0/28] [M10K] AIC 0 enter tiles=1
+[AIC Block 0/28] [M10K] AIC 0 tile loop done
+[AIC Block 0/28] [M10K] AIC 0 reach FD sync
+[AIC Block 3/28] [M10K] AIC 3 enter tiles=2
+[AIC Block 3/28] [M10K] AIC 3 tile loop done
+[AIC Block 3/28] [M10K] AIC 3 reach FD sync
+[AIC Block 1/28] [M10K] AIC 1 enter tiles=1
+[AIC Block 1/28] [M10K] AIC 1 tile loop done
+[AIC Block 1/28] [M10K] AIC 1 reach FD sync
+[AIC Block 4/28] [M10K] AIC 4 enter tiles=2
+[AIC Block 4/28] [M10K] AIC 4 tile loop done
+[AIC Block 4/28] [M10K] AIC 4 reach FD sync
+[AIC Block 2/28] [M10K] AIC 2 enter tiles=1
+[AIC Block 2/28] [M10K] AIC 2 tile loop done
+[AIC Block 2/28] [M10K] AIC 2 reach FD sync
+[AIC Block 5/28] [M10K] AIC 5 enter tiles=2
+[AIC Block 5/28] [M10K] AIC 5 tile loop done
+[AIC Block 5/28] [M10K] AIC 5 reach FD sync
+[AIC Block 3/28] [M10K] AIC 3 enter tiles=1
+[AIC Block 3/28] [M10K] AIC 3 tile loop done
+[AIC Block 3/28] [M10K] AIC 3 reach FD sync
+[AIC Block 6/28] [M10K] AIC 6 enter tiles=2
+[AIC Block 6/28] [M10K] AIC 6 tile loop done
+[AIC Block 6/28] [M10K] AIC 6 reach FD sync
+[AIC Block 4/28] [M10K] AIC 4 reach FD sync
+[AIC Block 7/28] [M10K] AIC 7 enter tiles=2
+[AIC Block 7/28] [M10K] AIC 7 tile loop done
+[AIC Block 7/28] [M10K] AIC 7 reach FD sync
+[AIC Block 5/28] [M10K] AIC 5 reach FD sync
+[AIC Block 8/28] [M10K] AIC 8 enter tiles=2
+[AIC Block 8/28] [M10K] AIC 8 tile loop done
+[AIC Block 8/28] [M10K] AIC 8 reach FD sync
+[AIC Block 6/28] [M10K] AIC 6 reach FD sync
+[AIC Block 9/28] [M10K] AIC 9 enter tiles=2
+[AIC Block 9/28] [M10K] AIC 9 tile loop done
+[AIC Block 9/28] [M10K] AIC 9 reach FD sync
+[AIC Block 7/28] [M10K] AIC 7 reach FD sync
+[AIC Block 10/28] [M10K] AIC 10 enter tiles=2
+[AIC Block 10/28] [M10K] AIC 10 tile loop done
+[AIC Block 10/28] [M10K] AIC 10 reach FD sync
+[AIC Block 8/28] [M10K] AIC 8 reach FD sync
+[AIC Block 11/28] [M10K] AIC 11 enter tiles=2
+[AIC Block 11/28] [M10K] AIC 11 tile loop done
+[AIC Block 11/28] [M10K] AIC 11 reach FD sync
+[AIC Block 9/28] [M10K] AIC 9 reach FD sync
+[AIC Block 12/28] [M10K] AIC 12 enter tiles=2
+[AIC Block 12/28] [M10K] AIC 12 tile loop done
+[AIC Block 12/28] [M10K] AIC 12 reach FD sync
+[AIC Block 10/28] [M10K] AIC 10 reach FD sync
+[AIC Block 13/28] [M10K] AIC 13 enter tiles=2
+[AIC Block 13/28] [M10K] AIC 13 tile loop done
+[AIC Block 13/28] [M10K] AIC 13 reach FD sync
+[AIV Block 22/56] [M10K] AIV 22 enter aic=11 half=0 hasWork=0 tiles=0
+[AIV Block 22/56] [M10K] AIV 22 idle signalled
+[AIV Block 22/56] [M10K] AIV 22 wait RDY
+[AIV Block 22/56] [M10K] AIV 22 got RDY
+[AIV Block 22/56] [M10K] AIV 22 done
+[AIV Block 0/56] [M10K] AIV 0 enter aic=0 half=0 hasWork=1 tiles=2
+[AIV Block 0/56] [M10K] AIV 0 vec done
+[AIV Block 0/56] [M10K] AIV 0 partial done
+[AIV Block 0/56] [M10K] AIV 0 wait RDY
+[AIV Block 0/56] [M10K] AIV 0 got RDY
+[AIV Block 0/56] [M10K] combine enter n2=0 half=0 nsplit=8
+[AIV Block 0/56] [M10K] combine got CIN mte2
+[AIV Block 0/56] [M10K] combine m/s copied
+[AIV Block 0/56] [M10K] combine got CIN v
+[AIV Block 0/56] [M10K] combine weights done
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=0 den=1928.943115
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=1 den=2013.171631
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=2 den=1998.348755
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=3 den=1829.454224
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=4 den=1932.155396
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=5 den=2087.604248
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=6 den=2132.572754
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=7 den=1698.273804
+[AIV Block 0/56] [M10K] combine done n2=0 half=0
+[AIV Block 0/56] [M10K] AIV 0 done
+[AIV Block 23/56] [M10K] AIV 23 enter aic=11 half=1 hasWork=0 tiles=0
+[AIV Block 23/56] [M10K] AIV 23 idle signalled
+[AIV Block 23/56] [M10K] AIV 23 wait RDY
+[AIV Block 23/56] [M10K] AIV 23 got RDY
+[AIV Block 23/56] [M10K] AIV 23 done
+[AIV Block 1/56] [M10K] AIV 1 enter aic=0 half=1 hasWork=1 tiles=2
+[AIV Block 1/56] [M10K] AIV 1 vec done
+[AIV Block 1/56] [M10K] AIV 1 partial done
+[AIV Block 1/56] [M10K] AIV 1 wait RDY
+[AIV Block 1/56] [M10K] AIV 1 got RDY
+[AIV Block 1/56] [M10K] combine enter n2=1 half=0 nsplit=8
+[AIV Block 1/56] [M10K] combine got CIN mte2
+[AIV Block 1/56] [M10K] combine m/s copied
+[AIV Block 1/56] [M10K] combine got CIN v
+[AIV Block 1/56] [M10K] combine weights done
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=0 den=2158.771240
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=1 den=1934.098022
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=2 den=1860.363525
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=3 den=1832.218140
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=4 den=2071.165771
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=5 den=1773.929932
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=6 den=1753.620239
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=7 den=2020.213501
+[AIV Block 1/56] [M10K] combine done n2=1 half=0
+[AIV Block 1/56] [M10K] AIV 1 done
+[AIV Block 24/56] [M10K] AIV 24 enter aic=12 half=0 hasWork=0 tiles=0
+[AIV Block 24/56] [M10K] AIV 24 idle signalled
+[AIV Block 24/56] [M10K] AIV 24 wait RDY
+[AIV Block 24/56] [M10K] AIV 24 got RDY
+[AIV Block 24/56] [M10K] AIV 24 done
+[AIV Block 2/56] [M10K] AIV 2 enter aic=1 half=0 hasWork=1 tiles=2
+[AIV Block 2/56] [M10K] AIV 2 vec done
+[AIV Block 2/56] [M10K] AIV 2 partial done
+[AIV Block 2/56] [M10K] AIV 2 wait RDY
+[AIV Block 2/56] [M10K] AIV 2 got RDY
+[AIV Block 2/56] [M10K] combine enter n2=0 half=1 nsplit=8
+[AIV Block 2/56] [M10K] combine got CIN mte2
+[AIV Block 2/56] [M10K] combine m/s copied
+[AIV Block 2/56] [M10K] combine got CIN v
+[AIV Block 2/56] [M10K] combine weights done
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=8 den=1891.927979
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=9 den=1534.125000
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=10 den=2097.211670
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=11 den=2094.124268
+[AIV Block 2/56] [M10K] combine done n2=0 half=1
+[AIV Block 2/56] [M10K] AIV 2 done
+[AIV Block 25/56] [M10K] AIV 25 enter aic=12 half=1 hasWork=0 tiles=0
+[AIV Block 25/56] [M10K] AIV 25 idle signalled
+[AIV Block 25/56] [M10K] AIV 25 wait RDY
+[AIV Block 25/56] [M10K] AIV 25 got RDY
+[AIV Block 25/56] [M10K] AIV 25 done
+[AIV Block 3/56] [M10K] AIV 3 enter aic=1 half=1 hasWork=1 tiles=2
+[AIV Block 3/56] [M10K] AIV 3 vec done
+[AIV Block 3/56] [M10K] AIV 3 partial done
+[AIV Block 3/56] [M10K] AIV 3 wait RDY
+[AIV Block 3/56] [M10K] AIV 3 got RDY
+[AIV Block 3/56] [M10K] combine enter n2=1 half=1 nsplit=8
+[AIV Block 3/56] [M10K] combine got CIN mte2
+[AIV Block 3/56] [M10K] combine m/s copied
+[AIV Block 3/56] [M10K] combine got CIN v
+[AIV Block 3/56] [M10K] combine weights done
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=8 den=1948.311035
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=9 den=1992.420898
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=10 den=2076.513184
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=11 den=1913.975098
+[AIV Block 3/56] [M10K] combine done n2=1 half=1
+[AIV Block 3/56] [M10K] AIV 3 done
+[AIV Block 26/56] [M10K] AIV 26 enter aic=13 half=0 hasWork=0 tiles=0
+[AIV Block 26/56] [M10K] AIV 26 idle signalled
+[AIV Block 26/56] [M10K] AIV 26 wait RDY
+[AIV Block 26/56] [M10K] AIV 26 got RDY
+[AIV Block 26/56] [M10K] AIV 26 done
+[AIV Block 4/56] [M10K] AIV 4 enter aic=2 half=0 hasWork=1 tiles=2
+[AIV Block 4/56] [M10K] AIV 4 vec done
+[AIV Block 4/56] [M10K] AIV 4 partial done
+[AIV Block 4/56] [M10K] AIV 4 wait RDY
+[AIV Block 4/56] [M10K] AIV 4 got RDY
+[AIV Block 4/56] [M10K] AIV 4 done
+[AIV Block 27/56] [M10K] AIV 27 enter aic=13 half=1 hasWork=0 tiles=0
+[AIV Block 27/56] [M10K] AIV 27 idle signalled
+[AIV Block 27/56] [M10K] AIV 27 wait RDY
+[AIV Block 27/56] [M10K] AIV 27 got RDY
+[AIV Block 27/56] [M10K] AIV 27 done
+[AIV Block 5/56] [M10K] AIV 5 enter aic=2 half=1 hasWork=1 tiles=2
+[AIV Block 5/56] [M10K] AIV 5 vec done
+[AIV Block 5/56] [M10K] AIV 5 partial done
+[AIV Block 5/56] [M10K] AIV 5 wait RDY
+[AIV Block 5/56] [M10K] AIV 5 got RDY
+[AIV Block 5/56] [M10K] AIV 5 done
+[AIV Block 0/56] [M10K] AIV 0 enter aic=0 half=0 hasWork=1 tiles=1
+[AIV Block 0/56] [M10K] AIV 0 vec done
+[AIV Block 0/56] [M10K] AIV 0 partial done
+[AIV Block 0/56] [M10K] AIV 0 wait RDY
+[AIV Block 0/56] [M10K] AIV 0 got RDY
+[AIV Block 0/56] [M10K] combine enter n2=0 half=0 nsplit=2
+[AIV Block 0/56] [M10K] combine got CIN mte2
+[AIV Block 0/56] [M10K] combine m/s copied
+[AIV Block 0/56] [M10K] combine got CIN v
+[AIV Block 0/56] [M10K] combine weights done
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=0 den=498.221527
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=1 den=171.646820
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=2 den=161.742294
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=3 den=181.193573
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=4 den=170.022537
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=5 den=161.414429
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=6 den=169.945099
+[AIV Block 0/56] [M10K] combine n2=0 half=0 row=7 den=165.137817
+[AIV Block 0/56] [M10K] combine done n2=0 half=0
+[AIV Block 0/56] [M10K] AIV 0 done
+[AIV Block 6/56] [M10K] AIV 6 enter aic=3 half=0 hasWork=1 tiles=2
+[AIV Block 6/56] [M10K] AIV 6 vec done
+[AIV Block 6/56] [M10K] AIV 6 partial done
+[AIV Block 6/56] [M10K] AIV 6 wait RDY
+[AIV Block 6/56] [M10K] AIV 6 got RDY
+[AIV Block 6/56] [M10K] AIV 6 done
+[AIV Block 1/56] [M10K] AIV 1 enter aic=0 half=1 hasWork=1 tiles=1
+[AIV Block 1/56] [M10K] AIV 1 vec done
+[AIV Block 1/56] [M10K] AIV 1 partial done
+[AIV Block 1/56] [M10K] AIV 1 wait RDY
+[AIV Block 1/56] [M10K] AIV 1 got RDY
+[AIV Block 1/56] [M10K] combine enter n2=1 half=0 nsplit=2
+[AIV Block 1/56] [M10K] combine got CIN mte2
+[AIV Block 1/56] [M10K] combine m/s copied
+[AIV Block 1/56] [M10K] combine got CIN v
+[AIV Block 1/56] [M10K] combine weights done
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=0 den=236.941483
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=1 den=180.764145
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=2 den=174.790619
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=3 den=156.267731
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=4 den=176.101547
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=5 den=164.998718
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=6 den=185.983459
+[AIV Block 1/56] [M10K] combine n2=1 half=0 row=7 den=152.793961
+[AIV Block 1/56] [M10K] combine done n2=1 half=0
+[AIV Block 1/56] [M10K] AIV 1 done
+[AIV Block 7/56] [M10K] AIV 7 enter aic=3 half=1 hasWork=1 tiles=2
+[AIV Block 7/56] [M10K] AIV 7 vec done
+[AIV Block 7/56] [M10K] AIV 7 partial done
+[AIV Block 7/56] [M10K] AIV 7 wait RDY
+[AIV Block 7/56] [M10K] AIV 7 got RDY
+[AIV Block 7/56] [M10K] AIV 7 done
+[AIV Block 2/56] [M10K] AIV 2 enter aic=1 half=0 hasWork=1 tiles=1
+[AIV Block 2/56] [M10K] AIV 2 vec done
+[AIV Block 2/56] [M10K] AIV 2 partial done
+[AIV Block 2/56] [M10K] AIV 2 wait RDY
+[AIV Block 2/56] [M10K] AIV 2 got RDY
+[AIV Block 2/56] [M10K] combine enter n2=0 half=1 nsplit=2
+[AIV Block 2/56] [M10K] combine got CIN mte2
+[AIV Block 2/56] [M10K] combine m/s copied
+[AIV Block 2/56] [M10K] combine got CIN v
+[AIV Block 2/56] [M10K] combine weights done
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=8 den=23.494633
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=9 den=188.103302
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=10 den=143.282379
+[AIV Block 2/56] [M10K] combine n2=0 half=1 row=11 den=186.494064
+[AIV Block 2/56] [M10K] combine done n2=0 half=1
+[AIV Block 2/56] [M10K] AIV 2 done
+[AIV Block 8/56] [M10K] AIV 8 enter aic=4 half=0 hasWork=1 tiles=2
+[AIV Block 8/56] [M10K] AIV 8 vec done
+[AIV Block 8/56] [M10K] AIV 8 partial done
+[AIV Block 8/56] [M10K] AIV 8 wait RDY
+[AIV Block 8/56] [M10K] AIV 8 got RDY
+[AIV Block 8/56] [M10K] AIV 8 done
+[AIV Block 3/56] [M10K] AIV 3 enter aic=1 half=1 hasWork=1 tiles=1
+[AIV Block 3/56] [M10K] AIV 3 vec done
+[AIV Block 3/56] [M10K] AIV 3 partial done
+[AIV Block 3/56] [M10K] AIV 3 wait RDY
+[AIV Block 3/56] [M10K] AIV 3 got RDY
+[AIV Block 3/56] [M10K] combine enter n2=1 half=1 nsplit=2
+[AIV Block 3/56] [M10K] combine got CIN mte2
+[AIV Block 3/56] [M10K] combine m/s copied
+[AIV Block 3/56] [M10K] combine got CIN v
+[AIV Block 3/56] [M10K] combine weights done
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=8 den=25.034525
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=9 den=158.422714
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=10 den=170.791504
+[AIV Block 3/56] [M10K] combine n2=1 half=1 row=11 den=171.469894
+[AIV Block 3/56] [M10K] combine done n2=1 half=1
+[AIV Block 3/56] [M10K] AIV 3 done
+[AIV Block 9/56] [M10K] AIV 9 enter aic=4 half=1 hasWork=1 tiles=2
+[AIV Block 9/56] [M10K] AIV 9 vec done
+[AIV Block 9/56] [M10K] AIV 9 partial done
+[AIV Block 9/56] [M10K] AIV 9 wait RDY
+[AIV Block 9/56] [M10K] AIV 9 got RDY
+[AIV Block 9/56] [M10K] AIV 9 done
+[AIV Block 4/56] [M10K] AIV 4 enter aic=2 half=0 hasWork=1 tiles=1
+[AIV Block 4/56] [M10K] AIV 4 vec done
+[AIV Block 4/56] [M10K] AIV 4 partial done
+[AIV Block 4/56] [M10K] AIV 4 wait RDY
+[AIV Block 4/56] [M10K] AIV 4 got RDY
+[AIV Block 4/56] [M10K] AIV 4 done
+[AIV Block 10/56] [M10K] AIV 10 enter aic=5 half=0 hasWork=1 tiles=2
+[AIV Block 10/56] [M10K] AIV 10 vec done
+[AIV Block 10/56] [M10K] AIV 10 partial done
+[AIV Block 10/56] [M10K] AIV 10 wait RDY
+[AIV Block 10/56] [M10K] AIV 10 got RDY
+[AIV Block 10/56] [M10K] AIV 10 done
+[AIV Block 5/56] [M10K] AIV 5 enter aic=2 half=1 hasWork=1 tiles=1
+[AIV Block 5/56] [M10K] AIV 5 vec done
+[AIV Block 5/56] [M10K] AIV 5 partial done
+[AIV Block 5/56] [M10K] AIV 5 wait RDY
+[AIV Block 5/56] [M10K] AIV 5 got RDY
+[AIV Block 5/56] [M10K] AIV 5 done
+[AIV Block 11/56] [M10K] AIV 11 enter aic=5 half=1 hasWork=1 tiles=2
+[AIV Block 11/56] [M10K] AIV 11 vec done
+[AIV Block 11/56] [M10K] AIV 11 partial done
+[AIV Block 11/56] [M10K] AIV 11 wait RDY
+[AIV Block 11/56] [M10K] AIV 11 got RDY
+[AIV Block 11/56] [M10K] AIV 11 done
+[AIV Block 6/56] [M10K] AIV 6 enter aic=3 half=0 hasWork=1 tiles=1
+[AIV Block 6/56] [M10K] AIV 6 vec done
+[AIV Block 6/56] [M10K] AIV 6 partial done
+[AIV Block 6/56] [M10K] AIV 6 wait RDY
+[AIV Block 6/56] [M10K] AIV 6 got RDY
+[AIV Block 6/56] [M10K] AIV 6 done
+[AIV Block 12/56] [M10K] AIV 12 enter aic=6 half=0 hasWork=1 tiles=2
+[AIV Block 12/56] [M10K] AIV 12 vec done
+[AIV Block 12/56] [M10K] AIV 12 partial done
+[AIV Block 12/56] [M10K] AIV 12 wait RDY
+[AIV Block 12/56] [M10K] AIV 12 got RDY
+[AIV Block 12/56] [M10K] AIV 12 done
+[AIV Block 7/56] [M10K] AIV 7 enter aic=3 half=1 hasWork=1 tiles=1
+[AIV Block 7/56] [M10K] AIV 7 vec done
+[AIV Block 7/56] [M10K] AIV 7 partial done
+[AIV Block 7/56] [M10K] AIV 7 wait RDY
+[AIV Block 7/56] [M10K] AIV 7 got RDY
+[AIV Block 7/56] [M10K] AIV 7 done
+[AIV Block 13/56] [M10K] AIV 13 enter aic=6 half=1 hasWork=1 tiles=2
+[AIV Block 13/56] [M10K] AIV 13 vec done
+[AIV Block 13/56] [M10K] AIV 13 partial done
+[AIV Block 13/56] [M10K] AIV 13 wait RDY
+[AIV Block 13/56] [M10K] AIV 13 got RDY
+[AIV Block 13/56] [M10K] AIV 13 done
+[AIV Block 8/56] [M10K] AIV 8 enter aic=4 half=0 hasWork=0 tiles=0
+[AIV Block 8/56] [M10K] AIV 8 idle signalled
+[AIV Block 8/56] [M10K] AIV 8 wait RDY
+[AIV Block 8/56] [M10K] AIV 8 got RDY
+[AIV Block 8/56] [M10K] AIV 8 done
+[AIV Block 14/56] [M10K] AIV 14 enter aic=7 half=0 hasWork=1 tiles=2
+[AIV Block 14/56] [M10K] AIV 14 vec done
+[AIV Block 14/56] [M10K] AIV 14 partial done
+[AIV Block 14/56] [M10K] AIV 14 wait RDY
+[AIV Block 14/56] [M10K] AIV 14 got RDY
+[AIV Block 14/56] [M10K] AIV 14 done
+[AIV Block 9/56] [M10K] AIV 9 enter aic=4 half=1 hasWork=0 tiles=0
+[AIV Block 9/56] [M10K] AIV 9 idle signalled
+[AIV Block 9/56] [M10K] AIV 9 wait RDY
+[AIV Block 9/56] [M10K] AIV 9 got RDY
+[AIV Block 9/56] [M10K] AIV 9 done
+[AIV Block 15/56] [M10K] AIV 15 enter aic=7 half=1 hasWork=1 tiles=2
+[AIV Block 15/56] [M10K] AIV 15 vec done
+[AIV Block 15/56] [M10K] AIV 15 partial done
+[AIV Block 15/56] [M10K] AIV 15 wait RDY
+[AIV Block 15/56] [M10K] AIV 15 got RDY
+[AIV Block 15/56] [M10K] AIV 15 done
+[AIV Block 10/56] [M10K] AIV 10 enter aic=5 half=0 hasWork=0 tiles=0
+[AIV Block 10/56] [M10K] AIV 10 idle signalled
+[AIV Block 10/56] [M10K] AIV 10 wait RDY
+[AIV Block 10/56] [M10K] AIV 10 got RDY
+[AIV Block 10/56] [M10K] AIV 10 done
+[AIV Block 16/56] [M10K] AIV 16 enter aic=8 half=0 hasWork=1 tiles=2
+[AIV Block 16/56] [M10K] AIV 16 vec done
+[AIV Block 16/56] [M10K] AIV 16 partial done
+[AIV Block 16/56] [M10K] AIV 16 wait RDY
+[AIV Block 16/56] [M10K] AIV 16 got RDY
+[AIV Block 16/56] [M10K] AIV 16 done
+[AIV Block 11/56] [M10K] AIV 11 enter aic=5 half=1 hasWork=0 tiles=0
+[AIV Block 11/56] [M10K] AIV 11 idle signalled
+[AIV Block 11/56] [M10K] AIV 11 wait RDY
+[AIV Block 11/56] [M10K] AIV 11 got RDY
+[AIV Block 11/56] [M10K] AIV 11 done
+[AIV Block 17/56] [M10K] AIV 17 enter aic=8 half=1 hasWork=1 tiles=2
+[AIV Block 17/56] [M10K] AIV 17 vec done
+[AIV Block 17/56] [M10K] AIV 17 partial done
+[AIV Block 17/56] [M10K] AIV 17 wait RDY
+[AIV Block 17/56] [M10K] AIV 17 got RDY
+[AIV Block 17/56] [M10K] AIV 17 done
+[AIV Block 12/56] [M10K] AIV 12 enter aic=6 half=0 hasWork=0 tiles=0
+[AIV Block 12/56] [M10K] AIV 12 idle signalled
+[AIV Block 12/56] [M10K] AIV 12 wait RDY
+[AIV Block 12/56] [M10K] AIV 12 got RDY
+[AIV Block 12/56] [M10K] AIV 12 done
+[AIV Block 18/56] [M10K] AIV 18 enter aic=9 half=0 hasWork=1 tiles=2
+[AIV Block 18/56] [M10K] AIV 18 vec done
+[AIV Block 18/56] [M10K] AIV 18 partial done
+[AIV Block 18/56] [M10K] AIV 18 wait RDY
+[AIV Block 18/56] [M10K] AIV 18 got RDY
+[AIV Block 18/56] [M10K] AIV 18 done
+[AIV Block 13/56] [M10K] AIV 13 enter aic=6 half=1 hasWork=0 tiles=0
+[AIV Block 13/56] [M10K] AIV 13 idle signalled
+[AIV Block 13/56] [M10K] AIV 13 wait RDY
+[AIV Block 13/56] [M10K] AIV 13 got RDY
+[AIV Block 13/56] [M10K] AIV 13 done
+[AIV Block 19/56] [M10K] AIV 19 enter aic=9 half=1 hasWork=1 tiles=2
+[AIV Block 19/56] [M10K] AIV 19 vec done
+[AIV Block 19/56] [M10K] AIV 19 partial done
+[AIV Block 19/56] [M10K] AIV 19 wait RDY
+[AIV Block 19/56] [M10K] AIV 19 got RDY
+[AIV Block 19/56] [M10K] AIV 19 done
+[AIV Block 14/56] [M10K] AIV 14 enter aic=7 half=0 hasWork=0 tiles=0
+[AIV Block 14/56] [M10K] AIV 14 idle signalled
+[AIV Block 14/56] [M10K] AIV 14 wait RDY
+[AIV Block 14/56] [M10K] AIV 14 got RDY
+[AIV Block 14/56] [M10K] AIV 14 done
+[AIV Block 20/56] [M10K] AIV 20 enter aic=10 half=0 hasWork=1 tiles=2
+[AIV Block 20/56] [M10K] AIV 20 vec done
+[AIV Block 20/56] [M10K] AIV 20 partial done
+[AIV Block 20/56] [M10K] AIV 20 wait RDY
+[AIV Block 20/56] [M10K] AIV 20 got RDY
+[AIV Block 20/56] [M10K] AIV 20 done
+[AIV Block 15/56] [M10K] AIV 15 enter aic=7 half=1 hasWork=0 tiles=0
+[AIV Block 15/56] [M10K] AIV 15 idle signalled
+[AIV Block 15/56] [M10K] AIV 15 wait RDY
+[AIV Block 15/56] [M10K] AIV 15 got RDY
+[AIV Block 15/56] [M10K] AIV 15 done
+[AIV Block 21/56] [M10K] AIV 21 enter aic=10 half=1 hasWork=1 tiles=2
+[AIV Block 21/56] [M10K] AIV 21 vec done
+[AIV Block 21/56] [M10K] AIV 21 partial done
+[AIV Block 21/56] [M10K] AIV 21 wait RDY
+[AIV Block 21/56] [M10K] AIV 21 got RDY
+[AIV Block 21/56] [M10K] AIV 21 done
+[AIV Block 16/56] [M10K] AIV 16 enter aic=8 half=0 hasWork=0 tiles=0
+[AIV Block 16/56] [M10K] AIV 16 idle signalled
+[AIV Block 16/56] [M10K] AIV 16 wait RDY
+[AIV Block 16/56] [M10K] AIV 16 got RDY
+[AIV Block 16/56] [M10K] AIV 16 done
+[AIV Block 22/56] [M10K] AIV 22 enter aic=11 half=0 hasWork=1 tiles=2
+[AIV Block 22/56] [M10K] AIV 22 vec done
+[AIV Block 22/56] [M10K] AIV 22 partial done
+[AIV Block 22/56] [M10K] AIV 22 wait RDY
+[AIV Block 22/56] [M10K] AIV 22 got RDY
+[AIV Block 22/56] [M10K] AIV 22 done
+[AIV Block 17/56] [M10K] AIV 17 enter aic=8 half=1 hasWork=0 tiles=0
+[AIV Block 17/56] [M10K] AIV 17 idle signalled
+[AIV Block 17/56] [M10K] AIV 17 wait RDY
+[AIV Block 17/56] [M10K] AIV 17 got RDY
+[AIV Block 17/56] [M10K] AIV 17 done
+[AIV Block 23/56] [M10K] AIV 23 enter aic=11 half=1 hasWork=1 tiles=2
+[AIV Block 23/56] [M10K] AIV 23 vec done
+[AIV Block 23/56] [M10K] AIV 23 partial done
+[AIV Block 23/56] [M10K] AIV 23 wait RDY
+[AIV Block 23/56] [M10K] AIV 23 got RDY
+[AIV Block 23/56] [M10K] AIV 23 done
+[AIV Block 18/56] [M10K] AIV 18 enter aic=9 half=0 hasWork=0 tiles=0
+[AIV Block 18/56] [M10K] AIV 18 idle signalled
+[AIV Block 18/56] [M10K] AIV 18 wait RDY
+[AIV Block 18/56] [M10K] AIV 18 got RDY
+[AIV Block 18/56] [M10K] AIV 18 done
+[AIV Block 24/56] [M10K] AIV 24 enter aic=12 half=0 hasWork=1 tiles=2
+[AIV Block 24/56] [M10K] AIV 24 vec done
+[AIV Block 24/56] [M10K] AIV 24 partial done
+[AIV Block 24/56] [M10K] AIV 24 wait RDY
+[AIV Block 24/56] [M10K] AIV 24 got RDY
+[AIV Block 24/56] [M10K] AIV 24 done
+[AIV Block 19/56] [M10K] AIV 19 enter aic=9 half=1 hasWork=0 tiles=0
+[AIV Block 19/56] [M10K] AIV 19 idle signalled
+[AIV Block 19/56] [M10K] AIV 19 wait RDY
+[AIV Block 19/56] [M10K] AIV 19 got RDY
+[AIV Block 19/56] [M10K] AIV 19 done
+[AIV Block 25/56] [M10K] AIV 25 enter aic=12 half=1 hasWork=1 tiles=2
+[AIV Block 25/56] [M10K] AIV 25 vec done
+[AIV Block 25/56] [M10K] AIV 25 partial done
+[AIV Block 25/56] [M10K] AIV 25 wait RDY
+[AIV Block 25/56] [M10K] AIV 25 got RDY
+[AIV Block 25/56] [M10K] AIV 25 done
+[AIV Block 20/56] [M10K] AIV 20 enter aic=10 half=0 hasWork=0 tiles=0
+[AIV Block 20/56] [M10K] AIV 20 idle signalled
+[AIV Block 20/56] [M10K] AIV 20 wait RDY
+[AIV Block 20/56] [M10K] AIV 20 got RDY
+[AIV Block 20/56] [M10K] AIV 20 done
+[AIV Block 26/56] [M10K] AIV 26 enter aic=13 half=0 hasWork=1 tiles=2
+[AIV Block 26/56] [M10K] AIV 26 vec done
+[AIV Block 26/56] [M10K] AIV 26 partial done
+[AIV Block 26/56] [M10K] AIV 26 wait RDY
+[AIV Block 26/56] [M10K] AIV 26 got RDY
+[AIV Block 26/56] [M10K] AIV 26 done
+[AIV Block 21/56] [M10K] AIV 21 enter aic=10 half=1 hasWork=0 tiles=0
+[AIV Block 21/56] [M10K] AIV 21 idle signalled
+[AIV Block 21/56] [M10K] AIV 21 wait RDY
+[AIV Block 21/56] [M10K] AIV 21 got RDY
+[AIV Block 21/56] [M10K] AIV 21 done
+[AIV Block 27/56] [M10K] AIV 27 enter aic=13 half=1 hasWork=1 tiles=2
+[AIV Block 27/56] [M10K] AIV 27 vec done
+[AIV Block 27/56] [M10K] AIV 27 partial done
+[AIV Block 27/56] [M10K] AIV 27 wait RDY
+[AIV Block 27/56] [M10K] AIV 27 got RDY
+[AIV Block 27/56] [M10K] AIV 27 done
+[AIC Block 14/28] [M10K] AIC 14 reach FD sync
+[AIC Block 14/28] [M10K] AIC 14 enter tiles=2
+[AIC Block 14/28] [M10K] AIC 14 tile loop done
+[AIC Block 14/28] [M10K] AIC 14 reach FD sync
+[AIC Block 15/28] [M10K] AIC 15 reach FD sync
+[AIC Block 15/28] [M10K] AIC 15 enter tiles=2
+[AIC Block 15/28] [M10K] AIC 15 tile loop done
+[AIC Block 15/28] [M10K] AIC 15 reach FD sync
+[AIC Block 16/28] [M10K] AIC 16 reach FD sync
+[AIC Block 16/28] [M10K] AIC 16 reach FD sync
+[AIC Block 17/28] [M10K] AIC 17 reach FD sync
+[AIC Block 17/28] [M10K] AIC 17 reach FD sync
+[AIC Block 18/28] [M10K] AIC 18 reach FD sync
+[AIC Block 18/28] [M10K] AIC 18 reach FD sync
+[AIC Block 19/28] [M10K] AIC 19 reach FD sync
+[AIC Block 19/28] [M10K] AIC 19 reach FD sync
+[AIC Block 20/28] [M10K] AIC 20 reach FD sync
+[AIC Block 20/28] [M10K] AIC 20 reach FD sync
+[AIC Block 21/28] [M10K] AIC 21 reach FD sync
+[AIC Block 21/28] [M10K] AIC 21 reach FD sync
+[AIC Block 22/28] [M10K] AIC 22 reach FD sync
+[AIC Block 22/28] [M10K] AIC 22 reach FD sync
+[AIC Block 23/28] [M10K] AIC 23 reach FD sync
+[AIC Block 23/28] [M10K] AIC 23 reach FD sync
+[AIC Block 24/28] [M10K] AIC 24 reach FD sync
+[AIC Block 24/28] [M10K] AIC 24 reach FD sync
+[AIC Block 25/28] [M10K] AIC 25 reach FD sync
+[AIC Block 25/28] [M10K] AIC 25 reach FD sync
+[AIC Block 26/28] [M10K] AIC 26 reach FD sync
+[AIC Block 26/28] [M10K] AIC 26 reach FD sync
+[AIC Block 27/28] [M10K] AIC 27 reach FD sync
+[AIC Block 27/28] [M10K] AIC 27 reach FD sync
+[AIV Block 28/56] [M10K] AIV 28 enter aic=14 half=0 hasWork=0 tiles=0
+[AIV Block 28/56] [M10K] AIV 28 idle signalled
+[AIV Block 28/56] [M10K] AIV 28 wait RDY
+[AIV Block 28/56] [M10K] AIV 28 got RDY
+[AIV Block 28/56] [M10K] AIV 28 done
+[AIV Block 28/56] [M10K] AIV 28 enter aic=14 half=0 hasWork=1 tiles=2
+[AIV Block 28/56] [M10K] AIV 28 vec done
+[AIV Block 28/56] [M10K] AIV 28 partial done
+[AIV Block 28/56] [M10K] AIV 28 wait RDY
+[AIV Block 28/56] [M10K] AIV 28 got RDY
+[AIV Block 28/56] [M10K] AIV 28 done
+[AIV Block 29/56] [M10K] AIV 29 enter aic=14 half=1 hasWork=0 tiles=0
+[AIV Block 29/56] [M10K] AIV 29 idle signalled
+[AIV Block 29/56] [M10K] AIV 29 wait RDY
+[AIV Block 29/56] [M10K] AIV 29 got RDY
+[AIV Block 29/56] [M10K] AIV 29 done
+[AIV Block 29/56] [M10K] AIV 29 enter aic=14 half=1 hasWork=1 tiles=2
+[AIV Block 29/56] [M10K] AIV 29 vec done
+[AIV Block 29/56] [M10K] AIV 29 partial done
+[AIV Block 29/56] [M10K] AIV 29 wait RDY
+[AIV Block 29/56] [M10K] AIV 29 got RDY
+[AIV Block 29/56] [M10K] AIV 29 done
+[AIV Block 30/56] [M10K] AIV 30 enter aic=15 half=0 hasWork=0 tiles=0
+[AIV Block 30/56] [M10K] AIV 30 idle signalled
+[AIV Block 30/56] [M10K] AIV 30 wait RDY
+[AIV Block 30/56] [M10K] AIV 30 got RDY
+[AIV Block 30/56] [M10K] AIV 30 done
+[AIV Block 30/56] [M10K] AIV 30 enter aic=15 half=0 hasWork=1 tiles=2
+[AIV Block 30/56] [M10K] AIV 30 vec done
+[AIV Block 30/56] [M10K] AIV 30 partial done
+[AIV Block 30/56] [M10K] AIV 30 wait RDY
+[AIV Block 30/56] [M10K] AIV 30 got RDY
+[AIV Block 30/56] [M10K] AIV 30 done
+[AIV Block 31/56] [M10K] AIV 31 enter aic=15 half=1 hasWork=0 tiles=0
+[AIV Block 31/56] [M10K] AIV 31 idle signalled
+[AIV Block 31/56] [M10K] AIV 31 wait RDY
+[AIV Block 31/56] [M10K] AIV 31 got RDY
+[AIV Block 31/56] [M10K] AIV 31 done
+[AIV Block 31/56] [M10K] AIV 31 enter aic=15 half=1 hasWork=1 tiles=2
+[AIV Block 31/56] [M10K] AIV 31 vec done
+[AIV Block 31/56] [M10K] AIV 31 partial done
+[AIV Block 31/56] [M10K] AIV 31 wait RDY
+[AIV Block 31/56] [M10K] AIV 31 got RDY
+[AIV Block 31/56] [M10K] AIV 31 done
+[AIV Block 32/56] [M10K] AIV 32 enter aic=16 half=0 hasWork=0 tiles=0
+[AIV Block 32/56] [M10K] AIV 32 idle signalled
+[AIV Block 32/56] [M10K] AIV 32 wait RDY
+[AIV Block 32/56] [M10K] AIV 32 got RDY
+[AIV Block 32/56] [M10K] AIV 32 done
+[AIV Block 32/56] [M10K] AIV 32 enter aic=16 half=0 hasWork=0 tiles=0
+[AIV Block 32/56] [M10K] AIV 32 idle signalled
+[AIV Block 32/56] [M10K] AIV 32 wait RDY
+[AIV Block 32/56] [M10K] AIV 32 got RDY
+[AIV Block 32/56] [M10K] AIV 32 done
+[AIV Block 33/56] [M10K] AIV 33 enter aic=16 half=1 hasWork=0 tiles=0
+[AIV Block 33/56] [M10K] AIV 33 idle signalled
+[AIV Block 33/56] [M10K] AIV 33 wait RDY
+[AIV Block 33/56] [M10K] AIV 33 got RDY
+[AIV Block 33/56] [M10K] AIV 33 done
+[AIV Block 33/56] [M10K] AIV 33 enter aic=16 half=1 hasWork=0 tiles=0
+[AIV Block 33/56] [M10K] AIV 33 idle signalled
+[AIV Block 33/56] [M10K] AIV 33 wait RDY
+[AIV Block 33/56] [M10K] AIV 33 got RDY
+[AIV Block 33/56] [M10K] AIV 33 done
+[AIV Block 34/56] [M10K] AIV 34 enter aic=17 half=0 hasWork=0 tiles=0
+[AIV Block 34/56] [M10K] AIV 34 idle signalled
+[AIV Block 34/56] [M10K] AIV 34 wait RDY
+[AIV Block 34/56] [M10K] AIV 34 got RDY
+[AIV Block 34/56] [M10K] AIV 34 done
+[AIV Block 34/56] [M10K] AIV 34 enter aic=17 half=0 hasWork=0 tiles=0
+[AIV Block 34/56] [M10K] AIV 34 idle signalled
+[AIV Block 34/56] [M10K] AIV 34 wait RDY
+[AIV Block 34/56] [M10K] AIV 34 got RDY
+[AIV Block 34/56] [M10K] AIV 34 done
+[AIV Block 35/56] [M10K] AIV 35 enter aic=17 half=1 hasWork=0 tiles=0
+[AIV Block 35/56] [M10K] AIV 35 idle signalled
+[AIV Block 35/56] [M10K] AIV 35 wait RDY
+[AIV Block 35/56] [M10K] AIV 35 got RDY
+[AIV Block 35/56] [M10K] AIV 35 done
+[AIV Block 35/56] [M10K] AIV 35 enter aic=17 half=1 hasWork=0 tiles=0
+[AIV Block 35/56] [M10K] AIV 35 idle signalled
+[AIV Block 35/56] [M10K] AIV 35 wait RDY
+[AIV Block 35/56] [M10K] AIV 35 got RDY
+[AIV Block 35/56] [M10K] AIV 35 done
+[AIV Block 36/56] [M10K] AIV 36 enter aic=18 half=0 hasWork=0 tiles=0
+[AIV Block 36/56] [M10K] AIV 36 idle signalled
+[AIV Block 36/56] [M10K] AIV 36 wait RDY
+[AIV Block 36/56] [M10K] AIV 36 got RDY
+[AIV Block 36/56] [M10K] AIV 36 done
+[AIV Block 36/56] [M10K] AIV 36 enter aic=18 half=0 hasWork=0 tiles=0
+[AIV Block 36/56] [M10K] AIV 36 idle signalled
+[AIV Block 36/56] [M10K] AIV 36 wait RDY
+[AIV Block 36/56] [M10K] AIV 36 got RDY
+[AIV Block 36/56] [M10K] AIV 36 done
+[AIV Block 37/56] [M10K] AIV 37 enter aic=18 half=1 hasWork=0 tiles=0
+[AIV Block 37/56] [M10K] AIV 37 idle signalled
+[AIV Block 37/56] [M10K] AIV 37 wait RDY
+[AIV Block 37/56] [M10K] AIV 37 got RDY
+[AIV Block 37/56] [M10K] AIV 37 done
+[AIV Block 37/56] [M10K] AIV 37 enter aic=18 half=1 hasWork=0 tiles=0
+[AIV Block 37/56] [M10K] AIV 37 idle signalled
+[AIV Block 37/56] [M10K] AIV 37 wait RDY
+[AIV Block 37/56] [M10K] AIV 37 got RDY
+[AIV Block 37/56] [M10K] AIV 37 done
+[AIV Block 38/56] [M10K] AIV 38 enter aic=19 half=0 hasWork=0 tiles=0
+[AIV Block 38/56] [M10K] AIV 38 idle signalled
+[AIV Block 38/56] [M10K] AIV 38 wait RDY
+[AIV Block 38/56] [M10K] AIV 38 got RDY
+[AIV Block 38/56] [M10K] AIV 38 done
+[AIV Block 38/56] [M10K] AIV 38 enter aic=19 half=0 hasWork=0 tiles=0
+[AIV Block 38/56] [M10K] AIV 38 idle signalled
+[AIV Block 38/56] [M10K] AIV 38 wait RDY
+[AIV Block 38/56] [M10K] AIV 38 got RDY
+[AIV Block 38/56] [M10K] AIV 38 done
+[AIV Block 39/56] [M10K] AIV 39 enter aic=19 half=1 hasWork=0 tiles=0
+[AIV Block 39/56] [M10K] AIV 39 idle signalled
+[AIV Block 39/56] [M10K] AIV 39 wait RDY
+[AIV Block 39/56] [M10K] AIV 39 got RDY
+[AIV Block 39/56] [M10K] AIV 39 done
+[AIV Block 39/56] [M10K] AIV 39 enter aic=19 half=1 hasWork=0 tiles=0
+[AIV Block 39/56] [M10K] AIV 39 idle signalled
+[AIV Block 39/56] [M10K] AIV 39 wait RDY
+[AIV Block 39/56] [M10K] AIV 39 got RDY
+[AIV Block 39/56] [M10K] AIV 39 done
+[AIV Block 40/56] [M10K] AIV 40 enter aic=20 half=0 hasWork=0 tiles=0
+[AIV Block 40/56] [M10K] AIV 40 idle signalled
+[AIV Block 40/56] [M10K] AIV 40 wait RDY
+[AIV Block 40/56] [M10K] AIV 40 got RDY
+[AIV Block 40/56] [M10K] AIV 40 done
+[AIV Block 40/56] [M10K] AIV 40 enter aic=20 half=0 hasWork=0 tiles=0
+[AIV Block 40/56] [M10K] AIV 40 idle signalled
+[AIV Block 40/56] [M10K] AIV 40 wait RDY
+[AIV Block 40/56] [M10K] AIV 40 got RDY
+[AIV Block 40/56] [M10K] AIV 40 done
+[AIV Block 41/56] [M10K] AIV 41 enter aic=20 half=1 hasWork=0 tiles=0
+[AIV Block 41/56] [M10K] AIV 41 idle signalled
+[AIV Block 41/56] [M10K] AIV 41 wait RDY
+[AIV Block 41/56] [M10K] AIV 41 got RDY
+[AIV Block 41/56] [M10K] AIV 41 done
+[AIV Block 41/56] [M10K] AIV 41 enter aic=20 half=1 hasWork=0 tiles=0
+[AIV Block 41/56] [M10K] AIV 41 idle signalled
+[AIV Block 41/56] [M10K] AIV 41 wait RDY
+[AIV Block 41/56] [M10K] AIV 41 got RDY
+[AIV Block 41/56] [M10K] AIV 41 done
+[AIV Block 42/56] [M10K] AIV 42 enter aic=21 half=0 hasWork=0 tiles=0
+[AIV Block 42/56] [M10K] AIV 42 idle signalled
+[AIV Block 42/56] [M10K] AIV 42 wait RDY
+[AIV Block 42/56] [M10K] AIV 42 got RDY
+[AIV Block 42/56] [M10K] AIV 42 done
+[AIV Block 42/56] [M10K] AIV 42 enter aic=21 half=0 hasWork=0 tiles=0
+[AIV Block 42/56] [M10K] AIV 42 idle signalled
+[AIV Block 42/56] [M10K] AIV 42 wait RDY
+[AIV Block 42/56] [M10K] AIV 42 got RDY
+[AIV Block 42/56] [M10K] AIV 42 done
+[AIV Block 43/56] [M10K] AIV 43 enter aic=21 half=1 hasWork=0 tiles=0
+[AIV Block 43/56] [M10K] AIV 43 idle signalled
+[AIV Block 43/56] [M10K] AIV 43 wait RDY
+[AIV Block 43/56] [M10K] AIV 43 got RDY
+[AIV Block 43/56] [M10K] AIV 43 done
+[AIV Block 43/56] [M10K] AIV 43 enter aic=21 half=1 hasWork=0 tiles=0
+[AIV Block 43/56] [M10K] AIV 43 idle signalled
+[AIV Block 43/56] [M10K] AIV 43 wait RDY
+[AIV Block 43/56] [M10K] AIV 43 got RDY
+[AIV Block 43/56] [M10K] AIV 43 done
+[AIV Block 44/56] [M10K] AIV 44 enter aic=22 half=0 hasWork=0 tiles=0
+[AIV Block 44/56] [M10K] AIV 44 idle signalled
+[AIV Block 44/56] [M10K] AIV 44 wait RDY
+[AIV Block 44/56] [M10K] AIV 44 got RDY
+[AIV Block 44/56] [M10K] AIV 44 done
+[AIV Block 44/56] [M10K] AIV 44 enter aic=22 half=0 hasWork=0 tiles=0
+[AIV Block 44/56] [M10K] AIV 44 idle signalled
+[AIV Block 44/56] [M10K] AIV 44 wait RDY
+[AIV Block 44/56] [M10K] AIV 44 got RDY
+[AIV Block 44/56] [M10K] AIV 44 done
+[AIV Block 45/56] [M10K] AIV 45 enter aic=22 half=1 hasWork=0 tiles=0
+[AIV Block 45/56] [M10K] AIV 45 idle signalled
+[AIV Block 45/56] [M10K] AIV 45 wait RDY
+[AIV Block 45/56] [M10K] AIV 45 got RDY
+[AIV Block 45/56] [M10K] AIV 45 done
+[AIV Block 45/56] [M10K] AIV 45 enter aic=22 half=1 hasWork=0 tiles=0
+[AIV Block 45/56] [M10K] AIV 45 idle signalled
+[AIV Block 45/56] [M10K] AIV 45 wait RDY
+[AIV Block 45/56] [M10K] AIV 45 got RDY
+[AIV Block 45/56] [M10K] AIV 45 done
+[AIV Block 46/56] [M10K] AIV 46 enter aic=23 half=0 hasWork=0 tiles=0
+[AIV Block 46/56] [M10K] AIV 46 idle signalled
+[AIV Block 46/56] [M10K] AIV 46 wait RDY
+[AIV Block 46/56] [M10K] AIV 46 got RDY
+[AIV Block 46/56] [M10K] AIV 46 done
+[AIV Block 46/56] [M10K] AIV 46 enter aic=23 half=0 hasWork=0 tiles=0
+[AIV Block 46/56] [M10K] AIV 46 idle signalled
+[AIV Block 46/56] [M10K] AIV 46 wait RDY
+[AIV Block 46/56] [M10K] AIV 46 got RDY
+[AIV Block 46/56] [M10K] AIV 46 done
+[AIV Block 47/56] [M10K] AIV 47 enter aic=23 half=1 hasWork=0 tiles=0
+[AIV Block 47/56] [M10K] AIV 47 idle signalled
+[AIV Block 47/56] [M10K] AIV 47 wait RDY
+[AIV Block 47/56] [M10K] AIV 47 got RDY
+[AIV Block 47/56] [M10K] AIV 47 done
+[AIV Block 47/56] [M10K] AIV 47 enter aic=23 half=1 hasWork=0 tiles=0
+[AIV Block 47/56] [M10K] AIV 47 idle signalled
+[AIV Block 47/56] [M10K] AIV 47 wait RDY
+[AIV Block 47/56] [M10K] AIV 47 got RDY
+[AIV Block 47/56] [M10K] AIV 47 done
+[AIV Block 48/56] [M10K] AIV 48 enter aic=24 half=0 hasWork=0 tiles=0
+[AIV Block 48/56] [M10K] AIV 48 idle signalled
+[AIV Block 48/56] [M10K] AIV 48 wait RDY
+[AIV Block 48/56] [M10K] AIV 48 got RDY
+[AIV Block 48/56] [M10K] AIV 48 done
+[AIV Block 48/56] [M10K] AIV 48 enter aic=24 half=0 hasWork=0 tiles=0
+[AIV Block 48/56] [M10K] AIV 48 idle signalled
+[AIV Block 48/56] [M10K] AIV 48 wait RDY
+[AIV Block 48/56] [M10K] AIV 48 got RDY
+[AIV Block 48/56] [M10K] AIV 48 done
+[AIV Block 49/56] [M10K] AIV 49 enter aic=24 half=1 hasWork=0 tiles=0
+[AIV Block 49/56] [M10K] AIV 49 idle signalled
+[AIV Block 49/56] [M10K] AIV 49 wait RDY
+[AIV Block 49/56] [M10K] AIV 49 got RDY
+[AIV Block 49/56] [M10K] AIV 49 done
+[AIV Block 49/56] [M10K] AIV 49 enter aic=24 half=1 hasWork=0 tiles=0
+[AIV Block 49/56] [M10K] AIV 49 idle signalled
+[AIV Block 49/56] [M10K] AIV 49 wait RDY
+[AIV Block 49/56] [M10K] AIV 49 got RDY
+[AIV Block 49/56] [M10K] AIV 49 done
+[AIV Block 50/56] [M10K] AIV 50 enter aic=25 half=0 hasWork=0 tiles=0
+[AIV Block 50/56] [M10K] AIV 50 idle signalled
+[AIV Block 50/56] [M10K] AIV 50 wait RDY
+[AIV Block 50/56] [M10K] AIV 50 got RDY
+[AIV Block 50/56] [M10K] AIV 50 done
+[AIV Block 50/56] [M10K] AIV 50 enter aic=25 half=0 hasWork=0 tiles=0
+[AIV Block 50/56] [M10K] AIV 50 idle signalled
+[AIV Block 50/56] [M10K] AIV 50 wait RDY
+[AIV Block 50/56] [M10K] AIV 50 got RDY
+[AIV Block 50/56] [M10K] AIV 50 done
+[AIV Block 51/56] [M10K] AIV 51 enter aic=25 half=1 hasWork=0 tiles=0
+[AIV Block 51/56] [M10K] AIV 51 idle signalled
+[AIV Block 51/56] [M10K] AIV 51 wait RDY
+[AIV Block 51/56] [M10K] AIV 51 got RDY
+[AIV Block 51/56] [M10K] AIV 51 done
+[AIV Block 51/56] [M10K] AIV 51 enter aic=25 half=1 hasWork=0 tiles=0
+[AIV Block 51/56] [M10K] AIV 51 idle signalled
+[AIV Block 51/56] [M10K] AIV 51 wait RDY
+[AIV Block 51/56] [M10K] AIV 51 got RDY
+[AIV Block 51/56] [M10K] AIV 51 done
+[AIV Block 52/56] [M10K] AIV 52 enter aic=26 half=0 hasWork=0 tiles=0
+[AIV Block 52/56] [M10K] AIV 52 idle signalled
+[AIV Block 52/56] [M10K] AIV 52 wait RDY
+[AIV Block 52/56] [M10K] AIV 52 got RDY
+[AIV Block 52/56] [M10K] AIV 52 done
+[AIV Block 52/56] [M10K] AIV 52 enter aic=26 half=0 hasWork=0 tiles=0
+[AIV Block 52/56] [M10K] AIV 52 idle signalled
+[AIV Block 52/56] [M10K] AIV 52 wait RDY
+[AIV Block 52/56] [M10K] AIV 52 got RDY
+[AIV Block 52/56] [M10K] AIV 52 done
+[AIV Block 53/56] [M10K] AIV 53 enter aic=26 half=1 hasWork=0 tiles=0
+[AIV Block 53/56] [M10K] AIV 53 idle signalled
+[AIV Block 53/56] [M10K] AIV 53 wait RDY
+[AIV Block 53/56] [M10K] AIV 53 got RDY
+[AIV Block 53/56] [M10K] AIV 53 done
+[AIV Block 53/56] [M10K] AIV 53 enter aic=26 half=1 hasWork=0 tiles=0
+[AIV Block 53/56] [M10K] AIV 53 idle signalled
+[AIV Block 53/56] [M10K] AIV 53 wait RDY
+[AIV Block 53/56] [M10K] AIV 53 got RDY
+[AIV Block 53/56] [M10K] AIV 53 done
+[AIV Block 54/56] [M10K] AIV 54 enter aic=27 half=0 hasWork=0 tiles=0
+[AIV Block 54/56] [M10K] AIV 54 idle signalled
+[AIV Block 54/56] [M10K] AIV 54 wait RDY
+[AIV Block 54/56] [M10K] AIV 54 got RDY
+[AIV Block 54/56] [M10K] AIV 54 done
+[AIV Block 54/56] [M10K] AIV 54 enter aic=27 half=0 hasWork=0 tiles=0
+[AIV Block 54/56] [M10K] AIV 54 idle signalled
+[AIV Block 54/56] [M10K] AIV 54 wait RDY
+[AIV Block 54/56] [M10K] AIV 54 got RDY
+[AIV Block 54/56] [M10K] AIV 54 done
+[AIV Block 55/56] [M10K] AIV 55 enter aic=27 half=1 hasWork=0 tiles=0
+[AIV Block 55/56] [M10K] AIV 55 idle signalled
+[AIV Block 55/56] [M10K] AIV 55 wait RDY
+[AIV Block 55/56] [M10K] AIV 55 got RDY
+[AIV Block 55/56] [M10K] AIV 55 done
+[AIV Block 55/56] [M10K] AIV 55 enter aic=27 half=1 hasWork=0 tiles=0
+[AIV Block 55/56] [M10K] AIV 55 idle signalled
+[AIV Block 55/56] [M10K] AIV 55 wait RDY
+[AIV Block 55/56] [M10K] AIV 55 got RDY
+[AIV Block 55/56] [M10K] AIV 55 done

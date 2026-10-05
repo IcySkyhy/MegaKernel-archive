@@ -1,0 +1,8 @@
+RESOURCE name=T30-V2-256 threads=256 registers=63 static_shared=0 dynamic_shared=36480 local_bytes=0 active_blocks_per_sm=2 grid=4x30x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+LBM_allocateGrid: allocated 185.2 MByte
+LBM_showGridStatistics:
+	nObstacleCells:   99248 nAccelCells:   26912 nFluidCells: 2033840
+	minRho:   0.9961 maxRho:   1.0039 mass: 2.160000e+06
+	minU: 0.000000e+00 maxU: 4.025421e-03
+
+DONE physical_steps=2 kernel_launches=1 final_buffer=B patterned=0

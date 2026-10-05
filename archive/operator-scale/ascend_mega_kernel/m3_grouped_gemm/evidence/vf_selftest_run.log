@@ -1,0 +1,43 @@
+[M3] numBlocks(AIC) = 28
+[M3-VF] quant-pack     : PASS (0/2560 字节不符)
+[M3-VF] quant-scale    : PASS (0/160 字节不符)
+[M3-VF] scale-same     : PASS (99 组同解区间 device == ceil == floor)
+[M3-VF] scale-diverge  : PASS (59 组分歧区间 device == ceil == floor+1)
+[M3-VF] scale-corner   : PASS (2 组 clamp 角落 device == ceil)
+[M3-VF] 报告项: 同解组 99 / 分歧组 59 / clamp 角落 2 / 零组 2（共 160 组）
+[M3-VF] 报告项: e2m1 code 覆盖集 = {0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 }
+[M3-VF] e2m1-threshold : PASS (0 字节不符, code 覆盖 16/16)
+[M3-VF] scale-endpoint 实测读数（k = 0/-8/8/20；device / ceil / floor / 解析分类）:
+  [M3-VF] 4*2^k        amax=0x1p+2 device=127 ceil=127 floor=127 解析=同解 OK
+  [M3-VF] 5*2^k        amax=0x1.4p+2 device=127 ceil=127 floor=127 解析=同解 OK
+  [M3-VF] 6*2^k        amax=0x1.8p+2 device=127 ceil=127 floor=127 解析=同解 OK
+  [M3-VF] 6*2^k+1ulp   amax=0x1.800002p+2 device=128 ceil=128 floor=127 解析=分歧 OK
+  [M3-VF] 7*2^k        amax=0x1.cp+2 device=128 ceil=128 floor=127 解析=分歧 OK
+  [M3-VF] 8*2^k-1ulp   amax=0x1.fffffep+2 device=128 ceil=128 floor=127 解析=分歧 OK
+  [M3-VF] 8*2^k        amax=0x1p+3 device=128 ceil=128 floor=128 解析=同解 OK
+  [M3-VF] 4*2^k        amax=0x1p-6 device=119 ceil=119 floor=119 解析=同解 OK
+  [M3-VF] 5*2^k        amax=0x1.4p-6 device=119 ceil=119 floor=119 解析=同解 OK
+  [M3-VF] 6*2^k        amax=0x1.8p-6 device=119 ceil=119 floor=119 解析=同解 OK
+  [M3-VF] 6*2^k+1ulp   amax=0x1.800002p-6 device=120 ceil=120 floor=119 解析=分歧 OK
+  [M3-VF] 7*2^k        amax=0x1.cp-6 device=120 ceil=120 floor=119 解析=分歧 OK
+  [M3-VF] 8*2^k-1ulp   amax=0x1.fffffep-6 device=120 ceil=120 floor=119 解析=分歧 OK
+  [M3-VF] 8*2^k        amax=0x1p-5 device=120 ceil=120 floor=120 解析=同解 OK
+  [M3-VF] 4*2^k        amax=0x1p+10 device=135 ceil=135 floor=135 解析=同解 OK
+  [M3-VF] 5*2^k        amax=0x1.4p+10 device=135 ceil=135 floor=135 解析=同解 OK
+  [M3-VF] 6*2^k        amax=0x1.8p+10 device=135 ceil=135 floor=135 解析=同解 OK
+  [M3-VF] 6*2^k+1ulp   amax=0x1.800002p+10 device=136 ceil=136 floor=135 解析=分歧 OK
+  [M3-VF] 7*2^k        amax=0x1.cp+10 device=136 ceil=136 floor=135 解析=分歧 OK
+  [M3-VF] 8*2^k-1ulp   amax=0x1.fffffep+10 device=136 ceil=136 floor=135 解析=分歧 OK
+  [M3-VF] 8*2^k        amax=0x1p+11 device=136 ceil=136 floor=136 解析=同解 OK
+  [M3-VF] 4*2^k        amax=0x1p+22 device=147 ceil=147 floor=147 解析=同解 OK
+  [M3-VF] 5*2^k        amax=0x1.4p+22 device=147 ceil=147 floor=147 解析=同解 OK
+  [M3-VF] 6*2^k        amax=0x1.8p+22 device=147 ceil=147 floor=147 解析=同解 OK
+  [M3-VF] 6*2^k+1ulp   amax=0x1.800002p+22 device=148 ceil=148 floor=147 解析=分歧 OK
+  [M3-VF] 7*2^k        amax=0x1.cp+22 device=148 ceil=148 floor=147 解析=分歧 OK
+  [M3-VF] 8*2^k-1ulp   amax=0x1.fffffep+22 device=148 ceil=148 floor=147 解析=分歧 OK
+  [M3-VF] 8*2^k        amax=0x1p+23 device=148 ceil=148 floor=148 解析=同解 OK
+[M3-VF] scale-endpoint  : PASS (28/28 端点读数与解析分类一致)
+[M3-VF] silu-t3(VL)    : PASS (ε=2^-21=4.768372e-07；0/10240 元素超界)
+[M3-VF] 报告项: silu(VL) max |Δ| = 2.000 ulp、T3 界最大占用 0.414、非有限元素 0
+[M3-VF] 报告项: mode 6（仅 load+cast+落 64 fp32）10 次迭代中前 5 次逐位可见（尾部未落到 UB，见 README §5.5 / tower finding）
+[M3] ===== VF SELFTEST ALL PASS =====

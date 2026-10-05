@@ -1,0 +1,26 @@
+# M110 r1（复审 P2-1）：相邻性判据的**负向对照实跑**（复现命令 + 逐字输出）
+#
+# 背景：r1 复审指出 §4c/§4d 只落了容量/位置/复用断言，**没有**「同一 (核型, mode) 的相邻同步点
+# 不得同号」这条（任务 2 的原话要求它）。本 mission 的修法 = 给两个粒度各写一条判据
+# （`FlagRefsAdjacentOk` 逻辑同步点级 / `FlagEventsAdjacentOk` 事件级）+ 随代码入库的正负对照。
+# 本文件是**独立于代码内对照表**的第二次见证：把**真实表**里两条相邻逻辑点人为弄成同号，
+# 编译必须失败。
+#
+# 实验步骤（在本 worktree 里逐条实跑）：
+#   ① 备份：`cp m15_layer_loop/m15_layer_resources.h /tmp/m110r1_res_backup.h`
+#   ② 破坏真实表：把 `FLAG_SEQ_PREFILL_ATTN[]` 里那一行
+#        {"ATN-PF","AIC",0, ATTN_CORE_M0_AIC_BAR(8), "both", "core：全体 AIC 对齐 …"}
+#      改成用 `M15AP::AP_AIC_M0_OUT`(=1) ⇒ 该子空间里前端与 core 两条相邻逻辑点**同号**
+#   ③ 构建：`cmake --build m15_layer_loop/build -j16 --target m15_layer_loop`
+#   ④ 还原：把那一行改回 `ATTN_CORE_M0_AIC_BAR`，`diff` 与备份**逐字节相同**
+
+## ③ 的实跑输出（rc=2；逐字粘贴，重复行是 ASC 编译器的两阶段各报一次）
+
+$ cmake --build m15_layer_loop/build -j16 --target m15_layer_loop
+[ 50%] Building ASC object CMakeFiles/m15_layer_loop.dir/m15_layer_loop.asc.o
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-110/m15_layer_loop/m15_layer_resources.h:1199:1: error: static assertion failed due to requirement 'FlagRefsAdjacentOk(FLAG_SEQ_PREFILL_ATTN, FLAG_SEQ_PREFILL_ATTN_N)': attn prefill 的 flagId 相邻性违规：同一 (核型, mode) 的相邻逻辑同步点同号
+1 error generated.
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-110/m15_layer_loop/m15_layer_resources.h:1199:1: error: static assertion failed due to requirement 'FlagRefsAdjacentOk(FLAG_SEQ_PREFILL_ATTN, FLAG_SEQ_PREFILL_ATTN_N)': attn prefill 的 flagId 相邻性违规：同一 (核型, mode) 的相邻逻辑同步点同号
+10 warnings and 1 error generated.
+
+（完整构建日志另存：本文件只留判定行；原始 rc=2）

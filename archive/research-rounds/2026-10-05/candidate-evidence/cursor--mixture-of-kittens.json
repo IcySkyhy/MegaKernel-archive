@@ -1,0 +1,198 @@
+{
+  "repository": "cursor/mixture-of-kittens",
+  "url": "https://github.com/cursor/mixture-of-kittens",
+  "created_at": "2026-07-29T16:49:30Z",
+  "pushed_at": "2026-10-01T20:00:29Z",
+  "branch": "main",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 160
+    },
+    {
+      "path": ".gitmodules",
+      "size": 134
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 2273
+    },
+    {
+      "path": "LICENSE",
+      "size": 10762
+    },
+    {
+      "path": "MANIFEST.in",
+      "size": 141
+    },
+    {
+      "path": "Makefile",
+      "size": 2185
+    },
+    {
+      "path": "README.md",
+      "size": 11240
+    },
+    {
+      "path": "benchmarks/__init__.py",
+      "size": 21
+    },
+    {
+      "path": "benchmarks/bench_deepep_te.py",
+      "size": 10917
+    },
+    {
+      "path": "benchmarks/bench_deepep_torch.py",
+      "size": 9846
+    },
+    {
+      "path": "benchmarks/bench_hybridep_megatron.py",
+      "size": 11671
+    },
+    {
+      "path": "benchmarks/bench_mok.py",
+      "size": 6183
+    },
+    {
+      "path": "benchmarks/bench_nccl_torch.py",
+      "size": 13400
+    },
+    {
+      "path": "benchmarks/impl_utils.py",
+      "size": 3634
+    },
+    {
+      "path": "benchmarks/utils.py",
+      "size": 3933
+    },
+    {
+      "path": "csrc/bindings.cu",
+      "size": 7472
+    },
+    {
+      "path": "csrc/megakernel/backward.cuh",
+      "size": 65259
+    },
+    {
+      "path": "csrc/megakernel/dispatch_combine.cuh",
+      "size": 14768
+    },
+    {
+      "path": "csrc/megakernel/entrypoints.cuh",
+      "size": 31194
+    },
+    {
+      "path": "csrc/megakernel/forward.cuh",
+      "size": 36017
+    },
+    {
+      "path": "csrc/megakernel/grouped_gemm.cuh",
+      "size": 27426
+    },
+    {
+      "path": "csrc/megakernel/megakernel.cuh",
+      "size": 752
+    },
+    {
+      "path": "csrc/megakernel/recompute_forward_context.cuh",
+      "size": 27067
+    },
+    {
+      "path": "csrc/megakernel/swiglu.cuh",
+      "size": 35662
+    },
+    {
+      "path": "csrc/megakernel/types.cuh",
+      "size": 24859
+    },
+    {
+      "path": "csrc/megakernel/utils.cuh",
+      "size": 2099
+    },
+    {
+      "path": "csrc/mxfp8.cuh",
+      "size": 13344
+    },
+    {
+      "path": "csrc/scheduler.cuh",
+      "size": 9633
+    },
+    {
+      "path": "csrc/utils.cuh",
+      "size": 12092
+    },
+    {
+      "path": "figures/moe_benchmarks.png",
+      "size": 310328
+    },
+    {
+      "path": "mok/__init__.py",
+      "size": 219
+    },
+    {
+      "path": "mok/_fake_impls.py",
+      "size": 16035
+    },
+    {
+      "path": "mok/functional.py",
+      "size": 37429
+    },
+    {
+      "path": "mok/ops.py",
+      "size": 69383
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 506
+    },
+    {
+      "path": "setup.py",
+      "size": 5457
+    },
+    {
+      "path": "tests/__init__.py",
+      "size": 1
+    },
+    {
+      "path": "tests/conftest.py",
+      "size": 781
+    },
+    {
+      "path": "tests/test_functional.py",
+      "size": 57185
+    },
+    {
+      "path": "tests/test_functional_e2e.py",
+      "size": 14729
+    },
+    {
+      "path": "tests/test_misc.py",
+      "size": 63765
+    },
+    {
+      "path": "tests/test_ops.py",
+      "size": 79524
+    },
+    {
+      "path": "tests/utils.py",
+      "size": 20320
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-10-01T20:00:24Z",
+      "subject": "Update README",
+      "url": "https://github.com/cursor/mixture-of-kittens/commit/f3a8bd2432457c5a2a2ea13915f0dcd0224581e4"
+    },
+    {
+      "date": "2026-09-30T02:55:07Z",
+      "subject": "Update README",
+      "url": "https://github.com/cursor/mixture-of-kittens/commit/caeb2963f855c7ad53bb50c8bbf211086405cb98"
+    }
+  ],
+  "readme": "# Mixture-of-Kittens (MoK)\n\nMixture-of-Kittens (MoK) is a fully deterministic mixture-of-experts (MoE) training megakernel built from first principles for NVL72s. MoK fuses all MoE computation and communication into a single kernel, overlapping compute and inter-GPU networking at configurable granularity, and fully eliminates CPU-GPU synchronization. It supports BF16 and MXFP8, covers both forward and backward passes, and powers production training of Composer at Cursor.\n\nFor a deep dive, read our [paper](https://arxiv.org/abs/2609.36070) and [blog post](https://cursor.com/blog/mixture-of-kittens).\n\n## Performance\n\nWe evaluated MoK at two levels: standalone MoE layers, with all benchmark code available in [`benchmarks`](./benchmarks), and end-to-end training on our internal production stack across multiple NVL72 racks. The following figure summarizes the standalone MoE layer benchmarks:\n\n![MoE benchmark results](./figures/moe_benchmarks.png)\n\nCompared with the fastest baseline, MoK is up to 2.37x faster for the MXFP8 forward, 1.78x for the MXFP8 backward, 1.92x for the BF16 forward, and 1.58x for the BF16 backward.\n\nSee our [paper](https://arxiv.org/abs/2609.36070) and [blog post](https://cursor.com/blog/mixture-of-kittens) for the methodology and full results.\n\n## Setup\n\n### Requirements\n\n- NVIDIA Blackwell SM100 or SM103 GPUs (e.g., GB200 NVL72 or GB300 NVL72)\n- Python 3.12 or later\n- PyTorch 2.10 or later\n- CUDA toolkit 13.0 or later\n\n### PyTorch and CUDA\n\nThe installed PyTorch build must target CUDA 13.0+, and its CUDA version must match the major and minor version of the system CUDA toolkit. MoK is built and tested against CUDA 13.0, but later versions should work as well.\n\nFor example, to install PyTorch 2.10 built against CUDA 13.0:\n\n```bash\npython -m pip install \"torch==2.10.0+cu130\" --index-url https://download.pytorch.org/whl/cu130\n```\n\n### Installation\n\nBy default, MoK builds for SM103. Install from the repository root with either:\n\n```bash\npip install . --no-build-isolation\n```\n\nor:\n\n```bash\npython setup.py install\n```\n\nTo build for SM100 instead, set the `MOK_ARCH` environment variable:\n\n```bash\nMOK_ARCH=SM100 pip install . --no-build-isolation\n```\n\nTo verify the installation:\n\n```bash\npython -c \"import mok; print(mok.__version__)\"\n```\n\n### Development\n\nFor development, install MoK in editable mode once, then use `make` for fast rebuilds:\n\n```bash\npip install -e . --no-build-isolation\nmake\n```\n\n#### Unit tests\n\nLaunch multi-GPU unit tests through `torchrun` and `pytest`:\n\n```bash\ntorchrun --standalone --nproc-per-node=<num-gpus> -m pytest -s <test-path>\n```\n\n## Getting Started\n\nMoK provides two layers of abstraction:\n\n- **Ops layer** (`mok/ops.py`): the low-level API that lets you call our CUDA kernel implementations directly with minimal overhead. With this, you fully manage your own data (e.g., symmetric tensors) and coordinate the kernel calls yourself to implement the MoE layer's computation and communication.\n- **Functional layer** (`mok/functional.py`): the higher-level API that handles more for you, such as maintaining scratch memory and coordinating kernel launches. It consists of workspace creation functions, a schedule function, and forward/backward functions.\n\nThe functional layer is our choice for production training, so we recommend it unless you have specific needs. We explain only the functional layer from here.\n\nWith the functional API, MoK is simple to use: call `schedule(...)` once to build the dispatch/combine schedule, then pass that same schedule to `forward(...)` and `backward(...)`. Before doing so, however, you need to define and manage a **config** and a **workspace**.\n\n### Config\n\nMoK exposes 5 hyperparameters that can affect the performance of MoE execution. Because optimal values depend heavily on the workload, you should tune and sweep them before using MoK in production.\n\n- `fwd_num_comm_sms`: the number of communication SMs during forward. We recommend values between 4 and 52.\n- `bwd_num_comm_sms`: the number of communication SMs during backward. We recommend values between 4 and 52.\n- `minibatch_size`: the granularity of computation–communication overlap. This is an important parameter in MoK, and you must tune it properly to get optimal performance. We recommend values between 2048 and 16384.\n- `macrobatch_size`: the token ring buffer size. Setting this to a large value (e.g., 131072) means the ring buffer is used only once. You should maximize this value to fill the available GPU memory.\n- `schedule_capacity_multiplier`: defaults to 0.5. This should be set to the worst-case fraction of tokens routed to a single rank. Setting it to 1 assumes the absolute worst case (all tokens routed to one rank) but adds kernel scheduling overhead (due to expert padding, the actual worst case is slightly above 1.0). Ideally, use a higher value during the first steps of training when expert imbalance is bad, then reduce it to around 0.5 in later steps. Note that decreasing this value does not save GPU memory meaningfully, as the schedule table is at most a few megabytes.\n\nYou can set these values when creating the `MoKConfig` dataclass, which you pass to all functional-layer functions.\n\n### Workspace\n\nMoK relies on PyTorch symmetric memory to allocate and manage inter-GPU symmetric buffers, or identically sized memory allocations across many GPUs (i.e., all GPUs in an EP group). These buffers serve as the source/destination of token dispatch/combine, along with a few other purposes. We call the entire collection of symmetric memory, along with the other metadata and scratchpads MoK needs, the **workspace**. We provide a data structure and functions for creating and destroying workspaces.\n\nBecause symmetric buffers are expensive to allocate, we recommend creating a single workspace per model and reusing it across layers. For this, we provide the `get_workspace(...)` function, which automatically caches workspaces with identical properties (EP group, device, model shapes, etc.). If you prefer to manage a workspace's lifetime yourself, the `create_workspace(...)` function does not cache.\n\n### MXFP8\n\nTo run MoK in MXFP8 mode, pass the activations as-is in BF16 while prequantizing the weights to MXFP8. We *could* quantize the weights inside our kernels, but prequantizing leaves better opportunities for things like FSDP, so we keep it separate and provide the `mxfp8_quantize(...)` function at the ops layer so you can prequantize the weights yourself.\n\n### Example (MXFP8 forward and backward using the functional layer)\n\nThe following is a canonical example of implementing MoE forward and backward with MoK in MXFP8 mode:\n\n```python\nimport torch.distributed as dist\n\nfrom mok import functional, ops\n\n# Inputs:\n#   num_local_tokens:    int\n#   hidden_size:         int\n#   intermediate_size:   int\n#   topk:                int\n#   num_local_experts:   int\n#   x:                   torch.bfloat16 [num_local_tokens, hidden_size]\n#   topk_experts:        torch.int64    [num_local_tokens, topk]\n#   router_weights:      torch.float32  [num_local_tokens, topk]\n#   w_shared_gate:       torch.bfloat16 [intermediate_size, hidden_size]\n#   w_shared_up:         torch.bfloat16 [intermediate_size, hidden_size]\n#   w_shared_down:       torch.bfloat16 [hidden_size, intermediate_size]\n#   w_routed_gate:       torch.bfloat16 [num_local_experts, intermediate_size, hidden_size]\n#   w_routed_up:         torch.bfloat16 [num_local_experts, intermediate_size, hidden_size]\n#   w_routed_down:       torch.bfloat16 [num_local_experts, hidden_size, intermediate_size]\n#   d_output:            torch.bfloat16 [num_local_tokens, hidden_size]\n\nconfig = functional.MoKConfig() # tune for your workload\nworkspace = functional.get_workspace(\n    config,\n    dist.group.WORLD, # replace with your expert-parallel process group\n    device=x.device,\n    num_local_tokens=num_local_tokens,\n    hidden_size=hidden_size,\n    topk=topk,\n)\n\n\n########################\n# Weight quantization\n########################\n\n(\n    w_routed_gate_fp8,\n    w_routed_gate_sc,\n    w_routed_gate_t_fp8,\n    w_routed_gate_t_sc,\n) = ops.mxfp8_quantize(w_routed_gate, True, True)\n(\n    w_routed_up_fp8,\n    w_routed_up_sc,\n    w_routed_up_t_fp8,\n    w_routed_up_t_sc,\n) = ops.mxfp8_quantize(w_routed_up, True, True)\n(\n    w_routed_down_fp8,\n    w_routed_down_sc,\n    w_routed_down_t_fp8,\n    w_routed_down_t_sc,\n) = ops.mxfp8_quantize(w_routed_down, True, True)\n\n\n########################\n# Forward\n########################\n\nschedule = functional.build_schedule(\n    workspace,\n    config,\n    topk_experts,\n    num_local_experts=num_local_experts,\n)\noutput, forward_context = functional.forward(\n    config,\n    workspace,\n    schedule,\n    x,\n    router_weights,\n    w_shared_gate,\n    w_shared_up,\n    w_shared_down,\n    (w_routed_gate_fp8, w_routed_gate_sc),\n    (w_routed_up_fp8, w_routed_up_sc),\n    (w_routed_down_fp8, w_routed_down_sc),\n)\n\n# Save `schedule` and `forward_context` for the backward\n\n\n########################\n# Backward\n########################\n\n(\n    d_x,\n    d_router_weights,\n    d_w_routed_gate,\n    d_w_routed_up,\n    d_w_routed_down,\n    d_w_shared_gate,\n    d_w_shared_up,\n    d_w_shared_down,\n) = functional.backward(\n    config,\n    workspace,\n    schedule,\n    forward_context,\n    d_output,\n    x,\n    router_weights,\n    w_shared_gate,\n    w_shared_up,\n    w_shared_down,\n    (w_routed_gate_fp8, w_routed_gate_sc, w_routed_gate_t_fp8, w_routed_gate_t_sc),\n    (w_routed_up_fp8, w_routed_up_sc, w_routed_up_t_fp8, w_routed_up_t_sc),\n    (w_routed_down_t_fp8, w_routed_down_t_sc),\n)\n```\n\n### Manual activation checkpointing\n\nThe example above saves the first macrobatch's forward intermediates for the backward pass. While we recommend this pattern, you can avoid storing them by discarding the returned context and rebuilding it immediately before backward with `functional.recompute_forward_context`.\n\n```python\n# Forward pass\noutput, discarded_forward_context = functional.forward(...)  # same call as above\ndel discarded_forward_context\n\n# Backward pass\nforward_context = functional.recompute_forward_context(\n    config,\n    workspace,\n    schedule,\n    x,\n    w_shared_gate,\n    w_shared_up,\n    (w_routed_gate_fp8, w_routed_gate_sc),\n    (w_routed_up_fp8, w_routed_up_sc),\n)\ngradients = functional.backward(...)  # same backward call as above\n```\n\n## Contributing\n\nContributions are welcome! See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines.\n\n## License\n\nMixture-of-Kittens is released under the Apache 2.0 License. See [`LICENSE`](LICENSE).\n\n## Citation\n\nIf you use this work, please cite:\n\n```\nStuart H. Sul, Nash Brown, Henry Wildermuth, William Lin, Federico Cassano, and Christopher Ré. \"Mixture-of-Kittens: MoE Megakernel for NVL72s.\" arXiv preprint arXiv:2609.36070, Sep 2026. https://arxiv.org/abs/2609.36070\n```\n\nOr in BibTeX:\n\n```bibtex\n@article{sul2026mok,\n  title   = {Mixture-of-Kittens: {MoE} Megakernel for {NVL72s}},\n  author  = {Stuart H. Sul and Nash Brown and Henry Wildermuth and William Lin and Federico Cassano and Christopher Ré},\n  year    = {2026},\n  month   = sep,\n  journal = {arXiv preprint arXiv:2609.36070},\n  url     = {https://arxiv.org/abs/2609.36070},\n}\n```\n"
+}

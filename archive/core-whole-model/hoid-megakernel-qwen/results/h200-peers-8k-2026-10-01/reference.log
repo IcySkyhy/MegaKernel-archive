@@ -1,0 +1,34 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   0%|          | 1/398 [00:00<01:25,  4.65it/s]Loading weights:  17%|█▋        | 69/398 [00:00<00:02, 152.87it/s]Loading weights:  29%|██▊       | 114/398 [00:00<00:01, 223.94it/s]Loading weights:  40%|███▉      | 158/398 [00:00<00:00, 279.01it/s]Loading weights:  51%|█████     | 201/398 [00:01<00:01, 110.30it/s]Loading weights:  62%|██████▏   | 245/398 [00:01<00:01, 148.09it/s]Loading weights:  73%|███████▎  | 289/398 [00:01<00:00, 186.74it/s]Loading weights:  81%|████████  | 323/398 [00:02<00:00, 99.57it/s] Loading weights:  89%|████████▉ | 356/398 [00:02<00:00, 122.42it/s]Loading weights: 100%|██████████| 398/398 [00:02<00:00, 147.65it/s]
+{"case": "gate/8k/row0", "text": "The sky looks blue because molecules in the atmosphere scatter", "min_margin": 2.4737014770507812}
+{"case": "bench/8k/row0", "text": "/ 10000000", "min_margin": 0.08824443817138672}
+{"case": "gate/8k/row1", "text": "The three primary colors of **light** are:\n\n", "min_margin": 0.7278556823730469}
+{"case": "bench/8k/row1", "text": "avil 1000000", "min_margin": 0.18935680389404297}
+{"case": "gate/8k/row2", "text": "The capital of Australia is **Canberra**.\n\n", "min_margin": 7.446018218994141}
+{"case": "bench/8k/row2", "text": " 100000000", "min_margin": 0.19618797302246094}
+{"case": "gate/8k/row3", "text": "A bicycle gear system works by transferring the rider's", "min_margin": 0.2501659393310547}
+{"case": "bench/8k/row3", "text": " 100000000", "min_margin": 0.323394775390625}
+{"case": "gate/8k/row4", "text": "Certainly! Here are three effective tips for learning a", "min_margin": 0.4035186767578125}
+{"case": "bench/8k/row4", "text": " 100000000", "min_margin": 0.2956123352050781}
+{"case": "gate/8k/row5", "text": "Cats purr to communicate contentment, self", "min_margin": 0.4596576690673828}
+{"case": "bench/8k/row5", "text": " 100000000", "min_margin": 0.2905302047729492}
+{"case": "gate/8k/row6", "text": "Romeo and Juliet is a tragic love story", "min_margin": 3.216287612915039}
+{"case": "bench/8k/row6", "text": " 100000000", "min_margin": 0.29058361053466797}
+{"case": "gate/8k/row7", "text": "A refrigerator keeps food cold by using a cooling system", "min_margin": 1.5371971130371094}
+{"case": "bench/8k/row7", "text": " 100000000", "min_margin": 0.2352437973022461}
+{"case": "gate/32k/row0", "text": "The sky looks blue because molecules in the atmosphere scatter", "min_margin": 0.9928359985351562}
+{"case": "bench/32k/row0", "text": " 100000000", "min_margin": 0.2343149185180664}
+{"case": "gate/32k/row1", "text": "The three primary colors of light are **red,", "min_margin": 0.5372428894042969}
+{"case": "bench/32k/row1", "text": " 100000000", "min_margin": 0.21636581420898438}
+{"case": "gate/32k/row2", "text": "The capital of Australia is **Canberra**.\n\n", "min_margin": 5.984569549560547}
+{"case": "bench/32k/row2", "text": " 100000000", "min_margin": 0.26575469970703125}
+{"case": "gate/32k/row3", "text": "A bicycle gear system works by transferring mechanical energy from", "min_margin": 0.42889976501464844}
+{"case": "bench/32k/row3", "text": "s 10000000", "min_margin": 0.33552074432373047}
+{"case": "gate/32k/row4", "text": "Certainly! Here are three practical and effective tips for", "min_margin": 0.9266319274902344}
+{"case": "bench/32k/row4", "text": " 100000000", "min_margin": 0.1955862045288086}
+{"case": "gate/32k/row5", "text": "Cats purr to communicate, show contentment", "min_margin": 1.2280693054199219}
+{"case": "bench/32k/row5", "text": "s 10000000", "min_margin": 0.20617389678955078}
+{"case": "gate/32k/row6", "text": "The plot of *Romeo and Juliet*", "min_margin": 1.5745277404785156}
+{"case": "bench/32k/row6", "text": " 100000000", "min_margin": 0.2164297103881836}
+{"case": "gate/32k/row7", "text": "A refrigerator keeps food cold by using a combination of", "min_margin": 2.120004653930664}
+{"case": "bench/32k/row7", "text": " 100000000", "min_margin": 0.25347328186035156}

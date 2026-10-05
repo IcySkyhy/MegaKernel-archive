@@ -1,0 +1,39 @@
+[check_moe_ref] 布局表 32 个张量，ws 7685472 B/层；E=4 运行期 topk=2（M15_TOPK）topk 模板上界=4 M_MAX=64（参考链 = m17_moe_real/check_ref.py）
+[check_moe_ref] dump 层：[0, 1, 2, 3]
+
+[check_moe_ref] ===== 非空洞性 / 位置正确性（T4 guard）=====
+[check_moe_ref]   L00 x_sorted 非全零（非空洞）                                    PASS  (5118/5120 个非零)
+[check_moe_ref]   L00 topk_ids 落在 [0,E) 且互不相同                              PASS  ([3, 1])
+[check_moe_ref]   L00 counts 之和 == m*topk                                  PASS  (Σt_e=2)
+[check_moe_ref]   L00 logits 非常数（输入敏感）                                     PASS  (span=1.051e-01)
+[check_moe_ref]   L00 路由参考非退化（活跃专家数可变）                                     PASS  (活跃 2/4)
+[check_moe_ref]   L01 x_sorted 非全零（非空洞）                                    PASS  (5120/5120 个非零)
+[check_moe_ref]   L01 topk_ids 落在 [0,E) 且互不相同                              PASS  ([1, 2])
+[check_moe_ref]   L01 counts 之和 == m*topk                                  PASS  (Σt_e=2)
+[check_moe_ref]   L01 logits 非常数（输入敏感）                                     PASS  (span=9.676e-01)
+[check_moe_ref]   L01 路由参考非退化（活跃专家数可变）                                     PASS  (活跃 2/4)
+[check_moe_ref]   L02 x_sorted 非全零（非空洞）                                    PASS  (5120/5120 个非零)
+[check_moe_ref]   L02 topk_ids 落在 [0,E) 且互不相同                              PASS  ([1, 3])
+[check_moe_ref]   L02 counts 之和 == m*topk                                  PASS  (Σt_e=2)
+[check_moe_ref]   L02 logits 非常数（输入敏感）                                     PASS  (span=2.027e-01)
+[check_moe_ref]   L02 路由参考非退化（活跃专家数可变）                                     PASS  (活跃 2/4)
+[check_moe_ref]   L03 x_sorted 非全零（非空洞）                                    PASS  (5120/5120 个非零)
+[check_moe_ref]   L03 topk_ids 落在 [0,E) 且互不相同                              PASS  ([3, 2])
+[check_moe_ref]   L03 counts 之和 == m*topk                                  PASS  (Σt_e=2)
+[check_moe_ref]   L03 logits 非常数（输入敏感）                                     PASS  (span=2.454e-01)
+[check_moe_ref]   L03 路由参考非退化（活跃专家数可变）                                     PASS  (活跃 2/4)
+
+[check_moe_ref] ===== 判定项（T1 逐位 / T3 推导界 / T4）=====
+[check_moe_ref] 判定项 128 条：128 PASS / 0 FAIL（另有非空洞性 20 条：20 PASS / 0 FAIL）
+
+[check_moe_ref] ===== 参考项（非判定；两套 MXFP4 量化规范的逐字节差异）=====
+[check_moe_ref]   L00 A_qx_shd/golden(floor 序列) 规范                         0/1280
+[check_moe_ref]   L00 A_scale_shd/golden(floor 序列) 规范                      0/80
+[check_moe_ref]   L01 A_qx_shd/golden(floor 序列) 规范                         0/1280
+[check_moe_ref]   L01 A_scale_shd/golden(floor 序列) 规范                      0/80
+[check_moe_ref]   L02 A_qx_shd/golden(floor 序列) 规范                         0/1280
+[check_moe_ref]   L02 A_scale_shd/golden(floor 序列) 规范                      0/80
+[check_moe_ref]   L03 A_qx_shd/golden(floor 序列) 规范                         0/1280
+[check_moe_ref]   L03 A_scale_shd/golden(floor 序列) 规范                      0/80
+
+[check_moe_ref] RESULT: OK (128 条判定项 + 20 条非空洞全部比较通过)

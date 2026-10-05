@@ -1,0 +1,23 @@
+RESOURCE name=D-V2-256 threads=256 registers=56 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=135.792961121
+TRIAL 1 us_per_step=135.648002625
+TRIAL 2 us_per_step=135.681915283
+TRIAL 3 us_per_step=135.711040497
+TRIAL 4 us_per_step=135.702400208
+TRIAL 5 us_per_step=135.691843033
+TRIAL 6 us_per_step=135.732803345
+TRIAL 7 us_per_step=135.763196945
+TRIAL 8 us_per_step=135.711364746
+TRIAL 9 us_per_step=135.608320236
+TRIAL 10 us_per_step=135.617599487
+TRIAL 11 us_per_step=135.681915283
+TRIAL 12 us_per_step=135.538558960
+TRIAL 13 us_per_step=135.681600571
+TRIAL 14 us_per_step=135.845441818
+TRIAL 15 us_per_step=135.712318420
+TRIAL 16 us_per_step=135.692157745
+TRIAL 17 us_per_step=135.681600571
+TRIAL 18 us_per_step=135.525760651
+TRIAL 19 us_per_step=135.639038086
+BENCH mode=D-V2-256 warmups=5 trials=20 steps=100 launches=50 median_us=135.686879158 min_us=135.525760651 p90_us=135.763196945 mlups=15919.004205886 equivalent_population_TB_s=2.419688639

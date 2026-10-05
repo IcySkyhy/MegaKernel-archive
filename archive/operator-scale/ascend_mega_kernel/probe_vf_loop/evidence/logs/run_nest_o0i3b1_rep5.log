@@ -1,0 +1,50 @@
+[probe vf nest] tag=nest_o0i3b1 outer=0 inner=3 body=1 ct_rows=0
+  rows=0 
+    i      :
+    cnt    :
+    expect :
+    tri    :
+    acc_maxdiff vs ref(cnt)=0.0  ref(cnt-1)=0.0  ref(expect)=0.0   jset_odd=0
+    lane_mismatch=0  tri_odd=0  少一次的行数=0/0  hash=0x5e509dc5
+    rows=0 verdict=PASS
+  rows=1 
+    i      : 0
+    cnt    : 1
+    expect : 1
+    tri    : 1
+    acc_maxdiff vs ref(cnt)=0.0  ref(cnt-1)=64.0  ref(expect)=0.0   jset_odd=0
+    lane_mismatch=0  tri_odd=0  少一次的行数=0/1  hash=0xa56f47be
+    rows=1 verdict=PASS
+  rows=2 
+    i      : 0 1
+    cnt    : 2 2
+    expect : 2 2
+    tri    : 3 3
+    acc_maxdiff vs ref(cnt)=0.0  ref(cnt-1)=432.0  ref(expect)=0.0   jset_odd=0
+    lane_mismatch=0  tri_odd=0  少一次的行数=0/2  hash=0x4266802d
+    rows=2 verdict=PASS
+  rows=3 
+    i      : 0 1 2
+    cnt    : 3 3 3
+    expect : 3 3 3
+    tri    : 6 6 6
+    acc_maxdiff vs ref(cnt)=0.0  ref(cnt-1)=880.0  ref(expect)=0.0   jset_odd=0
+    lane_mismatch=0  tri_odd=0  少一次的行数=0/3  hash=0x2c7b6399
+    rows=3 verdict=PASS
+  rows=4 
+    i      : 0 1 2 3
+    cnt    : 4 4 4 4
+    expect : 4 4 4 4
+    tri    : 10 10 10 10
+    acc_maxdiff vs ref(cnt)=0.0  ref(cnt-1)=1408.0  ref(expect)=0.0   jset_odd=0
+    lane_mismatch=0  tri_odd=0  少一次的行数=0/4  hash=0x0a273c3e
+    rows=4 verdict=PASS
+  rows=64
+    i      : 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
+    cnt    : 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64
+    expect : 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64 64
+    tri    : 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080 2080
+    acc_maxdiff vs ref(cnt)=0.0  ref(cnt-1)=179488.0  ref(expect)=0.0   jset_odd=0
+    lane_mismatch=0  tri_odd=0  少一次的行数=0/64  hash=0x69dce998
+    rows=64 verdict=PASS
+[probe vf nest] tag=nest_o0i3b1 RUN PASS  (rows 档位 6，失败 0)

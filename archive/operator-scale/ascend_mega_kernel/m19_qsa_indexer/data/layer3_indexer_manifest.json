@@ -1,0 +1,37 @@
+{
+  "model_dir": "/workspace/Qwen3.8-Flash-Next-MXFP4",
+  "layer": 3,
+  "tensors": {
+    "index_qk_proj": {
+      "source": "model.language_model.layers.3.self_attn.indexer.index_qk_proj.weight",
+      "shape": [
+        640,
+        2560
+      ],
+      "dtype": "bf16",
+      "file": "layer3_index_qk_proj.bin",
+      "nbytes": 3276800,
+      "sha256": "741d5d2a31a217b922a9d4fb2dee1bdf015ca451d11c668b11b8e6afd00569d2"
+    },
+    "q_layernorm": {
+      "source": "model.language_model.layers.3.self_attn.indexer.q_layernorm.weight",
+      "shape": [
+        128
+      ],
+      "dtype": "bf16",
+      "file": "layer3_q_layernorm.bin",
+      "nbytes": 256,
+      "sha256": "6a6e37092d8ad8bb6eb7ede9fab7cd01fda8aa328b59d5079f87a3450bb63724"
+    },
+    "k_layernorm": {
+      "source": "model.language_model.layers.3.self_attn.indexer.k_layernorm.weight",
+      "shape": [
+        128
+      ],
+      "dtype": "bf16",
+      "file": "layer3_k_layernorm.bin",
+      "nbytes": 256,
+      "sha256": "a5cdd92f5ba736283e1dd0fa9811f13c4ac6e8b99acce52c3072124452deddc2"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "repository": "DaTouJun/ForgeKernel",
+  "url": "https://github.com/DaTouJun/ForgeKernel",
+  "created_at": "2026-09-29T12:22:12Z",
+  "pushed_at": "2026-09-29T16:01:57Z",
+  "branch": "main",
+  "license": null,
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "size": 389
+    },
+    {
+      "path": "README.md",
+      "size": 131
+    },
+    {
+      "path": "src/00_device_info.cu",
+      "size": 895
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-29T16:01:51Z",
+      "subject": "prepare project",
+      "url": "https://github.com/DaTouJun/ForgeKernel/commit/8f054d9867c943fad48607836c1d11c552f83155"
+    },
+    {
+      "date": "2026-09-29T14:47:19Z",
+      "subject": "device info",
+      "url": "https://github.com/DaTouJun/ForgeKernel/commit/b41e6f595ffd4506a9ef31cdbc9dd7c2c1083f29"
+    }
+  ],
+  "readme": "# ForgeKernel\nA From-Scratch Megakernel for LLM Inference\n\n在这个仓库当中尝试探索MegaKernel以及相关的infra技术。"
+}

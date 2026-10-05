@@ -1,0 +1,14 @@
+[ 50%] Building ASC object CMakeFiles/probe_b_idx_s32_f0_u32loop.dir/probe_b_vec_idx.asc.o
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-23/probe_sync_quirks/probe_b_vec_idx.asc:163:31: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+            for (LoopT i = 0; i < n16_; ++i) {     // VF 循环归纳变量必须是 uint16_t（改 uint32_t 即报错）
+                              ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-23/probe_sync_quirks/probe_b_vec_idx.asc:163:18: error: Induction variable must have a type uint16_t. Example:
+ (uint16_t $var=0; $var< bound; $var++))
+
+            for (LoopT i = 0; i < n16_; ++i) {     // VF 循环归纳变量必须是 uint16_t（改 uint32_t 即报错）
+                 ^
+1 warning and 1 error generated.
+gmake[3]: *** [CMakeFiles/probe_b_idx_s32_f0_u32loop.dir/build.make:76: CMakeFiles/probe_b_idx_s32_f0_u32loop.dir/probe_b_vec_idx.asc.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:1050: CMakeFiles/probe_b_idx_s32_f0_u32loop.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1057: CMakeFiles/probe_b_idx_s32_f0_u32loop.dir/rule] Error 2
+gmake: *** [Makefile:579: probe_b_idx_s32_f0_u32loop] Error 2

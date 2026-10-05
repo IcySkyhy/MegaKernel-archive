@@ -1,0 +1,18 @@
+{
+  "tensor": "h_swiglu.bin",
+  "shape": [
+    66,
+    640
+  ],
+  "dtype": "bf16",
+  "strides": [
+    640,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 84480,
+  "sha256": "4b3beb94384d9354bcac037963ede93a597418d1e6e5bd54fc3549db767caa2f",
+  "kind": "golden",
+  "description": "SwiGLU output before the H quantizer [m*top_k, moe_inter]"
+}

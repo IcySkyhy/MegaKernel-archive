@@ -1,0 +1,22 @@
+== 0. 区间内的源与生成器 ==
+BASE_REV=9296e79
+old gen sha256: 41ac4ba807fab52d92fbf94c0776cf48820fa55d07105dd3eb18076e1e8f769d
+new gen sha256: 41ac4ba807fab52d92fbf94c0776cf48820fa55d07105dd3eb18076e1e8f769d
+old src sha256: 09996f61f71891a9b4bd93226ee6cec4b3148b43c237b59783a22b4096f03c55
+new src sha256: a3e29fdd3697d07873f0ea4ffd7d468fd44351dbf0990ad50b9991c0f1ca8d62
+老产物归档 sha256: 8bbd5e03f73b04de9b5481cf4e4354bfaa81f9ceac75fba3781b2b25ee6123e7
+新产物归档 sha256: 55bba43502aa30e66a4954f070a927de50369e56236ed66deb5d8f63a62a5c66
+
+== 1. 2×2 交叉对拍 ==
+oldgen_oldsrc    gen_rc=0 check_rc=0 artifact=8bbd5e03f73b04de9b5481cf4e4354bfaa81f9ceac75fba3781b2b25ee6123e7
+oldgen_newsrc    gen_rc=0 check_rc=0 artifact=55bba43502aa30e66a4954f070a927de50369e56236ed66deb5d8f63a62a5c66
+newgen_oldsrc    gen_rc=0 check_rc=0 artifact=8bbd5e03f73b04de9b5481cf4e4354bfaa81f9ceac75fba3781b2b25ee6123e7
+newgen_newsrc    gen_rc=0 check_rc=0 artifact=55bba43502aa30e66a4954f070a927de50369e56236ed66deb5d8f63a62a5c66
+
+== 2. 负向对照：手改产物一个 token ⇒ --check 必须 rc=1 ==
+[FAIL] /tmp/m124_xcheck.sh.52429/newgen_newsrc/m15_layer_loop/m15_ple_wire.h 与 `m15_ple.asc` 抽出的片段不一致（漂移）—— 重新生成
+negctl_rc=1
+[ok] /tmp/m124_xcheck.sh.52429/newgen_newsrc/m15_layer_loop/m15_ple_wire.h == 从 /tmp/m124_xcheck.sh.52429/newgen_newsrc/m15_layer_loop/m15_ple.asc 重新抽取的结果（57203 字节，逐字节）
+restored_check_rc=0
+
+（证据归档 = M124_generator_xcheck.log，由本脚本的输出重定向而成）

@@ -1,0 +1,27 @@
+{
+  "query": [
+    "/opt/nvidia/nsight-compute/2025.2.1/ncu",
+    "--query-metrics",
+    "--query-metrics-mode",
+    "all",
+    "--devices",
+    "0"
+  ],
+  "selected": [
+    "l1tex__t_requests_pipe_lsu_mem_dshared_op_ld.sum",
+    "l1tex__t_requests_pipe_lsu_mem_dshared_op_st.sum",
+    "l1tex__t_sectors_pipe_lsu_mem_dshared_op_ld.sum",
+    "l1tex__t_sectors_pipe_lsu_mem_dshared_op_st.sum",
+    "l1tex__m_l1tex2xbar_write_bytes_mem_dshared_op_st.sum",
+    "l1tex__m_xbar2l1tex_read_bytes_mem_dshared_op_st.sum"
+  ],
+  "unavailable": [],
+  "descriptions": {
+    "l1tex__t_requests_pipe_lsu_mem_dshared_op_ld.sum": "l1tex__t_requests_pipe_lsu_mem_dshared_op_ld.sum                                      Counter                         # of requests sent to T-Stage for distributed shared loads (This      ",
+    "l1tex__t_requests_pipe_lsu_mem_dshared_op_st.sum": "l1tex__t_requests_pipe_lsu_mem_dshared_op_st.sum                                      Counter                         # of requests sent to T-Stage for distributed shared stores (This     ",
+    "l1tex__t_sectors_pipe_lsu_mem_dshared_op_ld.sum": "l1tex__t_sectors_pipe_lsu_mem_dshared_op_ld.sum                                                 Counter         sector          # of sectors requested for distributed shared loads (This counter     ",
+    "l1tex__t_sectors_pipe_lsu_mem_dshared_op_st.sum": "l1tex__t_sectors_pipe_lsu_mem_dshared_op_st.sum                                                  Counter         sector          # of sectors requested for distributed shared stores (This counter    ",
+    "l1tex__m_l1tex2xbar_write_bytes_mem_dshared_op_st.sum": "l1tex__m_l1tex2xbar_write_bytes_mem_dshared_op_st.sum                                      Counter         byte            # of bytes written from L1tex M-Stage for distributed shared stores   ",
+    "l1tex__m_xbar2l1tex_read_bytes_mem_dshared_op_st.sum": "l1tex__m_xbar2l1tex_read_bytes_mem_dshared_op_st.sum                                      Counter         byte            # of bytes read into L1TEX M-Stage for distributed shared stores      "
+  }
+}

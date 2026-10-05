@@ -1,0 +1,9 @@
+[A_close_2048] V=2048 blk_topk=512 : 选中 512 个 block（oracle 512）；与 oracle 差集 0；非 4 元组 block 0
+       count 列 2048；tail []；padding OK；每块 4 token OK
+[B_open_2048] V=2048 blk_topk=512 : 选中 512 个 block（oracle 512）；与 oracle 差集 0；非 4 元组 block 0
+       count 列 2050；tail [8192, 8193]；padding OK；每块 4 token OK
+[C_small_256] V=256 blk_topk=512 : 选中 256 个 block（oracle 256）；与 oracle 差集 0；非 4 元组 block 0
+       count 列 1024；tail []；padding OK；每块 4 token OK
+[D_max_65536] V=65536 blk_topk=512 : 选中 512 个 block（oracle 512）；与 oracle 差集 0；非 4 元组 block 0
+       count 列 2048；tail []；padding OK；每块 4 token OK
+[check_select] ===== ALL PASS =====

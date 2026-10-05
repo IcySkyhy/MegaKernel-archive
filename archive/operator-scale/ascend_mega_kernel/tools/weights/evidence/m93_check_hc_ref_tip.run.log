@@ -1,0 +1,70 @@
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 4 层，token 3，reps 10，权重=checkpoint，dump=开
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+[m15] device 缓冲：weights 4174.15 MB（36 层 × 115.95 MB）+ states 115.5 MB + ws 5.3 MB + MoE 权重 628.4 MB（48 层 × 13.09 MB）+ 融合 ws 12.94 MB（GDN 5.26 + MoE 7.69）
+[m15] M58 hc 缓冲：权重 1318.63 MB（49 槽 × 26.91 MB/槽；49 = 48 个层槽（每层 2 个边界子槽 × 13.46 MB）+ 1 个全局 mixer 槽，该槽只用到 13.13 MB（norm+down+up），槽 stride 仍为 26.91 MB）+ hc ws 452.71 MB（52 槽 × 8.71 MB/槽 = 每层 2 块 + 3 块 scratch + 1 块全局 mixer ws）
+[m15] M65 层链缓冲：pending BO 双缓冲 0.66 MB（2 块 × 327680 B）；三态入口平面复用 hc_hin
+[m15] M82 attention cache 平面（跨 12 个 attention 层长寿，按第 k 层编址 k=0..11）：主 KV 50.53 MB（12 层 × 4.211 MB/层 = 257 页/层 × 16384 B）；compressed 3.16 MB（12 层 × 0.263 MB/层 = 1028 行/层 × 256 B）；raw ring 0.01344 MB（12 层 × 1120 B = 4 行/层 × 280 B）；packed 33.63 MB（4097 行 × 8208 B，**层间复用一块**）
+[m15] 权重装载完成（真实 checkpoint 切片）：前 4 层内 3 个 GDN 层，4174.15 MB → device，耗时 4768.7 ms
+[m15] MoE 段权重装载完成（真实 checkpoint 4 专家切片 + 真实共享专家）：4 层 × 13.09 MB = 52.4 MB → device，耗时 699.3 ms
+[m15] hc 段权重装载完成（真实 checkpoint（hc 权重不量化、原样消费））：本 run H2D 5 槽 × 26.91 MB/槽 = 134.6 MB（4 个层槽，每层 2 个边界子槽 × 13.46 MB，+ 1 个全局 mixer 槽）；权重区分配 49 槽 × 26.91 MB/槽 = 1318.6 MB → device，耗时 1384.7 ms
+[m15] sha256 自检（NIST 向量："abc" 与 1e6×'a'）：PASS
+
+[m15] ===== 权重来源校验（review P2-1：in_proj/out_proj 独立字节级来源）=====
+[m15]   W.src.L00 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=4be850f53b884949b3b9cb74675f0066d78e53e1ff3a58b117dcda5d125c205d  ckpt-source sha256=4be850f53b884949b3b9cb74675f0066d78e53e1ff3a58b117dcda5d125c205d
+[m15]        out_proj slot sha256=61faf46f03e25a68c83cd45860b97bb50d834b30a200474b1a4d3de1aae5bcfe  ckpt-source sha256=61faf46f03e25a68c83cd45860b97bb50d834b30a200474b1a4d3de1aae5bcfe
+[m15]   W.src.L01 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=7f1a59c50b2c5cc8f5b5d6faff984ea80f76210a90bd28579f60887be90d9249  ckpt-source sha256=7f1a59c50b2c5cc8f5b5d6faff984ea80f76210a90bd28579f60887be90d9249
+[m15]        out_proj slot sha256=6718f11ec1b33d23be15e7bc83d84723f4ddff7cf485d015bfcff43d296a8034  ckpt-source sha256=6718f11ec1b33d23be15e7bc83d84723f4ddff7cf485d015bfcff43d296a8034
+[m15]   W.src.L02 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=c3bcf921144e862eddccf7970b7e47de5106716d0ddf4bf542a18cd6ae883bb7  ckpt-source sha256=c3bcf921144e862eddccf7970b7e47de5106716d0ddf4bf542a18cd6ae883bb7
+[m15]        out_proj slot sha256=ed42e0885ac9f2b73d0ede58ebdc126e1e9a22278c397e556836102a13bb4613  ckpt-source sha256=ed42e0885ac9f2b73d0ede58ebdc126e1e9a22278c397e556836102a13bb4613
+[m15] 权重来源校验（对照 checkpoint 独立来源）：3 个 GDN 层，slot 逐字节 3 / in_proj 3 / out_proj 3；耗时 2117.3 ms
+
+[m15] ===== MoE 段权重来源校验（独立 pread vs 设备槽位，逐字节 + sha256）=====
+[m15]   M.wsrc.L00                     PASS  slot sha256 dev=131543a0cb7956e72e5091c93a963296666fbc674ce8d5dda5510a08b4428714 ckpt=131543a0cb7956e72e5091c93a963296666fbc674ce8d5dda5510a08b4428714
+[m15]   M.wsrc.L01                     PASS  slot sha256 dev=b235d8ad9ff6697bcc2cfe6b9299339325c7168cd6bdb55c2366155571e08c42 ckpt=b235d8ad9ff6697bcc2cfe6b9299339325c7168cd6bdb55c2366155571e08c42
+[m15]   M.wsrc.L02                     PASS  slot sha256 dev=afbbea25d9fe13f7975f172b1ef2bf7944405d801fda6b9eb3b6f9701b9533d9 ckpt=afbbea25d9fe13f7975f172b1ef2bf7944405d801fda6b9eb3b6f9701b9533d9
+[m15]   M.wsrc.L03                     PASS  slot sha256 dev=086129776c5576c8c3ceda1eba0ca3e041227a14cc9c486fbb8be928a3b0d07c ckpt=086129776c5576c8c3ceda1eba0ca3e041227a14cc9c486fbb8be928a3b0d07c
+[m15]   MoE 权重来源：4 层逐字节一致（slot 13.092 MB/层）
+[m15]   Hc.ws.L00                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L01                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L02                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L03                      PASS (逐字节一致, n=26910720)
+[m15] hc 段权重来源判据：4 层 × 2 边界，逐字节 memcmp（含注入行 [4,16) 全零见证）
+
+[m15] ===== 验证 H：四相位融合形态（hc(attn) → 子层段 → hc(mlp) → MoE 段；m=1）=====
+[m15]   H.finite.L00                   PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   H.nontrivial.L00               PASS (与输入不同，非恒等)
+[m15]   H.h1ws.L00                     PASS (逐字节一致, n=4353024)
+[m15]   H.h2ws.L00                     PASS (逐字节一致, n=4353024)
+[m15]   H.conly.L00                    PASS (H' 与 combine_and_mix 档逐字节一致 n=20480；BLK 未被写出 0xCD 全场保持)
+[m15]   H.det_h1.L00                   PASS (逐字节一致, n=4353024)
+[m15]   H.det_h2.L00                   PASS (逐字节一致, n=4353024)
+[m15]   层 00（GDN，attn mode=0 / mlp mode=1）：H.fused/H.h1ws/H.h2ws/H.conly/H.det 全部比对完成
+[m15]   H.finite.L01                   PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   H.nontrivial.L01               PASS (与输入不同，非恒等)
+[m15]   H.h1ws.L01                     PASS (逐字节一致, n=4353024)
+[m15]   H.h2ws.L01                     PASS (逐字节一致, n=4353024)
+[m15]   H.conly.L01                    PASS (H' 与 combine_and_mix 档逐字节一致 n=20480；BLK 未被写出 0xCD 全场保持)
+[m15]   H.det_h1.L01                   PASS (逐字节一致, n=4353024)
+[m15]   H.det_h2.L01                   PASS (逐字节一致, n=4353024)
+[m15]   层 01（GDN，attn mode=1 / mlp mode=1）：H.fused/H.h1ws/H.h2ws/H.conly/H.det 全部比对完成
+[m15]   H.finite.L03                   PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   H.nontrivial.L03               PASS (与输入不同，非恒等)
+[m15]   H.h1ws.L03                     PASS (逐字节一致, n=4353024)
+[m15]   H.h2ws.L03                     PASS (逐字节一致, n=4353024)
+[m15]   H.conly.L03                    PASS (H' 与 combine_and_mix 档逐字节一致 n=20480；BLK 未被写出 0xCD 全场保持)
+[m15]   H.det_h1.L03                   PASS (逐字节一致, n=4353024)
+[m15]   H.det_h2.L03                   PASS (逐字节一致, n=4353024)
+[m15]   层 03（ATTN，attn mode=1 / mlp mode=1）：H.fused/H.h1ws/H.h2ws/H.conly/H.det 全部比对完成
+[m15] 验证 H：3 层（层表 M15_HC_LAYERS=0,1,3，m=1），本段判定项累计 21，累计 FAIL 0
+[m15] MoE 段布局表：moe_layout.txt（供 check_moe_ref.py 按同一套偏移切片）
+[m15] hc 段布局表：hc_layout.txt（供 check_hc_ref.py 按同一套偏移切片）
+[m15] dump 清单：dump_manifest.txt（119 条），供 check_ref.py / check_moe_ref.py / check_hc_ref.py
+
+[m15] 判据分账：权重来源 7（GDN+MoE）+ 4（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 21 + Ch 0 + Kv 0 = 32 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15]   ④ 与 M39 官方单层参考对拍的判据**不在这个数里**：它在 `check_chain_ref.py`（torch，独立三态退出码与计数），由本程序的 dump 驱动；运行方式见 README。
+[m15] guard：5 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 4 + 参考链锚点非空 0 + M65 链 0 + 其余 0
+[m15] ===== ALL PASS（checks=32, guards=5, fails=0）=====

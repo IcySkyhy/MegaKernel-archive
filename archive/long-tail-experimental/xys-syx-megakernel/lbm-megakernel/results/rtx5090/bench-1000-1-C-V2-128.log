@@ -1,0 +1,23 @@
+RESOURCE name=C-V2-128 threads=128 registers=61 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=15x15x19 block=128x1x1 steps_per_launch=2 theoretical_occupancy_pct=16.666667
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=155.502777100
+TRIAL 1 us_per_step=155.664871216
+TRIAL 2 us_per_step=155.711654663
+TRIAL 3 us_per_step=155.702438354
+TRIAL 4 us_per_step=155.752548218
+TRIAL 5 us_per_step=155.753662109
+TRIAL 6 us_per_step=155.744262695
+TRIAL 7 us_per_step=155.789505005
+TRIAL 8 us_per_step=155.799743652
+TRIAL 9 us_per_step=156.001464844
+TRIAL 10 us_per_step=155.801757812
+TRIAL 11 us_per_step=155.789505005
+TRIAL 12 us_per_step=155.801788330
+TRIAL 13 us_per_step=155.813018799
+TRIAL 14 us_per_step=155.820037842
+TRIAL 15 us_per_step=155.847808838
+TRIAL 16 us_per_step=155.800735474
+TRIAL 17 us_per_step=155.861114502
+TRIAL 18 us_per_step=155.828216553
+TRIAL 19 us_per_step=155.832321167
+BENCH mode=C-V2-128 warmups=5 trials=20 steps=1000 launches=500 median_us=155.800239563 min_us=155.502777100 p90_us=155.847808838 mlups=13863.906795385 equivalent_population_TB_s=2.107313833

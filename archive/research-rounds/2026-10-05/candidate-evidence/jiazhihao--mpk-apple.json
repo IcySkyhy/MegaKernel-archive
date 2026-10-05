@@ -1,0 +1,2172 @@
+{
+  "repository": "jiazhihao/mpk-apple",
+  "url": "https://github.com/jiazhihao/mpk-apple",
+  "created_at": "2026-09-20T00:36:00Z",
+  "pushed_at": "2026-10-05T02:07:16Z",
+  "branch": "main",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "size": 1283
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "size": 2480
+    },
+    {
+      "path": ".gitignore",
+      "size": 415
+    },
+    {
+      "path": "CLAUDE.md",
+      "size": 22245
+    },
+    {
+      "path": "CMakeLists.txt",
+      "size": 886
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 3461
+    },
+    {
+      "path": "LICENSE",
+      "size": 11358
+    },
+    {
+      "path": "MANIFEST.in",
+      "size": 170
+    },
+    {
+      "path": "README.md",
+      "size": 4817
+    },
+    {
+      "path": "docs/design/design.md",
+      "size": 85560
+    },
+    {
+      "path": "docs/installation.md",
+      "size": 2663
+    },
+    {
+      "path": "docs/llama-models.md",
+      "size": 4447
+    },
+    {
+      "path": "docs/porting.md",
+      "size": 28349
+    },
+    {
+      "path": "docs/qwen-hybrid-moe.md",
+      "size": 26460
+    },
+    {
+      "path": "docs/research/apple-gpu-probes.md",
+      "size": 48030
+    },
+    {
+      "path": "docs/research/apple-inference-systems.md",
+      "size": 19076
+    },
+    {
+      "path": "docs/research/decode-kernels.md",
+      "size": 106699
+    },
+    {
+      "path": "docs/research/dspark.md",
+      "size": 18680
+    },
+    {
+      "path": "docs/research/gdn-static-megakernel.md",
+      "size": 11962
+    },
+    {
+      "path": "docs/research/gemv-kernel-study.md",
+      "size": 19510
+    },
+    {
+      "path": "docs/research/llama-mlx-comparison.md",
+      "size": 11547
+    },
+    {
+      "path": "docs/research/m5-native-code.md",
+      "size": 6181
+    },
+    {
+      "path": "docs/research/m5max-27b-attention-optimization.md",
+      "size": 16913
+    },
+    {
+      "path": "docs/research/m5max-27b-attention-tasks.md",
+      "size": 13704
+    },
+    {
+      "path": "docs/research/m5max-27b-attention-tuning.md",
+      "size": 10493
+    },
+    {
+      "path": "docs/research/m5max-27b-backend-verification.md",
+      "size": 12314
+    },
+    {
+      "path": "docs/research/m5max-27b-dspark-refinement.md",
+      "size": 20536
+    },
+    {
+      "path": "docs/research/m5max-27b-dspark.md",
+      "size": 18245
+    },
+    {
+      "path": "docs/research/m5max-27b-megakernel-tuning.md",
+      "size": 15314
+    },
+    {
+      "path": "docs/research/m5max-27b-megakernel.md",
+      "size": 12334
+    },
+    {
+      "path": "docs/research/m5max-27b-mlp-optimization.md",
+      "size": 19975
+    },
+    {
+      "path": "docs/research/m5max-artifacts.md",
+      "size": 1364
+    },
+    {
+      "path": "docs/research/m5max-gdn-mixer-optimization.md",
+      "size": 12541
+    },
+    {
+      "path": "docs/research/m5max-qwen-llama-audit.md",
+      "size": 24045
+    },
+    {
+      "path": "docs/research/norm-projection-fusion.md",
+      "size": 15899
+    },
+    {
+      "path": "docs/research/porting-log.md",
+      "size": 10206
+    },
+    {
+      "path": "docs/research/prefill.md",
+      "size": 3259
+    },
+    {
+      "path": "docs/research/qwen8b-long-context-tuning.md",
+      "size": 12789
+    },
+    {
+      "path": "docs/research/qwen8b-serving-decode.md",
+      "size": 19473
+    },
+    {
+      "path": "docs/research/qwen8b-target-batch-gap.md",
+      "size": 6156
+    },
+    {
+      "path": "docs/serving.md",
+      "size": 15834
+    },
+    {
+      "path": "kernels/common/activation_math.metal",
+      "size": 803
+    },
+    {
+      "path": "kernels/common/advance.metal",
+      "size": 2355
+    },
+    {
+      "path": "kernels/common/argmax.metal",
+      "size": 4520
+    },
+    {
+      "path": "kernels/common/embed.metal",
+      "size": 7028
+    },
+    {
+      "path": "kernels/common/gdn_mixer.metal",
+      "size": 24118
+    },
+    {
+      "path": "kernels/common/gemm_tile.metal",
+      "size": 33816
+    },
+    {
+      "path": "kernels/common/gemv_T.metal",
+      "size": 27819
+    },
+    {
+      "path": "kernels/common/gemv_bf16_rows.metal",
+      "size": 5112
+    },
+    {
+      "path": "kernels/common/gemv_bf16_small.metal",
+      "size": 6648
+    },
+    {
+      "path": "kernels/common/gemv_nvfp4_rows.metal",
+      "size": 4885
+    },
+    {
+      "path": "kernels/common/gqa_common.metal",
+      "size": 7812
+    },
+    {
+      "path": "kernels/common/gqa_decode.metal",
+      "size": 14628
+    },
+    {
+      "path": "kernels/common/gqa_decode_cooperative.metal",
+      "size": 7014
+    },
+    {
+      "path": "kernels/common/gqa_decode_mma.metal",
+      "size": 10942
+    },
+    {
+      "path": "kernels/common/gqa_decode_mma_adaptive.metal",
+      "size": 8000
+    },
+    {
+      "path": "kernels/common/gqa_decode_v2.metal",
+      "size": 10974
+    },
+    {
+      "path": "kernels/common/gqa_decode_v3.metal",
+      "size": 10383
+    },
+    {
+      "path": "kernels/common/moe_combine.metal",
+      "size": 2260
+    },
+    {
+      "path": "kernels/common/moe_gemm.metal",
+      "size": 5700
+    },
+    {
+      "path": "kernels/common/moe_group.metal",
+      "size": 1940
+    },
+    {
+      "path": "kernels/common/moe_route.metal",
+      "size": 3236
+    },
+    {
+      "path": "kernels/common/norm_apply.metal",
+      "size": 2975
+    },
+    {
+      "path": "kernels/common/rmsnorm_stat.metal",
+      "size": 1956
+    },
+    {
+      "path": "kernels/common/sample.metal",
+      "size": 7798
+    },
+    {
+      "path": "kernels/common/spec_ops.metal",
+      "size": 12258
+    },
+    {
+      "path": "kernels/common/static_barrier_leader.metal",
+      "size": 1713
+    },
+    {
+      "path": "kernels/common/static_barrier_serial.metal",
+      "size": 1147
+    },
+    {
+      "path": "kernels/common/static_barrier_simd.metal",
+      "size": 1283
+    },
+    {
+      "path": "kernels/common/static_barrier_wide.metal",
+      "size": 1495
+    },
+    {
+      "path": "kernels/common/steal.metal",
+      "size": 3297
+    },
+    {
+      "path": "kernels/m3_pro/README.md",
+      "size": 291
+    },
+    {
+      "path": "kernels/m4_pro/README.md",
+      "size": 291
+    },
+    {
+      "path": "kernels/m5_max_32c/README.md",
+      "size": 295
+    },
+    {
+      "path": "kernels/m5_max_40c/README.md",
+      "size": 295
+    },
+    {
+      "path": "kernels/m5_pro/README.md",
+      "size": 291
+    },
+    {
+      "path": "monolith/__init__.py",
+      "size": 574
+    },
+    {
+      "path": "monolith/backends/__init__.py",
+      "size": 62
+    },
+    {
+      "path": "monolith/backends/metal/README.md",
+      "size": 5783
+    },
+    {
+      "path": "monolith/backends/metal/__init__.py",
+      "size": 411
+    },
+    {
+      "path": "monolith/backends/metal/base.py",
+      "size": 3029
+    },
+    {
+      "path": "monolith/backends/metal/calibration.py",
+      "size": 13770
+    },
+    {
+      "path": "monolith/backends/metal/common/__init__.py",
+      "size": 28
+    },
+    {
+      "path": "monolith/backends/metal/config.py",
+      "size": 7925
+    },
+    {
+      "path": "monolith/backends/metal/context.py",
+      "size": 1639
+    },
+    {
+      "path": "monolith/backends/metal/m3_pro/__init__.py",
+      "size": 28
+    },
+    {
+      "path": "monolith/backends/metal/m3_pro/backend.py",
+      "size": 143
+    },
+    {
+      "path": "monolith/backends/metal/m3_pro/config.json",
+      "size": 2488
+    },
+    {
+      "path": "monolith/backends/metal/m4_pro/__init__.py",
+      "size": 28
+    },
+    {
+      "path": "monolith/backends/metal/m4_pro/backend.py",
+      "size": 139
+    },
+    {
+      "path": "monolith/backends/metal/m4_pro/config-16c.json",
+      "size": 649
+    },
+    {
+      "path": "monolith/backends/metal/m4_pro/config-20c.json",
+      "size": 649
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_32c/__init__.py",
+      "size": 32
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_32c/backend.py",
+      "size": 166
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_32c/config.json",
+      "size": 655
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/__init__.py",
+      "size": 32
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/attention.py",
+      "size": 586
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/backend.py",
+      "size": 677
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/config.json",
+      "size": 7392
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/mlp.py",
+      "size": 2492
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/README.md",
+      "size": 1111
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/attention-optimization/attention-195c6979d4.json",
+      "size": 795
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/attention-optimization/attention-198c66a1ca.json",
+      "size": 811
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/attention-optimization/attention-e686867e2c.json",
+      "size": 819
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/attention-optimization/attention-ee10038aa6.json",
+      "size": 795
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/attention-optimization/attention-f0959614b4.json",
+      "size": 795
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/attention-optimization/selected-contexts.json",
+      "size": 198
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/dspark/selected-contexts.json",
+      "size": 24269
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/dspark/selected-nvfp4-endpoints.json",
+      "size": 10765
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/mlp-optimization/selected-contexts.json",
+      "size": 386
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/mlp-optimization/selected-mega.json",
+      "size": 283
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/recipes/mlp-optimization/selected-native.json",
+      "size": 348
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/routed.py",
+      "size": 5169
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/scheduling.py",
+      "size": 1694
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/serving.py",
+      "size": 2741
+    },
+    {
+      "path": "monolith/backends/metal/m5_max_40c/validation.py",
+      "size": 2856
+    },
+    {
+      "path": "monolith/backends/metal/m5_pro/__init__.py",
+      "size": 28
+    },
+    {
+      "path": "monolith/backends/metal/m5_pro/backend.py",
+      "size": 151
+    },
+    {
+      "path": "monolith/backends/metal/m5_pro/config.json",
+      "size": 14490
+    },
+    {
+      "path": "monolith/backends/metal/registry.py",
+      "size": 2153
+    },
+    {
+      "path": "monolith/bench.py",
+      "size": 5858
+    },
+    {
+      "path": "monolith/cli.py",
+      "size": 2171
+    },
+    {
+      "path": "monolith/compiler/__init__.py",
+      "size": 560
+    },
+    {
+      "path": "monolith/compiler/attention_fusion.py",
+      "size": 23371
+    },
+    {
+      "path": "monolith/compiler/autotune.py",
+      "size": 20265
+    },
+    {
+      "path": "monolith/compiler/barriers.py",
+      "size": 3851
+    },
+    {
+      "path": "monolith/compiler/coverage.py",
+      "size": 1476
+    },
+    {
+      "path": "monolith/compiler/decoder_fusion.py",
+      "size": 2090
+    },
+    {
+      "path": "monolith/compiler/emit.py",
+      "size": 98674
+    },
+    {
+      "path": "monolith/compiler/fp8_tiles.py",
+      "size": 5154
+    },
+    {
+      "path": "monolith/compiler/gdn_fusion.py",
+      "size": 8517
+    },
+    {
+      "path": "monolith/compiler/gemv_tuning.py",
+      "size": 4053
+    },
+    {
+      "path": "monolith/compiler/mlp_fusion.py",
+      "size": 8328
+    },
+    {
+      "path": "monolith/compiler/moe_down.py",
+      "size": 8083
+    },
+    {
+      "path": "monolith/compiler/moe_fusion.py",
+      "size": 17331
+    },
+    {
+      "path": "monolith/compiler/moe_ready.py",
+      "size": 8196
+    },
+    {
+      "path": "monolith/compiler/moe_tiles.py",
+      "size": 2873
+    },
+    {
+      "path": "monolith/compiler/nvfp4_tiles.py",
+      "size": 13881
+    },
+    {
+      "path": "monolith/compiler/passes/__init__.py",
+      "size": 328
+    },
+    {
+      "path": "monolith/compiler/passes/fuse_norm.py",
+      "size": 1624
+    },
+    {
+      "path": "monolith/compiler/region_fusion.py",
+      "size": 6007
+    },
+    {
+      "path": "monolith/compiler/static_fusion.py",
+      "size": 83085
+    },
+    {
+      "path": "monolith/compiler/weight_windows.py",
+      "size": 4995
+    },
+    {
+      "path": "monolith/core/__init__.py",
+      "size": 695
+    },
+    {
+      "path": "monolith/core/dtypes.py",
+      "size": 1138
+    },
+    {
+      "path": "monolith/core/ir.py",
+      "size": 11698
+    },
+    {
+      "path": "monolith/core/profile.py",
+      "size": 391
+    },
+    {
+      "path": "monolith/core/profile_writer.py",
+      "size": 365
+    },
+    {
+      "path": "monolith/core/shapes.py",
+      "size": 2068
+    },
+    {
+      "path": "monolith/core/step_state.py",
+      "size": 6239
+    },
+    {
+      "path": "monolith/formats/__init__.py",
+      "size": 753
+    },
+    {
+      "path": "monolith/formats/base.py",
+      "size": 5418
+    },
+    {
+      "path": "monolith/formats/bf16.py",
+      "size": 2179
+    },
+    {
+      "path": "monolith/formats/blm.py",
+      "size": 17392
+    },
+    {
+      "path": "monolith/formats/checkpoint.py",
+      "size": 3013
+    },
+    {
+      "path": "monolith/formats/dequant.py",
+      "size": 4485
+    },
+    {
+      "path": "monolith/formats/fp.py",
+      "size": 5114
+    },
+    {
+      "path": "monolith/formats/fp8_e4m3.py",
+      "size": 2764
+    },
+    {
+      "path": "monolith/formats/int4_affine.py",
+      "size": 12696
+    },
+    {
+      "path": "monolith/formats/int8.py",
+      "size": 4667
+    },
+    {
+      "path": "monolith/formats/nvfp4.py",
+      "size": 11222
+    },
+    {
+      "path": "monolith/formats/registry.py",
+      "size": 639
+    },
+    {
+      "path": "monolith/formats/safetensors_reader.py",
+      "size": 4494
+    },
+    {
+      "path": "monolith/generate.py",
+      "size": 28978
+    },
+    {
+      "path": "monolith/kernels.py",
+      "size": 45381
+    },
+    {
+      "path": "monolith/models/__init__.py",
+      "size": 438
+    },
+    {
+      "path": "monolith/models/catalog.py",
+      "size": 1830
+    },
+    {
+      "path": "monolith/models/llama/__init__.py",
+      "size": 103
+    },
+    {
+      "path": "monolith/models/llama/config.py",
+      "size": 3981
+    },
+    {
+      "path": "monolith/models/llama/model.py",
+      "size": 6400
+    },
+    {
+      "path": "monolith/models/llama/rope.py",
+      "size": 1915
+    },
+    {
+      "path": "monolith/models/llama/weights.py",
+      "size": 503
+    },
+    {
+      "path": "monolith/models/qwen3/__init__.py",
+      "size": 377
+    },
+    {
+      "path": "monolith/models/qwen3/config.py",
+      "size": 2659
+    },
+    {
+      "path": "monolith/models/qwen3/model.py",
+      "size": 5267
+    },
+    {
+      "path": "monolith/models/qwen3/weights.py",
+      "size": 831
+    },
+    {
+      "path": "monolith/models/qwen3_5/__init__.py",
+      "size": 378
+    },
+    {
+      "path": "monolith/models/qwen3_5/config.py",
+      "size": 3861
+    },
+    {
+      "path": "monolith/models/qwen3_5/model.py",
+      "size": 6361
+    },
+    {
+      "path": "monolith/models/qwen3_5/weights.py",
+      "size": 3780
+    },
+    {
+      "path": "monolith/models/qwen3_5_moe/__init__.py",
+      "size": 202
+    },
+    {
+      "path": "monolith/models/qwen3_5_moe/config.py",
+      "size": 4741
+    },
+    {
+      "path": "monolith/models/qwen3_5_moe/model.py",
+      "size": 6586
+    },
+    {
+      "path": "monolith/models/qwen3_5_moe/weights.py",
+      "size": 690
+    },
+    {
+      "path": "monolith/models/qwen3_moe/__init__.py",
+      "size": 230
+    },
+    {
+      "path": "monolith/models/qwen3_moe/config.py",
+      "size": 3450
+    },
+    {
+      "path": "monolith/models/qwen3_moe/model.py",
+      "size": 5250
+    },
+    {
+      "path": "monolith/models/qwen3_moe/weights.py",
+      "size": 1020
+    },
+    {
+      "path": "monolith/models/registry.py",
+      "size": 675
+    },
+    {
+      "path": "monolith/nn/__init__.py",
+      "size": 1094
+    },
+    {
+      "path": "monolith/nn/attention.py",
+      "size": 9929
+    },
+    {
+      "path": "monolith/nn/decoder.py",
+      "size": 1198
+    },
+    {
+      "path": "monolith/nn/embedding.py",
+      "size": 1612
+    },
+    {
+      "path": "monolith/nn/gdn.py",
+      "size": 8427
+    },
+    {
+      "path": "monolith/nn/linear.py",
+      "size": 9618
+    },
+    {
+      "path": "monolith/nn/lm_head.py",
+      "size": 2798
+    },
+    {
+      "path": "monolith/nn/mlp.py",
+      "size": 1611
+    },
+    {
+      "path": "monolith/nn/module.py",
+      "size": 11776
+    },
+    {
+      "path": "monolith/nn/moe.py",
+      "size": 10425
+    },
+    {
+      "path": "monolith/nn/norm.py",
+      "size": 2041
+    },
+    {
+      "path": "monolith/nn/oracle.py",
+      "size": 7334
+    },
+    {
+      "path": "monolith/nn/pack_plan.py",
+      "size": 8272
+    },
+    {
+      "path": "monolith/nn/rope.py",
+      "size": 4512
+    },
+    {
+      "path": "monolith/nn/sampler.py",
+      "size": 2501
+    },
+    {
+      "path": "monolith/nn/sampling_ref.py",
+      "size": 3817
+    },
+    {
+      "path": "monolith/ops/__init__.py",
+      "size": 789
+    },
+    {
+      "path": "monolith/ops/attention.py",
+      "size": 1463
+    },
+    {
+      "path": "monolith/ops/draft.py",
+      "size": 2373
+    },
+    {
+      "path": "monolith/ops/embed.py",
+      "size": 409
+    },
+    {
+      "path": "monolith/ops/gdn.py",
+      "size": 1922
+    },
+    {
+      "path": "monolith/ops/gemv.py",
+      "size": 1194
+    },
+    {
+      "path": "monolith/ops/moe.py",
+      "size": 1843
+    },
+    {
+      "path": "monolith/ops/norm.py",
+      "size": 975
+    },
+    {
+      "path": "monolith/ops/registry.py",
+      "size": 1695
+    },
+    {
+      "path": "monolith/ops/sample.py",
+      "size": 816
+    },
+    {
+      "path": "monolith/packs/__init__.py",
+      "size": 1193
+    },
+    {
+      "path": "monolith/packs/packer.py",
+      "size": 13992
+    },
+    {
+      "path": "monolith/packs/transforms.py",
+      "size": 4087
+    },
+    {
+      "path": "monolith/registry.py",
+      "size": 3099
+    },
+    {
+      "path": "monolith/resources.py",
+      "size": 277
+    },
+    {
+      "path": "monolith/runtime/__init__.py",
+      "size": 918
+    },
+    {
+      "path": "monolith/runtime/engine.py",
+      "size": 5569
+    },
+    {
+      "path": "monolith/runtime/program.py",
+      "size": 5021
+    },
+    {
+      "path": "monolith/serve.py",
+      "size": 17555
+    },
+    {
+      "path": "monolith/serving/__init__.py",
+      "size": 71
+    },
+    {
+      "path": "monolith/serving/cache.py",
+      "size": 7836
+    },
+    {
+      "path": "monolith/serving/clients.py",
+      "size": 5946
+    },
+    {
+      "path": "monolith/serving/events.py",
+      "size": 8873
+    },
+    {
+      "path": "monolith/serving/protocol.py",
+      "size": 17110
+    },
+    {
+      "path": "monolith/serving/setup.py",
+      "size": 7380
+    },
+    {
+      "path": "monolith/spec/__init__.py",
+      "size": 514
+    },
+    {
+      "path": "monolith/spec/drafter.py",
+      "size": 4029
+    },
+    {
+      "path": "monolith/spec/dspark/__init__.py",
+      "size": 522
+    },
+    {
+      "path": "monolith/spec/dspark/config.py",
+      "size": 3365
+    },
+    {
+      "path": "monolith/spec/dspark/model.py",
+      "size": 27188
+    },
+    {
+      "path": "monolith/spec/dspark/optimization.py",
+      "size": 4184
+    },
+    {
+      "path": "monolith/spec/dspark/weights.py",
+      "size": 1317
+    },
+    {
+      "path": "monolith/spec/lm/__init__.py",
+      "size": 400
+    },
+    {
+      "path": "monolith/spec/lm/model.py",
+      "size": 9423
+    },
+    {
+      "path": "monolith/spec/registry.py",
+      "size": 489
+    },
+    {
+      "path": "monolith/trace.py",
+      "size": 6474
+    },
+    {
+      "path": "plans/implementation-plan.md",
+      "size": 63973
+    },
+    {
+      "path": "plans/roadmap-issues.md",
+      "size": 57287
+    },
+    {
+      "path": "probes/README.md",
+      "size": 4525
+    },
+    {
+      "path": "probes/p10_claim_protocol.m",
+      "size": 6480
+    },
+    {
+      "path": "probes/p10_claim_protocol.metal",
+      "size": 6704
+    },
+    {
+      "path": "probes/p11_interop_overlap.m",
+      "size": 6744
+    },
+    {
+      "path": "probes/p11_interop_overlap.metal",
+      "size": 1305
+    },
+    {
+      "path": "probes/p12_stream_geometry.m",
+      "size": 7944
+    },
+    {
+      "path": "probes/p12_stream_geometry.metal",
+      "size": 4193
+    },
+    {
+      "path": "probes/p13_decode_gemv.m",
+      "size": 8484
+    },
+    {
+      "path": "probes/p13_decode_gemv.metal",
+      "size": 5360
+    },
+    {
+      "path": "probes/p14_tensor_ops.m",
+      "size": 7867
+    },
+    {
+      "path": "probes/p14_tensor_ops.metal",
+      "size": 6151
+    },
+    {
+      "path": "probes/p15_frame_pacing.m",
+      "size": 11869
+    },
+    {
+      "path": "probes/p1_limits.m",
+      "size": 2426
+    },
+    {
+      "path": "probes/p2_sync.m",
+      "size": 4460
+    },
+    {
+      "path": "probes/p2_sync.metal",
+      "size": 1763
+    },
+    {
+      "path": "probes/p3_residency.m",
+      "size": 3863
+    },
+    {
+      "path": "probes/p3_residency.metal",
+      "size": 1616
+    },
+    {
+      "path": "probes/p4_core_model.m",
+      "size": 2933
+    },
+    {
+      "path": "probes/p4_core_model.metal",
+      "size": 731
+    },
+    {
+      "path": "probes/p5_bandwidth.m",
+      "size": 3104
+    },
+    {
+      "path": "probes/p5_bandwidth.metal",
+      "size": 1630
+    },
+    {
+      "path": "probes/p5b_access_pattern.m",
+      "size": 2587
+    },
+    {
+      "path": "probes/p5b_access_pattern.metal",
+      "size": 1509
+    },
+    {
+      "path": "probes/p6_preemption.m",
+      "size": 3907
+    },
+    {
+      "path": "probes/p6b_interleave.m",
+      "size": 3454
+    },
+    {
+      "path": "probes/p7_dispatch_overhead.m",
+      "size": 6823
+    },
+    {
+      "path": "probes/p7_dispatch_overhead.metal",
+      "size": 841
+    },
+    {
+      "path": "probes/p8_threadgroup_mem.m",
+      "size": 2272
+    },
+    {
+      "path": "probes/p8_threadgroup_mem.metal",
+      "size": 1382
+    },
+    {
+      "path": "probes/p9_clock_warp.m",
+      "size": 2724
+    },
+    {
+      "path": "probes/p9_clock_warp.metal",
+      "size": 1482
+    },
+    {
+      "path": "probes/probe_common.h",
+      "size": 1455
+    },
+    {
+      "path": "probes/remote_run.sh",
+      "size": 1085
+    },
+    {
+      "path": "probes/results/Apple-M3-Pro_18c_macOS26.6.2_20260919-223834.txt",
+      "size": 25643
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-170431.txt",
+      "size": 25707
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-171246.txt",
+      "size": 3839
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-171255.txt",
+      "size": 1571
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-171303.txt",
+      "size": 1577
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-171312.txt",
+      "size": 1589
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-171857.txt",
+      "size": 4800
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-172111.txt",
+      "size": 5055
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-172131.txt",
+      "size": 4800
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-172141.txt",
+      "size": 4800
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-172540.txt",
+      "size": 2087
+    },
+    {
+      "path": "probes/results/Apple-M5-Pro_20c_macOS26.5.1_20260922-172757.txt",
+      "size": 2996
+    },
+    {
+      "path": "probes/run_all.sh",
+      "size": 2481
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 1057
+    },
+    {
+      "path": "runtime/CMakeLists.txt",
+      "size": 1608
+    },
+    {
+      "path": "runtime/src/metal_core.h",
+      "size": 6761
+    },
+    {
+      "path": "runtime/src/metal_core.mm",
+      "size": 18287
+    },
+    {
+      "path": "runtime/src/native.mm",
+      "size": 6830
+    },
+    {
+      "path": "setup.py",
+      "size": 1465
+    },
+    {
+      "path": "tests/contract/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/contract/test_activation_precision.py",
+      "size": 1788
+    },
+    {
+      "path": "tests/contract/test_attention_geometry_tuning.py",
+      "size": 1721
+    },
+    {
+      "path": "tests/contract/test_attention_optional_norm.py",
+      "size": 3871
+    },
+    {
+      "path": "tests/contract/test_barriers.py",
+      "size": 18811
+    },
+    {
+      "path": "tests/contract/test_blm_placement.py",
+      "size": 9059
+    },
+    {
+      "path": "tests/contract/test_checkpoint_adapters.py",
+      "size": 3797
+    },
+    {
+      "path": "tests/contract/test_direct_attention_selection.py",
+      "size": 2228
+    },
+    {
+      "path": "tests/contract/test_dspark_bench_sharing.py",
+      "size": 1824
+    },
+    {
+      "path": "tests/contract/test_dspark_checkpoint_head.py",
+      "size": 2845
+    },
+    {
+      "path": "tests/contract/test_dspark_drafter.py",
+      "size": 3623
+    },
+    {
+      "path": "tests/contract/test_dspark_lowering.py",
+      "size": 11084
+    },
+    {
+      "path": "tests/contract/test_dspark_shared_yarn.py",
+      "size": 3283
+    },
+    {
+      "path": "tests/contract/test_embedding_tensor_scale.py",
+      "size": 2043
+    },
+    {
+      "path": "tests/contract/test_eos_set.py",
+      "size": 2121
+    },
+    {
+      "path": "tests/contract/test_formats.py",
+      "size": 11229
+    },
+    {
+      "path": "tests/contract/test_fp8_tiles.py",
+      "size": 2839
+    },
+    {
+      "path": "tests/contract/test_fp_codes.py",
+      "size": 2530
+    },
+    {
+      "path": "tests/contract/test_gemm_geometry.py",
+      "size": 3081
+    },
+    {
+      "path": "tests/contract/test_gemv_tuning.py",
+      "size": 2355
+    },
+    {
+      "path": "tests/contract/test_generate_options.py",
+      "size": 976
+    },
+    {
+      "path": "tests/contract/test_generate_speculative.py",
+      "size": 3093
+    },
+    {
+      "path": "tests/contract/test_hybrid_moe_package.py",
+      "size": 3690
+    },
+    {
+      "path": "tests/contract/test_hygiene_and_extension.py",
+      "size": 1272
+    },
+    {
+      "path": "tests/contract/test_ir_coverage.py",
+      "size": 2868
+    },
+    {
+      "path": "tests/contract/test_llama_package.py",
+      "size": 4820
+    },
+    {
+      "path": "tests/contract/test_lm_drafter.py",
+      "size": 11649
+    },
+    {
+      "path": "tests/contract/test_metal_backends.py",
+      "size": 9568
+    },
+    {
+      "path": "tests/contract/test_mlp_backend.py",
+      "size": 4603
+    },
+    {
+      "path": "tests/contract/test_mlp_fusion.py",
+      "size": 5061
+    },
+    {
+      "path": "tests/contract/test_module.py",
+      "size": 2024
+    },
+    {
+      "path": "tests/contract/test_moe_package.py",
+      "size": 5285
+    },
+    {
+      "path": "tests/contract/test_moe_tiles.py",
+      "size": 1978
+    },
+    {
+      "path": "tests/contract/test_nn_lowering.py",
+      "size": 28159
+    },
+    {
+      "path": "tests/contract/test_nvfp4_tiles.py",
+      "size": 4541
+    },
+    {
+      "path": "tests/contract/test_packer.py",
+      "size": 9493
+    },
+    {
+      "path": "tests/contract/test_payload_scale_order.py",
+      "size": 3312
+    },
+    {
+      "path": "tests/contract/test_profile_writer.py",
+      "size": 8417
+    },
+    {
+      "path": "tests/contract/test_profiles.py",
+      "size": 5076
+    },
+    {
+      "path": "tests/contract/test_qwen3_package.py",
+      "size": 4407
+    },
+    {
+      "path": "tests/contract/test_registries.py",
+      "size": 2799
+    },
+    {
+      "path": "tests/contract/test_requantize.py",
+      "size": 4727
+    },
+    {
+      "path": "tests/contract/test_routed_backend.py",
+      "size": 5392
+    },
+    {
+      "path": "tests/contract/test_row_scale_specialization.py",
+      "size": 5084
+    },
+    {
+      "path": "tests/contract/test_safetensors_and_dequant.py",
+      "size": 4234
+    },
+    {
+      "path": "tests/contract/test_serve.py",
+      "size": 7758
+    },
+    {
+      "path": "tests/contract/test_serving_agents.py",
+      "size": 12806
+    },
+    {
+      "path": "tests/contract/test_serving_cache.py",
+      "size": 11845
+    },
+    {
+      "path": "tests/contract/test_spec_program.py",
+      "size": 24986
+    },
+    {
+      "path": "tests/contract/test_static_geometry.py",
+      "size": 13332
+    },
+    {
+      "path": "tests/contract/test_step_state.py",
+      "size": 1697
+    },
+    {
+      "path": "tests/contract/test_streaming_moe_oracle.py",
+      "size": 3616
+    },
+    {
+      "path": "tests/contract/test_weight_windows.py",
+      "size": 2056
+    },
+    {
+      "path": "tests/dspark_synth.py",
+      "size": 5375
+    },
+    {
+      "path": "tests/hybrid_moe_synth.py",
+      "size": 4694
+    },
+    {
+      "path": "tests/kernels/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/kernels/conftest.py",
+      "size": 385
+    },
+    {
+      "path": "tests/kernels/test_activation_precision.py",
+      "size": 2641
+    },
+    {
+      "path": "tests/kernels/test_attention_static.py",
+      "size": 15461
+    },
+    {
+      "path": "tests/kernels/test_commute_norm.py",
+      "size": 6153
+    },
+    {
+      "path": "tests/kernels/test_draft_ops.py",
+      "size": 30705
+    },
+    {
+      "path": "tests/kernels/test_draft_program.py",
+      "size": 12745
+    },
+    {
+      "path": "tests/kernels/test_embed_stat_argmax.py",
+      "size": 8870
+    },
+    {
+      "path": "tests/kernels/test_eos_set.py",
+      "size": 2693
+    },
+    {
+      "path": "tests/kernels/test_gdn_block_static.py",
+      "size": 12668
+    },
+    {
+      "path": "tests/kernels/test_gdn_default.py",
+      "size": 15665
+    },
+    {
+      "path": "tests/kernels/test_gdn_mixer.py",
+      "size": 25228
+    },
+    {
+      "path": "tests/kernels/test_gdn_static.py",
+      "size": 1175
+    },
+    {
+      "path": "tests/kernels/test_gemm_tile.py",
+      "size": 31920
+    },
+    {
+      "path": "tests/kernels/test_gemv_T.py",
+      "size": 8542
+    },
+    {
+      "path": "tests/kernels/test_gemv_bf16_rows.py",
+      "size": 6310
+    },
+    {
+      "path": "tests/kernels/test_gemv_bf16_small.py",
+      "size": 4029
+    },
+    {
+      "path": "tests/kernels/test_gemv_fusions.py",
+      "size": 15633
+    },
+    {
+      "path": "tests/kernels/test_gemv_nvfp4_rows.py",
+      "size": 3338
+    },
+    {
+      "path": "tests/kernels/test_gqa_decode.py",
+      "size": 46579
+    },
+    {
+      "path": "tests/kernels/test_large_prefill.py",
+      "size": 3124
+    },
+    {
+      "path": "tests/kernels/test_lm_drafter.py",
+      "size": 7654
+    },
+    {
+      "path": "tests/kernels/test_mlp_block_static.py",
+      "size": 13781
+    },
+    {
+      "path": "tests/kernels/test_modelopt_mlx.py",
+      "size": 1448
+    },
+    {
+      "path": "tests/kernels/test_moe_grouped.py",
+      "size": 4301
+    },
+    {
+      "path": "tests/kernels/test_moe_ops.py",
+      "size": 7779
+    },
+    {
+      "path": "tests/kernels/test_moe_program.py",
+      "size": 4315
+    },
+    {
+      "path": "tests/kernels/test_nvfp4_row_groups.py",
+      "size": 2674
+    },
+    {
+      "path": "tests/kernels/test_nvfp4_scale_decode.py",
+      "size": 1128
+    },
+    {
+      "path": "tests/kernels/test_payload_scale_order.py",
+      "size": 3007
+    },
+    {
+      "path": "tests/kernels/test_profile_writer.py",
+      "size": 2322
+    },
+    {
+      "path": "tests/kernels/test_program_sharing.py",
+      "size": 2805
+    },
+    {
+      "path": "tests/kernels/test_sampling.py",
+      "size": 5652
+    },
+    {
+      "path": "tests/kernels/test_spec_rollback.py",
+      "size": 12139
+    },
+    {
+      "path": "tests/kernels/test_uniform_row_scale.py",
+      "size": 1858
+    },
+    {
+      "path": "tests/layers/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/layers/conftest.py",
+      "size": 363
+    },
+    {
+      "path": "tests/layers/test_activation_precision.py",
+      "size": 1379
+    },
+    {
+      "path": "tests/layers/test_hybrid_moe_vs_hf.py",
+      "size": 2800
+    },
+    {
+      "path": "tests/layers/test_layers_vs_hf.py",
+      "size": 6108
+    },
+    {
+      "path": "tests/lm_synth.py",
+      "size": 2738
+    },
+    {
+      "path": "tests/models/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/models/conftest.py",
+      "size": 363
+    },
+    {
+      "path": "tests/models/llama/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/models/llama/goldens/llama-3.2-1b-int4.json",
+      "size": 1686
+    },
+    {
+      "path": "tests/models/llama/goldens/llama-3.2-1b-int4.safetensors",
+      "size": 679840
+    },
+    {
+      "path": "tests/models/llama/goldens/llama-3.2-3b-int4.json",
+      "size": 1834
+    },
+    {
+      "path": "tests/models/llama/goldens/llama-3.2-3b-int4.safetensors",
+      "size": 1331112
+    },
+    {
+      "path": "tests/models/llama/goldens/smollm2-1.7b-bf16.json",
+      "size": 1521
+    },
+    {
+      "path": "tests/models/llama/goldens/smollm2-1.7b-bf16.safetensors",
+      "size": 615744
+    },
+    {
+      "path": "tests/models/llama/test_gpu_golden.py",
+      "size": 5052
+    },
+    {
+      "path": "tests/models/llama/test_rope.py",
+      "size": 1189
+    },
+    {
+      "path": "tests/models/qwen3/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/models/qwen3/goldens/qwen3-8b-nvfp4.json",
+      "size": 1540
+    },
+    {
+      "path": "tests/models/qwen3/goldens/qwen3-8b-nvfp4.safetensors",
+      "size": 1824840
+    },
+    {
+      "path": "tests/models/qwen3/test_gpu_golden.py",
+      "size": 3246
+    },
+    {
+      "path": "tests/models/qwen3/test_spec_golden.py",
+      "size": 2685
+    },
+    {
+      "path": "tests/models/qwen3_5/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/models/qwen3_5/goldens/qwen3_5-0.8b-long.json",
+      "size": 1410
+    },
+    {
+      "path": "tests/models/qwen3_5/goldens/qwen3_5-0.8b-long.safetensors",
+      "size": 1474696
+    },
+    {
+      "path": "tests/models/qwen3_5/goldens/qwen3_5-0.8b.json",
+      "size": 1409
+    },
+    {
+      "path": "tests/models/qwen3_5/goldens/qwen3_5-0.8b.safetensors",
+      "size": 758080
+    },
+    {
+      "path": "tests/models/qwen3_5/test_golden.py",
+      "size": 4574
+    },
+    {
+      "path": "tests/models/qwen3_5/test_gpu_golden.py",
+      "size": 6132
+    },
+    {
+      "path": "tests/models/qwen3_5/test_mlx_int4.py",
+      "size": 3273
+    },
+    {
+      "path": "tests/models/qwen3_5/test_spec_rollback.py",
+      "size": 2799
+    },
+    {
+      "path": "tests/moe_synth.py",
+      "size": 3216
+    },
+    {
+      "path": "tests/oracle_conftest.py",
+      "size": 847
+    },
+    {
+      "path": "tests/runtime/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/runtime/conftest.py",
+      "size": 347
+    },
+    {
+      "path": "tests/runtime/test_toy_program.py",
+      "size": 6517
+    },
+    {
+      "path": "tests/spec/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/spec/conftest.py",
+      "size": 361
+    },
+    {
+      "path": "tests/spec/test_dspark_oracle.py",
+      "size": 5867
+    },
+    {
+      "path": "third_party/MLX-LICENSE",
+      "size": 1066
+    },
+    {
+      "path": "third_party/NOTICE",
+      "size": 6466
+    },
+    {
+      "path": "tools/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tools/bench/README.md",
+      "size": 24639
+    },
+    {
+      "path": "tools/bench/attention_geometry_tune.py",
+      "size": 8485
+    },
+    {
+      "path": "tools/bench/decode_shapes.py",
+      "size": 6962
+    },
+    {
+      "path": "tools/bench/decode_vs_mlx.py",
+      "size": 7421
+    },
+    {
+      "path": "tools/bench/draft_bench.py",
+      "size": 8541
+    },
+    {
+      "path": "tools/bench/dspark_compare_packs.py",
+      "size": 6669
+    },
+    {
+      "path": "tools/bench/dspark_kernel_tune.py",
+      "size": 12685
+    },
+    {
+      "path": "tools/bench/dspark_profile.py",
+      "size": 6611
+    },
+    {
+      "path": "tools/bench/dspark_quantization.py",
+      "size": 5921
+    },
+    {
+      "path": "tools/bench/dspark_round_latency.py",
+      "size": 19802
+    },
+    {
+      "path": "tools/bench/dspark_tune.py",
+      "size": 5369
+    },
+    {
+      "path": "tools/bench/full_fixed_vs_mlx.py",
+      "size": 9997
+    },
+    {
+      "path": "tools/bench/gdn_bench.py",
+      "size": 4544
+    },
+    {
+      "path": "tools/bench/gdn_block_bench.py",
+      "size": 8543
+    },
+    {
+      "path": "tools/bench/gdn_block_static.py",
+      "size": 345
+    },
+    {
+      "path": "tools/bench/gdn_static.metal",
+      "size": 2792
+    },
+    {
+      "path": "tools/bench/gdn_static_bench.py",
+      "size": 8687
+    },
+    {
+      "path": "tools/bench/gemm_bench.py",
+      "size": 10964
+    },
+    {
+      "path": "tools/bench/gemv_bench.py",
+      "size": 11270
+    },
+    {
+      "path": "tools/bench/gemv_fusions_ab.py",
+      "size": 3051
+    },
+    {
+      "path": "tools/bench/gqa_bench.py",
+      "size": 7446
+    },
+    {
+      "path": "tools/bench/kernel_knobs_study.py",
+      "size": 3063
+    },
+    {
+      "path": "tools/bench/layer_fixed_vs_mlx.py",
+      "size": 15018
+    },
+    {
+      "path": "tools/bench/layer_grid_search.py",
+      "size": 8202
+    },
+    {
+      "path": "tools/bench/layer_vs_mlx.py",
+      "size": 18321
+    },
+    {
+      "path": "tools/bench/long_context_tune.py",
+      "size": 8080
+    },
+    {
+      "path": "tools/bench/m1_gate_table.py",
+      "size": 2698
+    },
+    {
+      "path": "tools/bench/mlx_baseline.py",
+      "size": 3767
+    },
+    {
+      "path": "tools/bench/mlx_spec_step_latency.py",
+      "size": 5418
+    },
+    {
+      "path": "tools/bench/model_config_tune.py",
+      "size": 6809
+    },
+    {
+      "path": "tools/bench/modelopt_extend_tables.py",
+      "size": 3107
+    },
+    {
+      "path": "tools/bench/modelopt_full_mlx.py",
+      "size": 2016
+    },
+    {
+      "path": "tools/bench/modelopt_layer_bench.py",
+      "size": 29140
+    },
+    {
+      "path": "tools/bench/modelopt_mega_tune.py",
+      "size": 9911
+    },
+    {
+      "path": "tools/bench/modelopt_mlp_suffix_tune.py",
+      "size": 7064
+    },
+    {
+      "path": "tools/bench/modelopt_mlx.py",
+      "size": 5473
+    },
+    {
+      "path": "tools/bench/modelopt_payload_pack.py",
+      "size": 3034
+    },
+    {
+      "path": "tools/bench/modelopt_qwen_mlx.py",
+      "size": 5062
+    },
+    {
+      "path": "tools/bench/moe_tasks.py",
+      "size": 4284
+    },
+    {
+      "path": "tools/bench/nvfp4_decode_study.py",
+      "size": 1879
+    },
+    {
+      "path": "tools/bench/ollama_target_verify_test.go",
+      "size": 6083
+    },
+    {
+      "path": "tools/bench/plain_baseline.py",
+      "size": 8411
+    },
+    {
+      "path": "tools/bench/plot_attention_task_graph.py",
+      "size": 9441
+    },
+    {
+      "path": "tools/bench/plot_backend_tps.py",
+      "size": 6233
+    },
+    {
+      "path": "tools/bench/plot_dspark_kernel_graph.py",
+      "size": 9196
+    },
+    {
+      "path": "tools/bench/plot_gdn_task_graph.py",
+      "size": 8673
+    },
+    {
+      "path": "tools/bench/prefill_chunks.py",
+      "size": 2386
+    },
+    {
+      "path": "tools/bench/profile_spec_round.py",
+      "size": 7166
+    },
+    {
+      "path": "tools/bench/results/README.md",
+      "size": 3024
+    },
+    {
+      "path": "tools/bench/results/apple-m5-pro-20c_final_layer_summary_20260928.json",
+      "size": 2975
+    },
+    {
+      "path": "tools/bench/results/qwen8b-long-context-20260929/autotune.apple-m5-pro.json",
+      "size": 15464
+    },
+    {
+      "path": "tools/bench/results/qwen8b-long-context-20260929/generation-summary.json",
+      "size": 1517
+    },
+    {
+      "path": "tools/bench/results/qwen8b-long-context-20260929/methodology.json",
+      "size": 3371
+    },
+    {
+      "path": "tools/bench/results/qwen8b-long-context-20260929/mlx-comparison/control-launches.jsonl",
+      "size": 2768
+    },
+    {
+      "path": "tools/bench/results/qwen8b-long-context-20260929/mlx-comparison/input-token-sha256.json",
+      "size": 961
+    },
+    {
+      "path": "tools/bench/results/qwen8b-long-context-20260929/mlx-comparison/launches.jsonl",
+      "size": 4995
+    },
+    {
+      "path": "tools/bench/results/qwen8b-long-context-20260929/mlx-comparison/methodology.json",
+      "size": 2770
+    },
+    {
+      "path": "tools/bench/results/qwen8b-long-context-20260929/mlx-comparison/summary.json",
+      "size": 7247
+    },
+    {
+      "path": "tools/bench/results/qwen8b-long-context-20260929/screen-summary.json",
+      "size": 7686
+    },
+    {
+      "path": "tools/bench/results/qwen8b-serving-decode-20260929/README.md",
+      "size": 1115
+    },
+    {
+      "path": "tools/bench/results/qwen8b-serving-decode-20260929/methodology.json",
+      "size": 24370
+    },
+    {
+      "path": "tools/bench/results/qwen8b-serving-decode-20260929/round-profile-summary.json",
+      "size": 1513
+    },
+    {
+      "path": "tools/bench/results/qwen8b-serving-decode-20260929/summary.json",
+      "size": 5147
+    },
+    {
+      "path": "tools/bench/results/qwen8b-target-verify-20260930/methodology.json",
+      "size": 2054
+    },
+    {
+      "path": "tools/bench/results/qwen8b-target-verify-20260930/results.jsonl",
+      "size": 4084
+    },
+    {
+      "path": "tools/bench/results/sts_qwen3-8b-dspark_apple-m5-pro-20c.json",
+      "size": 162
+    },
+    {
+      "path": "tools/bench/routed_expert_tune.py",
+      "size": 5512
+    },
+    {
+      "path": "tools/bench/serve_latency.py",
+      "size": 2710
+    },
+    {
+      "path": "tools/bench/single_request_latency.py",
+      "size": 9855
+    },
+    {
+      "path": "tools/bench/spec_bench.py",
+      "size": 7345
+    },
+    {
+      "path": "tools/bench/spec_vs_mlx.py",
+      "size": 9074
+    },
+    {
+      "path": "tools/bench/static_barrier_leader.metal",
+      "size": 1713
+    },
+    {
+      "path": "tools/bench/static_barrier_simd.metal",
+      "size": 1283
+    },
+    {
+      "path": "tools/bench/sts_calibrate.py",
+      "size": 4428
+    },
+    {
+      "path": "tools/bench/target_batch_gap.py",
+      "size": 5797
+    },
+    {
+      "path": "tools/bench/target_verify_latency.py",
+      "size": 7288
+    },
+    {
+      "path": "tools/bench/vllm_target_verify.py",
+      "size": 6738
+    },
+    {
+      "path": "tools/ci/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tools/ci/extension_check.py",
+      "size": 1819
+    },
+    {
+      "path": "tools/ci/hygiene.py",
+      "size": 4013
+    },
+    {
+      "path": "tools/export_dspark_nvfp4.py",
+      "size": 6116
+    },
+    {
+      "path": "tools/goldens/hf_golden.py",
+      "size": 5139
+    },
+    {
+      "path": "tools/goldens/moe_streaming_hf.py",
+      "size": 6253
+    },
+    {
+      "path": "tools/pack_weights.py",
+      "size": 7561
+    },
+    {
+      "path": "tools/profile_writer.py",
+      "size": 13684
+    },
+    {
+      "path": "tools/release/build_macos.py",
+      "size": 3342
+    },
+    {
+      "path": "tools/roadmap_issues.py",
+      "size": 59657
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-10-04T22:03:22Z",
+      "subject": "Merge pull request #145 from jiazhihao/codex/lithos-metal-cli",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/872a36f6e0011614304a95565c453f2bafbdec68"
+    },
+    {
+      "date": "2026-10-04T21:54:06Z",
+      "subject": "Document the published Lithos Homebrew tap",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/08a0db21e44dc23e5ba6c9d74c2a5709a9f2887e"
+    },
+    {
+      "date": "2026-10-04T21:26:58Z",
+      "subject": "Validate Homebrew formula requirements and release 0.1.1",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/5f4dd121202a26f9a027e06b332782c50e5768f1"
+    },
+    {
+      "date": "2026-10-04T21:19:48Z",
+      "subject": "Add lithos-metal CLI, agent APIs, and automatic NVFP4 drafting",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/d941487fd5c5a96ecc0e635551409348a000285a"
+    },
+    {
+      "date": "2026-10-04T18:02:47Z",
+      "subject": "Support hybrid Qwen MoE DSpark and tune M5 Max kernels",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/3388ea81b3cf77758b285370fa0b8ba814236a3b"
+    },
+    {
+      "date": "2026-10-04T03:23:34Z",
+      "subject": "Install chat-template dependency for server contracts in CI",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/4d44a115f23024097e240f7e136dee6316d1f145"
+    },
+    {
+      "date": "2026-10-04T03:21:16Z",
+      "subject": "Serve DSpark with automatic checkpoint resolution and reusable pack caches",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/6e3bc1578eacb9a7dcfb54fe3c2724cc3a9840b3"
+    },
+    {
+      "date": "2026-10-04T02:31:13Z",
+      "subject": "Merge pull request #142 from jiazhihao/codex/gdn-megakernel-n7",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/2eb821253aa4b94beb02657e33a74854db9e1d52"
+    },
+    {
+      "date": "2026-10-04T02:19:16Z",
+      "subject": "Organize Metal kernels and tuning by chip backend",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/648d03c1dc41292289a886231fc13d6733d7dc5b"
+    },
+    {
+      "date": "2026-10-04T01:21:18Z",
+      "subject": "Remove generated M5 Max figures and results from the PR",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/e98ee239319ef3ec3f19d0b0c92bb00008c6e0c8"
+    },
+    {
+      "date": "2026-10-04T01:12:46Z",
+      "subject": "Support CPU task preprocessing without the Apple SDK wrapper",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/11a1f02e8632ebc75dcfbff48c89e8ea0900947a"
+    },
+    {
+      "date": "2026-10-04T01:09:19Z",
+      "subject": "Keep benchmark contract helpers importable without Metal",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/2317e76379e16c1dd2e67d0e5bec1161a25688d5"
+    },
+    {
+      "date": "2026-10-04T01:03:19Z",
+      "subject": "Tune M5 Max decoder kernels and integrate optimized DSpark drafting",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/7a0d6427cf86d8035f566b4a6ecc9b0882e1b812"
+    },
+    {
+      "date": "2026-10-01T17:02:37Z",
+      "subject": "Merge pull request #140 from jiazhihao/codex/trim-benchmark-results",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/8cc95bcbbfb064599eb15378bc34c6b65c6e82d8"
+    },
+    {
+      "date": "2026-10-01T17:02:26Z",
+      "subject": "Merge pull request #139 from jiazhihao/codex/simplify-speculative-generate",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/7f23bbc1c1d5abe23971b1b0bdfd30e81d31f7a7"
+    },
+    {
+      "date": "2026-10-01T16:44:16Z",
+      "subject": "Measure projection-inclusive GDN static megakernel and document Max handoff",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/bd662136b0ef00143e8698e98e50466f62cbcd61"
+    },
+    {
+      "date": "2026-10-01T16:16:02Z",
+      "subject": "Benchmark static single-kernel GDN schedules at N=7",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/207460ba01efa76b2f342bdbb9b463e2265bebb4"
+    },
+    {
+      "date": "2026-10-01T04:37:48Z",
+      "subject": "Keep benchmark summaries and archive bulky raw results",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/8c47c25f158e51e865684a11a5fecd5207d6885e"
+    },
+    {
+      "date": "2026-10-01T04:33:55Z",
+      "subject": "Run speculative generation through one native runner call",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/3e801ae71d671b02ceecd1e8f2cedc3e4a0e94d5"
+    },
+    {
+      "date": "2026-10-01T04:16:22Z",
+      "subject": "Merge pull request #137 from jiazhihao/codex/target-batch-gap",
+      "url": "https://github.com/jiazhihao/mpk-apple/commit/ade38fb5f81ebdf852a2b65a616703b03f4ec424"
+    }
+  ],
+  "readme": "# lithos-metal\n\nA megakernel-style LLM inference engine for Apple silicon (M3 / M4 / M5, macOS 26+). First target:\n[`nvidia/Qwen3.8-27B-NVFP4`](https://huggingface.co/nvidia/Qwen3.8-27B-NVFP4), batch-1 decode latency, with\n[DSpark](docs/research/dspark.md) speculative decoding; the engine itself is model-agnostic by construction. This is a\nstandalone repository: code from MPK and other projects is copied in with its license headers, never depended on.\n\n## Install and run\n\nOn Apple silicon with macOS 26+, install the precompiled package with Homebrew:\n\n```bash\nbrew install lithos-ai/tap/lithos-metal\nlithos-metal serve --model nvidia/Qwen3.8-27B-NVFP4\n```\n\nOr serve `nvidia/Qwen3.6-35B-A3B-NVFP4`. Both targets automatically download their matching\n**LithosAI NVFP4 DSpark heads**, use seven proposals plus an anchor, and select the chip's\nkernel recipes. Downloads and weight packs are cached. Use `--no-draft` for target-only\ninference or `--draft PATH_OR_HUB_ID` to override the head. The tested 27B/35B setup is a\n40-core M5 Max with 48 GB memory; other registered chip backends select their own configurations.\n\nLeave the server running and attach an installed agent from another terminal:\n\n```bash\nlithos-metal opencode\nlithos-metal claude\nlithos-metal codex\nlithos-metal hermes\n# Other OpenAI-compatible clients:\nlithos-metal env\nlithos-metal run -- your-client\n```\n\nThese commands discover the served model and configure the child process. They preserve\nclient approval settings and do not rewrite global configuration. The endpoint supports\ntext, tool calls and SSE through Chat Completions, Responses, and Anthropic Messages.\nSee [serving and client setup](docs/serving.md) for options and API limits.\n\nThe [Homebrew tap](https://github.com/lithos-ai/homebrew-tap) installs the native runtime\nand serving dependencies from a checksum-pinned release bundle. See\n[installation and release instructions](docs/installation.md) for source builds and publishing.\n\nThe idea, carried over from MPK: compile the *whole generation loop* — every layer, sampling, speculative\naccept/rollback, stop detection — into one GPU-resident static program so that no CPU work and no CPU↔GPU\nsynchronization sits on the critical path. The mechanism is re-derived for Apple GPUs from measurements: a\npre-encoded, self-advancing chain of bounded whole-GPU dispatches over a homogeneous crew of SIMD-groups, streaming\nweights from a block-lane-major pack — not one never-returning kernel with specialized roles.\n\n| Document | What it is |\n|---|---|\n| [`docs/design/design.md`](docs/design/design.md) | The design: MPK Runtime V2 re-derived for Apple GPUs; answers on warp specialization and the static-megakernel approach |\n| [`plans/implementation-plan.md`](plans/implementation-plan.md) | Milestones M0–M9 with exit gates and go/no-go points, repo layout, tests, reuse map, risks |\n| [`docs/research/apple-gpu-probes.md`](docs/research/apple-gpu-probes.md) | Measured Apple-GPU execution model (M3 Pro, M5 Pro): core mapping, in-kernel sync, preemption and sharing, bandwidth vs access pattern and lane order, in-kernel barriers vs dispatch boundaries, real FP8/NVFP4 decode kernels, the M5 `matmul2d` path |\n| [`docs/research/apple-inference-systems.md`](docs/research/apple-inference-systems.md) | How MLX, llama.cpp and others run LLMs on Apple silicon; what we reuse |\n| [`docs/research/dspark.md`](docs/research/dspark.md) | DSpark speculative decoding: the method, the public drafters for our targets, what a round costs on our hardware |\n| [`docs/porting.md`](docs/porting.md) | The porting guide: adding a model, a format, an op, a drafter or a chip — the contracts, the registries, the CI checks, the golden workflow, with the time each port took ([`porting-log.md`](docs/research/porting-log.md)) |\n| [`probes/`](probes) | The 16 probe programs. `./probes/run_all.sh` runs them on this machine (Command Line Tools only, ~5 min) and saves `probes/results/<chip>….txt`; `./probes/remote_run.sh user@host` does the same on another bare-metal Mac. Measured: M3 Pro (2026-09-19), M5 Pro (2026-09-22) |\n| [`monolith/backends/metal/`](monolith/backends/metal) | Chip backends and configurations: M3 Pro, M4 Pro, M5 Pro, M5 Max 32-core and M5 Max 40-core |\n\nPicking this up on another machine? Start with [`CLAUDE.md`](CLAUDE.md); §4 of the hardware report is the checklist for a chip not yet measured.\n\nThe [input-normalization fusion](docs/research/norm-projection-fusion.md) moves RMS scaling after eligible projections and is enabled by default. It changes BF16 rounding; use `--no-commute-norm` or `Session(..., commute_norm=False)` to disable it. The research note records measured gains and regressions.\n\n\n\nThe Python import namespace remains `monolith` for compatibility with existing integrations.\n"
+}

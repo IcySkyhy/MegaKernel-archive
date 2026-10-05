@@ -1,0 +1,7 @@
+DEVICE name=NVIDIA GeForce RTX 5090 cc=12.0 sms=170
+RESOURCE name=D-V3-XZ4-LoadBalancing threads=256 registers=86 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+CLUSTER runtime_cluster=1 dim=2x1x2 size=4 policy=LoadBalancing active_clusters_device=85 potential_cluster_size=8
+LBM_allocateGrid: allocated 185.2 MByte
+CHECK step=2 role=cluster-current populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+CHECK step=0 role=cluster-input-unchanged populations=41040000 bit_mismatches=0 flag_byte_mismatches=0 nonfinite=0 full_allocation_equal=1 max_abs=0 rms=0 max_rel=0 relative_epsilon=1e-12 near_zero_count=0 near_zero_max_abs=0
+OWNERSHIP_JSON {"passed":true,"wrong_writers":0,"wrong_cores":0,"wrong_producers":0,"counts":[969000,969000,969000,969000,944700,846002,924600,827998,37307300,3408464,313180,11056,683520,2699520,36480]}

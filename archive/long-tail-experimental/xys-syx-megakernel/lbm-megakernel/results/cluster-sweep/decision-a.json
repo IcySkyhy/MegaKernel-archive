@@ -1,0 +1,10 @@
+{
+  "stage": "A",
+  "material": true,
+  "threshold": "at least 1% lower pooled time at both lengths; every 1000-step round improves",
+  "ratios": {
+    "100": 0.9574724282206043,
+    "1000": 0.9561139040732425
+  },
+  "next": "A2: rerun Z2 C1/V3 under both policies before shape sweep"
+}

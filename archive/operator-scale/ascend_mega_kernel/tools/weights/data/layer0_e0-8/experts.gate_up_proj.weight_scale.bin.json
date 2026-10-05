@@ -1,0 +1,19 @@
+{
+  "tensor": "experts.gate_up_proj.weight_scale.bin",
+  "shape": [
+    8,
+    1280,
+    80
+  ],
+  "dtype": "uint8",
+  "strides": [
+    102400,
+    80,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 819200,
+  "kind": "input",
+  "description": "E8M0 group scales [E, N, K//32], bias 127, group 32 along K"
+}

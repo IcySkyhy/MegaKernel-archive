@@ -1,0 +1,115 @@
+# M156 证据：probe_aic_blockidx 撤回（可复算；命令逐字，输出为本机实跑）
+# 生成时点(UTC)：2026-10-04T13:19:00Z
+# 分支：feat/m156-m19-aic-blockidx-probe-ub-staging-f；base main = b5cea0a
+
+## 0. 一句话结论
+该探针的 AIC 分支经 UB 暂存落盘，而 AIC 访问不了 UB ⇒ 归档全 FAIL 是摆位伪影；
+探针已从构建移除，源文件保留为撤回说明。本 mission 未起设备档。
+
+## 1. 归档读数（未改动）—— m19_qsa_indexer/evidence/probe_aic_blockidx.log 逐字
+| [probe_aic] AICORE=28 VECTOR=56
+| [probe_aic] launch: OK
+| [probe_aic] A) 无同步: (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) 
+| [probe_aic] B) mode0 屏障后: (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) 
+| [probe_aic] 判定项: A 组 bid 与槽位一致 4/4 FAIL；B 组（mode0 后）4/4 FAIL
+
+## 2. 撤回守卫（能传播失败）
+$ bash m19_qsa_indexer/check_probe_retraction.sh
+ok:   CMakeLists.txt 无 add_executable(probe_aic_blockidx
+ok:   foreach 名单不含 probe_aic_blockidx
+ok:   源文件含 RETRACTED 撤回标记
+ok:   源文件为纯注释（无非注释行）
+ok:   dump_manifest.md 的旧措辞仅在更正语境出现
+ok:   dump_manifest.md 含更正解读「摆位不成立」
+ok:   README 含 §5.4
+== RETRACTION GUARD: PASS ==
+rc=0
+
+## 3. 撤回后的构建（probe_aic_blockidx 不在目标内）
+$ cmake --build m19_qsa_indexer/build -j4   # 配置命令见 README §4
+[ 16%] Building ASC object CMakeFiles/m19_qsa_indexer.dir/m19_qsa_indexer.asc.o
+[ 33%] Building ASC object CMakeFiles/probe_aiv_barrier.dir/probe_aiv_barrier.asc.o
+[ 50%] Building ASC object CMakeFiles/probe_norm_rope.dir/probe_norm_rope.asc.o
+[ 66%] Linking ASC executable probe_aiv_barrier
+[ 66%] Built target probe_aiv_barrier
+[ 83%] Linking ASC executable probe_norm_rope
+[ 83%] Built target probe_norm_rope
+[100%] Linking ASC executable m19_qsa_indexer
+[100%] Built target m19_qsa_indexer
+(build rc=0；目标仅 m19_qsa_indexer / probe_norm_rope / probe_aiv_barrier)
+
+## 4. 守卫的变异对照（证明属性被破坏时变红，rc 非零）
+A) 在临时副本追加 add_executable(probe_aic_blockidx …) → RETRACTION GUARD: FAIL, rc=1
+B) 在临时副本把 dump_manifest.md 该行还原成旧措辞 → RETRACTION GUARD: FAIL, rc=1
+
+## 5. npu-smi 快照（设备空闲；本 mission 未起设备档，故未占 /tmp/npu0.lock）
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.10                              Version: 25.7.rc1.10                           |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 194.6       55                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5241  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+
+## 6. 限度（如实写）
+- 未起设备档：探针已移除，重跑它不产生关于 AIC GetBlockIdx 的读数。
+- 「UB→GM 基础 API 在 AIC 上被常量折叠成空 ⇒ 标量 SetValue 被 DCE」是最一致解释，
+  未做编译产物/活消费者的隔离验证；本轮按口径不补做该实验。
+
+## 7. r1 整改（复审 reviewer-m156 的 p2-1item）：守卫收紧 + 新增负向用例
+# 复审实测：旧 §3 只判「带『更正』二字即豁免」⇒ 追加一行旧措辞+『更正』即 PASS（打标即豁免形态）。
+# 收紧：旧措辞必须恰 1 次，且只出现在含「摆位不成立」的那一行；README §5.4 的措辞同步收窄为实际断言。
+
+$ bash m19_qsa_indexer/check_probe_retraction.sh
+ok:   CMakeLists.txt 无 add_executable(probe_aic_blockidx
+ok:   foreach 名单不含 probe_aic_blockidx
+ok:   源文件含 RETRACTED 撤回标记
+ok:   源文件为纯注释（无非注释行）
+ok:   dump_manifest.md 旧措辞恰 1 次且在同行的更正语境
+ok:   dump_manifest.md 含更正解读「摆位不成立」
+ok:   README 含 §5.4
+== RETRACTION GUARD: PASS ==
+rc=0
+
+$ # 变异对照（临时副本，每例重置；M3 = 复审指出的绕过形态，现须 rc=1）
+baseline(expect PASS rc=0) rc=0 :: == RETRACTION GUARD: PASS ==
+M1 add_executable(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M2 asc non-comment(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M3 append old-phrase+更正(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M4 revert row old-only(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M5 remove README 5.4(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+
+## 8. r2 整改（复审 reviewer-m156 的 p2-1item）：§4 标题前缀匹配收紧 + 全脚本同类断言扫过
+# 复审实测：旧 §4 用 grep -q '^### 5.4'（前缀匹配），把标题改成 '### 5.4x' 并删掉 §5.4 正文仍 PASS。
+# 收紧：标题须匹配 ^### 5\.4[[:space:]]（排除 5.4x / 5.40），并加正文锚点句「本探针无法回答，已从构建移除」。
+# 同类扫过：脚本内唯一的 ^###-式断言就是 §4；其余 grep 均为「正向存在」或「负向不含」，无第二个节标题式前缀匹配。
+
+$ bash m19_qsa_indexer/check_probe_retraction.sh
+ok:   CMakeLists.txt 无 add_executable(probe_aic_blockidx
+ok:   foreach 名单不含 probe_aic_blockidx
+ok:   源文件含 RETRACTED 撤回标记
+ok:   源文件为纯注释（无非注释行）
+ok:   dump_manifest.md 旧措辞恰 1 次且在同行的更正语境
+ok:   dump_manifest.md 含更正解读「摆位不成立」
+ok:   README 含 §5.4（标题边界 + 正文锚点）
+== RETRACTION GUARD: PASS ==
+rc=0
+
+$ # 变异对照（临时副本，每例重置；M6 = 复审指出的绕过形态；B2/B3 = 复审自造形态）
+baseline(expect PASS rc=0) rc=0 :: == RETRACTION GUARD: PASS ==
+M1 add_executable(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M2 asc non-comment(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M3 append old-phrase+更正(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M4 revert row old-only(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M5 delete 5.4 heading(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M6 heading->5.4x + delete body(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+B2 phrase on line w/o 摆位不成立(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+B3 reword -> literal count 0(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==
+M7 delete whole 5.4 section(expect FAIL rc=1) rc=1 :: == RETRACTION GUARD: FAIL ==

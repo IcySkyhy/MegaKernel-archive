@@ -1,0 +1,18 @@
+{
+  "tensor": "gu.bin",
+  "shape": [
+    2,
+    1280
+  ],
+  "dtype": "bf16",
+  "strides": [
+    1280,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 5120,
+  "sha256": "69a0fc3641236f1f62c549e79f8e723b2dd79b2e299b37a5860d5793478b8514",
+  "kind": "golden",
+  "description": "GMM#1 output (bf16), compact rows [m*top_k, 2*moe_inter] (gate|up)"
+}

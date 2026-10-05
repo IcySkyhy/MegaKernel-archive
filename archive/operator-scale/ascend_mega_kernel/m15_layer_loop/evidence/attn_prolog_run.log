@@ -1,0 +1,8 @@
+# M88 prolog 档（runs=prolog）的实际行为 —— 冻结 tip；命令 → 输出
+# 命令: timeout 75 <wt>/m15_layer_loop/build/m15_layer_loop <wt>/m15_layer_loop/weights_manifest.txt prolog
+# 二进制 sha256 = c5fdb9ecb0ecedc7f69f2f2f0f714cebf9d4e06135cf0aa0ca8995b59acf0ee8
+# 结果: rc=124（挂死）；**本档故意不在 runs=all 里**（见 m15_layer_loop.asc 的分派注释）
+
+[m15] ===== 验证 prolog：attention 前端（主干 q/k + indexer）的数值语义（M88）=====
+[m15]   ⚠⚠ 本档**当前跑不通**（rc=124 挂死）：AIC 的 mode-2 CrossCoreSetFlag 与 AIV 侧的
+rc=124 (timeout 75s)

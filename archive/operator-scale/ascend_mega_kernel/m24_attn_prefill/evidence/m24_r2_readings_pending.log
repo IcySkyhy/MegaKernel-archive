@@ -1,0 +1,49 @@
+# M116 r2 复审再授权的两次设备档 —— **最终取到了**（经过 + 读数；本文件是人工注，不是运行输出）
+#
+# 【结局】两次都取到读数（2026-10-04）：
+#   A) m64 契约档（guard 逐行断言）→ evidence/m24_guardrun_m64.log，二进制 5839b401…，rc=0
+#      · [M24][GUARD-OK] Pf.guard.y0live.c0 poisonRows=0/64(阈值 1e6)      ← 逐行 guard 真被执行且绿
+#      · [M24][GUARD-OK] Ac.guard.poollive.c0 池化行参考 != 毒值面
+#      · m64：checks=23 fails=0 guards=2(guardFails=0)
+#   B) big4097_seq_refused（Trap 那档）→ evidence/m24_trap_probe.log，二进制同上，rc=0
+#      · launch 非正常结束 err=507015 msg=EZ9999: Inner Error!              ← 那道 Trap 的 err/msg 指纹
+#        （⚠ 507015 是本仓见过的**通用 aicore exception** 码，不是该 Trap 独有 ⇒ 它说明"发生了
+#          aicore 异常"，与"就是 nChunks>1 那道硬拦"合起来才构成归档指纹：该档的参数是 33 chunks > 1、
+#          走的正是 AttnPrefillPhaseA 的第一条语句）
+#      · Trap 之后的可用性探针（2 行 1 chunk 契约档）err=0 msg=(空) ⇒ **context 仍可用**
+#        · [M24][GUARD-OK] posttrap.context.usable Trap 后同一 stream 仍能跑契约档
+#        ⇒ 这一次读数里"连坐"**没有**出现（本轮只有这一次读数：不构成"任何 aicore 异常之后 context 都可用"的普遍结论）
+#      · 该档 checks=0 fails=0 guards=1(guardFails=0)
+#
+# 【方法变更（如实记）】起先按"先 flock -n 探锁"用**非阻塞探测**试了 18 次全部返回忙（`-n` 是插队式轮询、
+#   在拥挤时基本排不上）；塔随后明确：改用**一次有界等待** — `flock -w 180 /tmp/npu0.lock <一条短命令>`，
+#   锁内先 npu-smi + df -h，命令 timeout 110，两条各一次独立取锁。两次有界等待都在窗口内直接进锁：
+#   A 08:17:15 进锁、B 08:17:56 进锁（间隔 = A 跑完；两次独立取锁）。锁内环境读数见两个日志头部
+#   （npu-smi：Ascend950PR / OK、util 0；df：/ 余 433 G）。
+#
+# 下面保留最初"未取到"的经过记录与两条命令，供追溯：
+# 二进制：m24 = 5839b401a4e855dbe4f716f13bab270b5680501c48ed9f2f5fb3eaf52e271ee6（当前 tip）
+# 纪律：复审要求"先 flock -n 探锁；探到就一次进锁只跑一条 ≤120s 的命令；探不到不排长队、如实记未取到"
+#
+# 想跑的两条（各需一次锁获取）：
+#   A) 逐行 Pf.guard.y0live 在真机**契约档**上不误红（且日志要能看出 guard 真被执行）：
+#      flock -n /tmp/npu0.lock bash -c 'npu-smi info | sed -n "2,14p"; df -h / | tail -1; \
+#        timeout 110 env M24_ONLY=m64 ./m24_attn_prefill/build/m24_attn_prefill'
+#      ⇒ 期望读数：若干行 [M24][GUARD-OK] Pf.guard.y0live.c0 poisonRows=0/64 与
+#                  [M24][GUARD-OK] Ac.guard.poollive.c0 …，以及 m64 档 checks/fails 与 guards 计数
+#   B) 那道 Trap 的表现 + Trap 后 context 可用性：
+#      flock -n /tmp/npu0.lock bash -c 'npu-smi info | sed -n "2,14p"; df -h / | tail -1; \
+#        timeout 110 env M24_ONLY=big4097_seq_refused ./m24_attn_prefill/build/m24_attn_prefill'
+#      ⇒ 期望读数：expectLaunchFail 分支打印的 err=… msg=…、Trap 之后的可用性探针那一行
+#                  （posttrap.context.usable ⇒ context 仍可用 / 不可用）
+#
+# 实际经过（`flock -n` 非阻塞探测，全部返回忙；未排队、未阻塞）：
+#   A: 第 1 次（单发） + 第 2..7 次（每 15s 一次，6 次） + 第 8..17 次（每 12s 一次，10 次） = 17 次探测
+#   B: 第 18 次（单发）
+#   两次的输出文件均为 0 字节（锁没拿到 ⇒ 锁内命令未执行）：evidence/m24_guardrun_m64.log / m24_trap_probe.log
+#   跨时约 5 分钟；期间未做任何重编译或重档并发（cgroup 余量纪律）。
+#
+# 【历史标注 —— 下面这段是当时（尚未取到读数时）写的，已被本文件开头"结局"一节推翻】
+# 当时的结论：这两条"判据/探针写好了但没设备证据"。
+# 另：Trap 后 context 可用性一旦在真机上为"不可用"，按复审的口径它是一条**真 finding**（连坐风险成立），
+#     届时如实报、不压。本轮**没有**任何读数可以支持或否证它。

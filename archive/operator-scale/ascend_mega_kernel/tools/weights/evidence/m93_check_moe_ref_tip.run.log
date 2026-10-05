@@ -1,0 +1,362 @@
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 4 层，token 3，reps 10，权重=checkpoint，dump=开
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+[m15] device 缓冲：weights 4174.15 MB（36 层 × 115.95 MB）+ states 115.5 MB + ws 5.3 MB + MoE 权重 628.4 MB（48 层 × 13.09 MB）+ 融合 ws 12.94 MB（GDN 5.26 + MoE 7.69）
+[m15] M58 hc 缓冲：权重 1318.63 MB（49 槽 × 26.91 MB/槽；49 = 48 个层槽（每层 2 个边界子槽 × 13.46 MB）+ 1 个全局 mixer 槽，该槽只用到 13.13 MB（norm+down+up），槽 stride 仍为 26.91 MB）+ hc ws 452.71 MB（52 槽 × 8.71 MB/槽 = 每层 2 块 + 3 块 scratch + 1 块全局 mixer ws）
+[m15] M65 层链缓冲：pending BO 双缓冲 0.66 MB（2 块 × 327680 B）；三态入口平面复用 hc_hin
+[m15] M82 attention cache 平面（跨 12 个 attention 层长寿，按第 k 层编址 k=0..11）：主 KV 50.53 MB（12 层 × 4.211 MB/层 = 257 页/层 × 16384 B）；compressed 3.16 MB（12 层 × 0.263 MB/层 = 1028 行/层 × 256 B）；raw ring 0.01344 MB（12 层 × 1120 B = 4 行/层 × 280 B）；packed 33.63 MB（4097 行 × 8208 B，**层间复用一块**）
+[m15] 权重装载完成（真实 checkpoint 切片）：前 4 层内 3 个 GDN 层，4174.15 MB → device，耗时 5040.7 ms
+[m15] MoE 段权重装载完成（真实 checkpoint 4 专家切片 + 真实共享专家）：4 层 × 13.09 MB = 52.4 MB → device，耗时 686.1 ms
+[m15] hc 段权重装载完成（真实 checkpoint（hc 权重不量化、原样消费））：本 run H2D 5 槽 × 26.91 MB/槽 = 134.6 MB（4 个层槽，每层 2 个边界子槽 × 13.46 MB，+ 1 个全局 mixer 槽）；权重区分配 49 槽 × 26.91 MB/槽 = 1318.6 MB → device，耗时 1516.2 ms
+[m15] sha256 自检（NIST 向量："abc" 与 1e6×'a'）：PASS
+
+[m15] ===== 权重来源校验（review P2-1：in_proj/out_proj 独立字节级来源）=====
+[m15]   W.src.L00 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=4be850f53b884949b3b9cb74675f0066d78e53e1ff3a58b117dcda5d125c205d  ckpt-source sha256=4be850f53b884949b3b9cb74675f0066d78e53e1ff3a58b117dcda5d125c205d
+[m15]        out_proj slot sha256=61faf46f03e25a68c83cd45860b97bb50d834b30a200474b1a4d3de1aae5bcfe  ckpt-source sha256=61faf46f03e25a68c83cd45860b97bb50d834b30a200474b1a4d3de1aae5bcfe
+[m15]   W.src.L01 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=7f1a59c50b2c5cc8f5b5d6faff984ea80f76210a90bd28579f60887be90d9249  ckpt-source sha256=7f1a59c50b2c5cc8f5b5d6faff984ea80f76210a90bd28579f60887be90d9249
+[m15]        out_proj slot sha256=6718f11ec1b33d23be15e7bc83d84723f4ddff7cf485d015bfcff43d296a8034  ckpt-source sha256=6718f11ec1b33d23be15e7bc83d84723f4ddff7cf485d015bfcff43d296a8034
+[m15]   W.src.L02 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=c3bcf921144e862eddccf7970b7e47de5106716d0ddf4bf542a18cd6ae883bb7  ckpt-source sha256=c3bcf921144e862eddccf7970b7e47de5106716d0ddf4bf542a18cd6ae883bb7
+[m15]        out_proj slot sha256=ed42e0885ac9f2b73d0ede58ebdc126e1e9a22278c397e556836102a13bb4613  ckpt-source sha256=ed42e0885ac9f2b73d0ede58ebdc126e1e9a22278c397e556836102a13bb4613
+[m15] 权重来源校验（对照 checkpoint 独立来源）：3 个 GDN 层，slot 逐字节 3 / in_proj 3 / out_proj 3；耗时 2239.5 ms
+
+[m15] ===== MoE 段权重来源校验（独立 pread vs 设备槽位，逐字节 + sha256）=====
+[m15]   M.wsrc.L00                     PASS  slot sha256 dev=131543a0cb7956e72e5091c93a963296666fbc674ce8d5dda5510a08b4428714 ckpt=131543a0cb7956e72e5091c93a963296666fbc674ce8d5dda5510a08b4428714
+[m15]   M.wsrc.L01                     PASS  slot sha256 dev=b235d8ad9ff6697bcc2cfe6b9299339325c7168cd6bdb55c2366155571e08c42 ckpt=b235d8ad9ff6697bcc2cfe6b9299339325c7168cd6bdb55c2366155571e08c42
+[m15]   M.wsrc.L02                     PASS  slot sha256 dev=afbbea25d9fe13f7975f172b1ef2bf7944405d801fda6b9eb3b6f9701b9533d9 ckpt=afbbea25d9fe13f7975f172b1ef2bf7944405d801fda6b9eb3b6f9701b9533d9
+[m15]   M.wsrc.L03                     PASS  slot sha256 dev=086129776c5576c8c3ceda1eba0ca3e041227a14cc9c486fbb8be928a3b0d07c ckpt=086129776c5576c8c3ceda1eba0ca3e041227a14cc9c486fbb8be928a3b0d07c
+[m15]   MoE 权重来源：4 层逐字节一致（slot 13.092 MB/层）
+[m15]   Hc.ws.L00                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L01                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L02                      PASS (逐字节一致, n=26910720)
+[m15]   Hc.ws.L03                      PASS (逐字节一致, n=26910720)
+[m15] hc 段权重来源判据：4 层 × 2 边界，逐字节 memcmp（含注入行 [4,16) 全零见证）
+
+[m15] ===== 验证 A：层间组合正确性（4 层循环 vs 单层直接调用，逐字节）=====
+[m15]   A.handoff.L00                  PASS (逐字节一致, n=5120)
+[m15]   A.direct_y.L00                 PASS (逐字节一致, n=5120)
+[m15]   A.direct_ws.L00                PASS (除 g/β padding 外逐字节一致, n=5258240; padding 内差异 0 B 见报告项)
+[m15]   A.direct_cs.L00                PASS (逐字节一致, n=61440)
+[m15]   A.direct_ssm.L00               PASS (逐字节一致, n=3145728)
+[m15]   A.handoff.L01                  PASS (逐字节一致, n=5120)
+[m15]   A.direct_y.L01                 PASS (逐字节一致, n=5120)
+[m15]   A.direct_ws.L01                PASS (除 g/β padding 外逐字节一致, n=5258240; padding 内差异 0 B 见报告项)
+[m15]   A.direct_cs.L01                PASS (逐字节一致, n=61440)
+[m15]   A.direct_ssm.L01               PASS (逐字节一致, n=3145728)
+[m15]   A.handoff.L02                  PASS (逐字节一致, n=5120)
+[m15]   A.direct_y.L02                 PASS (逐字节一致, n=5120)
+[m15]   A.direct_ws.L02                PASS (除 g/β padding 外逐字节一致, n=5258240; padding 内差异 0 B 见报告项)
+[m15]   A.direct_cs.L02                PASS (逐字节一致, n=61440)
+[m15]   A.direct_ssm.L02               PASS (逐字节一致, n=3145728)
+[m15]   A.handoff.L03                  PASS (逐字节一致, n=5120)
+[m15]   A.direct_y.L03                 PASS (逐字节一致, n=5120)
+[m15]   A.attn_passthru.L03            PASS (逐字节一致, n=5120)
+[m15] 验证 A：4 层逐字节比对结束，本段判定项 18 条（累计 29），FAIL 0 条
+
+[m15] ===== 验证 B：多 token 状态连续性（3 token × 4 层；conv_state 位级 / ssm_state 1e-5 相对）=====
+[m15]   B.cs.L00.t0                        PASS (bf16 位级一致, n=30720)
+[m15]   B.ssm.L00.t0                       PASS (rel 1e-05+1e-06; 最差容差占用 0.101, maxAbs 5.364e-07, n=786432)
+[m15]   B.ssm_ulp.L00.t0                   (报告) 逐位一致 29.6318%; |exp|>=1e-6 子集: 位级一致 29.6614% / ≤1ulp 54.0528% / max ulp 15320 (n=786432)
+[m15]   B.cs_cur.L00.t0                PASS (逐字节一致, n=20480)
+[m15]   B.cs.L01.t0                        PASS (bf16 位级一致, n=30720)
+[m15]   B.ssm.L01.t0                       PASS (rel 1e-05+1e-06; 最差容差占用 0.098, maxAbs 5.364e-07, n=786432)
+[m15]   B.ssm_ulp.L01.t0                   (报告) 逐位一致 32.4980%; |exp|>=1e-6 子集: 位级一致 32.4982% / ≤1ulp 63.3773% / max ulp 12656 (n=786432)
+[m15]   B.cs_cur.L01.t0                PASS (逐字节一致, n=20480)
+[m15]   B.cs.L02.t0                        PASS (bf16 位级一致, n=30720)
+[m15]   B.ssm.L02.t0                       PASS (rel 1e-05+1e-06; 最差容差占用 0.127, maxAbs 6.258e-07, n=786432)
+[m15]   B.ssm_ulp.L02.t0                   (报告) 逐位一致 38.2038%; |exp|>=1e-6 子集: 位级一致 38.2048% / ≤1ulp 71.6262% / max ulp 20135 (n=786432)
+[m15]   B.cs_cur.L02.t0                PASS (逐字节一致, n=20480)
+[m15]   B.t0.attn_passthru.L03         PASS (逐字节一致, n=5120)
+[m15]   B.cs.L00.t1                        PASS (bf16 位级一致, n=30720)
+[m15]   B.ssm.L00.t1                       PASS (rel 1e-05+1e-06; 最差容差占用 0.130, maxAbs 7.749e-07, n=786432)
+[m15]   B.ssm_ulp.L00.t1                   (报告) 逐位一致 25.3072%; |exp|>=1e-6 子集: 位级一致 25.2991% / ≤1ulp 56.1692% / max ulp 13638 (n=786432)
+[m15]   B.cs_shift.L00.t1              PASS (逐字节一致, n=20480)
+[m15]   B.cs_shift2.L00.t1             PASS (逐字节一致, n=20480)
+[m15]   B.cs_cur.L00.t1                PASS (逐字节一致, n=20480)
+[m15]   B.cs.L01.t1                        PASS (bf16 位级一致, n=30720)
+[m15]   B.ssm.L01.t1                       PASS (rel 1e-05+1e-06; 最差容差占用 0.092, maxAbs 4.768e-07, n=786432)
+[m15]   B.ssm_ulp.L01.t1                   (报告) 逐位一致 20.1861%; |exp|>=1e-6 子集: 位级一致 20.1864% / ≤1ulp 45.8353% / max ulp 38033 (n=786432)
+[m15]   B.cs_shift.L01.t1              PASS (逐字节一致, n=20480)
+[m15]   B.cs_shift2.L01.t1             PASS (逐字节一致, n=20480)
+[m15]   B.cs_cur.L01.t1                PASS (逐字节一致, n=20480)
+[m15]   B.cs.L02.t1                        PASS (bf16 位级一致, n=30720)
+[m15]   B.ssm.L02.t1                       PASS (rel 1e-05+1e-06; 最差容差占用 0.121, maxAbs 5.066e-07, n=786432)
+[m15]   B.ssm_ulp.L02.t1                   (报告) 逐位一致 30.5537%; |exp|>=1e-6 子集: 位级一致 30.5630% / ≤1ulp 66.6114% / max ulp 26145 (n=786432)
+[m15]   B.cs_shift.L02.t1              PASS (逐字节一致, n=20480)
+[m15]   B.cs_shift2.L02.t1             PASS (逐字节一致, n=20480)
+[m15]   B.cs_cur.L02.t1                PASS (逐字节一致, n=20480)
+[m15]   B.t1.attn_passthru.L03         PASS (逐字节一致, n=5120)
+[m15]   B.cs.L00.t2                        PASS (bf16 位级一致, n=30720)
+[m15]   B.ssm.L00.t2                       PASS (rel 1e-05+1e-06; 最差容差占用 0.122, maxAbs 4.768e-07, n=786432)
+[m15]   B.ssm_ulp.L00.t2                   (报告) 逐位一致 21.8497%; |exp|>=1e-6 子集: 位级一致 21.8438% / ≤1ulp 50.3365% / max ulp 8624 (n=786432)
+[m15]   B.cs_shift.L00.t2              PASS (逐字节一致, n=20480)
+[m15]   B.cs_shift2.L00.t2             PASS (逐字节一致, n=20480)
+[m15]   B.cs_cur.L00.t2                PASS (逐字节一致, n=20480)
+[m15]   B.cs.L01.t2                        PASS (bf16 位级一致, n=30720)
+[m15]   B.ssm.L01.t2                       PASS (rel 1e-05+1e-06; 最差容差占用 0.110, maxAbs 6.557e-07, n=786432)
+[m15]   B.ssm_ulp.L01.t2                   (报告) 逐位一致 15.6639%; |exp|>=1e-6 子集: 位级一致 15.6656% / ≤1ulp 39.9427% / max ulp 28269 (n=786432)
+[m15]   B.cs_shift.L01.t2              PASS (逐字节一致, n=20480)
+[m15]   B.cs_shift2.L01.t2             PASS (逐字节一致, n=20480)
+[m15]   B.cs_cur.L01.t2                PASS (逐字节一致, n=20480)
+[m15]   B.cs.L02.t2                        PASS (bf16 位级一致, n=30720)
+[m15]   B.ssm.L02.t2                       PASS (rel 1e-05+1e-06; 最差容差占用 0.075, maxAbs 3.576e-07, n=786432)
+[m15]   B.ssm_ulp.L02.t2                   (报告) 逐位一致 25.4031%; |exp|>=1e-6 子集: 位级一致 25.4124% / ≤1ulp 61.1344% / max ulp 104793 (n=786432)
+[m15]   B.cs_shift.L02.t2              PASS (逐字节一致, n=20480)
+[m15]   B.cs_shift2.L02.t2             PASS (逐字节一致, n=20480)
+[m15]   B.cs_cur.L02.t2                PASS (逐字节一致, n=20480)
+[m15]   B.t2.attn_passthru.L03         PASS (逐字节一致, n=5120)
+[m15] 验证 B：4 层 × 3 token；非空洞性：cs 演化 3/3，ssm 演化 3/3（应 = 层数）
+[m15]   B.cs_evolved                       PASS (所有 3 个 GDN 层的 conv_state 都随 token 变化)
+[m15]   B.ssm_evolved                      PASS (所有 3 个 GDN 层的 ssm_state 都随 token 变化)
+
+[m15] ===== 验证 C：开销基线（4 层 × 10 次重复；host 计时）=====
+[m15]   单层「启动+sync」往返          中位 0.144 ms
+[m15]   4 次启动 host 下发（无 sync） 中位 0.009 ms → 每次启动 2.36 us
+[m15]   4 层 step（下发 + 尾部 sync） 中位 0.412 ms
+[m15]   4 次「逐层 sync」            中位 0.450 ms → 相对 step 多花 0.038 ms（≈ 每次额外 sync 12.72 us）
+[m15]   设备执行估计（step − 下发）    0.402 ms（准确值见 msprof，parse_msprof.py 汇总）
+[m15]   host 下发占 step wall 的        2.29%
+[m15]   （aclgraph 上限收益 ~ 该占比；跨层预取的收益不在此列）
+[m15]   C.timing                   PASS
+[m15]   ---- 生产形态数据复核（无中间 sync 的 48 次连发）----
+[m15]   C.nosync_vs_sync(h/cs/ssm)         PASS (7 个张量逐字节一致)
+[m15]   C.nosync_repeat(h/cs/ssm)          PASS (7 个张量逐字节一致)
+
+[m15] ===== 验证 M1：段间零串扰（融合 kernel vs 独立启动的两段，逐字节）=====
+[m15]   每层三路：融合(GDN|attn 段 + MoE 段) / 独立 GDN|attn / 独立 MoE(输入=独立段的出口)
+[m15]   M.finite.L00                   PASS (bf16 有限：NaN/Inf 0/2560)
+[m15]   M.nontrivial.L00               PASS (与输入不同，非恒等)
+[m15]   M.ym.L00                       PASS (逐字节一致, n=5120)
+[m15]   M.moews.L00                    PASS (逐字节一致, n=7685472)
+[m15]   M.gdnws.L00                    PASS (除 g/β padding 外逐字节一致, n=5258240; padding 内差异 56 B 见报告项)
+[m15]   M.gb_lane0.L00                 PASS (g/β 槽位首元素 48×2 个 fp32 逐字节一致)
+[m15]   M.st_cs.L00                    PASS (逐字节一致, n=61440)
+[m15]   M.st_ssm.L00                   PASS (逐字节一致, n=3145728)
+[m15]   M.finite.L01                   PASS (bf16 有限：NaN/Inf 0/2560)
+[m15]   M.nontrivial.L01               PASS (与输入不同，非恒等)
+[m15]   M.ym.L01                       PASS (逐字节一致, n=5120)
+[m15]   M.moews.L01                    PASS (逐字节一致, n=7685472)
+[m15]   M.gdnws.L01                    PASS (除 g/β padding 外逐字节一致, n=5258240; padding 内差异 25 B 见报告项)
+[m15]   M.gb_lane0.L01                 PASS (g/β 槽位首元素 48×2 个 fp32 逐字节一致)
+[m15]   M.st_cs.L01                    PASS (逐字节一致, n=61440)
+[m15]   M.st_ssm.L01                   PASS (逐字节一致, n=3145728)
+[m15]   M.finite.L02                   PASS (bf16 有限：NaN/Inf 0/2560)
+[m15]   M.nontrivial.L02               PASS (与输入不同，非恒等)
+[m15]   M.ym.L02                       PASS (逐字节一致, n=5120)
+[m15]   M.moews.L02                    PASS (逐字节一致, n=7685472)
+[m15]   M.gdnws.L02                    PASS (除 g/β padding 外逐字节一致, n=5258240; padding 内差异 26 B 见报告项)
+[m15]   M.gb_lane0.L02                 PASS (g/β 槽位首元素 48×2 个 fp32 逐字节一致)
+[m15]   M.st_cs.L02                    PASS (逐字节一致, n=61440)
+[m15]   M.st_ssm.L02                   PASS (逐字节一致, n=3145728)
+[m15]   M.finite.L03                   PASS (bf16 有限：NaN/Inf 0/2560)
+[m15]   M.nontrivial.L03               PASS (与输入不同，非恒等)
+[m15]   M.ym.L03                       PASS (逐字节一致, n=5120)
+[m15]   M.moews.L03                    PASS (逐字节一致, n=7685472)
+[m15]   M.attn.L03                     PASS (逐字节一致, n=5120)
+[m15] 验证 M1：4 层，本段判定项 29 条，累计 FAIL 0
+[m15]   [报告项·不计入判定] g/β padding 车道差异：合计 107 B（4 层），单层最大 56 B；该区域被消费方（S4 递推）按契约不读（见本节 1b 说明）
+
+[m15] ===== 验证 M2：多 token（融合形态；3 token × 4 层）=====
+[m15]   M2.fused_vs_composed_h         PASS (逐字节一致, n=5120)
+[m15]   M2.fused_vs_composed_state     PASS (逐字节一致, n=9621504)
+[m15]   M2.state_evolved               PASS（层 0 的 cs+ssm：token 0 vs token 2 有 2851778/3207168 字节不同 → 状态在演化）
+[m15]   M2.token_sensitive             PASS（末层输出 t0 != t2，逐字节不同）
+[m15]   M2.nosync_vs_sync_h            PASS (逐字节一致, n=5120)
+[m15]   M2.nosync_vs_sync_state        PASS (逐字节一致, n=9621504)
+[m15]   M2.nosync_repeat_h             PASS (逐字节一致, n=5120)
+[m15]   M2.nosync_repeat_state         PASS (逐字节一致, n=9621504)
+[m15] 验证 M2：本段判定项 8 条
+
+[m15] ===== 验证 H：四相位融合形态（hc(attn) → 子层段 → hc(mlp) → MoE 段；m=1）=====
+[m15]   H.finite.L00                   PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   H.nontrivial.L00               PASS (与输入不同，非恒等)
+[m15]   H.h1ws.L00                     PASS (逐字节一致, n=4353024)
+[m15]   H.h2ws.L00                     PASS (逐字节一致, n=4353024)
+[m15]   H.conly.L00                    PASS (H' 与 combine_and_mix 档逐字节一致 n=20480；BLK 未被写出 0xCD 全场保持)
+[m15]   H.det_h1.L00                   PASS (逐字节一致, n=4353024)
+[m15]   H.det_h2.L00                   PASS (逐字节一致, n=4353024)
+[m15]   层 00（GDN，attn mode=0 / mlp mode=1）：H.fused/H.h1ws/H.h2ws/H.conly/H.det 全部比对完成
+[m15]   H.finite.L01                   PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   H.nontrivial.L01               PASS (与输入不同，非恒等)
+[m15]   H.h1ws.L01                     PASS (逐字节一致, n=4353024)
+[m15]   H.h2ws.L01                     PASS (逐字节一致, n=4353024)
+[m15]   H.conly.L01                    PASS (H' 与 combine_and_mix 档逐字节一致 n=20480；BLK 未被写出 0xCD 全场保持)
+[m15]   H.det_h1.L01                   PASS (逐字节一致, n=4353024)
+[m15]   H.det_h2.L01                   PASS (逐字节一致, n=4353024)
+[m15]   层 01（GDN，attn mode=1 / mlp mode=1）：H.fused/H.h1ws/H.h2ws/H.conly/H.det 全部比对完成
+[m15]   H.finite.L03                   PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   H.nontrivial.L03               PASS (与输入不同，非恒等)
+[m15]   H.h1ws.L03                     PASS (逐字节一致, n=4353024)
+[m15]   H.h2ws.L03                     PASS (逐字节一致, n=4353024)
+[m15]   H.conly.L03                    PASS (H' 与 combine_and_mix 档逐字节一致 n=20480；BLK 未被写出 0xCD 全场保持)
+[m15]   H.det_h1.L03                   PASS (逐字节一致, n=4353024)
+[m15]   H.det_h2.L03                   PASS (逐字节一致, n=4353024)
+[m15]   层 03（ATTN，attn mode=1 / mlp mode=1）：H.fused/H.h1ws/H.h2ws/H.conly/H.det 全部比对完成
+[m15] 验证 H：3 层（层表 M15_HC_LAYERS=0,1,3，m=1），本段判定项累计 21，累计 FAIL 0
+
+[m15] ===== 验证 Ch：48 层链走四相位入口（每层一次启动；m=1，层数 4）=====
+[m15]   段序：hc(attn) → 子层段 → hc(mlp) → MoE（层 1 另把 H1 拆成 combine-only → PLE 占位 → mix-only）；层间零拷贝搬 H/BO/IJ 三条长寿状态
+[m15]   PLE 打断点 = 开（M15_CHAIN_PLE=1；关掉只用于 msprof 的 A/B）
+[m15]   Ch.wsrc.gm                     PASS (逐字节一致, n=26910720)
+[m15]   全局 mixer 权重来源：3 个张量（norm/down/up）+ 注入区 16 行全零见证，逐字节 memcmp（26910720 字节）
+[m15]   pass 1：4 层链跑通（一次启动/层；层 1 走 PLE 打断点（H1 拆成五段））
+[m15][DISCLOSE] 层 1 的 PLE 段**未实现**（空操作，见 m15_layer_kernel.h §3b）：本段验证的是打断点的结构与它的舍入点判据，**不是** PLE 的数值。
+[m15]   手工路径：逐层 4 段独立启动（hc#1 → 子层段 → hc#2 → MoE）与链逐字节对拍（PLE 层另加 combine-only 与单次 combine_and_mix 参考各一次 ⇒ 该层 6 次启动）
+[m15]   Ch.h1blk.L00                   PASS (逐字节一致, n=5120)
+[m15]   Ch.h1inj.L00                   PASS (逐字节一致, n=648)
+[m15]   Ch.sub.L00                     PASS (逐字节一致, n=5120)
+[m15]   Ch.h2hcp.L00                   PASS (逐字节一致, n=20480)
+[m15]   Ch.h2blk.L00                   PASS (逐字节一致, n=5120)
+[m15]   Ch.h2inj.L00                   PASS (逐字节一致, n=8)
+[m15]   Ch.bo.L00                      PASS (逐字节一致, n=5120)
+[m15]   Ch.h1hcp.L01                   PASS (逐字节一致, n=20480)
+[m15]   Ch.ple.bf16.L01                PASS (逐字节一致, n=20480)
+[m15]   Ch.ple.single.L01              PASS (逐字节一致, n=5120)
+[m15]   Ch.h1blk.L01                   PASS (逐字节一致, n=5120)
+[m15]   Ch.h1inj.L01                   PASS (逐字节一致, n=648)
+[m15]   Ch.sub.L01                     PASS (逐字节一致, n=5120)
+[m15]   Ch.h2hcp.L01                   PASS (逐字节一致, n=20480)
+[m15]   Ch.h2blk.L01                   PASS (逐字节一致, n=5120)
+[m15]   Ch.h2inj.L01                   PASS (逐字节一致, n=8)
+[m15]   Ch.bo.L01                      PASS (逐字节一致, n=5120)
+[m15]   Ch.h1hcp.L02                   PASS (逐字节一致, n=20480)
+[m15]   Ch.h1blk.L02                   PASS (逐字节一致, n=5120)
+[m15]   Ch.h1inj.L02                   PASS (逐字节一致, n=648)
+[m15]   Ch.sub.L02                     PASS (逐字节一致, n=5120)
+[m15]   Ch.h2hcp.L02                   PASS (逐字节一致, n=20480)
+[m15]   Ch.h2blk.L02                   PASS (逐字节一致, n=5120)
+[m15]   Ch.h2inj.L02                   PASS (逐字节一致, n=8)
+[m15]   Ch.bo.L02                      PASS (逐字节一致, n=5120)
+[m15]   Ch.h1hcp.L03                   PASS (逐字节一致, n=20480)
+[m15]   Ch.h1blk.L03                   PASS (逐字节一致, n=5120)
+[m15]   Ch.h1inj.L03                   PASS (逐字节一致, n=648)
+[m15]   Ch.sub.L03                     PASS (逐字节一致, n=5120)
+[m15]   Ch.h2hcp.L03                   PASS (逐字节一致, n=20480)
+[m15]   Ch.h2blk.L03                   PASS (逐字节一致, n=5120)
+[m15]   Ch.h2inj.L03                   PASS (逐字节一致, n=8)
+[m15]   Ch.bo.L03                      PASS (逐字节一致, n=5120)
+[m15]   Ch.detH.L00                    PASS (逐字节一致, n=20480)
+[m15]   Ch.detBO.L00                   PASS (逐字节一致, n=5120)
+[m15]   Ch.detIJ.L00                   PASS (逐字节一致, n=8)
+[m15]   Ch.detH.L01                    PASS (逐字节一致, n=20480)
+[m15]   Ch.detBO.L01                   PASS (逐字节一致, n=5120)
+[m15]   Ch.detIJ.L01                   PASS (逐字节一致, n=8)
+[m15]   Ch.detH.L02                    PASS (逐字节一致, n=20480)
+[m15]   Ch.detBO.L02                   PASS (逐字节一致, n=5120)
+[m15]   Ch.detIJ.L02                   PASS (逐字节一致, n=8)
+[m15]   Ch.detH.L03                    PASS (逐字节一致, n=20480)
+[m15]   Ch.detBO.L03                   PASS (逐字节一致, n=5120)
+[m15]   Ch.detIJ.L03                   PASS (逐字节一致, n=8)
+[m15]   Ch.det.gm_multi                PASS (逐字节一致, n=20480)
+[m15]   Ch.det.gm_sample               PASS (逐字节一致, n=5120)
+[m15]   Ch.pert.lastH                  PASS (与输入不同，非恒等)
+[m15]   Ch.pert.gm                     PASS (与输入不同，非恒等)
+[m15]   Ch.pert.gmmerge                PASS (与输入不同，非恒等)
+[m15]   Ch.nonid.L00                   PASS (与输入不同，非恒等)
+[m15]   Ch.moe.L00                     PASS (与输入不同，非恒等)
+[m15]   Ch.blks.L00                    PASS (与输入不同，非恒等)
+[m15]   Ch.finite.L00                  PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   Ch.nonid.L01                   PASS (与输入不同，非恒等)
+[m15]   Ch.moe.L01                     PASS (与输入不同，非恒等)
+[m15]   Ch.blks.L01                    PASS (与输入不同，非恒等)
+[m15]   Ch.finite.L01                  PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   Ch.nonid.L02                   PASS (与输入不同，非恒等)
+[m15]   Ch.moe.L02                     PASS (与输入不同，非恒等)
+[m15]   Ch.blks.L02                    PASS (与输入不同，非恒等)
+[m15]   Ch.finite.L02                  PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   Ch.nonid.L03                   PASS (与输入不同，非恒等)
+[m15]   Ch.moe.L03                     PASS (与输入不同，非恒等)
+[m15]   Ch.blks.L03                    PASS (与输入不同，非恒等)
+[m15]   Ch.finite.L03                  PASS (bf16 有限：NaN/Inf 0/10240)
+[m15]   Ch.gm.multi                    PASS (与输入不同，非恒等)
+[m15]   Ch.gm.sample                   PASS (bf16 有限：NaN/Inf 0/2560)
+[m15]   Ch.gm.sample_nonconst          PASS (非常量)
+[m15]   Ch.fp.L00                      PASS (跨层三态指纹互异，n=25608 字节)
+[m15]   Ch.fp.L01                      PASS (跨层三态指纹互异，n=25608 字节)
+[m15]   Ch.fp.L02                      PASS (跨层三态指纹互异，n=25608 字节)
+[m15]   Ch.fp.L03                      PASS (跨层三态指纹互异，n=25608 字节)
+[m15]   Ch.m39.dump                    M39 对拍 dump 已落盘：3 层（M15_HC_LAYERS）+ 末层 mixer
+[m15]   ④ 与 M39 官方单层参考对拍：请在 dump 目录跑 `check_chain_ref.py`（独立的三态退出码与计数；本段只保证输入/输出已落盘）
+[m15] 验证 Ch：本段判定项 74 条 + guard 4 条（累计 checks 208 / guards 18 / fails 0）
+
+[m15] ===== 验证 Kv：attention 三套 cache + packed indices 的布局冻结（M82）=====
+[m15]   权威来源：docs/14:616-627（三套 cache）、docs/15:528-531（paged 契约现在就定死）、docs/17:286（pos 4096 属开放组）、m19_qsa_indexer/README.md:90-123（行为）
+[m15]   **基准交代**：本段判的是布局/寻址/门控契约；首期数值基准 = 自建稠密 causal 参考，**它不是官方行为**（官方 QSA 每 token 只 attend 约一半历史，docs/17:281）
+[m15]   Kv.cap 独立复算（只用规范原始数字 16/2/256/4/140/2052/4097）：
+[m15]     主 KV   : ceil(4097/16)=257 页 × 16384 B/页 = 4210688 B/层；×12 层 = 50528256 B
+[m15]     compressed: 1028 行 × 256 B/行 = 263168 B/层（写入 1024 行 = 位置 3,7,…,4095）；×12 层 = 3158016 B
+[m15]     raw ring : 128×2 + 24 = 280 B/行 × 4 行 = 1120 B/层；×12 层 = 13440 B
+[m15]     packed   : 4097 行 × 2052 列 × 4 B = 33628176 B（**层间复用一块**）
+[m15]     decode(1,ctx=4096)：主 KV 256 页 = 4194304 B/层；compressed 1024 行 = 262144 B/层
+[m15]   Kv.align 判据：主 KV 页 16,384 / 页内 token 步长 512 / head 平面 8,192 / compressed 行 256 —— 均 32 B 整数倍；**raw ring 单行 280 B ≡ 24 (mod 32)**、**packed 单行 8,208 B ≡ 16 (mod 32)** ⇒ 单行传输只能走 DataCopyPad（实跑见证见 Kv.ring.row.* / Kv.pack.rows.*）
+[m15]   Kv.cap.rt.main                 PASS (逐字节一致, n=192)
+[m15]   Kv.cap.rt.comp                 PASS (逐字节一致, n=192)
+[m15]   Kv.cap.rt.ring                 PASS (逐字节一致, n=192)
+[m15]   Kv.cap.rt.pack                 PASS (逐字节一致, n=16)
+[m15]   Kv.cap.rt 标记 round-trip：74 个位置（12 层主 KV 的槽首/槽尾 24 + compressed 24 + ring 24 + packed 2）= 「第 k 槽可寻址且不被第 k+1 槽的写踩掉」
+[m15]   Kv.kv.paged.L0                 PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L0                 PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L0                     PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L0                PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L0                     PASS (gate=0 g=0 slot=0 mode=0)
+[m15]   Kv.kv.paged.L1                 PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L1                 PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L1                     PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L1                PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L1                     PASS (gate=0 g=0 slot=1 mode=0)
+[m15]   Kv.kv.paged.L2                 PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L2                 PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L2                     PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L2                PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L2                     PASS (gate=0 g=0 slot=2 mode=0)
+[m15]   Kv.kv.paged.L3                 PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L3                 PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L3                     PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L3                PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L3                     PASS (gate=1 g=0 slot=3 mode=0)
+[m15]   Kv.kv.paged.L4                 PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L4                 PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L4                     PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L4                PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L4                     PASS (gate=0 g=1 slot=0 mode=0)
+[m15]   Kv.kv.paged.L7                 PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L7                 PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L7                     PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L7                PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L7                     PASS (gate=1 g=1 slot=3 mode=0)
+[m15]   Kv.kv.paged.L17                PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L17                PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L17                    PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L17               PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L17                    PASS (gate=0 g=4 slot=1 mode=0)
+[m15]   Kv.kv.paged.L300               PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L300               PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L300                   PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L300              PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L300                   PASS (gate=0 g=75 slot=0 mode=0)
+[m15]   Kv.kv.paged.L4095              PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L4095              PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L4095                  PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L4095             PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L4095                  PASS (gate=1 g=1023 slot=3 mode=0)
+[m15]   Kv.kv.paged.L4096              PASS (逐字节一致, n=1024)
+[m15]   Kv.ring.row.L4096              PASS (逐字节一致, n=280)
+[m15]   Kv.comp.L4096                  PASS (逐字节一致, n=256)
+[m15]   Kv.pack.rows.L4096             PASS (逐字节一致, n=16416)
+[m15]   Kv.flag.L4096                  PASS (gate=0 g=1024 slot=0 mode=0)
+[m15]   Kv.neg.offbyone.L4096        PASS（契约档判据 成立；注入档（pos 4096 也写压缩行）同一判据 被打破 ⇒ 判据对 off-by-one 有判别力）
+[m15]   Kv.lay.headsplit               PASS (与输入不同，非恒等)
+[m15]   Kv.neg.paged                   PASS (与输入不同，非恒等)
+[m15]   覆盖交代：本段**不覆盖** ① 压缩行的内容（4 个 raw k 的均值 → GemmaRMSNorm → RoPE@组首）—— attention prolog **未实现**；② 主 KV 的 KV 向量本身（v_proj 输出）—— 同上；③ 打分/topk/expand 与 packed 的**选择语义**（本段只判 packed 行的字节布局/行距）。
+[m15]   未决交代：raw ring 行宽 140 是**带时点的设计决定**（默认按规范宽，见 m15_attn_kv.h 的 D1）；「serving 栈是否逐字节要求 3 个 MRoPE 位置尾」未取证。
+[m15] 验证 Kv：本段判定项 56 条 + guard 130 条（累计 checks 264 / guards 148 / fails 0）
+[m15] MoE 段布局表：moe_layout.txt（供 check_moe_ref.py 按同一套偏移切片）
+[m15] hc 段布局表：hc_layout.txt（供 check_hc_ref.py 按同一套偏移切片）
+[m15] dump 清单：dump_manifest.txt（298 条），供 check_ref.py / check_moe_ref.py / check_hc_ref.py
+
+[m15] 判据分账：权重来源 7（GDN+MoE）+ 4（hc）+ A 18 + B 44 + C 3 + M1 29 + M2 8 + H 21 + Ch 74 + Kv 56 = 264 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15]   ④ 与 M39 官方单层参考对拍的判据**不在这个数里**：它在 `check_chain_ref.py`（torch，独立三态退出码与计数），由本程序的 dump 驱动；运行方式见 README。
+[m15] guard：148 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 4 + 参考链锚点非空 9 + M65 链 4 + 其余 130
+[m15] ===== ALL PASS（checks=264, guards=148, fails=0）=====

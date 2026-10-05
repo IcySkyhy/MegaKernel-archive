@@ -1,0 +1,8 @@
+build/
+
+# M146 m=4097 取证的大 dump（in_proj 约 230MB / out_proj 约 99MB）：不入库，
+# 重建方式见 evidence/m4097_envelope/README.md 与同目录 reproduce.sh（M11_DEVICE=1）。
+evidence/**/a.bin
+evidence/**/b.bin
+evidence/**/c_device.bin
+

@@ -1,0 +1,577 @@
+{
+  "complete": true,
+  "utc": "2026-09-25T04:13:49.499483+00:00",
+  "sources": {
+    "Makefile": "4bea726a1b99b717026ac92f844ab32fe36c73097fae766231d79faeec76627d",
+    "build/sweep/driver.cuh": "83cea5517deeb01a3c2202d0b784448aaf0bbb5c88b7cb0c4a3928d694cf44b8",
+    "experiments/cluster_sweep/Makefile": "5e7948fb048ff01083914637a8c87540089d161e8c357d9079e1dcd1e3a222a4",
+    "experiments/cluster_sweep/launch.cuh": "9c12978e0c708bdc62b8e29aba995dfb1958060e9bdeb6d135ef66e0bfa19079",
+    "experiments/cluster_sweep/main.cu": "4e9fd0caa7ae2e3921b36d71b627e0ab7087e5e075798480b189e5598b47091a",
+    "experiments/cluster_sweep/model.cpp": "8c56a6e7db3b00dc9dd1235eef0fe09e5ca40c11b51107c483b93b423b0cc001",
+    "experiments/cluster_sweep/prepare_driver.py": "1d6b31727abc62a8f49262d26210bbe710d40e6487382b6e64ace811a38a3669",
+    "experiments/cluster_sweep/variants.cuh": "7b0ac826d986557b37fcb41868ca83965bc84729fecc0e66a26f1415ddbc4ef1",
+    "experiments/z2/run.py": "eb9f551bbf8252466afda160bd07a5b0f3fe4d55e5bfa33387066bab7b2882e1",
+    "include/layout_config.h": "c4759117b23e3353292739756f036a56c7152f1e891e7118eeff2175ac9a05c6",
+    "include/lbm.h": "2d48b6bc9e911bb8438e1a31f1134744792eb00f9033188d89af108aaacb2292",
+    "include/lbm_macros.h": "5bb7a8a9c303a5dadee24d0a5a895ebe2d102e7403efc396240e3d2a04697104",
+    "kernels/b0.cuh": "d1b77815abc036e7be0c2b47b26f4495a480f2686e37212e5029600a636b5808",
+    "kernels/c1.cuh": "51b1cff0e9bc8d929fb1834dc5b5e2e5b6cb96c93edaff0052460b7025007dd7",
+    "kernels/c2.cuh": "5692f0e5345dd82572b656fe1abf34f24b5ca1a2772dec80de21cc15e9994a4d",
+    "kernels/c3.cuh": "dfbef61318ca67508ee654aa8834e1b6370540e94af1ed0d0b532293e836346d",
+    "kernels/cell.cuh": "11d938d4364de25159d201b3b2f5b37ea28096efe64428117743a363897837e0",
+    "kernels/cluster_compat.cuh": "605038f9cff03b96f37ba5ba693889ffe296bb60442a9d1f96a408883b00d773",
+    "kernels/cluster_debug.cuh": "4afc28abef782d721dc5072d9e2a5ab5ba9ef3e73dccad4f4cd57f410e6b503d",
+    "kernels/cluster_dedup.cuh": "5184ab3dc51910fa3e68b363b6637b9af3988f7e50e51c8d8b63a4256657a834",
+    "kernels/cluster_sync.cuh": "b0188c54a6a7c5339e269c3af2100f0b704854e3560c7b0050a831d0535f1048",
+    "kernels/collision.cuh": "4e6fca903a0c8ccf3d94b6dc282206519e18c5246114f6c959c1c88ce24955cf",
+    "kernels/s2_c128.cuh": "361c459303b5c32a354a7fa5224f218b5ed9cfc8e6224f1e56acde761bff3b90",
+    "kernels/s2_d128.cuh": "896fbc87cfb96f22d44c7ce2658a4978910de957f0a140dc685931e280bc3e5e",
+    "kernels/spatial.cuh": "b002a3151e0167a01b3c8fecc39d9b012fd1c46085bc5374cb34866c0013016d",
+    "kernels/t30_s1.cuh": "662016a3611a864ff0e03481c2867e303173a11712bbe77709424ae405208135",
+    "kernels/temporal_common.cuh": "dc6ff0f1ece42c07acd9e257c51d050ec08d15a4f9bb0878b2a4bbdec3991f2a",
+    "kernels/temporal_v1.cuh": "405cbbed345c2f235fa5a5e7abcdbb4582f8f1fa001ff01ba607c36382ce8480",
+    "kernels/temporal_v2.cuh": "13c451b7d15afa41e2d3369a96ee803a44294835392ade285142dc35682ec33a",
+    "src/driver.cuh": "352b39eb50374ae8d1835122e447721c2129bee797b6444f40dc306351291378",
+    "src/grid.cuh": "6e9666d4f756423e54f5ba239e9fbf6c5771cfc163f87b3ac302b23fa9544a81"
+  },
+  "binaries": {
+    "build/sweep/lbm": "8add96cc46175f5ca0d9b4db8f482a2c9fb5ba2046ef742f7336bb71c1cfd3d8",
+    "build/sweep/model": "52fd136c4c738cf0659dffb2428b8f5faa3394d9660d48f557f82e85d1a83f40"
+  },
+  "versions": {
+    "nsys": "NVIDIA Nsight Systems version 2025.1.3.140-251335620677v0\n",
+    "ncu": "NVIDIA (R) Nsight Compute Command Line Profiler\nCopyright (c) 2018-2025 NVIDIA Corporation\nVersion 2025.2.1.0 (build 35987062) (public-release)\n",
+    "sanitizer": "NVIDIA (R) Compute Sanitizer\nCopyright (c) 2020-2025 NVIDIA Corporation\nVersion 2025.2.1.0 (build 35969825) (public-release)\n",
+    "gpu": "\n==============NVSMI LOG==============\n\nTimestamp                                 : Thu Sep 24 23:13:18 2026\nDriver Version                            : 575.57.08\nCUDA Version                              : 12.9\n\nAttached GPUs                             : 2\nGPU 00000000:01:00.0\n    Product Name                          : NVIDIA GeForce RTX 5090\n    Product Brand                         : GeForce\n    Product Architecture                  : Blackwell\n    Display Mode                          : Requested functionality has been deprecated\n    Display Attached                      : Yes\n    Display Active                        : Disabled\n    Persistence Mode                      : Enabled\n    Addressing Mode                       : HMM\n    MIG Mode\n        Current                           : N/A\n        Pending                           : N/A\n    Accounting Mode                       : Disabled\n    Accounting Mode Buffer Size           : 4000\n    Driver Model\n        Current                           : N/A\n        Pending                           : N/A\n    Serial Number                         : 0\n    GPU UUID                              : GPU-87c39f5e-618e-9ab7-4cb9-1491aac9cbc3\n    Minor Number                          : 1\n    VBIOS Version                         : 98.02.2E.00.D4\n    MultiGPU Board                        : No\n    Board ID                              : 0x100\n    Board Part Number                     : N/A\n    GPU Part Number                       : 2B85-300-A1\n    FRU Part Number                       : N/A\n    Platform Info\n        Chassis Serial Number             : \n        Slot Number                       : 0\n        Tray Index                        : 0\n        Host ID                           : 1\n        Peer Type                         : Direct Connected\n        Module Id                         : 1\n        GPU Fabric GUID                   : 0x0000000000000000\n    Inforom Version\n        Image Version                     : G005.0000.98.01\n        OEM Object                        : 2.1\n        ECC Object                        : N/A\n        Power Management Object           : N/A\n    Inforom BBX Object Flush\n        Latest Timestamp                  : N/A\n        Latest Duration                   : N/A\n    GPU Operation Mode\n        Current                           : N/A\n        Pending                           : N/A\n    GPU C2C Mode                          : Disabled\n    GPU Virtualization Mode\n        Virtualization Mode               : None\n        Host VGPU Mode                    : N/A\n        vGPU Heterogeneous Mode           : N/A\n    GPU Reset Status\n        Reset Required                    : Requested functionality has been deprecated\n        Drain and Reset Recommended       : Requested functionality has been deprecated\n    GPU Recovery Action                   : None\n    GSP Firmware Version                  : 575.57.08\n    IBMNPU\n        Relaxed Ordering Mode             : N/A\n    PCI\n        Bus                               : 0x01\n        Device                            : 0x00\n        Domain                            : 0x0000\n        Base Classcode                    : 0x3\n        Sub Classcode                     : 0x0\n        Device Id                         : 0x2B8510DE\n        Bus Id                            : 00000000:01:00.0\n        Sub System Id                     : 0x416F1458\n        GPU Link Info\n            PCIe Generation\n                Max                       : 5\n                Current                   : 1\n                Device Current            : 1\n                Device Max                : 5\n                Host Max                  : 5\n            Link Width\n                Max                       : 16x\n                Current                   : 16x\n        Bridge Chip\n            Type                          : N/A\n            Firmware                      : N/A\n        Replays Since Reset               : 0\n        Replay Number Rollovers           : 0\n        Tx Throughput                     : 4539 KB/s\n        Rx Throughput                     : 6719 KB/s\n        Atomic Caps Outbound              : N/A\n        Atomic Caps Inbound               : N/A\n    Fan Speed                             : 62 %\n    Performance State                     : P8\n    Clocks Event Reasons\n        Idle                              : Not Active\n        Applications Clocks Setting       : Not Active\n        SW Power Cap                      : Active\n        HW Slowdown                       : Not Active\n            HW Thermal Slowdown           : Not Active\n            HW Power Brake Slowdown       : Not Active\n        Sync Boost                        : Not Active\n        SW Thermal Slowdown               : Not Active\n        Display Clock Setting             : Not Active\n    Clocks Event Reasons Counters\n        SW Power Capping                  : 1789093494764491 us\n        Sync Boost                        : 0 us\n        SW Thermal Slowdown               : 0 us\n        HW Thermal Slowdown               : 0 us\n        HW Power Braking                  : 0 us\n    Sparse Operation Mode                 : N/A\n    FB Memory Usage\n        Total                             : 32607 MiB\n        Reserved                          : 501 MiB\n        Used                              : 244 MiB\n        Free                              : 31864 MiB\n    BAR1 Memory Usage\n        Total                             : 32768 MiB\n        Used                              : 19 MiB\n        Free                              : 32749 MiB\n    Conf Compute Protected Memory Usage\n        Total                             : 0 MiB\n        Used                              : 0 MiB\n        Free                              : 0 MiB\n    Compute Mode                          : Default\n    Utilization\n        GPU                               : 0 %\n        Memory                            : 0 %\n        Encoder                           : 0 %\n        Decoder                           : 0 %\n        JPEG                              : 0 %\n        OFA                               : 0 %\n    Encoder Stats\n        Active Sessions                   : 0\n        Average FPS                       : 0\n        Average Latency                   : 0\n    FBC Stats\n        Active Sessions                   : 0\n        Average FPS                       : 0\n        Average Latency                   : 0\n    DRAM Encryption Mode\n        Current                           : Disabled\n        Pending                           : Disabled\n    ECC Mode\n        Current                           : N/A\n        Pending                           : N/A\n    ECC Errors\n        Volatile\n            SRAM Correctable              : N/A\n            SRAM Uncorrectable Parity     : N/A\n            SRAM Uncorrectable SEC-DED    : N/A\n            DRAM Correctable              : N/A\n            DRAM Uncorrectable            : N/A\n        Aggregate\n            SRAM Correctable              : N/A\n            SRAM Uncorrectable Parity     : N/A\n            SRAM Uncorrectable SEC-DED    : N/A\n            DRAM Correctable              : N/A\n            DRAM Uncorrectable            : N/A\n            SRAM Threshold Exceeded       : N/A\n        Aggregate Uncorrectable SRAM Sources\n            SRAM L2                       : N/A\n            SRAM SM                       : N/A\n            SRAM Microcontroller          : N/A\n            SRAM PCIE                     : N/A\n            SRAM Other                    : N/A\n    Retired Pages\n        Single Bit ECC                    : N/A\n        Double Bit ECC                    : N/A\n        Pending Page Blacklist            : N/A\n    Remapped Rows                         : N/A\n    Temperature\n        GPU Current Temp                  : 57 C\n        GPU T.Limit Temp                  : 33 C\n        GPU Shutdown T.Limit Temp         : -5 C\n        GPU Slowdown T.Limit Temp         : -2 C\n        GPU Max Operating T.Limit Temp    : 0 C\n        GPU Target Temperature            : N/A\n        Memory Current Temp               : N/A\n        Memory Max Operating T.Limit Temp : N/A\n    GPU Power Readings\n        Average Power Draw                : 41.90 W\n        Instantaneous Power Draw          : 41.93 W\n        Current Power Limit               : 600.00 W\n        Requested Power Limit             : 600.00 W\n        Default Power Limit               : 600.00 W\n        Min Power Limit                   : 400.00 W\n        Max Power Limit                   : 600.00 W\n    GPU Memory Power Readings \n        Average Power Draw                : N/A\n        Instantaneous Power Draw          : N/A\n    Module Power Readings\n        Average Power Draw                : N/A\n        Instantaneous Power Draw          : N/A\n        Current Power Limit               : N/A\n        Requested Power Limit             : N/A\n        Default Power Limit               : N/A\n        Min Power Limit                   : N/A\n        Max Power Limit                   : N/A\n    Power Smoothing                       : N/A\n    Workload Power Profiles\n        Requested Profiles                : N/A\n        Enforced Profiles                 : N/A\n    Clocks\n        Graphics                          : 24 MHz\n        SM                                : 24 MHz\n        Memory                            : 405 MHz\n        Video                             : 735 MHz\n    Applications Clocks\n        Graphics                          : N/A\n        Memory                            : N/A\n    Default Applications Clocks\n        Graphics                          : N/A\n        Memory                            : N/A\n    Deferred Clocks\n        Memory                            : N/A\n    Max Clocks\n        Graphics                          : 3105 MHz\n        SM                                : 3105 MHz\n        Memory                            : 14001 MHz\n        Video                             : 3090 MHz\n    Max Customer Boost Clocks\n        Graphics                          : N/A\n    Clock Policy\n        Auto Boost                        : N/A\n        Auto Boost Default                : N/A\n    Voltage\n        Graphics                          : Requested functionality has been deprecated\n    Fabric\n        State                             : N/A\n        Status                            : N/A\n        CliqueId                          : N/A\n        ClusterUUID                       : N/A\n        Health\n            Bandwidth                     : N/A\n            Route Recovery in progress    : N/A\n            Route Unhealthy               : N/A\n            Access Timeout Recovery       : N/A\n    Processes\n        GPU instance ID                   : N/A\n        Compute instance ID               : N/A\n        Process ID                        : 3731\n            Type                          : G\n            Name                          : /usr/lib/xorg/Xorg\n            Used GPU Memory               : 106 MiB\n        GPU instance ID                   : N/A\n        Compute instance ID               : N/A\n        Process ID                        : 3973\n            Type                          : G\n            Name                          : /usr/bin/gnome-shell\n            Used GPU Memory               : 16 MiB\n    Capabilities\n        EGM                               : disabled\n\nGPU 00000000:E1:00.0\n    Product Name                          : NVIDIA GeForce RTX 5090\n    Product Brand                         : GeForce\n    Product Architecture                  : Blackwell\n    Display Mode                          : Requested functionality has been deprecated\n    Display Attached                      : No\n    Display Active                        : Disabled\n    Persistence Mode                      : Enabled\n    Addressing Mode                       : HMM\n    MIG Mode\n        Current                           : N/A\n        Pending                           : N/A\n    Accounting Mode                       : Disabled\n    Accounting Mode Buffer Size           : 4000\n    Driver Model\n        Current                           : N/A\n        Pending                           : N/A\n    Serial Number                         : 0\n    GPU UUID                              : GPU-d0f2fbdc-1170-600c-8c09-d2cb7db6f8ad\n    Minor Number                          : 0\n    VBIOS Version                         : 98.02.2E.00.D4\n    MultiGPU Board                        : No\n    Board ID                              : 0xe100\n    Board Part Number                     : N/A\n    GPU Part Number                       : 2B85-300-A1\n    FRU Part Number                       : N/A\n    Platform Info\n        Chassis Serial Number             : \n        Slot Number                       : 0\n        Tray Index                        : 0\n        Host ID                           : 1\n        Peer Type                         : Direct Connected\n        Module Id                         : 1\n        GPU Fabric GUID                   : 0x0000000000000000\n    Inforom Version\n        Image Version                     : G005.0000.98.01\n        OEM Object                        : 2.1\n        ECC Object                        : N/A\n        Power Management Object           : N/A\n    Inforom BBX Object Flush\n        Latest Timestamp                  : N/A\n        Latest Duration                   : N/A\n    GPU Operation Mode\n        Current                           : N/A\n        Pending                           : N/A\n    GPU C2C Mode                          : Disabled\n    GPU Virtualization Mode\n        Virtualization Mode               : None\n        Host VGPU Mode                    : N/A\n        vGPU Heterogeneous Mode           : N/A\n    GPU Reset Status\n        Reset Required                    : Requested functionality has been deprecated\n        Drain and Reset Recommended       : Requested functionality has been deprecated\n    GPU Recovery Action                   : None\n    GSP Firmware Version                  : 575.57.08\n    IBMNPU\n        Relaxed Ordering Mode             : N/A\n    PCI\n        Bus                               : 0xE1\n        Device                            : 0x00\n        Domain                            : 0x0000\n        Base Classcode                    : 0x3\n        Sub Classcode                     : 0x0\n        Device Id                         : 0x2B8510DE\n        Bus Id                            : 00000000:E1:00.0\n        Sub System Id                     : 0x416F1458\n        GPU Link Info\n            PCIe Generation\n                Max                       : 5\n                Current                   : 1\n                Device Current            : 1\n                Device Max                : 5\n                Host Max                  : 5\n            Link Width\n                Max                       : 16x\n                Current                   : 16x\n        Bridge Chip\n            Type                          : N/A\n            Firmware                      : N/A\n        Replays Since Reset               : 0\n        Replay Number Rollovers           : 0\n        Tx Throughput                     : 1977 KB/s\n        Rx Throughput                     : 1518 KB/s\n        Atomic Caps Outbound              : N/A\n        Atomic Caps Inbound               : N/A\n    Fan Speed                             : 0 %\n    Performance State                     : P8\n    Clocks Event Reasons\n        Idle                              : Not Active\n        Applications Clocks Setting       : Not Active\n        SW Power Cap                      : Not Active\n        HW Slowdown                       : Not Active\n            HW Thermal Slowdown           : Not Active\n            HW Power Brake Slowdown       : Not Active\n        Sync Boost                        : Not Active\n        SW Thermal Slowdown               : Not Active\n        Display Clock Setting             : Not Active\n    Clocks Event Reasons Counters\n        SW Power Capping                  : 1993095237 us\n        Sync Boost                        : 0 us\n        SW Thermal Slowdown               : 0 us\n        HW Thermal Slowdown               : 0 us\n        HW Power Braking                  : 0 us\n    Sparse Operation Mode                 : N/A\n    FB Memory Usage\n        Total                             : 32607 MiB\n        Reserved                          : 498 MiB\n        Used                              : 134 MiB\n        Free                              : 31976 MiB\n    BAR1 Memory Usage\n        Total                             : 32768 MiB\n        Used                              : 4 MiB\n        Free                              : 32764 MiB\n    Conf Compute Protected Memory Usage\n        Total                             : 0 MiB\n        Used                              : 0 MiB\n        Free                              : 0 MiB\n    Compute Mode                          : Default\n    Utilization\n        GPU                               : 0 %\n        Memory                            : 0 %\n        Encoder                           : 0 %\n        Decoder                           : 0 %\n        JPEG                              : 0 %\n        OFA                               : 0 %\n    Encoder Stats\n        Active Sessions                   : 0\n        Average FPS                       : 0\n        Average Latency                   : 0\n    FBC Stats\n        Active Sessions                   : 0\n        Average FPS                       : 0\n        Average Latency                   : 0\n    DRAM Encryption Mode\n        Current                           : Disabled\n        Pending                           : Disabled\n    ECC Mode\n        Current                           : N/A\n        Pending                           : N/A\n    ECC Errors\n        Volatile\n            SRAM Correctable              : N/A\n            SRAM Uncorrectable Parity     : N/A\n            SRAM Uncorrectable SEC-DED    : N/A\n            DRAM Correctable              : N/A\n            DRAM Uncorrectable            : N/A\n        Aggregate\n            SRAM Correctable              : N/A\n            SRAM Uncorrectable Parity     : N/A\n            SRAM Uncorrectable SEC-DED    : N/A\n            DRAM Correctable              : N/A\n            DRAM Uncorrectable            : N/A\n            SRAM Threshold Exceeded       : N/A\n        Aggregate Uncorrectable SRAM Sources\n            SRAM L2                       : N/A\n            SRAM SM                       : N/A\n            SRAM Microcontroller          : N/A\n            SRAM PCIE                     : N/A\n            SRAM Other                    : N/A\n    Retired Pages\n        Single Bit ECC                    : N/A\n        Double Bit ECC                    : N/A\n        Pending Page Blacklist            : N/A\n    Remapped Rows                         : N/A\n    Temperature\n        GPU Current Temp                  : 51 C\n        GPU T.Limit Temp                  : 39 C\n        GPU Shutdown T.Limit Temp         : -5 C\n        GPU Slowdown T.Limit Temp         : -2 C\n        GPU Max Operating T.Limit Temp    : 0 C\n        GPU Target Temperature            : N/A\n        Memory Current Temp               : N/A\n        Memory Max Operating T.Limit Temp : N/A\n    GPU Power Readings\n        Average Power Draw                : 24.67 W\n        Instantaneous Power Draw          : 24.68 W\n        Current Power Limit               : 600.00 W\n        Requested Power Limit             : 600.00 W\n        Default Power Limit               : 600.00 W\n        Min Power Limit                   : 400.00 W\n        Max Power Limit                   : 600.00 W\n    GPU Memory Power Readings \n        Average Power Draw                : N/A\n        Instantaneous Power Draw          : N/A\n    Module Power Readings\n        Average Power Draw                : N/A\n        Instantaneous Power Draw          : N/A\n        Current Power Limit               : N/A\n        Requested Power Limit             : N/A\n        Default Power Limit               : N/A\n        Min Power Limit                   : N/A\n        Max Power Limit                   : N/A\n    Power Smoothing                       : N/A\n    Workload Power Profiles\n        Requested Profiles                : N/A\n        Enforced Profiles                 : N/A\n    Clocks\n        Graphics                          : 24 MHz\n        SM                                : 24 MHz\n        Memory                            : 405 MHz\n        Video                             : 600 MHz\n    Applications Clocks\n        Graphics                          : N/A\n        Memory                            : N/A\n    Default Applications Clocks\n        Graphics                          : N/A\n        Memory                            : N/A\n    Deferred Clocks\n        Memory                            : N/A\n    Max Clocks\n        Graphics                          : 3105 MHz\n        SM                                : 3105 MHz\n        Memory                            : 14001 MHz\n        Video                             : 3090 MHz\n    Max Customer Boost Clocks\n        Graphics                          : N/A\n    Clock Policy\n        Auto Boost                        : N/A\n        Auto Boost Default                : N/A\n    Voltage\n        Graphics                          : Requested functionality has been deprecated\n    Fabric\n        State                             : N/A\n        Status                            : N/A\n        CliqueId                          : N/A\n        ClusterUUID                       : N/A\n        Health\n            Bandwidth                     : N/A\n            Route Recovery in progress    : N/A\n            Route Unhealthy               : N/A\n            Access Timeout Recovery       : N/A\n    Processes\n        GPU instance ID                   : N/A\n        Compute instance ID               : N/A\n        Process ID                        : 3731\n            Type                          : G\n            Name                          : /usr/lib/xorg/Xorg\n            Used GPU Memory               : 4 MiB\n    Capabilities\n        EGM                               : disabled\n\n"
+  },
+  "ncu": {
+    "D-V2-256-ncu-all": {
+      "output_sha256": "4a7a63bf997da96f8e00a5b78eb7ab51ec870d165e31cb995903a4fe6b628c43",
+      "csv_sha256": "ea1a7dec36aceee5e75f699b9040fae5db28247d6d5cceaa060769393665ac36",
+      "launch_metadata": {
+        "launch__barrier_count": "1",
+        "launch__block_dim_x": "256",
+        "launch__block_dim_y": "1",
+        "launch__block_dim_z": "1",
+        "launch__block_size": "256",
+        "launch__cluster_dim_x": "0",
+        "launch__cluster_dim_y": "0",
+        "launch__cluster_dim_z": "0",
+        "launch__cluster_max_active": "0",
+        "launch__cluster_max_potential_size": "8",
+        "launch__cluster_scheduling_policy": "PolicySpread",
+        "launch__cluster_size": "0",
+        "launch__context_id": "1",
+        "launch__device_id": "0",
+        "launch__func_cache_config": "CachePreferNone",
+        "launch__function_pcs": "1",
+        "launch__grid_dim_x": "8",
+        "launch__grid_dim_y": "15",
+        "launch__grid_dim_z": "38",
+        "launch__grid_size": "4560",
+        "launch__kernel_name": "",
+        "launch__occupancy_cluster_gpu_pct": "0",
+        "launch__occupancy_cluster_pct": "0",
+        "launch__occupancy_limit_barriers": "24",
+        "launch__occupancy_limit_blocks": "24",
+        "launch__occupancy_limit_registers": "4",
+        "launch__occupancy_limit_shared_mem": "2",
+        "launch__occupancy_limit_warps": "6",
+        "launch__occupancy_per_barrier_count": "304",
+        "launch__occupancy_per_block_size": "1400",
+        "launch__occupancy_per_cluster_size": "0",
+        "launch__occupancy_per_register_count": "3088",
+        "launch__occupancy_per_shared_mem_size": "2496",
+        "launch__preferred_cluster_dim_x": "0",
+        "launch__preferred_cluster_dim_y": "0",
+        "launch__preferred_cluster_dim_z": "0",
+        "launch__preferred_cluster_size": "0",
+        "launch__registers_per_thread": "56",
+        "launch__registers_per_thread_allocated": "56",
+        "launch__shared_mem_config_size": "102400",
+        "launch__shared_mem_per_block": "39936",
+        "launch__shared_mem_per_block_allocated": "39936",
+        "launch__shared_mem_per_block_driver": "1024",
+        "launch__shared_mem_per_block_dynamic": "38912",
+        "launch__shared_mem_per_block_static": "0",
+        "launch__sm_count": "170",
+        "launch__stack_size": "1024",
+        "launch__stream_id": "7",
+        "launch__thread_count": "1167360",
+        "launch__tpc_count": "85",
+        "launch__tpc_enabled": "all",
+        "launch__uses_cdp": "0",
+        "launch__uses_green_context": "0",
+        "launch__uses_mps": "0",
+        "launch__uses_vgpu": "0",
+        "launch__waves_per_multiprocessor": "13.41"
+      },
+      "dsm": {
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__m_l1tex2xbar_write_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        },
+        "l1tex__m_xbar2l1tex_read_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        }
+      }
+    },
+    "D-C0-Z2-Spread-ncu-all": {
+      "output_sha256": "4a7a63bf997da96f8e00a5b78eb7ab51ec870d165e31cb995903a4fe6b628c43",
+      "csv_sha256": "b3c342c8702365c93e490745c33eb518a5c914fb5b0e64599823ed9addcf0a22",
+      "launch_metadata": {
+        "launch__barrier_count": "1",
+        "launch__block_dim_x": "256",
+        "launch__block_dim_y": "1",
+        "launch__block_dim_z": "1",
+        "launch__block_size": "256",
+        "launch__cluster_dim_x": "1",
+        "launch__cluster_dim_y": "1",
+        "launch__cluster_dim_z": "2",
+        "launch__cluster_max_active": "170",
+        "launch__cluster_max_potential_size": "8",
+        "launch__cluster_scheduling_policy": "PolicySpread",
+        "launch__cluster_size": "2",
+        "launch__context_id": "1",
+        "launch__device_id": "0",
+        "launch__func_cache_config": "CachePreferNone",
+        "launch__function_pcs": "1",
+        "launch__grid_dim_x": "8",
+        "launch__grid_dim_y": "15",
+        "launch__grid_dim_z": "38",
+        "launch__grid_size": "4560",
+        "launch__kernel_name": "",
+        "launch__occupancy_cluster_gpu_pct": "2.78",
+        "launch__occupancy_cluster_pct": "8.33",
+        "launch__occupancy_limit_barriers": "24",
+        "launch__occupancy_limit_blocks": "24",
+        "launch__occupancy_limit_registers": "4",
+        "launch__occupancy_limit_shared_mem": "2",
+        "launch__occupancy_limit_warps": "6",
+        "launch__occupancy_per_barrier_count": "304",
+        "launch__occupancy_per_block_size": "1400",
+        "launch__occupancy_per_cluster_size": "902",
+        "launch__occupancy_per_register_count": "3088",
+        "launch__occupancy_per_shared_mem_size": "2496",
+        "launch__preferred_cluster_dim_x": "0",
+        "launch__preferred_cluster_dim_y": "0",
+        "launch__preferred_cluster_dim_z": "0",
+        "launch__preferred_cluster_size": "0",
+        "launch__registers_per_thread": "56",
+        "launch__registers_per_thread_allocated": "56",
+        "launch__shared_mem_config_size": "102400",
+        "launch__shared_mem_per_block": "39936",
+        "launch__shared_mem_per_block_allocated": "39936",
+        "launch__shared_mem_per_block_driver": "1024",
+        "launch__shared_mem_per_block_dynamic": "38912",
+        "launch__shared_mem_per_block_static": "0",
+        "launch__sm_count": "170",
+        "launch__stack_size": "1024",
+        "launch__stream_id": "7",
+        "launch__thread_count": "1167360",
+        "launch__tpc_count": "85",
+        "launch__tpc_enabled": "all",
+        "launch__uses_cdp": "0",
+        "launch__uses_green_context": "0",
+        "launch__uses_mps": "0",
+        "launch__uses_vgpu": "0",
+        "launch__waves_per_multiprocessor": "6.71"
+      },
+      "dsm": {
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__m_l1tex2xbar_write_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        },
+        "l1tex__m_xbar2l1tex_read_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        }
+      }
+    },
+    "D-C0-Z2-LoadBalancing-ncu-all": {
+      "output_sha256": "4a7a63bf997da96f8e00a5b78eb7ab51ec870d165e31cb995903a4fe6b628c43",
+      "csv_sha256": "1e017359e48f4f3073b6d52b7da0a7924e150b3f9e3275a49a2749456361ad2d",
+      "launch_metadata": {
+        "launch__barrier_count": "1",
+        "launch__block_dim_x": "256",
+        "launch__block_dim_y": "1",
+        "launch__block_dim_z": "1",
+        "launch__block_size": "256",
+        "launch__cluster_dim_x": "1",
+        "launch__cluster_dim_y": "1",
+        "launch__cluster_dim_z": "2",
+        "launch__cluster_max_active": "170",
+        "launch__cluster_max_potential_size": "8",
+        "launch__cluster_scheduling_policy": "PolicyLoadBalancing",
+        "launch__cluster_size": "2",
+        "launch__context_id": "1",
+        "launch__device_id": "0",
+        "launch__func_cache_config": "CachePreferNone",
+        "launch__function_pcs": "1",
+        "launch__grid_dim_x": "8",
+        "launch__grid_dim_y": "15",
+        "launch__grid_dim_z": "38",
+        "launch__grid_size": "4560",
+        "launch__kernel_name": "",
+        "launch__occupancy_cluster_gpu_pct": "2.78",
+        "launch__occupancy_cluster_pct": "8.33",
+        "launch__occupancy_limit_barriers": "24",
+        "launch__occupancy_limit_blocks": "24",
+        "launch__occupancy_limit_registers": "4",
+        "launch__occupancy_limit_shared_mem": "2",
+        "launch__occupancy_limit_warps": "6",
+        "launch__occupancy_per_barrier_count": "304",
+        "launch__occupancy_per_block_size": "1400",
+        "launch__occupancy_per_cluster_size": "902",
+        "launch__occupancy_per_register_count": "3088",
+        "launch__occupancy_per_shared_mem_size": "2496",
+        "launch__preferred_cluster_dim_x": "0",
+        "launch__preferred_cluster_dim_y": "0",
+        "launch__preferred_cluster_dim_z": "0",
+        "launch__preferred_cluster_size": "0",
+        "launch__registers_per_thread": "56",
+        "launch__registers_per_thread_allocated": "56",
+        "launch__shared_mem_config_size": "102400",
+        "launch__shared_mem_per_block": "39936",
+        "launch__shared_mem_per_block_allocated": "39936",
+        "launch__shared_mem_per_block_driver": "1024",
+        "launch__shared_mem_per_block_dynamic": "38912",
+        "launch__shared_mem_per_block_static": "0",
+        "launch__sm_count": "170",
+        "launch__stack_size": "1024",
+        "launch__stream_id": "7",
+        "launch__thread_count": "1167360",
+        "launch__tpc_count": "85",
+        "launch__tpc_enabled": "all",
+        "launch__uses_cdp": "0",
+        "launch__uses_green_context": "0",
+        "launch__uses_mps": "0",
+        "launch__uses_vgpu": "0",
+        "launch__waves_per_multiprocessor": "6.71"
+      },
+      "dsm": {
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__m_l1tex2xbar_write_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        },
+        "l1tex__m_xbar2l1tex_read_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        }
+      }
+    },
+    "D-V2-256-ncu-none": {
+      "output_sha256": "4a7a63bf997da96f8e00a5b78eb7ab51ec870d165e31cb995903a4fe6b628c43",
+      "csv_sha256": "d077d966ccb148ff4ab706047bd624206b54b8403e249816b9f2224dd1bb3001",
+      "launch_metadata": {
+        "launch__barrier_count": "1",
+        "launch__block_dim_x": "256",
+        "launch__block_dim_y": "1",
+        "launch__block_dim_z": "1",
+        "launch__block_size": "256",
+        "launch__cluster_dim_x": "0",
+        "launch__cluster_dim_y": "0",
+        "launch__cluster_dim_z": "0",
+        "launch__cluster_max_active": "0",
+        "launch__cluster_max_potential_size": "8",
+        "launch__cluster_scheduling_policy": "PolicySpread",
+        "launch__cluster_size": "0",
+        "launch__context_id": "1",
+        "launch__device_id": "0",
+        "launch__func_cache_config": "CachePreferNone",
+        "launch__function_pcs": "1",
+        "launch__grid_dim_x": "8",
+        "launch__grid_dim_y": "15",
+        "launch__grid_dim_z": "38",
+        "launch__grid_size": "4560",
+        "launch__kernel_name": "",
+        "launch__occupancy_cluster_gpu_pct": "0",
+        "launch__occupancy_cluster_pct": "0",
+        "launch__occupancy_limit_barriers": "24",
+        "launch__occupancy_limit_blocks": "24",
+        "launch__occupancy_limit_registers": "4",
+        "launch__occupancy_limit_shared_mem": "2",
+        "launch__occupancy_limit_warps": "6",
+        "launch__occupancy_per_barrier_count": "304",
+        "launch__occupancy_per_block_size": "1400",
+        "launch__occupancy_per_cluster_size": "0",
+        "launch__occupancy_per_register_count": "3088",
+        "launch__occupancy_per_shared_mem_size": "2496",
+        "launch__preferred_cluster_dim_x": "0",
+        "launch__preferred_cluster_dim_y": "0",
+        "launch__preferred_cluster_dim_z": "0",
+        "launch__preferred_cluster_size": "0",
+        "launch__registers_per_thread": "56",
+        "launch__registers_per_thread_allocated": "56",
+        "launch__shared_mem_config_size": "102400",
+        "launch__shared_mem_per_block": "39936",
+        "launch__shared_mem_per_block_allocated": "39936",
+        "launch__shared_mem_per_block_driver": "1024",
+        "launch__shared_mem_per_block_dynamic": "38912",
+        "launch__shared_mem_per_block_static": "0",
+        "launch__sm_count": "170",
+        "launch__stack_size": "1024",
+        "launch__stream_id": "7",
+        "launch__thread_count": "1167360",
+        "launch__tpc_count": "85",
+        "launch__tpc_enabled": "all",
+        "launch__uses_cdp": "0",
+        "launch__uses_green_context": "0",
+        "launch__uses_mps": "0",
+        "launch__uses_vgpu": "0",
+        "launch__waves_per_multiprocessor": "13.41"
+      },
+      "dsm": {
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__m_l1tex2xbar_write_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        },
+        "l1tex__m_xbar2l1tex_read_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        }
+      }
+    },
+    "D-C0-Z2-Spread-ncu-none": {
+      "output_sha256": "4a7a63bf997da96f8e00a5b78eb7ab51ec870d165e31cb995903a4fe6b628c43",
+      "csv_sha256": "273e5c76f583527732d895bd0a3afb676d1af4f61dc63d9577f0892cdde0c59c",
+      "launch_metadata": {
+        "launch__barrier_count": "1",
+        "launch__block_dim_x": "256",
+        "launch__block_dim_y": "1",
+        "launch__block_dim_z": "1",
+        "launch__block_size": "256",
+        "launch__cluster_dim_x": "1",
+        "launch__cluster_dim_y": "1",
+        "launch__cluster_dim_z": "2",
+        "launch__cluster_max_active": "170",
+        "launch__cluster_max_potential_size": "8",
+        "launch__cluster_scheduling_policy": "PolicySpread",
+        "launch__cluster_size": "2",
+        "launch__context_id": "1",
+        "launch__device_id": "0",
+        "launch__func_cache_config": "CachePreferNone",
+        "launch__function_pcs": "1",
+        "launch__grid_dim_x": "8",
+        "launch__grid_dim_y": "15",
+        "launch__grid_dim_z": "38",
+        "launch__grid_size": "4560",
+        "launch__kernel_name": "",
+        "launch__occupancy_cluster_gpu_pct": "2.78",
+        "launch__occupancy_cluster_pct": "8.33",
+        "launch__occupancy_limit_barriers": "24",
+        "launch__occupancy_limit_blocks": "24",
+        "launch__occupancy_limit_registers": "4",
+        "launch__occupancy_limit_shared_mem": "2",
+        "launch__occupancy_limit_warps": "6",
+        "launch__occupancy_per_barrier_count": "304",
+        "launch__occupancy_per_block_size": "1400",
+        "launch__occupancy_per_cluster_size": "902",
+        "launch__occupancy_per_register_count": "3088",
+        "launch__occupancy_per_shared_mem_size": "2496",
+        "launch__preferred_cluster_dim_x": "0",
+        "launch__preferred_cluster_dim_y": "0",
+        "launch__preferred_cluster_dim_z": "0",
+        "launch__preferred_cluster_size": "0",
+        "launch__registers_per_thread": "56",
+        "launch__registers_per_thread_allocated": "56",
+        "launch__shared_mem_config_size": "102400",
+        "launch__shared_mem_per_block": "39936",
+        "launch__shared_mem_per_block_allocated": "39936",
+        "launch__shared_mem_per_block_driver": "1024",
+        "launch__shared_mem_per_block_dynamic": "38912",
+        "launch__shared_mem_per_block_static": "0",
+        "launch__sm_count": "170",
+        "launch__stack_size": "1024",
+        "launch__stream_id": "7",
+        "launch__thread_count": "1167360",
+        "launch__tpc_count": "85",
+        "launch__tpc_enabled": "all",
+        "launch__uses_cdp": "0",
+        "launch__uses_green_context": "0",
+        "launch__uses_mps": "0",
+        "launch__uses_vgpu": "0",
+        "launch__waves_per_multiprocessor": "6.71"
+      },
+      "dsm": {
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__m_l1tex2xbar_write_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        },
+        "l1tex__m_xbar2l1tex_read_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        }
+      }
+    },
+    "D-C0-Z2-LoadBalancing-ncu-none": {
+      "output_sha256": "4a7a63bf997da96f8e00a5b78eb7ab51ec870d165e31cb995903a4fe6b628c43",
+      "csv_sha256": "2a213ed7fdbdbad7e5a54e83cadc14ac41dcbe8b68bc378bf0747a834b7d12de",
+      "launch_metadata": {
+        "launch__barrier_count": "1",
+        "launch__block_dim_x": "256",
+        "launch__block_dim_y": "1",
+        "launch__block_dim_z": "1",
+        "launch__block_size": "256",
+        "launch__cluster_dim_x": "1",
+        "launch__cluster_dim_y": "1",
+        "launch__cluster_dim_z": "2",
+        "launch__cluster_max_active": "170",
+        "launch__cluster_max_potential_size": "8",
+        "launch__cluster_scheduling_policy": "PolicyLoadBalancing",
+        "launch__cluster_size": "2",
+        "launch__context_id": "1",
+        "launch__device_id": "0",
+        "launch__func_cache_config": "CachePreferNone",
+        "launch__function_pcs": "1",
+        "launch__grid_dim_x": "8",
+        "launch__grid_dim_y": "15",
+        "launch__grid_dim_z": "38",
+        "launch__grid_size": "4560",
+        "launch__kernel_name": "",
+        "launch__occupancy_cluster_gpu_pct": "2.78",
+        "launch__occupancy_cluster_pct": "8.33",
+        "launch__occupancy_limit_barriers": "24",
+        "launch__occupancy_limit_blocks": "24",
+        "launch__occupancy_limit_registers": "4",
+        "launch__occupancy_limit_shared_mem": "2",
+        "launch__occupancy_limit_warps": "6",
+        "launch__occupancy_per_barrier_count": "304",
+        "launch__occupancy_per_block_size": "1400",
+        "launch__occupancy_per_cluster_size": "902",
+        "launch__occupancy_per_register_count": "3088",
+        "launch__occupancy_per_shared_mem_size": "2496",
+        "launch__preferred_cluster_dim_x": "0",
+        "launch__preferred_cluster_dim_y": "0",
+        "launch__preferred_cluster_dim_z": "0",
+        "launch__preferred_cluster_size": "0",
+        "launch__registers_per_thread": "56",
+        "launch__registers_per_thread_allocated": "56",
+        "launch__shared_mem_config_size": "102400",
+        "launch__shared_mem_per_block": "39936",
+        "launch__shared_mem_per_block_allocated": "39936",
+        "launch__shared_mem_per_block_driver": "1024",
+        "launch__shared_mem_per_block_dynamic": "38912",
+        "launch__shared_mem_per_block_static": "0",
+        "launch__sm_count": "170",
+        "launch__stack_size": "1024",
+        "launch__stream_id": "7",
+        "launch__thread_count": "1167360",
+        "launch__tpc_count": "85",
+        "launch__tpc_enabled": "all",
+        "launch__uses_cdp": "0",
+        "launch__uses_green_context": "0",
+        "launch__uses_mps": "0",
+        "launch__uses_vgpu": "0",
+        "launch__waves_per_multiprocessor": "6.71"
+      },
+      "dsm": {
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_requests_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_ld.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__t_sectors_pipe_lsu_mem_dshared_op_st.sum": {
+          "unit": "sector",
+          "value": "0"
+        },
+        "l1tex__m_l1tex2xbar_write_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        },
+        "l1tex__m_xbar2l1tex_read_bytes_mem_dshared_op_st.sum": {
+          "unit": "byte",
+          "value": "0"
+        }
+      }
+    }
+  }
+}

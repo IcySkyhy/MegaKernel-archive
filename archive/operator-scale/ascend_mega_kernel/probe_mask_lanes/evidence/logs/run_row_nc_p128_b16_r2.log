@@ -1,0 +1,8 @@
+VARIANT name=row_nc_p128_b16 kind=3 group=row sd=s16 md=m16 pat=all rows=4 pitchI=128 pitchW=256 im=0
+LAUNCH aclError=0 (sync timeout=120000ms)
+AREABYTES 12288
+WRANGES 0-640,4096-5120
+NZ bytes_written=1664 first_off=0 last_off=5120
+FNV 0xcd58e4476c049903
+OUTCOME: RAN
+rc=0

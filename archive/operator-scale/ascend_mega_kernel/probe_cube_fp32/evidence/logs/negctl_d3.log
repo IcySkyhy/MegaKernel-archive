@@ -1,0 +1,30 @@
+read A(7, 16, 256) B(7, 16, 256) C(7, 16, 16) from /workspace/ascend_mega_kernel/.tower/worktrees/wt-106/probe_cube_fp32/evidence/negctl_d3
+
+dist          dev C[0][0]       ref_fp64    maxAbsErr    maxRelErr
+d0 ones               256            256    0.000e+00    0.000e+00
+d1 mant13        256.0625       256.0625    0.000e+00    0.000e+00
+d2 mant10           256.5          256.5    0.000e+00    0.000e+00
+d3 absorb        16777472       16777471    1.000e+00    5.960e-08
+d4 rand        59.7598228     59.7598435    7.176e-05    1.007e-06
+d5 cancel               0              0    0.000e+00    0.000e+00
+d6 mant23s     1.00000012     1.00000012    0.000e+00    0.000e+00
+
+---- 逐条判据（读数 -> 结论）；任一条不成立 ⇒ rc=1 ----
+d0 ones   : dev C[0] 全部 == 256 ? YES  (max|dev-256| = 0)
+d1 mant13 : A=1+2^-12 => ref=256.0625, dev=256.0625, |diff|=0
+            => 操作数保留 13 位有效位（未降到 hf32(10 位)/bf16(8 位)）
+d2 mant10 : A=1+2^-9  => ref=256.5, dev=256.5, |diff|=0
+d3 absorb : ref=16777471 dev=16777472 ; 2^24=16777216 ; 2^24+255 的 fp32 舍入=16777472
+            => dev != 2^24 ⇒ 累加未在 fp32 宽度上丢 +1（>= 按 8 分块精确和 / 宽累加器 / 操作数被舍）
+
+d4 rand   : dev vs fp64  maxAbsErr = 7.175603e-05
+            dev vs bf16  maxAbsErr = 2.140994e-02
+            dev vs hf32  maxAbsErr = 3.654220e-03
+            => dev 最贴合【fp64/fp32 操作数】（残差 7.176e-05）
+
+d5 cancel : dev C[0] 全 == 0 ? YES (max|dev| = 0)
+d6 mant23s: 单项 C = 1+2^-23 = 1.00000012 (0x3f800001) ; dev = 1.00000012 (0x3f800001) ; 全元素相等 ? YES
+            => 操作数尾数保留 23 位（23 位 = 全 fp32；10 位 = hf32/tf32；8 位 = bf16）
+
+[check_ref] FAIL: 下列判据不成立 -> d3（默认模式累加器 = fp32 宽度 / cube_k=1 签名）
+rc=1

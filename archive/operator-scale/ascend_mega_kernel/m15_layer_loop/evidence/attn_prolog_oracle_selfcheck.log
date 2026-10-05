@@ -1,0 +1,36 @@
+# M88 host 参考（oracle）自检 —— 命令 → 输出（冻结身份上重跑）
+# 命令: cd m15_layer_loop/evidence/attn_prolog && /usr/local/python3.12.13/bin/python3.12 oracle_attn_prolog.py selfcheck
+
+[selfcheck] q+gate 宽度 = 2*nh*hd = 12288: PASS
+[selfcheck] idx 宽度 = (4+1)*128 = 640: PASS
+[selfcheck] ROT = int(256*0.25) = 64: PASS
+[selfcheck] HALF = ROT/2 = 32: PASS
+[selfcheck] mrope_section 和 == ROT/2: PASS
+[selfcheck] Y0_N == 13952: PASS
+[selfcheck] OUT_N == 13952: PASS
+[selfcheck] pos 0 ⇒ cos 全 1 / sin 全 0: PASS
+[selfcheck] pos 1 ⇒ 第一对 (j=0, inv_freq=1) 与 cos/sin(1.0) 相差 < 4*2^-9: PASS
+[selfcheck] OK
+rc=0
+
+# 命令: /usr/local/python3.12.13/bin/python3.12 oracle_attn_prolog.py gen
+
+[gen] cos/sin 表 4097×64 bf16 = 524416 B，非零 262176/262208，distinct=3323
+[gen] normonly.q（**读落盘文件**）: 非零 6144/6144
+[gen] normonly.k（**读落盘文件**）: 非零 512/512
+[gen] normonly.qidx（**读落盘文件**）: 非零 512/512
+[gen] x0: y0 非零 13952/13952，out 非零 13952/13952，distinct=2104，|out|max=4.781
+[gen] normonly.q（**读落盘文件**）: 非零 6144/6144
+[gen] normonly.k（**读落盘文件**）: 非零 512/512
+[gen] normonly.qidx（**读落盘文件**）: 非零 512/512
+[gen] x1: y0 非零 13952/13952，out 非零 13952/13952，distinct=2085，|out|max=5.344
+[gen] 输入敏感性：exp_out(x0) vs exp_out(x1) 不同元素 13938/13952
+[gen] OK → /workspace/ascend_mega_kernel/.tower/worktrees/wt-88/m15_layer_loop/evidence/attn_prolog/data
+rc=0
+
+# 命令: sha256sum -c data/meta.json.sha256
+
+data/x0.bin: OK
+data/x1.bin: OK
+# OK 条数: 15 / 不符: 0
+0

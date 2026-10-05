@@ -1,0 +1,29 @@
+== 真实表几何 ==
+分片数            : 128
+每片行数          : 2500012（= ceil(320001446/128)*128/128，PLE_SPEC.md §2.1）
+行宽              : 320 B（160 × bf16）
+全表              : 320001536 行 = 102400491520 B = 102.40 GB = 95.37 GiB
+
+== 行 id → 文件位置（本脚本在真实文件上实测）==
+global_id      shard  local      file(切片)         file_off     结果
+0              0      0          model-00005-of-00131.safetensors 68329314     byte-identical
+1              0      1          model-00005-of-00131.safetensors 68329634     byte-identical
+2              0      2          model-00005-of-00131.safetensors 68329954     byte-identical
+12345          0      12345      model-00005-of-00131.safetensors 72279714     byte-identical
+2500011        0      2500011    model-00005-of-00131.safetensors 868332834    byte-identical
+2500012        1      0          model-00005-of-00131.safetensors 868333154    byte-identical
+2500015        1      3          model-00005-of-00131.safetensors 868334114    byte-identical
+320001535      127    2500011    model-00037-of-00131.safetensors 1600092312   byte-identical
+
+== 逐字节证据（≥3 个真实行 id：窗口 gather vs 直读 shard 文件）==
+id=0            shard=0    file_off=68329314     sha256(320B)=67354d4be4c2d2d8ed2f6003c5e98e56  OK
+id=1            shard=0    file_off=68329634     sha256(320B)=063ea2c562448ef7a97d498b5c2bd0b4  OK
+id=2            shard=0    file_off=68329954     sha256(320B)=41de7db143ee175c14f896c28d707b02  OK
+id=12345        shard=0    file_off=72279714     sha256(320B)=0194377330c29d73ff02d22c4459388b  OK
+id=2500011      shard=0    file_off=868332834    sha256(320B)=cf7d77eea5706713dc0438e104f37332  OK
+id=2500012      shard=1    file_off=868333154    sha256(320B)=6e861bcc2e4d88ce6453a88a4ac06b65  OK
+id=2500015      shard=1    file_off=868334114    sha256(320B)=49a806a53b7ccbdbee2d009bb967d6ca  OK
+id=320001535    shard=127  file_off=1600092312   sha256(320B)=5abe266cc3652a4944a86cc91dae0209  OK
+
+窗口搬运：fills=8 bytes_moved=2560（窗口 4194304 B）
+结论：PASS —— 上述 8 个真实行 id 的 320 B 与直读分片文件逐字节一致

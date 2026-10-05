@@ -1,0 +1,20 @@
+# M82：attention 权重 role 落进 manifest 的**纯增量**证明
+# 命令：cp weights_manifest.txt /tmp/pre && python3.12 slice_layer_manifest.py --model-dir /workspace/Qwen3.8-Flash-Next-MXFP4 --out weights_manifest.txt && diff /tmp/pre weights_manifest.txt
+# 结果：tensor 行 1287 → 1395（+108 = 9 个 role × 12 个 full_attention 层）；wc -l 1291 → 1399
+# 删除行数 = 0；--check 通过（manifest 与 checkpoint 现况一致）
+# 时点：2026-09-27（M82）
+
+# ---- diff 的 added 行（头 9 条 + 尾 3 条；共 108 条）----
+> tensor layer=3 role=attn_q_proj file=model-00082-of-00131.safetensors offset=53198230 bytes=62914560 dtype=BF16 rows=12288 cols=2560
+> tensor layer=3 role=attn_k_proj file=model-00082-of-00131.safetensors offset=19118998 bytes=2621440 dtype=BF16 rows=512 cols=2560
+> tensor layer=3 role=attn_v_proj file=model-00082-of-00131.safetensors offset=116112790 bytes=2621440 dtype=BF16 rows=512 cols=2560
+> tensor layer=3 role=attn_o_proj file=model-00082-of-00131.safetensors offset=21740438 bytes=31457280 dtype=BF16 rows=2560 cols=6144
+> tensor layer=3 role=attn_q_norm file=model-00082-of-00131.safetensors offset=53197718 bytes=512 dtype=BF16 rows=1 cols=256
+> tensor layer=3 role=attn_k_norm file=model-00082-of-00131.safetensors offset=19118486 bytes=512 dtype=BF16 rows=1 cols=256
+> tensor layer=3 role=attn_idx_qk_proj file=model-00082-of-00131.safetensors offset=15841174 bytes=3276800 dtype=BF16 rows=640 cols=2560
+> tensor layer=3 role=attn_idx_q_norm file=model-00082-of-00131.safetensors offset=19118230 bytes=256 dtype=BF16 rows=1 cols=128
+> tensor layer=3 role=attn_idx_k_norm file=model-00082-of-00131.safetensors offset=19117974 bytes=256 dtype=BF16 rows=1 cols=128
+...
+> tensor layer=47 role=attn_idx_qk_proj file=model-00120-of-00131.safetensors offset=15841163 bytes=3276800 dtype=BF16 rows=640 cols=2560
+> tensor layer=47 role=attn_idx_q_norm file=model-00120-of-00131.safetensors offset=19118219 bytes=256 dtype=BF16 rows=1 cols=128
+> tensor layer=47 role=attn_idx_k_norm file=model-00120-of-00131.safetensors offset=19117963 bytes=256 dtype=BF16 rows=1 cols=128

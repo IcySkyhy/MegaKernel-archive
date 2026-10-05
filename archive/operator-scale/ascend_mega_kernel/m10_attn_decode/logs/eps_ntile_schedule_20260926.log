@@ -1,0 +1,15 @@
+# ε 的 nTile 记账自查（M61 r1 评审 P2-1）；命令：cd <任意目录> && /usr/local/python3.12.13/bin/python3 ../check_ref.py eps
+# nTile 的定义 = 实际调度里每 split 最多的 tile 数 = kernel 的 chunkTiles；**不需要任何 dump**（纯记账）。
+# 旧式 = max(1, ceil(seq/S2T)//nsplit) —— 在 n_tiles=15（seq ∈ [3585,3840]）时给 1 而实际是 2（评审给出的窗口）。
+# 本仓的判定不依赖本文件，但 README §6.6 的 ε 推导引用了这些读数。
+
+[eps] ε 的 nTile 记账自查：nTile = 实际调度里每 split 最多的 tile 数 = kernel 的 chunkTiles
+[eps] seq=  256 | nTiles=  1 nsplit= 1 | 每 split tile 数 [1] | 实际 nTile=1 / kernel chunkTiles=1 OK | 旧式 nTile=1 | ε 261.0g·2^-24 → 261.0g·2^-24（+0.00%）
+[eps] seq=  300 | nTiles=  2 nsplit= 2 | 每 split tile 数 [1, 1] | 实际 nTile=1 / kernel chunkTiles=1 OK | 旧式 nTile=1 | ε 262.0g·2^-24 → 262.0g·2^-24（+0.00%）
+[eps] seq= 3584 | nTiles= 14 nsplit=14 | 每 split tile 数 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] | 实际 nTile=1 / kernel chunkTiles=1 OK | 旧式 nTile=1 | ε 274.0g·2^-24 → 274.0g·2^-24（+0.00%）
+[eps] seq= 3585 | nTiles= 15 nsplit= 8 | 每 split tile 数 [2, 2, 2, 2, 2, 2, 2, 1] | 实际 nTile=2 / kernel chunkTiles=2 OK | 旧式 nTile=1 **旧式少算一档**（已修） | ε 268.0g·2^-24 → 272.0g·2^-24（+1.49%）
+[eps] seq= 3600 | nTiles= 15 nsplit= 8 | 每 split tile 数 [2, 2, 2, 2, 2, 2, 2, 1] | 实际 nTile=2 / kernel chunkTiles=2 OK | 旧式 nTile=1 **旧式少算一档**（已修） | ε 268.0g·2^-24 → 272.0g·2^-24（+1.49%）
+[eps] seq= 3840 | nTiles= 15 nsplit= 8 | 每 split tile 数 [2, 2, 2, 2, 2, 2, 2, 1] | 实际 nTile=2 / kernel chunkTiles=2 OK | 旧式 nTile=1 **旧式少算一档**（已修） | ε 268.0g·2^-24 → 272.0g·2^-24（+1.49%）
+[eps] seq= 4096 | nTiles= 16 nsplit= 8 | 每 split tile 数 [2, 2, 2, 2, 2, 2, 2, 2] | 实际 nTile=2 / kernel chunkTiles=2 OK | 旧式 nTile=2 | ε 272.0g·2^-24 → 272.0g·2^-24（+0.00%）
+RESULT: OK (7 档：新式 nTile 与「实际调度」及 kernel 切分式逐档一致；其中 3 档旧式少算一档——窗口 seq ∈ [3585, 3840]，本轮已修）
+rc=0

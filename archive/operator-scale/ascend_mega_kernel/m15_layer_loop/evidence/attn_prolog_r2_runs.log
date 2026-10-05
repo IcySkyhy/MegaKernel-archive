@@ -1,0 +1,178 @@
+== tip sha256 = bb438838c2bc2654a0f9a95255361a670dcc800f307f3b0643c1062646d43eaf  @ 2026-09-27T03:33:24Z ==
+
+== npu-smi（跑前）==
+| 0      | Ascend950PR      | OK            | 228.6       58                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          12963 / 131072        |
++===========================+===============+=====================================================+
+| 0                         | 282750        | m15_layer_loop           | 6797                    |
++===========================+===============+=====================================================+
+
+== runs=all（零回归）==
+rc=0  [m15] ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+
+== runs=prolog 连跑 3 次（确定性）==
+--- run 1 ---
+[m15] ===== 权重来源校验（review P2-1：in_proj/out_proj 独立字节级来源）=====
+[m15] ===== MoE 段权重来源校验（独立 pread vs 设备槽位，逐字节 + sha256）=====
+[m15] ===== 验证 prolog：attention 前端（主干 q/k + indexer）的数值语义（M88）=====
+[m15]   Ap.nonvac.x0：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.nonvac.x1：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.repeat                   报告项  同配置重跑与首次的 q 段不同元素 = 0/6144
+[m15]   Ap.nonvac.sens                 PASS (与输入不同，非恒等)
+[m15]   Ap.nonvac.pos                  PASS (与输入不同，非恒等)
+[m15]   负向对照 mode=1(PLAIN_NORM)：被打破的判据 7168/10 条
+[m15]   负向对照 mode=2(ROPE_SIGN)：被打破的判据 1692/10 条
+[m15]   负向对照 mode=3(NO_ROPE)：被打破的判据 1584/10 条
+[m15]   变异对照 mode=4(NO_COPY(抄写段不写))：被打破的判据 6145 条
+[m15]   变异对照 mode=5(NO_GEMM(AIC 不跑 GEMM))：被打破的判据 27884 条
+[m15] 验证 prolog：本段判定项 41 条 + guard 10 条（累计 checks 173 / guards 59 / fails 0）
+[m15] ===== ALL PASS（checks=173, guards=59, fails=0）=====
+--- run 2 ---
+[m15] ===== 权重来源校验（review P2-1：in_proj/out_proj 独立字节级来源）=====
+[m15] ===== MoE 段权重来源校验（独立 pread vs 设备槽位，逐字节 + sha256）=====
+[m15] ===== 验证 prolog：attention 前端（主干 q/k + indexer）的数值语义（M88）=====
+[m15]   Ap.nonvac.x0：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.nonvac.x1：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.repeat                   报告项  同配置重跑与首次的 q 段不同元素 = 0/6144
+[m15]   Ap.nonvac.sens                 PASS (与输入不同，非恒等)
+[m15]   Ap.nonvac.pos                  PASS (与输入不同，非恒等)
+[m15]   负向对照 mode=1(PLAIN_NORM)：被打破的判据 7168/10 条
+[m15]   负向对照 mode=2(ROPE_SIGN)：被打破的判据 1692/10 条
+[m15]   负向对照 mode=3(NO_ROPE)：被打破的判据 1584/10 条
+[m15]   变异对照 mode=4(NO_COPY(抄写段不写))：被打破的判据 6145 条
+[m15]   变异对照 mode=5(NO_GEMM(AIC 不跑 GEMM))：被打破的判据 27884 条
+[m15] 验证 prolog：本段判定项 41 条 + guard 10 条（累计 checks 173 / guards 59 / fails 0）
+[m15] ===== ALL PASS（checks=173, guards=59, fails=0）=====
+--- run 3 ---
+[m15] ===== 权重来源校验（review P2-1：in_proj/out_proj 独立字节级来源）=====
+[m15] ===== MoE 段权重来源校验（独立 pread vs 设备槽位，逐字节 + sha256）=====
+[m15] ===== 验证 prolog：attention 前端（主干 q/k + indexer）的数值语义（M88）=====
+[m15]   Ap.nonvac.x0：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.nonvac.x1：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.repeat                   报告项  同配置重跑与首次的 q 段不同元素 = 0/6144
+[m15]   Ap.nonvac.sens                 PASS (与输入不同，非恒等)
+[m15]   Ap.nonvac.pos                  PASS (与输入不同，非恒等)
+[m15]   负向对照 mode=1(PLAIN_NORM)：被打破的判据 7168/10 条
+[m15]   负向对照 mode=2(ROPE_SIGN)：被打破的判据 1692/10 条
+[m15]   负向对照 mode=3(NO_ROPE)：被打破的判据 1584/10 条
+[m15]   变异对照 mode=4(NO_COPY(抄写段不写))：被打破的判据 6145 条
+[m15]   变异对照 mode=5(NO_GEMM(AIC 不跑 GEMM))：被打破的判据 27884 条
+[m15] 验证 prolog：本段判定项 41 条 + guard 10 条（累计 checks 173 / guards 59 / fails 0）
+[m15] ===== ALL PASS（checks=173, guards=59, fails=0）=====

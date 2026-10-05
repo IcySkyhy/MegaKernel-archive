@@ -1,0 +1,454 @@
+{
+  "_meta": {
+    "eps": 1e-06,
+    "generator": "gen_fixtures.py (numpy float64 oracle, fp32 storage)",
+    "head_dim": 64,
+    "heads": 4,
+    "hidden": 256,
+    "rope_position": 5.0,
+    "rope_theta": 10000000.0,
+    "rotary": 16,
+    "rows": 8,
+    "seed": 12648430,
+    "seq": 8,
+    "vocab": 512
+  },
+  "cast_bf16": {
+    "file": "cast_bf16.8x256.f32.bin",
+    "sha256": "564eef72e9ca60f52b6152e62f3c95f269d8fe2fb742d0a0e66bb5452f3c9871",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "cast_x": {
+    "file": "cast_x.8x256.f32.bin",
+    "sha256": "43818e438f7e49781389390f5b20ce43bba81436fe02a1308b07711f056e699f",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "conv_dstate": {
+    "file": "conv_dstate.3x256.f32.bin",
+    "sha256": "daf76c395839dbb8c82a54f90b4f6e168d13116e30a546e3f35fb74202e3cb08",
+    "shape": [
+      3,
+      256
+    ]
+  },
+  "conv_dw": {
+    "file": "conv_dw.256x4.f32.bin",
+    "sha256": "2765d98bfad66a3fa360b5bae0ae5940cf56549a43a2325d94c5f10700b8f77b",
+    "shape": [
+      256,
+      4
+    ]
+  },
+  "conv_dw_step": {
+    "file": "conv_dw_step.256x4.f32.bin",
+    "sha256": "6d7317ecd65aa1ad2ac2a7be4b69f5e629cb1e96ddd4d30121915486c0295699",
+    "shape": [
+      256,
+      4
+    ]
+  },
+  "conv_dx": {
+    "file": "conv_dx.8x256.f32.bin",
+    "sha256": "4f15bb2b98a1973bc2661e27c8995c8c630f45e48a54e3ae3b098c18c2dd5b9c",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "conv_dxt": {
+    "file": "conv_dxt.256.f32.bin",
+    "sha256": "fc3952a3516486c01f457dd6a9a84d1ada1f5df78ca47a6c28bfb9ef8730fa3a",
+    "shape": [
+      256
+    ]
+  },
+  "conv_dy": {
+    "file": "conv_dy.8x256.f32.bin",
+    "sha256": "f00cf7c9bccc042acf8a2b71f6bdcc49f4969c936519cf6a3303427b007bc5aa",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "conv_dyt": {
+    "file": "conv_dyt.256.f32.bin",
+    "sha256": "48d0a4b9f5ae22df2af7f12fce1300a3325bad491feb786827ca6321300610f0",
+    "shape": [
+      256
+    ]
+  },
+  "conv_state": {
+    "file": "conv_state.3x256.f32.bin",
+    "sha256": "b922177262fb165b3dfdc9956ded58dbd6e45517a3051e5564a3ce050665efe1",
+    "shape": [
+      3,
+      256
+    ]
+  },
+  "conv_state_out": {
+    "file": "conv_state_out.3x256.f32.bin",
+    "sha256": "462412776319c5884fe7f99b3a8d5879f6a32b2b13515cda2d058d8a041e39e0",
+    "shape": [
+      3,
+      256
+    ]
+  },
+  "conv_w": {
+    "file": "conv_w.256x4.f32.bin",
+    "sha256": "23e76af4f0f27f0e74127510546c6a59e35c61288cdbfb0d84544869b7e76a5d",
+    "shape": [
+      256,
+      4
+    ]
+  },
+  "conv_x": {
+    "file": "conv_x.8x256.f32.bin",
+    "sha256": "00ecc25508e45c7735c5bb3682e43811d879afd7aa5292db49fa012adc9b60fd",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "conv_xt": {
+    "file": "conv_xt.256.f32.bin",
+    "sha256": "0e3d6210996a68945b9253b257b82c84e37efb627c18295bb0e7432d694f40f4",
+    "shape": [
+      256
+    ]
+  },
+  "conv_y": {
+    "file": "conv_y.8x256.f32.bin",
+    "sha256": "dd48406e829776df495fccbf890cf645b35e206095472daedb2059f609f283db",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "conv_yt": {
+    "file": "conv_yt.256.f32.bin",
+    "sha256": "bfa18a57126795033170a928508cb3ca581dcf02fd3924bf085062b895b2fe9a",
+    "shape": [
+      256
+    ]
+  },
+  "embed_ids": {
+    "file": "embed_ids.8.f32.bin",
+    "sha256": "60c72cbe69ad4a7f5ec48579a98c392665c1a7e40ded7df6346ac37d1d5b86d3",
+    "shape": [
+      8
+    ]
+  },
+  "embed_out": {
+    "file": "embed_out.8x256.f32.bin",
+    "sha256": "8edf6e9d15ce3ef03515458d3fd7ac2669b7223277ac2dcdfd218a273af97b79",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "embed_table": {
+    "file": "embed_table.512x256.f32.bin",
+    "sha256": "84f1ed4a68df95b1638c854232a934ed3312f205d5602b7197d1c7dc7cb9dac7",
+    "shape": [
+      512,
+      256
+    ]
+  },
+  "gated_dx": {
+    "file": "gated_dx.8x64.f32.bin",
+    "sha256": "2fc4ee74a90112e56690c407e538a0bb2c9c8a165106099ce9020f2beaf10544",
+    "shape": [
+      8,
+      64
+    ]
+  },
+  "gated_dy": {
+    "file": "gated_dy.8x64.f32.bin",
+    "sha256": "052662f5ed9e2ea7070fb2e9d73a9da3ed9902dc52329d8390a977dc3b4e17af",
+    "shape": [
+      8,
+      64
+    ]
+  },
+  "gated_dz": {
+    "file": "gated_dz.8x64.f32.bin",
+    "sha256": "20dfb619b1320353c24d8d028f0f5e003d7558887d3ddfa5ab78f97ab499e29a",
+    "shape": [
+      8,
+      64
+    ]
+  },
+  "gated_inv": {
+    "file": "gated_inv.8.f32.bin",
+    "sha256": "49f76999729a219322284cb5da33f5355bc215e47eb81d5b8d94346f55e7a91c",
+    "shape": [
+      8
+    ]
+  },
+  "gated_x": {
+    "file": "gated_x.8x64.f32.bin",
+    "sha256": "550471aa91211ef98ea8d0a6c3c23d909245168f14ddb6285b197352c0982efd",
+    "shape": [
+      8,
+      64
+    ]
+  },
+  "gated_y": {
+    "file": "gated_y.8x64.f32.bin",
+    "sha256": "c93d81fb49c93fd258267bb1fe1a5bde087dd03d97bf67827e8cd0822a15b716",
+    "shape": [
+      8,
+      64
+    ]
+  },
+  "gated_z": {
+    "file": "gated_z.8x64.f32.bin",
+    "sha256": "583dfc80643559def805854a4c0db92a3e846e97f51a97006a7fd21e0c1eae51",
+    "shape": [
+      8,
+      64
+    ]
+  },
+  "l2_dx": {
+    "file": "l2_dx.4x64.f32.bin",
+    "sha256": "1becfb39e136149fb17b569a451be3ea375771080684b3346f85f06e37cdee7d",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "l2_dy": {
+    "file": "l2_dy.4x64.f32.bin",
+    "sha256": "6f0b2f34e2f51fc4dcba19fcf85b2688efcc28a72d8981d8d7b13e0b5250f758",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "l2_x": {
+    "file": "l2_x.4x64.f32.bin",
+    "sha256": "7ebbf50d9297a4e1ea5c7795a516bdac3dc79f903f84561ceb888dc061942cae",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "l2_y": {
+    "file": "l2_y.4x64.f32.bin",
+    "sha256": "b321235f50ddc7f8f98acd3ff75c4cc673bbf427d560391b1d8a82c1e0ab1534",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "rms_dw": {
+    "file": "rms_dw.256.f32.bin",
+    "sha256": "6d9073f85f9bfc02f044b4096e96ef153349311e52e5b854aa7c3230f86d1084",
+    "shape": [
+      256
+    ]
+  },
+  "rms_dx": {
+    "file": "rms_dx.8x256.f32.bin",
+    "sha256": "7243a2131073ebc41a672281ce46d0d9d8966043a892504bd79553e52faffebe",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "rms_dy": {
+    "file": "rms_dy.8x256.f32.bin",
+    "sha256": "dd7bbc5ef8338f7f8aaf97deecc77a51e711943f73f2d5beecd874174b7cd40a",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "rms_inv": {
+    "file": "rms_inv.8.f32.bin",
+    "sha256": "f0132f8b8832c4674b6afa982467d7501d661eeef8d41bf8ae6f9c2996859e20",
+    "shape": [
+      8
+    ]
+  },
+  "rms_w": {
+    "file": "rms_w.256.f32.bin",
+    "sha256": "856c754c7a66d944651faa88616ba348f98e7dec8dbc5512aadb32f95fc2c7eb",
+    "shape": [
+      256
+    ]
+  },
+  "rms_x": {
+    "file": "rms_x.8x256.f32.bin",
+    "sha256": "345b557ab49b1358ff20787d6ddad7e8317e11d1b7ee6f44440ca0d3de1d197a",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "rms_y": {
+    "file": "rms_y.8x256.f32.bin",
+    "sha256": "c87f138809b26aa593777c63a7c6bb3075c4a6b166915df54847cc8e78d876cb",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "rope_dk": {
+    "file": "rope_dk.4x64.f32.bin",
+    "sha256": "01c73a4f32197d24eb7b9191c1dd45d2809a98862cfa01865eb327cdc7d03c41",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "rope_dk_pre": {
+    "file": "rope_dk_pre.4x64.f32.bin",
+    "sha256": "589f234b6fe260d8ad3542e2eb6817642c2a246b944b1948c91e5a25c03c60c0",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "rope_dq": {
+    "file": "rope_dq.4x64.f32.bin",
+    "sha256": "94d3d16fb8daca4aafa9cf6af726827dbd3256e84339ae651ae0a8581486979d",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "rope_dq_pre": {
+    "file": "rope_dq_pre.4x64.f32.bin",
+    "sha256": "147e3ece650991377841368084eb51ffd34e314ff7db66713789093725bdb151",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "rope_invfreq": {
+    "file": "rope_invfreq.8.f32.bin",
+    "sha256": "869f75e855b6ba8ecff2c8dd81392540184606d1068d1617600d18bd2572779a",
+    "shape": [
+      8
+    ]
+  },
+  "rope_k": {
+    "file": "rope_k.4x64.f32.bin",
+    "sha256": "ef74b4d03724d1f1c96b7e3e90251ff3f6c0e4ef98633af83840f39ea464f639",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "rope_k_out": {
+    "file": "rope_k_out.4x64.f32.bin",
+    "sha256": "7df3e96f03ef11a8fdc6ce48114af32c38feeae6ecc2c5995440433b76f3963b",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "rope_q": {
+    "file": "rope_q.4x64.f32.bin",
+    "sha256": "2073ce63ed0dea609c62f9c429e604a3569d56bb17e6010dd1287b79603f6e18",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "rope_q_out": {
+    "file": "rope_q_out.4x64.f32.bin",
+    "sha256": "275f0d06dee3cdb2091142dc3a920380f69bad38550d466e9f5abde2cdb3882d",
+    "shape": [
+      4,
+      64
+    ]
+  },
+  "silu_dx": {
+    "file": "silu_dx.8x256.f32.bin",
+    "sha256": "7dd0ffdc3b6750351f9368431ee0b7f20f208b40f1d1dc557ce658243c2ae78a",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "silu_dy": {
+    "file": "silu_dy.8x256.f32.bin",
+    "sha256": "ae937a7502d827b44b34d11845cc73bea42cff7187f02cdb1e5b0ae946a46ae1",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "silu_x": {
+    "file": "silu_x.8x256.f32.bin",
+    "sha256": "16692ecb392f0c204bdd2ebae07bf102536fa5578d661b2e10576a6bf466f702",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "silu_y": {
+    "file": "silu_y.8x256.f32.bin",
+    "sha256": "bf943351137fa8d759e7a3070c344eaa07ccbdc5eee46be81869c5f1db4bc5d0",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "swiglu_dgate": {
+    "file": "swiglu_dgate.8x256.f32.bin",
+    "sha256": "1bad64a5ca3cc4fbfe69c38e80d3ff3e586b0bb86575f5a3a1364dfbcf1a0648",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "swiglu_dh": {
+    "file": "swiglu_dh.8x256.f32.bin",
+    "sha256": "41c293562dfc6fba429df875acee49eebff652d8c116a04c1de092e2d071d7ed",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "swiglu_dup": {
+    "file": "swiglu_dup.8x256.f32.bin",
+    "sha256": "67bc3f6904ddb1ed1c9a6d39ee6d7d1cbffa12a2568980ca4691c9e3b10aa490",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "swiglu_gate": {
+    "file": "swiglu_gate.8x256.f32.bin",
+    "sha256": "f5e998f5ce8ad387d133a7279f86bfb7cb5ec859677867f49347986bef83da73",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "swiglu_h": {
+    "file": "swiglu_h.8x256.f32.bin",
+    "sha256": "19174eb9db5f21304c79890ebfc8606fde7d8b09c050e66adfeab2aeb2bdccc6",
+    "shape": [
+      8,
+      256
+    ]
+  },
+  "swiglu_up": {
+    "file": "swiglu_up.8x256.f32.bin",
+    "sha256": "93704eca115b1a6c85e5ea8910b4e18fdbbe38e61c5a6a7137ab893142755a36",
+    "shape": [
+      8,
+      256
+    ]
+  }
+}

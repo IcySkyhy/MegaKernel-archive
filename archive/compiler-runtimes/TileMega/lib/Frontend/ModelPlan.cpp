@@ -1,0 +1,1194 @@
+// SPDX-License-Identifier: BSD-3-Clause
+#include <tilemega/Frontend/ModelPlan.h>
+
+#include <tilemega/Frontend/GraphPattern.h>
+
+#include <algorithm>
+#include <cctype>
+#include <limits>
+#include <functional>
+#include <map>
+#include <set>
+#include <stdexcept>
+#include <unordered_set>
+
+namespace tilemega::frontend {
+namespace {
+
+constexpr std::uint32_t kNoOperand = std::numeric_limits<std::uint32_t>::max();
+
+std::string FileComponent(std::string value) {
+  for (char& c : value)
+    if (!std::isalnum(static_cast<unsigned char>(c))) c = '_';
+  return value;
+}
+
+std::uint32_t NumericElements(FxNodeRecord const& node) {
+  std::uint64_t product = 1;
+  if (node.shape.empty())
+    throw std::runtime_error("placeholder has no tensor shape: " + node.name);
+  for (auto const& extent : node.shape) {
+    if (extent.empty() || !std::all_of(extent.begin(), extent.end(), ::isdigit))
+      throw std::runtime_error("expected a static parameter shape for " +
+                               node.name + "; got " + extent);
+    product *= std::stoull(extent);
+  }
+  if (product > std::numeric_limits<std::uint32_t>::max())
+    throw std::runtime_error("parameter is too large for Phase-3 table: " +
+                             node.name);
+  return static_cast<std::uint32_t>(product);
+}
+
+std::uint32_t StaticExtent(FxNodeRecord const& node, std::size_t axis) {
+  if (axis >= node.shape.size())
+    throw std::runtime_error("missing shape axis on " + node.name);
+  auto const& value = node.shape[axis];
+  if (value.empty() || !std::all_of(value.begin(), value.end(), ::isdigit))
+    throw std::runtime_error("expected static shape axis on " + node.name +
+                             "; got " + value);
+  return static_cast<std::uint32_t>(std::stoul(value));
+}
+
+std::string StorageDtype(FxNodeRecord const& node) {
+  if (node.dtype == "torch.float32") return "f32";
+  if (node.dtype == "torch.bfloat16") return "bf16";
+  throw std::runtime_error("unsupported tensor dtype on " + node.name +
+                           ": " + node.dtype);
+}
+
+struct PlanBuilder {
+  explicit PlanBuilder(std::vector<FxNodeRecord> const& records)
+      : nodes(records) {
+    for (auto const& node : nodes) by_name.emplace(node.name, &node);
+  }
+
+  FxNodeRecord const& Node(std::string const& name) const {
+    auto found = by_name.find(name);
+    if (found == by_name.end())
+      throw std::runtime_error("model-plan reference names unknown FX node: " + name);
+    return *found->second;
+  }
+
+  bool DependsOn(std::string const& value, std::string const& ancestor) const {
+    if (value == ancestor) return true;
+    std::vector<std::string> work{value};
+    std::unordered_set<std::string> seen;
+    while (!work.empty()) {
+      std::string current = std::move(work.back());
+      work.pop_back();
+      if (!seen.insert(current).second) continue;
+      auto found = by_name.find(current);
+      if (found == by_name.end()) continue;
+      for (auto const& input : found->second->inputs) {
+        if (input == ancestor) return true;
+        work.push_back(input);
+      }
+    }
+    return false;
+  }
+
+  std::uint32_t Buffer(PlanBuffer buffer) {
+    auto found = buffer_id.find(buffer.name);
+    if (found != buffer_id.end()) return found->second;
+    std::uint32_t id = static_cast<std::uint32_t>(plan.buffers.size());
+    buffer_id.emplace(buffer.name, id);
+    plan.buffers.push_back(std::move(buffer));
+    return id;
+  }
+
+  /// `elements_per_value` is 2 for a table the device reads back as FP32:
+  /// buffers are arrays of model elements, so an FP32 value occupies two of
+  /// them and the fixture bytes are copied in unchanged.
+  std::uint32_t Weight(SignatureInput const& input,
+                       std::uint32_t elements_per_value = 1) {
+    FxNodeRecord const& node = Node(input.name);
+    return Buffer({input.name, NumericElements(node) * elements_per_value,
+                   0, 0, 0, PlanBuffer::Source::kWeight,
+                   "state_" + FileComponent(input.target) + ".bin"});
+  }
+
+  std::uint32_t Scratch(std::string name, std::uint32_t per_seq) {
+    return Buffer({std::move(name), 0, per_seq, 0, 0,
+                   PlanBuffer::Source::kZero, {}});
+  }
+
+  std::uint32_t Gemm(std::uint32_t a, std::uint32_t b, std::uint32_t c,
+                     std::uint32_t d, std::uint32_t n, std::uint32_t k,
+                     float beta) {
+    plan.gemms.push_back({n, k, a, b, c, d, beta});
+    return static_cast<std::uint32_t>(plan.gemms.size() - 1);
+  }
+
+  void Stage(PlanTaskKind kind, std::string const& representative,
+             std::uint32_t gemm, std::uint32_t extent,
+             std::uint32_t width, std::uint32_t group,
+             std::initializer_list<std::uint32_t> operands = {}) {
+    PlanStage stage;
+    stage.kind = kind;
+    stage.gemm = gemm;
+    stage.extent = extent;
+    stage.width = width;
+    stage.group = group;
+    stage.operands.fill(kNoOperand);
+    std::copy(operands.begin(), operands.end(), stage.operands.begin());
+    stage.representative = representative;
+    stage.representative_index = Node(representative).index;
+    if (!plan.stages.empty() &&
+        stage.representative_index <= plan.stages.back().representative_index)
+      throw std::runtime_error("semantic stages are not in FX topological order at " +
+                               representative);
+    plan.stages.push_back(std::move(stage));
+  }
+
+  /// Every normalization of one model shares one epsilon; disagreement means
+  /// the structural match pulled in something that is not a normalization.
+  /// Zero is "the document does not state it" and leaves the runtime default
+  /// in place, which is the only thing an older bridge export supports.
+  void Epsilon(double value) {
+    if (value == 0.0) return;
+    if (plan.norm_epsilon != 0.0 && plan.norm_epsilon != value)
+      throw std::runtime_error("the model's normalizations disagree on epsilon");
+    plan.norm_epsilon = value;
+  }
+
+  std::vector<FxNodeRecord> const& nodes;
+  std::unordered_map<std::string, FxNodeRecord const*> by_name;
+  std::unordered_map<std::string, std::uint32_t> buffer_id;
+  ModelPlan plan;
+};
+
+/// The epsilon of the normalization behind `value`. An RMSNorm scale is
+/// `rsqrt(mean(x^2) + eps)`, so the epsilon is the literal operand of the
+/// `add` that the `rsqrt` reads. It is the one piece of model configuration
+/// that reaches FX as a literal rather than as a shape or a parameter, which
+/// is why it has to be read here instead of assumed downstream.
+double NormalizationEpsilon(PatternMatcher const& matcher,
+                            std::string const& value) {
+  std::string root = matcher.FirstOfRole(value, "rsqrt", "contraction");
+  if (root.empty())
+    throw std::runtime_error("no rsqrt behind the normalization at " + value);
+  FxNodeRecord const* rsqrt = matcher.Find(root);
+  bool stated = false;
+  for (auto const& operand : rsqrt->inputs) {
+    FxNodeRecord const* add = matcher.Find(matcher.Value(operand));
+    if (!add || matcher.RoleOf(*add) != "add") continue;
+    stated = stated || add->has_scalars;
+    if (!add->scalars.empty()) return add->scalars.front();
+  }
+  if (stated)
+    throw std::runtime_error("the normalization at " + value +
+                             " has no epsilon literal behind its rsqrt");
+  return 0.0;
+}
+
+/// The decoder layer, stated as use-def structure. Nothing here names a
+/// module, a parameter or a layer index: the anchor is the KV concat, and
+/// every other slot is pinned relative to it. `Value` is exact modulo
+/// layout-only operators, `Dep`/`ancestor_of` are transitive, which is what
+/// makes one pattern cover both the composite export and its Core ATen form.
+GraphPattern const& DecoderLayerPattern() {
+  static GraphPattern const pattern = {
+      "decoder_layer",
+      {
+          // The layer starts at its input norm: the three projections that
+          // read one scaled tensor are Q, K and V by definition, and pinning
+          // them to a shared operand is what keeps a match inside one layer.
+          // Unordered: the reference graph scales then weights
+          // (`value * weight`), while the published modeling code writes
+          // `self.weight * hidden_states`. Both are the same normalization.
+          {"norm1", "multiply", {Any(), Param()}, /*unordered=*/true},
+          {"q", "contraction", {Value("norm1"), Param()}},
+          {"k", "contraction", {Value("norm1"), Param()}},
+          {"v", "contraction", {Value("norm1"), Param()}},
+          // Each cache appends its own projection to a model input; that is
+          // what tells K from V without naming either.
+          {"cat_k", "concat", {Input(), Near("contraction", "k")}},
+          {"cat_v", "concat", {Input(), Near("contraction", "v")}},
+          // Scores read the key cache and not the value cache; the context
+          // matmul is the other way round.
+          {"score", "contraction",
+           {Near("contraction", "q"), Near("concat", "cat_k")}},
+          {"prob", "softmax", {Near("contraction", "score")}},
+          {"ctx", "contraction", {Value("prob"), Dep("cat_v")}},
+          {"o", "contraction", {Value("ctx"), Param()}},
+          // The residual takes the projection's own result, not merely
+          // something downstream of it, so `Value` and not `Dep`.
+          {"resid1", "add", {Value("o")}, /*unordered=*/true},
+          // SwiGLU: the gate is the projection under the activation, the up
+          // projection is the other operand of the product. `resid2` pins the
+          // whole group back to this layer's first residual.
+          {"gate", "contraction", {Dep("resid1"), Param()}},
+          {"act", "activation", {Value("gate")}},
+          {"up", "contraction", {Dep("resid1"), Param()}},
+          // `Dep` and not `Value` on the activation: SiLU is one node before
+          // `run_decompositions()` and `sigmoid` followed by a product after,
+          // so the gate arrives at the product through one more multiply.
+          {"swiglu", "multiply", {Dep("act"), Value("up")}, true},
+          {"down", "contraction", {Value("swiglu"), Param()}},
+          {"resid2", "add", {Value("down"), Value("resid1")}, true},
+      },
+      // Both residuals carry the hidden width; the eps add inside an RMSNorm
+      // does not, which is the only other `add` reachable from `o`.
+      {{"resid1", -1, "o", -1}, {"resid2", -1, "down", -1}},
+  };
+  return pattern;
+}
+
+
+// Preserve supported regions on both sides of explicit normalization/RoPE
+// cuts. Every non-layout input must resolve to a fixture or emitted stage;
+// an unmatched calculation cannot silently become a graph input.
+ModelPlan BuildCoveredRegions(std::vector<FxNodeRecord> const& nodes,
+    std::vector<SignatureInput> const& inputs,std::vector<std::string> const& outputs) {
+  PatternMatcher matcher(nodes,inputs);
+  GraphPattern attention{"cut_attention",{
+      {"cat_k","concat",{Input(),Input()}},
+      {"cat_v","concat",{Input(),Any()}},
+      {"score","contraction",{Input(),Near("concat","cat_k")}},
+      {"prob","softmax",{Near("contraction","score")}},
+      {"ctx","contraction",{Value("prob"),Dep("cat_v")}},
+      {"o","contraction",{Value("ctx"),Param()}}},{}};
+  auto attentions=matcher.FindAll(attention);
+  if (attentions.empty()) return {};
+  PlanBuilder builder(nodes);
+  std::map<std::string,SignatureInput const*> signature;
+  for (auto const& input:inputs) signature.emplace(input.name,&input);
+  builder.plan.dtype=StorageDtype(builder.Node(inputs.front().name));
+  for (auto const& input:inputs)
+    if (StorageDtype(builder.Node(input.name))!=builder.plan.dtype)
+      throw std::invalid_argument("mixed storage in covered regions");
+  std::map<std::string,std::uint32_t> values;
+  auto resolve=[&](std::string name) {
+    name=matcher.Value(name);
+    if (auto found=values.find(name);found!=values.end()) return found->second;
+    auto found=signature.find(name);
+    if (found==signature.end() || found->second->kind!="USER_INPUT")
+      throw std::invalid_argument("covered region has an unsupported boundary: "+name);
+    auto const& node=builder.Node(name);
+    if (node.shape.size()!=3)
+      throw std::invalid_argument("activation boundary requires token-major rank three: "+name);
+    auto id=builder.Buffer({name,0,StaticExtent(node,2),0,0,
+        PlanBuffer::Source::kFixture,"input_"+name+".bin"});
+    values.emplace(name,id);return id;
+  };
+  auto weight=[&](std::string name) {
+    name=matcher.Value(name);auto found=signature.find(name);
+    if (found==signature.end() || found->second->kind=="USER_INPUT")
+      throw std::invalid_argument("covered contraction has no parameter");
+    return builder.Weight(*found->second);
+  };
+  std::map<int,std::function<void()>> actions;
+  auto add_action=[&](FxNodeRecord const* n,std::function<void()> action) {
+    if (!actions.emplace(n->index,std::move(action)).second)
+      throw std::invalid_argument("ambiguous covered region at "+n->name);
+  };
+  std::set<std::string> cats,contexts;
+  for (auto const& match:attentions) {
+    auto const* score=match.at("score"),*ctx=match.at("ctx");
+    auto const& q_layout=builder.Node(score->inputs.at(0));
+    if (q_layout.shape.size()!=4) throw std::invalid_argument("cut attention query must carry heads");
+    unsigned heads=StaticExtent(q_layout,1),width=StaticExtent(q_layout,3);
+    unsigned kv=StaticExtent(*match.at("cat_k"),1);
+    if (!kv || heads%kv) throw std::invalid_argument("invalid cut attention head grouping");
+    for (auto slot:{"cat_k","cat_v"}) {
+      auto const* cat=match.at(slot);
+      if (!cats.insert(cat->name).second) continue;
+      add_action(cat,[&,cat,kv,width] {
+        auto past_name=matcher.Value(cat->inputs.at(0));auto const& past=builder.Node(past_name);
+        if (!matcher.IsInput(past_name) || past.shape.size()!=4 || StaticExtent(past,1)!=kv || StaticExtent(past,3)!=width)
+          throw std::invalid_argument("cache boundary is not head-major past storage");
+        auto p=builder.Buffer({past_name,0,0,kv*width,0,PlanBuffer::Source::kFixture,"input_"+past_name+".bin"});
+        auto current=resolve(cat->inputs.at(1));
+        auto full=builder.Buffer({cat->name,0,0,0,kv*width,PlanBuffer::Source::kZero,{}});
+        builder.Stage(PlanTaskKind::kKVAppend,cat->name,0,kv,width,1,{current,p,full});
+        values[cat->name]=full;builder.plan.node_buffer[cat->name]=full;
+      });
+    }
+    if (!contexts.insert(ctx->name).second) throw std::invalid_argument("ambiguous cut attention context");
+    auto k=match.at("cat_k")->name,v=match.at("cat_v")->name;
+    add_action(ctx,[&,ctx,score,k,v,heads,kv,width] {
+      auto q=resolve(score->inputs.at(0));auto out=builder.Scratch(ctx->name,heads*width);
+      builder.Stage(PlanTaskKind::kAttention,ctx->name,0,heads,width,heads/kv,{q,values.at(k),values.at(v),out});
+      values[ctx->name]=out;builder.plan.node_buffer[ctx->name]=out;
+    });
+  }
+  GraphPattern linear{"covered_linear",{{"linear","contraction",{Any(),Param()}}},{}};
+  for (auto const& match:matcher.FindAll(linear)) {
+    auto const* node=match.at("linear");
+    add_action(node,[&,node] {
+      auto a=resolve(node->inputs.at(0)),b=weight(node->inputs.at(1));
+      auto const& parameter=builder.Node(matcher.Value(node->inputs.at(1)));
+      unsigned n=StaticExtent(parameter,0),k=StaticExtent(parameter,1);
+      auto d=builder.Scratch(node->name,n);
+      builder.Stage(PlanTaskKind::kGemm,node->name,builder.Gemm(a,b,d,d,n,k,0),0,0,1);
+      values[node->name]=d;builder.plan.node_buffer[node->name]=d;
+    });
+  }
+  GraphPattern swiglu{"covered_swiglu",{
+      {"gate","contraction",{Input(),Param()}},{"act","activation",{Value("gate")}},
+      {"up","contraction",{Input(),Param()}},{"product","multiply",{Dep("act"),Value("up")},true}},{}};
+  for (auto const& match:matcher.FindAll(swiglu)) {
+    auto const* node=match.at("product");auto gate=match.at("gate")->name,up=match.at("up")->name;
+    add_action(node,[&,node,gate,up] {
+      unsigned width=StaticExtent(*node,node->shape.size()-1);auto out=builder.Scratch(node->name,width);
+      builder.Stage(PlanTaskKind::kElementwise,node->name,0,width,0,1,{values.at(gate),values.at(up),out});
+      values[node->name]=out;builder.plan.node_buffer[node->name]=out;
+    });
+  }
+  GraphPattern residual{"covered_residual",{{"projection","contraction",{Any(),Param()}},
+      {"sum","add",{Value("projection"),Any()},true}},{{"sum",-1,"projection",-1}}};
+  for (auto const& match:matcher.FindAll(residual)) {
+    auto const* node=match.at("sum");
+    add_action(node,[&,node] {
+      auto a=resolve(node->inputs.at(0)),b=resolve(node->inputs.at(1));
+      unsigned width=StaticExtent(*node,node->shape.size()-1);auto out=builder.Scratch(node->name,width);
+      builder.Stage(PlanTaskKind::kAdd,node->name,0,width,0,1,{a,b,out});
+      values[node->name]=out;builder.plan.node_buffer[node->name]=out;
+    });
+  }
+  for (auto const& [index,action]:actions) action();
+  for (std::size_t i=0;i<outputs.size();++i) {
+    auto name=matcher.Value(outputs[i]);
+    if (!values.count(name)) throw std::invalid_argument("uncovered exported output: "+outputs[i]);
+    builder.plan.outputs.push_back({values.at(name),"reference_"+std::to_string(i)+".bin"});
+  }
+  return std::move(builder.plan);
+}
+
+// An independently exported, already-normalized SwiGLU region uses only
+// existing GEMM/elementwise TaskBodies. This adapter does not synthesize a
+// missing normalization or silently substitute an approximate RoPE.
+ModelPlan BuildMlpRegions(std::vector<FxNodeRecord> const& nodes,
+    std::vector<SignatureInput> const& inputs,std::vector<std::string> const& outputs) {
+  GraphPattern pattern{"mlp_region",{
+    {"gate","contraction",{Input(),Param()}},
+    {"act","activation",{Value("gate")}},
+    {"up","contraction",{Input(),Param()}},
+    {"product","multiply",{Dep("act"),Value("up")},true},
+    {"down","contraction",{Value("product"),Param()}},
+    {"residual","add",{Value("down"),Input()},true}},
+    {{"residual",-1,"down",-1}}};
+  PatternMatcher matcher(nodes,inputs);auto matches=matcher.FindAll(pattern);
+  if (matches.empty()) return {};
+  std::sort(matches.begin(),matches.end(),[](auto const& a,auto const& b) {
+    return a.at("residual")->index<b.at("residual")->index;
+  });
+  PlanBuilder builder(nodes);std::map<std::string,SignatureInput const*> signature;
+  for (auto const& input:inputs) signature.emplace(input.name,&input);
+  auto input_buffer=[&](std::string name) {
+    name=matcher.Value(name);auto const& node=builder.Node(name);
+    if (!signature.count(name) || signature.at(name)->kind!="USER_INPUT")
+      throw std::invalid_argument("MLP cut boundary is not an exported input");
+    return builder.Buffer({name,0,StaticExtent(node,node.shape.size()-1),0,0,
+        PlanBuffer::Source::kFixture,"input_"+name+".bin"});
+  };
+  auto weight=[&](std::string name) {
+    name=matcher.Value(name);
+    if (!signature.count(name) || signature.at(name)->kind=="USER_INPUT")
+      throw std::invalid_argument("MLP weight is not a parameter");
+    return builder.Weight(*signature.at(name));
+  };
+  std::map<std::string,std::uint32_t> result;
+  builder.plan.dtype=StorageDtype(builder.Node(matcher.Value(matches.front().at("gate")->inputs[0])));
+  for (auto const& input:inputs) if (StorageDtype(builder.Node(input.name))!=builder.plan.dtype)
+    throw std::invalid_argument("mixed storage types in MLP region");
+  for (auto const& match:matches) {
+    auto const& gate=*match.at("gate");auto const& up=*match.at("up");
+    auto const& down=*match.at("down");auto const& residual=*match.at("residual");
+    if (result.count(residual.name)) throw std::invalid_argument("ambiguous MLP region");
+    if (matcher.Value(gate.inputs[0])!=matcher.Value(up.inputs[0]))
+      throw std::invalid_argument("MLP gate and up do not share an input");
+    auto x=input_buffer(gate.inputs[0]);std::string residual_input;
+    for (auto const& input:residual.inputs)
+      if (matcher.Value(input)!=matcher.Value(down.name)) residual_input=input;
+    auto r=input_buffer(residual_input);
+    auto hidden=StaticExtent(builder.Node(matcher.Value(gate.inputs[0])),gate.shape.size()-1);
+    auto intermediate=StaticExtent(gate,gate.shape.size()-1);
+    auto g=builder.Scratch(gate.name,intermediate),u=builder.Scratch(up.name,intermediate);
+    auto y=builder.Scratch(residual.name,hidden);
+    builder.Stage(PlanTaskKind::kGemm,gate.name,builder.Gemm(x,weight(gate.inputs[1]),g,g,intermediate,hidden,0),0,0,1);
+    builder.Stage(PlanTaskKind::kGemm,up.name,builder.Gemm(x,weight(up.inputs[1]),u,u,intermediate,hidden,0),0,0,1);
+    builder.Stage(PlanTaskKind::kElementwise,match.at("product")->name,0,intermediate,0,1,{g,u,g});
+    builder.Stage(PlanTaskKind::kGemm,residual.name,builder.Gemm(g,weight(down.inputs[1]),r,y,hidden,intermediate,1),0,0,1);
+    result[residual.name]=y;builder.plan.node_buffer[residual.name]=y;
+  }
+  for (std::size_t i=0;i<outputs.size();++i) {
+    if (!result.count(outputs[i])) throw std::invalid_argument("MLP region does not cover an exported output");
+    builder.plan.outputs.push_back({result.at(outputs[i]),"reference_"+std::to_string(i)+".bin"});
+  }
+  return std::move(builder.plan);
+}
+
+}  // namespace
+
+/// The vocabulary gather whose result reaches `consumer`, if the exported
+/// graph starts at token identifiers rather than at hidden states. The index
+/// operand must be the model input itself: an embedding somewhere deeper in
+/// the graph is not the entry point and must not be lifted as one.
+FxNodeRecord const* EntryEmbedding(PatternMatcher const& matcher,
+                                   std::vector<FxNodeRecord> const& nodes,
+                                   std::string const& consumer,
+                                   std::string const& input) {
+  FxNodeRecord const* result = nullptr;
+  for (auto const& node : nodes) {
+    if (matcher.RoleOf(node) != "embedding" || node.inputs.size() < 2) continue;
+    if (matcher.Value(node.inputs[1]) != input) continue;
+    if (!matcher.DependsOn(consumer, node.name)) continue;
+    if (result)
+      throw std::runtime_error("two embeddings read the same model input");
+    result = &node;
+  }
+  return result;
+}
+
+/// The per-head normalization between a projection and its rotation, if the
+/// architecture has one. Structural in both directions: it must lie on the
+/// path from the projection to the rotation, and its parameter must be exactly
+/// one head wide -- a row normalization on the same path would carry the whole
+/// projected width and is not this.
+FxNodeRecord const* PerHeadNormalization(PatternMatcher const& matcher,
+                                         std::vector<FxNodeRecord> const& nodes,
+                                         std::string const& projection,
+                                         std::string const& rotated,
+                                         std::uint32_t head_dim) {
+  FxNodeRecord const* result = nullptr;
+  for (auto const& node : nodes) {
+    if (matcher.RoleOf(node) != "multiply") continue;
+    if (!matcher.DependsOn(rotated, node.name)) continue;
+    if (!matcher.DependsOn(node.name, projection)) continue;
+    bool weighted = false;
+    for (auto const& operand : node.inputs) {
+      std::string const value = matcher.Value(operand);
+      if (!matcher.IsParameter(value)) continue;
+      auto found = std::find_if(nodes.begin(), nodes.end(),
+                                [&](FxNodeRecord const& n) { return n.name == value; });
+      if (found != nodes.end() && NumericElements(*found) == head_dim)
+        weighted = true;
+    }
+    if (!weighted) continue;
+    if (result)
+      throw std::runtime_error("two per-head normalizations reach " + rotated);
+    result = &node;
+  }
+  return result;
+}
+
+/// Model elements per identifier. Buffers are arrays of model elements, so an
+/// identifier occupies as many of them as its own width needs and the fixture
+/// bytes are copied in unchanged.
+std::uint32_t TokenIdBits(FxNodeRecord const& node) {
+  if (node.dtype == "torch.int64") return 64;
+  if (node.dtype == "torch.int32") return 32;
+  throw std::runtime_error("token identifiers have an unsupported dtype: " +
+                           node.dtype);
+}
+
+ModelPlan BuildModelPlan(std::vector<FxNodeRecord> const& nodes,
+                         std::vector<SignatureInput> const& inputs,
+                         std::vector<std::string> const& outputs) {
+  PatternMatcher matcher(nodes, inputs);
+  PlanBuilder builder(nodes);
+  std::unordered_map<std::string, SignatureInput const*> signature_by_name;
+  for (auto const& input : inputs) signature_by_name.emplace(input.name, &input);
+  std::vector<PatternBinding> layers = matcher.FindAll(DecoderLayerPattern());
+  std::sort(layers.begin(), layers.end(),
+            [](PatternBinding const& a, PatternBinding const& b) {
+              return a.at("resid2")->index < b.at("resid2")->index;
+            });
+  for (std::size_t i = 1; i < layers.size(); ++i)
+    if (layers[i].at("resid2") == layers[i - 1].at("resid2"))
+      throw std::runtime_error("the decoder-layer pattern is ambiguous at " +
+                               layers[i].at("resid2")->name);
+  // Degradation, not refusal (skeleton §0.1): a graph the decoder pattern does
+  // not cover still imports, as one task space per operator, with no plan.
+  if (layers.empty()) {
+    auto covered=BuildCoveredRegions(nodes,inputs,outputs);
+    if (!covered.stages.empty()) return covered;
+    return BuildMlpRegions(nodes,inputs,outputs);
+  }
+
+  // The hidden state is the model input the first layer's query projection
+  // reads; the KV inputs never reach it, so no name convention is needed.
+  SignatureInput const* hidden_input = nullptr;
+  for (auto const& input : inputs)
+    if (input.kind == "USER_INPUT" &&
+        matcher.DependsOn(layers.front().at("q")->name, input.name)) {
+      hidden_input = &input;
+      break;
+    }
+  if (!hidden_input)
+    throw std::runtime_error("no model input reaches the first query projection");
+
+  auto weight = [&](std::string const& operand) -> std::uint32_t {
+    std::string name = matcher.Value(operand);
+    auto found = signature_by_name.find(name);
+    if (found == signature_by_name.end())
+      throw std::runtime_error("expected a parameter operand; got " + name);
+    return builder.Weight(*found->second);
+  };
+
+  // With an embedding in front of the first layer the model input is a token
+  // identifier tensor, and the hidden state is that gather's result. Which of
+  // the two the graph starts at is read off the graph, not configured.
+  FxNodeRecord const* entry_embedding = EntryEmbedding(
+      matcher, nodes, layers.front().at("q")->name, hidden_input->name);
+  FxNodeRecord const& hidden_node = builder.Node(
+      entry_embedding ? entry_embedding->name : hidden_input->name);
+  builder.plan.dtype = StorageDtype(hidden_node);
+  // The current decoder ABI is one storage type per model. Mixed precision
+  // accumulation remains an operator property (norm/softmax/GEMM use f32),
+  // but persistent buffers and parameters must agree so a buffer id has one
+  // unambiguous element size.
+  // Inputs whose dtype is not the model's. Two are legitimate and the layer
+  // loop below names them: the token identifiers are indices, and the rotary
+  // frequency table is a phase table read at its own precision. Anything else
+  // still has to agree, so the check is deferred rather than dropped -- a
+  // buffer id must have one unambiguous element size.
+  std::set<std::string> foreign_dtype;
+  for (auto const& input : inputs) {
+    if (entry_embedding && input.name == hidden_input->name) continue;
+    FxNodeRecord const& node = builder.Node(input.name);
+    if (StorageDtype(node) != builder.plan.dtype) foreign_dtype.insert(input.name);
+  }
+  std::uint32_t hidden = StaticExtent(hidden_node, hidden_node.shape.size() - 1);
+  std::uint32_t current_hidden;
+  if (entry_embedding) {
+    FxNodeRecord const& ids_node = builder.Node(hidden_input->name);
+    std::uint32_t const bits = TokenIdBits(ids_node);
+    builder.plan.token_id_bits = static_cast<int>(bits);
+    std::uint32_t ids = builder.Buffer(
+        {hidden_input->name, 0, bits / 16, 0, 0, PlanBuffer::Source::kFixture,
+         "input_" + hidden_input->name + ".bin"});
+    std::string const table_name = matcher.Value(entry_embedding->inputs[0]);
+    auto table_sig = signature_by_name.find(table_name);
+    if (table_sig == signature_by_name.end())
+      throw std::runtime_error("the embedding table is not a model parameter: " +
+                               table_name);
+    std::uint32_t table = builder.Weight(*table_sig->second);
+    FxNodeRecord const& table_node = builder.Node(table_name);
+    current_hidden = builder.Scratch("embed.hidden", hidden);
+    builder.Stage(PlanTaskKind::kEmbedding, entry_embedding->name, 0,
+                  StaticExtent(table_node, 0), hidden, 1,
+                  {ids, table, current_hidden});
+    builder.plan.node_buffer[entry_embedding->name] = current_hidden;
+  } else {
+    current_hidden = builder.Buffer(
+        {hidden_input->name, 0, hidden, 0, 0, PlanBuffer::Source::kFixture,
+         "input_" + hidden_input->name + ".bin"});
+  }
+
+  std::unordered_map<std::string, std::uint32_t> semantic_output;
+  for (std::size_t number = 0; number < layers.size(); ++number) {
+    PatternBinding const& match = layers[number];
+    FxNodeRecord const& q_node = *match.at("q");
+    FxNodeRecord const& k_node = *match.at("k");
+    FxNodeRecord const& v_node = *match.at("v");
+    FxNodeRecord const& o_node = *match.at("o");
+    FxNodeRecord const& gate_node = *match.at("gate");
+    FxNodeRecord const& up_node = *match.at("up");
+    FxNodeRecord const& down_node = *match.at("down");
+    FxNodeRecord const& cat_k = *match.at("cat_k");
+    FxNodeRecord const& cat_v = *match.at("cat_v");
+    FxNodeRecord const& score = *match.at("score");
+    FxNodeRecord const& residual1 = *match.at("resid1");
+    FxNodeRecord const& residual2 = *match.at("resid2");
+    if (matcher.Value(q_node.inputs[0]) != matcher.Value(k_node.inputs[0]) ||
+        matcher.Value(q_node.inputs[0]) != matcher.Value(v_node.inputs[0]))
+      throw std::runtime_error("Q/K/V projections do not share one norm output: " +
+                               q_node.name + "/" + k_node.name + "/" + v_node.name);
+    if (matcher.Value(gate_node.inputs[0]) != matcher.Value(up_node.inputs[0]))
+      throw std::runtime_error("gate/up projections do not share one norm output");
+
+    std::uint32_t q_width = StaticExtent(
+        builder.Node(matcher.Value(q_node.inputs[1])), 0);
+    std::uint32_t kv_width = StaticExtent(
+        builder.Node(matcher.Value(k_node.inputs[1])), 0);
+    std::uint32_t intermediate = StaticExtent(
+        builder.Node(matcher.Value(up_node.inputs[1])), 0);
+    // The head dimension is the contracted axis of the score matmul, so it is
+    // read off the attention rather than off a RoPE frequency table.
+    // The rotated query, not the reshape that feeds the score matmul: after
+    // normalization that reshape sits behind the KV concats in FX order, and
+    // stage representatives must stay topologically ordered.
+    FxNodeRecord const& q_rot = builder.Node(matcher.Value(score.inputs[0]));
+    if (q_rot.shape.empty())
+      throw std::runtime_error("attention operand has no shape: " + q_rot.name);
+    std::uint32_t head_dim = StaticExtent(q_rot, q_rot.shape.size() - 1);
+    if (!head_dim || q_width % head_dim || kv_width % head_dim)
+      throw std::runtime_error("Q/K/V widths are incompatible with RoPE head dim");
+    std::uint32_t heads = q_width / head_dim;
+    std::uint32_t kv_heads = kv_width / head_dim;
+    if (!kv_heads || heads % kv_heads)
+      throw std::runtime_error("query heads are not divisible by KV heads");
+
+    // The RoPE table is the parameter behind the rotation's own cosine: the
+    // nearest parameter to the rotated query is the projection weight, and a
+    // plain dependence walk would find the previous layer's table as well.
+    // The past-KV tensors are the concat operands that are model inputs.
+    std::string inv_freq_name = matcher.NearestParameter(
+        matcher.FirstOfRole(q_rot.name, "trig", "contraction"));
+    auto inv_freq_sig = signature_by_name.find(inv_freq_name);
+    std::string past_k_name, past_v_name;
+    for (auto const& operand : cat_k.inputs) {
+      auto found = signature_by_name.find(matcher.Value(operand));
+      if (found != signature_by_name.end() && found->second->kind == "USER_INPUT")
+        past_k_name = found->first;
+    }
+    for (auto const& operand : cat_v.inputs) {
+      auto found = signature_by_name.find(matcher.Value(operand));
+      if (found != signature_by_name.end() && found->second->kind == "USER_INPUT")
+        past_v_name = found->first;
+    }
+    if (past_k_name.empty() || past_v_name.empty() ||
+        inv_freq_sig == signature_by_name.end())
+      throw std::runtime_error("layer " + std::to_string(number) +
+                               " has no explicit KV inputs or RoPE table");
+
+    std::string prefix = "l" + std::to_string(number) + ".";
+    std::uint32_t next_hidden = builder.Scratch(prefix + "hidden", hidden);
+    std::uint32_t norm = builder.Scratch(prefix + "norm", hidden);
+    std::uint32_t q = builder.Scratch(prefix + "q", q_width);
+    std::uint32_t k = builder.Scratch(prefix + "k", kv_width);
+    std::uint32_t v = builder.Scratch(prefix + "v", kv_width);
+    std::uint32_t q_rot_buffer = builder.Scratch(prefix + "q_rot", q_width);
+    std::uint32_t k_rot = builder.Scratch(prefix + "k_rot", kv_width);
+    std::uint32_t context = builder.Scratch(prefix + "context", q_width);
+    std::uint32_t gate = builder.Scratch(prefix + "gate", intermediate);
+    std::uint32_t up = builder.Scratch(prefix + "up", intermediate);
+    std::uint32_t wn1 = weight(matcher.NearestParameter(
+        matcher.Value(q_node.inputs[0])));
+    std::uint32_t wn2 = weight(matcher.NearestParameter(
+        matcher.Value(gate_node.inputs[0])));
+    std::uint32_t wq = weight(q_node.inputs[1]);
+    std::uint32_t wk = weight(k_node.inputs[1]);
+    std::uint32_t wv = weight(v_node.inputs[1]);
+    std::uint32_t wo = weight(o_node.inputs[1]);
+    std::uint32_t wg = weight(gate_node.inputs[1]);
+    std::uint32_t wu = weight(up_node.inputs[1]);
+    std::uint32_t wd = weight(down_node.inputs[1]);
+    bool const fp32_phase =
+        builder.Node(inv_freq_sig->first).dtype == "torch.float32";
+    builder.plan.rope_fp32_phase = fp32_phase;
+    std::uint32_t inv =
+        builder.Weight(*inv_freq_sig->second,
+                       fp32_phase && builder.plan.dtype == "bf16" ? 2u : 1u);
+    foreign_dtype.erase(inv_freq_sig->first);
+    std::uint32_t past_k = builder.Buffer(
+        {past_k_name, 0, 0, kv_width, 0, PlanBuffer::Source::kFixture,
+         "input_" + past_k_name + ".bin"});
+    std::uint32_t past_v = builder.Buffer(
+        {past_v_name, 0, 0, kv_width, 0, PlanBuffer::Source::kFixture,
+         "input_" + past_v_name + ".bin"});
+    std::uint32_t full_k = builder.Buffer(
+        {prefix + "full_k", 0, 0, 0, kv_width,
+         PlanBuffer::Source::kZero, {}});
+    std::uint32_t full_v = builder.Buffer(
+        {prefix + "full_v", 0, 0, 0, kv_width,
+         PlanBuffer::Source::kZero, {}});
+
+    builder.Epsilon(NormalizationEpsilon(matcher, q_node.inputs[0]));
+    builder.Stage(PlanTaskKind::kRMSNorm, q_node.inputs[0], 0, 0, hidden, 1,
+                  {current_hidden, wn1, norm});
+    // A per-head normalization, where the architecture has one, sits between
+    // each projection and its rotation and is what the rotation then reads.
+    FxNodeRecord const* q_norm = PerHeadNormalization(
+        matcher, nodes, q_node.name, q_rot.name, head_dim);
+    FxNodeRecord const* k_norm = PerHeadNormalization(
+        matcher, nodes, k_node.name, matcher.Value(cat_k.inputs[1]), head_dim);
+    if (static_cast<bool>(q_norm) != static_cast<bool>(k_norm))
+      throw std::runtime_error("only one of the query and key is normalized "
+                               "per head in layer " + std::to_string(number));
+    std::uint32_t q_rotated = q, k_rotated = k;
+    // Independent projections may precede either normalization in FX. Keep
+    // the exported topological order while retaining the same buffer edges.
+    std::vector<std::pair<std::size_t,std::function<void()>>> projections;
+    projections.emplace_back(q_node.index,[&]{
+      builder.Stage(PlanTaskKind::kGemm,q_node.name,
+          builder.Gemm(norm,wq,q,q,q_width,hidden,0.0f),0,0,1);
+    });
+    projections.emplace_back(k_node.index,[&]{
+      builder.Stage(PlanTaskKind::kGemm,k_node.name,
+          builder.Gemm(norm,wk,k,k,kv_width,hidden,0.0f),0,0,1);
+    });
+    projections.emplace_back(v_node.index,[&]{
+      builder.Stage(PlanTaskKind::kGemm,v_node.name,
+          builder.Gemm(norm,wv,v,v,kv_width,hidden,0.0f),0,0,1);
+    });
+    if(q_norm)projections.emplace_back(q_norm->index,[&]{
+      builder.Epsilon(NormalizationEpsilon(matcher,q_norm->name));
+      q_rotated=builder.Scratch(prefix+"q_normed",q_width);
+      builder.Stage(PlanTaskKind::kQKNorm,q_norm->name,0,heads,head_dim,1,
+          {q,weight(matcher.NearestParameter(q_norm->name)),q_rotated});
+    });
+    if(k_norm)projections.emplace_back(k_norm->index,[&]{
+      builder.Epsilon(NormalizationEpsilon(matcher,k_norm->name));
+      k_rotated=builder.Scratch(prefix+"k_normed",kv_width);
+      builder.Stage(PlanTaskKind::kQKNorm,k_norm->name,0,kv_heads,head_dim,1,
+          {k,weight(matcher.NearestParameter(k_norm->name)),k_rotated});
+    });
+    std::sort(projections.begin(),projections.end(),[](auto const& a,auto const& b){return a.first<b.first;});
+    for(auto const& [index,emit]:projections)emit();
+    builder.Stage(PlanTaskKind::kRoPE, q_rot.name, 0, heads, head_dim, 1,
+                  {q_rotated, q_rot_buffer, inv});
+    builder.Stage(PlanTaskKind::kRoPE, cat_k.inputs[1], 0, kv_heads,
+                  head_dim, 1, {k_rotated, k_rot, inv});
+    builder.Stage(PlanTaskKind::kKVAppend, cat_k.name, 0, kv_heads, head_dim, 1,
+                  {k_rot, past_k, full_k});
+    builder.Stage(PlanTaskKind::kKVAppend, cat_v.name, 0, kv_heads, head_dim, 1,
+                  {v, past_v, full_v});
+    builder.Stage(PlanTaskKind::kAttention, o_node.inputs[0], 0, heads,
+                  head_dim, heads / kv_heads,
+                  {q_rot_buffer, full_k, full_v, context});
+    builder.Stage(PlanTaskKind::kGemm, residual1.name,
+                  builder.Gemm(context, wo, current_hidden, next_hidden,
+                               hidden, q_width, 1.0f),
+                  0, 0, 1);
+    builder.Epsilon(NormalizationEpsilon(matcher, gate_node.inputs[0]));
+    builder.Stage(PlanTaskKind::kRMSNorm, gate_node.inputs[0], 0, 0, hidden, 1,
+                  {next_hidden, wn2, norm});
+    builder.Stage(PlanTaskKind::kGemm, gate_node.name,
+                  builder.Gemm(norm, wg, gate, gate, intermediate, hidden, 0.0f),
+                  0, 0, 1);
+    builder.Stage(PlanTaskKind::kGemm, up_node.name,
+                  builder.Gemm(norm, wu, up, up, intermediate, hidden, 0.0f),
+                  0, 0, 1);
+    builder.Stage(PlanTaskKind::kElementwise, down_node.inputs[0], 0,
+                  intermediate, 0, 1, {gate, up, gate});
+    builder.Stage(PlanTaskKind::kGemm, residual2.name,
+                  builder.Gemm(gate, wd, next_hidden, next_hidden,
+                               hidden, intermediate, 1.0f),
+                  0, 0, 1);
+
+    semantic_output[residual2.name] = next_hidden;
+    semantic_output[cat_k.name] = full_k;
+    semantic_output[cat_v.name] = full_v;
+    builder.plan.node_buffer[residual2.name] = next_hidden;
+    builder.plan.node_buffer[cat_k.name] = full_k;
+    builder.plan.node_buffer[cat_v.name] = full_v;
+    current_hidden = next_hidden;
+  }
+
+  if (!foreign_dtype.empty())
+    throw std::runtime_error("mixed model storage dtypes are unsupported: " +
+                             hidden_node.name + " vs " + *foreign_dtype.begin());
+
+  // The tail after the last layer: the model's final normalization, and the
+  // vocabulary projection that reads it. Neither belongs to the decoder-layer
+  // pattern -- there is exactly one of each in the whole graph -- so they are
+  // recognized here, by what reads the last residual, and emitted as stages of
+  // their own rather than folded into the last layer.
+  FxNodeRecord const& last_residual = *layers.back().at("resid2");
+  for (auto const& node : nodes) {
+    if (node.index <= last_residual.index) continue;
+    if (matcher.RoleOf(node) != "multiply") continue;
+    if (!matcher.DependsOn(node.name, last_residual.name)) continue;
+    bool weighted = false;
+    for (auto const& operand : node.inputs)
+      if (matcher.IsParameter(matcher.Value(operand))) weighted = true;
+    if (!weighted) continue;
+    std::uint32_t const output = builder.Scratch("final.norm", hidden);
+    builder.Epsilon(NormalizationEpsilon(matcher, node.name));
+    builder.Stage(PlanTaskKind::kRMSNorm, node.name, 0, 0, hidden, 1,
+                  {current_hidden, weight(matcher.NearestParameter(node.name)),
+                   output});
+    semantic_output[node.name] = output;
+    builder.plan.node_buffer[node.name] = output;
+    current_hidden = output;
+    break;
+  }
+  for (auto const& node : nodes) {
+    if (node.index <= last_residual.index) continue;
+    if (matcher.RoleOf(node) != "contraction" || node.inputs.size() < 2) continue;
+    if (!matcher.DependsOn(node.name, last_residual.name)) continue;
+    auto head = signature_by_name.find(matcher.Value(node.inputs[1]));
+    if (head == signature_by_name.end()) continue;
+    FxNodeRecord const& head_node = builder.Node(head->first);
+    std::uint32_t const vocab = StaticExtent(head_node, 0);
+    std::uint32_t const logits = builder.Scratch("final.logits", vocab);
+    builder.Stage(PlanTaskKind::kGemm, node.name,
+                  builder.Gemm(current_hidden, builder.Weight(*head->second),
+                               logits, logits, vocab, hidden, 0.0f),
+                  0, 0, 1);
+    semantic_output[node.name] = logits;
+    builder.plan.node_buffer[node.name] = logits;
+    break;
+  }
+
+  for (std::size_t index = 0; index < outputs.size(); ++index) {
+    auto found = semantic_output.find(outputs[index]);
+    if (found == semantic_output.end())
+      throw std::runtime_error("unsupported semantic model output: " + outputs[index]);
+    builder.plan.outputs.push_back(
+        {found->second, "reference_" + std::to_string(index) + ".bin"});
+  }
+  return std::move(builder.plan);
+}
+
+ModelPlan BuildModelPlan(std::vector<FxNodeRecord> const& nodes,
+                         std::vector<SignatureInput> const& inputs,
+                         std::vector<std::string> const& outputs,
+                         ServingOptions const& serving) {
+  if (serving.seq != 1 && serving.seq != 64)
+    throw std::invalid_argument("serving plan requires a fixed decode or prefill seq");
+  if (serving.capacity <= serving.seq || serving.interleave_u != 16)
+    throw std::invalid_argument("serving capacity or gate/up interleave is invalid");
+  PatternMatcher matcher(nodes, inputs);
+  auto layers = matcher.FindAll(DecoderLayerPattern());
+  std::sort(layers.begin(), layers.end(), [](auto const& a, auto const& b) {
+    return a.at("resid2")->index < b.at("resid2")->index;
+  });
+  if (layers.empty())
+    throw std::invalid_argument("serving export has no complete decoder layer");
+  PlanBuilder builder(nodes);
+  builder.plan.serving = true;
+  builder.plan.serving_seq = serving.seq;
+  builder.plan.serving_capacity = serving.capacity;
+  std::unordered_map<std::string, SignatureInput const*> signatures;
+  for (auto const& input : inputs) signatures.emplace(input.name, &input);
+  auto parameter = [&](std::string const& operand) -> SignatureInput const& {
+    auto found = signatures.find(matcher.Value(operand));
+    if (found == signatures.end() || found->second->kind == "USER_INPUT")
+      throw std::invalid_argument("serving parameter is not an FX parameter: " + operand);
+    return *found->second;
+  };
+  auto external = [&](std::string name, std::uint32_t constant,
+                      std::uint32_t per_batch, std::string dtype,
+                      std::string pack) {
+    PlanBuffer buffer;
+    buffer.name = std::move(name);
+    buffer.constant = constant;
+    buffer.per_batch = per_batch;
+    buffer.dtype = std::move(dtype);
+    buffer.role = "external";
+    buffer.external_name = buffer.name;
+    buffer.pack_json = std::move(pack);
+    return builder.Buffer(std::move(buffer));
+  };
+  auto scratch = [&](std::string name, std::uint32_t per_batch,
+                     std::string dtype = "bf16") {
+    PlanBuffer buffer;
+    buffer.name = std::move(name);
+    buffer.per_batch = per_batch;
+    buffer.dtype = std::move(dtype);
+    return builder.Buffer(std::move(buffer));
+  };
+  auto alias = [&](std::string const& operand) {
+    auto const& input = parameter(operand);
+    return external(input.target, NumericElements(builder.Node(input.name)),
+                    0, "bf16", "{\"kind\":\"alias\",\"source\":\"" +
+                    input.target + "\"}");
+  };
+  auto packed = [&](std::string name, std::uint32_t elements,
+                    std::string recipe) {
+    return external(std::move(name), elements, 0, "bf16", std::move(recipe));
+  };
+  auto json_sources = [](std::initializer_list<std::string> sources) {
+    std::string result = "[";
+    bool first = true;
+    for (auto const& source : sources) {
+      if (!first) result += ',';
+      first = false;
+      result += '"' + source + '"';
+    }
+    return result + ']';
+  };
+  auto user_input = [&](std::string const& name) -> SignatureInput const& {
+    auto found = signatures.find(name);
+    if (found == signatures.end() || found->second->kind != "USER_INPUT")
+      throw std::invalid_argument("serving export is missing input " + name);
+    return *found->second;
+  };
+  auto const& ids_input = user_input("input_ids");
+  auto const& ids_node = builder.Node(ids_input.name);
+  if (ids_node.shape.size() != 2 ||
+      StaticExtent(ids_node, 1) != std::uint32_t(serving.seq))
+    throw std::invalid_argument("serving token IDs do not have the plan's seq");
+  std::uint32_t const id_bits = TokenIdBits(ids_node);
+  if (id_bits != 32)
+    throw std::invalid_argument("serving token IDs must match int32 token state");
+  builder.plan.dtype = "bf16";
+  builder.plan.token_id_bits = static_cast<int>(id_bits);
+  std::uint32_t tokens = external("serving.tokens", 0, serving.capacity,
+                                  "i32", "");
+  std::uint32_t cos = external("serving.rope_cos", 0, 0, "bf16", "");
+  std::uint32_t sin = external("serving.rope_sin", 0, 0, "bf16", "");
+  // The position tables' size is fixed by cap and the attention head axis.
+  std::uint32_t hidden = StaticExtent(builder.Node(parameter(
+      layers.front().at("q")->inputs.at(1)).name), 1);
+  FxNodeRecord const* embedding = EntryEmbedding(
+      matcher, nodes, layers.front().at("q")->name, ids_input.name);
+  if (!embedding)
+    throw std::invalid_argument("serving export has no token embedding");
+  auto const& embedding_param = parameter(embedding->inputs.at(0));
+  std::uint32_t vocab = StaticExtent(builder.Node(embedding_param.name), 0);
+  std::uint32_t table = alias(embedding->inputs.at(0));
+  std::uint32_t x = scratch("serving.hidden", serving.seq * hidden);
+  bool const dn=serving.phase==ServingOptions::Phase::kDecode && serving.deferred_norm;
+  std::uint32_t ss_cur=kNoOperand;
+  if(dn)ss_cur=scratch("embed.ss",hidden/32,"f32");
+  builder.Stage(PlanTaskKind::kEmbedding, embedding->name, 0, vocab, hidden, 1,
+                {tokens, table, x, ss_cur});
+  for (std::size_t number = 0; number < layers.size(); ++number) {
+    auto const& match = layers[number];
+    auto const& q = *match.at("q");
+    auto const& k = *match.at("k");
+    auto const& v = *match.at("v");
+    auto const& o = *match.at("o");
+    auto const& gate = *match.at("gate");
+    auto const& up = *match.at("up");
+    auto const& down = *match.at("down");
+    auto const& score = *match.at("score");
+    auto const& cat_k = *match.at("cat_k");
+    auto const& cat_v = *match.at("cat_v");
+    int qwidth = StaticExtent(builder.Node(parameter(q.inputs.at(1)).name), 0);
+    int kvwidth = StaticExtent(builder.Node(parameter(k.inputs.at(1)).name), 0);
+    auto const& qrot = builder.Node(matcher.Value(score.inputs.at(0)));
+    int head_dim = StaticExtent(qrot, qrot.shape.size() - 1);
+    if (!head_dim || qwidth % head_dim || kvwidth % head_dim)
+      throw std::invalid_argument("serving QKV widths do not share head_dim");
+    if (number == 0) {
+      builder.plan.buffers[cos].constant = serving.capacity * head_dim;
+      builder.plan.buffers[sin].constant = serving.capacity * head_dim;
+    } else if (builder.plan.buffers[cos].constant !=
+               std::uint32_t(serving.capacity * head_dim)) {
+      throw std::invalid_argument("serving layers disagree on RoPE head_dim");
+    }
+    int hkv = kvwidth / head_dim;
+    int qperkv = qwidth / kvwidth;
+    int intermediate = StaticExtent(builder.Node(parameter(up.inputs.at(1)).name), 0);
+    std::string prefix = "l" + std::to_string(number) + ".";
+    // L2 may interleave task spaces from several layers. A single reused
+    // normalized scratch buffer creates an unmodelled write-after-read hazard
+    // between otherwise legal tiles, so each normalization owns its output.
+    std::uint32_t norm1 = dn ? kNoOperand :
+        scratch(prefix + "norm1", serving.seq * hidden);
+    builder.Epsilon(NormalizationEpsilon(matcher, q.inputs.at(0)));
+    auto norm1_fqn=parameter(matcher.NearestParameter(q.inputs.at(0))).target;
+    if(!dn)builder.Stage(PlanTaskKind::kRMSNorm, q.inputs.at(0), 0, 0, hidden, 1,
+                        {x, alias(matcher.NearestParameter(q.inputs.at(0))), norm1});
+    auto const& qw = parameter(q.inputs.at(1));
+    auto const& kw = parameter(k.inputs.at(1));
+    auto const& vw = parameter(v.inputs.at(1));
+    int packed_width = qwidth + 2 * kvwidth;
+    std::string qkv_recipe = "{\"kind\":\"qkv_group_interleave\",\"sources\":" +
+        json_sources({qw.target, kw.target, vw.target}) +
+        ",\"hkv\":" + std::to_string(hkv) +
+        ",\"qperkv\":" + std::to_string(qperkv) +
+        ",\"head_dim\":" + std::to_string(head_dim) + '}';
+    if(dn)qkv_recipe="{\"kind\":\"fold_rmsnorm\",\"norm\":\""+
+        norm1_fqn+"\",\"source\":"+qkv_recipe+'}';
+    std::uint32_t qkv_weight = packed(prefix + (dn?"qkv.weight.dn":"qkv.weight"),
+                                      packed_width * hidden, qkv_recipe);
+    std::uint32_t qkv = scratch(prefix + "qkv", serving.seq * packed_width);
+    auto const* latest_qkv = &q;
+    for (auto const* node : {&k, &v})
+      if (node->index > latest_qkv->index) latest_qkv = node;
+    auto qkv_gemm = builder.Gemm(dn?x:norm1, qkv_weight, qkv, qkv,
+                                 packed_width, hidden, 0.0f);
+    if(dn)builder.plan.gemms[qkv_gemm].norm_ss=ss_cur;
+    builder.Stage(PlanTaskKind::kGemm, latest_qkv->name, qkv_gemm, 0, 0, 1);
+
+    auto cache_input = [&](FxNodeRecord const& cat) {
+      for (auto const& input : cat.inputs) {
+        auto found = signatures.find(matcher.Value(input));
+        if (found != signatures.end() && found->second->kind == "USER_INPUT")
+          return found->second;
+      }
+      throw std::invalid_argument("serving attention has no cache input");
+    };
+    (void)cache_input(cat_k);
+    (void)cache_input(cat_v);
+    int cache_elements = hkv * serving.capacity * head_dim;
+    std::uint32_t kc = external("kv_cache.k." + std::to_string(number), 0,
+                                cache_elements, "bf16", "");
+    std::uint32_t vc = external("kv_cache.v." + std::to_string(number), 0,
+                                cache_elements, "bf16", "");
+    auto const* q_norm = PerHeadNormalization(
+        matcher, nodes, q.name, qrot.name, head_dim);
+    auto const* k_norm = PerHeadNormalization(
+        matcher, nodes, k.name, matcher.Value(cat_k.inputs.at(1)), head_dim);
+    if (bool(q_norm) != bool(k_norm))
+      throw std::invalid_argument("serving Q/K normalization is asymmetric");
+    std::uint32_t q_norm_weight = kNoOperand, k_norm_weight = kNoOperand;
+    if (q_norm) {
+      q_norm_weight = alias(matcher.NearestParameter(q_norm->name));
+      k_norm_weight = alias(matcher.NearestParameter(k_norm->name));
+    }
+    std::uint32_t context = scratch(prefix + "context", serving.seq * qwidth);
+    // The selected block extent is a compile-time coordinate of this plan.
+    if (serving.kv_block <= 0 || serving.query_rows <= 0)
+      throw std::invalid_argument("serving KV and query blocks must be positive");
+    // Prefill is one causal attention task per query block and KV group.
+    // Decode alone splits the persistent cache into independent KV blocks.
+    int block_extent = serving.phase == ServingOptions::Phase::kPrefill
+        ? serving.capacity : serving.kv_block;
+    int blocks = (serving.capacity + block_extent - 1) / block_extent;
+    std::uint32_t po = scratch(prefix + "attn.partial", serving.seq * qwidth * blocks, "f32");
+    std::uint32_t lse = scratch(prefix + "attn.lse", serving.seq * qwidth / head_dim * blocks, "f32");
+    builder.Stage(PlanTaskKind::kFusedAttention, match.at("ctx")->name,
+                  0, hkv, head_dim, qperkv,
+                  {qkv, kc, vc, cos, sin, q_norm_weight, k_norm_weight,
+                   context, po, lse});
+    builder.plan.stages.back().attention_kv_block = block_extent;
+    builder.plan.stages.back().attention_query_rows =
+        serving.seq == 1 ? qperkv : serving.query_rows;
+    if (serving.phase == ServingOptions::Phase::kDecode && blocks > 1) {
+      std::string merge_rep = o.inputs.at(0);
+      builder.Stage(PlanTaskKind::kAttentionMerge, merge_rep,
+                    0, hkv, head_dim, qperkv, {po, lse, context});
+      builder.plan.stages.back().attention_kv_block = block_extent;
+    }
+    auto o_gemm = builder.Gemm(context, alias(o.inputs.at(1)), x, x,
+                               hidden, qwidth, 1.0f);
+    if(dn){ss_cur=scratch(prefix+"o.ss",hidden/32,"f32");
+           builder.plan.gemms[o_gemm].ss_out=ss_cur;}
+    builder.plan.gemms[o_gemm].epilogue = PlanGemm::Epilogue::kResidual;
+    builder.Stage(PlanTaskKind::kGemm, match.at("resid1")->name,
+                  o_gemm, 0, 0, 1);
+    std::uint32_t norm2 = dn ? kNoOperand :
+        scratch(prefix + "norm2", serving.seq * hidden);
+    builder.Epsilon(NormalizationEpsilon(matcher, gate.inputs.at(0)));
+    auto norm2_fqn=parameter(matcher.NearestParameter(gate.inputs.at(0))).target;
+    if(!dn)builder.Stage(PlanTaskKind::kRMSNorm, gate.inputs.at(0), 0, 0, hidden, 1,
+                        {x, alias(matcher.NearestParameter(gate.inputs.at(0))), norm2});
+    auto const& gw = parameter(gate.inputs.at(1));
+    auto const& uw = parameter(up.inputs.at(1));
+    std::string gu_recipe = "{\"kind\":\"gate_up_interleave\",\"sources\":" +
+        json_sources({gw.target, uw.target}) +
+        ",\"u\":" + std::to_string(serving.interleave_u) + '}';
+    if(dn)gu_recipe="{\"kind\":\"fold_rmsnorm\",\"norm\":\""+
+        norm2_fqn+"\",\"source\":"+gu_recipe+'}';
+    std::uint32_t gu_weight = packed(prefix + (dn?"gate_up.weight.dn":"gate_up.weight"),
+                                     2 * intermediate * hidden, gu_recipe);
+    std::uint32_t act = scratch(prefix + "act", serving.seq * intermediate);
+    auto gu_gemm = builder.Gemm(dn?x:norm2, gu_weight, act, act,
+                                2 * intermediate, hidden, 0.0f);
+    if(dn)builder.plan.gemms[gu_gemm].norm_ss=ss_cur;
+    builder.plan.gemms[gu_gemm].epilogue = PlanGemm::Epilogue::kSwiGLU;
+    builder.plan.gemms[gu_gemm].interleave_u = serving.interleave_u;
+    builder.Stage(PlanTaskKind::kGemm,
+                  gate.index > up.index ? gate.name : up.name,
+                  gu_gemm, 0, 0, 1);
+    auto down_gemm = builder.Gemm(act, alias(down.inputs.at(1)), x, x,
+                                  hidden, intermediate, 1.0f);
+    if(dn){ss_cur=scratch(prefix+"down.ss",hidden/32,"f32");
+           builder.plan.gemms[down_gemm].ss_out=ss_cur;}
+    builder.plan.gemms[down_gemm].epilogue = PlanGemm::Epilogue::kResidual;
+    builder.Stage(PlanTaskKind::kGemm, match.at("resid2")->name,
+                  down_gemm, 0, 0, 1);
+  }
+  auto const& last = *layers.back().at("resid2");
+  std::uint32_t xf = scratch("final.normalized", hidden);
+  for (auto const& node : nodes) {
+    if (node.index <= last.index || matcher.RoleOf(node) != "multiply" ||
+        !matcher.DependsOn(node.name, last.name)) continue;
+    bool weighted = false;
+    for (auto const& input : node.inputs)
+      weighted |= matcher.IsParameter(matcher.Value(input));
+    if (!weighted) continue;
+    if(dn)xf=alias(matcher.NearestParameter(node.name));
+    else {
+      builder.Stage(PlanTaskKind::kRMSNorm, node.name, 0, 0, hidden, 1,
+                    {x, alias(matcher.NearestParameter(node.name)), xf});
+      builder.plan.stages.back().batch_rows = true;
+      builder.plan.stages.back().row_stride = serving.seq;
+      builder.plan.stages.back().row_offset = serving.seq - 1;
+    }
+    break;
+  }
+  if (serving.argmax_tile_n < 32 || serving.argmax_tile_n % 32)
+    throw std::invalid_argument("argmax partial tile must be a legal serving N tile");
+  int const partial_tiles = (vocab + serving.argmax_tile_n - 1) /
+                            serving.argmax_tile_n;
+  std::uint32_t ap_value = scratch("serving.argmax.value", partial_tiles, "f32");
+  std::uint32_t ap_index = scratch("serving.argmax.index", partial_tiles, "i32");
+  bool head_found = false;
+  for (auto const& node : nodes) {
+    if (node.index <= last.index || matcher.RoleOf(node) != "contraction" ||
+        !matcher.DependsOn(node.name, last.name) || node.inputs.size() < 2)
+      continue;
+    auto const& weight = parameter(node.inputs.at(1));
+    std::string head_recipe="{\"kind\":\"alias\",\"source\":\""+weight.target+"\"}";
+    if(dn)head_recipe="{\"kind\":\"fold_rmsnorm\",\"norm\":\""+
+        builder.plan.buffers[xf].external_name+"\",\"source\":"+head_recipe+'}';
+    auto head_weight=dn?packed("lm_head.weight.dn",vocab*hidden,head_recipe):alias(weight.name);
+    auto head_gemm = builder.Gemm(dn?x:xf,head_weight, ap_value, ap_value,
+                                  vocab, hidden, 0.0f);
+    if(dn)builder.plan.gemms[head_gemm].norm_ss=ss_cur;
+    builder.plan.gemms[head_gemm].epilogue = PlanGemm::Epilogue::kArgmaxPartial;
+    builder.plan.gemms[head_gemm].partial_tile_n = serving.argmax_tile_n;
+    builder.Stage(PlanTaskKind::kGemm, node.name, head_gemm, 0, 0, 1);
+    builder.plan.stages.back().batch_rows = true;
+    head_found = true;
+    break;
+  }
+  if (!head_found)
+    throw std::invalid_argument("serving export has no vocabulary projection");
+  PlanStage argmax;
+  argmax.kind = PlanTaskKind::kArgmaxReduce;
+  argmax.batch_rows = true;
+  argmax.extent = vocab;
+  argmax.width = partial_tiles;
+  argmax.operands.fill(kNoOperand);
+  argmax.operands[0] = ap_value;
+  argmax.operands[1] = ap_index;
+  argmax.operands[2] = tokens;
+  argmax.representative = "serving.argmax";
+  argmax.representative_index = nodes.back().index + 1;
+  builder.plan.stages.push_back(std::move(argmax));
+  builder.plan.outputs.push_back({tokens, ""});
+  (void)outputs;  // The functional logits and cache are not materialized.
+  (void)cos;
+  (void)sin;
+  return std::move(builder.plan);
+}
+
+void SeparateResidualTasks(ModelPlan& plan) {
+  std::vector<PlanStage> stages;
+  for (auto stage:plan.stages) {
+    if (stage.kind!=PlanTaskKind::kGemm || plan.gemms.at(stage.gemm).beta==0.0f) {
+      stages.push_back(stage);
+      continue;
+    }
+    auto& gemm=plan.gemms.at(stage.gemm);
+    if (gemm.beta!=1.0f)
+      throw std::invalid_argument("explicit residual task requires unit residual scaling");
+    auto output=gemm.d,residual=gemm.c;
+    auto intermediate=plan.buffers.at(output);
+    intermediate.name+=".gemm_product";
+    intermediate.source=PlanBuffer::Source::kZero;
+    intermediate.file.clear();
+    gemm.d=plan.buffers.size();
+    plan.buffers.push_back(std::move(intermediate));
+    gemm.c=gemm.d;
+    gemm.beta=0.0f;
+    stages.push_back(stage);
+    stage.kind=PlanTaskKind::kAdd;
+    stage.extent=gemm.n;
+    stage.width=gemm.n;
+    stage.operands.fill(std::numeric_limits<std::uint32_t>::max());
+    stage.operands[0]=gemm.d;
+    stage.operands[1]=residual;
+    stage.operands[2]=output;
+    stages.push_back(stage);
+  }
+  plan.stages=std::move(stages);
+}
+
+std::vector<int> FormSemanticStages(std::vector<FxNodeRecord> const& tasks,
+                                    ModelPlan const& plan) {
+  std::vector<int> result;
+  if (plan.stages.empty()) return std::vector<int>(tasks.size(), 0);
+
+  result.reserve(tasks.size());
+  std::size_t stage = 0;
+  for (auto const& task : tasks) {
+    while (stage + 1 < plan.stages.size() &&
+           task.index > plan.stages[stage].representative_index)
+      ++stage;
+    result.push_back(static_cast<int>(stage));
+  }
+  return result;
+}
+
+}  // namespace tilemega::frontend

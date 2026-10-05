@@ -1,0 +1,25 @@
+DEVICE name=NVIDIA GeForce RTX 5090 cc=12.0 sms=170
+RESOURCE name=D-C1-XZ4-LoadBalancing threads=256 registers=56 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+CLUSTER runtime_cluster=1 dim=2x1x2 size=4 policy=LoadBalancing active_clusters_device=85 potential_cluster_size=8
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=145.344512939
+TRIAL 1 us_per_step=145.327301025
+TRIAL 2 us_per_step=145.302719116
+TRIAL 3 us_per_step=145.350845337
+TRIAL 4 us_per_step=145.381561279
+TRIAL 5 us_per_step=145.285308838
+TRIAL 6 us_per_step=145.305786133
+TRIAL 7 us_per_step=145.327331543
+TRIAL 8 us_per_step=145.331329346
+TRIAL 9 us_per_step=145.331390381
+TRIAL 10 us_per_step=145.366210938
+TRIAL 11 us_per_step=145.290435791
+TRIAL 12 us_per_step=145.301666260
+TRIAL 13 us_per_step=145.373657227
+TRIAL 14 us_per_step=145.328704834
+TRIAL 15 us_per_step=145.278015137
+TRIAL 16 us_per_step=145.336410522
+TRIAL 17 us_per_step=145.304733276
+TRIAL 18 us_per_step=145.313796997
+TRIAL 19 us_per_step=145.301666260
+BENCH mode=D-C1-XZ4-LoadBalancing warmups=5 trials=20 steps=1000 launches=500 median_us=145.327316284 min_us=145.278015137 p90_us=145.366210938 mlups=14863.000674809 equivalent_population_TB_s=2.259176103

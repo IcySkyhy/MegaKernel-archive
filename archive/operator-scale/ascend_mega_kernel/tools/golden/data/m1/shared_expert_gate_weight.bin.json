@@ -1,0 +1,18 @@
+{
+  "tensor": "shared_expert_gate_weight.bin",
+  "shape": [
+    1,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 5120,
+  "sha256": "d223b0f746552726146384662294188b3c37e90275078a9eeda8b3f1e328f556",
+  "kind": "input",
+  "description": "shared expert gate weight [1, hidden], bf16"
+}

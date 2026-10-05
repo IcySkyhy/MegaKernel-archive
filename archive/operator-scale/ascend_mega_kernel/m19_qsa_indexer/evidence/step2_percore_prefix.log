@@ -1,0 +1,32 @@
+# M35 Step 2/3：每核四组数并排（V=256, M19_BUDGET=8 ⇒ blkTopk=2, C 档）
+# kernel 侧每核 dump 16 int32 到 statGm[aiv*64]（字段：aiv,nvalid,nchunk,localCgt,localTie,
+#   myGtBase,myEqBase,myTieQuota,gtEmit,clipped,firstRank,candGT,candEQ,gtTotal,coreDiv,blkTopk）
+# 命令： M19_V=256 M19_BUDGET=8 M19_CORES=<N> ./m19_qsa_indexer/build/m19_qsa_indexer
+
+## coreDiv=56（4 核有效）
+          aiv   nvalid  nchunk localCgt localTie  myGtBase  myEqBase myTieQuota   gtEmit  clipped
+            0       64       1      160        0         0         0         0      160      160   期望前缀(按升序)=0
+            1       64       1      160        0        63         0         0      160      160   期望前缀=160
+            2       64       1      160        0       128         0         0      160      160   期望前缀=320
+            3       64       1      160        0       192         0         0      160      160   期望前缀=480
+   (candGT=0, candEQ=-1, gtTotal=256, blkTopk=2)
+
+## coreDiv=2
+            0      128       2      416        0         0         0         0      416      416
+            1      128       2      416        0       127         0         0      416      416   期望前缀=416
+## coreDiv=1
+            0      256       4      928        0         0         0         0      928      928
+
+# 三条读数结论（机理，非结论式猜测）
+# (A) 每个子块（16 列）的计数 = localCgt/nsub = 160/1、416/2、928/4 … 实测每子块 ~58~104 个，
+#     **远大于子块列数 16** ⇒ `CountSub`/`EmitSub` 的掩码覆盖了整个 64-lane 寄存器
+#     （把邻子块的 score 也计入）⇒ 计数虚高。已按此修（改用 UpdateMask(nv) 限本子块），
+#     见本轮 patch；但主签名（下条）另有独立原因。
+# (B) `candGT=0 / candEQ=-1` 恰是 RadixSelect 里 `V <= blkTopk` 的**退化分支**取值，
+#     而该档 V=256 > blkTopk=2 ⇒ 该谓词在 kernel 内被判为真 ⇒ 走"全部选中"⇒
+#     Σcgt=256 ≫ blkTopk=2 ⇒ 每个子块都被 `rankBase+count>blkTopk` 守卫整块丢弃 ⇒ 0 token。
+#     （与 Step1 的"多核越界 token + 计数偏低"签名同源：走 select-all 时 rank 会超出预算。）
+# (C) 该守卫是**整块丢弃**（不是截断到剩余预算），本身也会丢合法元素 —— 需改为截断。
+# 注：myGtBase 与期望前缀的差（如 63 vs 160、127 vs 416）说明前缀读到的计数数组与
+#     本核局部计数不是同一个口径（前缀读的是 CountTotals 的 cgt，局部是本核子块计数之和），
+#     两者不一致 ⇒ 需要在同一口径下重算（下一轮插桩点）。

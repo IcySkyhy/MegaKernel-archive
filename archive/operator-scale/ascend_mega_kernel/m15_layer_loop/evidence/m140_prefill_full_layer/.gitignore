@@ -1,0 +1,28 @@
+# M140 证据目录的忽略口径（沿用 M136 的分档 + 反选做法）。
+# 父级 `m15_layer_loop/.gitignore` 有 `*.bin`（挡住所有 bin）⇒ 下面用反选让 m=1 档的小面可被跟踪。
+# 规则按"后写优先"：先放反选，再用更细的模式把权重与大档挡回去。
+#
+# 入库：m=1 各档的**激活面**（hcp/blk/ij/hin/bo/moe_y，每档约 80 KB）+ m26 小面 + meta + sha256sums。
+# 不入库：
+#   · hc 权重平面（每边界 norm/down/inj/up ≈ 13.5 MB × 2 边界 × 每档 3 个 tag）—— 源 = checkpoint，可重建
+#   · router pad 平面（3.27 MB）—— 源 = moe512_router_w + moe_sgate_w
+#   · m=4097 档的全部 *.bin（激活面 hcp 84 MB / blk 21 MB / ... 合计约 1.9 GB）
+!dumps_m1_p*/*.bin
+!dumps_m1_p*/m26_*/*.bin
+*moe_wpad.bin
+*m26_wpad.bin
+*_w_a1_*.bin
+*_w_a2_*.bin
+# m23 的状态面（h0 入 / ht 出，各 3.1 MB；h0 是宿主合成输入、ht 与 m=1 的其它面同源）——
+# 由 reproduce.sh 重建；保留 q/k/v/g/β/o（小）以便直接看输入输出。
+m23_*_h0.bin
+m23_*_ht.bin
+dumps_m4097_p15/**/*.bin
+# 反向例外（M140 复审 r1 P2-2：让洁净检出也能离线跑通三套判据）：
+#   · m=1 p15 档的 m23 状态面 h0/ht（各 3.1 MB）—— m23 检查需要它们才能比 `ht 超界`；
+#   · 一份 router pad 平面（3.27 MB，与 tag/m 无关）—— reproduce.sh 会把它拷进各 tag 子目录。
+!dumps_m1_p15/m23_Pf.gdn_h0.bin
+!dumps_m1_p15/m23_Pf.gdn_ht.bin
+!dumps_m1_p15/m23_Pf.gdn_mut1_h0.bin
+!dumps_m1_p15/m23_Pf.gdn_mut1_ht.bin
+!dumps_m1_p15/m26_Pf.gdn/m26_wpad.bin

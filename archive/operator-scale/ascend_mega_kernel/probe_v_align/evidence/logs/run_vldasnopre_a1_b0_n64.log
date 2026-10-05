@@ -1,0 +1,8 @@
+VARIANT op=vldasnopre(id=40) a=1 b=0 n=64 model=1 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x801747fa14f5c903
+HEAD32 00000000 00000000 00000000 00000000
+COMPARE window_bytes=256 bytes_outside_window_written=0
+MISMATCH first_bad_off=2
+OUTCOME: WRONG
+RESULT: FAIL (first mismatch at byte 2 of 1024)

@@ -1,0 +1,15 @@
+--- run 1 (timeout 40s) ---
+[probe] mode=tail variant=c_two_ids vi=13 run=1 N=8 handoffs=1 idSame=0 drainV=1 drainE3=1 skipVrel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=c_two_ids run=1 N=8 tiles=16 mismatched=14 elems=32768 match=4608 stale=0 zero=0 histOther=0 rc=1
+TILEFAIL first idx=0 (aiv=0 tile=0)
+exit=1
+--- run 2 (timeout 40s) ---
+[probe] mode=tail variant=c_two_ids vi=13 run=2 N=8 handoffs=1 idSame=0 drainV=1 drainE3=1 skipVrel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=c_two_ids run=2 N=8 tiles=16 mismatched=13 elems=32768 match=7072 stale=0 zero=0 histOther=0 rc=1
+TILEFAIL first idx=1 (aiv=0 tile=1)
+exit=1
+--- run 3 (timeout 40s) ---
+[probe] mode=tail variant=c_two_ids vi=13 run=3 N=8 handoffs=1 idSame=0 drainV=1 drainE3=1 skipVrel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=c_two_ids run=3 N=8 tiles=16 mismatched=13 elems=32768 match=6656 stale=0 zero=0 histOther=0 rc=1
+TILEFAIL first idx=1 (aiv=0 tile=1)
+exit=1

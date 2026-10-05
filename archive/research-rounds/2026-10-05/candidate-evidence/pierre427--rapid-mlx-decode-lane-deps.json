@@ -1,0 +1,91 @@
+{
+  "repository": "pierre427/rapid-mlx-decode-lane-deps",
+  "url": "https://github.com/pierre427/rapid-mlx-decode-lane-deps",
+  "created_at": "2026-09-06T15:51:55Z",
+  "pushed_at": "2026-09-06T23:18:41Z",
+  "branch": "main",
+  "license": "MIT",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": "LICENSE",
+      "size": 1066
+    },
+    {
+      "path": "PROVENANCE.md",
+      "size": 1860
+    },
+    {
+      "path": "README.md",
+      "size": 6890
+    },
+    {
+      "path": "mlx_lm/compiled_decode.py",
+      "size": 33461
+    },
+    {
+      "path": "mlx_lm/compiled_qualification.py",
+      "size": 23539
+    },
+    {
+      "path": "mlx_lm/megakernel_lane.py",
+      "size": 8260
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel.py",
+      "size": 56218
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_body.py",
+      "size": 105830
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_config.py",
+      "size": 20509
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_contract.py",
+      "size": 8415
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_device.py",
+      "size": 15080
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_pack.py",
+      "size": 34031
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_runtime.py",
+      "size": 56434
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_schedule.py",
+      "size": 42716
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_tune.py",
+      "size": 31333
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-06T23:18:40Z",
+      "subject": "Remove incorrect Apple copyright header from decode-lane modules",
+      "url": "https://github.com/pierre427/rapid-mlx-decode-lane-deps/commit/233fb7eed7fd543174f5d001f9f7b2b7f2220183"
+    },
+    {
+      "date": "2026-09-06T15:53:30Z",
+      "subject": "PROVENANCE: describe anonymization edits without echoing the original identifiers",
+      "url": "https://github.com/pierre427/rapid-mlx-decode-lane-deps/commit/68b3e551c750b09c19b58f0f6eea05a36a468964"
+    },
+    {
+      "date": "2026-09-06T15:52:34Z",
+      "subject": "Add review-grade mlx-lm decode-lane dependency modules for Rapid-MLX #3141/#3142",
+      "url": "https://github.com/pierre427/rapid-mlx-decode-lane-deps/commit/99411f88b3699c14bf82e9662fcf4a504f777c38"
+    }
+  ],
+  "readme": "# mlx-lm decode-lane dependencies (companion to Rapid-MLX #3141 / #3142)\n\nThis repository is a **review-grade snapshot** of the mlx-lm–side modules that\ntwo Rapid-MLX pull requests depend on:\n\n- **[Rapid-MLX #3141](https://github.com/raullenchai/Rapid-MLX/pull/3141)** —\n  compiled-decode-replay plain-decode lane (dense MoE / 35B).\n- **[Rapid-MLX #3142](https://github.com/raullenchai/Rapid-MLX/pull/3142)** —\n  megakernel plain-decode lane (Flash-Next `qwen4_exp` + dense MoE).\n\nNeither PR vendors model or kernel code into Rapid. Both are thin, opt-in,\nfail-closed lanes that are a **silent no-op on a stock mlx-lm wheel** and only\nengage when the installed mlx-lm build exposes the surfaces below. This repo\nexists so the depended-on code can be **read and reviewed** alongside those PRs.\n\n> **Read this first — what this repo is and is not.**\n> This is a snapshot of the *new, additive* modules only. It is **not a\n> standalone-importable package** and is **not** the full build. The modules\n> here import from other mlx-lm modules that are **not** included (see\n> *Why the wiring isn't here*), so `pip install`-ing this directory will not\n> produce a working lane. It is provided for code review. End-to-end device\n> numbers are reproduced by the source lab and reported in the PR bodies; a\n> joint validation run can be arranged if desired.\n\n---\n\n## What's included\n\n### Compiled-decode surface (backs #3141)\n- `mlx_lm/compiled_decode.py` — the compiled-replay step, context policy,\n  numerics acceptance, shape-stable-cache conversion.\n- `mlx_lm/compiled_qualification.py` — the reviewed serving-manifest identity\n  and acceptance (`serving_qualification_reason`).\n\n### Megakernel surface (backs #3142)\n- `mlx_lm/megakernel_lane.py` — the lane object and its entry points\n  (`megakernel_lane_enabled`, `attach_megakernel_lane`,\n  `preload_megakernel_lane`), invoked from inside `generate_step`.\n- `mlx_lm/models/qwen4_megakernel*.py` (9 modules) — the whole-token persistent\n  Metal kernel, its device calibration, packing, runtime, schedule, contract,\n  and config.\n\nFull file list and a record of the small anonymization edits made to this\nsnapshot are in [`PROVENANCE.md`](PROVENANCE.md).\n\n---\n\n## Why the wiring isn't here\n\nBoth lanes hook into three core mlx-lm files — `mlx_lm/generate.py`,\n`mlx_lm/models/cache.py`, and `mlx_lm/server.py`. On the source tree those three\nfiles have diverged from stock mlx-lm (v0.31.3, this build's base) by roughly\n**+12,700 lines**, and that divergence carries **many unrelated features**, not\njust these two lanes. There is no clean seam that extracts \"only the\ncompiled-decode and megakernel hooks\" from those files in runnable form, so they\nare **deliberately not reproduced here**. Instead, the exact surface those files\nmust expose is documented below, so a reviewer can see precisely how the\nincluded modules attach.\n\nConcretely, the included modules import from non-included modules — e.g.\n`compiled_decode.py` imports `RingKVCache` / `_ring_buckets` from\n`mlx_lm/models/cache.py`, and `megakernel_lane.py` imports the `qwen4_exp`\n(Flash-Next) model. That is why this snapshot does not run on its own.\n\n---\n\n## Integration surface (what the host mlx-lm build must expose)\n\n### For #3141 (compiled-decode)\n- `mlx_lm.compiled_decode`: `CompiledDecodeStep`, `compiled_decode_step`,\n  `compiled_decode_enabled`, `compiled_decode_context_policy`,\n  `compiled_decode_numerics_accepted`, `compiled_decode_serving_reason`,\n  `model_is_compilable`, `to_shape_stable_cache`; the class-1 bucket-ladder\n  acceptance and the `short` / `memory` / `latency` / `long` context profiles\n  (`long` → 262144 on the extended ladder).\n- `mlx_lm.compiled_qualification`: `serving_qualification_reason`; identity =\n  config / weights / parameter_layout / runtime / environment, plus numerical +\n  serving evidence and spot-check revalidation, bound via the\n  `MLX_LM_COMPILED_DECODE_QUALIFICATION` environment variable.\n- `mlx_lm.models.cache`: `RingKVCache` (with `from_kv_cache` / `to_kv_cache`,\n  `reserve`, `size`, `trim`, `is_trimmable`) and the `_RING_KV_BUCKETS` ladder\n  (`_ring_buckets`).\n- `mlx_lm.generate.generate_step` request-private compiled plumbing: the\n  `compiled_decode`, `_prompt_cache_is_request_private`, and\n  `_compiled_decode_status` keyword arguments. An older `generate_step` without\n  these makes the lane a no-op.\n- Server-side APC publish-back lives in `mlx_lm.server`\n  (`_compiled_cache_publishable`, `_compiled_cache_for_publication`,\n  `_compiled_request_selected`, `insert_cache`). The Rapid runner mirrors this\n  at its own surface and publishes the **stock** cache form\n  (`RingKVCache.to_kv_cache()`), never a `RingKVCache`.\n\n### For #3142 (megakernel)\n- `mlx_lm.megakernel_lane`: `megakernel_lane_enabled`,\n  `attach_megakernel_lane(model, prompt_cache, *, max_tokens, status)`,\n  `preload_megakernel_lane`, and the in-`generate_step` hook that attaches the\n  lane for width-1 plain requests.\n- The master switch is the `MLX_QWEN4_MEGAKERNEL` environment variable; a build\n  that captures it at import must see it set before the model loads.\n- Model eligibility is resolved inside the lane (it targets the `qwen4_exp`\n  Flash-Next geometry and the dense `qwen3_5_moe` geometry); there is **no**\n  separate `geometry_for_model_type` registry.\n\n---\n\n## Two operational gotchas (why \"have the code\" ≠ \"runs the lane\")\n\n1. **Per-device calibration.** The megakernel requires a validated *primitives*\n   calibration keyed by **both** the GPU signature and the **mlx core version**\n   (a per-device tune cache). On a device/core with no cached, validated entry,\n   the lane **declines cleanly (fail-closed to eager)** rather than engaging.\n   Running the lane on a new machine requires the one-time primitive tune for\n   that device and core.\n2. **Pin the mlx core.** In testing, an mlx core one patch version off the\n   calibration declined the lane (the fail-closed path, as designed). When\n   enabling the megakernel lane, pin the mlx core to the calibrated version.\n\nThe compiled-decode lane (#3141) has no per-device kernel calibration, but is\ngated by the reviewed serving manifest above and serves the mixed 4/6-bit\ncheckpoint natively via `mx.quantized_matmul` (no custom 6-bit decode).\n\n---\n\n## How to use this repo\n\n- **To review the PRs:** read the modules here against the *Integration surface*\n  section; that is the full contract the Rapid-side lanes rely on. The Rapid\n  PRs are default-OFF and fail-closed, so their safety on a stock mlx-lm (the\n  no-op path) is verifiable without this code.\n- **To run end-to-end:** this snapshot is not sufficient on its own (see\n  *Why the wiring isn't here*). Reach out to arrange a build or a joint\n  validation session.\n\n## License\n\nMIT — see [LICENSE](LICENSE). This matches the license of the upstream mlx-lm\nproject these modules extend.\n"
+}

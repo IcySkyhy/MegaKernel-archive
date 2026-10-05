@@ -1,0 +1,128 @@
+# M133 设备槽驱动输出（原样复制，仅把工作树绝对路径替换为 <WORKTREE>；每行 "=== [时刻] <mode> <变体> ===" 是驱动进入该档的时刻，"date=" 行是进锁成功的时刻）
+=== [2026-10-04T09:45:32+00:00] defer-lock variant=base_N8 reps=3 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 198.2       60                0     / 0             |
+date=2026-10-04T09:45:49+00:00 mode=tail filter=^base_N8$ reps=3 timeout=30s
+== tail 变体 ==
+tail:base_N8                       rc==0 3/3  hang=0  SUMMARY mode=tail variant=base_N8 run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:46:10+00:00] defer-lock variant=neg_skipvrel reps=2 to=25 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 197.1       59                0     / 0             |
+date=2026-10-04T09:46:34+00:00 mode=tail filter=^neg_skipvrel$ reps=2 timeout=25s
+== tail 变体 ==
+tail:neg_skipvrel                  rc==0 0/2  hang=2  SUMMARY mode=tail variant=neg_skipvrel run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:47:25+00:00] defer-lock variant=ctrl_e3rls reps=3 to=25 trace=1 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 197.1       59                0     / 0             |
+date=2026-10-04T09:48:13+00:00 mode=tail filter=^ctrl_e3rls$ reps=3 timeout=25s
+== tail 变体 ==
+tail:ctrl_e3rls                    rc==0 3/3  hang=0  SUMMARY mode=tail variant=ctrl_e3rls run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:48:34+00:00] defer-lock variant=neg_skipse3 reps=3 to=25 trace=1 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 196.7       59                0     / 0             |
+date=2026-10-04T09:48:35+00:00 mode=tail filter=^neg_skipse3$ reps=3 timeout=25s
+== tail 变体 ==
+tail:neg_skipse3                   rc==0 0/3  hang=3  SUMMARY mode=tail variant=neg_skipse3 run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:49:51+00:00] defer-lock variant=neg_skipse3_2id reps=3 to=25 trace=1 ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 204.3       68                0     / 0             |
+date=2026-10-04T09:51:45+00:00 mode=tail filter=^neg_skipse3_2id$ reps=3 timeout=25s
+== tail 变体 ==
+tail:neg_skipse3_2id               rc==0 0/3  hang=3  SUMMARY mode=tail variant=neg_skipse3_2id run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:53:00+00:00] defer-lock variant=rel_base reps=4 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 198.8       61                0     / 0             |
+date=2026-10-04T09:53:28+00:00 mode=tail filter=^rel_base$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rel_base                      rc==0 4/4  hang=0  SUMMARY mode=tail variant=rel_base run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:53:56+00:00] defer-lock variant=relv_imm reps=4 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.7       62                0     / 0             |
+date=2026-10-04T09:54:58+00:00 mode=tail filter=^relv_imm$ reps=4 timeout=30s
+== tail 变体 ==
+tail:relv_imm                      rc==0 4/4  hang=0  SUMMARY mode=tail variant=relv_imm run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:55:25+00:00] defer-lock variant=relv_unlockB reps=4 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 270.1       69                0     / 0             |
+date=2026-10-04T09:57:23+00:00 mode=tail filter=^relv_unlockB$ reps=4 timeout=30s
+== tail 变体 ==
+tail:relv_unlockB                  rc==0 4/4  hang=0  SUMMARY mode=tail variant=relv_unlockB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:57:52+00:00] defer-lock variant=relv_unlockNB reps=4 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 200.7       63                0     / 0             |
+date=2026-10-04T09:57:53+00:00 mode=tail filter=^relv_unlockNB$ reps=4 timeout=30s
+== tail 变体 ==
+tail:relv_unlockNB                 rc==0 4/4  hang=0  SUMMARY mode=tail variant=relv_unlockNB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:58:22+00:00] defer-lock variant=rele_imm reps=4 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 198.6       61                0     / 0             |
+date=2026-10-04T09:58:23+00:00 mode=tail filter=^rele_imm$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rele_imm                      rc==0 4/4  hang=0  SUMMARY mode=tail variant=rele_imm run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T09:58:52+00:00] defer-lock variant=rele_unlockB reps=4 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 264.2       63                0     / 0             |
+date=2026-10-04T10:00:59+00:00 mode=tail filter=^rele_unlockB$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rele_unlockB                  rc==0 4/4  hang=0  SUMMARY mode=tail variant=rele_unlockB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:01:27+00:00] defer-lock variant=rele_unlockNB reps=4 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.8       63                0     / 0             |
+date=2026-10-04T10:02:51+00:00 mode=tail filter=^rele_unlockNB$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rele_unlockNB                 rc==0 4/4  hang=0  SUMMARY mode=tail variant=rele_unlockNB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:03:19+00:00] defer-lock variant=rel_neg_twoids reps=4 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.7       62                0     / 0             |
+date=2026-10-04T10:04:43+00:00 mode=tail filter=^rel_neg_twoids$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rel_neg_twoids                rc==0 0/4  hang=0  SUMMARY mode=tail variant=rel_neg_twoids run=1 N=32 tiles=64 mismatched=61 elems=131072 match=6720 stale=0 zero=0 histOther=0 rc=1
+完成。证据目录：<WORKTREE>/evidence
+=== [2026-10-04T10:05:11+00:00] defer-lock variant=rel_neg_shift reps=4 to=30 trace= ===
+== 进锁成功 ==
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.2       62                0     / 0             |
+date=2026-10-04T10:05:46+00:00 mode=tail filter=^rel_neg_shift$ reps=4 timeout=30s
+== tail 变体 ==
+tail:rel_neg_shift                 rc==0 0/4  hang=0  SUMMARY mode=tail variant=rel_neg_shift run=1 N=32 tiles=64 mismatched=64 elems=131072 match=0 stale=0 zero=0 histOther=4096 rc=1
+完成。证据目录：<WORKTREE>/evidence
+=== ALL DONE 2026-10-04T10:06:12+00:00 ===

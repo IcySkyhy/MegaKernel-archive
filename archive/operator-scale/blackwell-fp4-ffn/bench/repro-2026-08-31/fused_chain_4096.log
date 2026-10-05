@@ -1,0 +1,35 @@
+=== fused single-kernel FP4 chain, 4096 square, 2026-08-31 ===
+claims under test: README.md:26 '0.320 ms/pair, 862 TFLOPS, fused sparse chain one kernel d=8'
+                   README.md:27 '0.3147 ms/pair, 873, StagesC=3/StagesD=1 bf16 C'
+argv per README: <n> <iters> <swz> <ras> <gate> <d> [beta2off pf]
+clock: 3022 MHz, 330.00 W
+
+--- round 1 : DENSE baseline ---
+fused FP4 double GEMM  N=4096 tile=128x128x128 sw1 r1  0.4004 ms/pair  686.5 TFLOPS  81.1% of 846 (actual-clock peak)
+--- round 1 : SPARSE chain ---
+sparse residual FP4 double GEMM  N=4096 tile=128x128x256  0.3349 ms/pair  820.8 TFLOPS dense-equiv
+--- round 1 : FUSED  d=8 ---
+fused sparse residual FP4 double GEMM  N=4096 grid=32x64 swz=1 d=8 C=16b sC=3 sD=1  0.3202 ms/pair  858.6 TFLOPS dense-equiv
+--- round 1 : FUSED  d=2 ---
+fused sparse residual FP4 double GEMM  N=4096 grid=32x64 swz=1 d=2 C=16b sC=3 sD=1  0.3188 ms/pair  862.3 TFLOPS dense-equiv
+    3022 MHz, 84.79 W, 49
+--- round 2 : DENSE baseline ---
+fused FP4 double GEMM  N=4096 tile=128x128x128 sw1 r1  0.4009 ms/pair  685.6 TFLOPS  81.0% of 846 (actual-clock peak)
+--- round 2 : SPARSE chain ---
+sparse residual FP4 double GEMM  N=4096 tile=128x128x256  0.3349 ms/pair  820.8 TFLOPS dense-equiv
+--- round 2 : FUSED  d=8 ---
+fused sparse residual FP4 double GEMM  N=4096 grid=32x64 swz=1 d=8 C=16b sC=3 sD=1  0.3206 ms/pair  857.3 TFLOPS dense-equiv
+--- round 2 : FUSED  d=2 ---
+fused sparse residual FP4 double GEMM  N=4096 grid=32x64 swz=1 d=2 C=16b sC=3 sD=1  0.3191 ms/pair  861.5 TFLOPS dense-equiv
+    3022 MHz, 85.35 W, 50
+--- round 3 : DENSE baseline ---
+fused FP4 double GEMM  N=4096 tile=128x128x128 sw1 r1  0.4012 ms/pair  685.2 TFLOPS  80.9% of 846 (actual-clock peak)
+--- round 3 : SPARSE chain ---
+sparse residual FP4 double GEMM  N=4096 tile=128x128x256  0.3353 ms/pair  819.8 TFLOPS dense-equiv
+--- round 3 : FUSED  d=8 ---
+fused sparse residual FP4 double GEMM  N=4096 grid=32x64 swz=1 d=8 C=16b sC=3 sD=1  0.3207 ms/pair  857.0 TFLOPS dense-equiv
+--- round 3 : FUSED  d=2 ---
+fused sparse residual FP4 double GEMM  N=4096 grid=32x64 swz=1 d=2 C=16b sC=3 sD=1  0.3197 ms/pair  859.7 TFLOPS dense-equiv
+    3022 MHz, 85.54 W, 50
+DONE 2026-08-31T14:26:18-07:00
+EXIT=0

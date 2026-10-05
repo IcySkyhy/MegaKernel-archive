@@ -1,0 +1,33 @@
+# M164 稳定性：clean arm (m26_Pf.gdn) 的 logits maxAbs 与跨进程重复跑比较（同一次构建内、同输入）
+
+== PREFIX(无握手) p12 x3 ==
+   dumps_prefix/m1_p12            maxAbs=6.4704e+08 sha256=7c3328c05a655f3d
+   dumps_prefix/m1_p12_rep2       maxAbs=6.7885e+08 sha256=767b52f258afd6d7
+   dumps_prefix/m1_p12_rep3       maxAbs=1.3283e+09 sha256=d4b8ff5eac9e65be
+   dumps_prefix/m1_p12_rep2       vs base: 逐字节相同=False max|diff|=5.4874e+08
+   dumps_prefix/m1_p12_rep3       vs base: 逐字节相同=False max|diff|=1.1519e+09
+
+== POST(带握手) p12 x3 ==
+   dumps_post/m1_p12_rep1         maxAbs=2.9017e+00 sha256=1d8238b90fab482f
+   dumps_post/m1_p12_rep2         maxAbs=2.9017e+00 sha256=1d8238b90fab482f
+   dumps_post/m1_p12_rep3         maxAbs=2.9017e+00 sha256=1d8238b90fab482f
+   dumps_post/m1_p12_rep2         vs base: 逐字节相同=True  max|diff|=0.0000e+00
+   dumps_post/m1_p12_rep3         vs base: 逐字节相同=True  max|diff|=0.0000e+00
+
+== PREFIX p15 ==
+   dumps_prefix/m1_p15            maxAbs=6.8160e+08 sha256=51630c8de956f694
+
+== POST p15 x3 ==
+   dumps_post/m1_p15_rep1         maxAbs=2.0385e+00 sha256=30aa62314522971d
+   dumps_post/m1_p15_rep2         maxAbs=2.0385e+00 sha256=30aa62314522971d
+   dumps_post/m1_p15_rep3         maxAbs=2.0385e+00 sha256=30aa62314522971d
+   dumps_post/m1_p15_rep2         vs base: 逐字节相同=True  max|diff|=0.0000e+00
+   dumps_post/m1_p15_rep3         vs base: 逐字节相同=True  max|diff|=0.0000e+00
+
+== PREFIX p8 ==
+   dumps_prefix/m1_p8             maxAbs=4.1255e+00 sha256=5ca3b41e0f3267a2
+
+== POST p8 ==
+   dumps_post/m1_p8_rep1          maxAbs=4.1255e+00 sha256=5ca3b41e0f3267a2
+
+# PREFIX = base HEAD（无握手，修前）；POST = 带握手（本 mission，修后）。

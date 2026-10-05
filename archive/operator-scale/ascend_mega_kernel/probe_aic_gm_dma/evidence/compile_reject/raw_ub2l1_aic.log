@@ -1,0 +1,8 @@
+raw_ub2l1_aic.asc:12:9: error: function type 'void (__cbuf__ void *, __ubuf__ void *, unsigned char, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_cbuf' does not support the given target feature
+        copy_ubuf_to_cbuf((__cbuf__ void*)l1.GetPhyAddr(), (__ubuf__ void*)ub.GetPhyAddr(), 0, 1, 256, 0, 0);
+        ^
+raw_ub2l1_aic.asc:12:9: error: function type 'void (__cbuf__ void *, __ubuf__ void *, unsigned char, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_cbuf' does not support the given target feature
+raw_ub2l1_aic.asc:12:9: error: function type 'void (__cbuf__ void *, __ubuf__ void *, unsigned char, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_cbuf' does not support the given target feature
+raw_ub2l1_aic.asc:12:9: error: function type 'void (__cbuf__ void *, __ubuf__ void *, bool, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_cbuf' does not support the given target feature
+raw_ub2l1_aic.asc:12:9: error: function type 'void (__cbuf__ void *, __ubuf__ void *, bool, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_cbuf' does not support the given target feature
+5 errors generated.

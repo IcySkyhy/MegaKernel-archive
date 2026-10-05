@@ -1,0 +1,3 @@
+[check_anchors] scanned 20 package files; 522 anchors found over 88 distinct anchor target paths -> 39 distinct files; 522 verified against the intended file / 0 UNVERIFIED (ambiguous / root absent) / 0 out of range
+  matcher scope: `FILE.ext:NNN[-MMM]`, comma-chained `,NNN-MMM`, and `:NNN` continuations inside `anchor-check:on` regions. 0 reference-like token(s) matched NONE of those -> NOT CHECKED (listed below if any)
+RESULT: OK (522/522 anchors verified against one exact intended file; 0 reference-like tokens not covered by the matcher)

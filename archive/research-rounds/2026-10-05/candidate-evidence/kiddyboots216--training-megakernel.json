@@ -1,0 +1,362 @@
+{
+  "repository": "kiddyboots216/training-megakernel",
+  "url": "https://github.com/kiddyboots216/training-megakernel",
+  "created_at": "2026-09-01T20:20:18Z",
+  "pushed_at": "2026-09-30T09:21:23Z",
+  "branch": "main",
+  "license": "MIT",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 616
+    },
+    {
+      "path": "LICENSE",
+      "size": 1089
+    },
+    {
+      "path": "LICENSES/FlashAttention-BSD-3-Clause.txt",
+      "size": 1668
+    },
+    {
+      "path": "LICENSES/Quack-Apache-2.0.txt",
+      "size": 11357
+    },
+    {
+      "path": "MANIFEST.in",
+      "size": 322
+    },
+    {
+      "path": "README.md",
+      "size": 9701
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "size": 1701
+    },
+    {
+      "path": "examples/dclm/README.md",
+      "size": 7374
+    },
+    {
+      "path": "examples/dclm/dclm_example/__init__.py",
+      "size": 80
+    },
+    {
+      "path": "examples/dclm/dclm_example/catalog.py",
+      "size": 2453
+    },
+    {
+      "path": "examples/dclm/dclm_example/checkpoint_history.py",
+      "size": 948
+    },
+    {
+      "path": "examples/dclm/dclm_example/checkpoint_service.py",
+      "size": 8482
+    },
+    {
+      "path": "examples/dclm/dclm_example/checkpoint_storage.py",
+      "size": 22136
+    },
+    {
+      "path": "examples/dclm/dclm_example/corpus.py",
+      "size": 20414
+    },
+    {
+      "path": "examples/dclm/dclm_example/model_loader.py",
+      "size": 19452
+    },
+    {
+      "path": "examples/dclm/dclm_example/runtime.py",
+      "size": 19762
+    },
+    {
+      "path": "examples/dclm/dclm_example/system.py",
+      "size": 1488
+    },
+    {
+      "path": "examples/dclm/dclm_example/workload_store.py",
+      "size": 8025
+    },
+    {
+      "path": "examples/dclm/prepare.py",
+      "size": 3816
+    },
+    {
+      "path": "examples/dclm/random_init.py",
+      "size": 4197
+    },
+    {
+      "path": "examples/dclm/resume.sh",
+      "size": 239
+    },
+    {
+      "path": "examples/dclm/run_world8.sh",
+      "size": 2079
+    },
+    {
+      "path": "examples/dclm/train.sh",
+      "size": 243
+    },
+    {
+      "path": "kernel/README.md",
+      "size": 4241
+    },
+    {
+      "path": "kernel/build.py",
+      "size": 12598
+    },
+    {
+      "path": "kernel/build.sh",
+      "size": 570
+    },
+    {
+      "path": "kernel/program/anchors.py",
+      "size": 4968
+    },
+    {
+      "path": "kernel/program/attention.py",
+      "size": 59323
+    },
+    {
+      "path": "kernel/program/attention_members.py",
+      "size": 10526
+    },
+    {
+      "path": "kernel/program/attention_projections.py",
+      "size": 20841
+    },
+    {
+      "path": "kernel/program/clipped_adamw.py",
+      "size": 19015
+    },
+    {
+      "path": "kernel/program/communication/__init__.py",
+      "size": 670
+    },
+    {
+      "path": "kernel/program/communication/decoder_fabric.py",
+      "size": 8820
+    },
+    {
+      "path": "kernel/program/communication/embedding_route.py",
+      "size": 6594
+    },
+    {
+      "path": "kernel/program/communication/memory_ops.py",
+      "size": 12922
+    },
+    {
+      "path": "kernel/program/communication/shell_fabric.py",
+      "size": 9503
+    },
+    {
+      "path": "kernel/program/communication/symmetric_memory.py",
+      "size": 1025
+    },
+    {
+      "path": "kernel/program/decoder_gemm_runners.py",
+      "size": 4188
+    },
+    {
+      "path": "kernel/program/decoder_layer.py",
+      "size": 28351
+    },
+    {
+      "path": "kernel/program/fa4_backward_call.py",
+      "size": 11463
+    },
+    {
+      "path": "kernel/program/fa4_backward_kernel.py",
+      "size": 10735
+    },
+    {
+      "path": "kernel/program/fa4_forward_call.py",
+      "size": 11048
+    },
+    {
+      "path": "kernel/program/fa4_forward_kernel.py",
+      "size": 22798
+    },
+    {
+      "path": "kernel/program/fa4_postprocess.py",
+      "size": 37514
+    },
+    {
+      "path": "kernel/program/gemm_members.py",
+      "size": 21355
+    },
+    {
+      "path": "kernel/program/gemm_role_rotation.py",
+      "size": 4350
+    },
+    {
+      "path": "kernel/program/grid_barrier.py",
+      "size": 2066
+    },
+    {
+      "path": "kernel/program/lm_head.py",
+      "size": 22620
+    },
+    {
+      "path": "kernel/program/mlp_projections.py",
+      "size": 28212
+    },
+    {
+      "path": "kernel/program/model.py",
+      "size": 2157
+    },
+    {
+      "path": "kernel/program/optimizer_state.py",
+      "size": 7644
+    },
+    {
+      "path": "kernel/program/program_smem.py",
+      "size": 5266
+    },
+    {
+      "path": "kernel/program/projection_members.py",
+      "size": 3260
+    },
+    {
+      "path": "kernel/program/qk_norm_rope.py",
+      "size": 18924
+    },
+    {
+      "path": "kernel/program/quack_gemm_bodies.py",
+      "size": 42332
+    },
+    {
+      "path": "kernel/program/quack_rmsnorm_bodies.py",
+      "size": 33173
+    },
+    {
+      "path": "kernel/program/resident_step.py",
+      "size": 24265
+    },
+    {
+      "path": "kernel/program/tile_schedulers.py",
+      "size": 8046
+    },
+    {
+      "path": "kernel/program/training_program.py",
+      "size": 183180
+    },
+    {
+      "path": "kernel/program/training_tensors.py",
+      "size": 7998
+    },
+    {
+      "path": "kernel/tools/patch_step_backedge.py",
+      "size": 9213
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 1095
+    },
+    {
+      "path": "src/training_megakernel/__init__.py",
+      "size": 235
+    },
+    {
+      "path": "src/training_megakernel/abi.py",
+      "size": 3003
+    },
+    {
+      "path": "src/training_megakernel/arenas.py",
+      "size": 5950
+    },
+    {
+      "path": "src/training_megakernel/checkpoint_protocol.py",
+      "size": 3443
+    },
+    {
+      "path": "src/training_megakernel/circular_refill_runtime.py",
+      "size": 17322
+    },
+    {
+      "path": "src/training_megakernel/contract.py",
+      "size": 319
+    },
+    {
+      "path": "src/training_megakernel/distributed.py",
+      "size": 18096
+    },
+    {
+      "path": "src/training_megakernel/environment.py",
+      "size": 5052
+    },
+    {
+      "path": "src/training_megakernel/geometry.py",
+      "size": 2833
+    },
+    {
+      "path": "src/training_megakernel/host_memory.py",
+      "size": 1713
+    },
+    {
+      "path": "src/training_megakernel/layout.py",
+      "size": 11526
+    },
+    {
+      "path": "src/training_megakernel/logger.py",
+      "size": 14351
+    },
+    {
+      "path": "src/training_megakernel/module_smoke.py",
+      "size": 1808
+    },
+    {
+      "path": "src/training_megakernel/nstep.py",
+      "size": 6912
+    },
+    {
+      "path": "src/training_megakernel/resident_protocol.py",
+      "size": 3993
+    },
+    {
+      "path": "src/training_megakernel/route_layout.py",
+      "size": 5498
+    },
+    {
+      "path": "src/training_megakernel/runtime.py",
+      "size": 12578
+    },
+    {
+      "path": "src/training_megakernel/schedule.py",
+      "size": 5803
+    },
+    {
+      "path": "src/training_megakernel/shape.py",
+      "size": 10153
+    },
+    {
+      "path": "src/training_megakernel/shards.py",
+      "size": 7363
+    },
+    {
+      "path": "src/training_megakernel/state.py",
+      "size": 29971
+    },
+    {
+      "path": "src/training_megakernel/workload.py",
+      "size": 440
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-30T09:21:19Z",
+      "subject": "README: link the article, add measured step times and citation",
+      "url": "https://github.com/kiddyboots216/training-megakernel/commit/10a05111a2f9fd4d03ae704f175dbd555e065e68"
+    },
+    {
+      "date": "2026-09-26T02:52:42Z",
+      "subject": "Training megakernel 0.1.0",
+      "url": "https://github.com/kiddyboots216/training-megakernel/commit/942f86a9fc2b5166acff14818f137b6d1b141848"
+    }
+  ],
+  "readme": "# Training Megakernel\n\nTrain Qwen3-8B, or a model of Qwen3-8B's width with 2 to 82 layers, on eight\nH100s with one cooperative application CUfunction launch per GPU for an entire\nresident run.\n\nHow it works, and how it was built, is written up in [Writing Training\nMegakernels without Writing Training\nMegakernels](https://kiddyboots216.github.io/megakernel/).\n\nTrained from the same random initialization on the same 1,000 steps of DCLM\ndata, with the same AdamW settings, on the same node, the training megakernel\nfinished in 68.8 minutes and Megatron-LM in 83.3: **1.21x the throughput,\n17% less wall time**. After step 100 the two loss curves differ by 0.003 on\naverage (Pearson correlation 0.9993), and their last 50 steps average within\n0.1% of each other. Megatron-LM ran eight-way data parallelism with its\ndistributed optimizer, full activation recompute and Transformer Engine\nattention. Wall time runs from the first logged step to the last; it is one\nrun per implementation.\n\nPer step, Megatron-LM's median is 4.98 s and the megakernel's 4.08 s, a ratio\nof 1.22. A factor of 1.13 of that is work Megatron-LM does and the megakernel\ndoes not (19.0 against 16.8 PFLOP per step, from activation recompute); the\nremaining 1.08 is how fast each program executes the work it has. These are\nintervals between consecutive log records, not device timings.\n\nA stronger baseline is a staged CUDA graph built from the same FlashAttention 4\nand Quack tile code: one captured graph per GPU replaying 3,837 kernel launches\nper step. Against it the megakernel is about 1% faster. One Qwen3-8B optimizer\nupdate on eight H100s, median of 50 iterations in both run orders:\n\n| Program | Step latency | Positions per second |\n|---|---|---|\n| Staged CUDA graph | 4,141 ms | 63,300 |\n| Megakernel | 4,092 ms | 64,100 |\n\nPositions count all 32,768 per GPU, summed over eight GPUs.\n\nEach rank enters one cooperative CUfunction that remains resident across\noptimizer steps. Inside that function, the GPU executes the complete forward\npass, backward pass, distributed gradient work, global-norm clipping, and\nAdamW update. Host services refill token slots, persist checkpoints, and emit\ntelemetry while the function remains live.\n\n## Supported configuration\n\n- Qwen3-8B's width: hidden size 4,096, 32 query and 8 key-value heads of 128,\n  MLP size 12,288 and a 151,936-token vocabulary\n- 2 to 82 decoder layers and 1,024 to 32,768 tokens per GPU per step, in\n  multiples of 1,024, chosen when the kernel is built; the compiled release is\n  Qwen3-8B itself, 36 layers at 32,768 tokens\n- one node with eight fully NVLink-connected H100 80 GB GPUs\n- 132 cooperative CTAs by 384 threads on every rank\n- runtime-selected step count, advancing token slots, and restartable\n  checkpoints\n\nMemory bounds the shape. The build estimates the per-GPU training state and\nstops if it cannot fit an 80 GB GPU with 3.5 GiB left for the CUDA context and\ncommunication. By that estimate every depth up to 82 fits at 16,384 tokens or\nfewer, and at most 41 layers fit at 32,768 tokens. 41 layers at 32,768 tokens\nruns with about 3 GiB left per GPU:\n\n| Layers | Tokens per GPU | Estimated state | Measured in use | Step time |\n|---|---|---|---|---|\n| 41 | 32,768 | 75.1 GiB | 76.5 GiB | 4.73 s |\n| 40 | 32,768 | 74.5 GiB | 75.8 GiB | 4.61 s |\n| 36 | 32,768 | 71.8 GiB | 73.2 GiB | 4.16 s |\n| 40 | 16,384 | 50.0 GiB | 51.4 GiB | 2.13 s |\n| 12 | 3,072 | 17.2 GiB | 18.6 GiB | 0.19 s |\n| 2 | 1,024 | 10.5 GiB | 11.9 GiB | 0.05 s |\n\n\"Measured in use\" is what `nvidia-smi` reports per GPU during training. Step\ntimes are means over 100 steps (36 layers), 20 steps (40 and 41 layers at 32,768\ntokens) or 200 steps of the DCLM example, leaving out the one step that waited\nwhile a checkpoint was written. A checkpoint stores 12 bytes per optimizer\nelement, 12.3 GB per GPU at 36 layers. The grid streams it to the host\nthrough two 256 MiB pinned slots and holds the step until every rank's copy is\non disk: 12 to 21 seconds per 36-layer checkpoint in our runs, the time of\nthree to five steps. The device-side copy takes about a third of a second; the\nrest is host-side writing and agreement between the ranks. Pretrained weights exist only for 36 layers; the example can train\nother depths from random initialization.\n\nOn the same batch, the step-1 gradient norm is within 0.14% of a Hugging Face\nTransformers reference at every shape tested: 36 layers at 32,768 tokens, 40 at\n16,384, 12 at 3,072 and 2 at 1,024.\n\n## Requirements\n\nThe supported environment is based on `nvcr.io/nvidia/pytorch:26.02-py3` with:\n\n- Python 3.12\n- CUDA 13.0 runtime, CUDA 13.1 binary tools, and driver 590.48.01 or compatible\n- binutils 2.42; source builds also need `cuobjdump` and `nvdisasm`\n\n`pyproject.toml` pins exact versions only of the packages the kernel code is\nwritten against (`nvidia-cutlass-dsl`, and `quack-kernels` for source builds)\nand sets minimum versions for everything else. Install PyTorch 2.14 or later\nwith CUDA 13 wheels, then this package with the `dclm` extra for the example\nand `logging` for W&B:\n\n```bash\npython -m pip install --index-url https://download.pytorch.org/whl/cu130 'torch>=2.14.0'\npython -m pip install -e '.[dclm,logging]'\ntraining-megakernel-check --world8\n```\n\n`training-megakernel-check` prints a JSON report and exits nonzero if a check\nfails. It checks the Python version, the pinned package versions and that\nPyTorch was built for CUDA 13; `--world8` adds the GPU count, SM count,\ncompute capability and NVLink topology, and `--build` the source-build\npackages. It does not inspect the driver or binary-tool versions; compare\nthose directly with the requirements above.\n\n## Run the compiled release\n\nCompiled CUDA code is attached to the GitHub Release rather than stored in\nGit. The v0.1.0 release carries one bundle, Qwen3-8B at 36 layers and 32,768\ntokens per GPU. Download the bundle from the release, extract it, and check\nthat it loads:\n\n```bash\ntraining-megakernel-smoke /absolute/path/to/bundle\n```\n\nA bundle holds three files: `image.o`, `launch_abi.json` and `manifest.json`.\n`launch_abi.json` records the depth and tokens per GPU the bundle was built\nfor, and the runtime sizes everything from those. The manifest records each\nfile's size and SHA-256; the loader checks them, and the launch ABI's\ncheckpoint layout, before it loads CUDA code. The smoke test loads and\nresolves the CUfunction without launching it.\n\n## Train on DCLM\n\nThe [DCLM example](examples/dclm/) prepares token shards, runs the resident\nfunction on eight GPUs, writes periodic checkpoints, and resumes from the\nlatest complete one. `prepare.py catalog` indexes local DCLM Parquet files,\n`prepare.py shards --bundle BUNDLE` tokenizes them into a shard set for the\nbundle's tokens per GPU, and then:\n\n```bash\nexport TMK_STEPS=1000 TMK_HF_MODEL_SNAPSHOT=/absolute/path/to/Qwen3-8B\nexport TMK_LEARNING_RATE=1e-5 TMK_WEIGHT_DECAY=0.01\nbash examples/dclm/train.sh \"$BUNDLE\" \"$RUN_DIR\" \"$CHECKPOINT_ROOT\" \"$SHARDS\"\n```\n\nThe learning rate is constant, without warmup. The defaults, 3e-4 and weight\ndecay 0.1, are for training from random initialization; continuing the\npretrained Qwen3-8B at 3e-4 makes the loss jump within a few steps, so the\nexample above uses 1e-5 and 0.01.\n\nThe scripts take explicit dataset, tokenizer, model, bundle and output paths\nand do not download anything. `random_init.py` writes a randomly initialized\nsnapshot for bundles of other depths, and `resume.sh` continues from the\nnewest complete checkpoint. The [example's README](examples/dclm/README.md)\nwalks through every step.\n\nAvoid starting containers on a node while a run is live: in testing, doing so\nstopped the running kernel with an illegal-address error. Querying the GPUs\nwith `nvidia-smi` did not.\n\n## Build from source\n\nThe complete source closure is under `kernel/`. Install the build extra and\nFlashAttention 4, then build into a new directory outside the repository:\n\n```bash\npython -m pip install -e '.[build]'\npython -m pip install --no-deps \\\n  \"flash-attn-4 @ git+https://github.com/Dao-AILab/flash-attention@890f23878394cbff75a92e415f7b7e99b8fbccba#subdirectory=flash_attn/cute\"\npython -m pip install einops typing_extensions\ntraining-megakernel-check --world8 --build\nCUDA_VISIBLE_DEVICES=0 bash kernel/build.sh /absolute/path/to/new-bundle \\\n  --depth 36 --sequence 32768\n```\n\n`--depth` and `--sequence` choose the shape (the defaults are 36 and 32,768).\nA build takes one H100 for 4 to 14 minutes and allocates there the training\nstate it compiles for; it writes the same three files as the release bundle.\nSee [kernel/README.md](kernel/README.md).\n\nFlashAttention 4 is pinned to commit `890f238` but is not a declared\ndependency: its metadata at that commit requires `nvidia-cutlass-dsl==4.6.0.dev0`,\nso letting pip resolve it would downgrade `nvidia-cutlass-dsl` and\n`quack-kernels`. Install it with `--no-deps` as above, together with `einops`\nand `typing_extensions`; its other requirements come with the build extra. The\npreflight's `--build` check confirms version `4.0.0b20.dev8+g890f238`.\n\n## Source checks\n\n```bash\npython -m compileall -q src examples kernel\nbash -n kernel/build.sh examples/dclm/*.sh\n```\n\n## Citation\n\n```bibtex\n@misc{panda2026megakernel,\n  author       = {Ashwinee Panda},\n  title        = {Writing Training Megakernels without Writing Training\n                  Megakernels},\n  howpublished = {\\url{https://kiddyboots216.github.io/megakernel/}},\n  year         = {2026},\n  month        = {sep},\n  note         = {Blog post}\n}\n```\n\n## License\n\nProject code is licensed under the [MIT License](LICENSE). Build dependencies\nremain under their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).\n"
+}

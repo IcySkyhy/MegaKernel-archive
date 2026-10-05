@@ -1,0 +1,180 @@
+[m14-ref] 发现 5 个 tag manifest（解析失败跳过 0 个）；覆盖范围见末尾三态汇总
+[m14-ref] 咬合自检 ①：篡改 1 元素 +2 ulp                (报告) maxUlp 2 ⇒ 网格判据FAIL（必须咬得住）
+[m14-ref] 咬合自检 ②：全体 +1 ulp（负向对照）               (报告) maxUlp 1 ⇒ 网格判据仍 PASS ⇒ **咬不住** ≤1 ulp 的规则级偏移
+[m14-ref] ---- case chain (1 step, slice_mode=0 stage_limit=7): ① 参考链=分段(设备锚) / ② 隔离 ----
+[m14-ref] chain S1 res1 (host 全链)              PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain S1 x_norm (host 全链)            PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain S2 qkvzba (host 全链)            PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9879%, 超限 0/16480 
+[m14-ref] chain S3 q (分段, 设备锚)                 PASS rel 1e-5+1e-6: 最差容差占用 0.003, maxAbs 3.725e-09 
+[m14-ref] chain S3 k (分段, 设备锚)                 PASS rel 1e-5+1e-6: 最差容差占用 0.012, maxAbs 5.960e-08 
+[m14-ref] chain S3 v (分段, 设备锚)                 PASS rel 1e-5+1e-6: 最差容差占用 0.025, maxAbs 9.537e-07 
+[m14-ref] chain S3 g (分段, 设备锚)                 PASS rel 1e-5+1e-6: 最差容差占用 0.077, maxAbs 3.815e-06 
+[m14-ref] chain S3 beta (分段, 设备锚)              PASS rel 1e-5+1e-6: 最差容差占用 0.008, maxAbs 5.960e-08 
+[m14-ref] chain S3 conv_state (分段, 设备锚)        PASS bf16 位级一致: 不同 0/30720
+[m14-ref] chain S4 o (分段, 设备锚)                 PASS rel 1e-5+1e-6: 最差容差占用 0.019, maxAbs 5.960e-08 
+[m14-ref] chain S4 ssm_state (分段, 设备锚)         PASS rel 1e-5+1e-6: 最差容差占用 0.099, maxAbs 9.710e-07 
+[m14-ref] chain S4 ssm_state 位级统计 (分段, 设备锚)    (报告) 逐位一致 41.0081%; |exp|>=1e-6 子集: 位级一致 42.3634% / ≤1ulp 82.1118% / max ulp 167944
+[m14-ref] chain S5 opin = RMSNormGated (分段, 设备锚) PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9837%, 超限 0/6144 
+[m14-ref] chain S6 out_proj (分段, 设备锚)          PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9219%, 超限 0/2560 
+[m14-ref] chain S7 res2 (fp32) (分段, 设备锚)       PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain S7 y_final (分段, 设备锚)           PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain S1 res1 (隔离)                   PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain S1 x_norm (隔离)                 PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain S2 in_proj (隔离)                PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9879%, 超限 0/16480 
+[m14-ref] chain S3 q (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.003, maxAbs 3.725e-09 
+[m14-ref] chain S3 k (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.012, maxAbs 5.960e-08 
+[m14-ref] chain S3 v (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.025, maxAbs 9.537e-07 
+[m14-ref] chain S3 g (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.077, maxAbs 3.815e-06 
+[m14-ref] chain S3 beta (隔离)                   PASS rel 1e-5+1e-6: 最差容差占用 0.008, maxAbs 5.960e-08 
+[m14-ref] chain S3 conv_state (隔离, 位级)         PASS bf16 位级一致: 不同 0/30720
+[m14-ref] chain conv_state 移位一致性               PASS new[0]=old[1],new[1]=old[2],new[2]=x
+[m14-ref] chain S4 o (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.014, maxAbs 5.960e-08 
+[m14-ref] chain S4 ssm_state (隔离)              PASS rel 1e-5+1e-6: 最差容差占用 0.052, maxAbs 1.100e-06 
+[m14-ref] chain S4 ssm_state 位级统计(隔离)          (报告) 逐位一致 67.7615%; |exp|>=1e-6 子集: 位级一致 67.3434% / ≤1ulp 98.6031% / max ulp 11393
+[m14-ref] chain S5 opin (隔离)                   PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/6144 
+[m14-ref] chain S6 out_proj (隔离)               PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9219%, 超限 0/2560 
+[m14-ref] chain S7 res2 (隔离, fp32)             PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain S7 y_final (隔离)                PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain P: S3 k (纯参考链)                 (报告) maxAbs 1.327e-03 maxRel 5.049e-03
+[m14-ref] chain P: S4 ssm_state (纯参考链)         (报告) maxAbs 1.892e-02 maxRel 1.005e+00
+[m14-ref] chain P: S6 opout (纯参考链)             (报告) maxUlp 117 bit 一致 92.9688%
+[m14-ref] chain P: S7 y_final (纯参考链)           (报告) maxUlp 128 bit 一致 96.2891%
+[m14-ref] ---- case chain2 (2 steps, slice_mode=0 stage_limit=7): ① 参考链=分段(设备锚) / ② 隔离 ----
+[m14-ref] chain2_s0 S1 res1 (host 全链)          PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain2_s0 S1 x_norm (host 全链)        PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s0 S2 qkvzba (host 全链)        PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9879%, 超限 0/16480 
+[m14-ref] chain2_s0 S3 q (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.003, maxAbs 3.725e-09 
+[m14-ref] chain2_s0 S3 k (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.012, maxAbs 5.960e-08 
+[m14-ref] chain2_s0 S3 v (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.025, maxAbs 9.537e-07 
+[m14-ref] chain2_s0 S3 g (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.077, maxAbs 3.815e-06 
+[m14-ref] chain2_s0 S3 beta (分段, 设备锚)          PASS rel 1e-5+1e-6: 最差容差占用 0.008, maxAbs 5.960e-08 
+[m14-ref] chain2_s0 S3 conv_state (分段, 设备锚)    PASS bf16 位级一致: 不同 0/30720
+[m14-ref] chain2_s0 S4 o (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.019, maxAbs 5.960e-08 
+[m14-ref] chain2_s0 S4 ssm_state (分段, 设备锚)     PASS rel 1e-5+1e-6: 最差容差占用 0.099, maxAbs 9.710e-07 
+[m14-ref] chain2_s0 S4 ssm_state 位级统计 (分段, 设备锚) (报告) 逐位一致 41.0081%; |exp|>=1e-6 子集: 位级一致 42.3634% / ≤1ulp 82.1118% / max ulp 167944
+[m14-ref] chain2_s0 S5 opin = RMSNormGated (分段, 设备锚) PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9837%, 超限 0/6144 
+[m14-ref] chain2_s0 S6 out_proj (分段, 设备锚)      PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9219%, 超限 0/2560 
+[m14-ref] chain2_s0 S7 res2 (fp32) (分段, 设备锚)   PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain2_s0 S7 y_final (分段, 设备锚)       PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s0 S1 res1 (隔离)               PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain2_s0 S1 x_norm (隔离)             PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s0 S2 in_proj (隔离)            PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9879%, 超限 0/16480 
+[m14-ref] chain2_s0 S3 q (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.003, maxAbs 3.725e-09 
+[m14-ref] chain2_s0 S3 k (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.012, maxAbs 5.960e-08 
+[m14-ref] chain2_s0 S3 v (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.025, maxAbs 9.537e-07 
+[m14-ref] chain2_s0 S3 g (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.077, maxAbs 3.815e-06 
+[m14-ref] chain2_s0 S3 beta (隔离)               PASS rel 1e-5+1e-6: 最差容差占用 0.008, maxAbs 5.960e-08 
+[m14-ref] chain2_s0 S3 conv_state (隔离, 位级)     PASS bf16 位级一致: 不同 0/30720
+[m14-ref] chain2_s0 conv_state 移位一致性           PASS new[0]=old[1],new[1]=old[2],new[2]=x
+[m14-ref] chain2_s0 S4 o (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.014, maxAbs 5.960e-08 
+[m14-ref] chain2_s0 S4 ssm_state (隔离)          PASS rel 1e-5+1e-6: 最差容差占用 0.052, maxAbs 1.100e-06 
+[m14-ref] chain2_s0 S4 ssm_state 位级统计(隔离)      (报告) 逐位一致 67.7615%; |exp|>=1e-6 子集: 位级一致 67.3434% / ≤1ulp 98.6031% / max ulp 11393
+[m14-ref] chain2_s0 S5 opin (隔离)               PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/6144 
+[m14-ref] chain2_s0 S6 out_proj (隔离)           PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9219%, 超限 0/2560 
+[m14-ref] chain2_s0 S7 res2 (隔离, fp32)         PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain2_s0 S7 y_final (隔离)            PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s0 P: S3 k (纯参考链)             (报告) maxAbs 1.327e-03 maxRel 5.049e-03
+[m14-ref] chain2_s0 P: S4 ssm_state (纯参考链)     (报告) maxAbs 1.892e-02 maxRel 1.005e+00
+[m14-ref] chain2_s0 P: S6 opout (纯参考链)         (报告) maxUlp 117 bit 一致 92.9688%
+[m14-ref] chain2_s0 P: S7 y_final (纯参考链)       (报告) maxUlp 128 bit 一致 96.2891%
+[m14-ref] chain2_s1 S1 res1 (host 全链)          PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain2_s1 S1 x_norm (host 全链)        PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s1 S2 qkvzba (host 全链)        PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9818%, 超限 0/16480 
+[m14-ref] chain2_s1 S3 q (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.003, maxAbs 3.725e-09 
+[m14-ref] chain2_s1 S3 k (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.013, maxAbs 5.960e-08 
+[m14-ref] chain2_s1 S3 v (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.090, maxAbs 1.907e-06 
+[m14-ref] chain2_s1 S3 g (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.155, maxAbs 7.629e-06 
+[m14-ref] chain2_s1 S3 beta (分段, 设备锚)          PASS rel 1e-5+1e-6: 最差容差占用 0.006, maxAbs 5.960e-08 
+[m14-ref] chain2_s1 S3 conv_state (分段, 设备锚)    PASS bf16 位级一致: 不同 0/30720
+[m14-ref] chain2_s1 S4 o (分段, 设备锚)             PASS rel 1e-5+1e-6: 最差容差占用 0.027, maxAbs 2.384e-07 
+[m14-ref] chain2_s1 S4 ssm_state (分段, 设备锚)     PASS rel 1e-5+1e-6: 最差容差占用 0.320, maxAbs 1.939e-06 
+[m14-ref] chain2_s1 S4 ssm_state 位级统计 (分段, 设备锚) (报告) 逐位一致 32.5624%; |exp|>=1e-6 子集: 位级一致 33.1761% / ≤1ulp 75.0418% / max ulp 135476
+[m14-ref] chain2_s1 S5 opin = RMSNormGated (分段, 设备锚) PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/6144 
+[m14-ref] chain2_s1 S6 out_proj (分段, 设备锚)      PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s1 S7 res2 (fp32) (分段, 设备锚)   PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain2_s1 S7 y_final (分段, 设备锚)       PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s1 S1 res1 (隔离)               PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain2_s1 S1 x_norm (隔离)             PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s1 S2 in_proj (隔离)            PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9818%, 超限 0/16480 
+[m14-ref] chain2_s1 S3 q (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.003, maxAbs 3.725e-09 
+[m14-ref] chain2_s1 S3 k (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.013, maxAbs 5.960e-08 
+[m14-ref] chain2_s1 S3 v (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.090, maxAbs 1.907e-06 
+[m14-ref] chain2_s1 S3 g (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.155, maxAbs 7.629e-06 
+[m14-ref] chain2_s1 S3 beta (隔离)               PASS rel 1e-5+1e-6: 最差容差占用 0.006, maxAbs 5.960e-08 
+[m14-ref] chain2_s1 S3 conv_state (隔离, 位级)     PASS bf16 位级一致: 不同 0/30720
+[m14-ref] chain2_s1 conv_state 移位一致性           PASS new[0]=old[1],new[1]=old[2],new[2]=x
+[m14-ref] chain2_s1 S4 o (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.016, maxAbs 1.192e-07 
+[m14-ref] chain2_s1 S4 ssm_state (隔离)          PASS rel 1e-5+1e-6: 最差容差占用 0.187, maxAbs 8.664e-07 
+[m14-ref] chain2_s1 S4 ssm_state 位级统计(隔离)      (报告) 逐位一致 69.0781%; |exp|>=1e-6 子集: 位级一致 68.9216% / ≤1ulp 98.3630% / max ulp 18914
+[m14-ref] chain2_s1 S5 opin (隔离)               PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/6144 
+[m14-ref] chain2_s1 S6 out_proj (隔离)           PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s1 S7 res2 (隔离, fp32)         PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] chain2_s1 S7 y_final (隔离)            PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] chain2_s1 P: S3 k (纯参考链)             (报告) maxAbs 9.018e-08 maxRel 2.746e-02
+[m14-ref] chain2_s1 P: S4 ssm_state (纯参考链)     (报告) maxAbs 1.535e-02 maxRel 1.125e+00
+[m14-ref] chain2_s1 P: S6 opout (纯参考链)         (报告) maxUlp 2 bit 一致 97.2266%
+[m14-ref] chain2_s1 P: S7 y_final (纯参考链)       (报告) maxUlp 7 bit 一致 98.4766%
+[m14-ref] ---- case hostchain (1 step, slice_mode=2 stage_limit=7): ① 参考链=host 全链 / ② 隔离 ----
+[m14-ref] hostchain host 声明 S2 出口 == check_ref 独立重算 PASS bf16 位级一致: 不同 0/16480
+[m14-ref] hostchain (mode 2) device 消费的 q|k|v == host 输入字节 PASS bf16 位级一致: 不同 0/10240
+[m14-ref] hostchain S3 q (host 全链)             PASS rel 1e-5+1e-6: 最差容差占用 0.003, maxAbs 3.725e-09 
+[m14-ref] hostchain S3 k (host 全链)             PASS rel 1e-5+1e-6: 最差容差占用 0.012, maxAbs 5.960e-08 
+[m14-ref] hostchain S3 v (host 全链)             PASS rel 1e-5+1e-6: 最差容差占用 0.025, maxAbs 9.537e-07 
+[m14-ref] hostchain S3 g (host 全链)             PASS rel 1e-5+1e-6: 最差容差占用 0.077, maxAbs 3.815e-06 
+[m14-ref] hostchain S3 beta (host 全链)          PASS rel 1e-5+1e-6: 最差容差占用 0.008, maxAbs 5.960e-08 
+[m14-ref] hostchain S3 conv_state (host 全链)    PASS bf16 位级一致: 不同 0/30720
+[m14-ref] hostchain S4 o (host 全链)             PASS rel 1e-5+1e-6: 最差容差占用 0.018, maxAbs 5.960e-08 
+[m14-ref] hostchain S4 ssm_state (host 全链)     PASS rel 1e-5+1e-6: 最差容差占用 0.090, maxAbs 9.710e-07 
+[m14-ref] hostchain S4 ssm_state 位级统计 (host 全链) (报告) 逐位一致 40.7196%; |exp|>=1e-6 子集: 位级一致 42.0428% / ≤1ulp 82.0741% / max ulp 167944
+[m14-ref] hostchain S5 opin = RMSNormGated (host 全链) PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9837%, 超限 0/6144 
+[m14-ref] hostchain S6 out_proj (host 全链)      PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9609%, 超限 0/2560 
+[m14-ref] hostchain S7 res2 (fp32) (host 全链)   (报告) res2 位型不同 1/2560（源: 参考侧 opout 的 bf16 网格 ≤1 ulp，不是 S7 的算术问题；S7 算术精确性由 ② 的隔离项以逐位判据给出）
+[m14-ref] hostchain S7 y_final (host 全链)       PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9609%, 超限 0/2560 
+[m14-ref] hostchain S3 q (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.003, maxAbs 3.725e-09 
+[m14-ref] hostchain S3 k (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.012, maxAbs 5.960e-08 
+[m14-ref] hostchain S3 v (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.025, maxAbs 9.537e-07 
+[m14-ref] hostchain S3 g (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.077, maxAbs 3.815e-06 
+[m14-ref] hostchain S3 beta (隔离)               PASS rel 1e-5+1e-6: 最差容差占用 0.008, maxAbs 5.960e-08 
+[m14-ref] hostchain S3 conv_state (隔离, 位级)     PASS bf16 位级一致: 不同 0/30720
+[m14-ref] hostchain conv_state 移位一致性           PASS new[0]=old[1],new[1]=old[2],new[2]=x
+[m14-ref] hostchain S4 o (隔离)                  PASS rel 1e-5+1e-6: 最差容差占用 0.011, maxAbs 5.960e-08 
+[m14-ref] hostchain S4 ssm_state (隔离)          PASS rel 1e-5+1e-6: 最差容差占用 0.045, maxAbs 1.100e-06 
+[m14-ref] hostchain S4 ssm_state 位级统计(隔离)      (报告) 逐位一致 67.7676%; |exp|>=1e-6 子集: 位级一致 67.3509% / ≤1ulp 98.6155% / max ulp 11393
+[m14-ref] hostchain S5 opin (隔离)               PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/6144 
+[m14-ref] hostchain S6 out_proj (隔离)           PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9609%, 超限 0/2560 
+[m14-ref] hostchain S7 res2 (隔离, fp32)         PASS fp32 逐位一致: 不同 0/2560
+[m14-ref] hostchain S7 y_final (隔离)            PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/2560 
+[m14-ref] ---- case slice (1 step, slice_mode=1 stage_limit=7): ① 参考链=host 全链 / ② 隔离 ----
+[m14-ref] slice (mode 1) device 消费的 q|k|v == host 输入字节 PASS bf16 位级一致: 不同 0/10240
+[m14-ref] slice S3 q (host 全链)                 PASS rel 1e-5+1e-6: 最差容差占用 0.006, maxAbs 7.451e-09 
+[m14-ref] slice S3 k (host 全链)                 PASS rel 1e-5+1e-6: 最差容差占用 0.013, maxAbs 5.960e-08 
+[m14-ref] slice S3 v (host 全链)                 PASS rel 1e-5+1e-6: 最差容差占用 0.018, maxAbs 2.384e-07 
+[m14-ref] slice S3 g (host 全链)                 PASS rel 1e-5+1e-6: 最差容差占用 0.042, maxAbs 3.815e-06 
+[m14-ref] slice S3 beta (host 全链)              PASS rel 1e-5+1e-6: 最差容差占用 0.008, maxAbs 5.960e-08 
+[m14-ref] slice S3 conv_state (host 全链)        PASS bf16 位级一致: 不同 0/30720
+[m14-ref] slice S4 o (host 全链)                 PASS rel 1e-5+1e-6: 最差容差占用 0.013, maxAbs 2.235e-08 
+[m14-ref] slice S4 ssm_state (host 全链)         PASS rel 1e-5+1e-6: 最差容差占用 0.090, maxAbs 1.473e-07 
+[m14-ref] slice S4 ssm_state 位级统计 (host 全链)    (报告) 逐位一致 33.5879%; |exp|>=1e-6 子集: 位级一致 33.5932% / ≤1ulp 75.9674% / max ulp 206920
+[m14-ref] slice S5 opin = RMSNormGated (host 全链) PASS bf16 网格 ≤1ulp: maxUlp 1, bit 一致 99.9837%, 超限 0/6144 
+[m14-ref] slice S3 q (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.006, maxAbs 7.451e-09 
+[m14-ref] slice S3 k (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.013, maxAbs 5.960e-08 
+[m14-ref] slice S3 v (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.018, maxAbs 2.384e-07 
+[m14-ref] slice S3 g (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.042, maxAbs 3.815e-06 
+[m14-ref] slice S3 beta (隔离)                   PASS rel 1e-5+1e-6: 最差容差占用 0.008, maxAbs 5.960e-08 
+[m14-ref] slice S3 conv_state (隔离, 位级)         PASS bf16 位级一致: 不同 0/30720
+[m14-ref] slice conv_state 移位一致性               PASS new[0]=old[1],new[1]=old[2],new[2]=x
+[m14-ref] slice S4 o (隔离)                      PASS rel 1e-5+1e-6: 最差容差占用 0.006, maxAbs 7.451e-09 
+[m14-ref] slice S4 ssm_state (隔离)              PASS rel 1e-5+1e-6: 最差容差占用 0.029, maxAbs 9.593e-08 
+[m14-ref] slice S4 ssm_state 位级统计(隔离)          (报告) 逐位一致 64.4146%; |exp|>=1e-6 子集: 位级一致 64.4129% / ≤1ulp 96.9745% / max ulp 110578
+[m14-ref] slice S5 opin (隔离)                   PASS bf16 网格 ≤1ulp: maxUlp 0, bit 一致 100.0000%, 超限 0/6144 
+[m14-ref] ===== ALL PASS（判定项 139）=====
+[m14-ref] 覆盖三态：判定项 139（PASS 139 / FAIL 0）| 报告项 25 | 未覆盖(跳过) 8
+[m14-ref]   未覆盖：chain ①S2 出口自洽 — 仅 hostchain（其余 mode 的 S3 输入不是「参考自算的 S2 出口」）
+[m14-ref]   未覆盖：chain2_s0 ①S2 出口自洽 — 仅 hostchain（其余 mode 的 S3 输入不是「参考自算的 S2 出口」）
+[m14-ref]   未覆盖：chain2_s1 ①S2 出口自洽 — 仅 hostchain（其余 mode 的 S3 输入不是「参考自算的 S2 出口」）
+[m14-ref]   未覆盖：hostchain ①S1/S2 (host 全链) — slice_mode=2：device 不跑 S1/S2（S2 出口由 host 直供）
+[m14-ref]   未覆盖：slice ①S1/S2 (host 全链) — slice_mode=1：device 不跑 S1/S2（S2 出口由 host 直供）
+[m14-ref]   未覆盖：slice ①S2 出口自洽 — 仅 hostchain（其余 mode 的 S3 输入不是「参考自算的 S2 出口」）
+[m14-ref]   未覆盖：slice ①S6 — slice_mode=1：device 不跑 S6
+[m14-ref]   未覆盖：slice ①S7 — slice_mode=1：device 不跑 S7
+[m14-ref] RESULT: OK（判定项 139，报告项 25，未覆盖 8）

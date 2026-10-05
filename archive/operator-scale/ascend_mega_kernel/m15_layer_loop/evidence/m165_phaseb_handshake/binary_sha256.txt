@@ -1,0 +1,6 @@
+# M164 二进制与补丁 sha256（本次档的对照物）
+# 说明：pre-fix = base 0cd7fe5（无握手）；post-fix = base + handshake.patch；mutant = post-fix 去掉全体 AIC mode0 barrier。
+e7a61c7b35193b088fe9da5760212b5533a34c2a133c33855dcd1fe4c3043f37  /tmp/m15_prefix
+4eeb3906433893827f9b8caa9937f3d5eecef9fc802dfb5c343104735dd3c923  /tmp/m15_postfix
+2febd120b8dcee25c28c0cac8a2401367693e072c2d8b0ae547f8de2abf391f2  /tmp/m15_m2only
+e7d058d8ed3a77e9b34b2c71ec358660efd891aa1ce2a30cf17efa3e4f9d61e1  m15_layer_loop/evidence/m165_phaseb_handshake/handshake.patch

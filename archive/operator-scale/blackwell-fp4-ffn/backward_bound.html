@@ -1,0 +1,96 @@
+<!doctype html><html><head><meta charset="utf-8"><title>fp4 backward / training-step</title>
+<style>
+ body{background:#0d1117;color:#c9d1d9;font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;margin:0;padding:28px}
+ h1{font-size:19px;margin:0 0 2px} .sub{color:#8b949e;font-size:12.5px;margin-bottom:20px}
+ .wrap{display:flex;gap:34px;flex-wrap:wrap} .panel{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:16px 18px}
+ h2{font-size:14px;margin:0 0 12px;color:#e6edf3} .cap{color:#8b949e;font-size:11.5px;margin-top:10px;max-width:520px}
+ text{font-family:inherit} .foot{color:#8b949e;font-size:11.5px;margin-top:22px;max-width:1000px}
+ b.g{color:#3fb950} b.r{color:#f85149} b.y{color:#d29922}
+</style></head><body>
+<h1>fp4 residual-double-GEMM: the training-step throughput wall</h1>
+<div class="sub">RTX 5070 Ti (sm120), 3090 MHz lock, S=8192, dense-equiv TFLOPS. Measured this session (bwd_probe.cu + train_flip_24.cu).</div>
+<div class="wrap">
+ <div class="panel">
+  <h2>Step throughput / layer — three honesty tiers</h2>
+  <svg width="560" height="360" viewBox="0 0 560 360" id="p1"></svg>
+  <div class="cap">Each scenario at GEMM-only (pure tensor rate) → +amortized compress → +activation requant (deployable). The requant tax is real and does <b>not</b> overlap (measured 3% hidden). <b class="g">Transposable-2:4</b> is the accuracy-viable path; <b class="r">+structured dW</b> needs block masks (see right).</div>
+ </div>
+ <div class="panel">
+  <h2>Accuracy cost of the 2:4 mask (flip task, relPJ ↓)</h2>
+  <svg width="560" height="360" viewBox="0 0 560 360" id="p2"></svg>
+  <div class="cap">relPJ = ‖P−J‖/√S after 3000 steps fp4 QAT. Finer masks = better accuracy. Only <b class="r">block-2:4</b> (≥64) unlocks the dW 2× — and it collapses the flip (b 0.97→0.42). The <b class="g">accuracy-viable</b> masks (per-row/transposable) leave dW dense.</div>
+ </div>
+</div>
+<div class="foot">
+<b>The wall:</b> the two dense dW gradient GEMMs (711 TFLOPS, the dense-fp4 ceiling) are ~40% of the step and cap the accuracy-viable (transposable) deployable step at <b class="y">~840 &lt; 900</b>. The only route to &gt;900 is a sparse dW, which needs block-2:4 masks that break accuracy on this permutation task. A genuine accuracy↔throughput tension at the 900 line.
+</div>
+<script>
+const NS='http://www.w3.org/2000/svg';
+function el(p,t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e;}
+function txt(p,x,y,s,a={}){const e=el(p,'text',Object.assign({x,y,fill:a.fill||'#c9d1d9','font-size':a.fs||12,'text-anchor':a.ta||'start'},a.w?{'font-weight':a.w}:{}));e.textContent=s;return e;}
+
+// ---- panel 1: grouped bars ----
+(function(){
+ const svg=document.getElementById('p1');
+ const X0=52,Y0=300,W=470,H=250,MAX=1400;
+ // gridlines + y labels
+ for(let v=0;v<=1400;v+=200){const y=Y0-v/MAX*H;el(svg,'line',{x1:X0,y1:y,x2:X0+W,y2:y,stroke:'#21262d'});txt(svg,X0-8,y+4,v,{ta:'end',fill:'#6e7681',fs:10});}
+ // 900 reference line
+ const y9=Y0-900/MAX*H; el(svg,'line',{x1:X0,y1:y9,x2:X0+W,y2:y9,stroke:'#d29922','stroke-dasharray':'5 4','stroke-width':1.5});
+ txt(svg,X0+W,y9-5,'900 goal',{ta:'end',fill:'#d29922',fs:11,w:600});
+ txt(svg,16,Y0-H/2-30,'TFLOPS',{fill:'#8b949e',fs:11,ta:'middle'}).setAttribute('transform',`rotate(-90 16 ${Y0-H/2})`);
+ const groups=[
+  {name:'plain 2:4',      vals:[833,790,716], col:'#6e7681'},
+  {name:'transposable 2:4',vals:[1006,940,839],col:'#3fb950'},
+  {name:'+ structured dW', vals:[1305,1196,1038],col:'#f85149'},
+ ];
+ const tiers=['GEMM-only','+compress','deployable'];
+ const gW=W/groups.length, bw=26, gap=6;
+ groups.forEach((g,gi)=>{
+  const gx=X0+gi*gW+18;
+  g.vals.forEach((v,ti)=>{
+   const x=gx+ti*(bw+gap), h=v/MAX*H, y=Y0-h;
+   const op=[1,0.72,0.46][ti];
+   el(svg,'rect',{x,y,width:bw,height:h,fill:g.col,'fill-opacity':op,rx:2});
+   txt(svg,x+bw/2,y-4,v,{ta:'middle',fs:10,fill:'#c9d1d9',w:600});
+  });
+  txt(svg,gx+ (3*bw+2*gap)/2,Y0+16,g.name,{ta:'middle',fs:11,fill:g.col,w:600});
+ });
+ // tier legend
+ tiers.forEach((t,i)=>{txt(svg,X0+i*112+70,Y0+40,t,{fs:10.5,fill:'#8b949e'});el(svg,'rect',{x:X0+i*112+52,y:Y0+31,width:12,height:11,fill:'#8b949e','fill-opacity':[1,0.72,0.46][i],rx:2});});
+})();
+
+// ---- panel 2: relPJ line + speed markers ----
+(function(){
+ const svg=document.getElementById('p2');
+ const X0=54,Y0=290,W=468,H=232,MAX=0.9;
+ for(let v=0;v<=0.9;v+=0.1){const y=Y0-v/MAX*H;el(svg,'line',{x1:X0,y1:y,x2:X0+W,y2:y,stroke:'#21262d'});txt(svg,X0-8,y+4,v.toFixed(1),{ta:'end',fill:'#6e7681',fs:10});}
+ txt(svg,18,Y0-H/2-24,'relPJ',{fill:'#8b949e',fs:11,ta:'middle'}).setAttribute('transform',`rotate(-90 18 ${Y0-H/2})`);
+ const pts=[
+  {name:'dense',      relpj:0.17,b:0.97,dw:false},
+  {name:'per-row 2:4',relpj:0.34,b:0.90,dw:false},
+  {name:'transpos.',  relpj:0.40,b:0.87,dw:false},
+  {name:'block-16',   relpj:0.70,b:0.59,dw:'partial'},
+  {name:'block-64',   relpj:0.80,b:0.44,dw:true},
+  {name:'block-128',  relpj:0.82,b:0.42,dw:true},
+ ];
+ const dx=W/(pts.length); 
+ const xs=pts.map((p,i)=>X0+dx*(i+0.5));
+ // connecting line
+ let d=''; pts.forEach((p,i)=>{d+=(i?'L':'M')+xs[i]+' '+(Y0-p.relpj/MAX*H)+' ';});
+ el(svg,'path',{d,stroke:'#58a6ff',fill:'none','stroke-width':2});
+ // shaded "dW 2x available" region (block masks)
+ pts.forEach((p,i)=>{
+  const x=xs[i],y=Y0-p.relpj/MAX*H;
+  const col=p.dw===true?'#f85149':(p.dw==='partial'?'#d29922':'#3fb950');
+  el(svg,'circle',{cx:x,cy:y,r:5,fill:col,stroke:'#0d1117','stroke-width':1.5});
+  txt(svg,x,y-11,'b='+p.b.toFixed(2),{ta:'middle',fs:9.5,fill:'#8b949e'});
+  txt(svg,x,Y0+16,p.name,{ta:'middle',fs:10,fill:col,w:600});
+ });
+ // legend
+ const ly=40;
+ [['#3fb950','accuracy-viable · dW stays dense'],['#f85149','dW 2× (1386) · flip collapses']].forEach((L,i)=>{
+  el(svg,'circle',{cx:X0+8,cy:ly+i*18,r:5,fill:L[0]});txt(svg,X0+20,ly+i*18+4,L[1],{fs:10.5,fill:'#8b949e'});
+ });
+})();
+</script></body></html>

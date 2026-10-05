@@ -1,0 +1,18 @@
+{
+  "tensor": "a_qx.bin",
+  "shape": [
+    2,
+    1280
+  ],
+  "dtype": "uint8",
+  "strides": [
+    1280,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 2560,
+  "sha256": "22def6afcaaf4508947be081f0031550e0e15f9dd567c95145c473e9b713883d",
+  "kind": "golden",
+  "description": "routed A = MXFP4(x_sorted), compact rows [m*top_k, hidden/2], lohi along K (row r = perm slot r)"
+}

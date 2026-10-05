@@ -1,0 +1,7 @@
+VARIANT op=stpack4(id=6) a=0 b=0 n=64 model=3 window=64
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0xf844074f4e8d4fc3
+HEAD32 60503010 70707060 70707070 70707070
+COMPARE window_bytes=64 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (structural only: model=3; window 64B non-empty, 64 non-sentinel bytes, 0 bytes written outside window)

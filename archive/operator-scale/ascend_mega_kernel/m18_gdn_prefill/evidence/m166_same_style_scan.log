@@ -1,0 +1,5 @@
+# M166 同型写法普查（命令 + 逐字输出）
+# $ grep -nE 'np\.exp\(-' m18_gdn_prefill/check_ref.py
+267:            decay = np.exp(-gc)
+# 说明：命中的就是 --legacy-exp 的旧式分支（保留供对照）；默认 stable 路径不含它。
+# 全仓其它同型写法（未改）见 README §4.8(5)；M162 负责 m15_layer_loop 那处。

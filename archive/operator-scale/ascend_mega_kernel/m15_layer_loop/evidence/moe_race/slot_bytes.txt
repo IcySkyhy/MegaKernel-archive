@@ -1,0 +1,251 @@
+# M105 · §4③ 字节级读数（诊断槽 vs 同层 x_norm 行 0 残值）
+
+读取脚本：`check_slot_bytes.py`（两个偏移都由库内常量自算：槽 = WS_OFFSETS+32 = 988224；
+x_norm 行 0 的第 2176 B = (UB_IG_CNT+128) - UB_RT_XB）。`L*_moe_ws.bin` 是**融合路**那一侧的 ws
+（host 侧 `H_DumpMoeLayer` 只落这一侧；moe-only 侧的值只在 `run.log` 的 `exp 0x??` 里露首字节）。
+
+## 第 2 轮（本轮交付形态：写提前 + 写侧 drain release）
+
+### c9_fix2_dump（flip 基座 · 本轮形态 · 9 层落盘，二进制 `8310e71df5d8`）
+```
+$ python3 check_slot_bytes.py /tmp/m105/runs/c9_fix2_dump L00 L01 L02 L04 L05 L06 L08 L10 L14
+L00: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=593f36bc  slot!=x残值（slot=00000000 xn=593f36bc）
+L01: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=8c3f07bd  slot!=x残值（slot=00000000 xn=8c3f07bd）
+L02: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=9b3d2b3e  slot!=x残值（slot=00000000 xn=9b3d2b3e）
+L04: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=c8bdaf3d  slot!=x残值（slot=00000000 xn=c8bdaf3d）
+L05: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=68ba36be  slot!=x残值（slot=00000000 xn=68ba36be）
+L06: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=893d18be  slot!=x残值（slot=00000000 xn=893d18be）
+L08: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=a1bdba3e  slot!=x残值（slot=00000000 xn=a1bdba3e）
+L10: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=cdbe793c  slot!=x残值（slot=00000000 xn=cdbe793c）
+L14: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=d0bb47bb  slot!=x残值（slot=00000000 xn=d0bb47bb）
+```
+### c9_fix2_probe（同一形态 + 把写值拨成 `oobCountUb ^ 0x5A5A5A5A`，二进制 `c487fbdf8483`）
+```
+$ python3 check_slot_bytes.py /tmp/m105/runs/c9_fix2_probe L00 L01
+L00: size=7685472 slot[988224:988228]=5a5a5a5a x_norm_row0[2176:2180]=593f36bc  slot!=x残值（slot=5a5a5a5a xn=593f36bc）
+L01: size=7685472 slot[988224:988228]=5a5a5a5a x_norm_row0[2176:2180]=8c3f07bd  slot!=x残值（slot=5a5a5a5a xn=8c3f07bd）
+```
+### c9_racy2（反例：写搬回 `BufAcquire<PIPE_MTE3>` 之后 + 同一 drain release，二进制 `1c0d3a6961e7`）
+```
+$ grep -oE 'M\.moews\.L(00|01)[^)]*\)' /tmp/m105/runs/c9_racy2/run.log
+M.moews.L00                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x59)
+M.moews.L01                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x8c)
+（36 条 FAIL，失败位置恒为 988224 —— 见 runs_summary.txt §A）
+```
+
+## 第 1 轮（上一轮形态：只提前写、释放仍 mode 0）—— 正文保留
+
+## c9_unf_dump
+```
+$ python3 check_slot_bytes.py /tmp/m105/runs/c9_unf_dump $(ls /tmp/m105/runs/c9_unf_dump/*_moe_ws.bin | sed 's#.*/##; s#_moe_ws.bin##' | tr '\n' ' ')
+L00: size=7685472 slot[988224:988228]=593f36bc x_norm_row0[2176:2180]=593f36bc  slot==x残值（抢跑）
+L01: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=8c3f07bd  slot!=x残值（slot=00000000 xn=8c3f07bd）
+```
+判据行（`run.log`）：
+```
+M.moews.L00                    PASS (逐字节一致, n=7685472)
+M.moews.L01                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x8c)
+M.moews.L02                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x9b)
+M.moews.L03                    PASS (逐字节一致, n=7685472)
+M.moews.L04                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xc8)
+M.moews.L05                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x68)
+M.moews.L06                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x89)
+M.moews.L07                    PASS (逐字节一致, n=7685472)
+M.moews.L08                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xa1)
+M.moews.L09                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xb0)
+M.moews.L10                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xcd)
+M.moews.L11                    PASS (逐字节一致, n=7685472)
+M.moews.L12                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x90)
+M.moews.L13                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xda)
+M.moews.L14                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xd0)
+```
+
+## c9_unf_mldump
+```
+$ python3 check_slot_bytes.py /tmp/m105/runs/c9_unf_mldump $(ls /tmp/m105/runs/c9_unf_mldump/*_moe_ws.bin | sed 's#.*/##; s#_moe_ws.bin##' | tr '\n' ' ')
+L00: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=593f36bc  slot!=x残值（slot=00000000 xn=593f36bc）
+L01: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=8c3f07bd  slot!=x残值（slot=00000000 xn=8c3f07bd）
+L02: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=9b3d2b3e  slot!=x残值（slot=00000000 xn=9b3d2b3e）
+L04: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=c8bdaf3d  slot!=x残值（slot=00000000 xn=c8bdaf3d）
+L05: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=68ba36be  slot!=x残值（slot=00000000 xn=68ba36be）
+L06: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=893d18be  slot!=x残值（slot=00000000 xn=893d18be）
+L08: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=a1bdba3e  slot!=x残值（slot=00000000 xn=a1bdba3e）
+L10: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=cdbe793c  slot!=x残值（slot=00000000 xn=cdbe793c）
+L14: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=d0bb47bb  slot!=x残值（slot=00000000 xn=d0bb47bb）
+```
+判据行（`run.log`）：
+```
+M.moews.L00                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x59)
+M.moews.L01                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x8c)
+M.moews.L02                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x9b)
+M.moews.L03                    PASS (逐字节一致, n=7685472)
+M.moews.L04                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xc8)
+M.moews.L05                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x68)
+M.moews.L06                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x89)
+M.moews.L07                    PASS (逐字节一致, n=7685472)
+M.moews.L08                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xa1)
+M.moews.L09                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xb0)
+M.moews.L10                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xcd)
+M.moews.L11                    PASS (逐字节一致, n=7685472)
+M.moews.L12                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0x90)
+M.moews.L13                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xda)
+M.moews.L14                    FAIL (4/7685472 字节不同; first off 988224 got 0x00 exp 0xd0)
+```
+
+## c9_fix_dump
+```
+$ python3 check_slot_bytes.py /tmp/m105/runs/c9_fix_dump $(ls /tmp/m105/runs/c9_fix_dump/*_moe_ws.bin | sed 's#.*/##; s#_moe_ws.bin##' | tr '\n' ' ')
+L00: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=593f36bc  slot!=x残值（slot=00000000 xn=593f36bc）
+L01: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=8c3f07bd  slot!=x残值（slot=00000000 xn=8c3f07bd）
+```
+判据行（`run.log`）：
+```
+M.moews.L00                    PASS (逐字节一致, n=7685472)
+M.moews.L01                    PASS (逐字节一致, n=7685472)
+M.moews.L02                    PASS (逐字节一致, n=7685472)
+M.moews.L03                    PASS (逐字节一致, n=7685472)
+M.moews.L04                    PASS (逐字节一致, n=7685472)
+M.moews.L05                    PASS (逐字节一致, n=7685472)
+M.moews.L06                    PASS (逐字节一致, n=7685472)
+M.moews.L07                    PASS (逐字节一致, n=7685472)
+M.moews.L08                    PASS (逐字节一致, n=7685472)
+M.moews.L09                    PASS (逐字节一致, n=7685472)
+M.moews.L10                    PASS (逐字节一致, n=7685472)
+M.moews.L11                    PASS (逐字节一致, n=7685472)
+M.moews.L12                    PASS (逐字节一致, n=7685472)
+M.moews.L13                    PASS (逐字节一致, n=7685472)
+M.moews.L14                    PASS (逐字节一致, n=7685472)
+```
+
+## c9_fix_mldump
+```
+$ python3 check_slot_bytes.py /tmp/m105/runs/c9_fix_mldump $(ls /tmp/m105/runs/c9_fix_mldump/*_moe_ws.bin | sed 's#.*/##; s#_moe_ws.bin##' | tr '\n' ' ')
+L00: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=593f36bc  slot!=x残值（slot=00000000 xn=593f36bc）
+L01: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=8c3f07bd  slot!=x残值（slot=00000000 xn=8c3f07bd）
+L02: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=9b3d2b3e  slot!=x残值（slot=00000000 xn=9b3d2b3e）
+L04: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=c8bdaf3d  slot!=x残值（slot=00000000 xn=c8bdaf3d）
+L05: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=68ba36be  slot!=x残值（slot=00000000 xn=68ba36be）
+L06: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=893d18be  slot!=x残值（slot=00000000 xn=893d18be）
+L08: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=a1bdba3e  slot!=x残值（slot=00000000 xn=a1bdba3e）
+L10: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=cdbe793c  slot!=x残值（slot=00000000 xn=cdbe793c）
+L14: size=7685472 slot[988224:988228]=00000000 x_norm_row0[2176:2180]=d0bb47bb  slot!=x残值（slot=00000000 xn=d0bb47bb）
+```
+判据行（`run.log`）：
+```
+M.moews.L00                    PASS (逐字节一致, n=7685472)
+M.moews.L01                    PASS (逐字节一致, n=7685472)
+M.moews.L02                    PASS (逐字节一致, n=7685472)
+M.moews.L03                    PASS (逐字节一致, n=7685472)
+M.moews.L04                    PASS (逐字节一致, n=7685472)
+M.moews.L05                    PASS (逐字节一致, n=7685472)
+M.moews.L06                    PASS (逐字节一致, n=7685472)
+M.moews.L07                    PASS (逐字节一致, n=7685472)
+M.moews.L08                    PASS (逐字节一致, n=7685472)
+M.moews.L09                    PASS (逐字节一致, n=7685472)
+M.moews.L10                    PASS (逐字节一致, n=7685472)
+M.moews.L11                    PASS (逐字节一致, n=7685472)
+M.moews.L12                    PASS (逐字节一致, n=7685472)
+M.moews.L13                    PASS (逐字节一致, n=7685472)
+M.moews.L14                    PASS (逐字节一致, n=7685472)
+```
+
+## mn_unf_dump
+```
+$ python3 check_slot_bytes.py /tmp/m105/runs/mn_unf_dump $(ls /tmp/m105/runs/mn_unf_dump/*_moe_ws.bin | sed 's#.*/##; s#_moe_ws.bin##' | tr '\n' ' ')
+L00: size=7685472 slot[988224:988228]=593f36bc x_norm_row0[2176:2180]=593f36bc  slot==x残值（抢跑）
+L01: size=7685472 slot[988224:988228]=8c3f07bd x_norm_row0[2176:2180]=8c3f07bd  slot==x残值（抢跑）
+```
+判据行（`run.log`）：
+```
+M.moews.L00                    PASS (逐字节一致, n=7685472)
+M.moews.L01                    PASS (逐字节一致, n=7685472)
+M.moews.L02                    PASS (逐字节一致, n=7685472)
+M.moews.L03                    PASS (逐字节一致, n=7685472)
+M.moews.L04                    PASS (逐字节一致, n=7685472)
+M.moews.L05                    PASS (逐字节一致, n=7685472)
+M.moews.L06                    PASS (逐字节一致, n=7685472)
+M.moews.L07                    PASS (逐字节一致, n=7685472)
+M.moews.L08                    PASS (逐字节一致, n=7685472)
+M.moews.L09                    PASS (逐字节一致, n=7685472)
+M.moews.L10                    PASS (逐字节一致, n=7685472)
+M.moews.L11                    PASS (逐字节一致, n=7685472)
+M.moews.L12                    PASS (逐字节一致, n=7685472)
+M.moews.L13                    PASS (逐字节一致, n=7685472)
+M.moews.L14                    PASS (逐字节一致, n=7685472)
+```
+
+## c9_fix_probe_dump
+```
+$ python3 check_slot_bytes.py /tmp/m105/runs/c9_fix_probe_dump $(ls /tmp/m105/runs/c9_fix_probe_dump/*_moe_ws.bin | sed 's#.*/##; s#_moe_ws.bin##' | tr '\n' ' ')
+L00: size=7685472 slot[988224:988228]=5a5a5a5a x_norm_row0[2176:2180]=593f36bc  slot!=x残值（slot=5a5a5a5a xn=593f36bc）
+L01: size=7685472 slot[988224:988228]=5a5a5a5a x_norm_row0[2176:2180]=8c3f07bd  slot!=x残值（slot=5a5a5a5a xn=8c3f07bd）
+```
+判据行（`run.log`）：
+```
+M.moews.L00                    PASS (逐字节一致, n=7685472)
+M.moews.L01                    PASS (逐字节一致, n=7685472)
+M.moews.L02                    PASS (逐字节一致, n=7685472)
+M.moews.L03                    PASS (逐字节一致, n=7685472)
+M.moews.L04                    PASS (逐字节一致, n=7685472)
+M.moews.L05                    PASS (逐字节一致, n=7685472)
+M.moews.L06                    PASS (逐字节一致, n=7685472)
+M.moews.L07                    PASS (逐字节一致, n=7685472)
+M.moews.L08                    PASS (逐字节一致, n=7685472)
+M.moews.L09                    PASS (逐字节一致, n=7685472)
+M.moews.L10                    PASS (逐字节一致, n=7685472)
+M.moews.L11                    PASS (逐字节一致, n=7685472)
+M.moews.L12                    PASS (逐字节一致, n=7685472)
+M.moews.L13                    PASS (逐字节一致, n=7685472)
+M.moews.L14                    PASS (逐字节一致, n=7685472)
+```
+
+## c9_unf_probe_dump
+```
+$ python3 check_slot_bytes.py /tmp/m105/runs/c9_unf_probe_dump $(ls /tmp/m105/runs/c9_unf_probe_dump/*_moe_ws.bin | sed 's#.*/##; s#_moe_ws.bin##' | tr '\n' ' ')
+L00: size=7685472 slot[988224:988228]=593f36bc x_norm_row0[2176:2180]=593f36bc  slot==x残值（抢跑）
+L01: size=7685472 slot[988224:988228]=8c3f07bd x_norm_row0[2176:2180]=8c3f07bd  slot==x残值（抢跑）
+```
+判据行（`run.log`）：
+```
+M.moews.L00                    PASS (逐字节一致, n=7685472)
+M.moews.L01                    PASS (逐字节一致, n=7685472)
+M.moews.L02                    PASS (逐字节一致, n=7685472)
+M.moews.L03                    PASS (逐字节一致, n=7685472)
+M.moews.L04                    PASS (逐字节一致, n=7685472)
+M.moews.L05                    PASS (逐字节一致, n=7685472)
+M.moews.L06                    PASS (逐字节一致, n=7685472)
+M.moews.L07                    PASS (逐字节一致, n=7685472)
+M.moews.L08                    PASS (逐字节一致, n=7685472)
+M.moews.L09                    PASS (逐字节一致, n=7685472)
+M.moews.L10                    PASS (逐字节一致, n=7685472)
+M.moews.L11                    PASS (逐字节一致, n=7685472)
+M.moews.L12                    PASS (逐字节一致, n=7685472)
+M.moews.L13                    PASS (逐字节一致, n=7685472)
+M.moews.L14                    PASS (逐字节一致, n=7685472)
+```
+
+## 读法（逐条）
+1. **修后（c9_fix_dump / c9_fix_mldump）**：槽 = `00000000`，同层 x_norm 行 0 的 [2176:2180] 是各层
+   自己的残值（非零、逐层不同）⇒ **槽不再是残值**；判据 48/48 PASS ⇒ **两侧都是这个 0**（= 本档 badIds）。
+2. **未修 · 融合路读到残值（c9_unf_dump L00、mn_unf_dump L00/L01）**：槽 == 残值，且判据 PASS
+   ⇒ 两条路径**都**读到残值 ⇒ 这条 PASS 与计数器无关（假绿）。
+3. **未修 · 融合路读到计数器（c9_unf_mldump）**：槽 = `00000000`，而判据 36 条 FAIL 且 `exp 0x??`
+   **逐层等于**该层 x_norm 行 0 的 [2176] ⇒ moe-only 侧读到的是残值。9 层逐层对上（见下）。
+4. **拨值探针**：把写进槽的值改成 `oobCountUb ^ 0x5A5A5A5A`（仅 /tmp）—— 修后槽 = `5a5a5a5a`（值随写落盘，
+   **不是**残值）；同一改动在未修档槽 = 残值（`593f36bc`/`8c3f07bd`），`5a5a5a5a` 根本没落地 ⇒ 那 4 B 在未修档
+   与这次标量写**无关**，修后才有关。
+
+## 9 层逐层对照（未修档 `c9_unf_mldump`：`exp` 首字节 vs 该层 dump 的 x_norm[2176]）
+```
+   层       融合路槽首字节(got)    moe-only侧首字节(exp)    同层 x_norm[2176]    对上?
+  00                 00                   59                 59      是
+  01                 00                   8c                 8c      是
+  02                 00                   9b                 9b      是
+  04                 00                   c8                 c8      是
+  05                 00                   68                 68      是
+  06                 00                   89                 89      是
+  08                 00                   a1                 a1      是
+  10                 00                   cd                 cd      是
+  14                 00                   d0                 d0      是
+```
+（`got` 那列 9 层都是 `00` ⇒ 融合路这次读到的是计数器；`exp` 与同层 x_norm[2176] 逐层相同 ⇒ moe-only 侧读到残值。）

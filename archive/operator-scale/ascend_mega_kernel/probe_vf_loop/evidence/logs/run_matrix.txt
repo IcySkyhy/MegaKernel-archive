@@ -1,0 +1,130 @@
+# probe_vf_loop 运行结果矩阵（由 tools/summarize.py reindex 从 run_*.log 重建）
+# 每个 target 三行：RUN PASS/FAIL / rows 档位 N，FAIL M，判据列跨 rep 一致|不一致 / 数据面列跨 rep 一致|不一致
+nest_o0i0b0              [probe vf nest] tag=nest_o0i0b0 RUN FAIL
+nest_o0i0b0                rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i0b0                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i0b0_NOUNROT      [probe vf nest] tag=nest_o0i0b0_NOUNROT RUN FAIL
+nest_o0i0b0_NOUNROT        rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i0b0_NOUNROT        数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i0b1              [probe vf nest] tag=nest_o0i0b1 RUN FAIL
+nest_o0i0b1                rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i0b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i0b1_NOUNROT      [probe vf nest] tag=nest_o0i0b1_NOUNROT RUN FAIL
+nest_o0i0b1_NOUNROT        rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i0b1_NOUNROT        数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i0b1_O2           [probe vf nest] tag=nest_o0i0b1_O2 RUN FAIL
+nest_o0i0b1_O2             rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i0b1_O2             数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i0b3              [probe vf nest] tag=nest_o0i0b3 RUN FAIL
+nest_o0i0b3                rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i0b3                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i1b1              [probe vf nest] tag=nest_o0i1b1 RUN FAIL
+nest_o0i1b1                rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i1b1                数据面列(acc_maxdiff/hash)跨 rep **不一致**（读越界 UB，非判据；见 summarize_verify.txt）
+nest_o0i2b1              [probe vf nest] tag=nest_o0i2b1 RUN PASS
+nest_o0i2b1                rows 档位 6，FAIL 0，判据列跨 rep 一致
+nest_o0i2b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i3b0              [probe vf nest] tag=nest_o0i3b0 RUN PASS
+nest_o0i3b0                rows 档位 6，FAIL 0，判据列跨 rep 一致
+nest_o0i3b0                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i3b1              [probe vf nest] tag=nest_o0i3b1 RUN PASS
+nest_o0i3b1                rows 档位 6，FAIL 0，判据列跨 rep 一致
+nest_o0i3b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i3b1_O2           [probe vf nest] tag=nest_o0i3b1_O2 RUN PASS
+nest_o0i3b1_O2             rows 档位 6，FAIL 0，判据列跨 rep 一致
+nest_o0i3b1_O2             数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i3b3              [probe vf nest] tag=nest_o0i3b3 RUN PASS
+nest_o0i3b3                rows 档位 6，FAIL 0，判据列跨 rep 一致
+nest_o0i3b3                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i4b0              [probe vf nest] tag=nest_o0i4b0 RUN FAIL
+nest_o0i4b0                rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i4b0                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i4b1              [probe vf nest] tag=nest_o0i4b1 RUN FAIL
+nest_o0i4b1                rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i4b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i5b1              [probe vf nest] tag=nest_o0i5b1 RUN FAIL
+nest_o0i5b1                rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i5b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o0i6b1              [probe vf nest] tag=nest_o0i6b1 RUN FAIL
+nest_o0i6b1                rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o0i6b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o1i0b1              [probe vf nest] tag=nest_o1i0b1 RUN FAIL
+nest_o1i0b1                rows 档位 6，FAIL 4，判据列跨 rep 一致
+nest_o1i0b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o1i3b1              [probe vf nest] tag=nest_o1i3b1 RUN PASS
+nest_o1i3b1                rows 档位 6，FAIL 0，判据列跨 rep 一致
+nest_o1i3b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o2i0b1_ct1          [probe vf nest] tag=nest_o2i0b1_ct1 RUN PASS
+nest_o2i0b1_ct1            rows 档位 1，FAIL 0，判据列跨 rep 一致
+nest_o2i0b1_ct1            数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o2i0b1_ct2          [probe vf nest] tag=nest_o2i0b1_ct2 RUN PASS
+nest_o2i0b1_ct2            rows 档位 1，FAIL 0，判据列跨 rep 一致
+nest_o2i0b1_ct2            数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o2i0b1_ct3          [probe vf nest] tag=nest_o2i0b1_ct3 RUN FAIL
+nest_o2i0b1_ct3            rows 档位 1，FAIL 1，判据列跨 rep 一致
+nest_o2i0b1_ct3            数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o2i0b1_ct4          [probe vf nest] tag=nest_o2i0b1_ct4 RUN FAIL
+nest_o2i0b1_ct4            rows 档位 1，FAIL 1，判据列跨 rep 一致
+nest_o2i0b1_ct4            数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o2i0b1_ct64         [probe vf nest] tag=nest_o2i0b1_ct64 RUN FAIL
+nest_o2i0b1_ct64           rows 档位 1，FAIL 1，判据列跨 rep 一致
+nest_o2i0b1_ct64           数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o2i3b1_ct4          [probe vf nest] tag=nest_o2i3b1_ct4 RUN PASS
+nest_o2i3b1_ct4            rows 档位 1，FAIL 0，判据列跨 rep 一致
+nest_o2i3b1_ct4            数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o3i0b1              [probe vf nest] tag=nest_o3i0b1 RUN PASS
+nest_o3i0b1                rows 档位 6，FAIL 0，判据列跨 rep 一致
+nest_o3i0b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o4i0b1              [probe vf nest] tag=nest_o4i0b1 RUN PASS
+nest_o4i0b1                rows 档位 6，FAIL 0，判据列跨 rep 一致
+nest_o4i0b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+nest_o5i0b1              [probe vf nest] tag=nest_o5i0b1 RUN PASS
+nest_o5i0b1                rows 档位 6，FAIL 0，判据列跨 rep 一致
+nest_o5i0b1                数据面列(acc_maxdiff/hash)跨 rep 一致
+ag_gather_sweep s=0 x=1                    in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=0 x=128                  in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=0 x=2                    in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=0 x=64                   in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=0 x=8                    in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=1024 x=1                 in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=1048576 x=1              aclError=507035
+ag_gather_sweep s=1048576 x=128            aclError=507035
+ag_gather_sweep s=12000 x=1                in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=131072 x=1               aclError=507035
+ag_gather_sweep s=16000 x=1                in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=16000 x=128              in_rng_bad=0 oob_lanes=61 oob_zero=60 oob_first=1891
+ag_gather_sweep s=16000 x=2                in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=16000 x=64               in_rng_bad=0 oob_lanes=58 oob_zero=58 oob_first=0
+ag_gather_sweep s=16000 x=8                in_rng_bad=0 oob_lanes=16 oob_zero=0 oob_first=-0.241934
+ag_gather_sweep s=16320 x=1                in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=16321 x=1                in_rng_bad=0 oob_lanes=1 oob_zero=1 oob_first=0
+ag_gather_sweep s=16321 x=128              in_rng_bad=0 oob_lanes=63 oob_zero=16 oob_first=-0.51659
+ag_gather_sweep s=16321 x=2                in_rng_bad=0 oob_lanes=32 oob_zero=0 oob_first=0.348567
+ag_gather_sweep s=16321 x=64               in_rng_bad=0 oob_lanes=63 oob_zero=62 oob_first=17064
+ag_gather_sweep s=16321 x=8                in_rng_bad=0 oob_lanes=56 oob_zero=56 oob_first=0
+ag_gather_sweep s=16383 x=1                in_rng_bad=0 oob_lanes=63 oob_zero=0 oob_first=17321
+ag_gather_sweep s=16384 x=1                in_rng_bad=0 oob_lanes=64 oob_zero=0 oob_first=-0.241934
+ag_gather_sweep s=1 x=128                  in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=20000 x=1                in_rng_bad=0 oob_lanes=64 oob_zero=0 oob_first=0.00735474
+ag_gather_sweep s=20000 x=128              in_rng_bad=0 oob_lanes=64 oob_zero=38 oob_first=0
+ag_gather_sweep s=32000 x=1                in_rng_bad=0 oob_lanes=64 oob_zero=0 oob_first=-0.0172252
+ag_gather_sweep s=4096 x=1                 in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=60000 x=1                in_rng_bad=0 oob_lanes=64 oob_zero=64 oob_first=0
+ag_gather_sweep s=64 x=128                 in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=65000 x=1                in_rng_bad=0 oob_lanes=64 oob_zero=64 oob_first=0
+ag_gather_sweep s=65400 x=1                in_rng_bad=0 oob_lanes=64 oob_zero=64 oob_first=0
+ag_gather_sweep s=65472 x=1                in_rng_bad=0 oob_lanes=64 oob_zero=64 oob_first=0
+ag_gather_sweep s=65473 x=1                aclError=507035
+ag_gather_sweep s=65500 x=1                aclError=507035
+ag_gather_sweep s=65535 x=1                aclError=507035
+ag_gather_sweep s=65536 x=1                aclError=507035
+ag_gather_sweep s=65537 x=1                aclError=507035
+ag_gather_sweep s=70000 x=1                aclError=507035
+ag_gather_sweep s=8064 x=1                 in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=8064 x=128               in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=8191 x=1                 in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=8191 x=128               in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=8192 x=1                 in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=8192 x=128               in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=8193 x=1                 in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0
+ag_gather_sweep s=8193 x=128               in_rng_bad=0 oob_lanes=0 oob_zero=0 oob_first=0

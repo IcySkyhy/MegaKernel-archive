@@ -1,0 +1,102 @@
+===== 逆证 legacy =====
+NC-1 doc/section   SAMPLE = see docs/99-nothing.md §1 and docs/11 §5.1 ; also docs/07 §2 ; bare doc refs docs/88-nowhere.md and docs/77
+     bad_doc = ['docs/88-nowhere.md', 'docs/77']   （分母 doc refs=2，分子 ⊆ 分母）
+     bad_sec = ['docs/99-nothing.md §1', 'docs/11 §5.1', 'docs/07 §2']    （分母 section refs=3，分子 ⊆ 分母）
+     两栏不重叠：`docs/99-nothing.md §1` 只进 bad_sec、`docs/88-nowhere.md` 只进 bad_doc    -> PASS
+NC-2 path-ref      SAMPLE = see m99_bogus/nope_file.py and tools/does_not_exist.py
+     missed  = ['m99_bogus/nope_file.py', 'tools/does_not_exist.py']    -> PASS
+     （这两条不在 ALLOWLIST 里 ⇒ 必须进 RESULT 与退出码）
+NC-3 allowlist     含 ALLOWLIST：gating=[]  allowlisted=['tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_defines.h', 'tools/bisheng_compiler/lib/clang/15.0.5/include/cce_aicore_intrinsics.h']
+                   清空 ALLOWLIST：gating=['tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_defines.h', 'tools/bisheng_compiler/lib/clang/15.0.5/include/cce_aicore_intrinsics.h']  allowlisted=[]
+     判定：(清空后 gating) == (清空前 gating) ∪ (清空前 allowlisted)
+     -> PASS   （本次 2 条豁免全部改走 gate；allowlist 不是免死金牌）
+NC-4 same-doc §-ref SAMPLE = 同上，见本文 §99.7（本文件内的错引）与本文 §1.2（正确引用）
+     `§99.7` 在本文中是否存在 = False（False = 它确实是一条**错引**）
+     scanner reported: bad_doc=[] bad_sec=[] n_sec=0  <- 全 0 = **不报**（盲区，如实登记）
+     判据：错引确实存在 且 扫描器确实不报 ⇒ 这条对照**就是**「同文档 §-号不在覆盖面内」的声明    -> PASS
+NC-5 backtick §-ref SAMPLE = wrap-bad: `docs/99-nothing.md` §1 and `docs/07` §2 ; wrap-good: `docs/17` §10 and `docs/17` §1
+     放宽前的匹配面（= 去掉 `` `? ``）在本样本上命中 = 0 条（0 = 旧正则对这 4 条一条都不匹配 ⇒ 这正是被放宽的缺口）
+     放宽后命中 = 4 条：['docs/07` §2', 'docs/17` §1', 'docs/17` §10', 'docs/99-nothing.md` §1']
+     (a) 负向 bad_sec = ['docs/99-nothing.md` §1', 'docs/07` §2']   （期望 ['docs/99-nothing.md` §1', 'docs/07` §2']）
+     (b) 正向：上面 4 条里可解析的那 2 条（`docs/17` §10 / §1）未进 bad_sec，且它们**确实被匹配到**（否则就是假通过）
+     (c) 盲区 SAMPLE = version-gap: docs/05-megakernel-design.md v1.2 §2/§6
+         `docs/05` 的 §2/§6 都存在 = True（引用本身是好的），而扫描器命中 = 0 条（0 = **不报**，缺口如实登记）
+     -> PASS
+NC-6 §-heading     SAMPLE = sign-heading: docs/20 §3.2 and docs/20 §5 ; bad: docs/20 §99.7 and docs/20 §10 and docs/17 §99.7
+     `docs/20`（docs/20-kernel-compliance-sweep.md）里以 `§` 开头的标题 = 28 条 —— 仓内 `§`-前导标题的唯一出处
+     改后判定命中 = 5 条：['10', '3.2', '5', '99.7']
+     (a) 负向 bad_sec = ['docs/20 §3.2', 'docs/20 §5', 'docs/20 §99.7', 'docs/20 §10', 'docs/17 §99.7']   （期望 ['docs/20 §99.7', 'docs/20 §10', 'docs/17 §99.7']）
+     (b) 正向：`docs/20` §3.2 / §5 未进 bad_sec，且它们**确实被匹配到**（否则就是假通过）
+     (c) 非空洞：同一份样本改用**改前**判定（`^<num>`）时，正向条目里被判处负的 = ['3.2', '5']   （期望 ['3.2', '5'] ⇒ 这条对照测的是新判定面）
+     -> FAIL
+RESULT: FAIL (负向对照未按预期成立)
+说明：`--selftest` 判的是**这套检查器还在不在咬**（工具层），它刻意不随语料状态变化；语料的干净与否由**主扫描**的退出码回答（语料层）。
+rc = 1
+===== 逆证 always_true =====
+NC-1 doc/section   SAMPLE = see docs/99-nothing.md §1 and docs/11 §5.1 ; also docs/07 §2 ; bare doc refs docs/88-nowhere.md and docs/77
+     bad_doc = ['docs/88-nowhere.md', 'docs/77']   （分母 doc refs=2，分子 ⊆ 分母）
+     bad_sec = ['docs/99-nothing.md §1', 'docs/07 §2']    （分母 section refs=3，分子 ⊆ 分母）
+     两栏不重叠：`docs/99-nothing.md §1` 只进 bad_sec、`docs/88-nowhere.md` 只进 bad_doc    -> FAIL
+NC-2 path-ref      SAMPLE = see m99_bogus/nope_file.py and tools/does_not_exist.py
+     missed  = ['m99_bogus/nope_file.py', 'tools/does_not_exist.py']    -> PASS
+     （这两条不在 ALLOWLIST 里 ⇒ 必须进 RESULT 与退出码）
+NC-3 allowlist     含 ALLOWLIST：gating=[]  allowlisted=['tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_defines.h', 'tools/bisheng_compiler/lib/clang/15.0.5/include/cce_aicore_intrinsics.h']
+                   清空 ALLOWLIST：gating=['tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_defines.h', 'tools/bisheng_compiler/lib/clang/15.0.5/include/cce_aicore_intrinsics.h']  allowlisted=[]
+     判定：(清空后 gating) == (清空前 gating) ∪ (清空前 allowlisted)
+     -> PASS   （本次 2 条豁免全部改走 gate；allowlist 不是免死金牌）
+NC-4 same-doc §-ref SAMPLE = 同上，见本文 §99.7（本文件内的错引）与本文 §1.2（正确引用）
+     `§99.7` 在本文中是否存在 = True（False = 它确实是一条**错引**）
+     scanner reported: bad_doc=[] bad_sec=[] n_sec=0  <- 全 0 = **不报**（盲区，如实登记）
+     判据：错引确实存在 且 扫描器确实不报 ⇒ 这条对照**就是**「同文档 §-号不在覆盖面内」的声明    -> FAIL
+NC-5 backtick §-ref SAMPLE = wrap-bad: `docs/99-nothing.md` §1 and `docs/07` §2 ; wrap-good: `docs/17` §10 and `docs/17` §1
+     放宽前的匹配面（= 去掉 `` `? ``）在本样本上命中 = 0 条（0 = 旧正则对这 4 条一条都不匹配 ⇒ 这正是被放宽的缺口）
+     放宽后命中 = 4 条：['docs/07` §2', 'docs/17` §1', 'docs/17` §10', 'docs/99-nothing.md` §1']
+     (a) 负向 bad_sec = ['docs/99-nothing.md` §1', 'docs/07` §2']   （期望 ['docs/99-nothing.md` §1', 'docs/07` §2']）
+     (b) 正向：上面 4 条里可解析的那 2 条（`docs/17` §10 / §1）未进 bad_sec，且它们**确实被匹配到**（否则就是假通过）
+     (c) 盲区 SAMPLE = version-gap: docs/05-megakernel-design.md v1.2 §2/§6
+         `docs/05` 的 §2/§6 都存在 = True（引用本身是好的），而扫描器命中 = 0 条（0 = **不报**，缺口如实登记）
+     -> PASS
+NC-6 §-heading     SAMPLE = sign-heading: docs/20 §3.2 and docs/20 §5 ; bad: docs/20 §99.7 and docs/20 §10 and docs/17 §99.7
+     `docs/20`（docs/20-kernel-compliance-sweep.md）里以 `§` 开头的标题 = 28 条 —— 仓内 `§`-前导标题的唯一出处
+     改后判定命中 = 5 条：['10', '3.2', '5', '99.7']
+     (a) 负向 bad_sec = []   （期望 ['docs/20 §99.7', 'docs/20 §10', 'docs/17 §99.7']）
+     (b) 正向：`docs/20` §3.2 / §5 未进 bad_sec，且它们**确实被匹配到**（否则就是假通过）
+     (c) 非空洞：同一份样本改用**改前**判定（`^<num>`）时，正向条目里被判处负的 = ['3.2', '5']   （期望 ['3.2', '5'] ⇒ 这条对照测的是新判定面）
+     -> FAIL
+RESULT: FAIL (负向对照未按预期成立)
+说明：`--selftest` 判的是**这套检查器还在不在咬**（工具层），它刻意不随语料状态变化；语料的干净与否由**主扫描**的退出码回答（语料层）。
+rc = 1
+===== 逆证 always_false =====
+NC-1 doc/section   SAMPLE = see docs/99-nothing.md §1 and docs/11 §5.1 ; also docs/07 §2 ; bare doc refs docs/88-nowhere.md and docs/77
+     bad_doc = ['docs/88-nowhere.md', 'docs/77']   （分母 doc refs=2，分子 ⊆ 分母）
+     bad_sec = ['docs/99-nothing.md §1', 'docs/11 §5.1', 'docs/07 §2']    （分母 section refs=3，分子 ⊆ 分母）
+     两栏不重叠：`docs/99-nothing.md §1` 只进 bad_sec、`docs/88-nowhere.md` 只进 bad_doc    -> PASS
+NC-2 path-ref      SAMPLE = see m99_bogus/nope_file.py and tools/does_not_exist.py
+     missed  = ['m99_bogus/nope_file.py', 'tools/does_not_exist.py']    -> PASS
+     （这两条不在 ALLOWLIST 里 ⇒ 必须进 RESULT 与退出码）
+NC-3 allowlist     含 ALLOWLIST：gating=[]  allowlisted=['tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_defines.h', 'tools/bisheng_compiler/lib/clang/15.0.5/include/cce_aicore_intrinsics.h']
+                   清空 ALLOWLIST：gating=['tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_defines.h', 'tools/bisheng_compiler/lib/clang/15.0.5/include/cce_aicore_intrinsics.h']  allowlisted=[]
+     判定：(清空后 gating) == (清空前 gating) ∪ (清空前 allowlisted)
+     -> PASS   （本次 2 条豁免全部改走 gate；allowlist 不是免死金牌）
+NC-4 same-doc §-ref SAMPLE = 同上，见本文 §99.7（本文件内的错引）与本文 §1.2（正确引用）
+     `§99.7` 在本文中是否存在 = False（False = 它确实是一条**错引**）
+     scanner reported: bad_doc=[] bad_sec=[] n_sec=0  <- 全 0 = **不报**（盲区，如实登记）
+     判据：错引确实存在 且 扫描器确实不报 ⇒ 这条对照**就是**「同文档 §-号不在覆盖面内」的声明    -> PASS
+NC-5 backtick §-ref SAMPLE = wrap-bad: `docs/99-nothing.md` §1 and `docs/07` §2 ; wrap-good: `docs/17` §10 and `docs/17` §1
+     放宽前的匹配面（= 去掉 `` `? ``）在本样本上命中 = 0 条（0 = 旧正则对这 4 条一条都不匹配 ⇒ 这正是被放宽的缺口）
+     放宽后命中 = 4 条：['docs/07` §2', 'docs/17` §1', 'docs/17` §10', 'docs/99-nothing.md` §1']
+     (a) 负向 bad_sec = ['docs/99-nothing.md` §1', 'docs/07` §2', 'docs/17` §10', 'docs/17` §1']   （期望 ['docs/99-nothing.md` §1', 'docs/07` §2']）
+     (b) 正向：上面 4 条里可解析的那 2 条（`docs/17` §10 / §1）未进 bad_sec，且它们**确实被匹配到**（否则就是假通过）
+     (c) 盲区 SAMPLE = version-gap: docs/05-megakernel-design.md v1.2 §2/§6
+         `docs/05` 的 §2/§6 都存在 = False（引用本身是好的），而扫描器命中 = 0 条（0 = **不报**，缺口如实登记）
+     -> FAIL
+NC-6 §-heading     SAMPLE = sign-heading: docs/20 §3.2 and docs/20 §5 ; bad: docs/20 §99.7 and docs/20 §10 and docs/17 §99.7
+     `docs/20`（docs/20-kernel-compliance-sweep.md）里以 `§` 开头的标题 = 28 条 —— 仓内 `§`-前导标题的唯一出处
+     改后判定命中 = 5 条：['10', '3.2', '5', '99.7']
+     (a) 负向 bad_sec = ['docs/20 §3.2', 'docs/20 §5', 'docs/20 §99.7', 'docs/20 §10', 'docs/17 §99.7']   （期望 ['docs/20 §99.7', 'docs/20 §10', 'docs/17 §99.7']）
+     (b) 正向：`docs/20` §3.2 / §5 未进 bad_sec，且它们**确实被匹配到**（否则就是假通过）
+     (c) 非空洞：同一份样本改用**改前**判定（`^<num>`）时，正向条目里被判处负的 = ['3.2', '5']   （期望 ['3.2', '5'] ⇒ 这条对照测的是新判定面）
+     -> FAIL
+RESULT: FAIL (负向对照未按预期成立)
+说明：`--selftest` 判的是**这套检查器还在不在咬**（工具层），它刻意不随语料状态变化；语料的干净与否由**主扫描**的退出码回答（语料层）。
+rc = 1

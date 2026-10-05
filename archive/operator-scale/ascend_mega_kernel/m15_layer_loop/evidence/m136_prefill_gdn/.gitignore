@@ -1,0 +1,7 @@
+# M136（Wave D）证据目录的忽略口径。
+# 父级 `m15_layer_loop/.gitignore` 有 `*.bin`（挡住所有 bin）——这里按体量分档：
+#   · `dumps_m4097/*.bin` 约 530 MB ⇒ **不入 git**（入 meta + sha256sums.txt + reproduce.sh 保证可复算）。
+#   · `dumps_m1/*.bin` 约 15 MB ⇒ **入库**；用下面的反选让它们可被跟踪（列在 `dumps_m4097/*.bin` 之后，
+#     后写的规则优先）。若 `git add` 未生效，用 `git add -f dumps_m1`。
+dumps_m4097/*.bin
+!dumps_m1/*.bin

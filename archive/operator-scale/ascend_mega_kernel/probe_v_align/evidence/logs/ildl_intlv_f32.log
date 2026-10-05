@@ -1,0 +1,6 @@
+CASE intlv_f32 id=1 misalign=0 pattern=f32-ramp(i+0.5)
+LAUNCH aclError=0 (sync timeout=120000ms)
+NONZERO d0=255 d1=256 (of 256 bytes each)
+DUMP_FNV32 0xdb608705
+OUTCOME: OK
+RESULT: OK (structural: d0 255/256 bytes nonzero, d1 256/256；逐 lane 语义由 check_ref_ildl.py 判)

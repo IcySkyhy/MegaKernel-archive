@@ -1,0 +1,7 @@
+VARIANT op=gather(id=12) a=24 b=0 n=64 model=3 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0xcd72ee836e59840d
+HEAD32 40d00000 40f00000 41080000 41180000
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (structural only: model=3; window 256B non-empty, 256 non-sentinel bytes, 0 bytes written outside window)

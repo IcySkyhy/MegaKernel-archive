@@ -1,0 +1,27 @@
+# probe_ub2l1（M121）证据生成记录（本批 2026-10-04T09:26:06+00:00）
+date: 2026-10-04T09:26:06+00:00
+pwd: /workspace/ascend_mega_kernel/.tower/worktrees/wt-121/probe_ub2l1
+HEAD_at_run: 8e610f36fa7b1c8c52e34f5f195b49a981f3e20b
+dirty_at_run: 7 files
+CANN: Version=9.1.0 version_dir=cann required_package_runtime_version="9.1" required_package_ge-executor_version="9.1" required_package_metadef_version="9.1" required_package_bisheng-compiler_version="9.1" required_package_tbe-tik_version="9.1" timestamp=20260730_231653901 
+ASC arch: dav-3510
+
+## 源码内容指纹（内容寻址 ⇒ 用它核对「本 log 由哪份源码产出」）
+ab7ec8a8c83252f365a4ae86bc350e23ad74dcc64c6b0c710299bb68ec26bfd5  probe_ub2l1.asc
+6edb09ac3cfb958863ae67ffa4a618199f134866adccf4b9d7d7cc7bd42b3f8f  CMakeLists.txt
+1ede1d83eb728a9f2d4dc2480631ea4341eb3e23090e998e62a5517aca394c73  run_probes.sh
+49f91796bb0f2dd60d7973485650c206cf3e32a7db50c090588a9b146e410fea  check_ref.py
+7be3adba96c46b7a40c1b96833a3da53bdadae7cf1bff870b05c6f288e3650cf  evidence/version_diff.sh
+e4b83b3497f99a44e5878d16f18e56f3fc7e9670fa8b15fcae47cd9a4bdaddb9  evidence/slot.sh
+1dd716044d4a7467cbd45b7fc33c18ad30bd31e9da67d382ddeaa9a26e1b5a63  evidence/retake.sh
+
+## 复现命令（本目录执行）
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j4
+bash evidence/version_diff.sh    # host 侧版本差取证（零设备）
+bash run_probes.sh               # 本文（逐条短命令取设备槽；可反复重跑补齐）
+
+## 构建
+cmake rc=0 ; build rc=0
+74a8dc808ef928cd7adc070c9cb556b7  /workspace/ascend_mega_kernel/.tower/worktrees/wt-121/probe_ub2l1/build/probe_ub2l1
+9247b9dd43d7f685a4c4654fbc7de1ce  /workspace/ascend_mega_kernel/.tower/worktrees/wt-121/probe_ub2l1/build/probe_ub2l1_ssbuf

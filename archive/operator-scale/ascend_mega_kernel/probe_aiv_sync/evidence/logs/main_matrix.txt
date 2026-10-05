@@ -1,0 +1,37 @@
+A0_none_readonce           rc==0  0/9  hang=0  viol_min..max=892 895   rounds_clean=      9 0 
+A1_poll_nobarrier          rc==0  0/9  hang=0  viol_min..max=118 222   rounds_clean=      9 0 
+A2_open_only               rc==0  0/9  hang=0  viol_min..max=75 117   rounds_clean=      3 1       5 2       1 3 
+A3_open_close              rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A4_open_only_waits         rc==0  0/9  hang=0  viol_min..max=90 110   rounds_clean=      5 1       2 2       2 3 
+A5_close_waits             rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A6_open_close_waitV        rc==0  0/9  hang=0  viol_min..max=769 812   rounds_clean=      9 0 
+A7_open_close_waitE3       rc==0  0/9  hang=0  viol_min..max=793 823   rounds_clean=      9 0 
+A8_setV_close              rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A9_setE2_close             rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A10_nodrain_close          rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A11_pipebar_close          rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A12_dcci_close             rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A13_dcci_close_rd          rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A14_m1_close               rc==0  0/9  hang=0  viol_min..max=741 815   rounds_clean=      8 0       1 1 
+A15_m2_close               rc==0  0/9  hang=9  viol_min..max=  rounds_clean=
+A16_fid_fixed_close        rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A17_fid_rot7_close         rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A18_noskew_close           rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A19_poll_hybrid_close      rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 4 
+A20_sepwins                rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A21_28aiv_close            rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A22_close_closepipeE2      rc==0  0/9  hang=0  viol_min..max=253 380   rounds_clean=      8 1       1 2 
+A23_close_closesetE3       rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A24_poll_sepwins           rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 4 
+A25_sepwins_dense4         rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+N0_negctrl_selfonly        rc==0  0/9  hang=0  viol_min..max=896 896   rounds_clean=      9 0 
+C0_halfset                 rc==0  0/9  hang=9  viol_min..max=  rounds_clean=
+B0_geom_dense4             rc==0  0/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+B1_geom_align4             rc==0  0/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+B2_geom_align32            rc==0  0/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+B3_geom_align64            rc==0  0/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+B4_dense4_openonly         rc==0  0/9  hang=0  viol_min..max=262 487   rounds_clean=      9 1 
+B5_dense4_28aiv            rc==0  0/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+N0_negctrl_selfonly        rc==0  0/9  hang=0  viol_min..max=896 896   rounds_clean=      9 0 
+A26_fid_same_id            rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 
+A27_fid_same_id_sep        rc==0  9/9  hang=0  viol_min..max=0 0   rounds_clean=      9 16 

@@ -1,0 +1,18 @@
+{
+  "tensor": "h_qx.bin",
+  "shape": [
+    66,
+    320
+  ],
+  "dtype": "uint8",
+  "strides": [
+    320,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 21120,
+  "sha256": "7c78ee7c14b3f01842ec5c2ebf232b90ff67f6a894662a5d5191bb19958f9075",
+  "kind": "golden",
+  "description": "routed H = MXFP4(h_swiglu) [m*top_k, moe_inter/2]"
+}

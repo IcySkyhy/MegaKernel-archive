@@ -1,0 +1,20 @@
+{
+  "tensor": "experts.down_proj.bin",
+  "shape": [
+    4,
+    2560,
+    320
+  ],
+  "dtype": "uint8",
+  "strides": [
+    819200,
+    320,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 3276800,
+  "sha256": "f8dc2613ce9d3c9d2ccfaa9a4b50ec6d0d556ac0f85157659bbe305e576a4aa0",
+  "kind": "input",
+  "description": "MXFP4 packed weights [4, 2560, 320], lohi nibbles along K"
+}

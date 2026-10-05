@@ -1,0 +1,6 @@
+## selftest（副本目录 /tmp/vfprobe_selftest_b2btijw_/logs，工作区只读）
+- 基线（未变异）：exit=0 ✅
+- 变异判据列（nest_o0i3b1 rep2 的 cnt 行）：exit=1（期望 1）✅，点名 target=✅
+- 负向对照（只改数据面 nest_o0i0b1 rep2 的 acc_maxdiff）：exit=0（期望 0 = 判据列确实没变）✅，数据面差异被单列出=是 ✅
+- 缺输入（不存在的目录）：exit=2（期望 2）✅
+- selftest 结论：✅ 全部符合声明

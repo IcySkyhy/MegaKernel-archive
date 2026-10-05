@@ -1,0 +1,15 @@
+[check_moe_ref] 布局表 32 个张量，ws 7685472 B/层；E=4 topk_max=4 M_MAX=64（参考链 = m17_moe_real/check_ref.py）
+[check_moe_ref] dump 层：[0, 1, 2, 3]
+Traceback (most recent call last):
+  File "/workspace/ascend_mega_kernel/.tower/worktrees/wt-93/m15_layer_loop/check_moe_ref.py", line 604, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/workspace/ascend_mega_kernel/.tower/worktrees/wt-93/m15_layer_loop/check_moe_ref.py", line 574, in main
+    check_layer(L, ws, layout, rdr, results, refs, nonvac)
+  File "/workspace/ascend_mega_kernel/.tower/worktrees/wt-93/m15_layer_loop/check_moe_ref.py", line 357, in check_layer
+    hd = M17R.dequant(hqx[e], hs[e], t, INTER, INTER // 2, INTER // GROUP)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/ascend_mega_kernel/.tower/worktrees/wt-93/m17_moe_real/check_ref.py", line 219, in dequant
+    s = scale.reshape(-1, s_stride)[:rows, : k // GROUP]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot reshape array of size 32 into shape (20)

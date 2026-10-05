@@ -1,0 +1,407 @@
+{
+  "passed": true,
+  "utc": "2026-09-25T04:19:22.628191+00:00",
+  "variants": [
+    "D-V2-256",
+    "D-C0-Z2-Spread",
+    "D-C0-Z2-LoadBalancing",
+    "D-C1-Z2-Spread",
+    "D-C1-Z2-LoadBalancing",
+    "D-V3-Z2-Spread",
+    "D-V3-Z2-LoadBalancing"
+  ],
+  "unsupported": [],
+  "sources": {
+    "Makefile": "4bea726a1b99b717026ac92f844ab32fe36c73097fae766231d79faeec76627d",
+    "build/sweep/driver.cuh": "83cea5517deeb01a3c2202d0b784448aaf0bbb5c88b7cb0c4a3928d694cf44b8",
+    "experiments/cluster_sweep/Makefile": "5e7948fb048ff01083914637a8c87540089d161e8c357d9079e1dcd1e3a222a4",
+    "experiments/cluster_sweep/launch.cuh": "9c12978e0c708bdc62b8e29aba995dfb1958060e9bdeb6d135ef66e0bfa19079",
+    "experiments/cluster_sweep/main.cu": "4e9fd0caa7ae2e3921b36d71b627e0ab7087e5e075798480b189e5598b47091a",
+    "experiments/cluster_sweep/model.cpp": "8c56a6e7db3b00dc9dd1235eef0fe09e5ca40c11b51107c483b93b423b0cc001",
+    "experiments/cluster_sweep/prepare_driver.py": "1d6b31727abc62a8f49262d26210bbe710d40e6487382b6e64ace811a38a3669",
+    "experiments/cluster_sweep/variants.cuh": "7b0ac826d986557b37fcb41868ca83965bc84729fecc0e66a26f1415ddbc4ef1",
+    "experiments/z2/run.py": "eb9f551bbf8252466afda160bd07a5b0f3fe4d55e5bfa33387066bab7b2882e1",
+    "include/layout_config.h": "c4759117b23e3353292739756f036a56c7152f1e891e7118eeff2175ac9a05c6",
+    "include/lbm.h": "2d48b6bc9e911bb8438e1a31f1134744792eb00f9033188d89af108aaacb2292",
+    "include/lbm_macros.h": "5bb7a8a9c303a5dadee24d0a5a895ebe2d102e7403efc396240e3d2a04697104",
+    "kernels/b0.cuh": "d1b77815abc036e7be0c2b47b26f4495a480f2686e37212e5029600a636b5808",
+    "kernels/c1.cuh": "51b1cff0e9bc8d929fb1834dc5b5e2e5b6cb96c93edaff0052460b7025007dd7",
+    "kernels/c2.cuh": "5692f0e5345dd82572b656fe1abf34f24b5ca1a2772dec80de21cc15e9994a4d",
+    "kernels/c3.cuh": "dfbef61318ca67508ee654aa8834e1b6370540e94af1ed0d0b532293e836346d",
+    "kernels/cell.cuh": "11d938d4364de25159d201b3b2f5b37ea28096efe64428117743a363897837e0",
+    "kernels/cluster_compat.cuh": "605038f9cff03b96f37ba5ba693889ffe296bb60442a9d1f96a408883b00d773",
+    "kernels/cluster_debug.cuh": "4afc28abef782d721dc5072d9e2a5ab5ba9ef3e73dccad4f4cd57f410e6b503d",
+    "kernels/cluster_dedup.cuh": "5184ab3dc51910fa3e68b363b6637b9af3988f7e50e51c8d8b63a4256657a834",
+    "kernels/cluster_sync.cuh": "b0188c54a6a7c5339e269c3af2100f0b704854e3560c7b0050a831d0535f1048",
+    "kernels/collision.cuh": "4e6fca903a0c8ccf3d94b6dc282206519e18c5246114f6c959c1c88ce24955cf",
+    "kernels/s2_c128.cuh": "361c459303b5c32a354a7fa5224f218b5ed9cfc8e6224f1e56acde761bff3b90",
+    "kernels/s2_d128.cuh": "896fbc87cfb96f22d44c7ce2658a4978910de957f0a140dc685931e280bc3e5e",
+    "kernels/spatial.cuh": "b002a3151e0167a01b3c8fecc39d9b012fd1c46085bc5374cb34866c0013016d",
+    "kernels/t30_s1.cuh": "662016a3611a864ff0e03481c2867e303173a11712bbe77709424ae405208135",
+    "kernels/temporal_common.cuh": "dc6ff0f1ece42c07acd9e257c51d050ec08d15a4f9bb0878b2a4bbdec3991f2a",
+    "kernels/temporal_v1.cuh": "405cbbed345c2f235fa5a5e7abcdbb4582f8f1fa001ff01ba607c36382ce8480",
+    "kernels/temporal_v2.cuh": "13c451b7d15afa41e2d3369a96ee803a44294835392ade285142dc35682ec33a",
+    "src/driver.cuh": "352b39eb50374ae8d1835122e447721c2129bee797b6444f40dc306351291378",
+    "src/grid.cuh": "6e9666d4f756423e54f5ba239e9fbf6c5771cfc163f87b3ac302b23fa9544a81"
+  },
+  "binaries": {
+    "build/sweep/lbm": "8add96cc46175f5ca0d9b4db8f482a2c9fb5ba2046ef742f7336bb71c1cfd3d8",
+    "build/sweep/model": "52fd136c4c738cf0659dffb2428b8f5faa3394d9660d48f557f82e85d1a83f40"
+  },
+  "source_gate": {
+    "validation_and_event_body_unchanged": true,
+    "collision_and_temporal_body_unchanged": true
+  },
+  "cases": [
+    {
+      "variant": "D-V2-256",
+      "case": "two",
+      "steps": 2,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "default1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "default1002",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "patterned1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "obstacle100",
+      "steps": 100,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "obstacle102",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-Spread",
+      "case": "two",
+      "steps": 2,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-Spread",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-Spread",
+      "case": "default1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-Spread",
+      "case": "default1002",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-Spread",
+      "case": "patterned1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-Spread",
+      "case": "obstacle100",
+      "steps": 100,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-Spread",
+      "case": "obstacle102",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-LoadBalancing",
+      "case": "two",
+      "steps": 2,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-LoadBalancing",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-LoadBalancing",
+      "case": "default1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-LoadBalancing",
+      "case": "default1002",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-LoadBalancing",
+      "case": "patterned1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-LoadBalancing",
+      "case": "obstacle100",
+      "steps": 100,
+      "pass": true
+    },
+    {
+      "variant": "D-C0-Z2-LoadBalancing",
+      "case": "obstacle102",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-Spread",
+      "case": "two",
+      "steps": 2,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-Spread",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-Spread",
+      "case": "default1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-Spread",
+      "case": "default1002",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-Spread",
+      "case": "patterned1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-Spread",
+      "case": "obstacle100",
+      "steps": 100,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-Spread",
+      "case": "obstacle102",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-LoadBalancing",
+      "case": "two",
+      "steps": 2,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-LoadBalancing",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-LoadBalancing",
+      "case": "default1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-LoadBalancing",
+      "case": "default1002",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-LoadBalancing",
+      "case": "patterned1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-LoadBalancing",
+      "case": "obstacle100",
+      "steps": 100,
+      "pass": true
+    },
+    {
+      "variant": "D-C1-Z2-LoadBalancing",
+      "case": "obstacle102",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-Spread",
+      "case": "two",
+      "steps": 2,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-Spread",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-Spread",
+      "case": "default1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-Spread",
+      "case": "default1002",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-Spread",
+      "case": "patterned1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-Spread",
+      "case": "obstacle100",
+      "steps": 100,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-Spread",
+      "case": "obstacle102",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-LoadBalancing",
+      "case": "two",
+      "steps": 2,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-LoadBalancing",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-LoadBalancing",
+      "case": "default1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-LoadBalancing",
+      "case": "default1002",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-LoadBalancing",
+      "case": "patterned1000",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-LoadBalancing",
+      "case": "obstacle100",
+      "steps": 100,
+      "pass": true
+    },
+    {
+      "variant": "D-V3-Z2-LoadBalancing",
+      "case": "obstacle102",
+      "steps": 102,
+      "pass": true
+    }
+  ],
+  "reference_outputs": {
+    "2": "5fe9be38995c59c91f071cd61028b20cf0b4a96de26ed481f238cce603623b6b",
+    "6": "ee25d4199fc2c90d6b7b217afb30f88e1df5106c9e77f3c798026919cde3dd5f",
+    "100": "4a7a63bf997da96f8e00a5b78eb7ab51ec870d165e31cb995903a4fe6b628c43"
+  },
+  "obstacle_sha256": "f2c32b0d13badf27f6a5dca1dad050b11fe86e4be04a29615f9c62cd208df98a",
+  "sanitizers": [
+    "memcheck",
+    "racecheck",
+    "synccheck",
+    "initcheck"
+  ],
+  "sass_checks": {
+    "V2_C0": {
+      "symbol": "_ZN8temporal2v2ILi16ELi8ELi4EEEvPKfPf",
+      "sha256": "c8950a0d7c38fac14644566e99a8e6c24f8d81dc810f35c962aed25a83dced5a",
+      "barrier_instructions": [
+        "/*3090*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */"
+      ],
+      "no_atomics_or_asserts": true
+    },
+    "C2": {
+      "symbol": "_ZN8temporal8z2_dedupEPKfPf",
+      "sha256": "6d50482aaddcaa592fc9f8f2de5183310fad2b5b8cc8a8c9438f13e82438fb3b",
+      "barrier_instructions": [
+        "/*00a0*/                   MEMBAR.ALL.GPU ;                                                   /* 0x0000000000007992 */",
+        "/*00c0*/                   CGAERRBAR ;                                                        /* 0x00000000000075ab */",
+        "/*00d0*/                   UCGABAR_ARV ;                                                      /* 0x00000000000079c7 */",
+        "/*0110*/                   UCGABAR_WAIT ;                                                     /* 0x0000000000007dc7 */",
+        "/*0140*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */",
+        "/*3de0*/                   MEMBAR.ALL.GPU ;                                                   /* 0x0000000000007992 */",
+        "/*3e00*/                   CGAERRBAR ;                                                        /* 0x00000000000075ab */",
+        "/*3e10*/                   UCGABAR_ARV ;                                                      /* 0x00000000000079c7 */",
+        "/*3e50*/                   UCGABAR_WAIT ;                                                     /* 0x0000000000007dc7 */",
+        "/*3e80*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */"
+      ],
+      "no_atomics_or_asserts": true
+    },
+    "C1": {
+      "symbol": "_ZN8temporal7z2_syncEPKfPf",
+      "sha256": "ab5e00ae967e8b103734285fc332eae0bd32b73aebf4a0965b405c3bf3bc7d7c",
+      "barrier_instructions": [
+        "/*0050*/                   MEMBAR.ALL.GPU ;                                                   /* 0x0000000000007992 */",
+        "/*0070*/                   CGAERRBAR ;                                                        /* 0x00000000000075ab */",
+        "/*0080*/                   UCGABAR_ARV ;                                                      /* 0x00000000000079c7 */",
+        "/*00c0*/                   UCGABAR_WAIT ;                                                     /* 0x0000000000007dc7 */",
+        "/*00f0*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */",
+        "/*31a0*/                   MEMBAR.ALL.GPU ;                                                   /* 0x0000000000007992 */",
+        "/*31c0*/                   CGAERRBAR ;                                                        /* 0x00000000000075ab */",
+        "/*31d0*/                   UCGABAR_ARV ;                                                      /* 0x00000000000079c7 */",
+        "/*3210*/                   UCGABAR_WAIT ;                                                     /* 0x0000000000007dc7 */",
+        "/*3240*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */"
+      ],
+      "no_atomics_or_asserts": true
+    }
+  }
+}

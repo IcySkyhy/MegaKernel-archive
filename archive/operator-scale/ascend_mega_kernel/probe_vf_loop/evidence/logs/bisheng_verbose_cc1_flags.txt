@@ -1,0 +1,97 @@
+2026-07-30T20:53:21+08:00 clang version 15.0.5 (clang-5c68a1cb1231 flang-5c68a1cb1231)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/local/Ascend/cann-9.1.0/bin
+Found candidate GCC installation: /usr/lib/gcc/x86_64-openEuler-linux/12
+Selected GCC installation: /usr/lib/gcc/x86_64-openEuler-linux/12
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ "/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/bin/bisheng" -cc1 -triple hiipu64-hisilicon-cce -I/usr/local/Ascend/cann-9.1.0/include -I/usr/local/Ascend/cann-9.1.0/asc -I/usr/local/Ascend/cann-9.1.0/asc/include -I/usr/local/Ascend/cann-9.1.0/asc/include/c_api -I/usr/local/Ascend/cann-9.1.0/asc/include/basic_api -I/usr/local/Ascend/cann-9.1.0/asc/include/aicpu_api -I/usr/local/Ascend/cann-9.1.0/asc/include/simt_api -I/usr/local/Ascend/cann-9.1.0/asc/include/adv_api -I/usr/local/Ascend/cann-9.1.0/asc/include/adv_api/matmul -I/usr/local/Ascend/cann-9.1.0/asc/include/interface -I/usr/local/Ascend/cann-9.1.0/asc/include/tiling -I/usr/local/Ascend/cann-9.1.0/asc/include/utils -I/usr/local/Ascend/cann-9.1.0/asc/include/utils/debug -I/usr/local/Ascend/cann-9.1.0/include/ascendc/highlevel_api -std=c++17 -O3 -D__NPU_DEVICE__ -DTILING_KEY_VAR=0 -D__ENABLE_ASCENDC_PRINTF__ -mllvm -cce-aicore-stack-size=0x8000 -mllvm -cce-aicore-function-stack-size=0x8000 -mllvm -cce-aicore-dcci-insert-for-scalar=false -DL2_CACHE_HINT -D__CCE_AICORE_ENABLE_MIX__ -fcce-aicpu-legacy-launch -fcce-is-aicore -cce-enable-mix -mllvm -enable-mix=true -fno-zero-initialized-in-bss -fno-use-cxa-atexit -mllvm -cce-aicore-disable-argmem-alias-check=true -mllvm -cce-aicore-basicaa-disjoint-addrspace=true -mllvm --cce-enable-spbuffer-alloc-align=true -mllvm -cce-aicore-hwloops=false -mllvm -cce-aicore-hwloops-threshold=0 -mllvm -cce-aicore-analysis-peel=false -mllvm -cce-aicore-dcache-safe-mode=false -mllvm -cce-aicore-loop-unroll-tti=false -mllvm -licm-safe-hoist=false -cce-aicore-initialization-list-opt=true -mllvm -handle-output-dep=true -mllvm -sroa-allow-skip-function=false -mllvm -misched-allow-skip-func=false -mllvm -enable-post-ra-sched=true -mllvm -misched-postra=true -mllvm -early-cse-allow-skip-function=false -mllvm -loop-unswitch-allow-skip-loop=false -mllvm -enable-vloop-lowering=true -mllvm -cce-aicore-cleanup-metadata=false -mllvm -cce-aicore-backend-loop-lower=true -mllvm -cce-aicore-loop-unrotate=true -mllvm -cce-aicore-if-predicate=true -mllvm -cce-aicore-fix-errata-v920-001-enable=true -mllvm -cce-aicore-dcpreload-args=true -mllvm -cce-block-local-relocate=true -cce-launch-with-flagv2-impl -mllvm -cce-dyn-kernel-stack-size=true -mllvm -cce-aicore-jump-table=true -mllvm -cce-aicore-emit-lookup-tables=true -mllvm -enable-npm-O3-nontrivial-unswitch=false -mllvm -cce-vf-enable-blockldst-trans=true -fcce-add-annotation-array-subscript -mllvm -cce-sroa-allow-variable-arrayidx=true -mllvm -cce-aicore-movx8-opt=false -Wuninitialized -mllvm -hoist-common-insts=true -mllvm -cce-vf-stack-size=0x1800 -mllvm -cce-simt-stack-size=0x1000 -mllvm -memdep-block-scan-limit=150 -mllvm -enable-load-pre=false -mllvm -disable-ifcvt-simple=true -mllvm -disable-ifcvt-simple-false=true -mllvm -cce-stack-opt-sp-relocated=true -mllvm -cce-aicore-frame-idx-handle-opt=true -mllvm -cce-aicore-long-call=true -mllvm -vectorize-slp=false -mllvm -cce-aicore-number-of-cluster-loads=5 -mllvm -cce-aicore-addr-transform=true -mllvm -cce-aicore-jump-expand=true -mllvm -cce-sync-inst=auto -fcce-auto-sync -mllvm -cce-aicore-disable-argmem-alias-check=true -mllvm -enable-deps-filter=on -mllvm -enable-sync-event-coloring -mllvm -cce-aicore-enable-sync=true -mllvm -api-deps-filter -mllvm -enable-kerneltype-autoinfer=true -fcce-auto-infer-kernel-type -mllvm -cce-aicore-long-call=true -fcce-enable-asc-lang -mllvm -enable-ascendc-lang=true -aux-triple x86_64-unknown-linux-gnu -emit-obj --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name probe_vf_nest.asc -mrelocation-model static -mframe-pointer=all -fmath-errno -ffp-contract=on -fno-rounding-math -fno-verbose-asm -target-cpu dav-c310-cube -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -debug-info-kind=line-tables-only -mllvm -cce-aicore-cleanup-metadata=true -v -fcoverage-compilation-dir=/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -resource-dir /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5 -include __clang_cce_runtime_wrapper.h -D NPU_ARCH_DAV_3510 -D PROBE_OUTER=0 -D PROBE_INNER=0 -D PROBE_BODY=0 -D PROBE_CT_ROWS=0 -D PROBE_TAG=nest_o0i0b0 -D NDEBUG -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12 -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/x86_64-openEuler-linux -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/backward -internal-isystem /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include -internal-isystem /usr/local/include -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../x86_64-openEuler-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -O3 -std=c++17 -fdeprecated-macro -fdebug-compilation-dir=/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -ferror-limit 19 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -vectorize-loops -vectorize-slp -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /tmp/probe_vf_nest-3413fe/probe_vf_nest-dav-c310-cube.o -x asc probe_vf_nest.asc
+clang -cc1 version 15.0.5 based upon LLVM 15.0.5 default target x86_64-unknown-linux-gnu
+ignoring nonexistent directory "/usr/lib/gcc/x86_64-openEuler-linux/12/../../../../x86_64-openEuler-linux/include"
+ignoring nonexistent directory "/include"
+ignoring duplicate directory "/usr/local/include"
+ignoring duplicate directory "/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include"
+ignoring duplicate directory "/usr/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/local/Ascend/cann-9.1.0/include
+ /usr/local/Ascend/cann-9.1.0/asc
+ /usr/local/Ascend/cann-9.1.0/asc/include
+ /usr/local/Ascend/cann-9.1.0/asc/include/c_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/basic_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/aicpu_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/simt_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/adv_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/adv_api/matmul
+ /usr/local/Ascend/cann-9.1.0/asc/include/interface
+ /usr/local/Ascend/cann-9.1.0/asc/include/tiling
+ /usr/local/Ascend/cann-9.1.0/asc/include/utils
+ /usr/local/Ascend/cann-9.1.0/asc/include/utils/debug
+ /usr/local/Ascend/cann-9.1.0/include/ascendc/highlevel_api
+ /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12
+ /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/x86_64-openEuler-linux
+ /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/backward
+ /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include
+ /usr/local/include
+ /usr/include
+End of search list.
+ "/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/bin/bisheng" -cc1 -triple hiipu64-hisilicon-cce -I/usr/local/Ascend/cann-9.1.0/include -I/usr/local/Ascend/cann-9.1.0/asc -I/usr/local/Ascend/cann-9.1.0/asc/include -I/usr/local/Ascend/cann-9.1.0/asc/include/c_api -I/usr/local/Ascend/cann-9.1.0/asc/include/basic_api -I/usr/local/Ascend/cann-9.1.0/asc/include/aicpu_api -I/usr/local/Ascend/cann-9.1.0/asc/include/simt_api -I/usr/local/Ascend/cann-9.1.0/asc/include/adv_api -I/usr/local/Ascend/cann-9.1.0/asc/include/adv_api/matmul -I/usr/local/Ascend/cann-9.1.0/asc/include/interface -I/usr/local/Ascend/cann-9.1.0/asc/include/tiling -I/usr/local/Ascend/cann-9.1.0/asc/include/utils -I/usr/local/Ascend/cann-9.1.0/asc/include/utils/debug -I/usr/local/Ascend/cann-9.1.0/include/ascendc/highlevel_api -std=c++17 -O3 -D__NPU_DEVICE__ -DTILING_KEY_VAR=0 -D__ENABLE_ASCENDC_PRINTF__ -mllvm -cce-aicore-stack-size=0x8000 -mllvm -cce-aicore-function-stack-size=0x8000 -mllvm -cce-aicore-dcci-insert-for-scalar=false -DL2_CACHE_HINT -D__CCE_AICORE_ENABLE_MIX__ -fcce-aicpu-legacy-launch -fcce-is-aicore -cce-enable-mix -mllvm -enable-mix=true -fno-zero-initialized-in-bss -fno-use-cxa-atexit -mllvm -cce-aicore-disable-argmem-alias-check=true -mllvm -cce-aicore-basicaa-disjoint-addrspace=true -mllvm --cce-enable-spbuffer-alloc-align=true -mllvm -cce-aicore-hwloops=false -mllvm -cce-aicore-hwloops-threshold=0 -mllvm -cce-aicore-analysis-peel=false -mllvm -cce-aicore-dcache-safe-mode=false -mllvm -cce-aicore-loop-unroll-tti=false -mllvm -licm-safe-hoist=false -cce-aicore-initialization-list-opt=true -mllvm -handle-output-dep=true -mllvm -sroa-allow-skip-function=false -mllvm -misched-allow-skip-func=false -mllvm -enable-post-ra-sched=true -mllvm -misched-postra=true -mllvm -early-cse-allow-skip-function=false -mllvm -loop-unswitch-allow-skip-loop=false -mllvm -enable-vloop-lowering=true -mllvm -cce-aicore-cleanup-metadata=false -mllvm -cce-aicore-backend-loop-lower=true -mllvm -cce-aicore-loop-unrotate=true -mllvm -cce-aicore-if-predicate=true -mllvm -cce-aicore-fix-errata-v920-001-enable=true -mllvm -cce-aicore-dcpreload-args=true -mllvm -cce-block-local-relocate=true -cce-launch-with-flagv2-impl -mllvm -cce-dyn-kernel-stack-size=true -mllvm -cce-aicore-jump-table=true -mllvm -cce-aicore-emit-lookup-tables=true -mllvm -enable-npm-O3-nontrivial-unswitch=false -mllvm -cce-vf-enable-blockldst-trans=true -fcce-add-annotation-array-subscript -mllvm -cce-sroa-allow-variable-arrayidx=true -mllvm -cce-aicore-movx8-opt=false -Wuninitialized -mllvm -hoist-common-insts=true -mllvm -cce-vf-stack-size=0x1800 -mllvm -cce-simt-stack-size=0x1000 -mllvm -memdep-block-scan-limit=150 -mllvm -enable-load-pre=false -mllvm -disable-ifcvt-simple=true -mllvm -disable-ifcvt-simple-false=true -mllvm -cce-stack-opt-sp-relocated=true -mllvm -cce-aicore-frame-idx-handle-opt=true -mllvm -cce-aicore-long-call=true -mllvm -vectorize-slp=false -mllvm -cce-aicore-number-of-cluster-loads=5 -mllvm -cce-aicore-addr-transform=true -mllvm -cce-aicore-jump-expand=true -mllvm -cce-sync-inst=auto -fcce-auto-sync -mllvm -cce-aicore-disable-argmem-alias-check=true -mllvm -enable-deps-filter=on -mllvm -enable-sync-event-coloring -mllvm -cce-aicore-enable-sync=true -mllvm -api-deps-filter -mllvm -enable-kerneltype-autoinfer=true -fcce-auto-infer-kernel-type -mllvm -cce-aicore-long-call=true -fcce-enable-asc-lang -mllvm -enable-ascendc-lang=true -aux-triple x86_64-unknown-linux-gnu -emit-obj --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name probe_vf_nest.asc -mrelocation-model static -mframe-pointer=all -fmath-errno -ffp-contract=on -fno-rounding-math -fno-verbose-asm -target-cpu dav-c310-vec -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -debug-info-kind=line-tables-only -mllvm -cce-aicore-cleanup-metadata=true -v -fcoverage-compilation-dir=/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -resource-dir /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5 -include __clang_cce_runtime_wrapper.h -D NPU_ARCH_DAV_3510 -D PROBE_OUTER=0 -D PROBE_INNER=0 -D PROBE_BODY=0 -D PROBE_CT_ROWS=0 -D PROBE_TAG=nest_o0i0b0 -D NDEBUG -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12 -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/x86_64-openEuler-linux -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/backward -internal-isystem /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include -internal-isystem /usr/local/include -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../x86_64-openEuler-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -O3 -std=c++17 -fdeprecated-macro -fdebug-compilation-dir=/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -ferror-limit 19 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -vectorize-loops -vectorize-slp -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /tmp/probe_vf_nest-0c698b/probe_vf_nest-dav-c310-vec.o -x asc probe_vf_nest.asc
+clang -cc1 version 15.0.5 based upon LLVM 15.0.5 default target x86_64-unknown-linux-gnu
+ignoring nonexistent directory "/usr/lib/gcc/x86_64-openEuler-linux/12/../../../../x86_64-openEuler-linux/include"
+ignoring nonexistent directory "/include"
+ignoring duplicate directory "/usr/local/include"
+ignoring duplicate directory "/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include"
+ignoring duplicate directory "/usr/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/local/Ascend/cann-9.1.0/include
+ /usr/local/Ascend/cann-9.1.0/asc
+ /usr/local/Ascend/cann-9.1.0/asc/include
+ /usr/local/Ascend/cann-9.1.0/asc/include/c_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/basic_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/aicpu_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/simt_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/adv_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/adv_api/matmul
+ /usr/local/Ascend/cann-9.1.0/asc/include/interface
+ /usr/local/Ascend/cann-9.1.0/asc/include/tiling
+ /usr/local/Ascend/cann-9.1.0/asc/include/utils
+ /usr/local/Ascend/cann-9.1.0/asc/include/utils/debug
+ /usr/local/Ascend/cann-9.1.0/include/ascendc/highlevel_api
+ /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12
+ /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/x86_64-openEuler-linux
+ /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/backward
+ /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include
+ /usr/local/include
+ /usr/include
+End of search list.
+ "/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/bin/ld.lld" -m aicorelinux -Ttext 0 /tmp/probe_vf_nest-3413fe/probe_vf_nest-dav-c310-cube.o /tmp/probe_vf_nest-0c698b/probe_vf_nest-dav-c310-vec.o -o /tmp/probe_vf_nest-6d5d48/probe_vf_nest-dav-c310.o -r --allow-multiple-definition
+ "/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/bin/bisheng" -cc1 -triple x86_64-unknown-linux-gnu -fcce-aicpu-legacy-launch -fcce-is-host -fcce-enable-eagerload -cce-enable-mix -mllvm -enable-mix=true -cce-launch-with-flagv2-impl -fcce-aicore-arch dav-c310 -fcce-fatobj-compile -I/usr/local/Ascend/cann-9.1.0/include -I/usr/local/Ascend/cann-9.1.0/asc -I/usr/local/Ascend/cann-9.1.0/asc/include -I/usr/local/Ascend/cann-9.1.0/asc/include/c_api -I/usr/local/Ascend/cann-9.1.0/asc/include/basic_api -I/usr/local/Ascend/cann-9.1.0/asc/include/aicpu_api -I/usr/local/Ascend/cann-9.1.0/asc/include/simt_api -I/usr/local/Ascend/cann-9.1.0/asc/include/adv_api -I/usr/local/Ascend/cann-9.1.0/asc/include/adv_api/matmul -I/usr/local/Ascend/cann-9.1.0/asc/include/interface -I/usr/local/Ascend/cann-9.1.0/asc/include/tiling -I/usr/local/Ascend/cann-9.1.0/asc/include/utils -I/usr/local/Ascend/cann-9.1.0/asc/include/utils/debug -I/usr/local/Ascend/cann-9.1.0/include/ascendc/highlevel_api -std=c++17 -O3 -D__NPU_HOST__ -DTILING_KEY_VAR=0 -fcce-enable-asc-lang -fcce-enable-asc-lang -mllvm -enable-ascendc-lang=true -emit-obj --mrelax-relocations -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name probe_vf_nest.asc -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -mllvm -treat-scalable-fixed-error-as-warning -debugger-tuning=gdb -v -fcoverage-compilation-dir=/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -resource-dir /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5 -include __clang_cce_runtime_wrapper.h -D NPU_ARCH_DAV_3510 -D PROBE_OUTER=0 -D PROBE_INNER=0 -D PROBE_BODY=0 -D PROBE_CT_ROWS=0 -D PROBE_TAG=nest_o0i0b0 -D NDEBUG -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12 -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/x86_64-openEuler-linux -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/backward -internal-isystem /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include -internal-isystem /usr/local/include -internal-isystem /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../x86_64-openEuler-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -O3 -std=c++17 -fdeprecated-macro -fdebug-compilation-dir=/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -ferror-limit 19 -fgnuc-version=4.2.1 -fcxx-exceptions -fexceptions -vectorize-loops -vectorize-slp -fcce-include-aibinary /tmp/probe_vf_nest-6d5d48/probe_vf_nest-dav-c310.o -fcce-device-module-id 773bc1d8729c7dcd -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /tmp/probe_vf_nest-909681.o -x asc probe_vf_nest.asc
+clang -cc1 version 15.0.5 based upon LLVM 15.0.5 default target x86_64-unknown-linux-gnu
+ignoring nonexistent directory "/usr/lib/gcc/x86_64-openEuler-linux/12/../../../../x86_64-openEuler-linux/include"
+ignoring nonexistent directory "/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/local/Ascend/cann-9.1.0/include
+ /usr/local/Ascend/cann-9.1.0/asc
+ /usr/local/Ascend/cann-9.1.0/asc/include
+ /usr/local/Ascend/cann-9.1.0/asc/include/c_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/basic_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/aicpu_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/simt_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/adv_api
+ /usr/local/Ascend/cann-9.1.0/asc/include/adv_api/matmul
+ /usr/local/Ascend/cann-9.1.0/asc/include/interface
+ /usr/local/Ascend/cann-9.1.0/asc/include/tiling
+ /usr/local/Ascend/cann-9.1.0/asc/include/utils
+ /usr/local/Ascend/cann-9.1.0/asc/include/utils/debug
+ /usr/local/Ascend/cann-9.1.0/include/ascendc/highlevel_api
+ /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12
+ /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/x86_64-openEuler-linux
+ /usr/lib/gcc/x86_64-openEuler-linux/12/../../../../include/c++/12/backward
+ /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include
+ /usr/local/include
+ /usr/include
+End of search list.
+ "/usr/local/Ascend/cann-9.1.0/bin/cce-ld" /usr/local/Ascend/cann-9.1.0/bin/ld.lld -x -cce-lite-bin-module-id 773bc1d8729c7dcd -cce-aicore-arch=dav-c310 -r -o /tmp/probe_vf_loop_verbose.o -cce-stub-dir /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/cce_stub -cce-install-dir /usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/bin -cce-inputs-number 1 /tmp/probe_vf_nest-909681.o

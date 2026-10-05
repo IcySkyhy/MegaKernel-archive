@@ -1,0 +1,23 @@
+# m18_gdn_prefill：三角解几何量归档（‖A‖∞ / κ∞）
+#
+# WHY：README §4.2 的 ε 推导用 κ∞ = ‖(I+A)⁻¹‖∞ 作「行前代放大」项，并声明 ‖A‖∞ = 2.31 使
+#      Neumann 界 1/(1−‖A‖∞) 不成立（该界要求 ‖A‖∞ < 1）。这两个量由 device 侧 A 矩阵复算而来，
+#      而 A 来自 probe dump `m18_h*_t*_probe.bin` 的 channel 0/1/2 —— dump 落在 build/ 下、
+#      **不入库**。因此此处把复算结果归档，使 `audit_readme_numbers.py` 在**没有 build/ 的干净
+#      checkout** 上也能对账（脚本另在 build/*_probe.bin 存在时从原始字节独立复算，作交叉见证）。
+#
+# HOW：A = probe[ch, 9+2, :, :]  ← 字节偏移 (PH*MC + ch*9 + 2)*HE 起、BT*BT 个 fp32，行主序 64×64，
+#      BT = 64、HE = 16384、PH = 2、MC = 128（与 m18_gdn_prefill.asc 的常量一致，读入后按 float64 累加）。
+#      ‖A‖∞  = max_i Σ_j |A[i][j]|          （取所有 (file, ch) 组合上的最大值）
+#      κ∞    = max_i Σ_j |(I+A)⁻¹[i][j]|    （同上）
+#
+# 输入 dump 的 sha256（与 evidence/dump_sha256.txt 对齐；脚本在 dump 存在时会先核这一列）：
+#   dfb983136a098b5985829bba83405b07c6913e6dfb9976294eaee32cf7df65c4  m18_h48_t04097_probe.bin
+#   c1ae0ee85f28579e51139f6c07530b52d5fc768cd260af9fa409cb8cf0813087  m18_h48_t00129_probe.bin
+#   28b0b94edc7d02b19a200521badbf7ccb45d90614dbacbeec742abbd303d666c  m18_h03_t00257_probe.bin
+#
+# 生成/复算命令（dump 存在时；audit_readme_numbers.py 用同一算法作交叉见证）：
+#   cd m18_gdn_prefill && /usr/local/python3.12.13/bin/python3 audit_readme_numbers.py
+#
+A_inf = 2.313775544
+kappa_inf = 3.211607375

@@ -1,0 +1,16 @@
+{
+  "tensor": "perm_expert.bin",
+  "shape": [
+    2
+  ],
+  "dtype": "int32",
+  "strides": [
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 8,
+  "sha256": "9ae4c9d0864c30005acac91f21015f39e35691a056d606a097c8cf8380275a17",
+  "kind": "golden",
+  "description": "grouped permute: expert id per sorted slot [m*top_k]"
+}

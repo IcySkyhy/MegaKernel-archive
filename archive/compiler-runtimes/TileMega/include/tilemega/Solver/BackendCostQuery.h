@@ -1,0 +1,156 @@
+// SPDX-License-Identifier: BSD-3-Clause
+// Skeleton refs: §1.2 principle 2 (solver <-> backend cost channel),
+//                §4.2 candidate legality, P4.1 cost query interface.
+#pragma once
+
+#include <tilemega/Target/TargetSpec.h>
+
+#include <optional>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <vector>
+
+namespace tilemega::solver {
+
+enum class ScalarType { kF32, kBF16 };
+
+struct ClusterShape {
+  int m = 1, n = 1, k = 1;
+  constexpr int size() const { return m * n * k; }
+};
+
+struct AlignmentRequirement {
+  int a = 1, b = 1;
+};
+
+/// Everything a candidate answers from compile-time traits alone: no device
+/// code is generated and ptxas never runs, so a whole family costs one
+/// translation unit (§1.2, tier 1).
+struct BackendTraits {
+  int tile_m = 0, tile_n = 0, tile_k = 0;
+  int stages = 0;
+  int threads = 0;
+  int smem_bytes = 0;
+  ClusterShape cluster;
+  AlignmentRequirement alignment;
+  int arch_sm = 0;  ///< minimum SM version, as 10 * major + minor
+  bool shape_legal = false;
+};
+
+/// One point of the implementation search space, as the solver sees it.
+///
+/// Register pressure is deliberately not part of the trait record: CUTLASS's
+/// constexpr traits do not carry it and no closed form predicts it, so
+/// `estimatedRegisters()` stays empty until a tier-3 compile hands over real
+/// ptxas output.
+class BackendCandidate {
+ public:
+  BackendCandidate() = default;
+  explicit BackendCandidate(BackendTraits traits) : traits_(traits) {}
+
+  bool isLegal(TargetSpec const& target) const;
+  int threads() const { return traits_.threads; }
+  int smemBytes() const { return traits_.smem_bytes; }
+  ClusterShape clusterShape() const { return traits_.cluster; }
+  AlignmentRequirement alignmentRequirement() const { return traits_.alignment; }
+  int architectureRequirement() const { return traits_.arch_sm; }
+  std::optional<int> estimatedRegisters() const { return registers_; }
+
+  /// Tier 3: take the maximum register count over the entry points named in a
+  /// real `nvcc -Xptxas=-v` log. Returns false and leaves the candidate
+  /// unchanged when the log names none, so a failed compile cannot be mistaken
+  /// for a zero-register kernel.
+  bool RecordPtxas(std::string_view ptxas_log, std::string_view entry_filter = {});
+
+  BackendTraits const& traits() const { return traits_; }
+  /// How many of these fit on one SM given the target's budgets; 0 when the
+  /// candidate does not fit at all.
+  int CoResidentPerSM(TargetSpec const& target) const;
+  std::string Describe() const;
+
+ private:
+  BackendTraits traits_;
+  std::optional<int> registers_;
+};
+
+/// Closed forms for the SIMT f32 TN family the megakernel dispatches to.
+/// `Backend/CutlassGemmCandidate.h` static_asserts each of them against the
+/// instantiated CUTLASS collective, which is what lets the host-side
+/// enumerator prune without compiling anything.
+constexpr char kSimtF32Backend[] = "cutlass.sm80_cpasync.simt_f32";
+constexpr int kSimtF32Threads = 256;
+constexpr int kSimtF32ArchSm = 80;
+
+constexpr int SimtF32SmemBytes(int m, int n, int k, int stages) {
+  return 4 * stages * k * ((m + 1) + (n + 1));
+}
+
+constexpr bool SimtF32ShapeLegal(int m, int n, int k, int stages) {
+  int const copy_k = k < 16 ? k : 16;
+  int const copy_m = copy_k > 0 ? kSimtF32Threads / copy_k : 0;
+  return m > 0 && n > 0 && k > 0 && stages > 1 && m % 16 == 0 && n % 16 == 0 &&
+         copy_k > 0 && kSimtF32Threads % copy_k == 0 && k % copy_k == 0 &&
+         copy_m > 0 && m % copy_m == 0 && n % copy_m == 0;
+}
+
+BackendTraits SimtF32Traits(int m, int n, int k, int stages);
+
+/// Closed forms for the SM80+ BF16 tensor-core TN family instantiated by
+/// Backend/CutlassGemmCandidate.h. Storage is BF16, accumulation is FP32.
+constexpr char kTensorBF16Backend[] =
+    "cutlass.sm80_cpasync.tensorop_bf16_f32acc";
+constexpr int kTensorBF16Threads = 128;
+constexpr int kTensorBF16ArchSm = 80;
+
+constexpr int TensorBF16SmemBytes(int m, int n, int k, int stages) {
+  return 2 * stages * k * (m + n);
+}
+
+constexpr bool TensorBF16ShapeLegal(int m, int n, int k, int stages) {
+  int const copy_k = k < 8 ? k : 8;
+  int const copy_m = copy_k > 0 ? kTensorBF16Threads / copy_k : 0;
+  return m > 0 && n > 0 && k > 0 && stages > 1 && m % 32 == 0 &&
+         n % 16 == 0 && k % 16 == 0 && copy_k > 0 &&
+         kTensorBF16Threads % copy_k == 0 && copy_m > 0 &&
+         m % copy_m == 0 && n % copy_m == 0;
+}
+
+BackendTraits TensorBF16Traits(int m, int n, int k, int stages);
+
+/// Serving's SM80-class BF16 collective has a 16-row MMA specialization and
+/// reuses its mainloop storage for the FP32 epilogue tile.  The target's shared
+/// memory budget is checked by BackendCandidate::isLegal, not baked in here.
+constexpr int kServingBF16Threads = 128;
+
+constexpr int ServingBF16SmemBytes(int m, int n, int k, int stages) {
+  int const mainloop = 2 * stages * k * (m + n);
+  int const epilogue = 4 * m * n + 4 * m;
+  return mainloop > epilogue ? mainloop : epilogue;
+}
+
+constexpr bool ServingBF16ShapeLegal(int m, int n, int k, int stages) {
+  bool const legal_m = m == 16 || m == 32 || m == 64 || m == 128;
+  bool const legal_n = n == 32 || n == 64 || n == 128 || n == 256;
+  bool const legal_k = k == 64 || k == 128;
+  return legal_m && legal_n && legal_k && m * n <= 16384 && stages >= 2;
+}
+
+inline BackendTraits ServingBF16Traits(int m, int n, int k, int stages) {
+  BackendTraits result;
+  result.tile_m = m;
+  result.tile_n = n;
+  result.tile_k = k;
+  result.stages = stages;
+  result.threads = kServingBF16Threads;
+  result.smem_bytes = ServingBF16SmemBytes(m, n, k, stages);
+  result.alignment = {8, 8};  // 16 B of BF16 per cp.async instruction.
+  result.arch_sm = 80;
+  result.shape_legal = ServingBF16ShapeLegal(m, n, k, stages);
+  return result;
+}
+
+/// `entry -> registers` for every entry point in a `-Xptxas=-v` log.
+std::vector<std::pair<std::string, int>> ParsePtxasRegisters(std::string_view log);
+
+}  // namespace tilemega::solver

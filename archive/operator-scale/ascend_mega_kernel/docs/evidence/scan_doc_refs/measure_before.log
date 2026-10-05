@@ -1,0 +1,109 @@
+# repo root: /workspace/ascend_mega_kernel/.tower/worktrees/wt-114
+# tracked *.md = 88  ->  gate(docs/*.md 去 SELF)=17 self(docs/17)=1 outside=70
+# 带前导 § 的标题 = 28 条，分布在 1 个文档 = ['20-kernel-compliance-sweep.md']
+# 量尺 vs 模块口径一致性: N/A（模块里还没有 _has_section）
+# 本目录自己的证据 .md（**不计入语料**，n=1）= ['docs/evidence/scan_doc_refs/README.md']
+
+## A. §-号标记处置（按域）
+域        markers  parsed gap_narrow  other
+gate        1158     212          2    944
+self         299      83          8    208
+outside     2116     386          0   1730
+
+## B. parsed 那栏：标题口径 old vs new（这一栏的目标由 SECREF 唯一确定，无推断）
+域           可解析(new)        其中改前误判  仍 out-of-range        目标文档有带§标题
+gate             212             0               0                0
+self              55             0              28                0
+outside          359             0              27                0
+  逐条（BAD = 改后仍 out-of-range；TARGET-SIGN = 目标文档里有带前导 § 的标题）:
+    [BAD][outside] baseline_env/README.md:476  §2.5 -> docs/17
+    [BAD][outside] baseline_env/README.md:502  §2.2 -> docs/17
+    [BAD][outside] baseline_env/evidence/13-number-audit-script-audit.md:188  §2.5 -> docs/17
+    [BAD][self] docs/17-verification-standard.md:493  §99.7 -> docs/15
+    [BAD][self] docs/17-verification-standard.md:671  §5.1 -> docs/11
+    [BAD][self] docs/17-verification-standard.md:704  §1 -> docs/77
+    [BAD][self] docs/17-verification-standard.md:812  §5.1 -> docs/11
+    [BAD][self] docs/17-verification-standard.md:813  §1 -> docs/99
+    [BAD][self] docs/17-verification-standard.md:813  §2 -> docs/07
+    [BAD][self] docs/17-verification-standard.md:830  §1 -> docs/99
+    [BAD][self] docs/17-verification-standard.md:830  §5.1 -> docs/11
+    [BAD][self] docs/17-verification-standard.md:830  §2 -> docs/07
+    [BAD][self] docs/17-verification-standard.md:832  §1 -> docs/99
+    [BAD][self] docs/17-verification-standard.md:832  §5.1 -> docs/11
+    [BAD][self] docs/17-verification-standard.md:832  §2 -> docs/07
+    [BAD][self] docs/17-verification-standard.md:833  §1 -> docs/99
+    [BAD][self] docs/17-verification-standard.md:847  §1 -> docs/99
+    [BAD][self] docs/17-verification-standard.md:847  §2 -> docs/07
+    [BAD][self] docs/17-verification-standard.md:849  §2 -> docs/07
+    [BAD][self] docs/17-verification-standard.md:849  §1 -> docs/99
+    [BAD][self] docs/17-verification-standard.md:850  §1 -> docs/99
+    [BAD][self] docs/17-verification-standard.md:850  §2 -> docs/07
+    [BAD][self] docs/17-verification-standard.md:850  §1 -> docs/99
+    [BAD][self] docs/17-verification-standard.md:850  §2 -> docs/07
+    [BAD][self] docs/17-verification-standard.md:882  §2 -> docs/07
+    [BAD][self] docs/17-verification-standard.md:911  §99.7 -> docs/15
+    [BAD][self] docs/17-verification-standard.md:912  §99.7 -> docs/15
+    [BAD][self] docs/17-verification-standard.md:918  §99.7 -> docs/15
+    [BAD][self] docs/17-verification-standard.md:919  §99.8 -> docs/15
+    [BAD][self] docs/17-verification-standard.md:926  §99.7 -> docs/15
+    [BAD][self] docs/17-verification-standard.md:953  §5.1 -> docs/11
+    [BAD][outside] m10_attn_decode/README.md:57  §2.1 -> docs/17
+    [BAD][outside] m13_moe_layer/README.md:232  §2.2 -> docs/17
+    [BAD][outside] m13_moe_layer/README.md:236  §2.1 -> docs/17
+    [BAD][outside] m13_moe_layer/README.md:243  §3.5 -> docs/17
+    [BAD][outside] m13_moe_layer/README.md:350  §2.1 -> docs/17
+    [BAD][outside] m13_moe_layer/evidence/README.md:12  §2.5 -> docs/17
+    [BAD][outside] m13_moe_layer/evidence/README.md:33  §2.1 -> docs/17
+    [BAD][outside] m15_layer_loop/README.md:574  §2.4 -> docs/17
+    [BAD][outside] m17_moe_real/README.md:20  §2.1 -> docs/17
+    [BAD][outside] m17_moe_real/README.md:226  §2.1 -> docs/17
+    [BAD][outside] m17_moe_real/README.md:230  §2.6 -> docs/17
+    [BAD][outside] m17_moe_real/README.md:457  §2.6 -> docs/17
+    [BAD][outside] m18_gdn_prefill/README.md:264  §3.5 -> docs/17
+    [BAD][outside] m1_mxfp4_gemm/README.md:53  §10.4 -> docs/05
+    [BAD][outside] m20_hyperconn/README.md:480  §2.1 -> docs/17
+    [BAD][outside] m20_hyperconn/README.md:545  §2.1 -> docs/17
+    [BAD][outside] m21_layer_ref/README.md:429  §3.4 -> docs/17
+    [BAD][outside] m21_layer_ref/README.md:468  §3.5 -> docs/17
+    [BAD][outside] m22_router512/README.md:38  §2.3 -> docs/17
+    [BAD][outside] m4_gdn_recurrent/README.md:99  §9.1 -> docs/18
+    [BAD][outside] probe_v_align/README.md:328  §2.1 -> docs/17
+    [BAD][outside] probe_v_align/README.md:343  §2.2 -> docs/17
+    [BAD][outside] tools/golden/README.md:214  §2.1 -> docs/17
+    [BAD][outside] tools/golden/README.md:588  §2.1 -> docs/17
+
+## C. skipped 那栏（本 mission **不改匹配面** ⇒ 这些是待裁决量，不是 M114 的暴露面）
+域        gap_narrow      其中悬空  other    other该号0文档    other该号1文档   other该号>=2文档
+gate              2         0    944            22            41            881
+self              8         0    208             6            17            185
+outside           0         0   1730           218            44           1468
+  gap_narrow 逐条（第 ⑤ 栏那种「path + 短 ASCII 夹层 + §」；M78 的历史读数是 **2 行** = docs/09:4 与 docs/11:4，本脚本应复现；见下）:
+    [可解析][gate] docs/09-moe-donor-map.md:4  §2 -> docs/05  夹层=' v1.2 '
+    [可解析][gate] docs/11-attn-analysis.md:4  §2 -> docs/05  夹层=' v1.2 '
+    [可解析][self] docs/17-verification-standard.md:491  §2 -> docs/05  夹层=' v1.2 '
+    [可解析][self] docs/17-verification-standard.md:673  §2 -> docs/05  夹层=' v1.2 '
+    [可解析][self] docs/17-verification-standard.md:673  §2 -> docs/05  夹层=' v1.2 '
+    [可解析][self] docs/17-verification-standard.md:696  §2 -> docs/05  夹层=' v1.2 '
+    [可解析][self] docs/17-verification-standard.md:730  §2 -> docs/05  夹层=' v1.2 '
+    [可解析][self] docs/17-verification-standard.md:814  §2 -> docs/05  夹层=' v1.2 '
+    [可解析][self] docs/17-verification-standard.md:852  §2 -> docs/05  夹层=' v1.2 '
+    [可解析][self] docs/17-verification-standard.md:878  §2 -> docs/05  夹层=' v1.2 '
+  行口径（去重后的行数）: gate=2 repo=9
+
+## D. 标题形态普查（解引用口径 `^<num>` 的隐含前提 —— 找"同一个问题"的其它形态）
+   412  <num>…（其余 docs 形态）
+   254  其它（不以数字开头）
+         例：01-environment.md: 昇腾环境调研报告（方向1：硬件与软件环境清单）
+         例：01-environment.md: 总体结论（TL;DR）
+         例：01-environment.md: npu-smi info -t memory -i 0
+         例：01-environment.md: npu-smi info -t common -i 0
+         例：01-environment.md: 未能获取/未验证的信息（如实说明）
+         例：02-workspace-repos.md: /workspace 仓库调研：算子仓库、推理框架与模型
+         例：02-workspace-repos.md: 一、昇腾官方算子与知识仓库
+         例：02-workspace-repos.md: 二、vLLM 与 vllm-ascend
+         例：02-workspace-repos.md: vllm/model_executor/models/r
+         例：02-workspace-repos.md: MXFP4_NZ_LAYER_SUFFIXES = ("
+         例：02-workspace-repos.md: 三、目标模型目录：Qwen3.8-Flash-Next-
+         例：02-workspace-repos.md: 四、shared_assets
+    28  §<num>…（docs/20 形态）
+  其中「§<num>…」形态只在 1 个文档里出现，而这些标题**今天收到多少条 parsed 引用** = 0

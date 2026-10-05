@@ -1,0 +1,21 @@
+# M35 tower Step 1：单 AIV vs 多 AIV 退化对照（M19_V / M19_SINGLE 环境变量驱动）
+# 配置：V=1024（> blkTopk=512 ⇒ 走 radix 路径）、budget=512 block = 2048 token；期望 2048 token
+$ M19_V=1024 ./m19_qsa_indexer/build/m19_qsa_indexer
+A_close_2048   自检 FAIL  count=2048 tokens=1280
+B_open_2048    自检 FAIL  count=2050 tokens=1282
+C_small_256    自检 FAIL  count=2048 tokens=1280
+D_max_65536    自检 FAIL  count=2048 tokens=1280
+$ M19_V=1024 M19_SINGLE=1 ./m19_qsa_indexer/build/m19_qsa_indexer
+A_close_2048   自检 FAIL  count=2048 tokens=2048   <-- 正确（= 4*512）
+B_open_2048    自检 FAIL  count=2050 tokens=2050   <-- 正确（含 tail 2）
+C_small_256    自检 FAIL  count=2048 tokens=2048
+D_max_65536    自检 FAIL  count=2048 tokens=2048
+$ M19_V=256 ./m19_qsa_indexer/build/m19_qsa_indexer      # 对照：V<=512 走"全部选中"路径，期望 1024
+A_close_2048   自检 FAIL  count=1024 tokens=774
+B_open_2048    自检 FAIL  count=1026 tokens=806
+C_small_256    自检 FAIL  count=1024 tokens=747
+D_max_65536    自检 FAIL  count=1024 tokens=777
+# 注：count 列 FAIL 是因为 M19_V 覆盖了 V 而 host 的期望值按 case 的 vblocks 算（对照实验的正常现象）
+# 结论：单核 = 正确（2048/2050）⇒ **确定性 bug 在多核切分/合并**（tower Step1 的第二种情形）
+# 机制指向：多核下 rank 基 myGtBase（按 AIV 的互斥前缀）算错 ⇒ rankBase+count > blkTopk 被守卫裁掉
+#          （单核时 aiv=0 ⇒ 前缀恒 0 ⇒ 掩盖了该 bug，故单核反而全对）

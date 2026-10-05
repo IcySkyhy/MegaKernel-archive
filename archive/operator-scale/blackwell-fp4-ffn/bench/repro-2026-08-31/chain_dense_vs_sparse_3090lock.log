@@ -1,0 +1,40 @@
+=== host/toolchain ===
+2026-08-31T14:11:49-07:00
+(local workstation)
+Cuda compilation tools, release 13.1, V13.1.115
+Build cuda_13.1.r13.1/compiler.37061995_0
+NVIDIA GeForce RTX 5070 Ti, 595.71.05
+cutlass: 4ca61d06 (cute_scaledbasis_eq.patch applied:  1 file changed, 7 insertions(+), 1 deletion(-))
+ptxas for sparse: 13.3.73 spliced via --dryrun; nvcc front end 13.1.115
+
+=== clock lock ===
+All done.
+All done.
+3022 MHz, 330.00 W
+
+=== interleaved same-session A/B, 4096 square, 300 iters, swz=1 ras=1 ===
+--- round 1 : DENSE (fp4_chain_cutlass.cu -DRESIDUAL) ---
+fused FP4 double GEMM  N=4096 tile=128x128x128 sw1 r1  0.3995 ms/pair  688.0 TFLOPS  81.3% of 846 (actual-clock peak)
+3022 MHz, 90.38 W, 46
+--- round 1 : SPARSE 2:4 (fp4_sparse_chain.cu, 13.3 ptxas) ---
+sparse residual FP4 double GEMM  N=4096 tile=128x128x256  0.3338 ms/pair  823.4 TFLOPS dense-equiv
+3022 MHz, 83.97 W, 58
+--- round 2 : DENSE (fp4_chain_cutlass.cu -DRESIDUAL) ---
+fused FP4 double GEMM  N=4096 tile=128x128x128 sw1 r1  0.3997 ms/pair  687.7 TFLOPS  81.2% of 846 (actual-clock peak)
+3022 MHz, 91.30 W, 47
+--- round 2 : SPARSE 2:4 (fp4_sparse_chain.cu, 13.3 ptxas) ---
+sparse residual FP4 double GEMM  N=4096 tile=128x128x256  0.3342 ms/pair  822.5 TFLOPS dense-equiv
+3022 MHz, 83.50 W, 62
+--- round 3 : DENSE (fp4_chain_cutlass.cu -DRESIDUAL) ---
+fused FP4 double GEMM  N=4096 tile=128x128x128 sw1 r1  0.3994 ms/pair  688.3 TFLOPS  81.3% of 846 (actual-clock peak)
+3022 MHz, 91.56 W, 47
+--- round 3 : SPARSE 2:4 (fp4_sparse_chain.cu, 13.3 ptxas) ---
+sparse residual FP4 double GEMM  N=4096 tile=128x128x256  0.3343 ms/pair  822.3 TFLOPS dense-equiv
+3022 MHz, 84.11 W, 64
+
+=== revert clocks ===
+All done.
+All done.
+3022 MHz, 300.00 W
+DONE 2026-08-31T14:12:02-07:00
+EXIT=0

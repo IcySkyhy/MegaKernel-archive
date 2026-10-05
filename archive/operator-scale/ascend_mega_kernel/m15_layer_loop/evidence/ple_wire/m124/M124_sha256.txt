@@ -1,0 +1,65 @@
+# M124 sha256 归档（生成命令：M124_sha256.sh；BASE_REV=9296e79）
+# 时间（UTC）：2026-10-04T08:42:30Z  tip：db68139（+工作树未提交改动）
+
+## 1. 本 tip 的源码与产物
+a3e29fdd3697d07873f0ea4ffd7d468fd44351dbf0990ad50b9991c0f1ca8d62  m15_layer_loop/m15_ple.asc
+55bba43502aa30e66a4954f070a927de50369e56236ed66deb5d8f63a62a5c66  m15_layer_loop/m15_ple_wire.h
+1417e786a8375ab4880b7fb215df4eef02da12961e0ec06b72d1de329cf72ba4  m15_layer_loop/m15_ple_check.py
+8b26d8392a0ec342618f4f917a1594485eab989e4170b543fb820263f511334a  m15_layer_loop/m15_ple_mutants.py
+5baa9358ebc011d2b9a610681cf7a72163e68532f8222e3dbe297e49c05ed115  m15_layer_loop/m15_layer_kernel.h
+04fce7821d71d10de66e2824b13ce0101b477b38e33cbee929c71939d2827a35  m15_layer_loop/m15_layer_resources.h
+41ac4ba807fab52d92fbf94c0776cf48820fa55d07105dd3eb18076e1e8f769d  m15_layer_loop/evidence/ple_wire/lift_ple_device_segment.py
+
+## 2. 基线 rev 的两个文件（改前的归档面）
+09996f61f71891a9b4bd93226ee6cec4b3148b43c237b59783a22b4096f03c55  9296e79:m15_layer_loop/m15_ple.asc
+8bbd5e03f73b04de9b5481cf4e4354bfaa81f9ceac75fba3781b2b25ee6123e7  9296e79:m15_layer_loop/m15_ple_wire.h
+
+## 3. 二进制（改前 = 基线 rev 在 /tmp 重建；改后 = 本 tip 工作树）
+40e66c7d73c6a38aa35e407c269e4221337eb93c7464625765dc29d1085b2dde  m15_ple(改前 9296e79 重建)
+33c8b0f178d0898dbae7df20f3a8f3a55960fd2cbf0afb70cd892e5e15a98e86  m15_ple(改后 本 tip；本批的 build 目录在仓库根 build/)
+9447734a5282599a28bb224b972ca49ea2ac0cf4e8e24d63fa937eaa1828e267  m15_layer_loop(改后 本 tip)
+
+## 4. 设备 dump 的关键平面（改前 /tmp/m124_out_base、改后 /tmp/m124_out_new、M=1 /tmp/m124_out_new_m1）
+f07fadeb3b88d55fa135bf582eadcec801a0d3bd5443b7df20deada5bf85da58  /tmp/m124_out_base/B_kv.bin
+b88e108daa8959344e45e2610f61fcd96ab0a4e3d5feb5ce43f8fc36ab3f1f82  /tmp/m124_out_new/B_kv.bin
+f489468d7baf0d4d7c791c559b65eb6b954cda19767d84bc5f634c77b94e06fd  /tmp/m124_out_new_m1/B_kv.bin
+14c2127c2497b8c6fe4784fa593c47a2304a463bd6f7692f60f191b9a01e2b43  /tmp/m124_out_base/B_emb.bin
+c40e7725ad95a969651bdfe24f6f858def6fc0e59ad68581cc56e0984937c635  /tmp/m124_out_base/B_gated.bin
+56b6733d36224256ee2e72b74bc26c1bc44e84903ab1e91da488257473afab0c  /tmp/m124_out_base/B_ids.bin
+56b6733d36224256ee2e72b74bc26c1bc44e84903ab1e91da488257473afab0c  /tmp/m124_out_base/B_ids_body.bin
+f07fadeb3b88d55fa135bf582eadcec801a0d3bd5443b7df20deada5bf85da58  /tmp/m124_out_base/B_kv.bin
+b4d3115b14c7a91f4ea3ca78cab4efd34e84dee3f0192d786fef202ee9dd9478  /tmp/m124_out_base/B_normed.bin
+9a02c0a43376b8569c71290119ec81aa1e8bf2f8d62c950f6a1343d41af67abc  /tmp/m124_out_base/B_out.bin
+f7153fc171cf1ad792bbd6400708be68d906ec12926585d45b701b89ccd7862a  /tmp/m124_out_base/B_state_out.bin
+14c2127c2497b8c6fe4784fa593c47a2304a463bd6f7692f60f191b9a01e2b43  /tmp/m124_out_new/B_emb.bin
+794f1b4adf074de28a43f5adc90241dc36e8e3199121021ad7250c55626af978  /tmp/m124_out_new/B_gated.bin
+56b6733d36224256ee2e72b74bc26c1bc44e84903ab1e91da488257473afab0c  /tmp/m124_out_new/B_ids.bin
+56b6733d36224256ee2e72b74bc26c1bc44e84903ab1e91da488257473afab0c  /tmp/m124_out_new/B_ids_body.bin
+b88e108daa8959344e45e2610f61fcd96ab0a4e3d5feb5ce43f8fc36ab3f1f82  /tmp/m124_out_new/B_kv.bin
+f982ff8dd353da3f3e4312de2c60a5ec3db1272aa0af6e348c651cc04c0f7d5e  /tmp/m124_out_new/B_normed.bin
+9a02c0a43376b8569c71290119ec81aa1e8bf2f8d62c950f6a1343d41af67abc  /tmp/m124_out_new/B_out.bin
+ec3568b7b0082493fce9acaf22c47f64a1f42d91e5a7af6023be1fdccb1e7d05  /tmp/m124_out_new/B_state_out.bin
+
+#
+# ===== M190 漂移标注（2026-10-05）=====
+# 第 1 节「本 tip」的源码记录（:5/:6/:9/:10）在归档后又被后续 mission 改动，记录值保留原样；
+# 第 2 节（:14/:15）是显式钉在 BASE_REV=9296e79 的历史值，经核与 9296e79 的 blob 逐位相同，不属陈旧。
+# 未改上方任何行值、任何设备代码/注释。
+#   :5  m15_layer_loop/m15_ple.asc  记录 a3e29fdd3697d07873f0ea4ffd7d468fd44351dbf0990ad50b9991c0f1ca8d62
+#       == 8646f95（M124）时的 blob；其后 6233ea1（M171）、808fe25（M181 BufferID 释放模式统一）先后改动
+#       当前实际 e3453c4b1d774eeebf0342a51d4d340bbd0583157a9d877ac94aba833a49c085
+#   :6  m15_layer_loop/m15_ple_wire.h  记录 55bba43502aa30e66a4954f070a927de50369e56236ed66deb5d8f63a62a5c66
+#       == 8646f95（M124）时的 blob；其后 6233ea1（M171）、808fe25（M181）先后改动
+#       当前实际 f7e24e5da318925fc46099425eb2a836339fbfe74d2db5d02e359f485ad030b2
+#   :9  m15_layer_loop/m15_layer_kernel.h  记录 5baa9358ebc011d2b9a610681cf7a72163e68532f8222e3dbe297e49c05ed115
+#       == 8646f95（M124）时的 blob；其后 m132 wave C 多笔、5f55c19（M164）、a63d187（M168）等先后改动
+#       当前实际 c5c87fb7fd63e52c3eb712e7146f9d08c2e5c98ef85d54fdb5372b2c7bc4ac8d
+#   :10 m15_layer_loop/m15_layer_resources.h  记录 04fce7821d71d10de66e2824b13ce0101b477b38e33cbee929c71939d2827a35
+#       == 175b80b（M124 r2-fix）时的 blob；其后 M138/M151/M164/M168/M185 多笔改动，末次 6758738（M185）
+#       当前实际 a3eaae491e508cf888c1b65c8cd820fd8a5a6ab1e88c1afae9c1fb3f116f4688
+#   :14/:15  9296e79:m15_ple.asc / 9296e79:m15_ple_wire.h 记录值 09996f61... / 8bbd5e03... 与 9296e79 的 blob 逐位相同。
+# 复算（当前 main）：
+#   sha256sum m15_layer_loop/m15_ple.asc m15_layer_loop/m15_ple_wire.h m15_layer_loop/m15_layer_kernel.h m15_layer_loop/m15_layer_resources.h
+# 复算（核对 :14/:15 的 rev 钉）：
+#   git show 9296e79:m15_layer_loop/m15_ple.asc | sha256sum
+#   git show 9296e79:m15_layer_loop/m15_ple_wire.h | sha256sum

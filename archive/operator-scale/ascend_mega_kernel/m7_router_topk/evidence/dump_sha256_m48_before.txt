@@ -1,0 +1,41 @@
+# m7_router_topk dump sha256 清单 —— **M48 改造前**（基线）那一轮的原始清单（M56 转存）
+#
+# 哪一轮      ：M48（向量 API 合规 sweep）的 m7 改造 —— 基线侧（改造前）
+# 哪个 commit ：**该工作副本未记录自身 commit**；基线是 M48 改造前的 m7 源码
+#               （改造落地点见 dump_sha256_m48_after.txt 头部）
+# 哪个临时路径：/tmp/m48_base/m7_dump_sha256.txt（M48 作者当时的归档，mtime 2026-09-26 12:07）
+# 覆盖范围    ：**只有 3 档**（m1 / m2 / m16，共 30 个文件）——M48 当时只对这三档做了改造前基线
+#
+# 用途：与 dump_sha256_m48_after.txt（50 个文件）在**重叠的 30 个文件上逐行相同**（comm -23 = 0 行），
+#       即「M48 的 m7 向量 API 改造未改变任何落盘字节」；after 侧另有 m33/m64 共 20 行是本次才补的档。
+# 原样转存：只加本注释头，不改任何行。
+db0212531ac177310beaac8a98f8f048a52a76f84a63f4feb2981e7bf57b86ac  ./m1/router_logits.bin
+c71573a14d38045c9b517284f3dcfedfa3e0c05d0a8643e82425edf21d356b6c  ./m1/router_logits.bin.json
+966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6  ./m1/router_weight.bin
+31b253de534ce3c2c824a14413780598118f32ed04441bbaa72c5f16c8e940e7  ./m1/router_weight.bin.json
+59ef36decc23277906f1d1483b1f74fedab77f82c8da6454bc5e97c41f9d0cf3  ./m1/topk_ids.bin
+94081e9fd0fee8e2f14ba32ef22da7c31e66d49f00ba7bf6a6e60410a2b0506d  ./m1/topk_ids.bin.json
+85fdc7a7ea8758f571dead6a8264931d75df3fbd58824075f56d564e6cc7bd9f  ./m1/topk_weights.bin
+d88b84d91ea91da633906d50067542305d42d0035413046b0b282db87f401e4e  ./m1/topk_weights.bin.json
+3806a856af0ecb82ae3f05ca068952a96b35504b9d44e69f79ef7848e8385083  ./m1/x.bin
+827e5179e6dc3faa739613447c1d2a7cc8c96eca8665b62e75accd4e04f74323  ./m1/x.bin.json
+0029a5cb2b3bcade4420586fe92ccd9ccc332a95141c6c83f2750831904bd95a  ./m16/router_logits.bin
+c6569cb7c9f7e77135e78ff0fe61f4a35eb4477e2123fc1d9b1b8ed67dab6d4c  ./m16/router_logits.bin.json
+966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6  ./m16/router_weight.bin
+31b253de534ce3c2c824a14413780598118f32ed04441bbaa72c5f16c8e940e7  ./m16/router_weight.bin.json
+fe064fe8678bbec6ed0a4d973feae3f077a4518545b241b06257d2f5f5cc789d  ./m16/topk_ids.bin
+793106a25bef8f60f09dce0a06bc47d6160f725248bce7c3a170a106dd70ee94  ./m16/topk_ids.bin.json
+0e873b8d810abf18ceabc5f06c38b46ebff5c26ae79539e42e288f119dd279fb  ./m16/topk_weights.bin
+9ee5cbc795c38b484c43571f67ec7b37473e047393d3f938e3b7bf0148a4c191  ./m16/topk_weights.bin.json
+992572a4ef81dcd4e7b7f8ab6754ae47713fe36ea756b85426b6eb3c28aa6632  ./m16/x.bin
+1102fdb6f0cad91aeb5d91162e544af85debf494bc07c77972432f8478965272  ./m16/x.bin.json
+d63ab4e8e528fdc6c4e2c943f1889907fa721d3214d7a6ce482dc5ab540aeda2  ./m2/router_logits.bin
+5fb600c96e07a8c1a518fe554d697977875df3e14b94ee31d6824cd6d5c1340c  ./m2/router_logits.bin.json
+966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6  ./m2/router_weight.bin
+31b253de534ce3c2c824a14413780598118f32ed04441bbaa72c5f16c8e940e7  ./m2/router_weight.bin.json
+776849c465154cef7d96b05c11fa08f26dd05f0171c18f76d4b1fd24c2545ef6  ./m2/topk_ids.bin
+89a7df95c109579a1355811ec2182a2f8585fa741dce56d2d96c52eb895586c1  ./m2/topk_ids.bin.json
+66c9ae38cef7723ee3c97d762675d74c0acf469f8af460c616c2208e7c9864d9  ./m2/topk_weights.bin
+a3172fab68d76ce54b57b9ad43c13a19826bf4ccdbfdc655ab23239c54967760  ./m2/topk_weights.bin.json
+deaae173f037b6f92267483f60294d3ff3b5fe17c1b51922ed8df59799dd4e80  ./m2/x.bin
+25444f4f8ece369952f0ba54f6df411ce8ab8a6a7da0d315371259b7e42618ec  ./m2/x.bin.json

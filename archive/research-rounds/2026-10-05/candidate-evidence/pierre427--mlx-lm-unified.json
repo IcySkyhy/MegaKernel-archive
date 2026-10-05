@@ -1,0 +1,2508 @@
+{
+  "repository": "pierre427/mlx-lm-unified",
+  "url": "https://github.com/pierre427/mlx-lm-unified",
+  "created_at": "2026-09-10T14:22:25Z",
+  "pushed_at": "2026-09-19T13:52:32Z",
+  "branch": "unified",
+  "license": "MIT",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE/new_model.md",
+      "size": 879
+    },
+    {
+      "path": ".github/actions/setup-macos/action.yml",
+      "size": 371
+    },
+    {
+      "path": ".github/issue_template.md",
+      "size": 73
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "size": 106
+    },
+    {
+      "path": ".github/scripts/find-eligible-contributors.js",
+      "size": 5967
+    },
+    {
+      "path": ".github/scripts/update-bypass-list.js",
+      "size": 4837
+    },
+    {
+      "path": ".github/workflows/pull_request.yml",
+      "size": 1334
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "size": 897
+    },
+    {
+      "path": ".github/workflows/update_bypass_list.yml",
+      "size": 613
+    },
+    {
+      "path": ".gitignore",
+      "size": 1870
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "size": 238
+    },
+    {
+      "path": "ACKNOWLEDGMENTS.md",
+      "size": 2173
+    },
+    {
+      "path": "AGENTS.md",
+      "size": 1839
+    },
+    {
+      "path": "CLAUDE.md",
+      "size": 9
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "size": 5544
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 3046
+    },
+    {
+      "path": "LICENSE",
+      "size": 1066
+    },
+    {
+      "path": "MANIFEST.in",
+      "size": 56
+    },
+    {
+      "path": "README.md",
+      "size": 8590
+    },
+    {
+      "path": "benchmarks/adaptive_prefill_gate.py",
+      "size": 6003
+    },
+    {
+      "path": "benchmarks/adaptive_prefill_self_mtp_gate.py",
+      "size": 7309
+    },
+    {
+      "path": "benchmarks/ane_cache_capsule_microbench.py",
+      "size": 9774
+    },
+    {
+      "path": "benchmarks/ane_gpu_cache_overlap_microbench.py",
+      "size": 10019
+    },
+    {
+      "path": "benchmarks/apc_cache_capsule_serving_gate.py",
+      "size": 7304
+    },
+    {
+      "path": "benchmarks/apc_cow_component_gate.py",
+      "size": 3678
+    },
+    {
+      "path": "benchmarks/arrays_cache_host_mirror_gate.py",
+      "size": 5341
+    },
+    {
+      "path": "benchmarks/cache_branch_state_microbench.py",
+      "size": 7270
+    },
+    {
+      "path": "benchmarks/cache_capsule_component_gate.py",
+      "size": 7315
+    },
+    {
+      "path": "benchmarks/cache_segmentation_trace.py",
+      "size": 8580
+    },
+    {
+      "path": "benchmarks/cache_shared_prefix_attention_microbench.py",
+      "size": 4277
+    },
+    {
+      "path": "benchmarks/confidence_gated_draft_screen.py",
+      "size": 10321
+    },
+    {
+      "path": "benchmarks/dasc_checkpoint_component_gate.py",
+      "size": 9227
+    },
+    {
+      "path": "benchmarks/decode_priority_cadence_gate.py",
+      "size": 5394
+    },
+    {
+      "path": "benchmarks/e5rt_cache_capsule_overlap_gate.py",
+      "size": 17201
+    },
+    {
+      "path": "benchmarks/gdn_prefix_fanout_benchmark.py",
+      "size": 14952
+    },
+    {
+      "path": "benchmarks/hybrid_proposer_benchmark.py",
+      "size": 13568
+    },
+    {
+      "path": "benchmarks/kv_asym_probe.py",
+      "size": 9983
+    },
+    {
+      "path": "benchmarks/kv_rot_asym_probe.py",
+      "size": 6303
+    },
+    {
+      "path": "benchmarks/kv_rotation_ppl.py",
+      "size": 4249
+    },
+    {
+      "path": "benchmarks/mtp_phase_variant_graph_gate.py",
+      "size": 5362
+    },
+    {
+      "path": "benchmarks/native_icb/.gitignore",
+      "size": 20
+    },
+    {
+      "path": "benchmarks/native_icb/P1_SPEC.md",
+      "size": 6813
+    },
+    {
+      "path": "benchmarks/native_icb/README.md",
+      "size": 2442
+    },
+    {
+      "path": "benchmarks/native_icb/build.sh",
+      "size": 699
+    },
+    {
+      "path": "benchmarks/native_icb/compute_icb_bench.mm",
+      "size": 27113
+    },
+    {
+      "path": "benchmarks/native_icb/prepare_qwen4_phase_family_p1.py",
+      "size": 14344
+    },
+    {
+      "path": "benchmarks/native_icb/qwen4_phase_family_icb.mm",
+      "size": 37147
+    },
+    {
+      "path": "benchmarks/native_icb/qwen4_phase_family_msl.py",
+      "size": 6705
+    },
+    {
+      "path": "benchmarks/native_icb/run.sh",
+      "size": 1299
+    },
+    {
+      "path": "benchmarks/native_icb/run_qwen4_phase_family_p1.sh",
+      "size": 2577
+    },
+    {
+      "path": "benchmarks/native_icb/test_qwen4_phase_family_p1.py",
+      "size": 8472
+    },
+    {
+      "path": "benchmarks/native_icb/verify_qwen4_phase_family_p1.py",
+      "size": 12894
+    },
+    {
+      "path": "benchmarks/prompt_host_cache_bench.py",
+      "size": 6888
+    },
+    {
+      "path": "benchmarks/qsa_mtp_amendment_gate.py",
+      "size": 6144
+    },
+    {
+      "path": "benchmarks/qwen4_ane_verifier_crossover.py",
+      "size": 17017
+    },
+    {
+      "path": "benchmarks/qwen4_ane_verifier_head_export.py",
+      "size": 23355
+    },
+    {
+      "path": "benchmarks/qwen4_ane_verifier_multisession.py",
+      "size": 31483
+    },
+    {
+      "path": "benchmarks/qwen4_ane_verifier_pipeline.py",
+      "size": 12184
+    },
+    {
+      "path": "benchmarks/qwen4_composition_ablation.py",
+      "size": 8452
+    },
+    {
+      "path": "benchmarks/qwen4_first_target_family_profile.py",
+      "size": 17029
+    },
+    {
+      "path": "benchmarks/qwen4_fused_gdn_context_ladder.py",
+      "size": 23207
+    },
+    {
+      "path": "benchmarks/qwen4_fused_gdn_decode.py",
+      "size": 11045
+    },
+    {
+      "path": "benchmarks/qwen4_fused_gdn_verify.py",
+      "size": 33099
+    },
+    {
+      "path": "benchmarks/qwen4_gdn_inproj_ab.py",
+      "size": 15250
+    },
+    {
+      "path": "benchmarks/qwen4_gdn_onekernel_window.py",
+      "size": 7629
+    },
+    {
+      "path": "benchmarks/qwen4_gdn_prefix_fanout_full_model_ab.py",
+      "size": 43355
+    },
+    {
+      "path": "benchmarks/qwen4_gdn_prep_matrix.py",
+      "size": 32044
+    },
+    {
+      "path": "benchmarks/qwen4_gdn_replay_cpu.py",
+      "size": 6815
+    },
+    {
+      "path": "benchmarks/qwen4_gdn_replay_gpu.py",
+      "size": 10223
+    },
+    {
+      "path": "benchmarks/qwen4_host_budget.py",
+      "size": 6641
+    },
+    {
+      "path": "benchmarks/qwen4_layer_byte_census.py",
+      "size": 4542
+    },
+    {
+      "path": "benchmarks/qwen4_layer_onekernel_prize.py",
+      "size": 13031
+    },
+    {
+      "path": "benchmarks/qwen4_live_tip_branch_gate.py",
+      "size": 44879
+    },
+    {
+      "path": "benchmarks/qwen4_live_tip_composition_gate.py",
+      "size": 26070
+    },
+    {
+      "path": "benchmarks/qwen4_mtp_dynamic_join_gate.py",
+      "size": 37581
+    },
+    {
+      "path": "benchmarks/qwen4_mtp_policy_gate.py",
+      "size": 18333
+    },
+    {
+      "path": "benchmarks/qwen4_mtp_static_cohort_immediate_multiturn_gate.py",
+      "size": 16689
+    },
+    {
+      "path": "benchmarks/qwen4_mtp_static_cohort_multiturn_smoke.py",
+      "size": 8770
+    },
+    {
+      "path": "benchmarks/qwen4_mtp_static_cohort_serving_smoke.py",
+      "size": 5587
+    },
+    {
+      "path": "benchmarks/qwen4_openai_cached20k_b4_realistic_ab.py",
+      "size": 28019
+    },
+    {
+      "path": "benchmarks/qwen4_openai_static_cohort_multiturn_gate.py",
+      "size": 23372
+    },
+    {
+      "path": "benchmarks/qwen4_qsa_apc_summaries_gate.py",
+      "size": 22604
+    },
+    {
+      "path": "benchmarks/qwen4_qsa_gate_merge_micro.py",
+      "size": 4331
+    },
+    {
+      "path": "benchmarks/qwen4_qsa_indexed_gate.py",
+      "size": 50875
+    },
+    {
+      "path": "benchmarks/qwen4_qsa_indexed_qkv_gate.py",
+      "size": 15015
+    },
+    {
+      "path": "benchmarks/qwen4_qsa_indexed_timing.py",
+      "size": 41979
+    },
+    {
+      "path": "benchmarks/qwen4_qsa_private_delta_microbench.py",
+      "size": 15053
+    },
+    {
+      "path": "benchmarks/qwen4_qsa_topology_receipt.py",
+      "size": 4667
+    },
+    {
+      "path": "benchmarks/qwen4_route_persistence_probe.py",
+      "size": 12959
+    },
+    {
+      "path": "benchmarks/qwen4_s7_expert_union_micro.py",
+      "size": 13558
+    },
+    {
+      "path": "benchmarks/qwen4_sparse_gather_rhs_micro.py",
+      "size": 8620
+    },
+    {
+      "path": "benchmarks/run_gdn_onekernel_window.sh",
+      "size": 1922
+    },
+    {
+      "path": "benchmarks/run_host_budget_window.sh",
+      "size": 1924
+    },
+    {
+      "path": "benchmarks/server_benchmark.py",
+      "size": 10741
+    },
+    {
+      "path": "benchmarks/summarize_hybrid_proposer.py",
+      "size": 4747
+    },
+    {
+      "path": "mlx_lm/BENCHMARKS.md",
+      "size": 2099
+    },
+    {
+      "path": "mlx_lm/LEARNED_QUANTS.md",
+      "size": 5632
+    },
+    {
+      "path": "mlx_lm/LORA.md",
+      "size": 13738
+    },
+    {
+      "path": "mlx_lm/MANAGE.md",
+      "size": 481
+    },
+    {
+      "path": "mlx_lm/README.md",
+      "size": 370
+    },
+    {
+      "path": "mlx_lm/SERVER.md",
+      "size": 5471
+    },
+    {
+      "path": "mlx_lm/__init__.py",
+      "size": 646
+    },
+    {
+      "path": "mlx_lm/__main__.py",
+      "size": 97
+    },
+    {
+      "path": "mlx_lm/_version.py",
+      "size": 60
+    },
+    {
+      "path": "mlx_lm/absolute_work.py",
+      "size": 13380
+    },
+    {
+      "path": "mlx_lm/absolute_work_fixtures.py",
+      "size": 7434
+    },
+    {
+      "path": "mlx_lm/adaptive_work_coordinator.py",
+      "size": 24752
+    },
+    {
+      "path": "mlx_lm/ane_verifier.py",
+      "size": 19863
+    },
+    {
+      "path": "mlx_lm/apc.py",
+      "size": 42602
+    },
+    {
+      "path": "mlx_lm/apc_backends.py",
+      "size": 8775
+    },
+    {
+      "path": "mlx_lm/batch_admission.py",
+      "size": 9161
+    },
+    {
+      "path": "mlx_lm/batch_runtime.py",
+      "size": 11432
+    },
+    {
+      "path": "mlx_lm/benchmark.py",
+      "size": 5005
+    },
+    {
+      "path": "mlx_lm/cache_branch_transaction.py",
+      "size": 35488
+    },
+    {
+      "path": "mlx_lm/cache_capsule.py",
+      "size": 37130
+    },
+    {
+      "path": "mlx_lm/cache_planes.py",
+      "size": 23575
+    },
+    {
+      "path": "mlx_lm/cache_policy.py",
+      "size": 21251
+    },
+    {
+      "path": "mlx_lm/cache_prompt.py",
+      "size": 5410
+    },
+    {
+      "path": "mlx_lm/cache_scheduler.py",
+      "size": 12752
+    },
+    {
+      "path": "mlx_lm/cache_segmentation.py",
+      "size": 28135
+    },
+    {
+      "path": "mlx_lm/chat.py",
+      "size": 5429
+    },
+    {
+      "path": "mlx_lm/chat_templates/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "mlx_lm/chat_templates/deepseek_v32.py",
+      "size": 11462
+    },
+    {
+      "path": "mlx_lm/cli.py",
+      "size": 1378
+    },
+    {
+      "path": "mlx_lm/cli_ui.py",
+      "size": 9996
+    },
+    {
+      "path": "mlx_lm/compiled_decode.py",
+      "size": 33461
+    },
+    {
+      "path": "mlx_lm/compiled_qualification.py",
+      "size": 23538
+    },
+    {
+      "path": "mlx_lm/confidence_draft_calibration.py",
+      "size": 12909
+    },
+    {
+      "path": "mlx_lm/context_compaction.py",
+      "size": 3181
+    },
+    {
+      "path": "mlx_lm/convert.py",
+      "size": 7847
+    },
+    {
+      "path": "mlx_lm/cow_cache.py",
+      "size": 56468
+    },
+    {
+      "path": "mlx_lm/e5rt_cache_capsule.py",
+      "size": 19256
+    },
+    {
+      "path": "mlx_lm/evaluate.py",
+      "size": 19514
+    },
+    {
+      "path": "mlx_lm/examples/batch_generate_response.py",
+      "size": 1201
+    },
+    {
+      "path": "mlx_lm/examples/chat.py",
+      "size": 1234
+    },
+    {
+      "path": "mlx_lm/examples/commit_steer.py",
+      "size": 4286
+    },
+    {
+      "path": "mlx_lm/examples/generate_response.py",
+      "size": 841
+    },
+    {
+      "path": "mlx_lm/examples/lora_config.yaml",
+      "size": 2297
+    },
+    {
+      "path": "mlx_lm/examples/merge_config.yaml",
+      "size": 249
+    },
+    {
+      "path": "mlx_lm/examples/openai_reasoning_content.py",
+      "size": 966
+    },
+    {
+      "path": "mlx_lm/examples/openai_tool_use.py",
+      "size": 1807
+    },
+    {
+      "path": "mlx_lm/examples/sharded_generate.py",
+      "size": 2301
+    },
+    {
+      "path": "mlx_lm/examples/tool_use.py",
+      "size": 1922
+    },
+    {
+      "path": "mlx_lm/fuse.py",
+      "size": 3211
+    },
+    {
+      "path": "mlx_lm/gdn_prefix_fanout.py",
+      "size": 23813
+    },
+    {
+      "path": "mlx_lm/generate.py",
+      "size": 293291
+    },
+    {
+      "path": "mlx_lm/gguf.py",
+      "size": 11475
+    },
+    {
+      "path": "mlx_lm/heterogeneous_execution.py",
+      "size": 19850
+    },
+    {
+      "path": "mlx_lm/host_timing.py",
+      "size": 4971
+    },
+    {
+      "path": "mlx_lm/hybrid_proposer.py",
+      "size": 18236
+    },
+    {
+      "path": "mlx_lm/hybrid_speculative.py",
+      "size": 186164
+    },
+    {
+      "path": "mlx_lm/int8_prefill.py",
+      "size": 19232
+    },
+    {
+      "path": "mlx_lm/lora.py",
+      "size": 11891
+    },
+    {
+      "path": "mlx_lm/manage.py",
+      "size": 4706
+    },
+    {
+      "path": "mlx_lm/megakernel_lane.py",
+      "size": 11346
+    },
+    {
+      "path": "mlx_lm/models/Klear.py",
+      "size": 8481
+    },
+    {
+      "path": "mlx_lm/models/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "mlx_lm/models/_safe_reduce.py",
+      "size": 423
+    },
+    {
+      "path": "mlx_lm/models/activations.py",
+      "size": 1100
+    },
+    {
+      "path": "mlx_lm/models/afm7.py",
+      "size": 12159
+    },
+    {
+      "path": "mlx_lm/models/afmoe.py",
+      "size": 12958
+    },
+    {
+      "path": "mlx_lm/models/agnes.py",
+      "size": 18461
+    },
+    {
+      "path": "mlx_lm/models/apertus.py",
+      "size": 6121
+    },
+    {
+      "path": "mlx_lm/models/apertus1p5_text.py",
+      "size": 4303
+    },
+    {
+      "path": "mlx_lm/models/baichuan_m1.py",
+      "size": 8722
+    },
+    {
+      "path": "mlx_lm/models/bailing_hybrid.py",
+      "size": 34813
+    },
+    {
+      "path": "mlx_lm/models/bailing_moe.py",
+      "size": 13026
+    },
+    {
+      "path": "mlx_lm/models/bailing_moe_linear.py",
+      "size": 19287
+    },
+    {
+      "path": "mlx_lm/models/bailing_moe_v3.py",
+      "size": 23109
+    },
+    {
+      "path": "mlx_lm/models/base.py",
+      "size": 10465
+    },
+    {
+      "path": "mlx_lm/models/bitlinear_layers.py",
+      "size": 5098
+    },
+    {
+      "path": "mlx_lm/models/bitnet.py",
+      "size": 6524
+    },
+    {
+      "path": "mlx_lm/models/cache.py",
+      "size": 225947
+    },
+    {
+      "path": "mlx_lm/models/cohere.py",
+      "size": 5861
+    },
+    {
+      "path": "mlx_lm/models/cohere2.py",
+      "size": 7003
+    },
+    {
+      "path": "mlx_lm/models/cohere2_moe.py",
+      "size": 17374
+    },
+    {
+      "path": "mlx_lm/models/dbrx.py",
+      "size": 7972
+    },
+    {
+      "path": "mlx_lm/models/deepseek.py",
+      "size": 8720
+    },
+    {
+      "path": "mlx_lm/models/deepseek_v2.py",
+      "size": 25878
+    },
+    {
+      "path": "mlx_lm/models/deepseek_v3.py",
+      "size": 26669
+    },
+    {
+      "path": "mlx_lm/models/deepseek_v32.py",
+      "size": 27917
+    },
+    {
+      "path": "mlx_lm/models/dflash_laguna.py",
+      "size": 7464
+    },
+    {
+      "path": "mlx_lm/models/dflash_qwen3.py",
+      "size": 8452
+    },
+    {
+      "path": "mlx_lm/models/dots1.py",
+      "size": 10126
+    },
+    {
+      "path": "mlx_lm/models/dream.py",
+      "size": 12462
+    },
+    {
+      "path": "mlx_lm/models/ernie4_5.py",
+      "size": 5115
+    },
+    {
+      "path": "mlx_lm/models/ernie4_5_moe.py",
+      "size": 9321
+    },
+    {
+      "path": "mlx_lm/models/exaone.py",
+      "size": 5234
+    },
+    {
+      "path": "mlx_lm/models/exaone4.py",
+      "size": 7061
+    },
+    {
+      "path": "mlx_lm/models/exaone_moe.py",
+      "size": 14936
+    },
+    {
+      "path": "mlx_lm/models/falcon_h1.py",
+      "size": 15932
+    },
+    {
+      "path": "mlx_lm/models/gated_delta.py",
+      "size": 26149
+    },
+    {
+      "path": "mlx_lm/models/gemma.py",
+      "size": 5318
+    },
+    {
+      "path": "mlx_lm/models/gemma2.py",
+      "size": 6719
+    },
+    {
+      "path": "mlx_lm/models/gemma3.py",
+      "size": 1808
+    },
+    {
+      "path": "mlx_lm/models/gemma3_text.py",
+      "size": 8663
+    },
+    {
+      "path": "mlx_lm/models/gemma3n.py",
+      "size": 21374
+    },
+    {
+      "path": "mlx_lm/models/gemma4.py",
+      "size": 2554
+    },
+    {
+      "path": "mlx_lm/models/gemma4_text.py",
+      "size": 24553
+    },
+    {
+      "path": "mlx_lm/models/glm.py",
+      "size": 5794
+    },
+    {
+      "path": "mlx_lm/models/glm4.py",
+      "size": 5599
+    },
+    {
+      "path": "mlx_lm/models/glm4_moe.py",
+      "size": 13765
+    },
+    {
+      "path": "mlx_lm/models/glm4_moe_lite.py",
+      "size": 21347
+    },
+    {
+      "path": "mlx_lm/models/glm4v_moe.py",
+      "size": 3558
+    },
+    {
+      "path": "mlx_lm/models/glm_moe_dsa.py",
+      "size": 1370
+    },
+    {
+      "path": "mlx_lm/models/gpt2.py",
+      "size": 6079
+    },
+    {
+      "path": "mlx_lm/models/gpt_bigcode.py",
+      "size": 5419
+    },
+    {
+      "path": "mlx_lm/models/gpt_neox.py",
+      "size": 6957
+    },
+    {
+      "path": "mlx_lm/models/gpt_oss.py",
+      "size": 12360
+    },
+    {
+      "path": "mlx_lm/models/gpt_oss_puzzle.py",
+      "size": 5903
+    },
+    {
+      "path": "mlx_lm/models/granite.py",
+      "size": 6318
+    },
+    {
+      "path": "mlx_lm/models/granitemoe.py",
+      "size": 7868
+    },
+    {
+      "path": "mlx_lm/models/granitemoehybrid.py",
+      "size": 19136
+    },
+    {
+      "path": "mlx_lm/models/helium.py",
+      "size": 5663
+    },
+    {
+      "path": "mlx_lm/models/hunyuan.py",
+      "size": 11327
+    },
+    {
+      "path": "mlx_lm/models/hunyuan_v1_dense.py",
+      "size": 7186
+    },
+    {
+      "path": "mlx_lm/models/hy_v3.py",
+      "size": 17772
+    },
+    {
+      "path": "mlx_lm/models/internlm2.py",
+      "size": 6274
+    },
+    {
+      "path": "mlx_lm/models/internlm3.py",
+      "size": 7595
+    },
+    {
+      "path": "mlx_lm/models/iquestloopcoder.py",
+      "size": 9911
+    },
+    {
+      "path": "mlx_lm/models/jamba.py",
+      "size": 12881
+    },
+    {
+      "path": "mlx_lm/models/k2_horizon_mova.py",
+      "size": 16916
+    },
+    {
+      "path": "mlx_lm/models/kimi_k25.py",
+      "size": 2432
+    },
+    {
+      "path": "mlx_lm/models/kimi_linear.py",
+      "size": 23659
+    },
+    {
+      "path": "mlx_lm/models/kimi_vl.py",
+      "size": 3402
+    },
+    {
+      "path": "mlx_lm/models/laguna.py",
+      "size": 20522
+    },
+    {
+      "path": "mlx_lm/models/lfm2-vl.py",
+      "size": 1350
+    },
+    {
+      "path": "mlx_lm/models/lfm2.py",
+      "size": 9801
+    },
+    {
+      "path": "mlx_lm/models/lfm2_moe.py",
+      "size": 12905
+    },
+    {
+      "path": "mlx_lm/models/lille-130m.py",
+      "size": 4700
+    },
+    {
+      "path": "mlx_lm/models/llada.py",
+      "size": 54465
+    },
+    {
+      "path": "mlx_lm/models/llama.py",
+      "size": 9212
+    },
+    {
+      "path": "mlx_lm/models/llama4.py",
+      "size": 10854
+    },
+    {
+      "path": "mlx_lm/models/llama4_text.py",
+      "size": 5754
+    },
+    {
+      "path": "mlx_lm/models/longcat_flash.py",
+      "size": 19521
+    },
+    {
+      "path": "mlx_lm/models/longcat_flash_ngram.py",
+      "size": 6722
+    },
+    {
+      "path": "mlx_lm/models/mamba.py",
+      "size": 7265
+    },
+    {
+      "path": "mlx_lm/models/mamba2.py",
+      "size": 8567
+    },
+    {
+      "path": "mlx_lm/models/mellum.py",
+      "size": 8833
+    },
+    {
+      "path": "mlx_lm/models/mimo.py",
+      "size": 6004
+    },
+    {
+      "path": "mlx_lm/models/mimo_v2_flash.py",
+      "size": 12971
+    },
+    {
+      "path": "mlx_lm/models/minicpm.py",
+      "size": 6363
+    },
+    {
+      "path": "mlx_lm/models/minicpm3.py",
+      "size": 8166
+    },
+    {
+      "path": "mlx_lm/models/minimax.py",
+      "size": 13046
+    },
+    {
+      "path": "mlx_lm/models/ministral3.py",
+      "size": 11340
+    },
+    {
+      "path": "mlx_lm/models/mistral3.py",
+      "size": 2575
+    },
+    {
+      "path": "mlx_lm/models/mixtral.py",
+      "size": 7589
+    },
+    {
+      "path": "mlx_lm/models/mla.py",
+      "size": 8938
+    },
+    {
+      "path": "mlx_lm/models/muse_glimmer.py",
+      "size": 10734
+    },
+    {
+      "path": "mlx_lm/models/nanochat.py",
+      "size": 6732
+    },
+    {
+      "path": "mlx_lm/models/nemotron-nas.py",
+      "size": 14128
+    },
+    {
+      "path": "mlx_lm/models/nemotron.py",
+      "size": 7042
+    },
+    {
+      "path": "mlx_lm/models/nemotron_h.py",
+      "size": 28090
+    },
+    {
+      "path": "mlx_lm/models/olmo.py",
+      "size": 4865
+    },
+    {
+      "path": "mlx_lm/models/olmo2.py",
+      "size": 6644
+    },
+    {
+      "path": "mlx_lm/models/olmo3.py",
+      "size": 7851
+    },
+    {
+      "path": "mlx_lm/models/olmoe.py",
+      "size": 7517
+    },
+    {
+      "path": "mlx_lm/models/openelm.py",
+      "size": 6797
+    },
+    {
+      "path": "mlx_lm/models/phi.py",
+      "size": 5565
+    },
+    {
+      "path": "mlx_lm/models/phi3.py",
+      "size": 7285
+    },
+    {
+      "path": "mlx_lm/models/phi3small.py",
+      "size": 10186
+    },
+    {
+      "path": "mlx_lm/models/phimoe.py",
+      "size": 7176
+    },
+    {
+      "path": "mlx_lm/models/phixtral.py",
+      "size": 6127
+    },
+    {
+      "path": "mlx_lm/models/pipeline.py",
+      "size": 1979
+    },
+    {
+      "path": "mlx_lm/models/pixtral.py",
+      "size": 1345
+    },
+    {
+      "path": "mlx_lm/models/plamo.py",
+      "size": 6536
+    },
+    {
+      "path": "mlx_lm/models/plamo2.py",
+      "size": 14989
+    },
+    {
+      "path": "mlx_lm/models/precise_ops.py",
+      "size": 3751
+    },
+    {
+      "path": "mlx_lm/models/qwen.py",
+      "size": 4732
+    },
+    {
+      "path": "mlx_lm/models/qwen2.py",
+      "size": 7450
+    },
+    {
+      "path": "mlx_lm/models/qwen2_moe.py",
+      "size": 7968
+    },
+    {
+      "path": "mlx_lm/models/qwen2_vl.py",
+      "size": 1561
+    },
+    {
+      "path": "mlx_lm/models/qwen3.py",
+      "size": 8346
+    },
+    {
+      "path": "mlx_lm/models/qwen3_5.py",
+      "size": 34975
+    },
+    {
+      "path": "mlx_lm/models/qwen3_5_moe.py",
+      "size": 2858
+    },
+    {
+      "path": "mlx_lm/models/qwen3_moe.py",
+      "size": 9008
+    },
+    {
+      "path": "mlx_lm/models/qwen3_next.py",
+      "size": 60351
+    },
+    {
+      "path": "mlx_lm/models/qwen3_vl.py",
+      "size": 1525
+    },
+    {
+      "path": "mlx_lm/models/qwen3_vl_moe.py",
+      "size": 2276
+    },
+    {
+      "path": "mlx_lm/models/qwen4_exp.py",
+      "size": 280538
+    },
+    {
+      "path": "mlx_lm/models/qwen4_fused_gdn.py",
+      "size": 34363
+    },
+    {
+      "path": "mlx_lm/models/qwen4_fused_gdn_verify.py",
+      "size": 39543
+    },
+    {
+      "path": "mlx_lm/models/qwen4_fused_moe.py",
+      "size": 18862
+    },
+    {
+      "path": "mlx_lm/models/qwen4_gdn_outproj.py",
+      "size": 5567
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel.py",
+      "size": 56229
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_body.py",
+      "size": 105830
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_config.py",
+      "size": 20501
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_contract.py",
+      "size": 8415
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_device.py",
+      "size": 15080
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_pack.py",
+      "size": 34031
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_runtime.py",
+      "size": 63575
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_schedule.py",
+      "size": 42716
+    },
+    {
+      "path": "mlx_lm/models/qwen4_megakernel_tune.py",
+      "size": 31326
+    },
+    {
+      "path": "mlx_lm/models/qwen4_moe_router.py",
+      "size": 5138
+    },
+    {
+      "path": "mlx_lm/models/qwen4_ple_nvme.py",
+      "size": 45708
+    },
+    {
+      "path": "mlx_lm/models/qwen4_qsa_indexed.py",
+      "size": 112841
+    },
+    {
+      "path": "mlx_lm/models/qwen4_qsa_indexed_merge.py",
+      "size": 14867
+    },
+    {
+      "path": "mlx_lm/models/qwen4_qsa_m1.py",
+      "size": 5296
+    },
+    {
+      "path": "mlx_lm/models/qwen4_qsa_nax.py",
+      "size": 18357
+    },
+    {
+      "path": "mlx_lm/models/qwen4_qsa_stage1.py",
+      "size": 22022
+    },
+    {
+      "path": "mlx_lm/models/qwen4_s7_expert_union.py",
+      "size": 24130
+    },
+    {
+      "path": "mlx_lm/models/qwen4_verify_tree.py",
+      "size": 14990
+    },
+    {
+      "path": "mlx_lm/models/recurrent_gemma.py",
+      "size": 13066
+    },
+    {
+      "path": "mlx_lm/models/rope_utils.py",
+      "size": 12211
+    },
+    {
+      "path": "mlx_lm/models/rwkv7.py",
+      "size": 14080
+    },
+    {
+      "path": "mlx_lm/models/sarvam_mla.py",
+      "size": 2979
+    },
+    {
+      "path": "mlx_lm/models/seed_oss.py",
+      "size": 5791
+    },
+    {
+      "path": "mlx_lm/models/smollm3.py",
+      "size": 2134
+    },
+    {
+      "path": "mlx_lm/models/solar_open.py",
+      "size": 970
+    },
+    {
+      "path": "mlx_lm/models/ssm.py",
+      "size": 24950
+    },
+    {
+      "path": "mlx_lm/models/stablelm.py",
+      "size": 6799
+    },
+    {
+      "path": "mlx_lm/models/starcoder2.py",
+      "size": 5129
+    },
+    {
+      "path": "mlx_lm/models/step3p5.py",
+      "size": 17353
+    },
+    {
+      "path": "mlx_lm/models/switch_layers.py",
+      "size": 11525
+    },
+    {
+      "path": "mlx_lm/models/telechat3.py",
+      "size": 6416
+    },
+    {
+      "path": "mlx_lm/models/youtu_llm.py",
+      "size": 7980
+    },
+    {
+      "path": "mlx_lm/os_memory.py",
+      "size": 3616
+    },
+    {
+      "path": "mlx_lm/perplexity.py",
+      "size": 5629
+    },
+    {
+      "path": "mlx_lm/pflash.py",
+      "size": 6662
+    },
+    {
+      "path": "mlx_lm/prompt_lookup.py",
+      "size": 35439
+    },
+    {
+      "path": "mlx_lm/proof_battery.py",
+      "size": 28022
+    },
+    {
+      "path": "mlx_lm/py.typed",
+      "size": 1
+    },
+    {
+      "path": "mlx_lm/qsa_segment_bounds.py",
+      "size": 10361
+    },
+    {
+      "path": "mlx_lm/qsa_shared_suffix.py",
+      "size": 20944
+    },
+    {
+      "path": "mlx_lm/qsa_topology_receipt.py",
+      "size": 16301
+    },
+    {
+      "path": "mlx_lm/quant/awq.py",
+      "size": 18041
+    },
+    {
+      "path": "mlx_lm/quant/dwq.py",
+      "size": 12921
+    },
+    {
+      "path": "mlx_lm/quant/dynamic_quant.py",
+      "size": 8116
+    },
+    {
+      "path": "mlx_lm/quant/gptq.py",
+      "size": 6832
+    },
+    {
+      "path": "mlx_lm/quant/utils.py",
+      "size": 998
+    },
+    {
+      "path": "mlx_lm/round_levers.py",
+      "size": 4174
+    },
+    {
+      "path": "mlx_lm/sample_utils.py",
+      "size": 28441
+    },
+    {
+      "path": "mlx_lm/segmented_batch_cache.py",
+      "size": 40678
+    },
+    {
+      "path": "mlx_lm/segmented_cache_contract.py",
+      "size": 10174
+    },
+    {
+      "path": "mlx_lm/segmented_physical_promotion.py",
+      "size": 34989
+    },
+    {
+      "path": "mlx_lm/segmented_self_mtp.py",
+      "size": 33450
+    },
+    {
+      "path": "mlx_lm/server.py",
+      "size": 299642
+    },
+    {
+      "path": "mlx_lm/share.py",
+      "size": 8830
+    },
+    {
+      "path": "mlx_lm/spec_policy.py",
+      "size": 10672
+    },
+    {
+      "path": "mlx_lm/speculation_router.py",
+      "size": 11856
+    },
+    {
+      "path": "mlx_lm/speculative_prefill.py",
+      "size": 20234
+    },
+    {
+      "path": "mlx_lm/speculative_prototypes.py",
+      "size": 7786
+    },
+    {
+      "path": "mlx_lm/spomin_coordinator.py",
+      "size": 17203
+    },
+    {
+      "path": "mlx_lm/spomin_layer.py",
+      "size": 15646
+    },
+    {
+      "path": "mlx_lm/spomin_live_surgery.py",
+      "size": 8403
+    },
+    {
+      "path": "mlx_lm/spomin_pressure.py",
+      "size": 8118
+    },
+    {
+      "path": "mlx_lm/spomin_qwen4_surgery.py",
+      "size": 8454
+    },
+    {
+      "path": "mlx_lm/steer.py",
+      "size": 17211
+    },
+    {
+      "path": "mlx_lm/tokenizer_utils.py",
+      "size": 21730
+    },
+    {
+      "path": "mlx_lm/tool_parsers/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "mlx_lm/tool_parsers/_schema.py",
+      "size": 2313
+    },
+    {
+      "path": "mlx_lm/tool_parsers/cohere.py",
+      "size": 4542
+    },
+    {
+      "path": "mlx_lm/tool_parsers/function_gemma.py",
+      "size": 2144
+    },
+    {
+      "path": "mlx_lm/tool_parsers/gemma4.py",
+      "size": 2166
+    },
+    {
+      "path": "mlx_lm/tool_parsers/glm47.py",
+      "size": 6975
+    },
+    {
+      "path": "mlx_lm/tool_parsers/hy_v3.py",
+      "size": 2880
+    },
+    {
+      "path": "mlx_lm/tool_parsers/hy_v3_opensource.py",
+      "size": 408
+    },
+    {
+      "path": "mlx_lm/tool_parsers/json_tools.py",
+      "size": 186
+    },
+    {
+      "path": "mlx_lm/tool_parsers/kimi_k2.py",
+      "size": 1830
+    },
+    {
+      "path": "mlx_lm/tool_parsers/laguna.py",
+      "size": 2219
+    },
+    {
+      "path": "mlx_lm/tool_parsers/longcat.py",
+      "size": 1744
+    },
+    {
+      "path": "mlx_lm/tool_parsers/minimax_m2.py",
+      "size": 6376
+    },
+    {
+      "path": "mlx_lm/tool_parsers/mistral.py",
+      "size": 1047
+    },
+    {
+      "path": "mlx_lm/tool_parsers/pythonic.py",
+      "size": 3378
+    },
+    {
+      "path": "mlx_lm/tool_parsers/qwen3_coder.py",
+      "size": 6916
+    },
+    {
+      "path": "mlx_lm/tool_protocol.py",
+      "size": 8417
+    },
+    {
+      "path": "mlx_lm/tuner/__init__.py",
+      "size": 92
+    },
+    {
+      "path": "mlx_lm/tuner/callbacks.py",
+      "size": 3955
+    },
+    {
+      "path": "mlx_lm/tuner/datasets.py",
+      "size": 9620
+    },
+    {
+      "path": "mlx_lm/tuner/dora.py",
+      "size": 6807
+    },
+    {
+      "path": "mlx_lm/tuner/lora.py",
+      "size": 8402
+    },
+    {
+      "path": "mlx_lm/tuner/losses.py",
+      "size": 26598
+    },
+    {
+      "path": "mlx_lm/tuner/trainer.py",
+      "size": 12537
+    },
+    {
+      "path": "mlx_lm/tuner/utils.py",
+      "size": 7069
+    },
+    {
+      "path": "mlx_lm/ubc_evict.py",
+      "size": 8631
+    },
+    {
+      "path": "mlx_lm/upload.py",
+      "size": 526
+    },
+    {
+      "path": "mlx_lm/utils.py",
+      "size": 45604
+    },
+    {
+      "path": "mlx_lm/verification_routing.py",
+      "size": 3232
+    },
+    {
+      "path": "mlx_lm/verify_cost_policy.py",
+      "size": 17301
+    },
+    {
+      "path": "mlx_lm/verify_sync.py",
+      "size": 2777
+    },
+    {
+      "path": "results/adaptive-prefill-apc-smoke-20260914.json",
+      "size": 638
+    },
+    {
+      "path": "results/adaptive-prefill-baseline-c1.json",
+      "size": 93348
+    },
+    {
+      "path": "results/adaptive-prefill-calibration-20260914.md",
+      "size": 3556
+    },
+    {
+      "path": "results/adaptive-prefill-candidate-t1000-d2000-v2.json",
+      "size": 92343
+    },
+    {
+      "path": "results/adaptive-prefill-candidate-t1500-d2000.json",
+      "size": 93349
+    },
+    {
+      "path": "results/adaptive-prefill-self-mtp-apc-only-live-gate-v6-20260914.json",
+      "size": 33668
+    },
+    {
+      "path": "results/adaptive-prefill-self-mtp-apc-residual-gate-20260914.json",
+      "size": 19356
+    },
+    {
+      "path": "results/adaptive-prefill-self-mtp-baseline-20260914.json",
+      "size": 212458
+    },
+    {
+      "path": "results/adaptive-prefill-self-mtp-candidate-20260914.json",
+      "size": 215606
+    },
+    {
+      "path": "results/adaptive-prefill-self-mtp-candidate-d10000-20260914.json",
+      "size": 215376
+    },
+    {
+      "path": "results/adaptive-prefill-self-mtp-candidate-measured-deadline-20260914.json",
+      "size": 214905
+    },
+    {
+      "path": "results/adaptive-prefill-t1000-d2000-v2-gate.json",
+      "size": 1730
+    },
+    {
+      "path": "results/adaptive-prefill-t1500-d2000-gate.json",
+      "size": 1723
+    },
+    {
+      "path": "results/cadence-calibration-c1.json",
+      "size": 92468
+    },
+    {
+      "path": "results/cadence-calibration-c2-gate.json",
+      "size": 1182
+    },
+    {
+      "path": "results/cadence-calibration-c2.json",
+      "size": 91663
+    },
+    {
+      "path": "results/cadence-calibration-c4-gate.json",
+      "size": 1180
+    },
+    {
+      "path": "results/cadence-calibration-c4.json",
+      "size": 92287
+    },
+    {
+      "path": "results/cadence-calibration-c8-gate.json",
+      "size": 1181
+    },
+    {
+      "path": "results/cadence-calibration-c8.json",
+      "size": 91773
+    },
+    {
+      "path": "results/cadence-schedule-calibration-seed427.json",
+      "size": 411305
+    },
+    {
+      "path": "results/decode-priority-cadence-calibration-20260914.md",
+      "size": 3480
+    },
+    {
+      "path": "results/mtp-phase-variant-gpu-component-20260916.json",
+      "size": 1324
+    },
+    {
+      "path": "results/qsa-mtp-amendment-gpu-screen-20260916.json",
+      "size": 3946
+    },
+    {
+      "path": "results/qsa-mtp-amendment-gpu-thermal-bracket-16k-20260916.json",
+      "size": 10629
+    },
+    {
+      "path": "results/qsa-mtp-amendment-gpu-thermal-bracket-8k-k4-20260916.json",
+      "size": 10199
+    },
+    {
+      "path": "results/qwen4-cache-segmentation-calibration-20260910.json",
+      "size": 20218
+    },
+    {
+      "path": "results/qwen4-cache-segmentation-trace-20260910.json",
+      "size": 401555
+    },
+    {
+      "path": "results/qwen4-gdn-replay-20260917/README.md",
+      "size": 6896
+    },
+    {
+      "path": "results/qwen4-gdn-replay-20260917/kernel-microbench.json",
+      "size": 19367
+    },
+    {
+      "path": "results/qwen4-gdn-replay-20260917/model-bound-r12.json",
+      "size": 576215
+    },
+    {
+      "path": "results/qwen4-gdn-replay-20260917/post-promotion-smoke.json",
+      "size": 54718
+    },
+    {
+      "path": "results/qwen4-gdn-replay-20260917/quick-ab-r6.json",
+      "size": 291503
+    },
+    {
+      "path": "results/qwen4-gdn-replay-20260917/selection.json",
+      "size": 1410
+    },
+    {
+      "path": "results/qwen4-route-persistence-heldout-20260911.json",
+      "size": 9838
+    },
+    {
+      "path": "results/qwen4-s7-expert-union-u49-diagnostic-20260911.json",
+      "size": 2376
+    },
+    {
+      "path": "results/speculative-prototypes-cpu-20260916.json",
+      "size": 3714
+    },
+    {
+      "path": "scripts/attest_qwen4_transactional_state.py",
+      "size": 37853
+    },
+    {
+      "path": "scripts/build_qwen4_ple_hot_rows.py",
+      "size": 7967
+    },
+    {
+      "path": "scripts/build_qwen4_ple_sidecar.py",
+      "size": 13033
+    },
+    {
+      "path": "scripts/qualify_speculative_prototypes.py",
+      "size": 5847
+    },
+    {
+      "path": "scripts/serve_agnes_6bit.sh",
+      "size": 3308
+    },
+    {
+      "path": "setup.py",
+      "size": 2428
+    },
+    {
+      "path": "tests/agnes_reference_parity.py",
+      "size": 4237
+    },
+    {
+      "path": "tests/fixtures/qwen4_qsa_indexed_pass1_legacy.metal",
+      "size": 4538
+    },
+    {
+      "path": "tests/fixtures/qwen4_qsa_indexed_real_bf16_257.safetensors",
+      "size": 1059266
+    },
+    {
+      "path": "tests/fixtures/qwen4_qsa_indexed_real_bf16_m3.json",
+      "size": 702
+    },
+    {
+      "path": "tests/fixtures/qwen4_qsa_indexed_real_bf16_m3.safetensors",
+      "size": 1081521
+    },
+    {
+      "path": "tests/model_parallel_tests.py",
+      "size": 3963
+    },
+    {
+      "path": "tests/test_absolute_work.py",
+      "size": 7479
+    },
+    {
+      "path": "tests/test_adaptive_mtp_depth.py",
+      "size": 29176
+    },
+    {
+      "path": "tests/test_adaptive_pld_persistent_mtp.py",
+      "size": 17935
+    },
+    {
+      "path": "tests/test_adaptive_prefill_gate.py",
+      "size": 1818
+    },
+    {
+      "path": "tests/test_adaptive_work_coordinator.py",
+      "size": 13859
+    },
+    {
+      "path": "tests/test_agnes.py",
+      "size": 27968
+    },
+    {
+      "path": "tests/test_agnes_fused_gdn_metal.py",
+      "size": 6299
+    },
+    {
+      "path": "tests/test_agnes_fusion_load.py",
+      "size": 3904
+    },
+    {
+      "path": "tests/test_ane_verifier.py",
+      "size": 7240
+    },
+    {
+      "path": "tests/test_ane_verifier_multisession.py",
+      "size": 1477
+    },
+    {
+      "path": "tests/test_apc.py",
+      "size": 7258
+    },
+    {
+      "path": "tests/test_apc_backends.py",
+      "size": 6227
+    },
+    {
+      "path": "tests/test_apc_v2.py",
+      "size": 11229
+    },
+    {
+      "path": "tests/test_arrays_cache_host_mirror.py",
+      "size": 7536
+    },
+    {
+      "path": "tests/test_asymmetric_kv_cache.py",
+      "size": 10072
+    },
+    {
+      "path": "tests/test_attest_qwen4_transactional_state.py",
+      "size": 1464
+    },
+    {
+      "path": "tests/test_bailing_hybrid.py",
+      "size": 32391
+    },
+    {
+      "path": "tests/test_batch_admission.py",
+      "size": 10081
+    },
+    {
+      "path": "tests/test_batch_cache_contracts.py",
+      "size": 10100
+    },
+    {
+      "path": "tests/test_batch_cache_extract.py",
+      "size": 4549
+    },
+    {
+      "path": "tests/test_batch_processor_invariant.py",
+      "size": 12421
+    },
+    {
+      "path": "tests/test_batch_runtime.py",
+      "size": 6193
+    },
+    {
+      "path": "tests/test_batched_self_mtp_core.py",
+      "size": 28516
+    },
+    {
+      "path": "tests/test_batched_self_mtp_generate.py",
+      "size": 30847
+    },
+    {
+      "path": "tests/test_batched_self_mtp_hardening.py",
+      "size": 7729
+    },
+    {
+      "path": "tests/test_batched_self_mtp_join_gate.py",
+      "size": 17829
+    },
+    {
+      "path": "tests/test_batched_self_mtp_qwen3_5.py",
+      "size": 19178
+    },
+    {
+      "path": "tests/test_batched_self_mtp_qwen4.py",
+      "size": 14760
+    },
+    {
+      "path": "tests/test_batched_self_mtp_server.py",
+      "size": 34999
+    },
+    {
+      "path": "tests/test_bucketed_attention.py",
+      "size": 7453
+    },
+    {
+      "path": "tests/test_cache_branch_transaction.py",
+      "size": 21640
+    },
+    {
+      "path": "tests/test_cache_capsule.py",
+      "size": 30886
+    },
+    {
+      "path": "tests/test_cache_planes.py",
+      "size": 10143
+    },
+    {
+      "path": "tests/test_cache_policy.py",
+      "size": 11815
+    },
+    {
+      "path": "tests/test_cache_scheduler.py",
+      "size": 7348
+    },
+    {
+      "path": "tests/test_cache_segmentation.py",
+      "size": 10160
+    },
+    {
+      "path": "tests/test_chat.py",
+      "size": 6325
+    },
+    {
+      "path": "tests/test_compiled_decode.py",
+      "size": 38723
+    },
+    {
+      "path": "tests/test_compiled_decode_source.py",
+      "size": 41543
+    },
+    {
+      "path": "tests/test_confidence_draft_calibration.py",
+      "size": 4050
+    },
+    {
+      "path": "tests/test_context_compaction.py",
+      "size": 3482
+    },
+    {
+      "path": "tests/test_cow_cache.py",
+      "size": 31111
+    },
+    {
+      "path": "tests/test_datsets.py",
+      "size": 5822
+    },
+    {
+      "path": "tests/test_decode_priority_cadence_gate.py",
+      "size": 2138
+    },
+    {
+      "path": "tests/test_dream.py",
+      "size": 3847
+    },
+    {
+      "path": "tests/test_e5rt_cache_capsule.py",
+      "size": 9277
+    },
+    {
+      "path": "tests/test_evaluate.py",
+      "size": 2321
+    },
+    {
+      "path": "tests/test_finetune.py",
+      "size": 17740
+    },
+    {
+      "path": "tests/test_fn_mk_apc_publish.py",
+      "size": 17662
+    },
+    {
+      "path": "tests/test_gated_delta.py",
+      "size": 19762
+    },
+    {
+      "path": "tests/test_gdn_prefix_fanout.py",
+      "size": 31146
+    },
+    {
+      "path": "tests/test_gdn_qk_l2norm.py",
+      "size": 7711
+    },
+    {
+      "path": "tests/test_gdn_rollback_spans.py",
+      "size": 7307
+    },
+    {
+      "path": "tests/test_generate.py",
+      "size": 95693
+    },
+    {
+      "path": "tests/test_generate_step.py",
+      "size": 1566
+    },
+    {
+      "path": "tests/test_gguf.py",
+      "size": 1974
+    },
+    {
+      "path": "tests/test_gptq.py",
+      "size": 3346
+    },
+    {
+      "path": "tests/test_heterogeneous_execution.py",
+      "size": 11556
+    },
+    {
+      "path": "tests/test_hybrid_proposer.py",
+      "size": 13393
+    },
+    {
+      "path": "tests/test_hybrid_proposer_summary.py",
+      "size": 4263
+    },
+    {
+      "path": "tests/test_hybrid_speculative_span.py",
+      "size": 4348
+    },
+    {
+      "path": "tests/test_int8_prefill.py",
+      "size": 8383
+    },
+    {
+      "path": "tests/test_k2_horizon_mova.py",
+      "size": 16457
+    },
+    {
+      "path": "tests/test_known_tail_ple_prefetch.py",
+      "size": 2120
+    },
+    {
+      "path": "tests/test_kv_normalization.py",
+      "size": 8788
+    },
+    {
+      "path": "tests/test_lane_rng.py",
+      "size": 16226
+    },
+    {
+      "path": "tests/test_lane_rng_wiring.py",
+      "size": 14396
+    },
+    {
+      "path": "tests/test_llada_diffusion_fixes.py",
+      "size": 5223
+    },
+    {
+      "path": "tests/test_losses.py",
+      "size": 1978
+    },
+    {
+      "path": "tests/test_mla_absorbed_query_width.py",
+      "size": 14485
+    },
+    {
+      "path": "tests/test_mla_quantized_kv.py",
+      "size": 15518
+    },
+    {
+      "path": "tests/test_models.py",
+      "size": 134973
+    },
+    {
+      "path": "tests/test_moe_sanitize_presence.py",
+      "size": 3792
+    },
+    {
+      "path": "tests/test_mtp_accept_rules.py",
+      "size": 13736
+    },
+    {
+      "path": "tests/test_mtp_cycle_exit.py",
+      "size": 5543
+    },
+    {
+      "path": "tests/test_mtp_transformed_verifier.py",
+      "size": 29160
+    },
+    {
+      "path": "tests/test_nemotron_h_mtp.py",
+      "size": 6206
+    },
+    {
+      "path": "tests/test_os_memory.py",
+      "size": 1125
+    },
+    {
+      "path": "tests/test_parallel_sampling.py",
+      "size": 49354
+    },
+    {
+      "path": "tests/test_prompt_cache.py",
+      "size": 57952
+    },
+    {
+      "path": "tests/test_prompt_lookup.py",
+      "size": 52844
+    },
+    {
+      "path": "tests/test_proof_battery.py",
+      "size": 15178
+    },
+    {
+      "path": "tests/test_qsa_cache_join_metadata.py",
+      "size": 15711
+    },
+    {
+      "path": "tests/test_qsa_segment_bounds.py",
+      "size": 9103
+    },
+    {
+      "path": "tests/test_qsa_shared_suffix.py",
+      "size": 17354
+    },
+    {
+      "path": "tests/test_qsa_topology_receipt.py",
+      "size": 9761
+    },
+    {
+      "path": "tests/test_quantized_batched_self_mtp.py",
+      "size": 13750
+    },
+    {
+      "path": "tests/test_quantized_cache_strided_views.py",
+      "size": 2682
+    },
+    {
+      "path": "tests/test_qwen3_5_gdn_fusion.py",
+      "size": 4651
+    },
+    {
+      "path": "tests/test_qwen3_5_moe_load_mixed_precision.py",
+      "size": 4411
+    },
+    {
+      "path": "tests/test_qwen3_5_moe_sanitize_fused_gate_up.py",
+      "size": 4391
+    },
+    {
+      "path": "tests/test_qwen3_5_mtp.py",
+      "size": 3696
+    },
+    {
+      "path": "tests/test_qwen3_next_concat_tables_guard.py",
+      "size": 3533
+    },
+    {
+      "path": "tests/test_qwen4_compiled_glue.py",
+      "size": 9466
+    },
+    {
+      "path": "tests/test_qwen4_exp.py",
+      "size": 177267
+    },
+    {
+      "path": "tests/test_qwen4_exp_levers.py",
+      "size": 82029
+    },
+    {
+      "path": "tests/test_qwen4_fused_gdn_contract.py",
+      "size": 24505
+    },
+    {
+      "path": "tests/test_qwen4_fused_gdn_metal.py",
+      "size": 6589
+    },
+    {
+      "path": "tests/test_qwen4_fused_gdn_verify_bench.py",
+      "size": 5378
+    },
+    {
+      "path": "tests/test_qwen4_fused_gdn_verify_contract.py",
+      "size": 31438
+    },
+    {
+      "path": "tests/test_qwen4_fused_gdn_verify_metal.py",
+      "size": 17775
+    },
+    {
+      "path": "tests/test_qwen4_fused_gdn_verify_reduction_width_guard.py",
+      "size": 13388
+    },
+    {
+      "path": "tests/test_qwen4_fused_moe_contract.py",
+      "size": 13332
+    },
+    {
+      "path": "tests/test_qwen4_fused_moe_metal.py",
+      "size": 5067
+    },
+    {
+      "path": "tests/test_qwen4_gdn_replay_cpu.py",
+      "size": 4468
+    },
+    {
+      "path": "tests/test_qwen4_live_tip_branch_gate.py",
+      "size": 3110
+    },
+    {
+      "path": "tests/test_qwen4_live_tip_composition_gate.py",
+      "size": 7277
+    },
+    {
+      "path": "tests/test_qwen4_megakernel.py",
+      "size": 29689
+    },
+    {
+      "path": "tests/test_qwen4_megakernel_pack.py",
+      "size": 11714
+    },
+    {
+      "path": "tests/test_qwen4_megakernel_portability.py",
+      "size": 28196
+    },
+    {
+      "path": "tests/test_qwen4_megakernel_runtime_source.py",
+      "size": 22302
+    },
+    {
+      "path": "tests/test_qwen4_megakernel_schedule.py",
+      "size": 9408
+    },
+    {
+      "path": "tests/test_qwen4_moe_levers.py",
+      "size": 23619
+    },
+    {
+      "path": "tests/test_qwen4_mtp_dynamic_join_gate.py",
+      "size": 7953
+    },
+    {
+      "path": "tests/test_qwen4_mtp_policy_gate.py",
+      "size": 2857
+    },
+    {
+      "path": "tests/test_qwen4_mtp_static_cohort_immediate_multiturn_gate.py",
+      "size": 1582
+    },
+    {
+      "path": "tests/test_qwen4_openai_cached20k_b4_realistic_ab.py",
+      "size": 3319
+    },
+    {
+      "path": "tests/test_qwen4_openai_static_cohort_multiturn_gate.py",
+      "size": 3967
+    },
+    {
+      "path": "tests/test_qwen4_ple_fork_cpu.py",
+      "size": 10479
+    },
+    {
+      "path": "tests/test_qwen4_ple_nvme.py",
+      "size": 59876
+    },
+    {
+      "path": "tests/test_qwen4_qsa_indexed.py",
+      "size": 77723
+    },
+    {
+      "path": "tests/test_qwen4_qsa_indexed_merge.py",
+      "size": 6242
+    },
+    {
+      "path": "tests/test_qwen4_qsa_nax_oracle.py",
+      "size": 4310
+    },
+    {
+      "path": "tests/test_qwen4_qsa_stage1.py",
+      "size": 4628
+    },
+    {
+      "path": "tests/test_qwen4_qsa_stride.py",
+      "size": 5497
+    },
+    {
+      "path": "tests/test_qwen4_s7_expert_union.py",
+      "size": 9026
+    },
+    {
+      "path": "tests/test_qwen4_verify_tree.py",
+      "size": 11530
+    },
+    {
+      "path": "tests/test_ragged_trim.py",
+      "size": 37051
+    },
+    {
+      "path": "tests/test_rotating_rollback.py",
+      "size": 4831
+    },
+    {
+      "path": "tests/test_round_levers.py",
+      "size": 15921
+    },
+    {
+      "path": "tests/test_runaway_rearm.py",
+      "size": 7648
+    },
+    {
+      "path": "tests/test_safe_reduce.py",
+      "size": 1722
+    },
+    {
+      "path": "tests/test_sample_utils.py",
+      "size": 13314
+    },
+    {
+      "path": "tests/test_segmented_cache_contract.py",
+      "size": 8408
+    },
+    {
+      "path": "tests/test_segmented_physical_promotion.py",
+      "size": 13817
+    },
+    {
+      "path": "tests/test_segmented_self_mtp.py",
+      "size": 73152
+    },
+    {
+      "path": "tests/test_server.py",
+      "size": 76865
+    },
+    {
+      "path": "tests/test_server_health.py",
+      "size": 10350
+    },
+    {
+      "path": "tests/test_server_prompt_host_cache.py",
+      "size": 12058
+    },
+    {
+      "path": "tests/test_server_self_mtp_receipts.py",
+      "size": 5047
+    },
+    {
+      "path": "tests/test_soft_reload.py",
+      "size": 29843
+    },
+    {
+      "path": "tests/test_spec_policy.py",
+      "size": 9269
+    },
+    {
+      "path": "tests/test_speculation_router.py",
+      "size": 1133
+    },
+    {
+      "path": "tests/test_speculative_prototypes.py",
+      "size": 5235
+    },
+    {
+      "path": "tests/test_speculative_rollback.py",
+      "size": 22095
+    },
+    {
+      "path": "tests/test_spomin_coordinator.py",
+      "size": 9696
+    },
+    {
+      "path": "tests/test_spomin_layer.py",
+      "size": 10456
+    },
+    {
+      "path": "tests/test_spomin_live_surgery.py",
+      "size": 4275
+    },
+    {
+      "path": "tests/test_spomin_pressure.py",
+      "size": 3356
+    },
+    {
+      "path": "tests/test_spomin_qwen4_surgery.py",
+      "size": 6616
+    },
+    {
+      "path": "tests/test_ssd_prefill.py",
+      "size": 5254
+    },
+    {
+      "path": "tests/test_ssm_seq_kernel.py",
+      "size": 2057
+    },
+    {
+      "path": "tests/test_state_checkpoint_trim.py",
+      "size": 25157
+    },
+    {
+      "path": "tests/test_steer.py",
+      "size": 5163
+    },
+    {
+      "path": "tests/test_switch_layers.py",
+      "size": 5154
+    },
+    {
+      "path": "tests/test_tokenizers.py",
+      "size": 4944
+    },
+    {
+      "path": "tests/test_tool_parsers.py",
+      "size": 4159
+    },
+    {
+      "path": "tests/test_tool_parsers_cohere.py",
+      "size": 8298
+    },
+    {
+      "path": "tests/test_tool_parsers_hygiene.py",
+      "size": 7257
+    },
+    {
+      "path": "tests/test_tool_parsing.py",
+      "size": 21739
+    },
+    {
+      "path": "tests/test_tool_protocol.py",
+      "size": 14633
+    },
+    {
+      "path": "tests/test_tuner_trainer.py",
+      "size": 2145
+    },
+    {
+      "path": "tests/test_tuner_utils.py",
+      "size": 6301
+    },
+    {
+      "path": "tests/test_utils.py",
+      "size": 13812
+    },
+    {
+      "path": "tests/test_verification_routing.py",
+      "size": 3074
+    },
+    {
+      "path": "tests/test_verify_cost_policy.py",
+      "size": 9358
+    },
+    {
+      "path": "tests/test_verify_state_oracle.py",
+      "size": 41554
+    },
+    {
+      "path": "tests/test_verify_sync_trace.py",
+      "size": 5553
+    },
+    {
+      "path": "validate_pr1456.sh",
+      "size": 4188
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-19T13:52:29Z",
+      "subject": "Add compact-tape rollback for Qwen4 fused GDN verify",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/a7ecfae3194538df8f02ec399a88ede302b75a46"
+    },
+    {
+      "date": "2026-09-16T19:00:58Z",
+      "subject": "Protect initial PLD trial boundaries",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/13eb83388750435bcc751d0b9e33857a38152544"
+    },
+    {
+      "date": "2026-09-16T18:19:49Z",
+      "subject": "Add adaptive acceptance controls for prompt lookup",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/f3bec370b9ddb1e2529915cdb5317c2bacaacfa4"
+    },
+    {
+      "date": "2026-09-16T17:51:40Z",
+      "subject": "Qualify and promote QSA MTP group amendment",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/8cc9071774a4db534368056fa38226bbf7e6ab02"
+    },
+    {
+      "date": "2026-09-16T16:56:34Z",
+      "subject": "Add acceptance-first indexed PLD oracle",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/f99d2bed6a83445c5bd0f1862ad343430c92cced"
+    },
+    {
+      "date": "2026-09-16T16:37:39Z",
+      "subject": "Prototype QSA amendment and phase-stable MTP variants",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/a85354bda7b8162c29c472ab192d2209d08eb40a"
+    },
+    {
+      "date": "2026-09-16T15:18:47Z",
+      "subject": "Add scheduler-capped adaptive PLD lookback",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/ede264310563710149a8949bdaa2890f28d3284c"
+    },
+    {
+      "date": "2026-09-16T13:55:13Z",
+      "subject": "Add deferred prompt lookup admission",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/f80df70899fc5fe09c5dfd34974efc1d58dfbcd9"
+    },
+    {
+      "date": "2026-09-16T02:21:54Z",
+      "subject": "Add bounded hot-segment prompt lookup",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/a4fa348214bc626608b4af2a8e486258bc58b20c"
+    },
+    {
+      "date": "2026-09-15T13:49:01Z",
+      "subject": "Guard parallel sampling with process footprint",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/1e2bc604f71d070bee970c3e7db8b60f7855599b"
+    },
+    {
+      "date": "2026-09-15T13:23:56Z",
+      "subject": "Gate QSA NAX kernels to validated M5 devices",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/e94cbb6ea6c1944d59cf4b8b1733d0b5e687b4f7"
+    },
+    {
+      "date": "2026-09-15T04:39:51Z",
+      "subject": "Route live KV surgery through quiescent path",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/81d9b5ddc014a40599da92ab082b041d16894590"
+    },
+    {
+      "date": "2026-09-15T04:34:19Z",
+      "subject": "Fix Qwen4 MTP checkpoint prefix loading",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/20070cd34e350381e44b032461d6e258d8d1b32a"
+    },
+    {
+      "date": "2026-09-15T04:24:18Z",
+      "subject": "Wire default live Spomin surgery and harden router",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/74e99cd0a52ddf0ab0d073cbdb2e95f7d0e03c34"
+    },
+    {
+      "date": "2026-09-15T02:04:49Z",
+      "subject": "Add topology-first adaptive work coordinator",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/39bf3eba487b2244a86bf060aacfada5f9da7dc6"
+    },
+    {
+      "date": "2026-09-15T01:23:35Z",
+      "subject": "Add adaptive Spomin pressure and Qwen4 KV surgery",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/b44bb7965cd3b048bcea74b6c1d7e382b441b896"
+    },
+    {
+      "date": "2026-09-14T23:48:14Z",
+      "subject": "Add standalone Spomin compaction controller",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/2b9fa8a92f1ecd9b873840a6a82b8dc6a715d14a"
+    },
+    {
+      "date": "2026-09-14T23:33:59Z",
+      "subject": "Add segmented transcript compaction plane",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/5c45150672e484595ad9be07cbf05e26bafe215f"
+    },
+    {
+      "date": "2026-09-14T23:23:02Z",
+      "subject": "Recover Qwen parameter names without '>' (#1881)",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/03cdb06e620a2f3408a0a9575d39df0cc8d11b16"
+    },
+    {
+      "date": "2026-09-14T23:22:09Z",
+      "subject": "Fix GPTQ error propagation indices (#1880)",
+      "url": "https://github.com/pierre427/mlx-lm-unified/commit/19e4e8d4c8b6df676eff94997dd4848aff77a15b"
+    }
+  ],
+  "readme": "## MLX LM \n\nMLX LM is a Python package for generating text and fine-tuning large language\nmodels on Apple silicon with MLX.\n\nSome key features include:\n\n* Integration with the Hugging Face Hub to easily use thousands of LLMs with a\n  single command. \n* Support for quantizing and uploading models to the Hugging Face Hub.\n* [Low-rank and full model\n  fine-tuning](https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/LORA.md)\n  with support for quantized models.\n* Distributed inference and fine-tuning with `mx.distributed`\n\nThe easiest way to get started is to install the `mlx-lm` package:\n\n**With `pip`**:\n\n```sh\npip install mlx-lm\n```\n\n**With `conda`**:\n\n```sh\nconda install -c conda-forge mlx-lm\n```\n\n### Quick Start\n\nTo generate text with an LLM use:\n\n```bash\nmlx_lm.generate --prompt \"How tall is Mt Everest?\"\n```\n\nTo chat with an LLM use:\n\n```bash\nmlx_lm.chat\n```\n\nThis will give you a chat REPL that you can use to interact with the LLM. The\nchat context is preserved during the lifetime of the REPL.\n\nCommands in `mlx-lm` typically take command line options which let you specify\nthe model, sampling parameters, and more. Use `-h` to see a list of available\noptions for a command, e.g.:\n\n```bash\nmlx_lm.generate -h\n```\n\nThe default model for generation and chat is\n`mlx-community/Llama-3.2-3B-Instruct-4bit`.  You can specify any MLX-compatible\nmodel with the `--model` flag. Thousands are available in the\n[MLX Community](https://huggingface.co/mlx-community) Hugging Face\norganization.\n\n### Python API\n\nYou can use `mlx-lm` as a module:\n\n```python\nfrom mlx_lm import load, generate\n\nmodel, tokenizer = load(\"mlx-community/Mistral-7B-Instruct-v0.3-4bit\")\n\nprompt = \"Write a story about Einstein\"\n\nmessages = [{\"role\": \"user\", \"content\": prompt}]\nprompt = tokenizer.apply_chat_template(\n    messages, add_generation_prompt=True,\n)\n\ntext = generate(model, tokenizer, prompt=prompt, verbose=True)\n```\n\nTo see a description of all the arguments you can do:\n\n```\n>>> help(generate)\n```\n\nCheck out the [generation\nexample](https://github.com/ml-explore/mlx-lm/tree/main/mlx_lm/examples/generate_response.py)\nto see how to use the API in more detail. Check out the [batch generation\nexample](https://github.com/ml-explore/mlx-lm/tree/main/mlx_lm/examples/batch_generate_response.py)\nto see how to efficiently generate continuations for a batch of prompts.\n\nThe `mlx-lm` package also comes with functionality to quantize and optionally\nupload models to the Hugging Face Hub.\n\nYou can convert models using the Python API:\n\n```python\nfrom mlx_lm import convert\n\nrepo = \"mistralai/Mistral-7B-Instruct-v0.3\"\nupload_repo = \"mlx-community/My-Mistral-7B-Instruct-v0.3-4bit\"\n\nconvert(repo, quantize=True, upload_repo=upload_repo)\n```\n\nThis will generate a 4-bit quantized Mistral 7B and upload it to the repo\n`mlx-community/My-Mistral-7B-Instruct-v0.3-4bit`. It will also save the\nconverted model in the path `mlx_model` by default.\n\nTo see a description of all the arguments you can do:\n\n```\n>>> help(convert)\n```\n\n#### Streaming\n\nFor streaming generation, use the `stream_generate` function. This yields\na generation response object.\n\nFor example,\n\n```python\nfrom mlx_lm import load, stream_generate\n\nrepo = \"mlx-community/Mistral-7B-Instruct-v0.3-4bit\"\nmodel, tokenizer = load(repo)\n\nprompt = \"Write a story about Einstein\"\n\nmessages = [{\"role\": \"user\", \"content\": prompt}]\nprompt = tokenizer.apply_chat_template(\n    messages, add_generation_prompt=True,\n)\n\nfor response in stream_generate(model, tokenizer, prompt, max_tokens=512):\n    print(response.text, end=\"\", flush=True)\nprint()\n```\n\n#### Sampling\n\nThe `generate` and `stream_generate` functions accept `sampler` and\n`logits_processors` keyword arguments. A sampler is any callable which accepts\na possibly batched logits array and returns an array of sampled tokens.  The\n`logits_processors` must be a list of callables which take the token history\nand current logits as input and return the processed logits. The logits\nprocessors are applied in order.\n\nSome standard sampling functions and logits processors are provided in\n`mlx_lm.sample_utils`.\n\n### Command Line\n\nYou can also use `mlx-lm` from the command line with:\n\n```\nmlx_lm.generate --model mistralai/Mistral-7B-Instruct-v0.3 --prompt \"hello\"\n```\n\nThis will download a Mistral 7B model from the Hugging Face Hub and generate\ntext using the given prompt.\n\nFor a full list of options run:\n\n```\nmlx_lm.generate --help\n```\n\nTo quantize a model from the command line run:\n\n```\nmlx_lm.convert --model mistralai/Mistral-7B-Instruct-v0.3 -q\n```\n\nFor more options run:\n\n```\nmlx_lm.convert --help\n```\n\nYou can upload new models to Hugging Face by specifying `--upload-repo` to\n`convert`. For example, to upload a quantized Mistral-7B model to the\n[MLX Hugging Face community](https://huggingface.co/mlx-community) you can do:\n\n```\nmlx_lm.convert \\\n    --model mistralai/Mistral-7B-Instruct-v0.3 \\\n    -q \\\n    --upload-repo mlx-community/my-4bit-mistral\n```\n\nModels can also be converted and quantized directly in the\n[mlx-my-repo](https://huggingface.co/spaces/mlx-community/mlx-my-repo) Hugging\nFace Space.\n\n### Long Prompts and Generations \n\n`mlx-lm` has some tools to scale efficiently to long prompts and generations:\n\n- A rotating fixed-size key-value cache.\n- Prompt caching\n- A configurable prefill step size\n\nTo use the rotating key-value cache pass the argument `--max-kv-size n` where\n`n` can be any integer. Smaller values like `512` will use very little RAM but\nresult in worse quality. Larger values like `4096` or higher will use more RAM\nbut have better quality.\n\nLong prompts are read in steps, and the step size sets how many prompt tokens\nare processed at once. Smaller steps use less peak memory while the prompt is\nread, at some cost to prompt processing speed. To change it pass\n`--prefill-step-size n`. The default is `2048`, and `mlx_lm.generate`,\n`mlx_lm.chat`, `mlx_lm.server` and `mlx_lm.benchmark` all accept it.\n\nCaching prompts can substantially speedup reusing the same long context with\ndifferent queries. To cache a prompt use `mlx_lm.cache_prompt`. For example:\n\n```bash\ncat prompt.txt | mlx_lm.cache_prompt \\\n  --model mistralai/Mistral-7B-Instruct-v0.3 \\\n  --prompt - \\\n  --prompt-cache-file mistral_prompt.safetensors\n``` \n\nThen use the cached prompt with `mlx_lm.generate`:\n\n```\nmlx_lm.generate \\\n    --prompt-cache-file mistral_prompt.safetensors \\\n    --prompt \"\\nSummarize the above text.\"\n```\n\nThe cached prompt is treated as a prefix to the supplied prompt. Also notice\nwhen using a cached prompt, the model to use is read from the cache and need\nnot be supplied explicitly.\n\nPrompt caching can also be used in the Python API in order to avoid\nrecomputing the prompt. This is useful in multi-turn dialogues or across\nrequests that use the same context. See the\n[example](https://github.com/ml-explore/mlx-lm/blob/main/mlx_lm/examples/chat.py)\nfor more usage details.\n\n### Supported Models\n\n`mlx-lm` supports thousands of LLMs available on the Hugging Face Hub. If the\nmodel you want to run is not supported, file an\n[issue](https://github.com/ml-explore/mlx-lm/issues/new) or better yet, submit\na pull request. Many supported models are available in various quantization\nformats in the [MLX Community](https://huggingface.co/mlx-community) Hugging\nFace organization.\n\nFor some models the tokenizer may require you to enable the `trust_remote_code`\noption. You can do this by passing `--trust-remote-code` in the command line.\nIf you don't specify the flag explicitly, you will be prompted to trust remote\ncode in the terminal when running the model. \n\nTokenizer options can also be set in the Python API. For example:\n\n```python\nmodel, tokenizer = load(\n    \"qwen/Qwen-7B\",\n    tokenizer_config={\"eos_token\": \"<|endoftext|>\", \"trust_remote_code\": True},\n)\n```\n\n### Large Models\n\n> [!NOTE]\n    This requires macOS 15.0 or higher to work.\n\nModels which are large relative to the total RAM available on the machine can\nbe slow. `mlx-lm` will attempt to make them faster by wiring the memory\noccupied by the model and cache. This requires macOS 15 or higher to\nwork.\n\nIf you see the following warning message:\n\n> [WARNING] Generating with a model that requires ...\n\nthen the model will likely be slow on the given machine. If the model fits in\nRAM then it can often be sped up by increasing the system wired memory limit.\nTo increase the limit, set the following `sysctl`:\n\n```bash\nsudo sysctl iogpu.wired_limit_mb=N\n```\n\nThe value `N` should be larger than the size of the model in megabytes but\nsmaller than the memory size of the machine.\n"
+}

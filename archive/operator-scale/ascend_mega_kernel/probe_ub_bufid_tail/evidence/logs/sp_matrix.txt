@@ -1,0 +1,18 @@
+# sp matrix（由 tools/summarize.sh 从逐变体日志重算）
+sp:mte2_drain_8                    rc==0 2/4 hang=0 SUMMARY mode=sp variant=mte2_drain_8 run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:mte2_drain_n16                  rc==0 6/8 hang=0 SUMMARY mode=sp variant=mte2_drain_n16 run=1 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:mte2_imm_8                      rc==0 7/8 hang=0 SUMMARY mode=sp variant=mte2_imm_8 run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:mte2_imm_n16                    rc==0 7/8 hang=0 SUMMARY mode=sp variant=mte2_imm_n16 run=1 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:mte2_neg_shift                  rc==0 0/3 hang=0 SUMMARY mode=sp variant=mte2_neg_shift run=1 N=8 aivs=2 mismatched=2 elems=4096 match=0 zero=0 histOther=4096 rc=1
+sp:mte2_pb_between_8               rc==0 8/8 hang=0 SUMMARY mode=sp variant=mte2_pb_between_8 run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:mte2_pb_between_n16             rc==0 8/8 hang=0 SUMMARY mode=sp variant=mte2_pb_between_n16 run=1 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:mte2_pb_end_8                   rc==0 3/3 hang=0 SUMMARY mode=sp variant=mte2_pb_end_8 run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:mte2_tail_imm                   rc==0 4/4 hang=0 SUMMARY mode=sp variant=mte2_tail_imm run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:mte2_tail_unlockB               rc==0 3/4 hang=0 SUMMARY mode=sp variant=mte2_tail_unlockB run=1 N=8 aivs=2 mismatched=1 elems=4096 match=3968 zero=0 histOther=0 rc=1
+sp:mte2_tail_unlockNB              rc==0 3/4 hang=0 SUMMARY mode=sp variant=mte2_tail_unlockNB run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:v_drain_8                       rc==0 8/8 hang=0 SUMMARY mode=sp variant=v_drain_8 run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:v_imm_8                         rc==0 8/8 hang=0 SUMMARY mode=sp variant=v_imm_8 run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:v_n16                           rc==0 8/8 hang=0 SUMMARY mode=sp variant=v_n16 run=1 N=16 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:v_neg_shift                     rc==0 0/3 hang=0 SUMMARY mode=sp variant=v_neg_shift run=1 N=8 aivs=2 mismatched=2 elems=4096 match=0 zero=0 histOther=4096 rc=1
+sp:v_pb_between_8                  rc==0 8/8 hang=0 SUMMARY mode=sp variant=v_pb_between_8 run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+sp:v_tail_imm                      rc==0 4/4 hang=0 SUMMARY mode=sp variant=v_tail_imm run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0

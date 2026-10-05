@@ -1,0 +1,35 @@
+# M58 · 负向对照（三组：脚本 --check 的变异对照 / 上游不变量断言的 6 条对照 / check_hc_ref 的三态退出码）
+# 复现：见各组标题下的命令（在 m15_layer_loop/ 下执行）
+
+==================================================================
+## 组 1：lift_hc_segment.py --check 的变异对照
+# 命令：
+#   cp m15_hc_layer.h /tmp/bak.h
+#   python3 - <<'EOF'   # 把一处 __VEC_SCOPE__ 内的向量调用注释掉（= 上游改成 memory-based 的等价形态）
+#   ...（把 'Mul(t, bor, w, maskAll);' 改写成注释）
+#   EOF
+#   python3 lift_hc_segment.py --check ; echo rc=$?    # 期望 rc=1（入库文件与规则不一致）
+#   cp /tmp/bak.h m15_hc_layer.h && python3 lift_hc_segment.py --check   # 期望 rc=0
+# 实测：rc=1（负向）+ rc=0（还原后正对照）
+
+==================================================================
+## 组 2：上游不变量断言（assert_upstream）的 6 条对照
+# 命令：python3 - <<'EOF'  # 直接对 m20 的 device 段做变异后调 assert_upstream()
+
+[neg] 0. 正对照（未改动的 device 段）                          → PASS(未咬)                                                               OK
+[neg] 1. VEC_SCOPE 外的向量计算                            → AssertionError(咬住了): 上游不变量断言失败：                                        OK
+[neg] 2. 出现 Sort32（需先登记例外声明）                         → AssertionError(咬住了): 上游不变量断言失败：                                        OK
+[neg] 3. helper 调用点在 VEC_SCOPE 外                     → AssertionError(咬住了): 上游不变量断言失败：                                        OK
+[neg] 4. 删掉「尚未隔离」披露                                  → AssertionError(咬住了): 上游不变量断言失败：                                        OK
+[neg] 5. device 段内容变更                                → AssertionError(咬住了): 上游不变量断言失败：                                        OK
+[neg] 6. 覆盖范围对照：改 host 段的 reference() 不改 device 段 → device 段逐字节相同 = True
+
+==================================================================
+## 组 3：check_hc_ref.py 的三态退出码
+# 命令：见每条前的构造说明（0 = 比过且通过；1 = 比过有差异；2 = 没得比/缺输入）
+
+[neg] 0. 正对照（完整 dump）                              rc=0  [chk] RESULT: OK (79/79 条比较过：判定项 64 + guard 15；SKIPPED 1)
+[neg] 1. 空目录（无 hc_layout.txt）                      rc=2  [chk] RESULT: SKIPPED (缺输入文件：hc_layout.txt)
+[neg] 2. 只有 hc_layout.txt（缺数据）                     rc=2  [chk] RESULT: SKIPPED (缺输入文件：hc_L00_hin.bin)
+[neg] 3. b2 H' 低字节高位翻转（~50% 变化）                    rc=1  [chk] RESULT: FAILED (2 条不符：["A2.H'<-ij,hin,bo", "B整层H''<-层输入链"])
+[neg] 4. 只翻 1 个 bf16 ulp（应在容差内 ⇒ PASS）             rc=0  [chk] RESULT: OK (79/79 条比较过：判定项 64 + guard 15；SKIPPED 1)

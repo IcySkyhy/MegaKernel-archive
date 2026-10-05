@@ -1,0 +1,31 @@
+[M22] merge mode = 2 (2-way, 4 levels (m7))
+[M22] real_m1     m=1    real | PASS | J:1111111111 | G:1111 | logMaxAbs=6.87e-05 idsBad=0 wUlp=0 nAct=10 nEmpty=502 nSingle=10 maxCnt=1 t=52.4ms
+        T3(logits): 界占用 0.0452%  越界元素 0  最大元素界 2.388e-01  (m7 兼容绝对口径 max abs 6.87e-05, 报告项)
+[M22] real_m2     m=2    real | PASS | J:1111111111 | G:1111 | logMaxAbs=6.87e-05 idsBad=0 wUlp=0 nAct=19 nEmpty=493 nSingle=18 maxCnt=2 t=0.2ms
+        T3(logits): 界占用 0.0452%  越界元素 0  最大元素界 2.388e-01  (m7 兼容绝对口径 max abs 6.87e-05, 报告项)
+[M22] real_m16    m=16   real | PASS | J:1111111111 | G:1111 | logMaxAbs=1.22e-04 idsBad=0 wUlp=1 nAct=117 nEmpty=395 nSingle=84 maxCnt=4 t=0.5ms
+        T3(logits): 界占用 0.0801%  越界元素 0  最大元素界 2.388e-01  (m7 兼容绝对口径 max abs 1.22e-04, 报告项)
+[M22] real_m33    m=33   real | PASS | J:1111111111 | G:1111 | logMaxAbs=2.06e-04 idsBad=0 wUlp=1 nAct=179 nEmpty=333 nSingle=100 maxCnt=7 t=1.0ms
+        T3(logits): 界占用 0.1163%  越界元素 0  最大元素界 2.388e-01  (m7 兼容绝对口径 max abs 2.06e-04, 报告项)
+[M22] real_m64    m=64   real | PASS | J:1111111111 | G:1111 | logMaxAbs=2.06e-04 idsBad=0 wUlp=1 nAct=229 nEmpty=283 nSingle=89 maxCnt=14 t=1.8ms
+        T3(logits): 界占用 0.1163%  越界元素 0  最大元素界 2.388e-01  (m7 兼容绝对口径 max abs 2.06e-04, 报告项)
+[M22] real_m4097  m=4097 real | PASS | J:1111111111 | G:1111 | logMaxAbs=3.13e-04 idsBad=0 wUlp=1 nAct=479 nEmpty=33 nSingle=5 maxCnt=1003 t=161.0ms
+        T3(logits): 界占用 0.2299%  越界元素 0  最大元素界 2.388e-01  (m7 兼容绝对口径 max abs 3.13e-04, 报告项)
+[M22] nu_m1       m=1    onehot | PASS | J:1111111111 | G:1111 | logMaxAbs=0.00e+00 idsBad=0 wUlp=0 nAct=10 nEmpty=502 nSingle=10 maxCnt=1 t=0.2ms
+        T3(logits): 界占用 0.0000%  越界元素 0  最大元素界 1.864e-03  (m7 兼容绝对口径 max abs 0.00e+00, 报告项)
+        profile: 全单槽（每活跃专家恰好 1 槽，无重槽）
+[M22] nu_m7       m=7    onehot | PASS | J:1111111111 | G:1111 | logMaxAbs=0.00e+00 idsBad=0 wUlp=0 nAct=67 nEmpty=445 nSingle=65 maxCnt=3 t=0.3ms
+        T3(logits): 界占用 0.0000%  越界元素 0  最大元素界 1.864e-03  (m7 兼容绝对口径 max abs 0.00e+00, 报告项)
+        profile: 重槽 3/2 + 单槽（含 502 级空专家）
+[M22] nu_m33      m=33   onehot | PASS | J:1111111111 | G:1111 | logMaxAbs=0.00e+00 idsBad=0 wUlp=0 nAct=301 nEmpty=211 nSingle=298 maxCnt=20 t=1.0ms
+        T3(logits): 界占用 0.0000%  越界元素 0  最大元素界 1.864e-03  (m7 兼容绝对口径 max abs 0.00e+00, 报告项)
+        profile: 重槽 20/10/2/1 + 单槽
+[M22] nu_m64      m=64   onehot | PASS | J:1111111111 | G:1111 | logMaxAbs=0.00e+00 idsBad=0 wUlp=0 nAct=404 nEmpty=108 nSingle=262 maxCnt=60 t=1.8ms
+        T3(logits): 界占用 0.0000%  越界元素 0  最大元素界 1.864e-03  (m7 兼容绝对口径 max abs 0.00e+00, 报告项)
+        profile: 重槽 60/30/8/4 + 二槽 138 + 单槽（含 108 级空专家）
+[M22] determinism real_m33    : PASS
+[M22] determinism nu_m33      : PASS
+[M22] input-sensitivity (seed 7 vs 8, m=33) ids differ : PASS
+[M22] ===== judged 100/100 + 4*40 case-guard, extra guards det=1/1 sens=1 | ALL PASS =====
+[M22] guards (report-only): per-case g1..g4 passed 40/40; determinism(+2) sensitivity(+1)
+EXIT2=0

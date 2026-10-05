@@ -1,0 +1,21 @@
+=== 守卫负向对照（不标注 M19_ACK_INCOMPLETE_SELECTION ⇒ 期望 exit 2）===
+[M19] REFUSED(exit 2)：选中集合判据未通过（默认 4 档 2044/2046/1024/2044，应 2048/2050/1024/2048），
+[M19] REFUSED       ：该选择输出禁止接到任何下游消费者（见 README 顶部横幅）。
+[M19] REFUSED       ：仅用于本模块自验/复现时，显式设置 M19_ACK_INCOMPLETE_SELECTION=1。
+exit=2
+
+=== 正向对照（标注 ⇒ 允许运行，期望 exit 1=判据 FAIL）===
+[M19] AICORE=28 VECTOR=56 numBlocks=28
+[M19] A_close_2048   V=2048   pos=8191    closes=1 tail=0 : launch OK
+[M19][FAIL] A_close_2048 有效 token 数 2044 != 2048
+[M19] A_close_2048   自检 FAIL  count=2048 tokens=2044
+[M19] B_open_2048    V=2048   pos=8193    closes=0 tail=2 : launch OK
+[M19][FAIL] B_open_2048 有效 token 数 2046 != 2050
+[M19] B_open_2048    自检 FAIL  count=2050 tokens=2046
+[M19] C_small_256    V=256    pos=1023    closes=1 tail=0 : launch OK
+[M19] C_small_256    自检 PASS  count=1024 tokens=1024
+[M19] D_max_65536    V=65536  pos=262143  closes=1 tail=0 : launch OK
+[M19][FAIL] D_max_65536 有效 token 数 2044 != 2048
+[M19] D_max_65536    自检 FAIL  count=2048 tokens=2044
+[M19] ===== FAILURES PRESENT =====
+exit=1

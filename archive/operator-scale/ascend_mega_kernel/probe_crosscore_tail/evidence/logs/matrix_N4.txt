@@ -1,0 +1,5 @@
+# variant N=4：由 tools/summarize.sh 从逐次日志的 AGG 行重算（每档 3 次独立进程）
+base               variant=base N=4 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+c_m2canon          variant=c_m2canon N=4 rc0=0 rc1=3 rc2=0 hang=0 reps=3
+c_mode4free        variant=c_mode4free N=4 rc0=0 rc1=3 rc2=0 hang=0 reps=3
+dbg_rdyonly        variant=dbg_rdyonly N=4 rc0=0 rc1=3 rc2=0 hang=0 reps=3

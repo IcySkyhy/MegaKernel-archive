@@ -1,0 +1,75 @@
+== commands ==
+build:  cmake --build m15_layer_loop/build -j4     -> rc=0
+bin:    sha256sum m15_layer_loop/build/m15_layer_loop
+
+$ sha256sum m15_layer_loop/build/m15_layer_loop   # M84 后（入库源码）
+19846b4d83d7afd0f3acc58f81cd635fac2b0ccc68522a04206d9e969d7e1354  m15_layer_loop/build/m15_layer_loop
+$ # 改前（**历史读数**，第 1 轮跑出来的）：把上面两处源码 stash、退回 main 的 header 后重建
+$ #   git stash push -- m15_layer_loop/m15_moe_layer.h m15_layer_loop/lift_moe_segment.py
+$ #   cmake --build m15_layer_loop/build -j4
+07efbf0364dfd4ceca2f5fcfea36a5e3bc1d30fc44939706bdb302fa036d356d  m15_layer_loop/build/m15_layer_loop
+# 该读数已被第 2 轮复审**独立重建同源基线二进制**复现（reviewer-m84b r1 的 Decision 段）。
+
+== A/B dump 逐字节对照（M52 §5.9 见证 ① 的同款形态）==
+# 约定：BIN/MF 写实绝对路径（不用字面 HEAD、不用占位符）
+BIN=/workspace/ascend_mega_kernel/.tower/worktrees/wt-84/m15_layer_loop/build/m15_layer_loop
+MF=/workspace/ascend_mega_kernel/.tower/worktrees/wt-84/m15_layer_loop/weights_manifest.txt
+
+# 改前（**历史运行**：第 1 轮用上面 07efbf03… 那个二进制跑的，形状如下；本轮不重跑、也不声称 rc）：
+#   rm -rf /tmp/m84_dump_base && mkdir -p /tmp/m84_dump_base
+#   (cd /tmp/m84_dump_base && M15_DUMP=1 M15_STEPS=3 $BIN $MF all)
+$ # 改后（**本轮在 tip 上实跑**；$BIN = 入库源码的 19846b4d…）：
+$ rm -rf /tmp/m84_dump && mkdir -p /tmp/m84_dump
+$ (cd /tmp/m84_dump && M15_DUMP=1 M15_STEPS=3 $BIN $MF all) > /tmp/m84_dump_rerun.log 2>&1; echo rc=$?
+rc=0
+$ tail -1 /tmp/m84_dump_rerun.log
+[m15] ===== ALL PASS（checks=2012, guards=161, fails=0）=====
+$ (cd /tmp/m84_dump_base && sha256sum * | sort -k2) > /tmp/m84_base_sha.txt; echo rc=$?
+rc=0
+$ (cd /tmp/m84_dump      && sha256sum * | sort -k2) > /tmp/m84_dump_sha.txt; echo rc=$?
+rc=0
+$ diff /tmp/m84_base_sha.txt /tmp/m84_dump_sha.txt; echo rc=$?
+rc=0
+$ wc -l /tmp/m84_base_sha.txt /tmp/m84_dump_sha.txt
+  1307 /tmp/m84_base_sha.txt
+  1307 /tmp/m84_dump_sha.txt
+  2614 total
+
+# 与 M40/M52 归档 m15_layer_loop/evidence/dump_sha256.txt 的对照：两个清单的**名目交集 = 1131 个文件名**，
+#   交集里**唯一不同的一行是 dump_manifest.txt**（那是 M65 新增 Ch.* dump 造成的清单变化，与 M84 无关；
+#   A/B 已证明连 manifest 都逐字节相同）。
+$ join -1 2 -2 2 -o 0,1.1,2.1 <(grep -E '^[0-9a-f]{64}  ' m15_layer_loop/evidence/dump_sha256.txt | sort -k2) /tmp/m84_dump_sha.txt | awk '$2!=$3' | wc -l
+1
+$ join -1 2 -2 2 -o 0,1.1,2.1 <(grep -E '^[0-9a-f]{64}  ' m15_layer_loop/evidence/dump_sha256.txt | sort -k2) /tmp/m84_dump_sha.txt | awk '$2!=$3 {print $1}'
+dump_manifest.txt
+$ join -1 2 -2 2 -o 0,1.1,2.1 <(grep -E '^[0-9a-f]{64}  ' m15_layer_loop/evidence/dump_sha256.txt | sort -k2) /tmp/m84_dump_sha.txt | awk '$2==$3' | wc -l
+1130
+# 名目交集数（= 两个清单都出现的文件名个数）——**这是 join 的输出行数，不是上面那三条管道的输出**：
+$ join -1 2 -2 2 -o 0,1.1,2.1 <(grep -E '^[0-9a-f]{64}  ' m15_layer_loop/evidence/dump_sha256.txt | sort -k2) /tmp/m84_dump_sha.txt | wc -l
+1131
+# 注 1：路径必须写全 `m15_layer_loop/evidence/dump_sha256.txt`（仓根没有 `evidence/`）。
+# 注 2：不给归档文件加 grep 过滤直接 join 会在 stderr 报 "input is not in sorted order"（归档头两行是
+#       以 # 开头的注释），读数仍是 1131；上面统一用 grep -E '^[0-9a-f]{64}  ' 取纯 sha256sum 行。
+# 注 3：以上四条读数在 LC_ALL=C 与 LC_ALL=C.UTF-8 下逐条一致（本次复核实跑，两档读数相同）。
+
+== 第 2 轮追加：r1(49e2e77) 与 r2 的 A/B（两条 P2 修复只改 constexpr/注释/static_assert）==
+$ sha256sum m15_layer_loop/build/m15_layer_loop        # r2 重建后
+19846b4d83d7afd0f3acc58f81cd635fac2b0ccc68522a04206d9e969d7e1354  m15_layer_loop/build/m15_layer_loop
+# 与第 1 轮（tip 49e2e77）**同一 sha** ⇒ 两条 P2 修复**未改变可观测行为**（二进制逐字节相同；
+# 确定性构建复现）。注意 `IG_DIAG_SLOT_END` **确实进了代码表达式**——
+# `m15_moe_layer.h` 的 `offsGm.SetGlobalBuffer(..., NUM_EXPERTS + IG_DIAG_SLOT_END)` 在 E=4 时该实参
+# 由 20 → 16（视图长度，仅元数据、不参与寻址）；结论是"无可观测差异"，不是"未进代码路径"。
+$ # 为免"只比二进制"的漏洞，第 2 轮用**当时那个二进制**重跑一次落盘并逐字节比：
+$ rm -rf /tmp/m84_dump_r2 && mkdir -p /tmp/m84_dump_r2
+$ (cd /tmp/m84_dump_r2 && M15_DUMP=1 M15_STEPS=3 $BIN $MF all) > /tmp/m84_dump_run_r2.log 2>&1; echo rc=$?
+rc=0
+$ tail -1 /tmp/m84_dump_run_r2.log        # 本目录 m84_dump_run.log 是该 stdout 的副本
+[m15] ===== ALL PASS（checks=2012, guards=161, fails=0）=====
+$ (cd /tmp/m84_dump_r2 && sha256sum * | sort -k2) > /tmp/m84_dump_r2_sha.txt; echo rc=$?
+rc=0
+$ diff /tmp/m84_dump_sha.txt /tmp/m84_dump_r2_sha.txt; echo rc=$?
+rc=0
+$ wc -l /tmp/m84_dump_sha.txt /tmp/m84_dump_r2_sha.txt
+  1307 /tmp/m84_dump_sha.txt
+  1307 /tmp/m84_dump_r2_sha.txt
+# 落盘那一次的 guard = 161（多出的 1 条是 M15_DUMP=1 才有的 Ch.m39.dump），checks 仍 2012。

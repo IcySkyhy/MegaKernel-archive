@@ -1,0 +1,23 @@
+[check] PASS  #5 标量栈数组已移除: 残留 = 无（cnt/off/cursor 三处均未见）
+[check] PASS  #5 标量数组已指向 UB 槽位: 命中的槽位符号 = ['UB_IG_SCAL', 'UB_IG_OFF', 'UB_IG_CUR']
+[check] PASS  #6 诊断槽 GM 目的使用 IG_DIAG_GM_SLOT（1 处）且无写死的 offsGm[8]: offsGm[IG_DIAG_GM_SLOT] = 1 处；offsGm[8] = 0 处
+[check] PASS  #6 未退回 offsGm[NUM_EXPERTS + 8] 的字面形态: offsGm[NUM_EXPERTS... = 0 处
+[check] PASS  #7 FmaChunk K 链 = 1..9（k=0 由 Mul 承担 ⇒ 覆盖 TK=10）: FmaChunk 实参 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+[check] PASS  #7 FmaChunk 无 <10>（TK=10 只需 1..9）: 含 <10> = False
+[check] PASS  #7 topk 分发 case = 1..9 + default→10: case = [1, 2, 3, 4, 5, 6, 7, 8, 9]；default→10 = True
+[check] PASS  #7 模板实例 = <1..10>: UnpermuteStage 实参 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[check] PASS  #7 Init 覆盖 1..10: Init 实参 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[check] PASS  #8 Y 视图上界 = TOTAL_MAX（紧凑 Σt_e）: UnpermuteStage 的 yGm 视图行 = yGm.SetGlobalBuffer(reinterpret_cast<__gm__ bfloat16_t*>(ySorted), static_cast<uint64_t>(TOTAL_MAX) * HIDDEN);
+[check] ---- 布局算术：当前档 NUM_EXPERTS=4 / TOPK_MAX=4 ----
+[check] PASS  [E=4] #5 标量槽随 E 定尺且落在 router-x-块窗内: NUM_EXPERTS=4/TOPK_MAX=4: 槽 = 96 B；窗 = UB_IG_SCAL..180224（窗宽 = 81920 B）；UB_IG_SCAL_END = 105824
+[check] PASS  [E=4] #5 栈数组字节数（诊断读数）: 3 × 4 × 4 B = 48 B（AIV 标量栈容量在仓内无登记值，不据此判 PASS/FAIL）
+[check] PASS  [E=4] #6 诊断槽在真 offsets[0..E] 之后: NUM_EXPERTS=4: IG_DIAG_GM_SLOT = 8 ≥ E+1 = 5
+[check] PASS  [E=4] #6 诊断槽 32B 对齐且在 SZ_OFFSETS 内: NUM_EXPERTS=4: 字节 = 32（%32 = 0）；SZ_OFFSETS = 64
+[check] PASS  [E=4] #8 Y 行数上界 TOTAL_MAX vs padded E*M_MAX（诊断读数）: NUM_EXPERTS=4: TOTAL_MAX = 256 行；padded = 256 行
+[check] ---- 布局算术：E=512 假设档（只重算算术；仓库常量未改）----
+[check] PASS  [E=512] #5 标量槽随 E 定尺且落在 router-x-块窗内: NUM_EXPERTS=512/TOPK_MAX=10: 槽 = 6176 B；窗 = UB_IG_SCAL..5382144（窗宽 = 81920 B）；UB_IG_SCAL_END = 5318432
+[check] PASS  [E=512] #5 栈数组字节数（诊断读数）: 3 × 512 × 4 B = 6144 B（AIV 标量栈容量在仓内无登记值，不据此判 PASS/FAIL）
+[check] PASS  [E=512] #6 诊断槽在真 offsets[0..E] 之后: NUM_EXPERTS=512: IG_DIAG_GM_SLOT = 520 ≥ E+1 = 513
+[check] PASS  [E=512] #6 诊断槽 32B 对齐且在 SZ_OFFSETS 内: NUM_EXPERTS=512: 字节 = 2080（%32 = 0）；SZ_OFFSETS = 2112
+[check] PASS  [E=512] #8 Y 行数上界 TOTAL_MAX vs padded E*M_MAX（诊断读数）: NUM_EXPERTS=512: TOTAL_MAX = 640 行；padded = 32768 行
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====

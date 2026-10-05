@@ -2,6 +2,8 @@
 
 MegaKernel 开源生态调研与源码快照。
 
+**最新增补：2026-10-05 第二轮调研。** [增量报告](archive/MEGAKERNEL_ROUND2_2026-10-05.md)重点覆盖 2026-09-05 至 10-05，并补收8月底遗漏；新增22个工件，归档由107项增至129项。重点新增 Cohere、Inferact TPU、Dist-MoE、Training Megakernel、TileMega、TensorRT-LLM CuTeDSL MegaMoE 和 Ascend DeepEP。工件数包含部分开放、原型与相邻路线，不等于成熟开源库数量。
+
 本仓库包含：
 
 - archive/：MegaKernel 编译器、whole-model kernel、分布式/MoE kernel、算子级大核、基础设施、替代路线和长尾实验的源码归档；
@@ -11,6 +13,8 @@ MegaKernel 开源生态调研与源码快照。
 - kernelwiki/：配套的内核知识与检索材料。
 
 主报告的系统性快照日期为 2026-08-26；本仓库上传的是 2026-09-24 的完整本地工作区快照，包含报告完成后继续补充的实验材料。
+
+2026-10-05 在上述快照上增补新项目与第二轮证据，保留原有源码快照；已有项目的远端近期进展单独记录，未将全部上游同步到最新版本。[本轮来源与下载记录](archive/research-rounds/2026-10-05/)
 
 ## 结论摘要
 
@@ -23,6 +27,8 @@ MegaKernel 开源生态调研与源码快照。
 3. ThunderKittens、TileLang/TIRx、AWS NKI、Ascend PTO/PyPTO 等编程和编译底座。
 
 整模型实现已经覆盖 NVIDIA、AMD、Ascend、Trainium 和 TPU，但仍普遍绑定具体模型、shape、精度、拓扑和设备代际。
+
+第二轮进一步确认：Cohere 已有动态服务集成，Dist-MoE 提供可复用前反向 API，训练常驻扩展到 optimizer steps，Apple Metal 则同时出现单 dispatch 实验和设备程序驱动的多 dispatch 路线。动态服务不再只是未来方向，但通用跨硬件库仍未形成。
 
 ## 归档方式
 

@@ -1,0 +1,165 @@
+# 说明（M121 自注，勿删）：本文件是"每档一行 rc="的批次流水。
+#   - 2026-09-27 那一版的 device_batch.log **已随塔的 WIP 快照（0170da5）被清空**；
+#     那一批的逐档逐字读数仍然完整保存在同目录的 <name>.log 里（mtime 09-27 10:1x~10:3x），
+#     README §3–§6 的结论引的就是它们。
+#   - 下面这批（2026-10-04）是在"一次 flock 一条短命令 + flock -n 探锁"的新纪律下重跑的：
+#     当时设备被别的 agent 占着（npu-smi 显示 m25_attn_fa_core 在跑），所以逐条记了 SKIP_BUSY、**一条都没执行**。
+#     rc=111 = 锁被占（未执行）；rc=124 = 挂死（这是 kill=2/5 的**预期**读数）；其余 rc 为该档自己的返回码。
+#   - run_probes.sh 可反复重跑：谁拿到锁谁就把还没有的档补上（同名 log 覆盖）。
+#   - 末行"覆盖小结"里 2026-10-04 那次执行数是旧版脚本的计数 bug，**以每行的 rc= 为准**。
+================ 批次 2026-10-04T07:54:09+00:00 HEAD=0170da5 ================
+SKIP_BUSY name=capi_step1 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_step2 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_step9 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_step3 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_step4 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_step5 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_step6 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_step7 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_step8 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_rt_k0_default (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_rt_k1_nowait (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_rt_k3_blockonly (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_rt_k4_intraonly (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_rt_k0_ssbuf (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_mmad_k0_opt2 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_mmad_k0_opt0 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_mmad_k0_opt1 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=basic_mmad_k0_default (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=basic_mmad_k0_ssbuf (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=basic_mmad_k1_nowait (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_bw_1k_2k (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_bw_8k_1k (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_bw_64k_300 (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=basic_bw_64k_300_default (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=basic_bw_64k_300_ssbuf (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=capi_rt_k2_noset (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+SKIP_BUSY name=basic_mmad_k2_noset (设备锁被别人持有；按纪律不空等，本轮不计入读数)
+覆盖小结：本轮执行 27 条，因锁被占跳过 0 条（跳过的不计入读数，重跑本脚本补齐）
+================ 批次 2026-10-04T08:12:59+00:00 HEAD=94c3c51 ================
+PROBE_BUSY name=capi_step1 → 做一次有界获取 flock -w 240（≤300）
+rc=124 name=capi_step1
+PROBE_BUSY name=capi_step2 → 做一次有界获取 flock -w 240（≤300）
+rc=124 name=capi_step2
+PROBE_BUSY name=capi_step9 → 做一次有界获取 flock -w 240（≤300）
+rc=124 name=capi_step9
+PROBE_BUSY name=capi_step3 → 做一次有界获取 flock -w 240（≤300）
+rc=124 name=capi_step3
+PROBE_BUSY name=capi_step4 → 做一次有界获取 flock -w 240（≤300）
+rc=124 name=capi_step4
+PROBE_BUSY name=capi_step5 → 做一次有界获取 flock -w 240（≤300）
+rc=0 name=capi_step5
+PROBE_BUSY name=capi_step6 → 做一次有界获取 flock -w 240（≤300）
+rc=0 name=capi_step6
+PROBE_BUSY name=capi_step7 → 做一次有界获取 flock -w 240（≤300）
+rc=0 name=capi_step7
+================ 批次 2026-10-04T08:18:27+00:00 HEAD=94c3c51 ================
+PROBE_BUSY name=capi_rt_k0_default → 做一次有界获取 flock -w 200（≤300）
+rc=0 name=capi_rt_k0_default
+PROBE_BUSY name=capi_step8 → 做一次有界获取 flock -w 240（≤300）
+rc=0 name=capi_step8
+PROBE_BUSY name=capi_rt_k0_ssbuf → 做一次有界获取 flock -w 200（≤300）
+rc=0 name=capi_rt_k0_ssbuf
+PROBE_BUSY name=capi_rt_k0_default → 做一次有界获取 flock -w 240（≤300）
+rc=0 name=capi_rt_k0_default
+PROBE_BUSY name=capi_rt_k1_nowait → 做一次有界获取 flock -w 200（≤300）
+rc=0 name=capi_rt_k1_nowait
+PROBE_BUSY name=capi_rt_k1_nowait → 做一次有界获取 flock -w 240（≤300）
+rc=1 name=capi_rt_k1_nowait LOCK_ACQUIRE_FAILED（-w 240 内没拿到锁，未执行）
+rc=1 name=capi_rt_k1_nowait
+PROBE_BUSY name=capi_mmad_k0_opt2 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=capi_mmad_k0_opt2 LOCK_ACQUIRE_FAILED（-w 200 内没拿到锁，未执行）
+rc=1 name=capi_mmad_k0_opt2
+PROBE_BUSY name=capi_rt_k3_blockonly → 做一次有界获取 flock -w 240（≤300）
+rc=0 name=capi_rt_k3_blockonly
+PROBE_BUSY name=capi_mmad_k0_opt0 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=capi_mmad_k0_opt0 LOCK_ACQUIRE_FAILED（-w 200 内没拿到锁，未执行）
+rc=1 name=capi_mmad_k0_opt0
+PROBE_BUSY name=capi_rt_k1_r1 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=capi_rt_k1_r1 executed=yes
+rc=1 name=capi_rt_k1_r1
+PROBE_BUSY name=capi_rt_k1_r2 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=capi_rt_k1_r2 executed=yes
+rc=1 name=capi_rt_k1_r2
+PROBE_BUSY name=capi_rt_k1_r3 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=capi_rt_k1_r3 executed=yes
+rc=1 name=capi_rt_k1_r3
+PROBE_BUSY name=capi_rt_k1_r4 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=capi_rt_k1_r4 executed=yes
+rc=1 name=capi_rt_k1_r4
+PROBE_BUSY name=basic_mmad_k1_r1 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=basic_mmad_k1_r1 executed=yes
+rc=1 name=basic_mmad_k1_r1
+PROBE_BUSY name=basic_mmad_k1_r2 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=basic_mmad_k1_r2 executed=yes
+rc=1 name=basic_mmad_k1_r2
+PROBE_BUSY name=capi_rt_k2_noset → 做一次有界获取 flock -w 200（≤300）
+rc=124 name=capi_rt_k2_noset executed=yes
+rc=124 name=capi_rt_k2_noset
+PROBE_BUSY name=basic_mmad_k2_noset → 做一次有界获取 flock -w 200（≤300）
+rc=124 name=basic_mmad_k2_noset executed=yes
+rc=124 name=basic_mmad_k2_noset
+PROBE_BUSY name=capi_rt_k5_halfarrive → 做一次有界获取 flock -w 200（≤300）
+rc=124 name=capi_rt_k5_halfarrive executed=yes
+rc=124 name=capi_rt_k5_halfarrive
+PROBE_BUSY name=basic_mmad_k5_halfarrive → 做一次有界获取 flock -w 200（≤300）
+rc=124 name=basic_mmad_k5_halfarrive executed=yes
+rc=124 name=basic_mmad_k5_halfarrive
+PROBE_BUSY name=capi_mmad_k0_opt2 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=capi_mmad_k0_opt2 executed=yes
+rc=1 name=capi_mmad_k0_opt2
+PROBE_BUSY name=capi_mmad_k0_opt0 → 做一次有界获取 flock -w 200（≤300）
+rc=1 name=capi_mmad_k0_opt0 executed=yes
+rc=1 name=capi_mmad_k0_opt0
+rc=0 name=basic_mmad_k0_default executed=yes
+rc=0 name=basic_mmad_k0_default
+rc=0 name=basic_mmad_k0_ssbuf executed=yes
+rc=0 name=basic_mmad_k0_ssbuf
+rc=0 name=capi_bw_64k_300 executed=yes
+rc=0 name=capi_bw_64k_300
+rc=0 name=basic_bw_64k_300_default executed=yes
+rc=0 name=basic_bw_64k_300_default
+rc=0 name=basic_bw_64k_300_ssbuf executed=yes
+rc=0 name=basic_bw_64k_300_ssbuf
+rc=0 name=capi_bw_1k_2k executed=yes
+rc=0 name=capi_bw_1k_2k
+rc=0 name=capi_bw_8k_1k executed=yes
+rc=0 name=capi_bw_8k_1k
+================ 批次 2026-10-04T08:48:24+00:00 HEAD=94c3c51 ================
+rc=0 name=capi_rt_k0_default executed=yes
+rc=0 name=capi_rt_k0_default
+rc=0 name=capi_rt_k0_ssbuf executed=yes
+rc=0 name=capi_rt_k0_ssbuf
+rc=0 name=capi_rt_k1_nowait executed=yes
+rc=0 name=capi_rt_k1_nowait
+rc=0 name=capi_mmad_k0_opt0 executed=yes
+rc=0 name=capi_mmad_k0_opt0
+rc=1 name=capi_mmad_k0_opt1 executed=yes
+rc=1 name=capi_mmad_k0_opt1
+rc=0 name=capi_mmad_k0_opt2 executed=yes
+rc=0 name=capi_mmad_k0_opt2
+rc=0 name=basic_mmad_k0_default executed=yes
+rc=0 name=basic_mmad_k0_default
+rc=0 name=basic_mmad_k0_ssbuf executed=yes
+rc=0 name=basic_mmad_k0_ssbuf
+rc=0 name=capi_bw_64k_300 executed=yes
+rc=0 name=capi_bw_64k_300
+rc=0 name=basic_bw_64k_300_default executed=yes
+rc=0 name=basic_bw_64k_300_default
+rc=124 name=capi_rt_k2_noset executed=yes
+rc=124 name=capi_rt_k2_noset
+PROBE_BUSY name=basic_mmad_k2_noset → 做一次有界获取 flock -w 1（≤300）
+rc=1 name=basic_mmad_k2_noset LOCK_ACQUIRE_FAILED（-w 1 内没拿到锁，未执行；log 里没有进锁标记）
+覆盖小结：本轮执行 11 条，因锁被占跳过 1 条（跳过的不计入读数，重跑本脚本补齐）
+================ 批次 2026-10-04T09:12:00+00:00 HEAD=ae5c25d ================
+覆盖小结：本轮执行 0 条，因锁被占跳过 0 条（跳过的不计入读数，重跑本脚本补齐）
+================ 批次 2026-10-04T09:12:51+00:00 HEAD=ae5c25d ================
+覆盖小结：本轮执行 0 条，因锁被占跳过 0 条（跳过的不计入读数，重跑本脚本补齐）
+================ 批次 2026-10-04T09:19:01+00:00 HEAD=7a335f2 ================
+覆盖小结：本轮执行 0 条，因锁被占跳过 0 条（跳过的不计入读数，重跑本脚本补齐）
+================ 批次 2026-10-04T09:19:07+00:00 HEAD=7a335f2 ================
+覆盖小结：本轮执行 0 条，因锁被占跳过 0 条（跳过的不计入读数，重跑本脚本补齐）
+================ 批次 2026-10-04T09:20:01+00:00 HEAD=e131ff0 ================
+覆盖小结：M121_ONLY=none —— 本轮**不取任何设备档**（只刷新 commands.txt / check_ref.log）
+================ 批次 2026-10-04T09:26:06+00:00 HEAD=8e610f3 ================
+覆盖小结：M121_ONLY=none —— 本轮**不取任何设备档**（只刷新 commands.txt / check_ref.log）

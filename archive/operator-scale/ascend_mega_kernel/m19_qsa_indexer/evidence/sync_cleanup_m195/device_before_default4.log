@@ -1,0 +1,27 @@
+=== lock acquired 2026-10-05T01:56:09+00:00 tag=baseline ===
+--- npu-smi (lock entry) ---
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.10                              Version: 25.7.rc1.10                           |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 195.0       54                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5243  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+--- command ---
+M19_OUT=/tmp/m195_base/dumps ./m19_qsa_indexer/build/m19_qsa_indexer (4 default cases)
+[M19] AICORE=28 VECTOR=56 numBlocks=28
+[M19] A_close_2048   V=2048   pos=8191    closes=1 tail=0 : launch OK
+[M19] A_close_2048   自检 PASS  count=2048 tokens=2048
+[M19] B_open_2048    V=2048   pos=8193    closes=0 tail=2 : launch OK
+[M19] B_open_2048    自检 PASS  count=2050 tokens=2050
+[M19] C_small_256    V=256    pos=1023    closes=1 tail=0 : launch OK
+[M19] C_small_256    自检 PASS  count=1024 tokens=1024
+[M19] D_max_65536    V=65536  pos=262143  closes=1 tail=0 : launch OK
+[M19] D_max_65536    自检 PASS  count=2048 tokens=2048
+[M19] ===== ALL PASS =====
+--- exit=0 ---

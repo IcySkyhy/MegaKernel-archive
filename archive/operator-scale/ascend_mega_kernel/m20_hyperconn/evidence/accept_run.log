@@ -1,0 +1,291 @@
+[M20] 核数（API 取得）：AIC=28 AIV=56（mix(1,2) 启动 numBlocks=AIC 数）
+[M20] WS_BYTES=4353024  UB_USED=89472  L1_USED=303104
+[M20]   -- 参考侧非空洞性（单输入整张量 ×1.5 → 任一输出最大绝对变化）--
+[M20]     hc_norm  Δout(maxAbs over all outputs)=2.093750e+00  sensitive
+[M20]     wDown    Δout(maxAbs over all outputs)=5.937500e+00  sensitive
+[M20]     wUp      Δout(maxAbs over all outputs)=1.093750e+00  sensitive
+[M20]     wInj     Δout(maxAbs over all outputs)=8.359375e-01  sensitive
+[M20]     BO       Δout(maxAbs over all outputs)=1.894531e+00  sensitive
+[M20]     IJ       Δout(maxAbs over all outputs)=2.500000e-01  sensitive
+[M20] === case exact0 : kind=3 m=1 mode=1 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=0.000e+00  PASS
+[M20]   报告 h'      n=10240   逐位=10240  (1.0000) | 良态=9661    逐位=9661   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.600e+01 归一=0.000e+00
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=579   其中越界=0  PASS
+[M20]   T1 JUDGE h'(exact0) 逐位一致=10240/10240  PASS
+[M20]   报告 xn      n=10240   逐位=10240  (1.0000) | 良态=6606    逐位=6606   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=7.000e+00 归一=0.000e+00
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=2560  其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=7.216e-08  PASS
+[M20]   报告 lora    n=320     逐位=320    (1.0000) | 良态=287     逐位=287    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.800e+03 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 inject  n=4       逐位=4      (1.0000) | 良态=4       逐位=4      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.128e+03 归一=0.000e+00
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=4       违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=320     逐位=314    (0.9812) | 良态=144     逐位=144    (1.0000) ulpMax(良态)=0   | maxAbs=7.384e-38 scale=7.000e+02 归一=1.055e-40
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=113   其中越界=0  PASS
+[M20]   报告 gate    n=10240   逐位=10239  (0.9999) | 良态=8628    逐位=8627   (0.9999) ulpMax(良态)=1   | maxAbs=6.400e+01 scale=4.864e+04 归一=1.316e-03
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=10240   违反=0     (maxRatio=0.069 @k=5362) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=2560    逐位=2559   (0.9996) | 良态=1580    逐位=1580   (1.0000) ulpMax(良态)=0   | maxAbs=1.188e-11 scale=4.000e+00 归一=2.970e-12
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=2560    违反=0     (maxRatio=0.000 @k=1099) FTZ区=378   其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 0/10240；设备 vs 复刻舍入 maxUlp=0，vs 不复刻 maxUlp=0；差异元素上更贴近复刻/不复刻 = 0/0
+[M20]       两条参考在本档无差异（整数数据下中间舍入常不改变取值）→ 本档不适用（跳过）
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] === case exact0m33 : kind=3 m=33 mode=1 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=0.000e+00  PASS
+[M20]   报告 h'      n=337920  逐位=337920 (1.0000) | 良态=318140  逐位=318140 (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.600e+01 归一=0.000e+00
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=337920  违反=0     (maxRatio=0.000 @k=0) FTZ区=19780 其中越界=0  PASS
+[M20]   T1 JUDGE h'(exact0) 逐位一致=337920/337920  PASS
+[M20]   报告 xn      n=337920  逐位=337920 (1.0000) | 良态=217205  逐位=217205 (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=7.188e+00 归一=0.000e+00
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=337920  违反=0     (maxRatio=0.000 @k=0) FTZ区=84968 其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=7.493e-08  PASS
+[M20]   报告 lora    n=10560   逐位=10560  (1.0000) | 良态=8984    逐位=8984   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=3.296e+03 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=10560   违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 inject  n=132     逐位=132    (1.0000) | 良态=113     逐位=113    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.128e+03 归一=0.000e+00
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=132     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=10560   逐位=10366  (0.9816) | 良态=4491    逐位=4491   (1.0000) ulpMax(良态)=0   | maxAbs=8.757e-37 scale=7.880e+02 归一=1.111e-39
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=10560   违反=0     (maxRatio=0.000 @k=0) FTZ区=3651  其中越界=0  PASS
+[M20]   报告 gate    n=337920  逐位=337904 (1.0000) | 良态=275470  逐位=275467 (1.0000) ulpMax(良态)=1   | maxAbs=6.400e+01 scale=6.118e+04 归一=1.046e-03
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=337920  违反=0     (maxRatio=0.069 @k=5362) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=84480   逐位=84475  (0.9999) | 良态=48748   逐位=48748  (1.0000) ulpMax(良态)=0   | maxAbs=1.688e-09 scale=4.375e+00 归一=3.858e-10
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=84480   违反=0     (maxRatio=0.000 @k=47262) FTZ区=12997 其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 0/337920；设备 vs 复刻舍入 maxUlp=0，vs 不复刻 maxUlp=0；差异元素上更贴近复刻/不复刻 = 0/0
+[M20]       两条参考在本档无差异（整数数据下中间舍入常不改变取值）→ 本档不适用（跳过）
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] === case int : kind=0 m=1 mode=1 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=7.264e-08  PASS
+[M20]   报告 h'      n=10240   逐位=10240  (1.0000) | 良态=9118    逐位=9118   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.112e+01 归一=0.000e+00
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=29    其中越界=0  PASS
+[M20]   报告 xn      n=10240   逐位=10240  (1.0000) | 良态=6871    逐位=6871   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=6.781e+00 归一=0.000e+00
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=2123  其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=7.223e-08  PASS
+[M20]   报告 lora    n=320     逐位=320    (1.0000) | 良态=278     逐位=278    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.512e+03 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 inject  n=4       逐位=4      (1.0000) | 良态=4       逐位=4      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.320e+03 归一=0.000e+00
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=4       违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=320     逐位=318    (0.9938) | 良态=138     逐位=138    (1.0000) ulpMax(良态)=0   | maxAbs=2.737e-38 scale=6.280e+02 归一=4.358e-41
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=105   其中越界=0  PASS
+[M20]   报告 gate    n=10240   逐位=10240  (1.0000) | 良态=8734    逐位=8734   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=4.685e+04 归一=0.000e+00
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=2560    逐位=2560   (1.0000) | 良态=1717    逐位=1717   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=3.297e+00 归一=0.000e+00
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=2560    违反=0     (maxRatio=0.000 @k=0) FTZ区=329   其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 2027/10240；设备 vs 复刻舍入 maxUlp=0，vs 不复刻 maxUlp=1；差异元素上更贴近复刻/不复刻 = 2027/0
+[M20]       差异占比=0.1979 站复刻侧比例=1.0000  判别性：PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] === case int_mix : kind=0 m=1 mode=0 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) 该档无 W0 段（mode 0 跳过 combine）→ 不判定
+[M20]   报告 xn      n=10240   逐位=10240  (1.0000) | 良态=7221    逐位=7221   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=4.938e+00 归一=0.000e+00
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=2555  其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=3.763e-08  PASS
+[M20]   报告 lora    n=320     逐位=320    (1.0000) | 良态=291     逐位=291    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.304e+03 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 inject  n=4       逐位=4      (1.0000) | 良态=4       逐位=4      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.600e+03 归一=0.000e+00
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=4       违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=320     逐位=308    (0.9625) | 良态=161     逐位=161    (1.0000) ulpMax(良态)=0   | maxAbs=3.247e-37 scale=5.720e+02 归一=5.677e-40
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=106   其中越界=0  PASS
+[M20]   报告 gate    n=10240   逐位=10240  (1.0000) | 良态=8688    逐位=8688   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=5.402e+04 归一=0.000e+00
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=2560    逐位=2560   (1.0000) | 良态=1834    逐位=1834   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.688e+00 归一=0.000e+00
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=2560    违反=0     (maxRatio=0.000 @k=0) FTZ区=385   其中越界=0  PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20] === case int_final : kind=0 m=1 mode=2 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=7.264e-08  PASS
+[M20]   报告 h'      n=10240   逐位=10240  (1.0000) | 良态=9118    逐位=9118   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.112e+01 归一=0.000e+00
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=29    其中越界=0  PASS
+[M20]   报告 xn      n=10240   逐位=10240  (1.0000) | 良态=6871    逐位=6871   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=6.781e+00 归一=0.000e+00
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=2123  其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=7.223e-08  PASS
+[M20]   报告 lora    n=320     逐位=320    (1.0000) | 良态=278     逐位=278    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.512e+03 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=320     逐位=318    (0.9938) | 良态=138     逐位=138    (1.0000) ulpMax(良态)=0   | maxAbs=2.737e-38 scale=6.280e+02 归一=4.358e-41
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=105   其中越界=0  PASS
+[M20]   报告 gate    n=10240   逐位=10240  (1.0000) | 良态=8734    逐位=8734   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=4.685e+04 归一=0.000e+00
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=2560    逐位=2560   (1.0000) | 良态=1717    逐位=1717   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=3.297e+00 归一=0.000e+00
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=2560    违反=0     (maxRatio=0.000 @k=0) FTZ区=329   其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 2027/10240；设备 vs 复刻舍入 maxUlp=0，vs 不复刻 maxUlp=1；差异元素上更贴近复刻/不复刻 = 2027/0
+[M20]       差异占比=0.1979 站复刻侧比例=1.0000  判别性：PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] === case real_m1 : kind=1 m=1 mode=1 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=5.156e-08  PASS
+[M20]   报告 h'      n=10240   逐位=10238  (0.9998) | 良态=9127    逐位=9127   (1.0000) ulpMax(良态)=0   | maxAbs=4.883e-04 scale=4.469e+00 归一=1.093e-04
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=10240   违反=0     (maxRatio=0.999 @k=7253) FTZ区=0     其中越界=0  PASS
+[M20]   报告 xn      n=10240   逐位=10239  (0.9999) | 良态=7654    逐位=7654   (1.0000) ulpMax(良态)=0   | maxAbs=2.441e-04 scale=4.188e+00 归一=5.830e-05
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=10240   违反=0     (maxRatio=0.231 @k=7253) FTZ区=0     其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=4.163e-08  PASS
+[M20]   报告 lora    n=320     逐位=320    (1.0000) | 良态=267     逐位=267    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.206e+01 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 inject  n=4       逐位=4      (1.0000) | 良态=4       逐位=4      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.680e+00 归一=0.000e+00
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=4       违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=320     逐位=320    (1.0000) | 良态=212     逐位=212    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.875e+00 归一=0.000e+00
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 gate    n=10240   逐位=10240  (1.0000) | 良态=8588    逐位=8588   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.188e+00 归一=0.000e+00
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=2560    逐位=2560   (1.0000) | 良态=2201    逐位=2201   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.469e+00 归一=0.000e+00
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=2560    违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 2740/10240；设备 vs 复刻舍入 maxUlp=2，vs 不复刻 maxUlp=1；差异元素上更贴近复刻/不复刻 = 2739/1
+[M20]       差异占比=0.2676 站复刻侧比例=0.9996  判别性：PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] === case real_m2 : kind=1 m=2 mode=1 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=6.021e-08  PASS
+[M20]   报告 h'      n=20480   逐位=20478  (0.9999) | 良态=18301   逐位=18301  (1.0000) ulpMax(良态)=0   | maxAbs=4.883e-04 scale=4.469e+00 归一=1.093e-04
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=20480   违反=0     (maxRatio=0.999 @k=7253) FTZ区=0     其中越界=0  PASS
+[M20]   报告 xn      n=20480   逐位=20479  (1.0000) | 良态=15479   逐位=15479  (1.0000) ulpMax(良态)=0   | maxAbs=2.441e-04 scale=4.188e+00 归一=5.830e-05
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=20480   违反=0     (maxRatio=0.231 @k=7253) FTZ区=0     其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=4.163e-08  PASS
+[M20]   报告 lora    n=640     逐位=640    (1.0000) | 良态=524     逐位=524    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.206e+01 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=640     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 inject  n=8       逐位=8      (1.0000) | 良态=8       逐位=8      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.922e+00 归一=0.000e+00
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=8       违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=640     逐位=640    (1.0000) | 良态=421     逐位=421    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.875e+00 归一=0.000e+00
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=640     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 gate    n=20480   逐位=20479  (1.0000) | 良态=16979   逐位=16979  (1.0000) ulpMax(良态)=0   | maxAbs=1.526e-05 scale=2.188e+00 归一=6.975e-06
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=20480   违反=0     (maxRatio=0.000 @k=14245) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=5120    逐位=5120   (1.0000) | 良态=4357    逐位=4357   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.500e+00 归一=0.000e+00
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=5120    违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 5323/20480；设备 vs 复刻舍入 maxUlp=2，vs 不复刻 maxUlp=1；差异元素上更贴近复刻/不复刻 = 5322/1
+[M20]       差异占比=0.2599 站复刻侧比例=0.9998  判别性：PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] === case real_m33 : kind=1 m=33 mode=1 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=1.037e-07  PASS
+[M20]   报告 h'      n=337920  逐位=337913 (1.0000) | 良态=300455  逐位=300455 (1.0000) ulpMax(良态)=0   | maxAbs=4.883e-04 scale=4.875e+00 归一=1.002e-04
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=337920  违反=0     (maxRatio=0.999 @k=7253) FTZ区=0     其中越界=0  PASS
+[M20]   报告 xn      n=337920  逐位=337914 (1.0000) | 良态=255949  逐位=255948 (1.0000) ulpMax(良态)=1   | maxAbs=7.812e-03 scale=4.188e+00 归一=1.866e-03
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=337920  违反=0     (maxRatio=0.545 @k=229883) FTZ区=0     其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=9.350e-08  PASS
+[M20]   报告 lora    n=10560   逐位=10540  (0.9981) | 良态=8762    逐位=8758   (0.9995) ulpMax(良态)=1   | maxAbs=1.562e-02 scale=1.319e+01 归一=1.185e-03
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=10560   违反=0     (maxRatio=0.010 @k=7139) FTZ区=0     其中越界=0  PASS
+[M20]   报告 inject  n=132     逐位=132    (1.0000) | 良态=119     逐位=119    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.500e+00 归一=0.000e+00
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=132     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=10560   逐位=10543  (0.9984) | 良态=7010    逐位=7010   (1.0000) ulpMax(良态)=0   | maxAbs=4.883e-04 scale=3.172e+00 归一=1.539e-04
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=10560   违反=0     (maxRatio=0.083 @k=666) FTZ区=0     其中越界=0  PASS
+[M20]   报告 gate    n=337920  逐位=337305 (0.9982) | 良态=271694  逐位=271508 (0.9993) ulpMax(良态)=1   | maxAbs=7.812e-03 scale=2.656e+00 归一=2.941e-03
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=337920  违反=0     (maxRatio=0.144 @k=28340) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=84480   逐位=84455  (0.9997) | 良态=69016   逐位=69006  (0.9999) ulpMax(良态)=1   | maxAbs=3.906e-03 scale=1.836e+00 归一=2.128e-03
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=84480   违反=0     (maxRatio=0.117 @k=6093) FTZ区=0     其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 87786/337920；设备 vs 复刻舍入 maxUlp=3，vs 不复刻 maxUlp=3；差异元素上更贴近复刻/不复刻 = 87781/5
+[M20]       差异占比=0.2598 站复刻侧比例=0.9999  判别性：PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] === case real_m64 : kind=1 m=64 mode=1 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=1.098e-07  PASS
+[M20]   报告 h'      n=655360  逐位=655334 (1.0000) | 良态=583624  逐位=583620 (1.0000) ulpMax(良态)=1   | maxAbs=3.125e-02 scale=4.875e+00 归一=6.410e-03
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=655360  违反=0     (maxRatio=1.000 @k=526598) FTZ区=0     其中越界=0  PASS
+[M20]   报告 xn      n=655360  逐位=655325 (0.9999) | 良态=496675  逐位=496661 (1.0000) ulpMax(良态)=2   | maxAbs=3.125e-02 scale=4.188e+00 归一=7.463e-03
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=655360  违反=0     (maxRatio=0.545 @k=229883) FTZ区=0     其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=2.246e-05  PASS
+[M20]   报告 lora    n=20480   逐位=20402  (0.9962) | 良态=17006   逐位=16980  (0.9985) ulpMax(良态)=1   | maxAbs=3.125e-02 scale=1.319e+01 归一=2.370e-03
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=20480   违反=0     (maxRatio=0.019 @k=16586) FTZ区=0     其中越界=0  PASS
+[M20]   报告 inject  n=256     逐位=255    (0.9961) | 良态=230     逐位=229    (0.9957) ulpMax(良态)=1   | maxAbs=1.953e-03 scale=3.094e+00 归一=6.313e-04
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=256     违反=0     (maxRatio=0.003 @k=205) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=20480   逐位=20411  (0.9966) | 良态=13590   逐位=13582  (0.9994) ulpMax(良态)=2   | maxAbs=7.812e-03 scale=3.172e+00 归一=2.463e-03
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=20480   违反=0     (maxRatio=0.490 @k=16586) FTZ区=0     其中越界=0  PASS
+[M20]   报告 gate    n=655360  逐位=646960 (0.9872) | 良态=527943  逐位=523891 (0.9923) ulpMax(良态)=2   | maxAbs=7.812e-03 scale=2.656e+00 归一=2.941e-03
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=655360  违反=0     (maxRatio=0.154 @k=524646) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=163840  逐位=163389 (0.9972) | 良态=134153  逐位=133933 (0.9984) ulpMax(良态)=1   | maxAbs=7.812e-03 scale=1.836e+00 归一=4.255e-03
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=163840  违反=0     (maxRatio=0.186 @k=143925) FTZ区=0     其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 170054/655360；设备 vs 复刻舍入 maxUlp=3，vs 不复刻 maxUlp=3；差异元素上更贴近复刻/不复刻 = 170033/21
+[M20]       差异占比=0.2595 站复刻侧比例=0.9999  判别性：PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] === case real_mix : kind=1 m=1 mode=0 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) 该档无 W0 段（mode 0 跳过 combine）→ 不判定
+[M20]   报告 xn      n=10240   逐位=10240  (1.0000) | 良态=8730    逐位=8730   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=3.047e+00 归一=0.000e+00
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=4     其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=4.367e-08  PASS
+[M20]   报告 lora    n=320     逐位=320    (1.0000) | 良态=286     逐位=286    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=9.312e+00 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 inject  n=4       逐位=4      (1.0000) | 良态=4       逐位=4      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.672e+00 归一=0.000e+00
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=4       违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=320     逐位=320    (1.0000) | 良态=275     逐位=275    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.578e+00 归一=0.000e+00
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 gate    n=10240   逐位=10240  (1.0000) | 良态=8411    逐位=8411   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.203e+00 归一=0.000e+00
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=2560    逐位=2560   (1.0000) | 良态=2192    逐位=2192   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=9.219e-01 归一=0.000e+00
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=2560    违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20] === case real_final : kind=1 m=1 mode=2 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=5.156e-08  PASS
+[M20]   报告 h'      n=10240   逐位=10238  (0.9998) | 良态=9127    逐位=9127   (1.0000) ulpMax(良态)=0   | maxAbs=4.883e-04 scale=4.469e+00 归一=1.093e-04
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=10240   违反=0     (maxRatio=0.999 @k=7253) FTZ区=0     其中越界=0  PASS
+[M20]   报告 xn      n=10240   逐位=10239  (0.9999) | 良态=7654    逐位=7654   (1.0000) ulpMax(良态)=0   | maxAbs=2.441e-04 scale=4.188e+00 归一=5.830e-05
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=10240   违反=0     (maxRatio=0.231 @k=7253) FTZ区=0     其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=4.163e-08  PASS
+[M20]   报告 lora    n=320     逐位=320    (1.0000) | 良态=267     逐位=267    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.206e+01 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 ls      n=320     逐位=320    (1.0000) | 良态=212     逐位=212    (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.875e+00 归一=0.000e+00
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 gate    n=10240   逐位=10240  (1.0000) | 良态=8588    逐位=8588   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.188e+00 归一=0.000e+00
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   报告 blk     n=2560    逐位=2560   (1.0000) | 良态=2201    逐位=2201   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=1.469e+00 归一=0.000e+00
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=2560    违反=0     (maxRatio=0.000 @k=0) FTZ区=0     其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 2740/10240；设备 vs 复刻舍入 maxUlp=2，vs 不复刻 maxUlp=1；差异元素上更贴近复刻/不复刻 = 2739/1
+[M20]       差异占比=0.2676 站复刻侧比例=0.9996  判别性：PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=non-const ref=non-const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] === case zerow : kind=2 m=1 mode=1 stageLimit=7 aicNum=28 ===
+[M20]   injw (fp32) maxRel=7.264e-08  PASS
+[M20]   报告 h'      n=10240   逐位=10240  (1.0000) | 良态=9118    逐位=9118   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.112e+01 归一=0.000e+00
+[M20]   T3 JUDGE h'       ε=2.23e-07 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=29    其中越界=0  PASS
+[M20]   报告 xn      n=10240   逐位=10240  (1.0000) | 良态=6871    逐位=6871   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=6.781e+00 归一=0.000e+00
+[M20]   T3 JUDGE xn       ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=2123  其中越界=0  PASS
+[M20]   rstd       (fp32) maxRel=7.223e-08  PASS
+[M20]   报告 lora    n=320     逐位=320    (1.0000) | 良态=0       逐位=0      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=0.000e+00 归一=0.000e+00
+[M20]   T3 JUDGE lora     ε=7.89e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=320   其中越界=0  PASS
+[M20]   T1 JUDGE lora≡0 逐位为 0：PASS
+[M20]   报告 inject  n=4       逐位=4      (1.0000) | 良态=0       逐位=0      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=0.000e+00 归一=0.000e+00
+[M20]   T3 JUDGE inject   ε=7.89e-03 n=4       违反=0     (maxRatio=0.000 @k=0) FTZ区=4     其中越界=0  PASS
+[M20]   T1 JUDGE inject≡0 逐位为 0：PASS
+[M20]   报告 ls      n=320     逐位=320    (1.0000) | 良态=0       逐位=0      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=0.000e+00 归一=0.000e+00
+[M20]   T3 JUDGE ls       ε=3.91e-03 n=320     违反=0     (maxRatio=0.000 @k=0) FTZ区=320   其中越界=0  PASS
+[M20]   报告 gate    n=10240   逐位=10240  (1.0000) | 良态=0       逐位=0      (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=0.000e+00 归一=0.000e+00
+[M20]   T3 JUDGE gate     ε=7.81e-03 n=10240   违反=0     (maxRatio=0.000 @k=0) FTZ区=10240 其中越界=0  PASS
+[M20]   报告 blk     n=2560    逐位=2560   (1.0000) | 良态=2071    逐位=2071   (1.0000) ulpMax(良态)=0   | maxAbs=0.000e+00 scale=2.062e+00 归一=0.000e+00
+[M20]   T3 JUDGE blk      ε=7.81e-03 n=2560    违反=0     (maxRatio=0.000 @k=0) FTZ区=11    其中越界=0  PASS
+[M20]   (A) 中间舍入判别：两条参考差异元素 2027/10240；设备 vs 复刻舍入 maxUlp=0，vs 不复刻 maxUlp=1；差异元素上更贴近复刻/不复刻 = 2027/0
+[M20]       差异占比=0.1979 站复刻侧比例=1.0000  判别性：PASS
+[M20]   -- 设备侧非空洞性 --
+[M20]   guard   xn         dev=non-const ref=non-const  OK
+[M20]   guard   gate       dev=CONST ref=const  OK
+[M20]   guard   blk        dev=non-const ref=non-const  OK
+[M20]   guard   h'         dev=non-const ref=non-const  OK
+[M20] 跨 case 判别力：12 个 case（不同 (kind,m) 组间）设备 blk 指纹两两互异 → OK
+[M20] 中间 bf16 舍入判别（docs/14 §3.2 / tower 硬约束）：至少一个 case 上判别性成立 PASS
+[M20] 计数：判定项 93 checks / 0 fails；报告项 80 条（不参与 PASS/FAIL）；guard 155 checks / 0 fails
+[M20] ===== ALL PASS =====

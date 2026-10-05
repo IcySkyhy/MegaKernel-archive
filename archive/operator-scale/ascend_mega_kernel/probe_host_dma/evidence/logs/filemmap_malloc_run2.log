@@ -1,0 +1,25 @@
+== probe_host_dma mode=filemmap tile=8192 repeats=8 launches=10 alignOff=0 ==
+[INIT] aclInit rc=0
+[INIT] aclrtSetDevice(0) rc=0
+[INIT] aclrtCreateStream rc=0
+[DEV ] AICORE=28 VECTOR=56 -> blocks=56
+[PREP] region=3670016 bytes (65536 per block) cyc=1792 blocks=56
+[PREP] posix_memalign(4096, 3670016) ptr=0x5589cabac000 pageAligned=1
+[PREP] RSS: before-mmap=113376 kB | after-touch(before-register)=115424 kB | region=3670016 B
+[PREP] aclrtHostRegisterV2(mapmode=malloc region, MAPPED) rc=0
+[PREP] RSS: after-register=115424 kB (delta vs after-touch = 0 kB)
+[PREP] aclrtHostGetDevicePointer rc=0 map=0x5589cabac000 dev=0x40000000000
+[PREP] srcKind=host-mapped(MAPPED) of mmap'd FILE/ANON/HEAP srcForKernel=0x40000000000 dst=0x12004c600000 cyc=0x120000017000
+[TIME] launches=10 perLaunch=165114.0 ns aclError_after_last=0
+[ASYNC] aclrtStreamQuery immediately after launch: rc=0 status=1(NOT_READY)
+[ASYNC] aclrtSynchronizeStream rc=0 (device-side MTE2 read loop is back-to-back, no per-tile wait)
+[COPY] aclrtMemcpy(D2H result) rc=0
+[COPY] aclrtMemcpy(D2H cycles) rc=0
+[VERIFY] bytes=3670016 mismatches=0 firstBadOff=0 (expect=0 got=0)
+[VERIFY] PASS: all bytes match model
+[CYCLE] validBlocks=56 avgSpanPerBlock=612 aggSpan(all blocks)=1238 syscnt
+[BANDWIDTH] host-wall: 22.23 GB/s (bytes=3670016 perLaunch=165114.0 ns)
+[CLEAN] aclrtHostUnregister rc=0
+[CLEAN] mmap/malloc release done
+== done mode=filemmap overall=OK ==
+rc=0

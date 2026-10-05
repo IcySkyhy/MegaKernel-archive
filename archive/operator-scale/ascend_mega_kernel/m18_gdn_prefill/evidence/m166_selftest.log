@@ -1,0 +1,428 @@
+[SELFTEST] 合成目录：/tmp/m18_nan_selftest_mg5pbxtc（零设备、零探针）
+[syn] H=3 T=8 nk=1 nc=1 scale=0.0883883461 probeHeads=2  (T3 ε=5.0e-05)
+  [terms-口径对照] 一层+传递 max Σ|terms|(S)=3.913e-01 ; 递归展开 max=7.638e-01（比值 1.95；递归口径在状态链上正反馈，故口径定为「一层+传递」，见 README §4.1）
+  [判定项]（必须 0 超界）
+    stage                      超界/总数         verdict
+    T1:input:q                 0/1024        PASS
+    T1:input:k                 0/1024        PASS
+    T1:input:v                 0/3072        PASS
+    T1:input:g                 0/24          PASS
+    T1:input:beta              0/24          PASS
+    T1:input:h0                0/49152       PASS
+    o[all_heads,tok]           0/3072        PASS
+    ht[final_state]            0/49152       PASS
+    S[head0,chunk0]            0/16384       PASS
+    S[head1,chunk0]            0/16384       PASS
+    gcum[chunk0]               0/64          PASS
+    eg[chunk0]                 0/64          PASS
+    A[chunk0]                  0/4096        PASS
+    u[chunk0]                  0/8192        PASS
+    w[chunk0]                  0/8192        PASS
+    d(v_new)[chunk0]           0/8192        PASS
+    AB[chunk0]                 0/4096        PASS
+    o[chunk0]                  0/8192        PASS
+  [报告项]（不参与 PASS/FAIL）
+    stage                      max|Δ|(绝对)  maxRel(相对)  ≤1ulp比例  T3最差占用      max Σ|terms| max|exp|    相对|out|占用
+    T1:input:q                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.651e-01   1.651e-01   0.000e+00
+    T1:input:k                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.577e-01   1.577e-01   0.000e+00
+    T1:input:v                 0.000e+00   0.000e+00   100.0%   0.000e+00   9.998e-01   9.998e-01   0.000e+00
+    T1:input:g                 0.000e+00   0.000e+00   100.0%   0.000e+00   4.814e-02   4.814e-02   0.000e+00
+    T1:input:beta              0.000e+00   0.000e+00   100.0%   0.000e+00   9.421e-01   9.421e-01   0.000e+00
+    T1:input:h0                0.000e+00   0.000e+00   100.0%   0.000e+00   9.999e-02   9.999e-02   0.000e+00
+    o[all_heads,tok]           9.096e-10   5.815e-08   100.0%   1.980e-04   3.208e-01   2.604e-02   1.162e-03
+    ht[final_state]            1.470e-08   5.914e-08   100.0%   1.093e-03   3.913e-01   3.361e-01   1.181e-03
+    S[head0,chunk0]            1.312e-08   5.858e-08   100.0%   1.056e-03   3.827e-01   3.361e-01   1.170e-03
+    S[head1,chunk0]            1.315e-08   5.860e-08   100.0%   1.093e-03   3.698e-01   2.740e-01   1.171e-03
+    gcum[chunk0]               6.519e-09   4.524e-08   100.0%   9.039e-04   1.745e-01   1.745e-01   9.039e-04
+    eg[chunk0]                 1.850e-08   2.202e-08   100.0%   4.401e-04   9.546e-01   9.546e-01   4.401e-04
+    A[chunk0]                  3.537e-09   4.972e-08   100.0%   2.433e-04   6.333e-01   1.318e-01   9.933e-04
+    u[chunk0]                  2.958e-08   5.831e-08   100.0%   1.165e-03   8.614e-01   8.558e-01   1.165e-03
+    w[chunk0]                  3.725e-09   5.683e-08   100.0%   1.130e-03   1.163e-01   1.163e-01   1.135e-03
+    d(v_new)[chunk0]           2.968e-08   5.466e-08   100.0%   6.211e-04   1.665e+00   8.726e-01   1.092e-03
+    AB[chunk0]                 4.162e-10   4.962e-08   100.0%   1.227e-04   8.084e-02   1.458e-02   9.913e-04
+    o[chunk0]                  7.316e-10   5.815e-08   100.0%   1.308e-04   3.208e-01   2.234e-02   1.162e-03
+  [非有限面]（M157 口径；nfd = 非有限不匹配，计入判定）
+    stage                       devNaN  refNaN   仅一侧NaN    双侧NaN  devInf  refInf   仅一侧Inf    异号Inf      nfd
+    T1:input:q                       0       0        0        0       0       0        0        0        0
+    T1:input:k                       0       0        0        0       0       0        0        0        0
+    T1:input:v                       0       0        0        0       0       0        0        0        0
+    T1:input:g                       0       0        0        0       0       0        0        0        0
+    T1:input:beta                    0       0        0        0       0       0        0        0        0
+    T1:input:h0                      0       0        0        0       0       0        0        0        0
+    o[all_heads,tok]                 0       0        0        0       0       0        0        0        0
+    ht[final_state]                  0       0        0        0       0       0        0        0        0
+    S[head0,chunk0]                  0       0        0        0       0       0        0        0        0
+    S[head1,chunk0]                  0       0        0        0       0       0        0        0        0
+    gcum[chunk0]                     0       0        0        0       0       0        0        0        0
+    eg[chunk0]                       0       0        0        0       0       0        0        0        0
+    A[chunk0]                        0       0        0        0       0       0        0        0        0
+    u[chunk0]                        0       0        0        0       0       0        0        0        0
+    w[chunk0]                        0       0        0        0       0       0        0        0        0
+    d(v_new)[chunk0]                 0       0        0        0       0       0        0        0        0
+    AB[chunk0]                       0       0        0        0       0       0        0        0        0
+    o[chunk0]                        0       0        0        0       0       0        0        0        0
+  [guard]（不参与 PASS/FAIL）
+    G1 输入非空洞:q                         PASS  max|·|=1.651e-01 std=8.828e-02
+    G1 输入非空洞:k                         PASS  max|·|=1.577e-01 std=8.839e-02
+    G1 输入非空洞:v                         PASS  max|·|=9.998e-01 std=5.810e-01
+    G1 输入非空洞:g                         PASS  max|·|=4.814e-02 std=1.482e-02
+    G1 输入非空洞:beta                      PASS  max|·|=9.421e-01 std=2.467e-01
+    G1 输入非空洞:h0                        PASS  max|·|=9.999e-02 std=5.774e-02
+    G2 状态跨 chunk 演化                    PASS  N/A（nc=1，无跨 chunk 边界）
+    G2 终态≠初态(all heads)                PASS  3/3 个 head
+    G3 A/AB 严格上三角恒 0                   PASS  max|上三角|=0.0e+00
+    G3 ĝ 单调不增(g≤0)                     PASS  递增位置数=0
+    G3 ragged 尾块 padding 行=0           PASS  末块(cv=8) slot7 第 8 行起 max|·|=0.0e+00
+    G3 probe 未用 chunk 槽位=0             PASS  S[head,chunk≥1] max|·|=0.0e+00
+    G3 probe 槽位可区分                     PASS  前 9 个 chunk 状态互不相同
+    G4 确定性(dump sha256 对照)             FAIL  ht sha256=2c80869a9e67e7a2
+[syn] PASS
+[syn_overflow] H=3 T=8 nk=1 nc=1 scale=0.0883883461 probeHeads=2  (T3 ε=5.0e-05)
+  [terms-口径对照] 一层+传递 max Σ|terms|(S)=nan ; 递归展开 max=nan（比值 nan；递归口径在状态链上正反馈，故口径定为「一层+传递」，见 README §4.1）
+  [判定项]（必须 0 超界）
+    stage                      超界/总数         verdict
+    T1:input:q                 0/1024        PASS
+    T1:input:k                 0/1024        PASS
+    T1:input:v                 0/3072        PASS
+    T1:input:g                 0/24          PASS
+    T1:input:beta              0/24          PASS
+    T1:input:h0                0/49152       PASS
+    o[all_heads,tok]           0/3072        PASS
+    ht[final_state]            16384/49152   FAIL(16384/49152)
+    S[head0,chunk0]            16384/16384   FAIL(16384/16384)
+    S[head1,chunk0]            0/16384       PASS
+    gcum[chunk0]               0/64          PASS
+    eg[chunk0]                 0/64          PASS
+    A[chunk0]                  0/4096        PASS
+    u[chunk0]                  0/8192        PASS
+    w[chunk0]                  0/8192        PASS
+    d(v_new)[chunk0]           0/8192        PASS
+    AB[chunk0]                 0/4096        PASS
+    o[chunk0]                  0/8192        PASS
+  [报告项]（不参与 PASS/FAIL）
+    stage                      max|Δ|(绝对)  maxRel(相对)  ≤1ulp比例  T3最差占用      max Σ|terms| max|exp|    相对|out|占用
+    T1:input:q                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.651e-01   1.651e-01   0.000e+00
+    T1:input:k                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.577e-01   1.577e-01   0.000e+00
+    T1:input:v                 0.000e+00   0.000e+00   100.0%   0.000e+00   9.998e-01   9.998e-01   0.000e+00
+    T1:input:g                 0.000e+00   0.000e+00   100.0%   0.000e+00   9.000e+02   9.000e+02   0.000e+00
+    T1:input:beta              0.000e+00   0.000e+00   100.0%   0.000e+00   9.421e-01   9.421e-01   0.000e+00
+    T1:input:h0                0.000e+00   0.000e+00   100.0%   0.000e+00   9.999e-02   9.999e-02   0.000e+00
+    o[all_heads,tok]           9.240e-10   5.792e-08   100.0%   1.980e-04   2.922e-01   2.604e-02   1.157e-03
+    ht[final_state]            1.470e-08   5.914e-08   100.0%   1.093e-03   3.913e-01   3.276e-01   1.181e-03
+    S[head0,chunk0]            0.000e+00   0.000e+00   0.0%     0.000e+00   0.000e+00   0.000e+00   0.000e+00
+    S[head1,chunk0]            1.315e-08   5.860e-08   100.0%   1.093e-03   3.698e-01   2.740e-01   1.171e-03
+    gcum[chunk0]               2.892e-05   3.213e-08   100.0%   6.421e-04   9.001e+02   9.001e+02   6.421e-04
+    eg[chunk0]                 0.000e+00   0.000e+00   100.0%   0.000e+00   0.000e+00   0.000e+00   0.000e+00
+    A[chunk0]                  3.537e-09   4.972e-08   100.0%   2.433e-04   6.333e-01   1.318e-01   9.933e-04
+    u[chunk0]                  2.958e-08   5.831e-08   100.0%   1.165e-03   8.614e-01   8.558e-01   1.165e-03
+    w[chunk0]                  0.000e+00   0.000e+00   100.0%   0.000e+00   0.000e+00   0.000e+00   0.000e+00
+    d(v_new)[chunk0]           2.958e-08   5.831e-08   100.0%   1.165e-03   8.558e-01   8.558e-01   1.165e-03
+    AB[chunk0]                 4.162e-10   4.962e-08   100.0%   1.227e-04   8.084e-02   1.458e-02   9.913e-04
+    o[chunk0]                  9.240e-10   5.730e-08   100.0%   1.188e-04   2.521e-01   2.410e-02   1.145e-03
+  [非有限面]（M157 口径；nfd = 非有限不匹配，计入判定）
+    stage                       devNaN  refNaN   仅一侧NaN    双侧NaN  devInf  refInf   仅一侧Inf    异号Inf      nfd
+    T1:input:q                       0       0        0        0       0       0        0        0        0
+    T1:input:k                       0       0        0        0       0       0        0        0        0
+    T1:input:v                       0       0        0        0       0       0        0        0        0
+    T1:input:g                       0       0        0        0       0       0        0        0        0
+    T1:input:beta                    0       0        0        0       0       0        0        0        0
+    T1:input:h0                      0       0        0        0       0       0        0        0        0
+    o[all_heads,tok]                 0       0        0        0       0       0        0        0        0
+    ht[final_state]                  0   16384    16384        0       0       0        0        0    16384
+    S[head0,chunk0]                  0   16384    16384        0       0       0        0        0    16384
+    S[head1,chunk0]                  0       0        0        0       0       0        0        0        0
+    gcum[chunk0]                     0       0        0        0       0       0        0        0        0
+    eg[chunk0]                       0       0        0        0       0       0        0        0        0
+    A[chunk0]                        0       0        0        0       0       0        0        0        0
+    u[chunk0]                        0       0        0        0       0       0        0        0        0
+    w[chunk0]                        0       0        0        0       0       0        0        0        0
+    d(v_new)[chunk0]                 0       0        0        0       0       0        0        0        0
+    AB[chunk0]                       0       0        0        0       0       0        0        0        0
+    o[chunk0]                        0       0        0        0       0       0        0        0        0
+  [guard]（不参与 PASS/FAIL）
+    G1 输入非空洞:q                         PASS  max|·|=1.651e-01 std=8.828e-02
+    G1 输入非空洞:k                         PASS  max|·|=1.577e-01 std=8.839e-02
+    G1 输入非空洞:v                         PASS  max|·|=9.998e-01 std=5.810e-01
+    G1 输入非空洞:g                         PASS  max|·|=9.000e+02 std=1.798e+02
+    G1 输入非空洞:beta                      PASS  max|·|=9.421e-01 std=2.467e-01
+    G1 输入非空洞:h0                        PASS  max|·|=9.999e-02 std=5.774e-02
+    G2 状态跨 chunk 演化                    PASS  N/A（nc=1，无跨 chunk 边界）
+    G2 终态≠初态(all heads)                PASS  3/3 个 head
+    G3 A/AB 严格上三角恒 0                   PASS  max|上三角|=0.0e+00
+    G3 ĝ 单调不增(g≤0)                     PASS  递增位置数=0
+    G3 ragged 尾块 padding 行=0           PASS  末块(cv=8) slot7 第 8 行起 max|·|=0.0e+00
+    G3 probe 未用 chunk 槽位=0             PASS  S[head,chunk≥1] max|·|=0.0e+00
+    G3 probe 槽位可区分                     PASS  前 9 个 chunk 状态互不相同
+    G4 确定性(dump sha256 对照)             FAIL  ht sha256=3e72197a36740775
+[syn_overflow] FAIL
+[syn_overflow] H=3 T=8 nk=1 nc=1 scale=0.0883883461 probeHeads=2  (T3 ε=5.0e-05)
+  [terms-口径对照] 一层+传递 max Σ|terms|(S)=3.913e-01 ; 递归展开 max=7.352e-01（比值 1.88；递归口径在状态链上正反馈，故口径定为「一层+传递」，见 README §4.1）
+  [判定项]（必须 0 超界）
+    stage                      超界/总数         verdict
+    T1:input:q                 0/1024        PASS
+    T1:input:k                 0/1024        PASS
+    T1:input:v                 0/3072        PASS
+    T1:input:g                 0/24          PASS
+    T1:input:beta              0/24          PASS
+    T1:input:h0                0/49152       PASS
+    o[all_heads,tok]           0/3072        PASS
+    ht[final_state]            0/49152       PASS
+    S[head0,chunk0]            0/16384       PASS
+    S[head1,chunk0]            0/16384       PASS
+    gcum[chunk0]               0/64          PASS
+    eg[chunk0]                 0/64          PASS
+    A[chunk0]                  0/4096        PASS
+    u[chunk0]                  0/8192        PASS
+    w[chunk0]                  0/8192        PASS
+    d(v_new)[chunk0]           0/8192        PASS
+    AB[chunk0]                 0/4096        PASS
+    o[chunk0]                  0/8192        PASS
+  [报告项]（不参与 PASS/FAIL）
+    stage                      max|Δ|(绝对)  maxRel(相对)  ≤1ulp比例  T3最差占用      max Σ|terms| max|exp|    相对|out|占用
+    T1:input:q                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.651e-01   1.651e-01   0.000e+00
+    T1:input:k                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.577e-01   1.577e-01   0.000e+00
+    T1:input:v                 0.000e+00   0.000e+00   100.0%   0.000e+00   9.998e-01   9.998e-01   0.000e+00
+    T1:input:g                 0.000e+00   0.000e+00   100.0%   0.000e+00   9.000e+02   9.000e+02   0.000e+00
+    T1:input:beta              0.000e+00   0.000e+00   100.0%   0.000e+00   9.421e-01   9.421e-01   0.000e+00
+    T1:input:h0                0.000e+00   0.000e+00   100.0%   0.000e+00   9.999e-02   9.999e-02   0.000e+00
+    o[all_heads,tok]           9.240e-10   5.792e-08   100.0%   1.980e-04   2.922e-01   2.604e-02   1.157e-03
+    ht[final_state]            1.470e-08   5.914e-08   100.0%   1.093e-03   3.913e-01   3.276e-01   1.181e-03
+    S[head0,chunk0]            7.450e-09   5.872e-08   100.0%   1.072e-03   3.236e-01   3.184e-01   1.173e-03
+    S[head1,chunk0]            1.315e-08   5.860e-08   100.0%   1.093e-03   3.698e-01   2.740e-01   1.171e-03
+    gcum[chunk0]               2.892e-05   3.213e-08   100.0%   6.421e-04   9.001e+02   9.001e+02   6.421e-04
+    eg[chunk0]                 0.000e+00   0.000e+00   100.0%   0.000e+00   0.000e+00   0.000e+00   0.000e+00
+    A[chunk0]                  3.537e-09   4.972e-08   100.0%   2.433e-04   6.333e-01   1.318e-01   9.933e-04
+    u[chunk0]                  2.958e-08   5.831e-08   100.0%   1.165e-03   8.614e-01   8.558e-01   1.165e-03
+    w[chunk0]                  0.000e+00   0.000e+00   100.0%   0.000e+00   0.000e+00   0.000e+00   0.000e+00
+    d(v_new)[chunk0]           2.958e-08   5.831e-08   100.0%   1.165e-03   8.558e-01   8.558e-01   1.165e-03
+    AB[chunk0]                 4.162e-10   4.962e-08   100.0%   1.227e-04   8.084e-02   1.458e-02   9.913e-04
+    o[chunk0]                  9.240e-10   5.730e-08   100.0%   1.188e-04   2.521e-01   2.410e-02   1.145e-03
+  [非有限面]（M157 口径；nfd = 非有限不匹配，计入判定）
+    stage                       devNaN  refNaN   仅一侧NaN    双侧NaN  devInf  refInf   仅一侧Inf    异号Inf      nfd
+    T1:input:q                       0       0        0        0       0       0        0        0        0
+    T1:input:k                       0       0        0        0       0       0        0        0        0
+    T1:input:v                       0       0        0        0       0       0        0        0        0
+    T1:input:g                       0       0        0        0       0       0        0        0        0
+    T1:input:beta                    0       0        0        0       0       0        0        0        0
+    T1:input:h0                      0       0        0        0       0       0        0        0        0
+    o[all_heads,tok]                 0       0        0        0       0       0        0        0        0
+    ht[final_state]                  0       0        0        0       0       0        0        0        0
+    S[head0,chunk0]                  0       0        0        0       0       0        0        0        0
+    S[head1,chunk0]                  0       0        0        0       0       0        0        0        0
+    gcum[chunk0]                     0       0        0        0       0       0        0        0        0
+    eg[chunk0]                       0       0        0        0       0       0        0        0        0
+    A[chunk0]                        0       0        0        0       0       0        0        0        0
+    u[chunk0]                        0       0        0        0       0       0        0        0        0
+    w[chunk0]                        0       0        0        0       0       0        0        0        0
+    d(v_new)[chunk0]                 0       0        0        0       0       0        0        0        0
+    AB[chunk0]                       0       0        0        0       0       0        0        0        0
+    o[chunk0]                        0       0        0        0       0       0        0        0        0
+  [guard]（不参与 PASS/FAIL）
+    G1 输入非空洞:q                         PASS  max|·|=1.651e-01 std=8.828e-02
+    G1 输入非空洞:k                         PASS  max|·|=1.577e-01 std=8.839e-02
+    G1 输入非空洞:v                         PASS  max|·|=9.998e-01 std=5.810e-01
+    G1 输入非空洞:g                         PASS  max|·|=9.000e+02 std=1.798e+02
+    G1 输入非空洞:beta                      PASS  max|·|=9.421e-01 std=2.467e-01
+    G1 输入非空洞:h0                        PASS  max|·|=9.999e-02 std=5.774e-02
+    G2 状态跨 chunk 演化                    PASS  N/A（nc=1，无跨 chunk 边界）
+    G2 终态≠初态(all heads)                PASS  3/3 个 head
+    G3 A/AB 严格上三角恒 0                   PASS  max|上三角|=0.0e+00
+    G3 ĝ 单调不增(g≤0)                     PASS  递增位置数=0
+    G3 ragged 尾块 padding 行=0           PASS  末块(cv=8) slot7 第 8 行起 max|·|=0.0e+00
+    G3 probe 未用 chunk 槽位=0             PASS  S[head,chunk≥1] max|·|=0.0e+00
+    G3 probe 槽位可区分                     PASS  前 9 个 chunk 状态互不相同
+    G4 确定性(dump sha256 对照)             FAIL  ht sha256=3e72197a36740775
+[syn_overflow] PASS
+[syn_devmut] H=3 T=8 nk=1 nc=1 scale=0.0883883461 probeHeads=2  (T3 ε=5.0e-05)
+  [terms-口径对照] 一层+传递 max Σ|terms|(S)=3.913e-01 ; 递归展开 max=7.638e-01（比值 1.95；递归口径在状态链上正反馈，故口径定为「一层+传递」，见 README §4.1）
+  [判定项]（必须 0 超界）
+    stage                      超界/总数         verdict
+    T1:input:q                 0/1024        PASS
+    T1:input:k                 0/1024        PASS
+    T1:input:v                 0/3072        PASS
+    T1:input:g                 0/24          PASS
+    T1:input:beta              0/24          PASS
+    T1:input:h0                0/49152       PASS
+    o[all_heads,tok]           16/3072       FAIL(16/3072)
+    ht[final_state]            0/49152       PASS
+    S[head0,chunk0]            0/16384       PASS
+    S[head1,chunk0]            0/16384       PASS
+    gcum[chunk0]               0/64          PASS
+    eg[chunk0]                 0/64          PASS
+    A[chunk0]                  0/4096        PASS
+    u[chunk0]                  0/8192        PASS
+    w[chunk0]                  0/8192        PASS
+    d(v_new)[chunk0]           0/8192        PASS
+    AB[chunk0]                 0/4096        PASS
+    o[chunk0]                  0/8192        PASS
+  [报告项]（不参与 PASS/FAIL）
+    stage                      max|Δ|(绝对)  maxRel(相对)  ≤1ulp比例  T3最差占用      max Σ|terms| max|exp|    相对|out|占用
+    T1:input:q                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.651e-01   1.651e-01   0.000e+00
+    T1:input:k                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.577e-01   1.577e-01   0.000e+00
+    T1:input:v                 0.000e+00   0.000e+00   100.0%   0.000e+00   9.998e-01   9.998e-01   0.000e+00
+    T1:input:g                 0.000e+00   0.000e+00   100.0%   0.000e+00   4.814e-02   4.814e-02   0.000e+00
+    T1:input:beta              0.000e+00   0.000e+00   100.0%   0.000e+00   9.421e-01   9.421e-01   0.000e+00
+    T1:input:h0                0.000e+00   0.000e+00   100.0%   0.000e+00   9.999e-02   9.999e-02   0.000e+00
+    o[all_heads,tok]           9.096e-10   5.815e-08   100.0%   1.980e-04   3.208e-01   2.604e-02   1.162e-03
+    ht[final_state]            1.470e-08   5.914e-08   100.0%   1.093e-03   3.913e-01   3.361e-01   1.181e-03
+    S[head0,chunk0]            1.312e-08   5.858e-08   100.0%   1.056e-03   3.827e-01   3.361e-01   1.170e-03
+    S[head1,chunk0]            1.315e-08   5.860e-08   100.0%   1.093e-03   3.698e-01   2.740e-01   1.171e-03
+    gcum[chunk0]               6.519e-09   4.524e-08   100.0%   9.039e-04   1.745e-01   1.745e-01   9.039e-04
+    eg[chunk0]                 1.850e-08   2.202e-08   100.0%   4.401e-04   9.546e-01   9.546e-01   4.401e-04
+    A[chunk0]                  3.537e-09   4.972e-08   100.0%   2.433e-04   6.333e-01   1.318e-01   9.933e-04
+    u[chunk0]                  2.958e-08   5.831e-08   100.0%   1.165e-03   8.614e-01   8.558e-01   1.165e-03
+    w[chunk0]                  3.725e-09   5.683e-08   100.0%   1.130e-03   1.163e-01   1.163e-01   1.135e-03
+    d(v_new)[chunk0]           2.968e-08   5.466e-08   100.0%   6.211e-04   1.665e+00   8.726e-01   1.092e-03
+    AB[chunk0]                 4.162e-10   4.962e-08   100.0%   1.227e-04   8.084e-02   1.458e-02   9.913e-04
+    o[chunk0]                  7.316e-10   5.815e-08   100.0%   1.308e-04   3.208e-01   2.234e-02   1.162e-03
+  [非有限面]（M157 口径；nfd = 非有限不匹配，计入判定）
+    stage                       devNaN  refNaN   仅一侧NaN    双侧NaN  devInf  refInf   仅一侧Inf    异号Inf      nfd
+    T1:input:q                       0       0        0        0       0       0        0        0        0
+    T1:input:k                       0       0        0        0       0       0        0        0        0
+    T1:input:v                       0       0        0        0       0       0        0        0        0
+    T1:input:g                       0       0        0        0       0       0        0        0        0
+    T1:input:beta                    0       0        0        0       0       0        0        0        0
+    T1:input:h0                      0       0        0        0       0       0        0        0        0
+    o[all_heads,tok]                16       0       16        0       0       0        0        0       16
+    ht[final_state]                  0       0        0        0       0       0        0        0        0
+    S[head0,chunk0]                  0       0        0        0       0       0        0        0        0
+    S[head1,chunk0]                  0       0        0        0       0       0        0        0        0
+    gcum[chunk0]                     0       0        0        0       0       0        0        0        0
+    eg[chunk0]                       0       0        0        0       0       0        0        0        0
+    A[chunk0]                        0       0        0        0       0       0        0        0        0
+    u[chunk0]                        0       0        0        0       0       0        0        0        0
+    w[chunk0]                        0       0        0        0       0       0        0        0        0
+    d(v_new)[chunk0]                 0       0        0        0       0       0        0        0        0
+    AB[chunk0]                       0       0        0        0       0       0        0        0        0
+    o[chunk0]                        0       0        0        0       0       0        0        0        0
+  [guard]（不参与 PASS/FAIL）
+    G1 输入非空洞:q                         PASS  max|·|=1.651e-01 std=8.828e-02
+    G1 输入非空洞:k                         PASS  max|·|=1.577e-01 std=8.839e-02
+    G1 输入非空洞:v                         PASS  max|·|=9.998e-01 std=5.810e-01
+    G1 输入非空洞:g                         PASS  max|·|=4.814e-02 std=1.482e-02
+    G1 输入非空洞:beta                      PASS  max|·|=9.421e-01 std=2.467e-01
+    G1 输入非空洞:h0                        PASS  max|·|=9.999e-02 std=5.774e-02
+    G2 状态跨 chunk 演化                    PASS  N/A（nc=1，无跨 chunk 边界）
+    G2 终态≠初态(all heads)                PASS  3/3 个 head
+    G3 A/AB 严格上三角恒 0                   PASS  max|上三角|=0.0e+00
+    G3 ĝ 单调不增(g≤0)                     PASS  递增位置数=0
+    G3 ragged 尾块 padding 行=0           PASS  末块(cv=8) slot7 第 8 行起 max|·|=0.0e+00
+    G3 probe 未用 chunk 槽位=0             PASS  S[head,chunk≥1] max|·|=0.0e+00
+    G3 probe 槽位可区分                     PASS  前 9 个 chunk 状态互不相同
+    G4 确定性(dump sha256 对照)             FAIL  ht sha256=2c80869a9e67e7a2
+[syn_devmut] FAIL
+[syn_chunkmut] H=3 T=65 nk=1 nc=2 scale=0.0883883461 probeHeads=2  (T3 ε=5.0e-05)
+  [terms-口径对照] 一层+传递 max Σ|terms|(S)=1.251e+00 ; 递归展开 max=3.834e+00（比值 3.07；递归口径在状态链上正反馈，故口径定为「一层+传递」，见 README §4.1）
+  [判定项]（必须 0 超界）
+    stage                      超界/总数         verdict
+    T1:input:q                 0/8320        PASS
+    T1:input:k                 0/8320        PASS
+    T1:input:v                 0/24960       PASS
+    T1:input:g                 0/195         PASS
+    T1:input:beta              0/195         PASS
+    T1:input:h0                0/49152       PASS
+    o[all_heads,tok]           383/24960     FAIL(383/24960)
+    ht[final_state]            49085/49152   FAIL(49085/49152)
+    S[head0,chunk0]            0/16384       PASS
+    S[head0,chunk1]            16382/16384   FAIL(16382/16384)
+    S[head1,chunk0]            0/16384       PASS
+    S[head1,chunk1]            16382/16384   FAIL(16382/16384)
+    gcum[chunk0]               0/64          PASS
+    eg[chunk0]                 0/64          PASS
+    A[chunk0]                  0/4096        PASS
+    u[chunk0]                  0/8192        PASS
+    w[chunk0]                  0/8192        PASS
+    d(v_new)[chunk0]           0/8192        PASS
+    AB[chunk0]                 0/4096        PASS
+    o[chunk0]                  0/8192        PASS
+    gcum[chunk1]               64/64         FAIL(64/64)
+    eg[chunk1]                 64/64         FAIL(64/64)
+    A[chunk1]                  0/4096        PASS
+    u[chunk1]                  128/8192      FAIL(128/8192)
+    w[chunk1]                  128/8192      FAIL(128/8192)
+    d(v_new)[chunk1]           128/8192      FAIL(128/8192)
+    AB[chunk1]                 1/4096        FAIL(1/4096)
+    o[chunk1]                  128/8192      FAIL(128/8192)
+  [报告项]（不参与 PASS/FAIL）
+    stage                      max|Δ|(绝对)  maxRel(相对)  ≤1ulp比例  T3最差占用      max Σ|terms| max|exp|    相对|out|占用
+    T1:input:q                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.675e-01   1.675e-01   0.000e+00
+    T1:input:k                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.652e-01   1.652e-01   0.000e+00
+    T1:input:v                 0.000e+00   0.000e+00   100.0%   0.000e+00   1.000e+00   1.000e+00   0.000e+00
+    T1:input:g                 0.000e+00   0.000e+00   100.0%   0.000e+00   5.093e-02   5.093e-02   0.000e+00
+    T1:input:beta              0.000e+00   0.000e+00   100.0%   0.000e+00   9.413e-01   9.413e-01   0.000e+00
+    T1:input:h0                0.000e+00   0.000e+00   100.0%   0.000e+00   1.000e-01   1.000e-01   0.000e+00
+    o[all_heads,tok]           3.621e-02   1.000e+00   98.5%    1.004e+03   1.056e+00   5.081e-02   1.999e+04
+    ht[final_state]            1.700e-01   3.757e+03   0.0%     4.995e+03   1.251e+00   6.170e-01   7.506e+07
+    S[head0,chunk0]            1.520e-08   5.881e-08   100.0%   5.294e-04   1.004e+00   5.294e-01   1.175e-03
+    S[head0,chunk1]            5.686e-01   1.000e+00   0.0%     1.377e+04   1.022e+00   5.686e-01   1.999e+04
+    S[head1,chunk0]            2.476e-08   5.901e-08   100.0%   5.716e-04   1.188e+00   5.747e-01   1.179e-03
+    S[head1,chunk1]            6.170e-01   1.000e+00   0.0%     1.435e+04   1.251e+00   6.170e-01   1.999e+04
+    gcum[chunk0]               5.797e-08   5.404e-08   100.0%   1.080e-03   1.583e+00   1.583e+00   1.080e-03
+    eg[chunk0]                 2.707e-08   4.653e-08   100.0%   9.296e-04   9.970e-01   9.970e-01   9.296e-04
+    A[chunk0]                  7.031e-09   5.776e-08   100.0%   2.747e-04   7.151e-01   2.055e-01   1.154e-03
+    u[chunk0]                  4.675e-08   5.886e-08   100.0%   1.117e-03   1.559e+00   1.146e+00   1.176e-03
+    w[chunk0]                  3.696e-09   5.886e-08   100.0%   1.124e-03   1.202e-01   1.165e-01   1.176e-03
+    d(v_new)[chunk0]           5.756e-08   5.848e-08   100.0%   8.021e-04   1.710e+00   1.137e+00   1.168e-03
+    AB[chunk0]                 8.809e-10   5.877e-08   100.0%   2.584e-04   8.909e-02   2.307e-02   1.174e-03
+    o[chunk0]                  1.821e-09   5.881e-08   100.0%   1.694e-04   9.146e-01   4.088e-02   1.175e-03
+    gcum[chunk1]               3.168e-02   1.000e+00   0.0%     1.998e+04   3.168e-02   3.168e-02   1.998e+04
+    eg[chunk1]                 9.688e-01   1.000e+00   0.0%     1.999e+04   9.688e-01   9.688e-01   1.999e+04
+    A[chunk1]                  0.000e+00   0.000e+00   100.0%   0.000e+00   0.000e+00   0.000e+00   0.000e+00
+    u[chunk1]                  7.187e-01   1.000e+00   98.4%    1.999e+04   7.187e-01   7.187e-01   1.999e+04
+    w[chunk1]                  1.042e-01   1.000e+00   98.4%    1.999e+04   1.042e-01   1.042e-01   1.999e+04
+    d(v_new)[chunk1]           7.874e-01   1.000e+00   98.4%    2.591e+03   6.634e+00   7.874e-01   1.999e+04
+    AB[chunk1]                 9.791e-03   1.000e+00   100.0%   2.573e+03   7.611e-02   9.791e-03   1.998e+04
+    o[chunk1]                  3.230e-02   1.000e+00   98.4%    9.275e+02   7.593e-01   3.230e-02   1.999e+04
+  [非有限面]（M157 口径；nfd = 非有限不匹配，计入判定）
+    stage                       devNaN  refNaN   仅一侧NaN    双侧NaN  devInf  refInf   仅一侧Inf    异号Inf      nfd
+    T1:input:q                       0       0        0        0       0       0        0        0        0
+    T1:input:k                       0       0        0        0       0       0        0        0        0
+    T1:input:v                       0       0        0        0       0       0        0        0        0
+    T1:input:g                       0       0        0        0       0       0        0        0        0
+    T1:input:beta                    0       0        0        0       0       0        0        0        0
+    T1:input:h0                      0       0        0        0       0       0        0        0        0
+    o[all_heads,tok]                 0       0        0        0       0       0        0        0        0
+    ht[final_state]                  0       0        0        0       0       0        0        0        0
+    S[head0,chunk0]                  0       0        0        0       0       0        0        0        0
+    S[head0,chunk1]                  0       0        0        0       0       0        0        0        0
+    S[head1,chunk0]                  0       0        0        0       0       0        0        0        0
+    S[head1,chunk1]                  0       0        0        0       0       0        0        0        0
+    gcum[chunk0]                     0       0        0        0       0       0        0        0        0
+    eg[chunk0]                       0       0        0        0       0       0        0        0        0
+    A[chunk0]                        0       0        0        0       0       0        0        0        0
+    u[chunk0]                        0       0        0        0       0       0        0        0        0
+    w[chunk0]                        0       0        0        0       0       0        0        0        0
+    d(v_new)[chunk0]                 0       0        0        0       0       0        0        0        0
+    AB[chunk0]                       0       0        0        0       0       0        0        0        0
+    o[chunk0]                        0       0        0        0       0       0        0        0        0
+    gcum[chunk1]                     0       0        0        0       0       0        0        0        0
+    eg[chunk1]                       0       0        0        0       0       0        0        0        0
+    A[chunk1]                        0       0        0        0       0       0        0        0        0
+    u[chunk1]                        0       0        0        0       0       0        0        0        0
+    w[chunk1]                        0       0        0        0       0       0        0        0        0
+    d(v_new)[chunk1]                 0       0        0        0       0       0        0        0        0
+    AB[chunk1]                       0       0        0        0       0       0        0        0        0
+    o[chunk1]                        0       0        0        0       0       0        0        0        0
+  [guard]（不参与 PASS/FAIL）
+    G1 输入非空洞:q                         PASS  max|·|=1.675e-01 std=8.839e-02
+    G1 输入非空洞:k                         PASS  max|·|=1.652e-01 std=8.839e-02
+    G1 输入非空洞:v                         PASS  max|·|=1.000e+00 std=5.795e-01
+    G1 输入非空洞:g                         PASS  max|·|=5.093e-02 std=1.472e-02
+    G1 输入非空洞:beta                      PASS  max|·|=9.413e-01 std=2.777e-01
+    G1 输入非空洞:h0                        PASS  max|·|=1.000e-01 std=5.760e-02
+    G2 状态跨 chunk 演化                    PASS  演化 2/2 个 (head,chunk) 边界
+    G2 终态≠初态(all heads)                PASS  3/3 个 head
+    G3 A/AB 严格上三角恒 0                   PASS  max|上三角|=0.0e+00
+    G3 ĝ 单调不增(g≤0)                     PASS  递增位置数=0
+    G3 ragged 尾块 padding 行=0           PASS  末块(cv=1) slot7 第 1 行起 max|·|=0.0e+00
+    G3 probe 未用 chunk 槽位=0             PASS  S[head,chunk≥2] max|·|=0.0e+00
+    G3 probe 槽位可区分                     PASS  前 9 个 chunk 状态互不相同
+    G4 确定性(dump sha256 对照)             FAIL  ht sha256=786994c5808b58b8
+[syn_chunkmut] FAIL
+[SELFTEST] ===== 汇总 =====
+[SELFTEST] syn 干净（稳定判据应 PASS）                             期望 PASS / 实得 PASS  ✓
+[SELFTEST] syn_overflow 旧式判据（0·inf ⇒ 应 FAIL）              期望 FAIL / 实得 FAIL  ✓
+[SELFTEST] syn_overflow 指数差判据（应 PASS）                     期望 PASS / 实得 PASS  ✓
+[SELFTEST] syn_devmut 设备侧 NaN（应 FAIL）                     期望 FAIL / 实得 FAIL  ✓
+[SELFTEST] syn_chunkmut 错一个 chunk 边界（应 FAIL）              期望 FAIL / 实得 FAIL  ✓
+[SELFTEST] 各档符合期望（rc=0，合成目录 /tmp/m18_nan_selftest_mg5pbxtc）

@@ -1,0 +1,135 @@
+########## 取锁（一次）##########
+--- npu-smi（进锁后复查）---
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.6                               Version: 25.7.rc1.6                            |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 263.8       62                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5482  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+== A1 real m=1..4097 ==
+[m27] 核数（API 取得）：AIC=28 AIV=56（mix(1,2) 启动 numBlocks=AIC 数）
+[m27] 块几何：MT=8 TILE_STRIDE=163840 WS_BYTES=4353024 UB_PEAK_PF=94592（UB_BYTES_TOTAL=253952）
+[m27] 权重 = 真实 checkpoint 切片（layer=0；attn 边界用 attn_hc_*、mlp 边界用 mlp_hc_*）
+[m27] ==== case m1：m=1 mode=1 tiles=1 arena=4.15 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m1 完成（dump=on 文件数=24）
+[m27] ==== case m1_mix：m=1 mode=0 tiles=1 arena=4.15 MB ====
+[m27] A1 HCP 未被写出（mode MIX；只查前 1 行 = 无更早块 scratch 覆盖的行）：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/0/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m1_mix 完成（dump=on 文件数=48）
+[m27] ==== case m1_conly：m=1 mode=3 tiles=1 arena=4.15 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=0/1/0）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m1_conly 完成（dump=on 文件数=72）
+[m27] ==== case m9：m=9 mode=1 tiles=2 arena=4.31 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m9 完成（dump=on 文件数=96）
+[m27] ==== case m33：m=33 mode=1 tiles=5 arena=4.78 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m33 完成（dump=on 文件数=120）
+[m27] ==== case m64：m=64 mode=1 tiles=8 arena=5.25 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m64 完成（dump=on 文件数=144）
+[m27] ==== case m257：m=257 mode=1 tiles=33 arena=9.15 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m257 完成（dump=on 文件数=168）
+[m27] ==== case m4097：m=4097 mode=1 tiles=513 arena=84.15 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m4097 完成（dump=on 文件数=190）
+[m27] ==== case m4097_mix：m=4097 mode=0 tiles=513 arena=84.15 MB ====
+[m27] A1 HCP 未被写出（mode MIX；只查前 64 行 = 无更早块 scratch 覆盖的行）：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/0/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m4097_mix 完成（dump=on 文件数=212）
+[m27] 共 15 次 launch；dump 文件 212 个
+[m27] ===== OK（host 侧自检）=====
+A1 rc=0
+== A2 MT=12 synth ==
+[m27] 核数（API 取得）：AIC=28 AIV=56（mix(1,2) 启动 numBlocks=AIC 数）
+[m27] 块几何：MT=12 TILE_STRIDE=245760 WS_BYTES=4353024 UB_PEAK_PF=94592（UB_BYTES_TOTAL=253952）
+[m27] 权重 = **合成**（原因：M27_SYNTH=1）
+[m27] ==== case m1：m=1 mode=1 tiles=1 arena=4.15 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m1 完成（dump=on 文件数=24）
+[m27] ==== case m33：m=33 mode=1 tiles=3 arena=4.62 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m33 完成（dump=on 文件数=48）
+[m27] ==== case m257：m=257 mode=1 tiles=22 arena=9.07 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m257 完成（dump=on 文件数=72）
+[m27] 共 6 次 launch；dump 文件 72 个
+[m27] ===== OK（host 侧自检）=====
+A2 rc=0
+== A3 rowsteal ==
+[m27] 核数（API 取得）：AIC=28 AIV=56（mix(1,2) 启动 numBlocks=AIC 数）
+[m27] 块几何：MT=8 TILE_STRIDE=163840 WS_BYTES=4353024 UB_PEAK_PF=94592（UB_BYTES_TOTAL=253952）
+[m27] 权重 = 真实 checkpoint 切片（layer=0；attn 边界用 attn_hc_*、mlp 边界用 mlp_hc_*）
+[m27] ==== case m1：m=1 mode=1 tiles=1 arena=4.15 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m1 完成（dump=on 文件数=24）
+[m27] ==== case m33：m=33 mode=1 tiles=5 arena=4.78 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m33 完成（dump=on 文件数=48）
+[m27] ==== case m257：m=257 mode=1 tiles=33 arena=9.15 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m257 完成（dump=on 文件数=72）
+[m27] 共 6 次 launch；dump 文件 72 个
+[m27] ===== OK（host 侧自检）=====
+A3 rc=0
+== A4 norel ==
+[m27] 核数（API 取得）：AIC=28 AIV=56（mix(1,2) 启动 numBlocks=AIC 数）
+[m27] 块几何：MT=8 TILE_STRIDE=163840 WS_BYTES=4353024 UB_PEAK_PF=94592（UB_BYTES_TOTAL=253952）
+[m27] 权重 = 真实 checkpoint 切片（layer=0；attn 边界用 attn_hc_*、mlp 边界用 mlp_hc_*）
+[m27] ==== case m33：m=33 mode=1 tiles=5 arena=4.78 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m33 完成（dump=on 文件数=24）
+[m27] ==== case m257：m=257 mode=1 tiles=33 arena=9.15 MB ====
+[m27] A1 HCP 已写出：OK
+[m27] A1 重定位（应写出的张量不再是毒值；want blk/injw/rstd=1/1/1）：blk=OK injw=OK rstd=OK
+[m27] A1 ij handoff 面（不再是毒值）：OK
+[m27] case m257 完成（dump=on 文件数=48）
+[m27] 共 4 次 launch；dump 文件 48 个
+[m27] ===== OK（host 侧自检）=====
+A4 rc=0
+########## 判据（每档一票三态）##########
+/tmp/m27_out rc=1 :: 
+/tmp/m27_out_mt12 rc=1 :: 
+/tmp/m27_out_mut/rowsteal rc=1 :: 
+/tmp/m27_out_mut/norel rc=1 :: 
+########## done（Sun Sep 27 10:23:57 UTC 2026）##########

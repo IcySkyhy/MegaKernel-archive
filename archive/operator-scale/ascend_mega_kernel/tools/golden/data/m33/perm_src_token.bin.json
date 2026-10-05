@@ -1,0 +1,16 @@
+{
+  "tensor": "perm_src_token.bin",
+  "shape": [
+    66
+  ],
+  "dtype": "int32",
+  "strides": [
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 264,
+  "sha256": "0fe3bfb22514a9e9f1bf3ee0873fc18bf67a77ce69919054ca1ce2158c327257",
+  "kind": "golden",
+  "description": "grouped permute: source token per sorted slot [m*top_k]"
+}

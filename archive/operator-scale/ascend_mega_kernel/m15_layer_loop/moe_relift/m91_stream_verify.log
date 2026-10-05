@@ -1,0 +1,65 @@
+# M91-#3 命令 -> 输出/rc 表（全部在本 worktree 实跑）
+# 环境：source /usr/local/Ascend/ascend-toolkit/set_env.sh ; Ascend950PR
+
+## 1) 重生成生成物 + 抽取规则自洽（两档 locale）
+$ LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py
+[lift] 写出 m15_moe_layer.h（2187 行；内容锚点 asc 行 62..2031，入口第 2033 行）
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+
+$ LC_ALL=C.UTF-8 python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+
+## 2) 构建
+$ cmake --build m15_layer_loop/build -j4 2>&1 | tail -3
+2 warnings generated.
+[100%] Linking ASC executable m15_layer_loop
+[100%] Built target m15_layer_loop
+rc=0
+
+$ sha256sum m15_layer_loop/build/m15_layer_loop
+2d42ba86e2f7d7918230d77f360295a5e12f4bbc2a6841602475e5b85945486c  m15_layer_loop/build/m15_layer_loop
+rc=0
+
+## 3) 验收 runs=all / runs=chain（与改前逐项相同）
+$ tail -1 /tmp/m91_base_all.log
+[m15] ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+rc=0
+
+$ tail -1 /tmp/m91_s_all.log
+[m15] ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+rc=0
+
+$ tail -1 /tmp/m91_base_chain.log
+[m15] ===== ALL PASS（checks=910, guards=52, fails=0）=====
+rc=0
+
+$ tail -1 /tmp/m91_s_chain.log
+[m15] ===== ALL PASS（checks=910, guards=52, fails=0）=====
+rc=0
+
+## 4) 三条静态判据
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_stream.py | tail -1
+[check] ===== 可 FAIL 的判据 15 条（FAIL 0 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+$ LC_ALL=C.UTF-8 python3 m15_layer_loop/moe_relift/check_stream.py | tail -1
+[check] ===== 可 FAIL 的判据 15 条（FAIL 0 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_rescale.py | tail -1
+[check] ===== 可 FAIL 的判据 30 条（FAIL 0 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py | tail -1
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+## 5) 两档 locale 读数逐行一致
+$ diff /tmp/m91_check_stream_C.log /tmp/m91_check_stream_utf8.log
+rc=0
+

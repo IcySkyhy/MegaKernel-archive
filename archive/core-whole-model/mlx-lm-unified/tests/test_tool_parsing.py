@@ -1,0 +1,572 @@
+import unittest
+from pathlib import Path
+
+from mlx_lm.tool_parsers import (
+    function_gemma,
+    gemma4,
+    glm47,
+    hy_v3,
+    hy_v3_opensource,
+    json_tools,
+    kimi_k2,
+    longcat,
+    minimax_m2,
+    mistral,
+    pythonic,
+    qwen3_coder,
+)
+
+
+class TestToolParsing(unittest.TestCase):
+    def test_parsers(self):
+        test_cases = [
+            ("call:multiply{a:12234585,b:48838483920}", function_gemma),
+            ("call:multiply{a:12234585,b:48838483920}", gemma4),
+            (
+                '{"name": "multiply", "arguments": {"a": 12234585, "b": 48838483920}}',
+                glm47,
+            ),
+            ("multiply a=12234585 b=48838483920", glm47),
+            (
+                "multiply<arg_key>a</arg_key><arg_value>12234585</arg_value><arg_key>b</arg_key><arg_value>48838483920</arg_value>",
+                glm47,
+            ),
+            (
+                '{"name": "multiply", "arguments": {"a": 12234585, "b": 48838483920}}',
+                json_tools,
+            ),
+            (
+                '<invoke name="multiply">\n<parameter name="a">12234585</parameter>\n<parameter name="b">48838483920</parameter>\n</invoke>',
+                minimax_m2,
+            ),
+            (
+                "<function=multiply>\n<parameter=a>\n12234585\n</parameter>\n<parameter=b>\n48838483920\n</parameter>\n</function>",
+                qwen3_coder,
+            ),
+            (
+                "multiply<longcat_arg_key>a</longcat_arg_key>\n<longcat_arg_value>12234585</longcat_arg_value>\n<longcat_arg_key>b</longcat_arg_key>\n<longcat_arg_value>48838483920</longcat_arg_value>",
+                longcat,
+            ),
+            (
+                "<tool_call>multiply<tool_sep>\n<arg_key>a</arg_key>\n<arg_value>12234585</arg_value>\n<arg_key>b</arg_key>\n<arg_value>48838483920</arg_value>\n</tool_call>",
+                hy_v3,
+            ),
+            (
+                "<tool_call:opensource>multiply<tool_sep:opensource>\n<arg_key:opensource>a</arg_key:opensource>\n<arg_value:opensource>12234585</arg_value:opensource>\n<arg_key:opensource>b</arg_key:opensource>\n<arg_value:opensource>48838483920</arg_value:opensource>\n</tool_call:opensource>",
+                hy_v3_opensource,
+            ),
+            (
+                '{"name": "multiply", "arguments": {"a": 12234585, "b": 48838483920}}',
+                longcat,
+            ),
+            (
+                "[multiply(a=12234585, b=48838483920)]",
+                pythonic,
+            ),
+            (
+                'multiply[ARGS]{"a": 12234585, "b": 48838483920}',
+                mistral,
+            ),
+        ]
+
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "multiply",
+                    "description": "Multiply two numbers.",
+                    "parameters": {
+                        "type": "object",
+                        "required": ["a", "b"],
+                        "properties": {
+                            "a": {"type": "number", "description": "a is a number"},
+                            "b": {"type": "number", "description": "b is a number"},
+                        },
+                    },
+                },
+            }
+        ]
+
+        for test_case, parser in test_cases:
+            with self.subTest(parser=parser):
+                tool_call = parser.parse_tool_call(test_case, tools)
+                expected = {
+                    "name": "multiply",
+                    "arguments": {"a": 12234585, "b": 48838483920},
+                }
+                self.assertEqual(tool_call, expected)
+
+        test_cases = [
+            (
+                "call:get_current_temperature{location:<escape>London<escape>}",
+                function_gemma,
+            ),
+            (
+                'call:get_current_temperature{location:<|"|>London<|"|>}',
+                gemma4,
+            ),
+            (
+                'get_current_temperature<arg_key>location</arg_key><arg_value>"London"</arg_value>',
+                glm47,
+            ),
+            (
+                '{"name": "get_current_temperature", "arguments": {"location": "London"}}',
+                json_tools,
+            ),
+            (
+                '<invoke name="get_current_temperature">\n<parameter name="location">London</parameter>\n</invoke>',
+                minimax_m2,
+            ),
+            (
+                "<function=get_current_temperature>\n<parameter=location>\nLondon\n</parameter>\n</function>",
+                qwen3_coder,
+            ),
+            (
+                "get_current_temperature<longcat_arg_key>location</longcat_arg_key>\n<longcat_arg_value>London</longcat_arg_value>",
+                longcat,
+            ),
+            (
+                "<tool_call>get_current_temperature<tool_sep>\n<arg_key>location</arg_key>\n<arg_value>London</arg_value>\n</tool_call>",
+                hy_v3,
+            ),
+            (
+                "<tool_call:opensource>get_current_temperature<tool_sep:opensource>\n<arg_key:opensource>location</arg_key:opensource>\n<arg_value:opensource>London</arg_value:opensource>\n</tool_call:opensource>",
+                hy_v3_opensource,
+            ),
+            (
+                '{"name": "get_current_temperature", "arguments": {"location": "London"}}',
+                longcat,
+            ),
+            (
+                '[get_current_temperature(location="London")]',
+                pythonic,
+            ),
+            (
+                'get_current_temperature[ARGS]{"location": "London"}',
+                mistral,
+            ),
+        ]
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "get_current_temperature",
+                    "description": "Get the current temperature.",
+                    "parameters": {
+                        "type": "object",
+                        "required": ["location"],
+                        "properties": {
+                            "location": {"type": "str", "description": "The location."},
+                        },
+                    },
+                },
+            }
+        ]
+
+        for test_case, parser in test_cases:
+            with self.subTest(parser=parser):
+                tool_call = parser.parse_tool_call(test_case, tools)
+                expected = {
+                    "name": "get_current_temperature",
+                    "arguments": {"location": "London"},
+                }
+                self.assertEqual(tool_call, expected)
+
+    def test_qwen3_coder_single_quoted_params(self):
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "search",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "filters": {"type": "object"},
+                            "tags": {"type": "array"},
+                        },
+                    },
+                },
+            }
+        ]
+
+        # single-quoted dict (python-style, not valid JSON)
+        test_case = (
+            "<function=search>"
+            "<parameter=filters>{'category': 'books', 'in_stock': True}</parameter>"
+            "<parameter=tags>['fiction', 'new']</parameter>"
+            "</function>"
+        )
+        tool_call = qwen3_coder.parse_tool_call(test_case, tools)
+        self.assertEqual(tool_call["name"], "search")
+        self.assertEqual(
+            tool_call["arguments"]["filters"],
+            {"category": "books", "in_stock": True},
+        )
+        self.assertEqual(tool_call["arguments"]["tags"], ["fiction", "new"])
+
+        # valid JSON (double-quoted) should still work
+        test_case = (
+            "<function=search>"
+            '<parameter=filters>{"category": "books"}</parameter>'
+            '<parameter=tags>["fiction", "new"]</parameter>'
+            "</function>"
+        )
+        tool_call = qwen3_coder.parse_tool_call(test_case, tools)
+        self.assertEqual(tool_call["arguments"]["filters"], {"category": "books"})
+        self.assertEqual(tool_call["arguments"]["tags"], ["fiction", "new"])
+
+    def test_gemma4(self):
+        # Nested object
+        test_case = 'call:configure{settings:{enabled:true,name:<|"|>test<|"|>}}'
+        tool_call = gemma4.parse_tool_call(test_case, None)
+        self.assertEqual(tool_call["name"], "configure")
+        self.assertEqual(
+            tool_call["arguments"],
+            {"settings": {"enabled": True, "name": "test"}},
+        )
+
+        # Array of strings
+        test_case = 'call:tag{items:[<|"|>foo<|"|>,<|"|>bar<|"|>]}'
+        tool_call = gemma4.parse_tool_call(test_case, None)
+        self.assertEqual(tool_call["name"], "tag")
+        self.assertEqual(tool_call["arguments"], {"items": ["foo", "bar"]})
+
+        # Mixed types
+        test_case = 'call:search{query:<|"|>hello world<|"|>,limit:10,verbose:false}'
+        tool_call = gemma4.parse_tool_call(test_case, None)
+        self.assertEqual(tool_call["name"], "search")
+        self.assertEqual(
+            tool_call["arguments"],
+            {"query": "hello world", "limit": 10, "verbose": False},
+        )
+
+        # Multiple tool calls in a single block (no delimiter between them)
+        test_case = (
+            'call:glob{pattern:<|"|>README*.md<|"|>}'
+            'call:glob{pattern:<|"|>CONTRIBUTING.md<|"|>}'
+        )
+        tool_calls = gemma4.parse_tool_call(test_case, None)
+        self.assertIsInstance(tool_calls, list)
+        self.assertEqual(len(tool_calls), 2)
+        self.assertEqual(tool_calls[0]["name"], "glob")
+        self.assertEqual(tool_calls[0]["arguments"], {"pattern": "README*.md"})
+        self.assertEqual(tool_calls[1]["name"], "glob")
+        self.assertEqual(tool_calls[1]["arguments"], {"pattern": "CONTRIBUTING.md"})
+
+        # Multiple tool calls with nested args
+        test_case = (
+            'call:search{query:<|"|>weather<|"|>,limit:5}'
+            'call:configure{settings:{enabled:true,name:<|"|>test<|"|>}}'
+        )
+        tool_calls = gemma4.parse_tool_call(test_case, None)
+        self.assertIsInstance(tool_calls, list)
+        self.assertEqual(len(tool_calls), 2)
+        self.assertEqual(tool_calls[0]["name"], "search")
+        self.assertEqual(
+            tool_calls[0]["arguments"],
+            {"query": "weather", "limit": 5},
+        )
+        self.assertEqual(tool_calls[1]["name"], "configure")
+        self.assertEqual(
+            tool_calls[1]["arguments"],
+            {"settings": {"enabled": True, "name": "test"}},
+        )
+
+        # Hyphenated function name (e.g. manim-video)
+        test_case = (
+            'call:manim-video{mode:<|"|>plan<|"|>,prompt:<|"|>explain KV caching<|"|>}'
+        )
+        tool_call = gemma4.parse_tool_call(test_case, None)
+        self.assertEqual(tool_call["name"], "manim-video")
+        self.assertEqual(
+            tool_call["arguments"],
+            {"mode": "plan", "prompt": "explain KV caching"},
+        )
+
+        # Braces inside a string argument (e.g. code snippets or markdown in content)
+        test_case = (
+            'call:skill_manage{action:<|"|>create<|"|>,'
+            'content:<|"|>use a dict like {key: value} in your code<|"|>}'
+        )
+        tool_call = gemma4.parse_tool_call(test_case, None)
+        self.assertEqual(tool_call["name"], "skill_manage")
+        self.assertEqual(tool_call["arguments"]["action"], "create")
+        self.assertIn("{", tool_call["arguments"]["content"])
+
+    def test_kimi_k2(self):
+        # Single tool call
+        test_case = (
+            "<|tool_call_begin|>functions.multiply:0<|tool_call_argument_begin|>"
+            '{"a": 12234585, "b": 48838483920}<|tool_call_end|>'
+        )
+        tool_calls = kimi_k2.parse_tool_call(test_case, None)
+        expected = [
+            {
+                "id": "functions.multiply:0",
+                "name": "multiply",
+                "arguments": {"a": 12234585, "b": 48838483920},
+            }
+        ]
+        self.assertEqual(tool_calls, expected)
+
+        # Multiple tool calls
+        test_case = (
+            "<|tool_call_begin|>functions.search:0<|tool_call_argument_begin|>"
+            '{"query": "weather"}<|tool_call_end|>'
+            "<|tool_call_begin|>functions.read_file:1<|tool_call_argument_begin|>"
+            '{"path": "/tmp/test.txt"}<|tool_call_end|>'
+        )
+        tool_calls = kimi_k2.parse_tool_call(test_case, None)
+        expected = [
+            {
+                "id": "functions.search:0",
+                "name": "search",
+                "arguments": {"query": "weather"},
+            },
+            {
+                "id": "functions.read_file:1",
+                "name": "read_file",
+                "arguments": {"path": "/tmp/test.txt"},
+            },
+        ]
+        self.assertEqual(tool_calls, expected)
+
+    def test_hy_v3(self):
+        # Single tool call
+        test_case = (
+            "<tool_call>search<tool_sep>\n"
+            "<arg_key>query</arg_key>\n"
+            "<arg_value>weather</arg_value>\n"
+            "</tool_call>"
+        )
+        tool_call = hy_v3.parse_tool_call(test_case, None)
+        self.assertEqual(
+            tool_call,
+            {"name": "search", "arguments": {"query": "weather"}},
+        )
+
+        # Multiple tool calls
+        test_case = (
+            "<tool_call>search<tool_sep>\n"
+            "<arg_key>query</arg_key>\n"
+            "<arg_value>weather</arg_value>\n"
+            "</tool_call>\n"
+            "<tool_call>read_file<tool_sep>\n"
+            "<arg_key>path</arg_key>\n"
+            "<arg_value>/tmp/test.txt</arg_value>\n"
+            "</tool_call>"
+        )
+        tool_calls = hy_v3.parse_tool_call(test_case, None)
+        self.assertEqual(
+            tool_calls,
+            [
+                {"name": "search", "arguments": {"query": "weather"}},
+                {"name": "read_file", "arguments": {"path": "/tmp/test.txt"}},
+            ],
+        )
+
+        # Type coercion via schema (string preserved, number coerced)
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "configure",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "name": {"type": "string"},
+                            "limit": {"type": "integer"},
+                            "enabled": {"type": "boolean"},
+                        },
+                    },
+                },
+            }
+        ]
+        test_case = (
+            "<tool_call>configure<tool_sep>\n"
+            "<arg_key>name</arg_key>\n"
+            "<arg_value>5</arg_value>\n"
+            "<arg_key>limit</arg_key>\n"
+            "<arg_value>5</arg_value>\n"
+            "<arg_key>enabled</arg_key>\n"
+            "<arg_value>true</arg_value>\n"
+            "</tool_call>"
+        )
+        tool_call = hy_v3.parse_tool_call(test_case, tools)
+        self.assertEqual(tool_call["name"], "configure")
+        self.assertEqual(tool_call["arguments"]["name"], "5")
+        self.assertEqual(tool_call["arguments"]["limit"], 5)
+        self.assertEqual(tool_call["arguments"]["enabled"], True)
+
+    def test_hy_v3_opensource(self):
+        self.assertEqual(hy_v3_opensource.tool_call_start, "<tool_calls:opensource>")
+        self.assertEqual(hy_v3_opensource.tool_call_end, "</tool_calls:opensource>")
+
+        # Single tool call
+        test_case = (
+            "<tool_call:opensource>search<tool_sep:opensource>\n"
+            "<arg_key:opensource>query</arg_key:opensource>\n"
+            "<arg_value:opensource>weather</arg_value:opensource>\n"
+            "</tool_call:opensource>"
+        )
+        tool_call = hy_v3_opensource.parse_tool_call(test_case, None)
+        self.assertEqual(
+            tool_call,
+            {"name": "search", "arguments": {"query": "weather"}},
+        )
+
+        # Multiple tool calls
+        test_case = (
+            "<tool_call:opensource>search<tool_sep:opensource>\n"
+            "<arg_key:opensource>query</arg_key:opensource>\n"
+            "<arg_value:opensource>weather</arg_value:opensource>\n"
+            "</tool_call:opensource>\n"
+            "<tool_call:opensource>read_file<tool_sep:opensource>\n"
+            "<arg_key:opensource>path</arg_key:opensource>\n"
+            "<arg_value:opensource>/tmp/test.txt</arg_value:opensource>\n"
+            "</tool_call:opensource>"
+        )
+        tool_calls = hy_v3_opensource.parse_tool_call(test_case, None)
+        self.assertEqual(
+            tool_calls,
+            [
+                {"name": "search", "arguments": {"query": "weather"}},
+                {"name": "read_file", "arguments": {"path": "/tmp/test.txt"}},
+            ],
+        )
+
+        # Truncated call without the </tool_call:opensource> terminator
+        test_case = (
+            "<tool_call:opensource>search<tool_sep:opensource>\n"
+            "<arg_key:opensource>query</arg_key:opensource>\n"
+            "<arg_value:opensource>weather</arg_value:opensource>"
+        )
+        tool_call = hy_v3_opensource.parse_tool_call(test_case, None)
+        self.assertEqual(
+            tool_call,
+            {"name": "search", "arguments": {"query": "weather"}},
+        )
+
+    def test_minimax_m2(self):
+        test_case = (
+            '<invoke name="search">\n'
+            '<parameter name="query">weather</parameter>\n'
+            "</invoke>\n"
+            '<invoke name="read_file">\n'
+            '<parameter name="path">/tmp/test.txt</parameter>\n'
+            "</invoke>"
+        )
+        expected = [
+            {"name": "search", "arguments": {"query": "weather"}},
+            {"name": "read_file", "arguments": {"path": "/tmp/test.txt"}},
+        ]
+        tool_calls = minimax_m2.parse_tool_call(test_case, None)
+        self.assertEqual(expected, tool_calls)
+
+    def test_qwen3_coder_iso_date(self):
+        """Qwen3 coder parser should not crash on ISO 8601 dates."""
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "schedule",
+                    "description": "Schedule a task",
+                    "parameters": {
+                        "type": "object",
+                        "required": ["name", "deadline"],
+                        "properties": {
+                            "name": {"type": "string"},
+                            "deadline": {"type": "string"},
+                        },
+                    },
+                },
+            }
+        ]
+        test_case = (
+            "<function=schedule>\n"
+            "<parameter=name>\n"
+            "deploy\n"
+            "</parameter>\n"
+            "<parameter=deadline>\n"
+            "2025-06-15T10:30:00Z\n"
+            "</parameter>\n"
+            "</function>"
+        )
+        tool_calls = qwen3_coder.parse_tool_call(test_case, tools)
+        # parse_tool_call returns dict, not list
+        self.assertEqual(tool_calls["name"], "schedule")
+        self.assertEqual(tool_calls["arguments"]["name"], "deploy")
+        self.assertEqual(tool_calls["arguments"]["deadline"], "2025-06-15T10:30:00Z")
+
+    def test_qwen3_coder_partial_number(self):
+        """Qwen3 coder parser should handle partial number-like strings."""
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "log",
+                    "description": "Log a message",
+                    "parameters": {
+                        "type": "object",
+                        "required": ["msg"],
+                        "properties": {
+                            "msg": {"type": "string"},
+                        },
+                    },
+                },
+            }
+        ]
+        test_case = (
+            "<function=log>\n"
+            "<parameter=msg>\n"
+            "version 3.10.5-beta\n"
+            "</parameter>\n"
+            "</function>"
+        )
+        tool_calls = qwen3_coder.parse_tool_call(test_case, tools)
+        # parse_tool_call returns dict, not list
+        self.assertEqual(tool_calls["arguments"]["msg"], "version 3.10.5-beta")
+
+    def test_qwen3_coder_recovers_missing_name_delimiters(self):
+        tools = [
+            {
+                "type": "function",
+                "function": {
+                    "name": "read_file",
+                    "parameters": {
+                        "type": "object",
+                        "required": ["path"],
+                        "properties": {"path": {"type": "string"}},
+                    },
+                },
+            }
+        ]
+
+        missing_parameter_close = (
+            "<function=read_file>\n"
+            "<parameter=path\n/etc/hosts\n</parameter>\n"
+            "</function>"
+        )
+        call = qwen3_coder.parse_tool_call(missing_parameter_close, tools)
+        self.assertEqual(call["arguments"], {"path": "/etc/hosts"})
+
+        greater_than_in_value = (
+            "<function=read_file>\n"
+            "<parameter=path\na>b\n</parameter>\n"
+            "</function>"
+        )
+        call = qwen3_coder.parse_tool_call(greater_than_in_value, tools)
+        self.assertEqual(call["arguments"], {"path": "a>b"})
+
+        missing_function_close = (
+            "<function=read_file\n"
+            "<parameter=path>\n/etc/hosts\n</parameter>\n"
+            "</function>"
+        )
+        call = qwen3_coder.parse_tool_call(missing_function_close, tools)
+        self.assertEqual(call["name"], "read_file")
+        self.assertEqual(call["arguments"], {"path": "/etc/hosts"})
+
+
+if __name__ == "__main__":
+    unittest.main()

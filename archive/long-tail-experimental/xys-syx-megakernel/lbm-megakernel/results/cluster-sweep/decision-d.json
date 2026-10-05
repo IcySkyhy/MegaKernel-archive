@@ -1,0 +1,20 @@
+{
+  "stage": "D",
+  "ordinary_us": 136.5690078735,
+  "finalists": {
+    "D-V3-Z2-LoadBalancing": {
+      "us": 139.6323013305,
+      "ratio_to_ordinary": 1.0224303705847921
+    },
+    "D-V3-XZ4-LoadBalancing": {
+      "us": 153.386352539,
+      "ratio_to_ordinary": 1.1231417356496975
+    }
+  },
+  "best_cluster": "D-V3-Z2-LoadBalancing",
+  "best_cluster_ratio": 1.0224303705847921,
+  "stop_t2_cluster_tuning": true,
+  "reason": "Best controlled Tt=2 cluster still loses by more than 2%, within the supplied guide's strong stop condition. XZ4 dedup is slower even than matched XZ4 C1.",
+  "stage_E": "Not executed: no clustered V3 beat ordinary D-V2. No pointer-hoisting or async-barrier variant added.",
+  "future_hypothesis": "Deeper temporal blocking (Tt>2), a separate experiment, not implemented here."
+}

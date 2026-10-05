@@ -1,0 +1,27 @@
+== [1/4] 构建（独立工程，不碰仓库顶层 CMakeLists.txt）==
+   OK：/workspace/ascend_mega_kernel/.tower/worktrees/wt-148/m28_gdn_epilog/build/m28_gdn_epilog
+== [2/4] 正向设备档（每档各自进一次锁）==
+   m=1 tag=m28 mutant='none' rc=0 :: [M28] ===== ALL PASS =====
+      log=/tmp/m28_out/m28_m1.log  smi=m28_npu_smi_m1.txt
+   m=4 tag=m28 mutant='none' rc=0 :: [M28] ===== ALL PASS =====
+      log=/tmp/m28_out/m28_m4.log  smi=m28_npu_smi_m4.txt
+   m=4097 tag=m28 mutant='none' rc=0 :: [M28] ===== ALL PASS =====
+      log=/tmp/m28_out/m28_m4097.log  smi=m28_npu_smi_m4097.txt
+== [3/4] 正向判据（numpy 参考，位级）==
+[/tmp/m28_out/m28_m1] m=1: o bit-exact=True z bit-exact=True -> PASS
+[/tmp/m28_out/m28_m4097] m=4097: o bit-exact=True z bit-exact=True -> PASS
+[/tmp/m28_out/m28_m4] m=4: o bit-exact=True z bit-exact=True -> PASS
+===== mode=pos: PASS =====
+   正向判据 rc=0（0=比过且绿；1=有差异；2=没得比）
+== [4/4] 负向对照（M28_MUTANT=headstride，判据必须变红）==
+   m=4 tag=mut_m28 mutant='headstride' rc=1 :: [M28] ===== FAILURES PRESENT =====
+      log=/tmp/m28_out/mut_m28_m4.log  smi=mut_m28_npu_smi_m4.txt
+   m=4097 tag=mut_m28 mutant='headstride' rc=1 :: [M28] ===== FAILURES PRESENT =====
+      log=/tmp/m28_out/mut_m28_m4097.log  smi=mut_m28_npu_smi_m4097.txt
+[/tmp/m28_out/mut_m28_m4097] m=4097: o bit-exact=False (want False) z bit-exact=True (want True) -> PASS
+    o first mismatch [0][128] (total 24647552)
+[/tmp/m28_out/mut_m28_m4] m=4: o bit-exact=False (want False) z bit-exact=True (want True) -> PASS
+    o first mismatch [0][128] (total 24064)
+===== mode=mut: PASS =====
+   负向判据 rc=0（0=确认已变红；1=没变红）
+== 汇总：设备档 rc=0 正向判据 rc=0 负向判据 rc=0；日志在 /tmp/m28_out ==

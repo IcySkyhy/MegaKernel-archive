@@ -1,0 +1,6 @@
+# cmake -B /workspace/ascend_mega_kernel/.tower/worktrees/wt-178/m15_layer_loop/build -S /workspace/ascend_mega_kernel/.tower/worktrees/wt-178/m15_layer_loop -DCMAKE_BUILD_TYPE=Release
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /workspace/ascend_mega_kernel/.tower/worktrees/wt-178/m15_layer_loop/build
+# cmake --build /workspace/ascend_mega_kernel/.tower/worktrees/wt-178/m15_layer_loop/build -j32 --target m15_layer_loop
+[100%] Built target m15_layer_loop

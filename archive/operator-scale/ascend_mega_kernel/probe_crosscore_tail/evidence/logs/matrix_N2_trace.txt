@@ -1,0 +1,5 @@
+variant N=2 reps=2 timeout=20s
+base           variant=base N=2 rc0=0 rc1=0 rc2=0 hang=2 reps=2
+a_nowait       variant=a_nowait N=2 rc0=0 rc1=0 rc2=0 hang=2 reps=2
+c_m2mte3       variant=c_m2mte3 N=2 rc0=0 rc1=0 rc2=0 hang=2 reps=2
+c_m2setonly    variant=c_m2setonly N=2 rc0=0 rc1=0 rc2=0 hang=2 reps=2

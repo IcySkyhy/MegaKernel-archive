@@ -1,0 +1,2 @@
+[probe ag] tag=ag_gather_sweep form=0 nel=16384 start=16000 stride=64
+[probe ag] tag=ag_gather_sweep start=16000    stride=64    max_idx=20032     in_rng_bad=0 oob_lanes=58 oob_zero=58 oob_first=0  RUN PASS

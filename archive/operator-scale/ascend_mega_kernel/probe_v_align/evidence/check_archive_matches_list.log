@@ -1,0 +1,8 @@
+[1] 行序核对：比过 218 行，位置不一致 0 行
+[2] 逐变体 log 核对：129 条（aclError/DUMP_FNV 与矩阵列一致）
+[3] guard② 登记例外：op=gatherb 偏移 0 = ['FAULT']（README §9.2 已披露，不作对齐结论）
+[3] guard② 登记例外：op=lmbarout 偏移 0 = ['FAULT']（README §9.2 已披露，不作对齐结论）
+[3] guard②（偏移 0 对照点 = OK）：核对 31 个 op，登记例外 2 个
+[4] 窗口自洽（VARIANT window == COMPARE window_bytes）：核对 84 条，冲突 0 条
+[R] 设备序号（报告项，不参与判定）：45 条故障行带序号，区间 888..932，沿矩阵顺序严格递增=True，连续=True
+RESULT: OK (行序 218 行逐项一致 + log 129 条列值一致 + guard② 31 个 op + 窗口自洽 84 条；与当前代码零差异)

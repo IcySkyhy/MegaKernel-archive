@@ -1,0 +1,10 @@
+# M94 报告项：位扩展模型对实测的复现率（两个模型；均为报告项，不是判据门）
+# 读数来源：./evidence/logs/run_*_r1.log 的 WRANGES（与哨兵不同的字节集合）
+
+变体数（lane_* + mt_*）= 62
+doc 先验模型（每元素整组置位）不命中 = 10：lane_bf16_m32_vl1, lane_s16_m32_all, lane_s16_m32_vl1, lane_s16_m32_vl2, lane_s16_m32_vl8, lane_s8_m16_vl1, lane_s8_m16_vl2, lane_s8_m32_all, lane_s8_m32_vl1, lane_u8_m16_all
+   ↑ 全部出现在 store 位宽 != mask 位宽的交叉形态；本位宽（lane-own + masktype）全部命中
+后验拟合模型（每元素只置该组第 0 位 = 按字节位图）不命中 = 0：(none)
+
+口径：后验模型是对本批读数拟合出来的 ⇒ 「后验 100% 命中」**不是**独立证据；
+      有信息量的是「doc 先验在交叉位宽上不命中」这条证伪读数。

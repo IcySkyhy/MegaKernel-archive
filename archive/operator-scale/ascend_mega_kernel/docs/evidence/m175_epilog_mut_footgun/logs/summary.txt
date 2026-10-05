@@ -1,0 +1,10 @@
+M175 reproduce 汇总 @ 2026-10-04T15:11:44+00:00
+base rev   = 449c5ea9f5ed5b887c241adba535d043e7e820a9
+pre  bin   = d2cc02d9b82e86f29c87c3daa57c4b7c5fd676ad443cd12f04f3b068bd7cdb1a
+fix  bin   = a03baa5e5d7c47da241188a404751a9db23ca9fa5dcb8741f48b779c2ee28b9c
+build warn = pre:21 / fix:21（grep -c 'warning:'）
+---- 期望与实测（见 pre_mut*/fix_mut*.log）----
+pre  MUT 0..7 : 全部 ALL PASS / rc=0
+fix  MUT 0..4 : ALL PASS（checks=89, guards=9, fails=0）/ rc=0
+fix  MUT 5..7 : FAILURES PRESENT（checks=2, guards=9, fails=5）/ rc=1（先有一行越界 WARN）
+MUT 0..4 修前/修后剔耗时逐字比对 : 差异 0 行

@@ -1,0 +1,40 @@
+# 判据命令 locale 一致性 + 扫描正对照
+date: 2026-09-27T03:04:24+00:00
+
+===== LC_ALL=C =====
+===== LC_ALL=C =====
+read_run1.log | aclError=0 | mism=0 | regRC=0 | overall=OK
+hbm_run1.log | aclError=0 | mism=0 | regRC= | overall=OK
+unreg_unregistered_ptr.log | aclError=507035 | mism=3655680 | regRC= | overall=DEVICE-ERROR
+page_partial_registration.log | aclError=507035 | mism=8160 | regRC=0 | overall=DEVICE-ERROR
+filemmap_file.log | aclError= | mism= | regRC=507899 | overall=REGISTER-REJECTED
+filemmap_anon_run1.log | aclError=0 | mism=0 | regRC=0 | overall=OK
+LANG=
+
+===== LC_ALL=C.UTF-8 =====
+===== LC_ALL=C.UTF-8 =====
+read_run1.log | aclError=0 | mism=0 | regRC=0 | overall=OK
+hbm_run1.log | aclError=0 | mism=0 | regRC= | overall=OK
+unreg_unregistered_ptr.log | aclError=507035 | mism=3655680 | regRC= | overall=DEVICE-ERROR
+page_partial_registration.log | aclError=507035 | mism=8160 | regRC=0 | overall=DEVICE-ERROR
+filemmap_file.log | aclError= | mism= | regRC=507899 | overall=REGISTER-REJECTED
+filemmap_anon_run1.log | aclError=0 | mism=0 | regRC=0 | overall=OK
+LANG=
+
+===== LC_ALL=POSIX =====
+===== LC_ALL=POSIX =====
+read_run1.log | aclError=0 | mism=0 | regRC=0 | overall=OK
+hbm_run1.log | aclError=0 | mism=0 | regRC= | overall=OK
+unreg_unregistered_ptr.log | aclError=507035 | mism=3655680 | regRC= | overall=DEVICE-ERROR
+page_partial_registration.log | aclError=507035 | mism=8160 | regRC=0 | overall=DEVICE-ERROR
+filemmap_file.log | aclError= | mism= | regRC=507899 | overall=REGISTER-REJECTED
+filemmap_anon_run1.log | aclError=0 | mism=0 | regRC=0 | overall=OK
+LANG=
+
+== 一致性判定（三份读数行逐字节 diff）==
+PASS: LC_ALL=C / C.UTF-8 / POSIX 三份读数行逐字节相同（6 行）
+
+== 正对照：同一套抽取在正例/负例上必须给出不同读数 ==
+  正例 read_run1 (expect aclError=0,mism=0):        read_run1.log | aclError=0 | mism=0 | regRC=0 | overall=OK
+  负例 unreg   (expect aclError=507035,mism>0):     unreg_unregistered_ptr.log | aclError=507035 | mism=3655680 | regRC= | overall=DEVICE-ERROR
+  负例 filemap (expect regRC=507899,overall=REJ):   filemmap_file.log | aclError= | mism= | regRC=507899 | overall=REGISTER-REJECTED

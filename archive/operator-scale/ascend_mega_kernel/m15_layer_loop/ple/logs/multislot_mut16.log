@@ -1,0 +1,6 @@
+[m15ple] M85 PLE 独立 kernel | aic=28 aiv=56 | out=m15_layer_loop/ple/out_ms_mut16 data=m15_layer_loop/ple/data_hm neg=65536
+[m15ple] hm-fill: 16776960 B 搬入窗口（多槽，含跨界拆分）
+[m15ple] hm: shard=0 rows_per_shard=2500012 r0=2493459 win=16776960 B (52428 rows) | file mmap->anon staging = 16776960 B（3.5 ms，host 墙钟单次）| aclrtHostRegisterV2(MAPPED) rc=0（127.0 ms，host 墙钟单次）| getDevPtr rc=0 win=0x7fc517600000 dev=0x40000000000
+[m15ple] hm dev-side raw: 参与核=56（应 56） winRows(设备侧读到)=52428 hmBad/槽0 合计=736.0 越窗=6.0
+[m15ple] hm ②③④⑤(host-mapped 真实表): n_tok=64 items=1024 in_win=1024 dev_row_fail=736.0 dev_miss=6
+[m15ple] ===== kernel-side OK =====

@@ -1,0 +1,571 @@
+// SPDX-License-Identifier: BSD-3-Clause
+#include <tilemega/Dialect/CouplingGraph/CGAttrs.h>
+#include <tilemega/Dialect/CouplingGraph/CGDialect.h>
+#include <tilemega/Dialect/CouplingGraph/CGOps.h>
+#include <tilemega/Analysis/CouplingDerivation.h>
+#include <tilemega/Analysis/ISLContext.h>
+#include <tilemega/Analysis/OpArithmetic.h>
+#include <tilemega/Analysis/SemanticCodec.h>
+#include <tilemega/Dialect/CouplingGraph/HandoffPass.h>
+#include <tilemega/Dialect/CouplingGraph/CGContract.h>
+#include <tilemega/Dialect/CouplingGraph/PlacementPlan.h>
+
+#include <mlir/IR/BuiltinAttributes.h>
+#include <mlir/IR/BuiltinTypes.h>
+#include <mlir/IR/Builders.h>
+#include <mlir/IR/DialectImplementation.h>
+#include <mlir/IR/SymbolTable.h>
+#include <llvm/ADT/TypeSwitch.h>
+
+#include <cctype>
+#include <set>
+#include <stdexcept>
+
+#ifndef TILEMEGA_VERIFY_COUPLING_INCIDENCE
+#define TILEMEGA_VERIFY_COUPLING_INCIDENCE 1
+#endif
+
+using namespace mlir;
+using namespace tilemega::dialect;
+
+#include "tilemega/Dialect/CouplingGraph/CGDialect.cpp.inc"
+#include "tilemega/Dialect/CouplingGraph/ExecDialect.cpp.inc"
+
+#define GET_ATTRDEF_CLASSES
+#include "tilemega/Dialect/CouplingGraph/CGAttrs.cpp.inc"
+
+namespace tilemega::dialect {
+
+void CGDialect::initialize() {
+  addAttributes<
+#define GET_ATTRDEF_LIST
+#include "tilemega/Dialect/CouplingGraph/CGAttrs.cpp.inc"
+      >();
+  addOperations<
+#define GET_OP_LIST
+#include "tilemega/Dialect/CouplingGraph/CGOps.cpp.inc"
+      >();
+}
+
+// R8 BE-7: the execution dialect owns the solver's decisions and nothing
+// else, which is what makes the ownership check in C-b a grep.
+void ExecDialect::initialize() {
+  addOperations<
+#define GET_OP_LIST
+#include "tilemega/Dialect/CouplingGraph/ExecOps.cpp.inc"
+      >();
+}
+
+mlir::FailureOr<analysis::QuasiPolynomial> parseMetric(mlir::AsmParser& parser) {
+  std::string expression;
+  if (failed(parser.parseString(&expression))) return failure();
+  try {
+    return analysis::QuasiPolynomial::FromIslText(expression);
+  } catch (std::exception const& error) {
+    parser.emitError(parser.getCurrentLocation(), error.what());
+    return failure();
+  }
+}
+
+void printMetric(mlir::AsmPrinter& printer,
+                 analysis::QuasiPolynomial const& value) {
+  printer.printString(value.ToString());
+}
+
+mlir::FailureOr<analysis::CouplingRelation> parseCouplingRelation(
+    mlir::AsmParser& parser) {
+  std::string text;
+  if (failed(parser.parseString(&text))) return failure();
+  try {
+    return analysis::CouplingRelation::FromIslText(text);
+  } catch (std::exception const& error) {
+    parser.emitError(parser.getCurrentLocation(), error.what());
+    return failure();
+  }
+}
+
+void printCouplingRelation(mlir::AsmPrinter& printer,
+                           analysis::CouplingRelation const& value) {
+  printer.printString(value.ToString());
+}
+
+static analysis::ParamBinding readBinding(ModuleOp module, StringRef name) {
+  analysis::ParamBinding result;
+  if (auto dict = module->getAttrOfType<DictionaryAttr>(name)) {
+    for (NamedAttribute item : dict) {
+      if (auto integer = dyn_cast<IntegerAttr>(item.getValue()))
+        result.Bind(item.getName().str(), integer.getInt());
+    }
+  }
+  return result;
+}
+
+/// The combined binding available at verification time: every theta value
+/// the module happens to have already fixed, plus every g (granularity)
+/// value. A workload dimension the module leaves free (e.g. the sequence
+/// length) stays out of this binding and therefore stays a genuine isl
+/// parameter on every metric this verifier checks (invariant I1).
+static analysis::ParamBinding combinedBinding(ModuleOp module) {
+  analysis::ParamBinding result = readBinding(module, "tilemega.theta");
+  analysis::ParamBinding granularity = readBinding(module, "tilemega.g");
+  for (auto const& [name, value] : granularity.values) result.Bind(name, value);
+  return result;
+}
+
+LogicalResult TileSpaceOp::verify() {
+  static constexpr StringLiteral known[] = {
+      "gemm", "rmsnorm", "rope", "kvappend", "elementwise", "attention",
+      "embedding", "fused_attention", "attention_merge", "argmax_reduce",
+      "view", "transpose", "broadcast", "reduction", "slice", "concat",
+      // `generic` is the degraded classification: one conservative task space
+      // for an operator no rule covers.
+      "frontend", "generic"};
+  StringRef kind = getKind().getValue().getValue();
+  if (llvm::none_of(known, [&](StringRef value) { return value == kind; }))
+    return emitOpError() << "unknown task kind '" << kind << "'";
+  if (getStage() < 0) return emitOpError("stage must be non-negative");
+  if (auto payload=getSemantic()) {
+    try {
+      auto op=analysis::DecodeSemanticOp(payload->str());
+      if (op.name!=getOperatorName() || op.arithmetic!=getArithmetic().value_or(""))
+        return emitOpError("semantic identity/arithmetic differs from task space");
+    } catch (std::exception const& error) { return emitOpError(error.what()); }
+  }
+  if (auto name = getArithmetic()) {
+    auto const& declarations = analysis::ArithmeticDeclarations();
+    auto found = llvm::find_if(declarations, [&](auto const& declaration) {
+      return *name == declaration.name;
+    });
+    if (found == declarations.end())
+      return emitOpError() << "missing arithmetic signature '" << *name << "'";
+    try { analysis::ValidateArithmeticDeclaration(*found); }
+    catch (std::exception const& error) { return emitOpError(error.what()); }
+  }
+  return success();
+}
+
+LogicalResult FusedTileSpaceOp::verify() {
+  analysis::IslReferenceAudit audit(__func__);
+  if (getPhaseSemantics().size()<2 || getPhaseSemantics().size()!=getPhaseMaps().size() ||
+      getPhaseSemantics().size()!=getPhaseGranularities().size() ||
+      getPhaseSemantics().size()!=getPhaseStages().size() || getWrites().empty())
+    return emitOpError("fusion needs ordered semantics, phase maps and an external write");
+  try {
+    if ((*this)->hasAttr("handoff_kind")) VerifyWrittenHandoff(*this);
+    std::set<std::string> identities;
+    analysis::CouplingRelation domain;
+    for (auto [semantic,map,granularity,stage]:llvm::zip(getPhaseSemantics(),getPhaseMaps(),getPhaseGranularities(),getPhaseStages())) {
+      auto text=dyn_cast<StringAttr>(semantic);
+      auto relation=dyn_cast<CouplingMapAttr>(map);
+      auto tiles=dyn_cast<DictionaryAttr>(granularity);
+      if (!text || !relation || !tiles || stage<0) return emitOpError("malformed fusion phase");
+      auto op=analysis::DecodeSemanticOp(text.getValue().str());
+      auto ownership=tiles.getAs<StringAttr>("ownership");
+      if (!ownership || (ownership!="element_chunk" && ownership!="tile_per_block"))
+        return emitOpError("fusion phase lacks ownership model");
+      for (auto const& axis:op.result.axes) {
+        auto tile=tiles.getAs<StringAttr>(axis.name);
+        if (!tile) return emitOpError("fusion phase lacks output tile");
+        (void)analysis::ClosedForm::Parse(tile.getValue().str());
+      }
+      if (!identities.insert(op.name).second) return emitOpError("duplicate fusion phase identity");
+      auto const& declarations=analysis::ArithmeticDeclarations();
+      auto found=llvm::find_if(declarations,[&](auto const& d) { return op.arithmetic==d.name; });
+      if (found==declarations.end()) return emitOpError("fusion phase lacks arithmetic signature");
+      analysis::ValidateArithmeticDeclaration(*found);
+      if (!relation.getMap().IsSingleValued() && !(*this)->hasAttr("handoff_kind"))
+        return emitOpError("fusion phase map must be single-valued");
+      auto current=relation.getMap().Reverse().Image();
+      auto handoff_kind=(*this)->getAttrOfType<StringAttr>("handoff_kind");
+      bool conditional=handoff_kind && handoff_kind.getValue()=="last_arriver";
+      if (!domain.empty() && (!current.IsSubset(domain) || (!conditional && !domain.IsSubset(current))))
+        return emitOpError("fusion phase domains differ");
+      // Empty KV blocks execute no reduction phase; the source proof above
+      // fixes this restricted phase map and the last-arrival ticket condition.
+      if (domain.empty() || !conditional) domain=current;
+    }
+    if (!domain.ImageCard().Add(getTaskCount().getValue().Scale(-1)).IsZero())
+      return emitOpError("fusion task count differs from consumer domain");
+    for (auto accesses:{getReads(),getWrites()}) for (auto named:accesses) {
+      auto map=dyn_cast<CouplingMapAttr>(named.getValue());
+      if (!map) return emitOpError("fusion physical access is not a relation");
+      if (!map.getMap().Reverse().Image().IsSubset(domain))
+        return emitOpError("fusion access extends beyond task domain");
+    }
+  } catch (std::exception const& error) { return emitOpError(error.what()); }
+  return success();
+}
+
+LogicalResult EventTensorOp::verify() {
+  auto tensor = dyn_cast<RankedTensorType>(getEventType());
+  if (!tensor || !tensor.getElementType().isInteger(32))
+    return emitOpError("event type must be a ranked tensor<i32>");
+  // image(C_kappa) has one axis per consumer coordinate that occurs in C, so
+  // the rank is whatever the derivation found; the rank-1 restriction only
+  // ever held because the importer emitted a one-point placeholder.
+  auto dims = getDims();
+  if (!dims) return success();
+  if (static_cast<std::size_t>(tensor.getRank()) != dims->size())
+    return emitOpError() << "event tensor rank " << tensor.getRank()
+                         << " does not match the " << dims->size()
+                         << " derived image axes";
+  auto module = (*this)->getParentOfType<ModuleOp>();
+  analysis::ParamBinding known =
+      module ? combinedBinding(module) : analysis::ParamBinding{};
+  long product = 1;
+  try {
+    for (auto [axis, attribute] : llvm::enumerate(*dims)) {
+      auto metric = dyn_cast<MetricAttr>(attribute);
+      if (!metric) return emitOpError("event dims must all be metrics");
+      long value = metric.getValue().Eval(known);
+      if (value < 0) return emitOpError("event extent must be non-negative");
+      if (!tensor.isDynamicDim(axis) && tensor.getDimSize(axis) != value)
+        return emitOpError()
+               << "event axis " << axis << " is " << tensor.getDimSize(axis)
+               << " but image(C_kappa) gives " << value;
+      product *= value;
+    }
+    // Only at the theta/g the module happens to fix: `extent` and `dims` are
+    // both symbolic in general, and isl offers no product of two
+    // pw_qpolynomials here, so the cross-check is numeric at that point.
+    if (getExtent().getValue().Eval(known) != product)
+      return emitOpError() << "extent " << getExtent().getValue().ToString()
+                           << " is not the product of the image axes";
+  } catch (std::exception const& error) {
+    return emitOpError() << "cannot evaluate event extent: " << error.what();
+  }
+  return success();
+}
+
+LogicalResult CouplingOp::verify() {
+  analysis::IslReferenceAudit audit(__func__);
+  auto module = (*this)->getParentOfType<ModuleOp>();
+  if (!module) return emitOpError("must be nested in a module");
+  auto source=SymbolTable::lookupNearestSymbolFrom(*this,getSrcAttr());
+  auto destination=SymbolTable::lookupNearestSymbolFrom(*this,getDstAttr());
+  if (!source || !isa<TileSpaceOp,FusedTileSpaceOp>(source))
+    return emitOpError() << "unknown source task " << getSrc();
+  if (!destination || !isa<TileSpaceOp,FusedTileSpaceOp>(destination))
+    return emitOpError() << "unknown destination task " << getDst();
+  auto event = SymbolTable::lookupNearestSymbolFrom<EventTensorOp>(*this, getEventAttr());
+  if (!event) return emitOpError() << "unknown event tensor " << getEvent();
+  // No separate structure check: isl_map syntax is its own schema, already
+  // validated by isl when the attribute was parsed (parseCouplingRelation).
+  StringRef sync = getSyncKind().getValue().getValue();
+  if (sync != "global" && sync != "cluster" && sync != "local")
+    return emitOpError() << "invalid sync kind '" << sync << "'";
+  if (getTier().getValue() == 3 && sync == "cluster")
+    return emitOpError("Tier 3 coupling cannot use cluster synchronization");
+  if (getTier().getValue() < 0 || getTier().getValue() > 3)
+    return emitOpError("tier must be in [0,3]");
+  // The tier is a summary of the five attributes (§2.4, CouplingDerivation.h).
+  // When an edge carries them, it is not allowed to also carry a tier that
+  // does not follow from them.
+  if (auto optional = getCouplingAttrs()) {
+    dialect::CouplingAttributesAttr attributes = *optional;
+    analysis::CouplingAttributes parsed;
+    if (!analysis::ParseCouplingAttributes(
+            attributes.getRelationKind().getValue().str(),
+            attributes.getExtentKind().getValue().str(),
+            attributes.getExactness().getValue().str(),
+            attributes.getRuntimeRequirement().getValue().str(),
+            attributes.getCountability().getValue().str(), &parsed))
+      return emitOpError("unknown coupling attribute name");
+    if (std::stol(analysis::ToString(analysis::DeriveTier(parsed))) !=
+        getTier().getValue())
+      return emitOpError()
+             << "tier " << getTier().getValue() << " does not follow from "
+             << parsed.ToString() << " (expected "
+             << analysis::ToString(analysis::DeriveTier(parsed)) << ")";
+  }
+
+  try {
+    analysis::ParamBinding known = combinedBinding(module);
+    // wait(x) = |C(x)|, computed directly from the relation -- not read back
+    // from a second, separately authored copy the way the pre-migration
+    // DictionaryAttr's "fiber" field was. SemanticallyEqual compares the two
+    // quasi-polynomials as functions after substituting `known`, not as
+    // scalars: a genuinely position-dependent wait must match at every task
+    // coordinate, not merely at whichever point a scalar comparison would
+    // have implicitly picked.
+    analysis::QuasiPolynomial expectedWait = getRelation().getMap().Card();
+    if (!expectedWait.SemanticallyEqual(getWait().getValue(), known))
+      return emitOpError() << "wait " << getWait().getValue().ToString()
+                           << " does not match the relation's fiber "
+                              "cardinality " << expectedWait.ToString();
+#if TILEMEGA_VERIFY_COUPLING_INCIDENCE
+    auto expectedFanout=getRelation().getMap().FanoutCard();
+    if (!expectedFanout.SemanticallyEqual(getFanout().getValue(),known))
+      return emitOpError("fanout does not match the inverse relation's fiber cardinality");
+    if (!expectedWait.SumDomain().SemanticallyEqual(expectedFanout.SumDomain(),known))
+      return emitOpError("coupling violates sum(wait) == sum(fanout)");
+#endif
+    // image(C_kappa) itself is not re-derived from the relation here: doing
+    // so needs "does producer coordinate depend on consumer coordinate X"
+    // per domain dimension, and the only isl query available for that
+    // (isl_map_involves_dims) is syntactic -- it also flags a domain
+    // coordinate that is merely *bounded* (as every one now is, so wait/
+    // fanout stay finite) but does not actually influence the output,
+    // which silently overcounts image(C_kappa) (confirmed empirically:
+    // a plain `j >= 0 and j < N` domain bound makes involves_dims report
+    // `j` as involved even when the map's output never depends on it).
+    // ComputeEventShape (lib/Analysis/CouplingDerivation.cpp) gets this
+    // right because it tracks "which coordinate a producer-axis constraint
+    // actually referenced" during construction, not by re-inspecting the
+    // assembled map -- context this verifier does not have. So the event
+    // extent is checked the same way wait/fanout/volume/count all were
+    // before this migration: it must evaluate under `known`, not that it
+    // matches a value re-derived from C.
+    (void)event.getExtent().getValue().Eval(known);
+  } catch (std::exception const& error) {
+    return emitOpError() << "cannot evaluate coupling metric after theta/g "
+                            "binding: " << error.what();
+  }
+  return success();
+}
+
+static TileSpaceOp LookupPlanTask(Operation* op,FlatSymbolRefAttr reference) {
+  if(auto task=SymbolTable::lookupNearestSymbolFrom<TileSpaceOp>(op,reference))return task;
+  if(auto plan=op->getParentOfType<PlanOp>())
+    if(auto graph=SymbolTable::lookupNearestSymbolFrom<GraphOp>(plan->getParentOp(),plan.getGraphAttr()))
+      return dyn_cast_or_null<TileSpaceOp>(SymbolTable::lookupSymbolIn(graph,reference.getValue()));
+  return {};
+}
+
+LogicalResult ImplementationOp::verify() {
+  auto task = LookupPlanTask(*this, getTaskAttr());
+  if (!task) return emitOpError() << "unknown task space " << getTask();
+  solver::ImplementationContract declared;
+  std::string reason;
+  if (!readImplementation(*this, &declared, &reason))
+    return emitOpError() << reason;
+  // The backend answers for its own cost: an implementation may pick a shape,
+  // it may not restate what that shape costs.
+  if (!solver::VerifyTraits(declared, &reason)) return emitOpError() << reason;
+  // The ⭐ check. Only possible when the task space carries the indexing map
+  // it was derived with; without it the declared access pattern is
+  // unfalsifiable, which is exactly the state F-17 was found in.
+  if (auto index = task.getIndexMap()) {
+    std::vector<solver::OperandContract> derived;
+    if (!readOperandContracts(*index, &derived, &reason))
+      return emitOpError() << "task space " << getTask() << ": " << reason;
+    if (!solver::VerifyAccessAgainst(declared, derived, &reason))
+      return emitOpError() << reason;
+  }
+  return success();
+}
+
+LogicalResult PlacementOp::verify() {
+  if (auto attr=(*this)->getAttr("mapping_mode")) {
+    auto mode=llvm::dyn_cast<StringAttr>(attr);
+    auto resident=(*this)->getAttrOfType<BoolAttr>("resident_only");
+    if (!mode || mode.getValue()!="balanced" || !resident || !resident.getValue())
+      return emitOpError("balanced mapping requires resident_only=true");
+  }
+  if (auto attr = (*this)->getAttr("resident_only")) {
+    auto flag = llvm::dyn_cast<BoolAttr>(attr);
+    if (!flag || !flag.getValue())
+      return emitOpError("resident_only must be true; over-resident proof is unavailable");
+  }
+  if (failed(verifyPlan())) return failure();
+  if (getCluster() < 1) return emitOpError("cluster must be positive");
+  if (getMap().empty()) return emitOpError("placement map cannot be empty");
+  if (!LookupPlanTask(*this, getTaskAttr()))
+    return emitOpError() << "unknown task space " << getTask();
+  return success();
+}
+
+static bool ReadPlacementFields(mlir::Attribute attr, PlacementTable* table,
+                                std::string* error) {
+  auto fail = [&](std::string message) {
+    if (error) *error = std::move(message);
+    return false;
+  };
+  *table = {};
+  if (!attr) return true;
+  auto const fields = llvm::dyn_cast<DictionaryAttr>(attr);
+  if (!fields)
+    return fail(std::string(kPlacementTableAttr) + " must be a dictionary");
+  auto integers = [&](char const* name, std::vector<int>* out) {
+    auto const array = fields.getAs<DenseI64ArrayAttr>(name);
+    if (!array) return false;
+    out->assign(array.asArrayRef().begin(), array.asArrayRef().end());
+    return true;
+  };
+  auto scalar = [&](char const* name, long long* out) {
+    auto const value = fields.getAs<IntegerAttr>(name);
+    if (!value) return false;
+    *out = value.getInt();
+    return true;
+  };
+  if (!integers("worker", &table->worker) || !integers("slot", &table->slot) ||
+      !scalar("seq", &table->seq) || !scalar("past", &table->past) ||
+      !scalar("grid", &table->grid))
+    return fail(std::string(kPlacementTableAttr) +
+                " needs worker and slot as array<i64> and seq, past and grid as "
+                "integers");
+  // Optional: a plan whose tasks have no read-only frontier pipelines nothing,
+  // and its table is the one earlier rounds wrote.
+  if (fields.get("pipeline")) {
+    std::vector<int> flags;
+    if (!integers("pipeline", &flags))
+      return fail(std::string(kPlacementTableAttr) + " needs pipeline as array<i64>");
+    table->pipeline.assign(flags.begin(), flags.end());
+    for (std::size_t i = 0; i < flags.size(); ++i)
+      if (flags[i] < 0 || flags[i] > 1)
+        return fail(std::string(kPlacementTableAttr) + " pipeline flags are 0 or 1");
+  }
+  std::string reason;
+  if (!ValidatePlacementTable(*table, &reason)) return fail(reason);
+  return true;
+}
+
+
+bool ReadPlacementIntervalTables(mlir::ModuleOp module,std::vector<PlacementTable>* tables,
+    std::string* error) {
+  tables->clear();
+  auto fail=[&](char const* reason){if(error)*error=reason;return false;};
+  if(!module)return true;
+  auto attr=module->getAttr(kPlacementTableAttr);
+  if(!attr)return true;
+  auto fields=llvm::dyn_cast<DictionaryAttr>(attr);
+  if(!fields)return fail("placement table must be a dictionary");
+  auto entries=fields.get("interval");if(!entries)return true;
+  auto array=llvm::dyn_cast<ArrayAttr>(entries);
+  if(!array || array.empty())return fail("placement interval must be a nonempty array");
+  PlacementTable first;if(!ReadPlacementFields(fields,&first,error))return false;
+  for(auto entry:array) {
+    PlacementTable table;if(!ReadPlacementFields(entry,&table,error))return false;
+    if(table.seq!=first.seq+static_cast<long long>(tables->size()) ||
+        table.past!=first.past || table.grid!=first.grid)
+      return fail("placement interval must have contiguous seq and one past/grid");
+    if(tables->empty() && (table.worker!=first.worker || table.slot!=first.slot))
+      return fail("placement interval first point differs from its root table");
+    tables->push_back(std::move(table));
+  }
+  return true;
+}
+
+bool ReadPlacementTable(mlir::ModuleOp module,PlacementTable* table,std::string* error) {
+  if(!ReadPlacementFields(module ? module->getAttr(kPlacementTableAttr) : mlir::Attribute{},table,error))return false;
+  std::vector<PlacementTable> interval;
+  return ReadPlacementIntervalTables(module,&interval,error);
+}
+
+/// The §5.7.1 Plan half of the op.  All four attributes are optional together:
+/// absent is the `legacy_grid_stride` form `map = [0]` has always denoted.
+LogicalResult PlacementOp::verifyPlan() {
+  auto const mode_attr = getModeAttr();
+  PlacementMode mode = PlacementMode::kLegacyGridStride;
+  if (mode_attr) {
+    auto const name = mode_attr.getValue();
+    if (!ParsePlacementMode(name.data(), name.size(), &mode))
+      return emitOpError() << "unknown placement mode " << name;
+    // A named mode is a solver decision, and every one of them schedules onto
+    // the resident grid only (§5.7.3 L-b, §8.7); nothing here can prove
+    // over-residency, so the claim has to be written down.
+    if (mode != PlacementMode::kLegacyGridStride) {
+      auto resident = (*this)->getAttrOfType<BoolAttr>("resident_only");
+      if (!resident || !resident.getValue())
+        return emitOpError() << "placement mode " << name
+                             << " requires resident_only=true";
+    }
+    if (auto legacy = (*this)->getAttrOfType<StringAttr>("mapping_mode")) {
+      // The pre-plan spelling still reaches codegen; two names for one
+      // decision may not disagree.
+      if (legacy.getValue() == "balanced" && mode != PlacementMode::kBalanced)
+        return emitOpError("mapping_mode=balanced contradicts the placement mode");
+    }
+  }
+  auto verifyFunction=[&](CouplingMapAttr attr,std::size_t arity,char const* name) -> LogicalResult {
+    if (!attr) return success();
+    auto const& map=attr.getMap();
+    if (!map.DomainDimNames().empty() || map.RangeDimNames().size()!=arity || !map.IsSingleValued())
+      return emitOpError() << name << " must be a single-valued theta function with " << arity << " outputs";
+    return success();
+  };
+  std::size_t const expected = PlacementModeParamCount(mode);
+  auto const params = getParams();
+  auto param_map=getParamsMapAttr();
+  if (param_map && params) return emitOpError("params and params_map are alternative representations");
+  if (failed(verifyFunction(param_map,expected,"params_map")) ||
+      failed(verifyFunction(getGridMapAttr(),1,"grid_map")) ||
+      failed(verifyFunction(getResidentLimitMapAttr(),1,"resident_limit_map"))) return failure();
+  if (bool(getGridMapAttr())!=bool(getResidentLimitMapAttr()))
+    return emitOpError("grid_map and resident_limit_map must be carried together");
+  if (getGridMapAttr()) {
+    auto grid=getGridMapAttr().getMap(),limit=getResidentLimitMapAttr().getMap();
+    auto gd=grid.Reverse().Image(),ld=limit.Reverse().Image();
+    if (!gd.IsSubset(ld) || !ld.IsSubset(gd))
+      return emitOpError("grid and resident limit theta domains differ");
+    auto product=grid.RangeProduct(limit);
+    if (!product.IsSubset(product.IntersectRange("{ [grid, resident] : 0 < grid <= resident }")))
+      return emitOpError("symbolic grid does not prove 0 < grid <= resident_limit");
+    if (!(*this)->getAttrOfType<BoolAttr>("resident_only"))
+      return emitOpError("symbolic grid requires resident_only=true");
+  }
+  if ((mode_attr || params) && !param_map) {
+    if (params.value_or(ArrayRef<std::int64_t>{}).size() != expected)
+      return emitOpError() << "placement mode " << PlacementModeName(mode)
+                           << " takes " << expected << " parameters";
+  }
+  if (mode == PlacementMode::kTemplate && param_map) {
+    auto map=param_map.getMap();
+    if (!map.IsSubset(map.IntersectRange("{ [family] : 0 <= family <= 1 }")))
+      return emitOpError("symbolic placement template must select family 0 or 1");
+  }
+  if (mode == PlacementMode::kTemplate && !param_map) {
+    std::int64_t const family = (*params)[0];
+    if (family != static_cast<std::int64_t>(PlacementTemplate::kBand) &&
+        family != static_cast<std::int64_t>(PlacementTemplate::kWavefront))
+      return emitOpError() << "unknown placement template " << family;
+  }
+  if (auto window = getWindow()) {
+    if (*window < 1) return emitOpError("placement window must be positive");
+  }
+  if (auto policy = getPolicyAttr()) {
+    if (policy.getValue() != kPlacementPolicyAot)
+      return emitOpError() << "unknown placement policy " << policy.getValue();
+  }
+  // The materialized table is a module attribute, because at a bound theta it
+  // is one object for the whole model; this is the only place both halves of an
+  // `eft` Plan are visible at once, so the pairing is checked here.
+  PlacementTable table;
+  std::string reason;
+  if (!ReadPlacementTable((*this)->getParentOfType<mlir::ModuleOp>(), &table,
+                          &reason))
+    return emitOpError() << reason;
+  if (!table.worker.empty() && mode != PlacementMode::kEft)
+    return emitOpError() << kPlacementTableAttr << " needs placement mode eft, not "
+                         << PlacementModeName(mode);
+  if (mode == PlacementMode::kEft && table.worker.empty())
+    return emitOpError() << "placement mode eft needs its materialized table in "
+                         << kPlacementTableAttr
+                         << ": it prices task durations, and no layer below the "
+                            "solver has a cost model to recompute it with";
+  return success();
+}
+
+}  // namespace tilemega::dialect
+
+#define GET_OP_CLASSES
+#include "tilemega/Dialect/CouplingGraph/CGOps.cpp.inc"
+// The generated file undefines the macro it consumed, so the second one needs
+// it set again.
+#define GET_OP_CLASSES
+#include "tilemega/Dialect/CouplingGraph/ExecOps.cpp.inc"
+
+mlir::LogicalResult tilemega::dialect::SkeletonOp::verify() {
+  if(getWorkers()<1 || getResidency()<1 || getAffinityLimit()!=2)
+    return emitOpError("requires positive resident workers and exactly two critical-affinity slots");
+  for(auto value:getSpaces()) {
+    auto entry=llvm::dyn_cast<mlir::DictionaryAttr>(value);
+    if(!entry)return emitOpError("space must be a dictionary");
+    auto base=entry.getAs<mlir::IntegerAttr>("base"),width=entry.getAs<mlir::IntegerAttr>("width");
+    auto count=entry.getAs<mlir::IntegerAttr>("count");auto load=entry.getAs<mlir::FloatAttr>("load_ns");
+    if(!base || !width || !count || !load || base.getInt()<0 || base.getInt()>=getWorkers() ||
+       width.getInt()<1 || width.getInt()>getWorkers() || count.getInt()<0 || load.getValueAsDouble()<0)
+      return emitOpError("invalid per-space candidate rule");
+  }
+  return mlir::success();
+}

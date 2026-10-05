@@ -1,0 +1,60 @@
+# FP32 FTZ 可达性审计（threshold = 2^-126 = 1.1754944e-38）
+# 次正规计数 = 0 < |v| < 2^-126 的元素数（0 不计）
+
+[A] 数据实测（已入库的缩小档；真实规模 router 见 router_ftz_device_repro.log）
+  [m1] m=1 E=4 top_k=2
+  router logits (pre max-shift)      elems=       4  次正规      0  |v|=0        0  min|v|≠0 2.683e-01
+  router logits (max-shifted)        elems=       4  次正规      0  |v|=0        1  min|v|≠0 1.083e-01
+  exp(max-shifted logits)            elems=       4  次正规      0  |v|=0        0  min|v|≠0 1.335e-01
+  softmax scores (ref /sum)          elems=       4  次正规      0  |v|=0        0  min|v|≠0 5.699e-02
+  topk_weights (renormed)            elems=       2  次正规      0  |v|=0        0  min|v|≠0 4.730e-01
+  dequant w_gu (expert 0)            elems= 3276800  次正规      0  |v|=0   354809  min|v|≠0 3.906e-03
+  gate_up = x@w_gu.T (expert 0)      elems=    1280  次正规      0  |v|=0        0  min|v|≠0 4.078e-03
+  SwiGLU exp(-gate) (expert 0)       elems=     640  次正规      0  |v|=0        0  min|v|≠0 1.854e-02
+  SwiGLU 1+exp (expert 0)            elems=     640  次正规      0  |v|=0        0  min|v|≠0 1.019e+00
+  SwiGLU output (expert 0)           elems=     640  次正规      0  |v|=0        0  min|v|≠0 8.443e-04
+  down = h@w_dn.T (expert 0)         elems=    2560  次正规      0  |v|=0        0  min|v|≠0 1.533e-04
+  shared sigmoid 1+exp(-v)           elems=       1  次正规      0  |v|=0        0  min|v|≠0 1.395e+00
+  shared gate (sigmoid+MLP)          elems=    2560  次正规      0  |v|=0        0  min|v|≠0 5.417e-04
+  routed_output                      elems=    2560  次正规      0  |v|=0        0  min|v|≠0 5.531e-04
+  moe_output                         elems=    2560  次正规      0  |v|=0        0  min|v|≠0 1.431e-04
+  m6 xAdd (res1)                     elems=    2560  次正规      0  |v|=0        0  min|v|≠0 7.868e-05
+  m6 mean(xAdd^2)                    elems=       1  次正规      0  |v|=0        0  min|v|≠0 9.914e-01
+  m6 y = bf16((xAdd*rstd)*gamma)     elems=    2560  次正规      0  |v|=0        1  min|v|≠0 1.396e-03
+  quantizer h = x(bf16)*halfScale    elems=    2560  次正规      0  |v|=0        0  min|v|≠0 5.417e-04
+
+  [m33] m=33 E=4 top_k=2
+  router logits (pre max-shift)      elems=     132  次正规      0  |v|=0        0  min|v|≠0 2.703e-03
+  router logits (max-shifted)        elems=     132  次正规      0  |v|=0       33  min|v|≠0 6.562e-02
+  exp(max-shifted logits)            elems=     132  次正规      0  |v|=0        0  min|v|≠0 2.014e-02
+  softmax scores (ref /sum)          elems=     132  次正规      0  |v|=0        0  min|v|≠0 1.342e-02
+  topk_weights (renormed)            elems=      66  次正规      0  |v|=0        0  min|v|≠0 7.101e-02
+  dequant w_gu (expert 0)            elems= 3276800  次正规      0  |v|=0   353878  min|v|≠0 3.906e-03
+  gate_up = x@w_gu.T (expert 0)      elems=   23040  次正规      0  |v|=0        0  min|v|≠0 1.967e-06
+  SwiGLU exp(-gate) (expert 0)       elems=   11520  次正规      0  |v|=0        0  min|v|≠0 2.798e-03
+  SwiGLU 1+exp (expert 0)            elems=   11520  次正规      0  |v|=0        0  min|v|≠0 1.003e+00
+  SwiGLU output (expert 0)           elems=   11520  次正规      0  |v|=0        0  min|v|≠0 1.360e-06
+  down = h@w_dn.T (expert 0)         elems=   46080  次正规      0  |v|=0        0  min|v|≠0 2.472e-05
+  shared sigmoid 1+exp(-v)           elems=      33  次正规      0  |v|=0        0  min|v|≠0 1.209e+00
+  shared gate (sigmoid+MLP)          elems=   84480  次正规      0  |v|=0        0  min|v|≠0 8.345e-06
+  routed_output                      elems=   84480  次正规      0  |v|=0        0  min|v|≠0 2.193e-05
+  moe_output                         elems=   84480  次正规      0  |v|=0        0  min|v|≠0 8.702e-06
+  m6 xAdd (res1)                     elems=   84480  次正规      0  |v|=0        0  min|v|≠0 2.110e-05
+  m6 mean(xAdd^2)                    elems=      33  次正规      0  |v|=0        0  min|v|≠0 9.586e-01
+  m6 y = bf16((xAdd*rstd)*gamma)     elems=   84480  次正规      0  |v|=0       66  min|v|≠0 1.063e-04
+  quantizer h = x(bf16)*halfScale    elems=   84480  次正规      0  |v|=0        0  min|v|≠0 1.210e-05
+
+
+[B] 构造探针（次正规可达但结果不可观测）
+  silu/sigmoid: v=[88.80000305175781, 90.0, 100.0, 110.0] -> exp(-v)=[2.7205004568187004e-39, 8.194008692231508e-40, 3.783505853677006e-44, 0.0]
+    1+exp(-v) == 1.0 逐元素: True  ⇒ v/(1+exp) == v/(1+0)（FTZ 不可观测）
+  fp4 cast: h=[0.0, 9.99994610111476e-41, -9.99994610111476e-41, 9.999999350456404e-39, 4.999999675228202e-39] -> codes=[0, 0, 8, 0, 0]  ⇒ 次正规值全部落到 0 码（±0，FTZ 不可观测）
+  RMSNorm: sqrt(ss/2560+1e-6) = [999.9999389648438, 999.9999389648438, 999.9999389648438] vs 零次正规 999.9999389648438
+    ⇒ ss 在次正规区时 rstd 与 ss=0 逐位相同（eps=1e-6 主导）
+
+[C] 不可建模项（GEMM/combine 的 fp32 累加链）
+  设备 cube fp32 累加 + vector 折叠 + 本参考的 numpy fp32 求和：累加次序不同，
+  逐级 FTZ 无法在本参考里表达。判据是【部分和落进次正规区】需要全部已累加项
+  相互抵消到 < 2^-126 —— 而同一链上 fp32 舍入噪声下限为 0.5·ulp(最大部分和)，
+  量级 ~1e-7（m33 实测 min|v|≠0 见上表）≫ 2^-126，故该事件在本数据族不可达；
+  且该链的不确定度早已被 T3 界 / 量化预算 / 1.5×oracle 容差覆盖（README 偏差预算）。

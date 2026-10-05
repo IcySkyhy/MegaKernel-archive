@@ -1,0 +1,5859 @@
+{
+  "repository": "xys-syx/megakernel",
+  "url": "https://github.com/xys-syx/megakernel",
+  "created_at": "2026-09-24T21:39:15Z",
+  "pushed_at": "2026-10-02T00:13:18Z",
+  "branch": "main",
+  "license": null,
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": "lbm-megakernel/.gitignore",
+      "size": 519
+    },
+    {
+      "path": "lbm-megakernel/Makefile",
+      "size": 2292
+    },
+    {
+      "path": "lbm-megakernel/NOTICE",
+      "size": 1083
+    },
+    {
+      "path": "lbm-megakernel/README.md",
+      "size": 22692
+    },
+    {
+      "path": "lbm-megakernel/docs/BENCHMARKS.md",
+      "size": 5001
+    },
+    {
+      "path": "lbm-megakernel/docs/CLUSTER_SWEEP_DESIGN.md",
+      "size": 10042
+    },
+    {
+      "path": "lbm-megakernel/docs/CLUSTER_SWEEP_RESULTS.md",
+      "size": 43188
+    },
+    {
+      "path": "lbm-megakernel/docs/MLIR_FUSION.md",
+      "size": 3497
+    },
+    {
+      "path": "lbm-megakernel/docs/VALIDATION.md",
+      "size": 3657
+    },
+    {
+      "path": "lbm-megakernel/docs/Z2_DESIGN.md",
+      "size": 9361
+    },
+    {
+      "path": "lbm-megakernel/docs/Z2_RESULTS.md",
+      "size": 16508
+    },
+    {
+      "path": "lbm-megakernel/docs/provenance.json",
+      "size": 5025
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/DECISIONS.md",
+      "size": 1601
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/Makefile",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/Makefile.xz4",
+      "size": 682
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/launch.cuh",
+      "size": 4024
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/main.cu",
+      "size": 94
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/model.cpp",
+      "size": 1462
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/prepare_driver.py",
+      "size": 468
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/report.py",
+      "size": 20864
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/run.py",
+      "size": 13937
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/variants.cuh",
+      "size": 1580
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/xz4.cuh",
+      "size": 6186
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/xz4_debug.cuh",
+      "size": 1718
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/xz4_main.cu",
+      "size": 351
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/xz4_model.cpp",
+      "size": 3047
+    },
+    {
+      "path": "lbm-megakernel/experiments/cluster_sweep/xz4_ownership.cu",
+      "size": 4232
+    },
+    {
+      "path": "lbm-megakernel/experiments/z2/model.cpp",
+      "size": 3495
+    },
+    {
+      "path": "lbm-megakernel/experiments/z2/report.py",
+      "size": 22896
+    },
+    {
+      "path": "lbm-megakernel/experiments/z2/run.py",
+      "size": 16432
+    },
+    {
+      "path": "lbm-megakernel/include/layout_config.h",
+      "size": 1629
+    },
+    {
+      "path": "lbm-megakernel/include/lbm.h",
+      "size": 2445
+    },
+    {
+      "path": "lbm-megakernel/include/lbm_macros.h",
+      "size": 6740
+    },
+    {
+      "path": "lbm-megakernel/kernels/b0.cuh",
+      "size": 230
+    },
+    {
+      "path": "lbm-megakernel/kernels/c1.cuh",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/kernels/c2.cuh",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/kernels/c3.cuh",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/kernels/cell.cuh",
+      "size": 5381
+    },
+    {
+      "path": "lbm-megakernel/kernels/cluster_compat.cuh",
+      "size": 580
+    },
+    {
+      "path": "lbm-megakernel/kernels/cluster_debug.cuh",
+      "size": 1815
+    },
+    {
+      "path": "lbm-megakernel/kernels/cluster_dedup.cuh",
+      "size": 3549
+    },
+    {
+      "path": "lbm-megakernel/kernels/cluster_sync.cuh",
+      "size": 2894
+    },
+    {
+      "path": "lbm-megakernel/kernels/collision.cuh",
+      "size": 3785
+    },
+    {
+      "path": "lbm-megakernel/kernels/onekernel.cuh",
+      "size": 4847
+    },
+    {
+      "path": "lbm-megakernel/kernels/s2_c128.cuh",
+      "size": 241
+    },
+    {
+      "path": "lbm-megakernel/kernels/s2_d128.cuh",
+      "size": 243
+    },
+    {
+      "path": "lbm-megakernel/kernels/spatial.cuh",
+      "size": 602
+    },
+    {
+      "path": "lbm-megakernel/kernels/t30_s1.cuh",
+      "size": 242
+    },
+    {
+      "path": "lbm-megakernel/kernels/temporal_common.cuh",
+      "size": 1512
+    },
+    {
+      "path": "lbm-megakernel/kernels/temporal_v1.cuh",
+      "size": 2680
+    },
+    {
+      "path": "lbm-megakernel/kernels/temporal_v2.cuh",
+      "size": 3093
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/B0-output-100.log",
+      "size": 652
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/B0-output-2.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/B0-output-6.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-LoadBalancing-ncu-all-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-LoadBalancing-ncu-all.csv",
+      "size": 63899
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-LoadBalancing-ncu-all.log",
+      "size": 1019
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-LoadBalancing-ncu-none-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-LoadBalancing-ncu-none.csv",
+      "size": 63896
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-LoadBalancing-ncu-none.log",
+      "size": 1115
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-LoadBalancing-nsys.log",
+      "size": 1517
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-Spread-ncu-all-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-Spread-ncu-all.csv",
+      "size": 63891
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-Spread-ncu-all.log",
+      "size": 998
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-Spread-ncu-none-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-Spread-ncu-none.csv",
+      "size": 63892
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-Spread-ncu-none.log",
+      "size": 1094
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-Spread-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-C0-Z2-Spread-nsys.log",
+      "size": 1308
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-V2-256-ncu-all-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-V2-256-ncu-all.csv",
+      "size": 63884
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-V2-256-ncu-all.log",
+      "size": 984
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-V2-256-ncu-none-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-V2-256-ncu-none.csv",
+      "size": 63879
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-V2-256-ncu-none.log",
+      "size": 1080
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-V2-256-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/D-V2-256-nsys.log",
+      "size": 1378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-0-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 429
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-0-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-0-D-C0-Z2-Spread-gpu.csv",
+      "size": 429
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-0-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-0-D-V2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-0-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-1-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-1-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-1-D-C0-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-1-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-1-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-1-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-2-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-2-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-2-D-C0-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-2-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-2-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-2-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-3-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-3-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-3-D-C0-Z2-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-3-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-3-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-100-3-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-0-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-0-D-C0-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-0-D-C0-Z2-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-0-D-C0-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-0-D-V2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-0-D-V2-256.log",
+      "size": 1284
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-1-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-1-D-C0-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-1-D-C0-Z2-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-1-D-C0-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-1-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/bench-1000-1-D-V2-256.log",
+      "size": 1284
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-Spread-default1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-Spread-default1002.log",
+      "size": 2378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-Spread-obstacle100.log",
+      "size": 2373
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-Spread-obstacle102.log",
+      "size": 2374
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-Spread-patterned1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-Spread-sentinels.log",
+      "size": 1995
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-C0-Z2-Spread-two.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-V2-256-default1000.log",
+      "size": 2369
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-V2-256-default1002.log",
+      "size": 2370
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-V2-256-obstacle100.log",
+      "size": 2365
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-V2-256-obstacle102.log",
+      "size": 2366
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-V2-256-patterned1000.log",
+      "size": 2369
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-V2-256-sentinels.log",
+      "size": 1987
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/check-D-V2-256-two.log",
+      "size": 1081
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/collision-source.log",
+      "size": 66
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/dsm-metrics.json",
+      "size": 2088
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/environment-gpu.txt",
+      "size": 22152
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/environment-ncu.txt",
+      "size": 144
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/environment-nsys.txt",
+      "size": 58
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/environment-sanitizer.txt",
+      "size": 125
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/events.json",
+      "size": 16167
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/gates.json",
+      "size": 9885
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/initcheck-D-C0-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/initcheck-D-C0-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/initcheck-D-V2-256.log",
+      "size": 771
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/interfaces.obstacles",
+      "size": 2178150
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-C0-Z2-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-C0-Z2-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-C0-Z2-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-C0-Z2-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-C0-Z2-Spread--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-C0-Z2-Spread-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-C0-Z2-Spread-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-C0-Z2-Spread-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-V2-256--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-V2-256-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-V2-256-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/invalid-D-V2-256-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/memcheck-D-C0-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/memcheck-D-C0-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/memcheck-D-V2-256.log",
+      "size": 771
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/ncu-dsm-metric-candidates.txt",
+      "size": 1649232
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/nsys.json",
+      "size": 8340
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/output-D-C0-Z2-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/output-D-C0-Z2-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/output-D-C0-Z2-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/output-D-C0-Z2-Spread-100.log",
+      "size": 666
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/output-D-C0-Z2-Spread-2.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/output-D-C0-Z2-Spread-6.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/output-D-V2-256-100.log",
+      "size": 658
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/output-D-V2-256-2.log",
+      "size": 655
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/output-D-V2-256-6.log",
+      "size": 655
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/probe-D-C0-Z2-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/probe-D-C0-Z2-Spread.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/probe-D-V2-256.log",
+      "size": 1081
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/producer-model.json",
+      "size": 326
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/production.sass",
+      "size": 951590
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/profiling.json",
+      "size": 47413
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/racecheck-D-C0-Z2-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/racecheck-D-C0-Z2-Spread.log",
+      "size": 817
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/racecheck-D-V2-256.log",
+      "size": 809
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/resources.json",
+      "size": 1747
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/sass.json",
+      "size": 3339
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/summary.json",
+      "size": 1032
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/synccheck-D-C0-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/synccheck-D-C0-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a/synccheck-D-V2-256.log",
+      "size": 771
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/B0-output-100.log",
+      "size": 652
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/B0-output-2.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/B0-output-6.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-LoadBalancing-ncu-all-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-LoadBalancing-ncu-all.csv",
+      "size": 63896
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-LoadBalancing-ncu-all.log",
+      "size": 1020
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-LoadBalancing-ncu-none-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-LoadBalancing-ncu-none.csv",
+      "size": 63902
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-LoadBalancing-ncu-none.log",
+      "size": 1116
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-LoadBalancing-nsys.log",
+      "size": 1519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-Spread-ncu-all-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-Spread-ncu-all.csv",
+      "size": 63892
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-Spread-ncu-all.log",
+      "size": 999
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-Spread-ncu-none-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-Spread-ncu-none.csv",
+      "size": 63887
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-Spread-ncu-none.log",
+      "size": 1095
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-Spread-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C0-Z2-Spread-nsys.log",
+      "size": 1442
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-LoadBalancing-ncu-all-details.txt",
+      "size": 9903
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-LoadBalancing-ncu-all.csv",
+      "size": 63904
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-LoadBalancing-ncu-all.log",
+      "size": 1025
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-LoadBalancing-ncu-none-details.txt",
+      "size": 11597
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-LoadBalancing-ncu-none.csv",
+      "size": 63904
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-LoadBalancing-ncu-none.log",
+      "size": 1121
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-LoadBalancing-nsys.log",
+      "size": 1519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-Spread-ncu-all-details.txt",
+      "size": 9815
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-Spread-ncu-all.csv",
+      "size": 63897
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-Spread-ncu-all.log",
+      "size": 1004
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-Spread-ncu-none-details.txt",
+      "size": 9815
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-Spread-ncu-none.csv",
+      "size": 63889
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-Spread-ncu-none.log",
+      "size": 1100
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-Spread-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-C1-Z2-Spread-nsys.log",
+      "size": 1442
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V2-256-ncu-all-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V2-256-ncu-all.csv",
+      "size": 63882
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V2-256-ncu-all.log",
+      "size": 985
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V2-256-ncu-none-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V2-256-ncu-none.csv",
+      "size": 63884
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V2-256-ncu-none.log",
+      "size": 1081
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V2-256-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V2-256-nsys.log",
+      "size": 1380
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-LoadBalancing-ncu-all-details.txt",
+      "size": 10267
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-LoadBalancing-ncu-all.csv",
+      "size": 64027
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-LoadBalancing-ncu-all.log",
+      "size": 1026
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-LoadBalancing-ncu-none-details.txt",
+      "size": 11961
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-LoadBalancing-ncu-none.csv",
+      "size": 64020
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-LoadBalancing-ncu-none.log",
+      "size": 1122
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-LoadBalancing-nsys.log",
+      "size": 1519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-Spread-ncu-all-details.txt",
+      "size": 10179
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-Spread-ncu-all.csv",
+      "size": 64012
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-Spread-ncu-all.log",
+      "size": 1005
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-Spread-ncu-none-details.txt",
+      "size": 10179
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-Spread-ncu-none.csv",
+      "size": 64016
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-Spread-ncu-none.log",
+      "size": 1101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-Spread-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/D-V3-Z2-Spread-nsys.log",
+      "size": 1442
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-C0-Z2-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-C1-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-C1-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-C1-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-C1-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-V3-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-V3-Z2-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-0-D-V3-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-C0-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-C1-Z2-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-C1-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-C1-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-C1-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-V3-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-V3-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-1-D-V3-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-C0-Z2-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-C1-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-C1-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-C1-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-C1-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-V2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-V3-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-V3-Z2-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-2-D-V3-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-C0-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-C1-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-C1-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-C1-Z2-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-C1-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-V3-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-V3-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-100-3-D-V3-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-C0-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-C0-Z2-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-C0-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-C1-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-C1-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-C1-Z2-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-C1-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-V2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-V2-256.log",
+      "size": 1284
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-V3-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-V3-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-0-D-V3-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-C0-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-C0-Z2-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-C0-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-C1-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-C1-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-C1-Z2-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-C1-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-V2-256.log",
+      "size": 1284
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-V3-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-V3-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/bench-1000-1-D-V3-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-Spread-default1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-Spread-default1002.log",
+      "size": 2378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-Spread-obstacle100.log",
+      "size": 2373
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-Spread-obstacle102.log",
+      "size": 2374
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-Spread-patterned1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-Spread-sentinels.log",
+      "size": 1995
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C0-Z2-Spread-two.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-Spread-default1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-Spread-default1002.log",
+      "size": 2378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-Spread-obstacle100.log",
+      "size": 2373
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-Spread-obstacle102.log",
+      "size": 2374
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-Spread-patterned1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-Spread-sentinels.log",
+      "size": 1995
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-C1-Z2-Spread-two.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V2-256-default1000.log",
+      "size": 2369
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V2-256-default1002.log",
+      "size": 2370
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V2-256-obstacle100.log",
+      "size": 2365
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V2-256-obstacle102.log",
+      "size": 2366
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V2-256-patterned1000.log",
+      "size": 2369
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V2-256-sentinels.log",
+      "size": 1987
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V2-256-two.log",
+      "size": 1081
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-Spread-default1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-Spread-default1002.log",
+      "size": 2378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-Spread-obstacle100.log",
+      "size": 2373
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-Spread-obstacle102.log",
+      "size": 2374
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-Spread-patterned1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-Spread-sentinels.log",
+      "size": 1995
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/check-D-V3-Z2-Spread-two.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/collision-source.log",
+      "size": 66
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/dsm-metrics.json",
+      "size": 2088
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/environment-gpu.txt",
+      "size": 22152
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/environment-ncu.txt",
+      "size": 144
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/environment-nsys.txt",
+      "size": 58
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/environment-sanitizer.txt",
+      "size": 125
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/events.json",
+      "size": 37306
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/gates.json",
+      "size": 13297
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/initcheck-D-C0-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/initcheck-D-C0-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/initcheck-D-C1-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/initcheck-D-C1-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/initcheck-D-V2-256.log",
+      "size": 771
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/initcheck-D-V3-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/initcheck-D-V3-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/interfaces.obstacles",
+      "size": 2178150
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C0-Z2-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C0-Z2-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C0-Z2-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C0-Z2-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C0-Z2-Spread--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C0-Z2-Spread-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C0-Z2-Spread-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C0-Z2-Spread-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C1-Z2-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C1-Z2-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C1-Z2-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C1-Z2-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C1-Z2-Spread--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C1-Z2-Spread-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C1-Z2-Spread-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-C1-Z2-Spread-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V2-256--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V2-256-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V2-256-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V2-256-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V3-Z2-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V3-Z2-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V3-Z2-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V3-Z2-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V3-Z2-Spread--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V3-Z2-Spread-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V3-Z2-Spread-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/invalid-D-V3-Z2-Spread-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/memcheck-D-C0-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/memcheck-D-C0-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/memcheck-D-C1-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/memcheck-D-C1-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/memcheck-D-V2-256.log",
+      "size": 771
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/memcheck-D-V3-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/memcheck-D-V3-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/ncu-dsm-metric-candidates.txt",
+      "size": 1649232
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/nsys.json",
+      "size": 19411
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C0-Z2-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C0-Z2-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C0-Z2-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C0-Z2-Spread-100.log",
+      "size": 666
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C0-Z2-Spread-2.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C0-Z2-Spread-6.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C1-Z2-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C1-Z2-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C1-Z2-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C1-Z2-Spread-100.log",
+      "size": 666
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C1-Z2-Spread-2.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-C1-Z2-Spread-6.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-V2-256-100.log",
+      "size": 658
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-V2-256-2.log",
+      "size": 655
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-V2-256-6.log",
+      "size": 655
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-V3-Z2-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-V3-Z2-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-V3-Z2-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-V3-Z2-Spread-100.log",
+      "size": 666
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-V3-Z2-Spread-2.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/output-D-V3-Z2-Spread-6.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/probe-D-C0-Z2-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/probe-D-C0-Z2-Spread.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/probe-D-C1-Z2-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/probe-D-C1-Z2-Spread.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/probe-D-V2-256.log",
+      "size": 1081
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/probe-D-V3-Z2-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/probe-D-V3-Z2-Spread.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/producer-model.json",
+      "size": 326
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/production.sass",
+      "size": 951590
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/profiling.json",
+      "size": 75553
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/racecheck-D-C0-Z2-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/racecheck-D-C0-Z2-Spread.log",
+      "size": 817
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/racecheck-D-C1-Z2-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/racecheck-D-C1-Z2-Spread.log",
+      "size": 817
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/racecheck-D-V2-256.log",
+      "size": 809
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/racecheck-D-V3-Z2-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/racecheck-D-V3-Z2-Spread.log",
+      "size": 817
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/resources.json",
+      "size": 4105
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/sass.json",
+      "size": 3339
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/summary.json",
+      "size": 2419
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/synccheck-D-C0-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/synccheck-D-C0-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/synccheck-D-C1-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/synccheck-D-C1-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/synccheck-D-V2-256.log",
+      "size": 771
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/synccheck-D-V3-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/a2/synccheck-D-V3-Z2-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/B0-output-100.log",
+      "size": 652
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/B0-output-2.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/B0-output-6.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-LoadBalancing-ncu-all-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-LoadBalancing-ncu-all.csv",
+      "size": 63903
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-LoadBalancing-ncu-all.log",
+      "size": 1020
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-LoadBalancing-ncu-none-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-LoadBalancing-ncu-none.csv",
+      "size": 63900
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-LoadBalancing-ncu-none.log",
+      "size": 1116
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-LoadBalancing-nsys.log",
+      "size": 1526
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-Spread-ncu-all-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-Spread-ncu-all.csv",
+      "size": 63889
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-Spread-ncu-all.log",
+      "size": 999
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-Spread-ncu-none-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-Spread-ncu-none.csv",
+      "size": 63887
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-Spread-ncu-none.log",
+      "size": 1095
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-Spread-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-XZ4-Spread-nsys.log",
+      "size": 1449
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-LoadBalancing-ncu-all-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-LoadBalancing-ncu-all.csv",
+      "size": 63898
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-LoadBalancing-ncu-all.log",
+      "size": 1020
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-LoadBalancing-ncu-none-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-LoadBalancing-ncu-none.csv",
+      "size": 63897
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-LoadBalancing-ncu-none.log",
+      "size": 1116
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-LoadBalancing-nsys.log",
+      "size": 1526
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-Spread-ncu-all-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-Spread-ncu-all.csv",
+      "size": 63890
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-Spread-ncu-all.log",
+      "size": 999
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-Spread-ncu-none-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-Spread-ncu-none.csv",
+      "size": 63892
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-Spread-ncu-none.log",
+      "size": 1095
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-Spread-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-YZ6-Spread-nsys.log",
+      "size": 1516
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-LoadBalancing-ncu-all-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-LoadBalancing-ncu-all.csv",
+      "size": 63903
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-LoadBalancing-ncu-all.log",
+      "size": 1019
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-LoadBalancing-ncu-none-details.txt",
+      "size": 11607
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-LoadBalancing-ncu-none.csv",
+      "size": 63892
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-LoadBalancing-ncu-none.log",
+      "size": 1115
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-LoadBalancing-nsys.log",
+      "size": 1517
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-Spread-ncu-all-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-Spread-ncu-all.csv",
+      "size": 63892
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-Spread-ncu-all.log",
+      "size": 998
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-Spread-ncu-none-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-Spread-ncu-none.csv",
+      "size": 63892
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-Spread-ncu-none.log",
+      "size": 1094
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-Spread-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-C0-Z2-Spread-nsys.log",
+      "size": 1440
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-V2-256-ncu-all-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-V2-256-ncu-all.csv",
+      "size": 63879
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-V2-256-ncu-all.log",
+      "size": 984
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-V2-256-ncu-none-details.txt",
+      "size": 11519
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-V2-256-ncu-none.csv",
+      "size": 63883
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-V2-256-ncu-none.log",
+      "size": 1080
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-V2-256-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/D-V2-256-nsys.log",
+      "size": 1378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-XZ4-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-XZ4-Spread.log",
+      "size": 1297
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-YZ6-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-YZ6-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-YZ6-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-YZ6-Spread.log",
+      "size": 1297
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-0-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-XZ4-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-XZ4-Spread.log",
+      "size": 1297
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-YZ6-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-YZ6-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-YZ6-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-YZ6-Spread.log",
+      "size": 1297
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-Z2-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-V2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-1-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-XZ4-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-XZ4-Spread.log",
+      "size": 1297
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-YZ6-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-YZ6-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-YZ6-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-YZ6-Spread.log",
+      "size": 1297
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-Z2-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-V2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-2-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-XZ4-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-XZ4-Spread.log",
+      "size": 1297
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-YZ6-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-YZ6-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-YZ6-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-YZ6-Spread.log",
+      "size": 1297
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-Z2-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-C0-Z2-Spread.log",
+      "size": 1296
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-100-3-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-XZ4-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-XZ4-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-XZ4-Spread.log",
+      "size": 1299
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-YZ6-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-YZ6-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-YZ6-Spread-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-YZ6-Spread.log",
+      "size": 1299
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-Z2-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-C0-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-0-D-V2-256.log",
+      "size": 1284
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-XZ4-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-XZ4-Spread-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-XZ4-Spread.log",
+      "size": 1299
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-YZ6-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-YZ6-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-YZ6-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-YZ6-Spread.log",
+      "size": 1299
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-Z2-Spread-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-C0-Z2-Spread.log",
+      "size": 1298
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/bench-1000-1-D-V2-256.log",
+      "size": 1284
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-Spread-default1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-Spread-default1002.log",
+      "size": 2378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-Spread-obstacle100.log",
+      "size": 2373
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-Spread-obstacle102.log",
+      "size": 2374
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-Spread-patterned1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-Spread-sentinels.log",
+      "size": 1995
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-XZ4-Spread-two.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-Spread-default1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-Spread-default1002.log",
+      "size": 2378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-Spread-obstacle100.log",
+      "size": 2373
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-Spread-obstacle102.log",
+      "size": 2374
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-Spread-patterned1000.log",
+      "size": 2377
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-Spread-sentinels.log",
+      "size": 1995
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/check-D-C0-YZ6-Spread-two.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/collision-source.log",
+      "size": 66
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/dsm-metrics.json",
+      "size": 2088
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/environment-gpu.txt",
+      "size": 22152
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/environment-ncu.txt",
+      "size": 144
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/environment-nsys.txt",
+      "size": 58
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/environment-sanitizer.txt",
+      "size": 125
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/events.json",
+      "size": 37500
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/gates.json",
+      "size": 13806
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/initcheck-D-C0-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/initcheck-D-C0-XZ4-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/initcheck-D-C0-YZ6-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/initcheck-D-C0-YZ6-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/interfaces.obstacles",
+      "size": 2178150
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-XZ4-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-XZ4-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-XZ4-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-XZ4-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-XZ4-Spread--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-XZ4-Spread-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-XZ4-Spread-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-XZ4-Spread-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-YZ6-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-YZ6-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-YZ6-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-YZ6-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-YZ6-Spread--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-YZ6-Spread-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-YZ6-Spread-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/invalid-D-C0-YZ6-Spread-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/memcheck-D-C0-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/memcheck-D-C0-XZ4-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/memcheck-D-C0-YZ6-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/memcheck-D-C0-YZ6-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/ncu-dsm-metric-candidates.txt",
+      "size": 1649232
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/nsys.json",
+      "size": 19537
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-XZ4-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-XZ4-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-XZ4-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-XZ4-Spread-100.log",
+      "size": 666
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-XZ4-Spread-2.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-XZ4-Spread-6.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-YZ6-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-YZ6-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-YZ6-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-YZ6-Spread-100.log",
+      "size": 666
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-YZ6-Spread-2.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/output-D-C0-YZ6-Spread-6.log",
+      "size": 663
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/probe-D-C0-XZ4-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/probe-D-C0-XZ4-Spread.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/probe-D-C0-YZ6-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/probe-D-C0-YZ6-Spread.log",
+      "size": 1089
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/producer-model.json",
+      "size": 326
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/production.sass",
+      "size": 951590
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/profiling.json",
+      "size": 75457
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/racecheck-D-C0-XZ4-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/racecheck-D-C0-XZ4-Spread.log",
+      "size": 817
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/racecheck-D-C0-YZ6-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/racecheck-D-C0-YZ6-Spread.log",
+      "size": 817
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/resources.json",
+      "size": 4109
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/sass.json",
+      "size": 3339
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/summary.json",
+      "size": 2424
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/synccheck-D-C0-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/synccheck-D-C0-XZ4-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/synccheck-D-C0-YZ6-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/b/synccheck-D-C0-YZ6-Spread.log",
+      "size": 779
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/B0-output-100.log",
+      "size": 652
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/B0-output-2.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/B0-output-6.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C0-XZ4-LoadBalancing-ncu-all-details.txt",
+      "size": 11611
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C0-XZ4-LoadBalancing-ncu-all.csv",
+      "size": 63903
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C0-XZ4-LoadBalancing-ncu-all.log",
+      "size": 1024
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C0-XZ4-LoadBalancing-ncu-none-details.txt",
+      "size": 11611
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C0-XZ4-LoadBalancing-ncu-none.csv",
+      "size": 63906
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C0-XZ4-LoadBalancing-ncu-none.log",
+      "size": 1120
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C0-XZ4-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C0-XZ4-LoadBalancing-nsys.log",
+      "size": 1378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C1-XZ4-LoadBalancing-ncu-all-details.txt",
+      "size": 9908
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C1-XZ4-LoadBalancing-ncu-all.csv",
+      "size": 63912
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C1-XZ4-LoadBalancing-ncu-all.log",
+      "size": 1030
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C1-XZ4-LoadBalancing-ncu-none-details.txt",
+      "size": 9908
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C1-XZ4-LoadBalancing-ncu-none.csv",
+      "size": 63910
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C1-XZ4-LoadBalancing-ncu-none.log",
+      "size": 1126
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C1-XZ4-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-C1-XZ4-LoadBalancing-nsys.log",
+      "size": 1452
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V2-256-ncu-all-details.txt",
+      "size": 11523
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V2-256-ncu-all.csv",
+      "size": 63888
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V2-256-ncu-all.log",
+      "size": 988
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V2-256-ncu-none-details.txt",
+      "size": 11523
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V2-256-ncu-none.csv",
+      "size": 63888
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V2-256-ncu-none.log",
+      "size": 1084
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V2-256-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V2-256-nsys.log",
+      "size": 1378
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-XZ4-LoadBalancing-ncu-all-details.txt",
+      "size": 9183
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-XZ4-LoadBalancing-ncu-all.csv",
+      "size": 64038
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-XZ4-LoadBalancing-ncu-all.log",
+      "size": 1031
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-XZ4-LoadBalancing-ncu-none-details.txt",
+      "size": 10877
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-XZ4-LoadBalancing-ncu-none.csv",
+      "size": 64040
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-XZ4-LoadBalancing-ncu-none.log",
+      "size": 1127
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-XZ4-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-XZ4-LoadBalancing-nsys.log",
+      "size": 1526
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-Z2-LoadBalancing-ncu-all-details.txt",
+      "size": 10271
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-Z2-LoadBalancing-ncu-all.csv",
+      "size": 64032
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-Z2-LoadBalancing-ncu-all.log",
+      "size": 1029
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-Z2-LoadBalancing-ncu-none-details.txt",
+      "size": 11965
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-Z2-LoadBalancing-ncu-none.csv",
+      "size": 64029
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-Z2-LoadBalancing-ncu-none.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-Z2-LoadBalancing-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/D-V3-Z2-LoadBalancing-nsys.log",
+      "size": 1444
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bad-cluster.log",
+      "size": 6165
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bad-threads.log",
+      "size": 19755
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-C0-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-C1-XZ4-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-C1-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-V3-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-V3-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-0-D-V3-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-C0-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-C1-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-C1-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-V3-XZ4-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-V3-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-1-D-V3-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-C0-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-C1-XZ4-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-C1-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-V3-XZ4-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-V3-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-2-D-V3-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-C0-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-C1-XZ4-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-C1-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-V2-256.log",
+      "size": 1282
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-V3-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-V3-XZ4-LoadBalancing.log",
+      "size": 1318
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-100-3-D-V3-Z2-LoadBalancing.log",
+      "size": 1317
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-C0-XZ4-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-C1-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-C1-XZ4-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-V2-256.log",
+      "size": 1284
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-V3-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-V3-XZ4-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-0-D-V3-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-C0-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-C0-XZ4-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-C1-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-C1-XZ4-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-V2-256.log",
+      "size": 1284
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-V3-XZ4-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-V3-XZ4-LoadBalancing.log",
+      "size": 1320
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-V3-Z2-LoadBalancing-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/bench-1000-1-D-V3-Z2-LoadBalancing.log",
+      "size": 1319
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C0-XZ4-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C0-XZ4-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C0-XZ4-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C0-XZ4-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C0-XZ4-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C0-XZ4-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C0-XZ4-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C1-XZ4-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C1-XZ4-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C1-XZ4-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C1-XZ4-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C1-XZ4-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C1-XZ4-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-C1-XZ4-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V2-256-default1000.log",
+      "size": 2369
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V2-256-default1002.log",
+      "size": 2370
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V2-256-obstacle100.log",
+      "size": 2365
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V2-256-obstacle102.log",
+      "size": 2366
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V2-256-patterned1000.log",
+      "size": 2369
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V2-256-sentinels.log",
+      "size": 1987
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V2-256-two.log",
+      "size": 1081
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-XZ4-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-XZ4-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-XZ4-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-XZ4-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-XZ4-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-XZ4-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-XZ4-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-Z2-LoadBalancing-default1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-Z2-LoadBalancing-default1002.log",
+      "size": 2392
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-Z2-LoadBalancing-obstacle100.log",
+      "size": 2387
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-Z2-LoadBalancing-obstacle102.log",
+      "size": 2388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-Z2-LoadBalancing-patterned1000.log",
+      "size": 2391
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-Z2-LoadBalancing-sentinels.log",
+      "size": 2009
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/check-D-V3-Z2-LoadBalancing-two.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/codegen.json",
+      "size": 2929
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/collision-source.log",
+      "size": 66
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/dsm-metrics.json",
+      "size": 2088
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/environment-gpu.txt",
+      "size": 22151
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/environment-ncu.txt",
+      "size": 144
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/environment-nsys.txt",
+      "size": 58
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/environment-sanitizer.txt",
+      "size": 125
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/events.json",
+      "size": 27535
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/gates.json",
+      "size": 13045
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/initcheck-D-C0-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/initcheck-D-C1-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/initcheck-D-V2-256.log",
+      "size": 771
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/initcheck-D-V3-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/initcheck-D-V3-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/interfaces.obstacles",
+      "size": 2178150
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-C0-XZ4-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-C0-XZ4-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-C0-XZ4-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-C0-XZ4-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-C1-XZ4-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-C1-XZ4-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-C1-XZ4-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-C1-XZ4-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V2-256--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V2-256-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V2-256-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V2-256-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V3-XZ4-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V3-XZ4-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V3-XZ4-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V3-XZ4-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V3-Z2-LoadBalancing--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V3-Z2-LoadBalancing-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V3-Z2-LoadBalancing-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/invalid-D-V3-Z2-LoadBalancing-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/memcheck-D-C0-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/memcheck-D-C1-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/memcheck-D-V2-256.log",
+      "size": 771
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/memcheck-D-V3-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/memcheck-D-V3-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/ncu-dsm-metric-candidates.txt",
+      "size": 1649232
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/nsys.json",
+      "size": 13847
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-C0-XZ4-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-C0-XZ4-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-C0-XZ4-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-C1-XZ4-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-C1-XZ4-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-C1-XZ4-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-V2-256-100.log",
+      "size": 658
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-V2-256-2.log",
+      "size": 655
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-V2-256-6.log",
+      "size": 655
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-V3-XZ4-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-V3-XZ4-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-V3-XZ4-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-V3-Z2-LoadBalancing-100.log",
+      "size": 680
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-V3-Z2-LoadBalancing-2.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/output-D-V3-Z2-LoadBalancing-6.log",
+      "size": 677
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/ownership-cpu.json",
+      "size": 167
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/ownership-gpu.log",
+      "size": 1072
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/ownership.json",
+      "size": 1083
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/probe-D-C0-XZ4-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/probe-D-C1-XZ4-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/probe-D-V2-256.log",
+      "size": 1081
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/probe-D-V3-XZ4-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/probe-D-V3-Z2-LoadBalancing.log",
+      "size": 1103
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/producer-model.json",
+      "size": 326
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/production.sass",
+      "size": 1549241
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/profiling.json",
+      "size": 62474
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/racecheck-D-C0-XZ4-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/racecheck-D-C1-XZ4-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/racecheck-D-V2-256.log",
+      "size": 809
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/racecheck-D-V3-XZ4-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/racecheck-D-V3-Z2-LoadBalancing.log",
+      "size": 831
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/resources.json",
+      "size": 2971
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/sass.json",
+      "size": 3339
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/summary.json",
+      "size": 1738
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/synccheck-D-C0-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/synccheck-D-C1-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/synccheck-D-V2-256.log",
+      "size": 771
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/synccheck-D-V3-XZ4-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/synccheck-D-V3-Z2-LoadBalancing.log",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/d/xz4-sass.json",
+      "size": 388
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/decision-a.json",
+      "size": 287
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/decision-a2.json",
+      "size": 311
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/decision-c.json",
+      "size": 579
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/decision-d.json",
+      "size": 810
+    },
+    {
+      "path": "lbm-megakernel/results/cluster-sweep/summary.json",
+      "size": 2108
+    },
+    {
+      "path": "lbm-megakernel/results/onekernel/rtx5090_2026-10-01.txt",
+      "size": 1138
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-B0.log",
+      "size": 1110
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-C-V1-128.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-C-V1-256.log",
+      "size": 1124
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-C-V2-128.log",
+      "size": 1124
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-C-V2-256.log",
+      "size": 1124
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-C1.log",
+      "size": 1108
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-C2.log",
+      "size": 1107
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-C3.log",
+      "size": 1108
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-D-V1-128.log",
+      "size": 1122
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-D-V1-256.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-D-V2-128.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-D-V2-256.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-S2-C128.log",
+      "size": 1119
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-S2-C256.log",
+      "size": 1118
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-S2-D128.log",
+      "size": 1118
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-S2-D256.log",
+      "size": 1117
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-T30-S1-128.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-T30-S1-256.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-T30-V2-128.log",
+      "size": 1127
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-0-T30-V2-256.log",
+      "size": 1127
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-B0.log",
+      "size": 1110
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-C-V1-128.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-C-V1-256.log",
+      "size": 1124
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-C-V2-128.log",
+      "size": 1124
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-C-V2-256.log",
+      "size": 1124
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-C1.log",
+      "size": 1108
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-C2.log",
+      "size": 1107
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-C3.log",
+      "size": 1108
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-D-V1-128.log",
+      "size": 1122
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-D-V1-256.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-D-V2-128.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-D-V2-256.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-S2-C128.log",
+      "size": 1119
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-S2-C256.log",
+      "size": 1118
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-S2-D128.log",
+      "size": 1118
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-S2-D256.log",
+      "size": 1117
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-T30-S1-128.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-T30-S1-256.log",
+      "size": 1123
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-T30-V2-128.log",
+      "size": 1127
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-100-1-T30-V2-256.log",
+      "size": 1127
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-B0.log",
+      "size": 1112
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-C-V1-128.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-C-V1-256.log",
+      "size": 1126
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-C-V2-128.log",
+      "size": 1126
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-C-V2-256.log",
+      "size": 1126
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-C1.log",
+      "size": 1110
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-C2.log",
+      "size": 1109
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-C3.log",
+      "size": 1110
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-D-V1-128.log",
+      "size": 1124
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-D-V1-256.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-D-V2-128.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-D-V2-256.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-S2-C128.log",
+      "size": 1121
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-S2-C256.log",
+      "size": 1120
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-S2-D128.log",
+      "size": 1120
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-S2-D256.log",
+      "size": 1119
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-T30-S1-128.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-T30-S1-256.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-T30-V2-128.log",
+      "size": 1129
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-0-T30-V2-256.log",
+      "size": 1129
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-B0.log",
+      "size": 1112
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-C-V1-128.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-C-V1-256.log",
+      "size": 1126
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-C-V2-128.log",
+      "size": 1126
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-C-V2-256.log",
+      "size": 1126
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-C1.log",
+      "size": 1110
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-C2.log",
+      "size": 1109
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-C3.log",
+      "size": 1110
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-D-V1-128.log",
+      "size": 1124
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-D-V1-256.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-D-V2-128.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-D-V2-256.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-S2-C128.log",
+      "size": 1121
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-S2-C256.log",
+      "size": 1120
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-S2-D128.log",
+      "size": 1120
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-S2-D256.log",
+      "size": 1119
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-T30-S1-128.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-T30-S1-256.log",
+      "size": 1125
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-T30-V2-128.log",
+      "size": 1129
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/bench-1000-1-T30-V2-256.log",
+      "size": 1129
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-B0-default.log",
+      "size": 2204
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-B0-obstacles.log",
+      "size": 2201
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-B0-parity.log",
+      "size": 2205
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-B0-patterned.log",
+      "size": 2204
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-B0-sentinels.log",
+      "size": 1821
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-128-default.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-128-obstacles.log",
+      "size": 2207
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-128-parity.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-128-patterned.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-128-sentinels.log",
+      "size": 1828
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-256-default.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-256-obstacles.log",
+      "size": 2208
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-256-parity.log",
+      "size": 2212
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-256-patterned.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V1-256-sentinels.log",
+      "size": 1829
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-128-default.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-128-obstacles.log",
+      "size": 2208
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-128-parity.log",
+      "size": 2212
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-128-patterned.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-128-sentinels.log",
+      "size": 1829
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-256-default.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-256-obstacles.log",
+      "size": 2208
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-256-parity.log",
+      "size": 2212
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-256-patterned.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C-V2-256-sentinels.log",
+      "size": 1829
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C1-default.log",
+      "size": 2202
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C1-obstacles.log",
+      "size": 2199
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C1-parity.log",
+      "size": 2203
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C1-patterned.log",
+      "size": 2202
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C1-sentinels.log",
+      "size": 1819
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C2-default.log",
+      "size": 2201
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C2-obstacles.log",
+      "size": 2198
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C2-parity.log",
+      "size": 2202
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C2-patterned.log",
+      "size": 2201
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C2-sentinels.log",
+      "size": 1818
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C3-default.log",
+      "size": 2202
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C3-obstacles.log",
+      "size": 2199
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C3-parity.log",
+      "size": 2203
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C3-patterned.log",
+      "size": 2202
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-C3-sentinels.log",
+      "size": 1819
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-128-default.log",
+      "size": 2209
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-128-obstacles.log",
+      "size": 2206
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-128-parity.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-128-patterned.log",
+      "size": 2209
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-128-sentinels.log",
+      "size": 1827
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-256-default.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-256-obstacles.log",
+      "size": 2207
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-256-parity.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-256-patterned.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V1-256-sentinels.log",
+      "size": 1828
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-128-default.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-128-obstacles.log",
+      "size": 2207
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-128-parity.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-128-patterned.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-128-sentinels.log",
+      "size": 1828
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-256-default.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-256-obstacles.log",
+      "size": 2207
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-256-parity.log",
+      "size": 2211
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-256-patterned.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-D-V2-256-sentinels.log",
+      "size": 1828
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C128-default.log",
+      "size": 2208
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C128-obstacles.log",
+      "size": 2205
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C128-parity.log",
+      "size": 2209
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C128-patterned.log",
+      "size": 2208
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C128-sentinels.log",
+      "size": 1825
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C256-default.log",
+      "size": 2207
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C256-obstacles.log",
+      "size": 2204
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C256-parity.log",
+      "size": 2208
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C256-patterned.log",
+      "size": 2207
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-C256-sentinels.log",
+      "size": 1824
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D128-default.log",
+      "size": 2207
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D128-obstacles.log",
+      "size": 2204
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D128-parity.log",
+      "size": 2208
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D128-patterned.log",
+      "size": 2207
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D128-sentinels.log",
+      "size": 1824
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D256-default.log",
+      "size": 2206
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D256-obstacles.log",
+      "size": 2203
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D256-parity.log",
+      "size": 2207
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D256-patterned.log",
+      "size": 2206
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-S2-D256-sentinels.log",
+      "size": 1823
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-128-default.log",
+      "size": 2209
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-128-obstacles.log",
+      "size": 2206
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-128-parity.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-128-patterned.log",
+      "size": 2209
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-128-sentinels.log",
+      "size": 1826
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-256-default.log",
+      "size": 2209
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-256-obstacles.log",
+      "size": 2206
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-256-parity.log",
+      "size": 2210
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-256-patterned.log",
+      "size": 2209
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-S1-256-sentinels.log",
+      "size": 1826
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-128-default.log",
+      "size": 2212
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-128-obstacles.log",
+      "size": 2209
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-128-parity.log",
+      "size": 2213
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-128-patterned.log",
+      "size": 2212
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-128-sentinels.log",
+      "size": 1830
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-256-default.log",
+      "size": 2212
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-256-obstacles.log",
+      "size": 2209
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-256-parity.log",
+      "size": 2213
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-256-patterned.log",
+      "size": 2212
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/check-T30-V2-256-sentinels.log",
+      "size": 1830
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/events.json",
+      "size": 145683
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-B0.log",
+      "size": 605
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-C-V1-128.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-C-V1-256.log",
+      "size": 613
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-C-V2-128.log",
+      "size": 613
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-C-V2-256.log",
+      "size": 613
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-C1.log",
+      "size": 603
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-C2.log",
+      "size": 602
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-C3.log",
+      "size": 603
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-D-V1-128.log",
+      "size": 611
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-D-V1-256.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-D-V2-128.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-D-V2-256.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-S2-C128.log",
+      "size": 609
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-S2-C256.log",
+      "size": 608
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-S2-D128.log",
+      "size": 608
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-S2-D256.log",
+      "size": 607
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-T30-S1-128.log",
+      "size": 610
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-T30-S1-256.log",
+      "size": 610
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-T30-V2-128.log",
+      "size": 614
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/initcheck-T30-V2-256.log",
+      "size": 614
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-B0.log",
+      "size": 605
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-C-V1-128.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-C-V1-256.log",
+      "size": 613
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-C-V2-128.log",
+      "size": 613
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-C-V2-256.log",
+      "size": 613
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-C1.log",
+      "size": 603
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-C2.log",
+      "size": 602
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-C3.log",
+      "size": 603
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-D-V1-128.log",
+      "size": 611
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-D-V1-256.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-D-V2-128.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-D-V2-256.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-S2-C128.log",
+      "size": 609
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-S2-C256.log",
+      "size": 608
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-S2-D128.log",
+      "size": 608
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-S2-D256.log",
+      "size": 607
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-T30-S1-128.log",
+      "size": 610
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-T30-S1-256.log",
+      "size": 610
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-T30-V2-128.log",
+      "size": 614
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/memcheck-T30-V2-256.log",
+      "size": 614
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/portability.json",
+      "size": 199
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-B0.log",
+      "size": 643
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-C-V1-128.log",
+      "size": 650
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-C-V1-256.log",
+      "size": 651
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-C-V2-128.log",
+      "size": 651
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-C-V2-256.log",
+      "size": 651
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-C1.log",
+      "size": 641
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-C2.log",
+      "size": 640
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-C3.log",
+      "size": 641
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-D-V1-128.log",
+      "size": 649
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-D-V1-256.log",
+      "size": 650
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-D-V2-128.log",
+      "size": 650
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-D-V2-256.log",
+      "size": 650
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-S2-C128.log",
+      "size": 647
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-S2-C256.log",
+      "size": 646
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-S2-D128.log",
+      "size": 646
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-S2-D256.log",
+      "size": 645
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-T30-S1-128.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-T30-S1-256.log",
+      "size": 648
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-T30-V2-128.log",
+      "size": 652
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/racecheck-T30-V2-256.log",
+      "size": 652
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/sass.json",
+      "size": 2193
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/source-check.log",
+      "size": 66
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/summary.json",
+      "size": 24170
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-B0.log",
+      "size": 605
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-C-V1-128.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-C-V1-256.log",
+      "size": 613
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-C-V2-128.log",
+      "size": 613
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-C-V2-256.log",
+      "size": 613
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-C1.log",
+      "size": 603
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-C2.log",
+      "size": 602
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-C3.log",
+      "size": 603
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-D-V1-128.log",
+      "size": 611
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-D-V1-256.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-D-V2-128.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-D-V2-256.log",
+      "size": 612
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-S2-C128.log",
+      "size": 609
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-S2-C256.log",
+      "size": 608
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-S2-D128.log",
+      "size": 608
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-S2-D256.log",
+      "size": 607
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-T30-S1-128.log",
+      "size": 610
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-T30-S1-256.log",
+      "size": 610
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-T30-V2-128.log",
+      "size": 614
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/synccheck-T30-V2-256.log",
+      "size": 614
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/upstream-B0-100.log",
+      "size": 960
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/upstream-B0-2.log",
+      "size": 952
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/upstream-B0-6.log",
+      "size": 953
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/validation.json",
+      "size": 23002
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-B0-100.log",
+      "size": 493
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-B0-2.log",
+      "size": 489
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-B0-6.log",
+      "size": 489
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C-V1-128-2.log",
+      "size": 496
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C-V1-128-6.log",
+      "size": 496
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C-V1-256-2.log",
+      "size": 497
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C-V1-256-6.log",
+      "size": 497
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C-V2-128-2.log",
+      "size": 497
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C-V2-128-6.log",
+      "size": 497
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C-V2-256-2.log",
+      "size": 497
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C-V2-256-6.log",
+      "size": 497
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C1-2.log",
+      "size": 487
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C1-6.log",
+      "size": 487
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C2-2.log",
+      "size": 486
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C2-6.log",
+      "size": 486
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C3-2.log",
+      "size": 487
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-C3-6.log",
+      "size": 487
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-D-V1-128-2.log",
+      "size": 495
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-D-V1-128-6.log",
+      "size": 495
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-D-V1-256-2.log",
+      "size": 496
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-D-V1-256-6.log",
+      "size": 496
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-D-V2-128-2.log",
+      "size": 496
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-D-V2-128-6.log",
+      "size": 496
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-D-V2-256-2.log",
+      "size": 496
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-D-V2-256-6.log",
+      "size": 496
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-S2-C128-2.log",
+      "size": 493
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-S2-C128-6.log",
+      "size": 493
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-S2-C256-2.log",
+      "size": 492
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-S2-C256-6.log",
+      "size": 492
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-S2-D128-2.log",
+      "size": 492
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-S2-D128-6.log",
+      "size": 492
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-S2-D256-2.log",
+      "size": 491
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-S2-D256-6.log",
+      "size": 491
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-T30-S1-128-2.log",
+      "size": 494
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-T30-S1-128-6.log",
+      "size": 494
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-T30-S1-256-2.log",
+      "size": 494
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-T30-S1-256-6.log",
+      "size": 494
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-T30-V2-128-2.log",
+      "size": 498
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-T30-V2-128-6.log",
+      "size": 498
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-T30-V2-256-2.log",
+      "size": 498
+    },
+    {
+      "path": "lbm-megakernel/results/rtx5090/velocity-T30-V2-256-6.log",
+      "size": 498
+    },
+    {
+      "path": "lbm-megakernel/results/z2/B0-output-100.log",
+      "size": 581
+    },
+    {
+      "path": "lbm-megakernel/results/z2/B0-output-2.log",
+      "size": 577
+    },
+    {
+      "path": "lbm-megakernel/results/z2/B0-output-6.log",
+      "size": 577
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C0-Z2-256-ncu-all-details.txt",
+      "size": 11522
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C0-Z2-256-ncu-all.csv",
+      "size": 63892
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C0-Z2-256-ncu-all.log",
+      "size": 903
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C0-Z2-256-ncu-none-details.txt",
+      "size": 11522
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C0-Z2-256-ncu-none.csv",
+      "size": 63890
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C0-Z2-256-ncu-none.log",
+      "size": 999
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C0-Z2-256-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C0-Z2-256-nsys.log",
+      "size": 1311
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C1-Z2-256-ncu-all-details.txt",
+      "size": 9818
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C1-Z2-256-ncu-all.csv",
+      "size": 63898
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C1-Z2-256-ncu-all.log",
+      "size": 908
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C1-Z2-256-ncu-none-details.txt",
+      "size": 9818
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C1-Z2-256-ncu-none.csv",
+      "size": 63900
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C1-Z2-256-ncu-none.log",
+      "size": 1004
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C1-Z2-256-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-C1-Z2-256-nsys.log",
+      "size": 1311
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V2-256-ncu-all-details.txt",
+      "size": 11522
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V2-256-ncu-all.csv",
+      "size": 63874
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V2-256-ncu-all.log",
+      "size": 897
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V2-256-ncu-none-details.txt",
+      "size": 11522
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V2-256-ncu-none.csv",
+      "size": 63887
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V2-256-ncu-none.log",
+      "size": 993
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V2-256-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V2-256-nsys.log",
+      "size": 1281
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V3-Z2-256-ncu-all-details.txt",
+      "size": 10182
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V3-Z2-256-ncu-all.csv",
+      "size": 64024
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V3-Z2-256-ncu-all.log",
+      "size": 909
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V3-Z2-256-ncu-none-details.txt",
+      "size": 10182
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V3-Z2-256-ncu-none.csv",
+      "size": 64011
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V3-Z2-256-ncu-none.log",
+      "size": 1005
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V3-Z2-256-nsys-export.log",
+      "size": 8101
+    },
+    {
+      "path": "lbm-megakernel/results/z2/D-V3-Z2-256-nsys.log",
+      "size": 1311
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bad-cluster.log",
+      "size": 12155
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bad-threads.log",
+      "size": 6683
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-0-D-C0-Z2-256-gpu.csv",
+      "size": 425
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-0-D-C0-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-0-D-C1-Z2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-0-D-C1-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-0-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-0-D-V2-256.log",
+      "size": 1211
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-0-D-V3-Z2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-0-D-V3-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-1-D-C0-Z2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-1-D-C0-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-1-D-C1-Z2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-1-D-C1-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-1-D-V2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-1-D-V2-256.log",
+      "size": 1211
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-1-D-V3-Z2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-1-D-V3-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-2-D-C0-Z2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-2-D-C0-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-2-D-C1-Z2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-2-D-C1-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-2-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-2-D-V2-256.log",
+      "size": 1211
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-2-D-V3-Z2-256-gpu.csv",
+      "size": 431
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-2-D-V3-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-3-D-C0-Z2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-3-D-C0-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-3-D-C1-Z2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-3-D-C1-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-3-D-V2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-3-D-V2-256.log",
+      "size": 1211
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-3-D-V3-Z2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-100-3-D-V3-Z2-256.log",
+      "size": 1217
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-0-D-C0-Z2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-0-D-C0-Z2-256.log",
+      "size": 1219
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-0-D-C1-Z2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-0-D-C1-Z2-256.log",
+      "size": 1219
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-0-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-0-D-V2-256.log",
+      "size": 1213
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-0-D-V3-Z2-256-gpu.csv",
+      "size": 430
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-0-D-V3-Z2-256.log",
+      "size": 1219
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-1-D-C0-Z2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-1-D-C0-Z2-256.log",
+      "size": 1219
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-1-D-C1-Z2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-1-D-C1-Z2-256.log",
+      "size": 1219
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-1-D-V2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-1-D-V2-256.log",
+      "size": 1213
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-1-D-V3-Z2-256-gpu.csv",
+      "size": 432
+    },
+    {
+      "path": "lbm-megakernel/results/z2/bench-1000-1-D-V3-Z2-256.log",
+      "size": 1219
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C0-Z2-256-default1000.log",
+      "size": 2301
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C0-Z2-256-default1002.log",
+      "size": 2302
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C0-Z2-256-obstacle100.log",
+      "size": 2297
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C0-Z2-256-obstacle102.log",
+      "size": 2298
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C0-Z2-256-patterned1000.log",
+      "size": 2301
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C0-Z2-256-sentinels.log",
+      "size": 1919
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C0-Z2-256-two.log",
+      "size": 1013
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C1-Z2-256-default1000.log",
+      "size": 2301
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C1-Z2-256-default1002.log",
+      "size": 2302
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C1-Z2-256-obstacle100.log",
+      "size": 2297
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C1-Z2-256-obstacle102.log",
+      "size": 2298
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C1-Z2-256-patterned1000.log",
+      "size": 2301
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C1-Z2-256-sentinels.log",
+      "size": 1919
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-C1-Z2-256-two.log",
+      "size": 1013
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V2-256-default1000.log",
+      "size": 2298
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V2-256-default1002.log",
+      "size": 2299
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V2-256-obstacle100.log",
+      "size": 2294
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V2-256-obstacle102.log",
+      "size": 2295
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V2-256-patterned1000.log",
+      "size": 2298
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V2-256-sentinels.log",
+      "size": 1916
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V2-256-two.log",
+      "size": 1010
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V3-Z2-256-default1000.log",
+      "size": 2301
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V3-Z2-256-default1002.log",
+      "size": 2302
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V3-Z2-256-obstacle100.log",
+      "size": 2297
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V3-Z2-256-obstacle102.log",
+      "size": 2298
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V3-Z2-256-patterned1000.log",
+      "size": 2301
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V3-Z2-256-sentinels.log",
+      "size": 1919
+    },
+    {
+      "path": "lbm-megakernel/results/z2/check-D-V3-Z2-256-two.log",
+      "size": 1013
+    },
+    {
+      "path": "lbm-megakernel/results/z2/cluster-interfaces.obstacles",
+      "size": 2178150
+    },
+    {
+      "path": "lbm-megakernel/results/z2/collision-source.log",
+      "size": 66
+    },
+    {
+      "path": "lbm-megakernel/results/z2/dsm-metrics.json",
+      "size": 2088
+    },
+    {
+      "path": "lbm-megakernel/results/z2/environment-gpu.txt",
+      "size": 22152
+    },
+    {
+      "path": "lbm-megakernel/results/z2/environment-ncu.txt",
+      "size": 144
+    },
+    {
+      "path": "lbm-megakernel/results/z2/environment-nsys.txt",
+      "size": 58
+    },
+    {
+      "path": "lbm-megakernel/results/z2/environment-sanitizer.txt",
+      "size": 125
+    },
+    {
+      "path": "lbm-megakernel/results/z2/events.json",
+      "size": 20010
+    },
+    {
+      "path": "lbm-megakernel/results/z2/gates.json",
+      "size": 8629
+    },
+    {
+      "path": "lbm-megakernel/results/z2/initcheck-D-C0-Z2-256.log",
+      "size": 703
+    },
+    {
+      "path": "lbm-megakernel/results/z2/initcheck-D-C1-Z2-256.log",
+      "size": 703
+    },
+    {
+      "path": "lbm-megakernel/results/z2/initcheck-D-V2-256.log",
+      "size": 700
+    },
+    {
+      "path": "lbm-megakernel/results/z2/initcheck-D-V3-Z2-256.log",
+      "size": 703
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-C0-Z2-256--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-C0-Z2-256-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-C0-Z2-256-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-C0-Z2-256-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-C1-Z2-256--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-C1-Z2-256-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-C1-Z2-256-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-C1-Z2-256-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-V2-256--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-V2-256-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-V2-256-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-V2-256-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-V3-Z2-256--2.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-V3-Z2-256-0.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-V3-Z2-256-3.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/invalid-D-V3-Z2-256-abc.log",
+      "size": 111
+    },
+    {
+      "path": "lbm-megakernel/results/z2/memcheck-D-C0-Z2-256.log",
+      "size": 703
+    },
+    {
+      "path": "lbm-megakernel/results/z2/memcheck-D-C1-Z2-256.log",
+      "size": 703
+    },
+    {
+      "path": "lbm-megakernel/results/z2/memcheck-D-V2-256.log",
+      "size": 700
+    },
+    {
+      "path": "lbm-megakernel/results/z2/memcheck-D-V3-Z2-256.log",
+      "size": 703
+    },
+    {
+      "path": "lbm-megakernel/results/z2/ncu-dsm-metric-candidates.txt",
+      "size": 1649232
+    },
+    {
+      "path": "lbm-megakernel/results/z2/nsys.json",
+      "size": 10945
+    },
+    {
+      "path": "lbm-megakernel/results/z2/original-executable.json",
+      "size": 226
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-C0-Z2-256-100.log",
+      "size": 590
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-C0-Z2-256-2.log",
+      "size": 587
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-C0-Z2-256-6.log",
+      "size": 587
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-C1-Z2-256-100.log",
+      "size": 590
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-C1-Z2-256-2.log",
+      "size": 587
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-C1-Z2-256-6.log",
+      "size": 587
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-V2-256-100.log",
+      "size": 587
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-V2-256-2.log",
+      "size": 584
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-V2-256-6.log",
+      "size": 584
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-V3-Z2-256-100.log",
+      "size": 590
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-V3-Z2-256-2.log",
+      "size": 587
+    },
+    {
+      "path": "lbm-megakernel/results/z2/output-D-V3-Z2-256-6.log",
+      "size": 587
+    },
+    {
+      "path": "lbm-megakernel/results/z2/ownership-cpu.json",
+      "size": 190
+    },
+    {
+      "path": "lbm-megakernel/results/z2/ownership-gpu.log",
+      "size": 960
+    },
+    {
+      "path": "lbm-megakernel/results/z2/ownership.json",
+      "size": 996
+    },
+    {
+      "path": "lbm-megakernel/results/z2/production.sass",
+      "size": 2373112
+    },
+    {
+      "path": "lbm-megakernel/results/z2/profiling.json",
+      "size": 54086
+    },
+    {
+      "path": "lbm-megakernel/results/z2/racecheck-D-C0-Z2-256.log",
+      "size": 741
+    },
+    {
+      "path": "lbm-megakernel/results/z2/racecheck-D-C1-Z2-256.log",
+      "size": 741
+    },
+    {
+      "path": "lbm-megakernel/results/z2/racecheck-D-V2-256.log",
+      "size": 738
+    },
+    {
+      "path": "lbm-megakernel/results/z2/racecheck-D-V3-Z2-256.log",
+      "size": 741
+    },
+    {
+      "path": "lbm-megakernel/results/z2/resources.json",
+      "size": 2109
+    },
+    {
+      "path": "lbm-megakernel/results/z2/sass.json",
+      "size": 3339
+    },
+    {
+      "path": "lbm-megakernel/results/z2/synccheck-D-C0-Z2-256.log",
+      "size": 703
+    },
+    {
+      "path": "lbm-megakernel/results/z2/synccheck-D-C1-Z2-256.log",
+      "size": 703
+    },
+    {
+      "path": "lbm-megakernel/results/z2/synccheck-D-V2-256.log",
+      "size": 700
+    },
+    {
+      "path": "lbm-megakernel/results/z2/synccheck-D-V3-Z2-256.log",
+      "size": 703
+    },
+    {
+      "path": "lbm-megakernel/scripts/benchmark.py",
+      "size": 2420
+    },
+    {
+      "path": "lbm-megakernel/scripts/check_source.py",
+      "size": 793
+    },
+    {
+      "path": "lbm-megakernel/scripts/common.py",
+      "size": 1715
+    },
+    {
+      "path": "lbm-megakernel/scripts/report.py",
+      "size": 9168
+    },
+    {
+      "path": "lbm-megakernel/scripts/validate.py",
+      "size": 4733
+    },
+    {
+      "path": "lbm-megakernel/src/cluster_main.cu",
+      "size": 47
+    },
+    {
+      "path": "lbm-megakernel/src/cluster_ownership.cu",
+      "size": 4203
+    },
+    {
+      "path": "lbm-megakernel/src/driver.cuh",
+      "size": 14478
+    },
+    {
+      "path": "lbm-megakernel/src/grid.cuh",
+      "size": 8053
+    },
+    {
+      "path": "lbm-megakernel/src/main.cu",
+      "size": 66
+    },
+    {
+      "path": "lbm-megakernel/src/onekernel_main.cu",
+      "size": 8366
+    },
+    {
+      "path": "lbm-megakernel/src/variants.cuh",
+      "size": 2317
+    },
+    {
+      "path": "lbm_rewritten/lbm.mlir",
+      "size": 137880
+    },
+    {
+      "path": "lbm_rewritten/lbm_s1.mlir",
+      "size": 106326
+    },
+    {
+      "path": "lbm_rewritten/lbm_s2.mlir",
+      "size": 169443
+    },
+    {
+      "path": "lbm_rewritten/lbm_s3.mlir",
+      "size": 169576
+    },
+    {
+      "path": "transform/SplitLoopTransformOps.cpp",
+      "size": 87189
+    },
+    {
+      "path": "transform/SplitLoopTransformOps.h",
+      "size": 973
+    },
+    {
+      "path": "transform/SplitLoopTransformOps.td",
+      "size": 12101
+    },
+    {
+      "path": "transform/dynamic-shared-memory.patch",
+      "size": 6304
+    },
+    {
+      "path": "transform/enzyme-jax.patch",
+      "size": 114970
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-10-02T00:13:11Z",
+      "subject": "one kernel",
+      "url": "https://github.com/xys-syx/megakernel/commit/a069b92b33494b1c23f5f8ac5c8ce6aaef894573"
+    },
+    {
+      "date": "2026-10-01T17:53:46Z",
+      "subject": "pass using transform dialect",
+      "url": "https://github.com/xys-syx/megakernel/commit/989db276cdfe1d8354a654f12341062fb0cc5354"
+    },
+    {
+      "date": "2026-09-29T08:00:44Z",
+      "subject": "ir rewritten",
+      "url": "https://github.com/xys-syx/megakernel/commit/af08abadb4f64f47e50ecd13f79d3011a8189743"
+    },
+    {
+      "date": "2026-09-26T07:23:59Z",
+      "subject": "cluster+dsmem",
+      "url": "https://github.com/xys-syx/megakernel/commit/aec19339ce72c51913b4e8c37d3dd49b72893472"
+    },
+    {
+      "date": "2026-09-24T22:02:01Z",
+      "subject": "readme",
+      "url": "https://github.com/xys-syx/megakernel/commit/dc99c5ec46c542bf644f717b3e451e72b52a45c8"
+    },
+    {
+      "date": "2026-09-24T21:46:07Z",
+      "subject": "Track LBM source files instead of embedded repository reference",
+      "url": "https://github.com/xys-syx/megakernel/commit/f2532331d09045016f7a83ab89a5b9bb7a66b141"
+    },
+    {
+      "date": "2026-09-24T21:42:48Z",
+      "subject": "upload",
+      "url": "https://github.com/xys-syx/megakernel/commit/298236ec365ccf21a17115627cbb430dbc675f4b"
+    }
+  ],
+  "readme": "README unavailable: Response status code does not indicate success: 404 (Not Found)."
+}

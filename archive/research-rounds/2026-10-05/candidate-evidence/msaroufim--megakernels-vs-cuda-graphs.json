@@ -1,0 +1,809 @@
+{
+  "repository": "msaroufim/megakernels-vs-cuda-graphs",
+  "url": "https://github.com/msaroufim/megakernels-vs-cuda-graphs",
+  "created_at": "2026-09-15T23:23:11Z",
+  "pushed_at": "2026-09-24T05:12:09Z",
+  "branch": "main",
+  "license": null,
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".github/workflows/cpu.yml",
+      "size": 1144
+    },
+    {
+      "path": ".github/workflows/llama-performance.yml",
+      "size": 6942
+    },
+    {
+      "path": ".gitignore",
+      "size": 137
+    },
+    {
+      "path": "AGENTS.md",
+      "size": 1437
+    },
+    {
+      "path": "README.md",
+      "size": 3253
+    },
+    {
+      "path": "docs/dspark-bubbles.png",
+      "size": 373054
+    },
+    {
+      "path": "dspark/.gitignore",
+      "size": 99
+    },
+    {
+      "path": "dspark/LICENSE",
+      "size": 1077
+    },
+    {
+      "path": "dspark/NOTICE",
+      "size": 7734
+    },
+    {
+      "path": "dspark/README.md",
+      "size": 6259
+    },
+    {
+      "path": "dspark/deepspec/__init__.py",
+      "size": 13
+    },
+    {
+      "path": "dspark/deepspec/megakernel/__init__.py",
+      "size": 2678
+    },
+    {
+      "path": "dspark/deepspec/megakernel/contract.py",
+      "size": 7994
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_attn_mma8.cuh",
+      "size": 2035
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_attn_phase.cuh",
+      "size": 43173
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_batch.h",
+      "size": 4694
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_boltin_kv.cpp",
+      "size": 1033
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_boltin_kv.cu",
+      "size": 10124
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_device_graph_runtime.cpp",
+      "size": 2779
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_device_graph_runtime_kernel.cu",
+      "size": 20974
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_epi_phase.cuh",
+      "size": 33394
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_fp8_scale4_phase.cuh",
+      "size": 9899
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_full.cpp",
+      "size": 777
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_full_kernel.cu",
+      "size": 111939
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_hc_overlap.cuh",
+      "size": 3238
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_hc_weight_stage.cuh",
+      "size": 5784
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_head_prefetch.cuh",
+      "size": 3672
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_lm_phase.cuh",
+      "size": 75746
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_lm_streamed_phase.cuh",
+      "size": 11680
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_markov_phase.cuh",
+      "size": 32152
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_proj_phase.cuh",
+      "size": 74801
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_proposal_io.cuh",
+      "size": 12437
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_qnorm_phase.cuh",
+      "size": 15604
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_quant_scale.cuh",
+      "size": 1043
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_reduction.cuh",
+      "size": 3491
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_route_pack.cpp",
+      "size": 3965
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_route_pack_kernel.cu",
+      "size": 38126
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_router_phase.cuh",
+      "size": 8985
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_router_top6.cuh",
+      "size": 2138
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_shared_bulk_phase.cuh",
+      "size": 8548
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_shared_phase.cuh",
+      "size": 40883
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_small_phase.cuh",
+      "size": 41906
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_swiglu_warp.cuh",
+      "size": 2511
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_tail.cpp",
+      "size": 979
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_tail_kernel.cu",
+      "size": 16018
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_tmem.cuh",
+      "size": 3047
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4.cpp",
+      "size": 11449
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_generated.h",
+      "size": 97210
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_generated_greedy.h",
+      "size": 72771
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_generated_greedy_b2.h",
+      "size": 80687
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_generated_greedy_b4.h",
+      "size": 91788
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_generated_greedy_b8.h",
+      "size": 120804
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_generated_greedy_overlap.h",
+      "size": 70425
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_generated_greedy_shared_continue_w2_128.h",
+      "size": 71449
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_generated_relaxed.h",
+      "size": 85378
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_kernel.cu",
+      "size": 291985
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_tp2_ablate.cuh",
+      "size": 4182
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_v4_tp2_tail.cuh",
+      "size": 32991
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_w13_phase.cuh",
+      "size": 152296
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_w13_stage3.cuh",
+      "size": 129143
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_woa_splitk.cuh",
+      "size": 13547
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/dspark_woa_streamed_phase.cuh",
+      "size": 11028
+    },
+    {
+      "path": "dspark/deepspec/megakernel/csrc/flashmla/LICENSE",
+      "size": 1065
+    },
+    {
+      "path": "dspark/deepspec/megakernel/device_graph_runtime.py",
+      "size": 6799
+    },
+    {
+      "path": "dspark/deepspec/megakernel/extension.py",
+      "size": 67686
+    },
+    {
+      "path": "dspark/deepspec/megakernel/full_loop_compiler.py",
+      "size": 12556
+    },
+    {
+      "path": "dspark/deepspec/megakernel/full_loop_graft.py",
+      "size": 17835
+    },
+    {
+      "path": "dspark/deepspec/megakernel/full_loop_moe_compiler.py",
+      "size": 20792
+    },
+    {
+      "path": "dspark/deepspec/megakernel/full_loop_proposal.py",
+      "size": 25481
+    },
+    {
+      "path": "dspark/deepspec/megakernel/full_loop_schedule.py",
+      "size": 15303
+    },
+    {
+      "path": "dspark/deepspec/megakernel/full_loop_weights.py",
+      "size": 22258
+    },
+    {
+      "path": "dspark/deepspec/megakernel/prefill_snapshot.py",
+      "size": 7383
+    },
+    {
+      "path": "dspark/deepspec/megakernel/proposal_io.py",
+      "size": 14111
+    },
+    {
+      "path": "dspark/deepspec/megakernel/scheduler.py",
+      "size": 9390
+    },
+    {
+      "path": "dspark/deepspec/megakernel/tail_reference.py",
+      "size": 5015
+    },
+    {
+      "path": "dspark/deepspec/megakernel/trace.py",
+      "size": 23110
+    },
+    {
+      "path": "dspark/deepspec/megakernel/v4_abi.py",
+      "size": 16725
+    },
+    {
+      "path": "dspark/deepspec/megakernel/v4_schedule.py",
+      "size": 26190
+    },
+    {
+      "path": "dspark/deepspec/megakernel/v4_trace.py",
+      "size": 15229
+    },
+    {
+      "path": "dspark/deepspec/megakernel/v4_weights.py",
+      "size": 14697
+    },
+    {
+      "path": "dspark/deepspec/modeling/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "dspark/deepspec/modeling/dspark/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "dspark/deepspec/modeling/dspark/deepseek_v4/__init__.py",
+      "size": 641
+    },
+    {
+      "path": "dspark/deepspec/modeling/dspark/deepseek_v4/official.py",
+      "size": 33727
+    },
+    {
+      "path": "dspark/docs/bubbles.md",
+      "size": 3632
+    },
+    {
+      "path": "dspark/pyproject.toml",
+      "size": 858
+    },
+    {
+      "path": "dspark/scripts/megakernel/boltin_kv_accessor.py",
+      "size": 17163
+    },
+    {
+      "path": "dspark/scripts/megakernel/boltin_pack.py",
+      "size": 17594
+    },
+    {
+      "path": "dspark/scripts/megakernel/generate_v4_header.py",
+      "size": 66648
+    },
+    {
+      "path": "dspark/scripts/megakernel/hazy_hybrid/benchmark_utils.py",
+      "size": 3463
+    },
+    {
+      "path": "dspark/scripts/megakernel/hazy_hybrid/equal_work.py",
+      "size": 16415
+    },
+    {
+      "path": "dspark/scripts/megakernel/hazy_hybrid/equal_work_head.py",
+      "size": 9915
+    },
+    {
+      "path": "dspark/scripts/megakernel/hazy_hybrid/fixture.py",
+      "size": 3245
+    },
+    {
+      "path": "dspark/scripts/megakernel/hazy_hybrid/full_proposal_build.py",
+      "size": 6811
+    },
+    {
+      "path": "dspark/scripts/megakernel/hazy_hybrid/full_proposal_disjoint_fixture.py",
+      "size": 20331
+    },
+    {
+      "path": "dspark/scripts/megakernel/hazy_hybrid/full_proposal_lab.py",
+      "size": 28996
+    },
+    {
+      "path": "dspark/scripts/megakernel/hazy_hybrid/graph_metadata.py",
+      "size": 4179
+    },
+    {
+      "path": "dspark/scripts/megakernel/hazy_hybrid/pins.json",
+      "size": 637
+    },
+    {
+      "path": "dspark/scripts/megakernel/precompiled_experiments.py",
+      "size": 9263
+    },
+    {
+      "path": "dspark/scripts/megakernel/render_trace.py",
+      "size": 10159
+    },
+    {
+      "path": "dspark/tests/test_boltin_kv_accessor.py",
+      "size": 8370
+    },
+    {
+      "path": "dspark/tests/test_confidence_prefix_loader.py",
+      "size": 6725
+    },
+    {
+      "path": "dspark/tests/test_deepseek_v4_official_loader.py",
+      "size": 1495
+    },
+    {
+      "path": "dspark/tests/test_device_graph_runtime.py",
+      "size": 4092
+    },
+    {
+      "path": "dspark/tests/test_fp8_bulk_staging.py",
+      "size": 933
+    },
+    {
+      "path": "dspark/tests/test_full_loop_compiler.py",
+      "size": 8886
+    },
+    {
+      "path": "dspark/tests/test_full_loop_moe_compiler.py",
+      "size": 2402
+    },
+    {
+      "path": "dspark/tests/test_full_loop_proposal_tail.py",
+      "size": 9728
+    },
+    {
+      "path": "dspark/tests/test_full_proposal_harness.py",
+      "size": 11413
+    },
+    {
+      "path": "dspark/tests/test_lm_bulk_staging.py",
+      "size": 1355
+    },
+    {
+      "path": "dspark/tests/test_markov_direct_drain_loader.py",
+      "size": 2322
+    },
+    {
+      "path": "dspark/tests/test_megakernel_v4_contract.py",
+      "size": 13118
+    },
+    {
+      "path": "dspark/tests/test_megakernel_v4_generated.py",
+      "size": 13949
+    },
+    {
+      "path": "dspark/tests/test_megakernel_v4_trace.py",
+      "size": 3093
+    },
+    {
+      "path": "dspark/tests/test_megakernel_v4_weights.py",
+      "size": 2345
+    },
+    {
+      "path": "dspark/tests/test_precompiled_experiments.py",
+      "size": 6544
+    },
+    {
+      "path": "dspark/tests/test_render_trace.py",
+      "size": 2262
+    },
+    {
+      "path": "dspark/tests/test_routed_bulk_weights.py",
+      "size": 1455
+    },
+    {
+      "path": "dspark/tests/test_routed_sfa_packing.py",
+      "size": 1211
+    },
+    {
+      "path": "dspark/tests/test_shared_continuation.py",
+      "size": 3406
+    },
+    {
+      "path": "dspark/uv.lock",
+      "size": 552683
+    },
+    {
+      "path": "llama/AGENTS.md",
+      "size": 2985
+    },
+    {
+      "path": "llama/PROTOCOL.md",
+      "size": 4846
+    },
+    {
+      "path": "llama/README.md",
+      "size": 4977
+    },
+    {
+      "path": "llama/benchmarks/freeze_final.py",
+      "size": 2601
+    },
+    {
+      "path": "llama/benchmarks/matched_final.py",
+      "size": 19659
+    },
+    {
+      "path": "llama/benchmarks/sequence_glue.py",
+      "size": 1743
+    },
+    {
+      "path": "llama/benchmarks/sequence_glue_embed.py",
+      "size": 1249
+    },
+    {
+      "path": "llama/benchmarks/summarize.py",
+      "size": 16372
+    },
+    {
+      "path": "llama/benchmarks/upstream_api.py",
+      "size": 3296
+    },
+    {
+      "path": "llama/campaign.py",
+      "size": 8291
+    },
+    {
+      "path": "llama/ci/benchmark.py",
+      "size": 19929
+    },
+    {
+      "path": "llama/ci/report.py",
+      "size": 7293
+    },
+    {
+      "path": "llama/ci/run_modal.py",
+      "size": 14169
+    },
+    {
+      "path": "llama/docs/H100_PROTOCOL.md",
+      "size": 2596
+    },
+    {
+      "path": "llama/docs/PROTOCOL.md",
+      "size": 8026
+    },
+    {
+      "path": "llama/docs/RESULTS.md",
+      "size": 4232
+    },
+    {
+      "path": "llama/kernels/attention.py",
+      "size": 2142
+    },
+    {
+      "path": "llama/kernels/candidate.py",
+      "size": 7599
+    },
+    {
+      "path": "llama/kernels/projection.cu",
+      "size": 12685
+    },
+    {
+      "path": "llama/megakernel/LICENSE",
+      "size": 1069
+    },
+    {
+      "path": "llama/megakernel/Makefile",
+      "size": 1254
+    },
+    {
+      "path": "llama/megakernel/ORIGIN.md",
+      "size": 744
+    },
+    {
+      "path": "llama/megakernel/attention_partial.cu",
+      "size": 30089
+    },
+    {
+      "path": "llama/megakernel/attention_reduction.cu",
+      "size": 14909
+    },
+    {
+      "path": "llama/megakernel/include/config.cuh",
+      "size": 3531
+    },
+    {
+      "path": "llama/megakernel/include/consumer.cuh",
+      "size": 108
+    },
+    {
+      "path": "llama/megakernel/include/controller/controller.cuh",
+      "size": 6199
+    },
+    {
+      "path": "llama/megakernel/include/controller/instruction_fetch.cuh",
+      "size": 1950
+    },
+    {
+      "path": "llama/megakernel/include/controller/page_allocator.cuh",
+      "size": 2911
+    },
+    {
+      "path": "llama/megakernel/include/controller/semaphore_constructor.cuh",
+      "size": 3114
+    },
+    {
+      "path": "llama/megakernel/include/controller/timings_store.cuh",
+      "size": 1799
+    },
+    {
+      "path": "llama/megakernel/include/launcher.cuh",
+      "size": 110
+    },
+    {
+      "path": "llama/megakernel/include/loader.cuh",
+      "size": 106
+    },
+    {
+      "path": "llama/megakernel/include/megakernel.cuh",
+      "size": 5791
+    },
+    {
+      "path": "llama/megakernel/include/noop.cuh",
+      "size": 1756
+    },
+    {
+      "path": "llama/megakernel/include/storer.cuh",
+      "size": 105
+    },
+    {
+      "path": "llama/megakernel/include/util.cuh",
+      "size": 12920
+    },
+    {
+      "path": "llama/megakernel/llama.cu",
+      "size": 2139
+    },
+    {
+      "path": "llama/megakernel/llama.cuh",
+      "size": 6922
+    },
+    {
+      "path": "llama/megakernel/matvec_adds.cu",
+      "size": 7979
+    },
+    {
+      "path": "llama/megakernel/matvec_pipeline.cuh",
+      "size": 14233
+    },
+    {
+      "path": "llama/megakernel/rms_lm_head.cu",
+      "size": 4513
+    },
+    {
+      "path": "llama/megakernel/rms_matvec_rope_append.cu",
+      "size": 9729
+    },
+    {
+      "path": "llama/megakernel/upgate.cu",
+      "size": 6588
+    },
+    {
+      "path": "llama/megakernel/utils.cuh",
+      "size": 4358
+    },
+    {
+      "path": "llama/pyproject.toml",
+      "size": 517
+    },
+    {
+      "path": "llama/reference/check_execution.py",
+      "size": 11077
+    },
+    {
+      "path": "llama/reference/generate.py",
+      "size": 14291
+    },
+    {
+      "path": "llama/reference/metrics.py",
+      "size": 3655
+    },
+    {
+      "path": "llama/reproduce.py",
+      "size": 15907
+    },
+    {
+      "path": "llama/tests/test_ci_benchmark.py",
+      "size": 10947
+    },
+    {
+      "path": "llama/tests/test_ci_controller.py",
+      "size": 4984
+    },
+    {
+      "path": "llama/tests/test_ci_report.py",
+      "size": 6306
+    },
+    {
+      "path": "llama/tests/test_h100_profile.py",
+      "size": 5723
+    },
+    {
+      "path": "llama/tests/test_report.py",
+      "size": 1496
+    },
+    {
+      "path": "llama/tests/test_reproduce.py",
+      "size": 11466
+    },
+    {
+      "path": "llama/tests/test_source_inventory.py",
+      "size": 653
+    },
+    {
+      "path": "llama/tests/test_stage_runtime.py",
+      "size": 6671
+    },
+    {
+      "path": "llama/tools/freeze_runtime.py",
+      "size": 3801
+    },
+    {
+      "path": "llama/tools/h200_runtime.py",
+      "size": 3022
+    },
+    {
+      "path": "llama/tools/hardware_profile.py",
+      "size": 557
+    },
+    {
+      "path": "llama/tools/prompt_suite.py",
+      "size": 4864
+    },
+    {
+      "path": "llama/tools/report.py",
+      "size": 3488
+    },
+    {
+      "path": "llama/tools/source_inventory.py",
+      "size": 1346
+    },
+    {
+      "path": "llama/tools/stage_runtime.py",
+      "size": 10101
+    },
+    {
+      "path": "llama/upstream/prepare.py",
+      "size": 11799
+    },
+    {
+      "path": "llama/upstream/test_campaign.py",
+      "size": 5226
+    },
+    {
+      "path": "llama/upstream/test_prepare.py",
+      "size": 2626
+    },
+    {
+      "path": "llama/upstream/test_vendor.py",
+      "size": 3517
+    },
+    {
+      "path": "llama/upstream/vendor.py",
+      "size": 2491
+    },
+    {
+      "path": "llama/uv.lock",
+      "size": 324937
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-24T05:12:09Z",
+      "subject": "Merge pull request #3 from msaroufim/codex/dspark-bubble-diagram",
+      "url": "https://github.com/msaroufim/megakernels-vs-cuda-graphs/commit/d1194f1d750bd1647a09ddb0b1e19c4ea9b21fd3"
+    },
+    {
+      "date": "2026-09-22T04:42:49Z",
+      "subject": "Add measured DSpark worker diagram and trace renderer",
+      "url": "https://github.com/msaroufim/megakernels-vs-cuda-graphs/commit/14dc80817684d9ff41b8ce76a453a8762730a0fb"
+    },
+    {
+      "date": "2026-09-17T21:53:36Z",
+      "subject": "Merge pull request #1 from msaroufim/llama-modal-ci",
+      "url": "https://github.com/msaroufim/megakernels-vs-cuda-graphs/commit/3ccf76800ad407de9a513304187cf222485da386"
+    },
+    {
+      "date": "2026-09-17T20:58:33Z",
+      "subject": "Vendor Llama megakernel and benchmark pull requests on Modal H100",
+      "url": "https://github.com/msaroufim/megakernels-vs-cuda-graphs/commit/08af32b96f2d23c57d6f7bfcaa2baddf9fa73baa"
+    },
+    {
+      "date": "2026-09-17T00:31:24Z",
+      "subject": "Megakernels vs CUDA Graphs",
+      "url": "https://github.com/msaroufim/megakernels-vs-cuda-graphs/commit/e7b1b5eb0e1b22370aebe48638205f046fdac620"
+    }
+  ],
+  "readme": "# Megakernels vs CUDA Graphs\n\n**Two case studies where CUDA Graphs + programmatic dependent launch (PDL)\nperform roughly on par with megakernels:** Llama decode and DSpark proposals.\nThe measured gaps are 0.7–4.6%, with different numerical behavior.\n\nMegakernel research needs more implementations and baselines that others can\nrun, inspect and extend. We’re collecting both approaches to support that work.\n\n| Case | GPU | CUDA Graphs + PDL | Megakernel | Difference |\n|---|---|---:|---:|---|\n| [Llama 1B](llama/docs/RESULTS.md) | H100 | 979.51 µs | 972.78 µs | Megakernel throughput +0.69% |\n| [Llama 1B](llama/docs/RESULTS.md) | H200 | 794.74 µs | 759.83 µs | Megakernel throughput +4.59% |\n| [DSpark](dspark/README.md) | GB300 | 803.968 µs | 828.544 µs | Megakernel latency +3.06% |\n\nLlama: mean per decode step, original unmodified HazyResearch kernel.\nDSpark: p50 per proposal, one fixed input/session. These are timing comparisons:\nLlama’s conventional baseline passes the numerical criteria; Hazy misses them.\nDSpark has unresolved logit/confidence differences. Neither establishes a general\nadvantage or end-to-end serving result.\n\n## Inside a megakernel\n\n![DSpark worker timeline: 152 persistent CTAs, with a zoom of the first FFN](docs/dspark-bubbles.png)\n\nOne row per GPU worker, inspired by HazyResearch's\n[bubble diagrams](https://hazyresearch.stanford.edu/blog/2025-05-27-no-bubbles).\nColors show task bodies; gray shows controller spans that may include waiting.\nBlank regions are unrecorded, not proven idle. The zoom shows the first FFN.\nThis is the **median of seven historical instrumented GB300 captures\n(September 4, 956.768 µs)**, separate from the final p50 results above.\n[Trace provenance and rendering command](dspark/docs/bubbles.md).\n\n## Layout\n\n| Directory | Contents |\n|---|---|\n| [`llama/`](llama/README.md) | H100/H200 kernels, benchmark, references and one-GPU runner |\n| [`dspark/`](dspark/README.md) | GB300 proposal kernel, graph baseline and replay tools; external artifacts required |\n\nEach directory has its own environment and tests. Follow its README and run\ncommands from that study’s folder.\n\nImprove either Llama baseline by editing [`llama/kernels/`](llama/kernels/) or\n[`llama/megakernel/`](llama/megakernel/), then submit a PR. See the\n[competitor guide](llama/AGENTS.md).\n\nThe Llama baseline uses fused projections, packed weights, split FP32 reductions\nand Triton attention: 100 kernels per decode step. Graphs reduce host submissions;\nPDL overlaps independent weight loading with preceding work. Start with\n[llama/kernels/candidate.py](llama/kernels/candidate.py) and [projection.cu](llama/kernels/projection.cu).\n\n## Sources\n\nThe Llama megakernel vendors [HazyResearch Megakernels](https://github.com/HazyResearch/Megakernels)\nCUDA sources; see [origin and license](llama/megakernel/ORIGIN.md).\nThe runner fetches the pinned Hazy Python runtime and\n[ThunderKittens](https://github.com/HazyResearch/ThunderKittens).\n[Measured source hashes](llama/tools/source_inventory.py).\nDSpark derives from [DeepSpec](https://github.com/deepseek-ai/DeepSpec) and retains\nits [license](dspark/LICENSE) and [notices](dspark/NOTICE),\nwhich apply to that subtree. Model weights are obtained separately.\n"
+}

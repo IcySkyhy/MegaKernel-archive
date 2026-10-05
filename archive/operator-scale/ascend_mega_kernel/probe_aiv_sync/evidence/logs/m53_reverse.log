@@ -1,0 +1,72 @@
+--- run 1 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56（每变体 4 轮，偏斜=8 次 DMA，轮询上界=2048）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障，只读一次（对照） 核 56/56；违规核 56（合计 222）；最少见到的槽数 2 ⇒ VIOLATION
+[probe_bar] v1 flag(1+r%8) 一次，只读一次（主 kernel 现行） 核 56/56；违规核 16（合计 19）；最少见到的槽数 11 ⇒ VIOLATION
+[probe_bar] v2 无屏障，轮询到齐            核 56/56；违规核 56（合计 183）；收敛核 0/56，收敛轮数上界 2048 ⇒ VIOLATION
+[probe_bar] v3 flag 一次 + 轮询到齐（混合） 核 56/56；违规核 49（合计 96）；收敛核 26/56，收敛轮数上界 2048 ⇒ VIOLATION
+exit=1
+--- run 2 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56（每变体 4 轮，偏斜=8 次 DMA，轮询上界=2048）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障，只读一次（对照） 核 56/56；违规核 56（合计 223）；最少见到的槽数 2 ⇒ VIOLATION
+[probe_bar] v1 flag(1+r%8) 一次，只读一次（主 kernel 现行） 核 56/56；违规核 25（合计 30）；最少见到的槽数 11 ⇒ VIOLATION
+[probe_bar] v2 无屏障，轮询到齐            核 56/56；违规核 56（合计 194）；收敛核 0/56，收敛轮数上界 2048 ⇒ VIOLATION
+[probe_bar] v3 flag 一次 + 轮询到齐（混合） 核 56/56；违规核 48（合计 96）；收敛核 40/56，收敛轮数上界 2048 ⇒ VIOLATION
+exit=1
+--- run 3 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56（每变体 4 轮，偏斜=8 次 DMA，轮询上界=2048）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障，只读一次（对照） 核 56/56；违规核 56（合计 222）；最少见到的槽数 1 ⇒ VIOLATION
+[probe_bar] v1 flag(1+r%8) 一次，只读一次（主 kernel 现行） 核 56/56；违规核 38（合计 69）；最少见到的槽数 15 ⇒ VIOLATION
+[probe_bar] v2 无屏障，轮询到齐            核 56/56；违规核 56（合计 165）；收敛核 0/56，收敛轮数上界 2048 ⇒ VIOLATION
+[probe_bar] v3 flag 一次 + 轮询到齐（混合） 核 56/56；违规核 51（合计 94）；收敛核 41/56，收敛轮数上界 2048 ⇒ VIOLATION
+exit=1
+--- run 4 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56（每变体 4 轮，偏斜=8 次 DMA，轮询上界=2048）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障，只读一次（对照） 核 56/56；违规核 56（合计 221）；最少见到的槽数 2 ⇒ VIOLATION
+[probe_bar] v1 flag(1+r%8) 一次，只读一次（主 kernel 现行） 核 56/56；违规核 20（合计 24）；最少见到的槽数 3 ⇒ VIOLATION
+[probe_bar] v2 无屏障，轮询到齐            核 56/56；违规核 56（合计 191）；收敛核 0/56，收敛轮数上界 2048 ⇒ VIOLATION
+[probe_bar] v3 flag 一次 + 轮询到齐（混合） 核 56/56；违规核 34（合计 49）；收敛核 51/56，收敛轮数上界 2048 ⇒ VIOLATION
+exit=1
+--- run 5 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56（每变体 4 轮，偏斜=8 次 DMA，轮询上界=2048）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障，只读一次（对照） 核 56/56；违规核 56（合计 223）；最少见到的槽数 1 ⇒ VIOLATION
+[probe_bar] v1 flag(1+r%8) 一次，只读一次（主 kernel 现行） 核 56/56；违规核 51（合计 86）；最少见到的槽数 11 ⇒ VIOLATION
+[probe_bar] v2 无屏障，轮询到齐            核 56/56；违规核 56（合计 159）；收敛核 0/56，收敛轮数上界 2048 ⇒ VIOLATION
+[probe_bar] v3 flag 一次 + 轮询到齐（混合） 核 56/56；违规核 53（合计 110）；收敛核 33/56，收敛轮数上界 2048 ⇒ VIOLATION
+exit=1
+--- run 6 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56（每变体 4 轮，偏斜=8 次 DMA，轮询上界=2048）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障，只读一次（对照） 核 56/56；违规核 56（合计 220）；最少见到的槽数 1 ⇒ VIOLATION
+[probe_bar] v1 flag(1+r%8) 一次，只读一次（主 kernel 现行） 核 56/56；违规核 28（合计 42）；最少见到的槽数 2 ⇒ VIOLATION
+[probe_bar] v2 无屏障，轮询到齐            核 56/56；违规核 56（合计 188）；收敛核 0/56，收敛轮数上界 2048 ⇒ VIOLATION
+[probe_bar] v3 flag 一次 + 轮询到齐（混合） 核 56/56；违规核 40（合计 63）；收敛核 49/56，收敛轮数上界 2048 ⇒ VIOLATION
+exit=1
+--- run 7 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56（每变体 4 轮，偏斜=8 次 DMA，轮询上界=2048）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障，只读一次（对照） 核 56/56；违规核 56（合计 222）；最少见到的槽数 1 ⇒ VIOLATION
+[probe_bar] v1 flag(1+r%8) 一次，只读一次（主 kernel 现行） 核 56/56；违规核 35（合计 45）；最少见到的槽数 13 ⇒ VIOLATION
+[probe_bar] v2 无屏障，轮询到齐            核 56/56；违规核 56（合计 147）；收敛核 0/56，收敛轮数上界 2048 ⇒ VIOLATION
+[probe_bar] v3 flag 一次 + 轮询到齐（混合） 核 56/56；违规核 43（合计 78）；收敛核 49/56，收敛轮数上界 2048 ⇒ VIOLATION
+exit=1
+--- run 8 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56（每变体 4 轮，偏斜=8 次 DMA，轮询上界=2048）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障，只读一次（对照） 核 56/56；违规核 56（合计 220）；最少见到的槽数 1 ⇒ VIOLATION
+[probe_bar] v1 flag(1+r%8) 一次，只读一次（主 kernel 现行） 核 56/56；违规核 36（合计 50）；最少见到的槽数 22 ⇒ VIOLATION
+[probe_bar] v2 无屏障，轮询到齐            核 56/56；违规核 56（合计 194）；收敛核 0/56，收敛轮数上界 2048 ⇒ VIOLATION
+[probe_bar] v3 flag 一次 + 轮询到齐（混合） 核 56/56；违规核 46（合计 91）；收敛核 42/56，收敛轮数上界 2048 ⇒ VIOLATION
+exit=1
+--- run 9 ---
+[probe_bar] AICORE=28 VECTOR=56 naiv=56（每变体 4 轮，偏斜=8 次 DMA，轮询上界=2048）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障，只读一次（对照） 核 56/56；违规核 56（合计 222）；最少见到的槽数 2 ⇒ VIOLATION
+[probe_bar] v1 flag(1+r%8) 一次，只读一次（主 kernel 现行） 核 56/56；违规核 19（合计 23）；最少见到的槽数 22 ⇒ VIOLATION
+[probe_bar] v2 无屏障，轮询到齐            核 56/56；违规核 56（合计 199）；收敛核 0/56，收敛轮数上界 2048 ⇒ VIOLATION
+[probe_bar] v3 flag 一次 + 轮询到齐（混合） 核 56/56；违规核 52（合计 99）；收敛核 31/56，收敛轮数上界 2048 ⇒ VIOLATION
+exit=1

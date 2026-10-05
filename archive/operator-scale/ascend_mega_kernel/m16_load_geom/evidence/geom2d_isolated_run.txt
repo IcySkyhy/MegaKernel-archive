@@ -1,0 +1,18 @@
+# P2-2 判定实验：非确定 conf 的单 conf 隔离运行（各 2 次）
+# 判据：模型定义的 in-range 槽位必须两次逐位一致；越界槽位允许不同
+
+conf 24 2d-24 T0 srcStride=3 (0,0,2,2,3,2)             in-range  768 槽 两次一致=True  |  越界槽  256 两次一致=False
+conf 27 2d-27 T0 mStart=1 (1,0,2,2,2,2)                in-range  768 槽 两次一致=True  |  越界槽  256 两次一致=False
+conf 28 2d-28 T0 kStart=1 (0,1,2,2,2,2)                in-range  512 槽 两次一致=True  |  越界槽  512 两次一致=False
+conf 29 2d-29 T0 mStart=16 (16,0,2,2,2,2)              in-range    0 槽 两次一致=None  |  越界槽 1024 两次一致=False
+conf 30 2d-30 T0 kStart=16 (0,16,2,2,2,2)              in-range    0 槽 两次一致=None  |  越界槽 1024 两次一致=True
+conf 36 2d-36 T1 kStep=4 (0,0,2,4,2,2)                 in-range  512 槽 两次一致=True  |  越界槽  512 两次一致=True
+conf 38 2d-38 T1 srcStride=3 (0,0,2,2,3,2)             in-range  768 槽 两次一致=True  |  越界槽  256 两次一致=False
+conf 41 2d-41 T1 mStart=1 (1,0,2,2,2,2)                in-range  768 槽 两次一致=True  |  越界槽  256 两次一致=False
+conf 42 2d-42 T1 kStart=1 (0,1,2,2,2,2)                in-range  512 槽 两次一致=True  |  越界槽  512 两次一致=False
+conf 43 2d-43 T1 mStart=16 (16,0,2,2,2,2)              in-range    0 槽 两次一致=None  |  越界槽 1024 两次一致=False
+conf 44 2d-44 T1 kStart=16 (0,16,2,2,2,2)              in-range    0 槽 两次一致=None  |  越界槽 1024 两次一致=True
+
+结论：全部候选 conf 的 in-range 槽位两次逐位一致；不一致只出现在越界（junk）槽位 ⇒ §3.4 里 mStart/kStartPosition 的结论在 in-range 范围内成立。
+注意：本条只用于说明『越界槽位不可用』，不改变 §2.3 的规则——整 conf 的 FNV 在这些 conf 上本就非确定，不能拿整 conf 的读数去推断。
+

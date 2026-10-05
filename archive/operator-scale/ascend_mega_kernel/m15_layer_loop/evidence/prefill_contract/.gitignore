@@ -1,0 +1,7 @@
+# M110 Wave A（prefill 契约与挂载点）的取证目录
+#
+# 大件（device dump / 二进制读数）不入库，只入文本读数与命令输出：
+*.bin
+*.npy
+/pf_dump/
+__pycache__/

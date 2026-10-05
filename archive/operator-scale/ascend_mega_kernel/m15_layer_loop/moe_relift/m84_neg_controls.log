@@ -1,0 +1,96 @@
+# M84 负向对照（docs/17 §4 反自指）：判据是否有咬合力
+# 环境：LC_ALL=C。变异**只在 /tmp/m84_nc 副本**上做（base.h = 入库的 m15_moe_layer.h）
+# 判据脚本 = m15_layer_loop/moe_relift/check_prep.py（--header 指向变异副本，--res 指向入库资源表）
+# 复现：cp m15_layer_loop/m15_moe_layer.h /tmp/m84_nc/base.h && cd /tmp/m84_nc && python3 mutate.py
+# 汇总口径："可 FAIL 的判据 16 条 + 诊断读数 4 条（2 个代码点 × 2 档跑）"；见 check_prep.py 的 Report
+# 本文件在第 2 轮复审（p2-1items）后重出：每条命令都在 tip 上重跑，读数从输出逐字抄录。
+
+## 0) 正对照：未变异（= 入库文件）
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py; echo rc=$?
+[check] PASS  #5 标量栈数组已移除: 残留 = 无（cnt/off/cursor 三处均未见）
+[check] PASS  #5 标量数组已指向 UB 槽位: 命中的槽位符号 = ['UB_IG_SCAL', 'UB_IG_OFF', 'UB_IG_CUR']
+[check] PASS  #6 诊断槽 GM 目的使用 IG_DIAG_GM_SLOT（1 处）且无写死的 offsGm[8]: offsGm[IG_DIAG_GM_SLOT] = 1 处；offsGm[8] = 0 处
+[check] PASS  #6 未退回 offsGm[NUM_EXPERTS + 8] 的字面形态: offsGm[NUM_EXPERTS... = 0 处
+[check] PASS  #7 FmaChunk K 链 = 1..9（k=0 由 Mul 承担 ⇒ 覆盖 TK=10）: FmaChunk 实参 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+[check] PASS  #7 FmaChunk 无 <10>（TK=10 只需 1..9）: 含 <10> = False
+[check] PASS  #7 topk 分发 case = 1..9 + default→10: case = [1, 2, 3, 4, 5, 6, 7, 8, 9]；default→10 = True
+[check] PASS  #7 模板实例 = <1..10>: UnpermuteStage 实参 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[check] PASS  #7 Init 覆盖 1..10: Init 实参 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[check] PASS  #8 Y 视图上界 = TOTAL_MAX（紧凑 Σt_e）: UnpermuteStage 的 yGm 视图行 = yGm.SetGlobalBuffer(reinterpret_cast<__gm__ bfloat16_t*>(ySorted), static_cast<uint64_t>(TOTAL_MAX) * HIDDEN);
+[check] ---- 布局算术：当前档 NUM_EXPERTS=4 / TOPK_MAX=4 ----
+[check] PASS  [E=4] #5 标量槽随 E 定尺且落在 router-x-块窗内: NUM_EXPERTS=4/TOPK_MAX=4: 槽 = 96 B；窗 = UB_IG_SCAL..180224（窗宽 = 81920 B）；UB_IG_SCAL_END = 105824
+[check] PASS  [E=4] #5 栈数组字节数（诊断读数）: 3 × 4 × 4 B = 48 B（AIV 标量栈容量在仓内无登记值，不据此判 PASS/FAIL）
+[check] PASS  [E=4] #6 诊断槽在真 offsets[0..E] 之后: NUM_EXPERTS=4: IG_DIAG_GM_SLOT = 8 ≥ E+1 = 5
+[check] PASS  [E=4] #6 诊断槽 32B 对齐且在 SZ_OFFSETS 内: NUM_EXPERTS=4: 字节 = 32（%32 = 0）；SZ_OFFSETS = 64
+[check] PASS  [E=4] #8 Y 行数上界 TOTAL_MAX vs padded E*M_MAX（诊断读数）: NUM_EXPERTS=4: TOTAL_MAX = 256 行；padded = 256 行
+[check] ---- 布局算术：E=512 假设档（只重算算术；仓库常量未改）----
+[check] PASS  [E=512] #5 标量槽随 E 定尺且落在 router-x-块窗内: NUM_EXPERTS=512/TOPK_MAX=10: 槽 = 6176 B；窗 = UB_IG_SCAL..5382144（窗宽 = 81920 B）；UB_IG_SCAL_END = 5318432
+[check] PASS  [E=512] #5 栈数组字节数（诊断读数）: 3 × 512 × 4 B = 6144 B（AIV 标量栈容量在仓内无登记值，不据此判 PASS/FAIL）
+[check] PASS  [E=512] #6 诊断槽在真 offsets[0..E] 之后: NUM_EXPERTS=512: IG_DIAG_GM_SLOT = 520 ≥ E+1 = 513
+[check] PASS  [E=512] #6 诊断槽 32B 对齐且在 SZ_OFFSETS 内: NUM_EXPERTS=512: 字节 = 2080（%32 = 0）；SZ_OFFSETS = 2112
+[check] PASS  [E=512] #8 Y 行数上界 TOTAL_MAX vs padded E*M_MAX（诊断读数）: NUM_EXPERTS=512: TOTAL_MAX = 640 行；padded = 32768 行
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+## 变异 nc1_diag_slot
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py --header /tmp/m84_nc/nc1_diag_slot.h --res m15_layer_loop/m15_moe_resources.h; echo rc=$?
+rc=1
+[check] FAIL  [E=512] #6 诊断槽在真 offsets[0..E] 之后: NUM_EXPERTS=512: IG_DIAG_GM_SLOT = 8 ≥ E+1 = 513
+[check] ===== 可 FAIL 的判据 16 条（FAIL 1 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+
+## 变异 nc2_stack_array
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py --header /tmp/m84_nc/nc2_stack_array.h --res m15_layer_loop/m15_moe_resources.h; echo rc=$?
+rc=1
+[check] FAIL  #5 标量栈数组已移除: 残留 = ['uint32_t cnt[NUM_EXPERTS]']
+[check] ===== 可 FAIL 的判据 16 条（FAIL 1 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+
+## 变异 nc3_switch_trunc
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py --header /tmp/m84_nc/nc3_switch_trunc.h --res m15_layer_loop/m15_moe_resources.h; echo rc=$?
+rc=1
+[check] FAIL  #7 topk 分发 case = 1..9 + default→10: case = [1, 2, 3, 4, 5, 6, 7, 8]；default→10 = False
+[check] ===== 可 FAIL 的判据 16 条（FAIL 1 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+
+## 变异 nc4_yview_padded
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py --header /tmp/m84_nc/nc4_yview_padded.h --res m15_layer_loop/m15_moe_resources.h; echo rc=$?
+rc=1
+[check] FAIL  #8 Y 视图上界 = TOTAL_MAX（紧凑 Σt_e）: UnpermuteStage 的 yGm 视图行 = yGm.SetGlobalBuffer(reinterpret_cast<__gm__ bfloat16_t*>(ySorted), static_cast<uint64_t>(NUM_EXPERTS * M_MAX) * HIDDEN);
+[check] ===== 可 FAIL 的判据 16 条（FAIL 1 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+
+## 变异 nc5_fma_trunc
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py --header /tmp/m84_nc/nc5_fma_trunc.h --res m15_layer_loop/m15_moe_resources.h; echo rc=$?
+rc=1
+[check] FAIL  #7 FmaChunk K 链 = 1..9（k=0 由 Mul 承担 ⇒ 覆盖 TK=10）: FmaChunk 实参 = [1, 2, 3, 4, 5, 6, 7, 8]
+[check] ===== 可 FAIL 的判据 16 条（FAIL 1 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+
+## 变异 nc6_diag_usage
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_prep.py --header /tmp/m84_nc/nc6_diag_usage.h --res m15_layer_loop/m15_moe_resources.h; echo rc=$?
+rc=1
+[check] FAIL  #6 诊断槽 GM 目的使用 IG_DIAG_GM_SLOT（1 处）且无写死的 offsGm[8]: offsGm[IG_DIAG_GM_SLOT] = 0 处；offsGm[8] = 0 处
+[check] FAIL  #6 未退回 offsGm[NUM_EXPERTS + 8] 的字面形态: offsGm[NUM_EXPERTS... = 1 处
+[check] ===== 可 FAIL 的判据 16 条（FAIL 2 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+
+## 变异定义（/tmp/m84_nc/mutate.py，未入库；逐字抄录以便复现）
+import pathlib
+# 只在 /tmp 副本上做变异；每条变异一个副本（base.h = 入库的 m15_moe_layer.h）
+M = {
+ "nc1_diag_slot": [("constexpr uint32_t IG_DIAG_GM_SLOT = AlignUp((NUM_EXPERTS + 1) * 4 + 4, WS_ALIGN) / 4;",
+                    "constexpr uint32_t IG_DIAG_GM_SLOT = 8;   // 变异：退回 m13 的写死下标")],
+ "nc2_stack_array": [("        uint32_t badIds = 0;   // 脏 ids 计数：诊断槽上报 + 落位循环的短路条件",
+                      "        uint32_t badIds = 0;   // 脏 ids 计数：诊断槽上报 + 落位循环的短路条件\n        uint32_t cnt[NUM_EXPERTS];   // 变异：退回标量栈数组")],
+ "nc3_switch_trunc": [("            case 9: unperm9.Run(bid, nAiv); break;\n", ""),
+                      ("default: unperm10.Run", "default: unperm4.Run")],
+ "nc4_yview_padded": [("        yGm.SetGlobalBuffer(reinterpret_cast<__gm__ bfloat16_t*>(ySorted), static_cast<uint64_t>(TOTAL_MAX) * HIDDEN);",
+                       "        yGm.SetGlobalBuffer(reinterpret_cast<__gm__ bfloat16_t*>(ySorted), static_cast<uint64_t>(NUM_EXPERTS * M_MAX) * HIDDEN);   // 变异：照抄 m17 的 padded 上界")],
+ "nc5_fma_trunc": [("                if constexpr (TK > 9) FmaChunk<9>(acc, yF, yB16, wRaw, wF, yUb, wRowUb, maskAll, off);\n", "")],
+ # P2-1 的咬合正对照：使用点退回「NUM_EXPERTS + 8」（任务书警告的方向级错误）
+ "nc6_diag_usage": [("            DataCopyPad(offsGm[IG_DIAG_GM_SLOT], bL[32], ExtBlock1(4));",
+                     "            DataCopyPad(offsGm[NUM_EXPERTS + 8], bL[32], ExtBlock1(4));   // 变异：使用点退回字面 E+8")],
+}
+txt = pathlib.Path("base.h").read_text()
+for name, subs in M.items():
+    t = txt
+    for old, new in subs:
+        assert t.count(old) == 1, (name, old, t.count(old))
+        t = t.replace(old, new)
+    pathlib.Path(name + ".h").write_text(t)
+    print("mutated:", name)

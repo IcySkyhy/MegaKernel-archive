@@ -1,0 +1,8 @@
+RESOURCE name=C-V2-128 threads=128 registers=61 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=15x15x19 block=128x1x1 steps_per_launch=2 theoretical_occupancy_pct=16.666667
+LBM_allocateGrid: allocated 185.2 MByte
+LBM_showGridStatistics:
+	nObstacleCells:   99248 nAccelCells:   26912 nFluidCells: 2033840
+	minRho:   0.9901 maxRho:   1.0101 mass: 2.160000e+06
+	minU: 0.000000e+00 maxU: 7.938424e-03
+
+DONE physical_steps=6 kernel_launches=3 final_buffer=B patterned=0

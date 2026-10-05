@@ -1,0 +1,20 @@
+
+[PCF] fp32 x fp32 -> fp32 Mmad（默认：未开 HF32），设备 L0C vs host 参考（M=16 N=16 K=256）
+dist             dev C[0][0] ref_fp64 C[0][0]       absErr       relErr      dev C[1][1]      dev C[3][3]
+d0 ones                  256              256    0.000e+00    0.000e+00              256              256
+d1 mant13           256.0625         256.0625    0.000e+00    0.000e+00         256.0625         256.0625
+d2 mant10              256.5            256.5    0.000e+00    0.000e+00            256.5            256.5
+d3 absorb           16777216         16777471    2.550e+02    1.520e-05         16777216         16777216
+d4 rand           59.7598228       59.7598435    2.064e-05    3.454e-07       60.0117607       63.5480423
+d5 cancel                  0                0    0.000e+00    0.000e+00                0                0
+d6 mant23s        1.00000012       1.00000012    0.000e+00    0.000e+00       1.00000012       1.00000012
+
+[PCF] d4 rand 逐元素最大绝对误差（256 个元素，每个是 K=256 的内积）:
+   vs fp64 精确和        : 7.175603e-05
+   vs bf16-操作数参考    : 2.140994e-02   (元素数与 dev 完全相等: 0/256)
+   vs hf32/tf32/fp16-操作数参考: 3.654220e-03   （三者尾数同为 10 位 ⇒ 是同一个参考，不是三个独立参考）
+   dev 与 fp64 逐位相等元素数: 26/256
+[PCF] dumped prec_a/b/c.bin to /workspace/ascend_mega_kernel/.tower/worktrees/wt-106/probe_cube_fp32/evidence/dumps
+[AIC Block 0/1] [PCF] prec_kernel enter bid=0 M=16 N=16 K=256 NDIST=7 C0=8 hf32=0
+rc=0
+attempts=2 rc_seq=124 0 

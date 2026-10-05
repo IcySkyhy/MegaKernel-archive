@@ -1,0 +1,11 @@
+# CUDA_VISIBLE_DEVICES=1 ./build/lbm-onekernel 1000   (2026-10-01, RTX 5090, /mnt2/xys-syx/Project/release/bin/clang++ -O3 -ffast-math)
+LBM_allocateGrid: allocated 185.2 MByte
+RESOURCE grid=120x150 block=120 blocks=18000 sms=170 resident_blocks bigkern2_grid_sync=1190 bigkern2_spin=1190 bigkern2_resident=2040
+RUN name=bigkern1 launches=500 result=WRONG bit_mismatches=39639009 populations=41040000 mismatch_pct=96.6
+RUN name=bigkern2 launches=1 result=WRONG bit_mismatches=39639919 populations=41040000 mismatch_pct=96.6
+RUN name=bigkern2_grid_sync launch=cooperative blocks=18000 status=refused error="too many blocks in cooperative launch"
+RUN name=bigkern2_spin launch=ordinary status=deadlock arrived_at_first_barrier=1190 blocks=18000 timeout_ms=300 elapsed_ms=300.246
+CHECK name=barrier_only blocks=1190 barriers=1000 finished_blocks=1190 status=works
+RUN name=bigkern2_resident(grid=2040) launches=1 result=correct bit_mismatches=0 populations=41040000 mismatch_pct=0.0
+BENCH name=B0 steps=1000 launches=1000 median_us=288.796
+BENCH name=bigkern2_resident(grid=2040) steps=1000 launches=1 median_us=443.731 speedup_over_B0=0.651

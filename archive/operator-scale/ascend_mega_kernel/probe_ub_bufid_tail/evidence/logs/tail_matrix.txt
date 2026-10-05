@@ -1,0 +1,33 @@
+# tail matrix（由 tools/summarize.sh 从逐变体日志重算）
+tail:a_bothimm                     rc==0 3/3 hang=0 SUMMARY mode=tail variant=a_bothimm run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+tail:a_noE3drain                   rc==0 3/3 hang=0 SUMMARY mode=tail variant=a_noE3drain run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+tail:a_noVdrain                    rc==0 3/3 hang=0 SUMMARY mode=tail variant=a_noVdrain run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+tail:b_one_contig                  rc==0 3/3 hang=0 SUMMARY mode=tail variant=b_one_contig run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+tail:b_one_strided                 rc==0 3/3 hang=0 SUMMARY mode=tail variant=b_one_strided run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+tail:b_rows                        rc==0 3/3 hang=0 SUMMARY mode=tail variant=b_rows run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+tail:base_N1                       rc==0 3/3 hang=0 SUMMARY mode=tail variant=base_N1 run=1 N=1 tiles=2 mismatched=0 elems=4096 match=4096 stale=0 zero=0 histOther=0 rc=0
+tail:base_N16                      rc==0 3/3 hang=0 SUMMARY mode=tail variant=base_N16 run=1 N=16 tiles=32 mismatched=0 elems=65536 match=65536 stale=0 zero=0 histOther=0 rc=0
+tail:base_N3                       rc==0 3/3 hang=0 SUMMARY mode=tail variant=base_N3 run=1 N=3 tiles=6 mismatched=0 elems=12288 match=12288 stale=0 zero=0 histOther=0 rc=0
+tail:base_N64                      rc==0 3/3 hang=0 SUMMARY mode=tail variant=base_N64 run=1 N=64 tiles=128 mismatched=0 elems=262144 match=262144 stale=0 zero=0 histOther=0 rc=0
+tail:base_N8                       rc==0 3/3 hang=0 SUMMARY mode=tail variant=base_N8 run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+tail:c_two_ids                     rc==0 0/3 hang=0 SUMMARY mode=tail variant=c_two_ids run=1 N=8 tiles=16 mismatched=14 elems=32768 match=4608 stale=0 zero=0 histOther=0 rc=1
+tail:ctrl_e3rls                    rc==0 3/3 hang=0 SUMMARY mode=tail variant=ctrl_e3rls run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+tail:ctrl_e3rls_m3                 rc==0 3/3 hang=0 SUMMARY mode=tail variant=ctrl_e3rls_m3 run=1 N=1 tiles=6 mismatched=0 elems=12288 match=12288 stale=0 zero=0 histOther=0 rc=0
+tail:multi3_N3                     rc==0 3/3 hang=0 SUMMARY mode=tail variant=multi3_N3 run=1 N=3 tiles=18 mismatched=0 elems=36864 match=36864 stale=0 zero=0 histOther=0 rc=0
+tail:multi3_N8                     rc==0 3/3 hang=0 SUMMARY mode=tail variant=multi3_N8 run=1 N=8 tiles=48 mismatched=0 elems=98304 match=98304 stale=0 zero=0 histOther=0 rc=0
+tail:neg_skipse3                   rc==0 0/3 hang=3 SUMMARY mode=tail variant=neg_skipse3 run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+tail:neg_skipse3_2id               rc==0 0/3 hang=3 SUMMARY mode=tail variant=neg_skipse3_2id run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+tail:neg_skipse3_2id_N1            rc==0 2/3 hang=0 SUMMARY mode=tail variant=neg_skipse3_2id_N1 run=1 N=1 tiles=2 mismatched=1 elems=4096 match=2048 stale=0 zero=2048 histOther=0 rc=1
+tail:neg_skipse3_N1                rc==0 3/3 hang=0 SUMMARY mode=tail variant=neg_skipse3_N1 run=1 N=1 tiles=2 mismatched=0 elems=4096 match=4096 stale=0 zero=0 histOther=0 rc=0
+tail:neg_skipse3_m3                rc==0 0/3 hang=3 SUMMARY mode=tail variant=neg_skipse3_m3 run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+tail:neg_skipvrel                  rc==0 0/2 hang=2 SUMMARY mode=tail variant=neg_skipvrel run=1 HANG=1 rc=124（超时未返回：按纪律记「未取得读数」，不记「没复现」）
+tail:neg_tagshift                  rc==0 0/3 hang=0 SUMMARY mode=tail variant=neg_tagshift run=1 N=8 tiles=16 mismatched=16 elems=32768 match=0 stale=0 zero=0 histOther=4096 rc=1
+tail:rel_base                      rc==0 4/4 hang=0 SUMMARY mode=tail variant=rel_base run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+tail:rel_neg_shift                 rc==0 0/4 hang=0 SUMMARY mode=tail variant=rel_neg_shift run=1 N=32 tiles=64 mismatched=64 elems=131072 match=0 stale=0 zero=0 histOther=4096 rc=1
+tail:rel_neg_twoids                rc==0 0/4 hang=0 SUMMARY mode=tail variant=rel_neg_twoids run=1 N=32 tiles=64 mismatched=61 elems=131072 match=6848 stale=0 zero=0 histOther=0 rc=1
+tail:rele_imm                      rc==0 4/4 hang=0 SUMMARY mode=tail variant=rele_imm run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+tail:rele_unlockB                  rc==0 4/4 hang=0 SUMMARY mode=tail variant=rele_unlockB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+tail:rele_unlockNB                 rc==0 4/4 hang=0 SUMMARY mode=tail variant=rele_unlockNB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+tail:relv_imm                      rc==0 4/4 hang=0 SUMMARY mode=tail variant=relv_imm run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+tail:relv_unlockB                  rc==0 4/4 hang=0 SUMMARY mode=tail variant=relv_unlockB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+tail:relv_unlockNB                 rc==0 4/4 hang=0 SUMMARY mode=tail variant=relv_unlockNB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0

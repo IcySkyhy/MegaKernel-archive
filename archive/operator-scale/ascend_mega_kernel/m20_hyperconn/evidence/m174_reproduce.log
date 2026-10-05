@@ -1,0 +1,72 @@
+### m174_reproduce.log at=2026-10-04T14:28:55+00:00
+### 命令: M174_DUMP_ROOT="<M169 evidence dir>" bash m20_hyperconn/evidence/reproduce.sh
+### 注：<REPO> = 本次运行的工作树根（仓内路径）；<M169_DUMP_ROOT> = M169 的 m4097 dump 目录（不随仓库入库）
+
+== ① 孤立负向对照（零 dump）：新子条件 over2 把判据打红，另两条子条件均 PASS ==
+$ /usr/local/python3.12.13/bin/python3 m20_hyperconn/evidence/negctl_over2.py
+[negctl] all-correct    over2=0.000e+00 (n_sig=200000) sfrac=1.0000 norm_abs=0.000e+00 ulpMax=0 | 子条件 norm=True sfrac=True over2=True
+[chk] 判定 all-correct              n=200000  逐位=1.0000 良态逐位=1.0000 良态ulp>2占比=0.000e+00 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[negctl]   shipped judge() -> PASS（期望 PASS）
+[negctl] over2@5.0e-4   over2=5.000e-04 (n_sig=200000) sfrac=0.9995 norm_abs=5.859e-03 ulpMax=3 | 子条件 norm=True sfrac=True over2=True
+[chk] 判定 over2@5.0e-4             n=200000  逐位=0.9995 良态逐位=0.9995 良态ulp>2占比=5.000e-04 ulpMax=3   归一maxAbs=5.859e-03  PASS
+[negctl]   shipped judge() -> PASS（期望 PASS）
+[negctl] over2@2.0e-3   over2=2.000e-03 (n_sig=200000) sfrac=0.9980 norm_abs=5.859e-03 ulpMax=3 | 子条件 norm=True sfrac=True over2=False
+[chk] 判定 over2@2.0e-3             n=200000  逐位=0.9980 良态逐位=0.9980 良态ulp>2占比=2.000e-03 ulpMax=3   归一maxAbs=5.859e-03  FAIL
+[negctl]   shipped judge() -> FAIL（期望 FAIL）
+[negctl] RESULT: OK（新子条件 over2 在 over2@2.0e-3 上把判据打红，另两条子条件均为 PASS）
+
+== ② 回归：M140/M169 台架调用不变 + 新口径（入库 m1 p15 dump）==
+$ /usr/local/python3.12.13/bin/python3 m15_layer_loop/evidence/m140_prefill_full_layer/check_full_layer.py <REPO>/m15_layer_loop/evidence/m140_prefill_full_layer/dumps_m1_p15 Pf.gdn 1 15
+[chk] M140 hc 四相位交叉校验：dump=<REPO>/m15_layer_loop/evidence/m140_prefill_full_layer/dumps_m1_p15 tag=Pf.gdn m=1 phases=0xF（参考 = m20 独立 numpy float64）
+[chk] 判定 h1.hcp                   n=10240   逐位=1.0000 良态逐位=1.0000 良态ulp>2占比=0.000e+00 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 h1.blk                   n=2560    逐位=1.0000 良态逐位=1.0000 良态ulp>2占比=0.000e+00 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 h2.hcp                   n=10240   逐位=1.0000 良态逐位=1.0000 良态ulp>2占比=0.000e+00 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 h2.blk                   n=2560    逐位=1.0000 良态逐位=1.0000 良态ulp>2占比=0.000e+00 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] guard h1_hin 非常量             OK
+[chk] guard h1_hcp 非常量             OK
+[chk] guard h1_hcp != h1_hin       OK
+[chk] guard h1_blk 非常量             OK
+[chk] guard h2_blk 非常量             OK
+[chk] 判定项 4 条，FAIL 0 条；guard 失败 0 条
+RESULT: OK
+
+== ③ h2.blk 的 m4097 复算（新/旧两种口径并列；dump 不入库）==
+$ /usr/local/python3.12.13/bin/python3 m20_hyperconn/evidence/h2_blk_recalib.py <M169_DUMP_ROOT>/dumps_m4097_p15_nolinks Pf.gdn 4097
+[recalib] dump=<M169_DUMP_ROOT>/dumps_m4097_p15_nolinks tag=Pf.gdn m=4097（参考 = m20/check_ref.py::reference，fp64）
+[recalib] h1.hcp   n=41953280  良态n=38325666  逐位=1.0000 良态逐位=1.0000 ulpMax=1   良态ulp>2占比=0.000e+00 归一maxAbs=4.525e-03 | 旧=PASS 新=PASS
+[recalib]   h1.hcp 良态 ulp>2: 0 个
+[recalib] h1.blk   n=10488320  良态n=1093953   逐位=0.9949 良态逐位=0.9985 ulpMax=1   良态ulp>2占比=0.000e+00 归一maxAbs=1.543e-03 | 旧=PASS 新=PASS
+[recalib]   h1.blk 良态 ulp>2: 0 个
+[recalib] h2.hcp   n=41953280  良态n=36982412  逐位=1.0000 良态逐位=1.0000 ulpMax=1   良态ulp>2占比=0.000e+00 归一maxAbs=3.268e-03 | 旧=PASS 新=PASS
+[recalib]   h2.hcp 良态 ulp>2: 0 个
+[recalib] h2.blk   n=10488320  良态n=6441452   逐位=0.9797 良态逐位=0.9903 ulpMax=11  良态ulp>2占比=4.673e-05 归一maxAbs=5.183e-03 | 旧=FAIL 新=PASS
+[recalib]   h2.blk 良态 ulp>2: 301/6441452 (4.673e-05)，最大 ulp=11，|ref|/scale ∈ [0.0501, 0.3020]
+[recalib] shipped judge() 复判 h2.blk（新口径）：
+[chk] 判定 h2.blk                   n=10488320 逐位=0.9797 良态逐位=0.9903 良态ulp>2占比=4.673e-05 ulpMax=11  归一maxAbs=5.183e-03  PASS
+[recalib] shipped judge -> PASS
+[recalib] 新口径：判定项 4 条，红 0 条
+   rc=0（期望 0）
+$ /usr/local/python3.12.13/bin/python3 m20_hyperconn/evidence/h2_blk_recalib.py <M169_DUMP_ROOT>/dumps_m4097_p15_links Pf.gdn 4097
+[recalib] dump=<M169_DUMP_ROOT>/dumps_m4097_p15_links tag=Pf.gdn m=4097（参考 = m20/check_ref.py::reference，fp64）
+[recalib] h1.hcp   n=41953280  良态n=38325666  逐位=1.0000 良态逐位=1.0000 ulpMax=1   良态ulp>2占比=0.000e+00 归一maxAbs=4.525e-03 | 旧=PASS 新=PASS
+[recalib]   h1.hcp 良态 ulp>2: 0 个
+[recalib] h1.blk   n=10488320  良态n=1093953   逐位=0.9949 良态逐位=0.9985 ulpMax=1   良态ulp>2占比=0.000e+00 归一maxAbs=1.543e-03 | 旧=PASS 新=PASS
+[recalib]   h1.blk 良态 ulp>2: 0 个
+[recalib] h2.hcp   n=41953280  良态n=33327034  逐位=1.0000 良态逐位=1.0000 ulpMax=1   良态ulp>2占比=0.000e+00 归一maxAbs=1.894e-03 | 旧=PASS 新=PASS
+[recalib]   h2.hcp 良态 ulp>2: 0 个
+[recalib] h2.blk   n=10488320  良态n=6046413   逐位=0.9785 良态逐位=0.9900 ulpMax=9   良态ulp>2占比=4.201e-05 归一maxAbs=4.184e-03 | 旧=FAIL 新=FAIL
+[recalib]   h2.blk 良态 ulp>2: 254/6046413 (4.201e-05)，最大 ulp=9，|ref|/scale ∈ [0.0502, 0.2333]
+[recalib] shipped judge() 复判 h2.blk（新口径）：
+[chk] 判定 h2.blk                   n=10488320 逐位=0.9785 良态逐位=0.9900 良态ulp>2占比=4.201e-05 ulpMax=9   归一maxAbs=4.184e-03  FAIL
+[recalib] shipped judge -> FAIL
+[recalib] 新口径：判定项 4 条，红 1 条：h2.blk
+   rc=1（期望 1）
+-- 负向对照：向 h2.blk 注入一个 64 行块的缺陷，新口径仍须红（期望 rc=1）--
+$ /usr/local/python3.12.13/bin/python3 m20_hyperconn/evidence/h2_blk_recalib.py <M169_DUMP_ROOT>/dumps_m4097_p15_nolinks Pf.gdn 4097 --inject scale
+   rc=1（期望 1）
+$ /usr/local/python3.12.13/bin/python3 m20_hyperconn/evidence/h2_blk_recalib.py <M169_DUMP_ROOT>/dumps_m4097_p15_nolinks Pf.gdn 4097 --inject zero
+   rc=1（期望 1）
+$ /usr/local/python3.12.13/bin/python3 m20_hyperconn/evidence/h2_blk_recalib.py <M169_DUMP_ROOT>/dumps_m4097_p15_nolinks Pf.gdn 4097 --inject shift
+   rc=1（期望 1）
+
+RESULT: OK

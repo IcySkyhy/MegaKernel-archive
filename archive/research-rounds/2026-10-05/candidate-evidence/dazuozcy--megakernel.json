@@ -1,0 +1,173 @@
+{
+  "repository": "dazuozcy/megakernel",
+  "url": "https://github.com/dazuozcy/megakernel",
+  "created_at": "2026-09-28T02:06:10Z",
+  "pushed_at": "2026-09-28T02:06:57Z",
+  "branch": "main",
+  "license": null,
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 107
+    },
+    {
+      "path": "L1_mixcv/README.md",
+      "size": 1406
+    },
+    {
+      "path": "L1_mixcv/mixcv.py",
+      "size": 4064
+    },
+    {
+      "path": "L1_mixcv/solutions/mixcv.py",
+      "size": 3457
+    },
+    {
+      "path": "L1_mixcv/test_mixcv.py",
+      "size": 1752
+    },
+    {
+      "path": "L2_ops/README.md",
+      "size": 3856
+    },
+    {
+      "path": "L2_ops/k01_embed.py",
+      "size": 1429
+    },
+    {
+      "path": "L2_ops/k02_rms_norm.py",
+      "size": 2901
+    },
+    {
+      "path": "L2_ops/k03_resid_rms_norm.py",
+      "size": 3610
+    },
+    {
+      "path": "L2_ops/k04_gemv.py",
+      "size": 3231
+    },
+    {
+      "path": "L2_ops/k05_qk_rope_cache.py",
+      "size": 2820
+    },
+    {
+      "path": "L2_ops/k06_attn_partial.py",
+      "size": 2419
+    },
+    {
+      "path": "L2_ops/k07_gemv_attn_combine.py",
+      "size": 2292
+    },
+    {
+      "path": "L2_ops/k08_gemv_silu.py",
+      "size": 2215
+    },
+    {
+      "path": "L2_ops/k09_lm_head_argmax.py",
+      "size": 3075
+    },
+    {
+      "path": "L2_ops/k10_sample_step.py",
+      "size": 2156
+    },
+    {
+      "path": "L2_ops/solutions/k01_embed.py",
+      "size": 912
+    },
+    {
+      "path": "L2_ops/solutions/k02_rms_norm.py",
+      "size": 2701
+    },
+    {
+      "path": "L2_ops/solutions/k03_resid_rms_norm.py",
+      "size": 3321
+    },
+    {
+      "path": "L2_ops/solutions/k04_gemv.py",
+      "size": 2339
+    },
+    {
+      "path": "L2_ops/solutions/k05_qk_rope_cache.py",
+      "size": 6594
+    },
+    {
+      "path": "L2_ops/solutions/k06_attn_partial.py",
+      "size": 5663
+    },
+    {
+      "path": "L2_ops/solutions/k07_gemv_attn_combine.py",
+      "size": 4420
+    },
+    {
+      "path": "L2_ops/solutions/k08_gemv_silu.py",
+      "size": 4746
+    },
+    {
+      "path": "L2_ops/solutions/k09_lm_head_argmax.py",
+      "size": 4066
+    },
+    {
+      "path": "L2_ops/solutions/k10_sample_step.py",
+      "size": 2599
+    },
+    {
+      "path": "L2_ops/tests/test_ops.py",
+      "size": 12542
+    },
+    {
+      "path": "L5_shapes/derive_shapes.py",
+      "size": 2145
+    },
+    {
+      "path": "L5_shapes/solutions/derive_shapes.py",
+      "size": 1341
+    },
+    {
+      "path": "L5_shapes/test_shapes.py",
+      "size": 2253
+    },
+    {
+      "path": "L6_incremental/README.md",
+      "size": 4431
+    },
+    {
+      "path": "README.md",
+      "size": 4307
+    },
+    {
+      "path": "check_env.py",
+      "size": 2496
+    },
+    {
+      "path": "common.py",
+      "size": 5948
+    },
+    {
+      "path": "docs/handwrite-megakernel-glm53.md",
+      "size": 8644
+    },
+    {
+      "path": "docs/handwrite-megakernel-kimi.md",
+      "size": 11214
+    },
+    {
+      "path": "docs/handwrite-megakernel.md",
+      "size": 6297
+    },
+    {
+      "path": "run_env.sh",
+      "size": 1854
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-28T02:00:14Z",
+      "subject": "Initial commit: megakernel handwriting scaffolding",
+      "url": "https://github.com/dazuozcy/megakernel/commit/fd742e111259786a023ee46729595dc193416ada"
+    }
+  ],
+  "readme": "# megakernel 手写脚手架\n\n配合 [`handwrite-megakernel-kimi.md`](handwrite-megakernel-kimi.md) 的学习路径使用。\n目标：从零学会独立手写\n`examples/qwen3_1_7b-mega-tilelang-npuir/kernel/mega.py`——Qwen3-1.7B 单 launch\ndecode megakernel（tilelang-npuir Expert 模式，Ascend 910B）。\n\n> 设计原则：**先能写对单个算子，再谈单 launch 编排**。mega 的难度 20% 在语法、\n> 80% 在\"谁等谁、数据何时落地\"的协议设计；所以每一层都有可运行的对照，绝不靠\n> \"看起来对\"。\n\n---\n\n## 目录结构\n\n| 目录 | 内容 | 验收物 |\n|---|---|---|\n| `L1_mixcv/` | 最小 MIX kernel（cube→vector 握手）骨架/答案/对拍 | `test_mixcv.py` 通过 |\n| `L2_ops/` | **10 个算子的 TODO 骨架 + torch 对照 + 参考答案** | `tests/test_ops.py` 全 ok |\n| `L5_shapes/` | 自己推导 `mega_shapes` 全部 tiling 常量（纯 python） | `test_shapes.py` 通过 |\n| `L6_incremental/` | 增量手写 mega 的阶梯与命令 | 逐级跑 `test_mega.py` |\n| `L3/L4/L7` | 见本 README 的\"层级地图\"，指向真实示例文件 | — |\n\nL0（心智模型）没有代码，读三份材料即可，见下。\n\n---\n\n## 层级地图（脚手架 ↔ 真实示例）\n\n真实示例根目录：`<TileFoundry-fork>/examples/qwen3_1_7b-mega-tilelang-npuir/`\n（下文简写 `$MEGA`），逐算子版：`$MEGA/../qwen3_1_7b-tilelang-npuir/`（简写 `$OPS`）。\n\n| 层 | 本脚手架 | 真实参考 |\n|---|---|---|\n| L0 | — | `tilelang-mlir-fork/docs/Developer_Expert_Mode对比.md`、`tilelang-npuir/docs/TileLang-Ascend Programming Guide.md`、`tilelang-mlir-fork/examples/mixcv/` |\n| L1 | `L1_mixcv/` | `tilelang-mlir-fork/examples/mixcv/mixcv_mixkernel.py` |\n| L2 | `L2_ops/` | `$OPS/fast/kernels.py` + `$OPS/fast/test_kernels.py` |\n| L3 | — | `$OPS/fast/engine.py`、`$OPS/run.py`、`$OPS/compare_hf.py` |\n| L4 | `L6_incremental/README.md` 的 flag 表 | `$MEGA/kernel/mega.py` 文档字符串 30–57 行 |\n| L5 | `L5_shapes/` | `$MEGA/kernel/mega.py: mega_shapes` |\n| L6 | `L6_incremental/README.md` | `$MEGA/kernel/mega.py`、`$MEGA/kernel/test_mega.py` |\n| L7 | — | `$MEGA/NOTES.md`、`$MEGA/OPTLOG.md`、`$MEGA/probe_twin.py` |\n\n---\n\n## 快速开始\n\n先做环境预检（本机没有昇腾也能跑，只会告诉你 kernel 会被 SKIP）：\n\n```bash\ncd megakernel\npython check_env.py\n```\n\n在**昇腾机**上，先 source 环境再跑：\n\n```bash\nsource run_env.sh                     # 设 PYTHONPATH / 编译器 / Developer 模式\npython L2_ops/tests/test_ops.py       # 测你的骨架\npython L2_ops/tests/test_ops.py --solution   # 测参考答案（应全 ok）\npython L1_mixcv/test_mixcv.py --solution\npython L5_shapes/test_shapes.py       # 纯 python，任何环境都能跑\n```\n\n`run_env.sh` 里 `MEGA_TILELANG_MODE` 默认 `Developer`（L1/L2 需要）；L6 跑 mega\n时改成 `expert`：\n\n```bash\nMEGA_TILELANG_MODE=expert ./run_env.sh python L6_incremental/...\n```\n\n---\n\n## 用法（逐格填空）\n\n1. 打开 `L2_ops/kNN_*.py`，读 docstring 的\"实现清单\"；\n2. 按 TODO 补全 `@T.prim_func`，删除开头的 `raise NotImplementedError`；\n3. 跑 `python L2_ops/tests/test_ops.py --only=<op名>`；\n4. 卡住了再看 `L2_ops/solutions/kNN_*.py`；\n5. 全过之后，用 `--solution` 复核一遍答案确实能过（排除是你 test 写错）。\n\n建议顺序：`embed → rms_norm → resid_rms_norm → gemv → qk_rope_cache →\nattn_partial → gemv_attn_combine → gemv_silu → lm_head_argmax → sample_step`。\n\n---\n\n## 无 NPU 时会发生什么\n\n`common.py` 检测 `torch_npu` + `torch.npu.is_available()`：\n\n* 有 NPU：kernel 真正编译执行，逐算子对拍；\n* 无 NPU：每个 check 报 `SKIP`，但 torch 参考逻辑仍在 CPU 上构造/校验；\n  `L5_shapes` 完全不受影响。\n\n想强制走 CPU 分支（即使有 NPU）：`MEGA_FORCE_CPU=1`。\n\n---\n\n## 三层陷阱（先读 `$MEGA/NOTES.md`）\n\n1. launcher 每 launch 泄漏 1 MB（>8k launch 后静默冻结）——已修；\n2. 每进程只能注册 ~4–5 个 device kernel，别在一进程里编译多份变体做二分；\n3. 随机 KV 历史不是正确性信号（1 ULP 噪声会被混沌放大），teacher-forced 才是门。\n\n更多逐算子坑见 `L2_ops/README.md` 的表格，以及 `$OPS/README.md` §4。\n"
+}

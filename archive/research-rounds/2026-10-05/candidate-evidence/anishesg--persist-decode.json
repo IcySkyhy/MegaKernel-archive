@@ -1,0 +1,107 @@
+{
+  "repository": "anishesg/persist-decode",
+  "url": "https://github.com/anishesg/persist-decode",
+  "created_at": "2026-09-01T00:03:50Z",
+  "pushed_at": "2026-09-01T02:09:30Z",
+  "branch": "main",
+  "license": null,
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": "CMakeLists.txt",
+      "size": 1369
+    },
+    {
+      "path": "README.md",
+      "size": 4362
+    },
+    {
+      "path": "benchmarks/bench_latency.cu",
+      "size": 6935
+    },
+    {
+      "path": "benchmarks/bench_multi_layer.py",
+      "size": 7014
+    },
+    {
+      "path": "benchmarks/bench_python.py",
+      "size": 4286
+    },
+    {
+      "path": "csrc/bindings.cpp",
+      "size": 11920
+    },
+    {
+      "path": "persist_decode/__init__.py",
+      "size": 7613
+    },
+    {
+      "path": "persist_decode/functional.py",
+      "size": 3377
+    },
+    {
+      "path": "setup.py",
+      "size": 1298
+    },
+    {
+      "path": "src/config.cuh",
+      "size": 3843
+    },
+    {
+      "path": "src/decode_attn.cuh",
+      "size": 7200
+    },
+    {
+      "path": "src/ffn.cuh",
+      "size": 2425
+    },
+    {
+      "path": "src/persistent_layer.cu",
+      "size": 5925
+    },
+    {
+      "path": "src/persistent_layer.cuh",
+      "size": 2096
+    },
+    {
+      "path": "src/persistent_multi_layer.cu",
+      "size": 6724
+    },
+    {
+      "path": "src/persistent_multi_layer.cuh",
+      "size": 2232
+    },
+    {
+      "path": "src/reference.cu",
+      "size": 10630
+    },
+    {
+      "path": "src/reference.cuh",
+      "size": 1940
+    },
+    {
+      "path": "src/smem_ops.cuh",
+      "size": 2334
+    },
+    {
+      "path": "src/tiled_matvec.cuh",
+      "size": 4381
+    },
+    {
+      "path": "tests/test_correctness.cu",
+      "size": 7880
+    },
+    {
+      "path": "tests/test_multi_layer.py",
+      "size": 4457
+    },
+    {
+      "path": "tests/test_python.py",
+      "size": 4510
+    }
+  ],
+  "recent_commits": [],
+  "readme": "# persist-decode\n\nPersistent-kernel transformer decode: full-layer fusion with shared-memory-resident hidden state and double-buffered weight streaming.\n\n## The Problem\n\nDuring batch=1 autoregressive decode, the hidden state is a single `d`-dimensional vector. On Llama-7B (`d=4096`) in fp16 that is 8 KB. Yet every serving framework today (TRT-LLM, vLLM, FasterTransformer) stores it to global memory after each operation and reloads it for the next. A single transformer layer performs roughly:\n\n```\nattn_norm  -> Q_proj -> K_proj -> V_proj -> attention -> O_proj\n           -> ffn_norm -> gate_proj -> up_proj -> silu_mul -> down_proj\n```\n\nThat is 11+ global memory round-trips of 8 KB each per layer, for a total of ~88 KB of unnecessary traffic per layer. At 2 TB/s A100 bandwidth this adds roughly 44 us per layer purely for hidden-state store/reload overhead, before counting weight loads.\n\n## The Persistent-Kernel Approach\n\nOne thread block processes a full transformer layer in a single kernel launch:\n\n1. **Load once**: hidden state copied from global memory into shared memory at the start of the layer.\n2. **Smem-resident state**: all intermediate activations (post-norm, attention output, post-attention residual, FFN output) remain in shared memory throughout.\n3. **Double-buffered weight streaming**: weight matrix tiles are streamed through shared memory using `cp.async` (LDGSTS), so the next tile loads while the current tile participates in computation.\n4. **Store once**: final hidden state written back to global memory at the end of the layer.\n\n### Shared Memory Budget (A100)\n\n| Tensor | Size (fp16, d=4096) |\n|--------|-------------------|\n| hidden state (working copy) | 8 KB |\n| smem tile A (current weight tile) | 4-8 KB |\n| smem tile B (prefetch weight tile) | 4-8 KB |\n| accumulation buffer | 8 KB |\n| **Total** | ~28 KB |\n\nA100 provides 164 KB of shared memory per SM; even with the generous tile sizes above, the working set fits comfortably and leaves room for register spilling headroom.\n\n## Why Compiler Fusion Cannot Match This\n\nTRT-LLM's compiler-driven fusion (via the trtllm-build toolchain and custom TensorRT plugins) can fuse consecutive pointwise operations or fuse a bias+activation pair. It cannot achieve:\n\n- **Cross-operation smem residency**: the compiler emits separate kernels for projection and normalization; values must pass through global memory between them because CUDA kernels cannot share smem state across launches.\n- **Warp-synchronous intra-layer sequencing**: the persistent kernel serializes attn and FFN within a single thread block, allowing warp-level synchronization (`__syncthreads`, `__shfl_xor_sync`) to coordinate partial reductions without going to global memory.\n\nThis is a fundamental limitation of the compilation model, not a tuning gap.\n\n## Hardware Requirements\n\n- CUDA compute capability 8.0+ (A100, A10, RTX 3090/4090, H100)\n- `cp.async` (async global-to-smem copy, `sm_80+`) required for double buffering\n- At least 48 KB smem per block (configurable via `cudaFuncSetAttribute`)\n\n## Build\n\n```bash\nmkdir build && cd build\ncmake .. -DCMAKE_BUILD_TYPE=Release\nmake -j$(nproc)\n```\n\n## Project Layout\n\n```\nsrc/\n  config.cuh           model config and per-layer weight layout\n  smem_ops.cuh         RMSNorm operating on smem-resident vector\n  tiled_matvec.cuh     double-buffered tiled matvec with cp.async\n  decode_attn.cuh      decode attention (smem hidden state, global KV cache)\n  ffn.cuh              SwiGLU FFN operating on smem-resident hidden state\n  persistent_layer.cuh kernel declaration and host launch wrapper\n  persistent_layer.cu  kernel definition\n  reference.cuh        multi-launch reference kernel declarations\n  reference.cu         multi-launch reference kernel definitions\ntests/\n  test_correctness.cu  cosine-similarity and max-abs-error validation\nbenchmarks/\n  bench_latency.cu     CUDA-event timed persistent vs reference latency\n```\n\n## Results (A100 SXM4, Llama-7B dims, kv_len=2048)\n\n| Implementation | Latency (us) | Global traffic (MB) |\n|---------------|-------------|-------------------|\n| Multi-launch reference | ~320 | ~0.18 |\n| Persistent kernel | ~195 | ~0.09 |\n| Speedup | 1.64x | 0.5x traffic |\n\nNumbers from `bench_latency` on a single transformer layer. Traffic reduction comes entirely from eliminating hidden-state store/reload round-trips.\n"
+}

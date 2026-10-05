@@ -1,0 +1,73 @@
+# M116（Wave B2）读数复跑：2026-09-27T10:23:54+00:00
+# worktree = /workspace/ascend_mega_kernel/.tower/worktrees/wt-116
+--- 进锁后的复查 ---
+overlay         8.7T  8.4T  308G  97% /
+| npu-smi 25.7.rc1.6                               Version: 25.7.rc1.6                            |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 198.4       60                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5248  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+=== [1/2] m24 全档（契约档 + 变异档）===
+binary sha256 = b181c0d639a6779aa91d89bf48b8ef73f149500f599238599c5c5e7fac4d4d53
+[M24] mix(1,2) launch: nblk(AIC)=28 → AIV=56；chunk=128 行 = 2 个 m-tile（64 行）
+[M24] 形状：HIDDEN=2560 NH=24 HD=256 NKV=2 IDX_NH=4 IDX_D=128 ROT=64 | item 维=56 | GEMM 项=218（2 m-tile × 109 N 块）
+[M24] cache：主 KV 层 stride=8421376、压缩层 stride=263168、环层 stride=1120、packed 行=8208 B
+[M24] 夹具：x 4099 行 × 2560 bf16、权重平面 71435776 B（8 role）、cos/sin 4097 行、packed seed 16416 B
+
+[M24] ==== 案例 big4097_step（rows=4097 @0, chunk=128 × 33, mut=0x0, acMode=0, 逐 chunk 发射）====
+m24_attn_prefill/evidence/run_evidence.sh: line 32: 494870 Killed                  timeout 900 "$BIN_M24"
+m24 rc=137
+=== [2/2] M98 探针零回归档：m15_attn_cache.h 改动后重跑 runs=kv ===
+[本档覆盖 M116 对 m15_attn_cache.h 的改动：AC_MAX_ROWS 8->128 / AC_MAX_GROUPS 2->32 /
+ 门控 lane 的标量落盘通路 / 主 KV 落页抽成 MainKvFillChunk(rows=1)]
+binary sha256 = aa01a4fb543214e1528d5ebf2b9177e729131455442ffd19393883f3af720317
+[m15]   主 KV 的几何：本段按**官方**几何（页 32768 B、token 步长 1024 B、head 步长 16384 B、V 与 K 同槽 +512 B）判定 —— 该几何已按**塔裁 A** 更正进 `m15_attn_kv.h`，本段直接引用其常量
+[m15]   Ac.nonvac.expect            PASS（环 4 行各自与全毒值平面不同=1；主 KV 4 个 (head,K/V) 槽各自与毒值不同=1；压缩期望行 2 条且两行互异=1；行 0 非零元素 128/128）
+[m15]   Ac.pool.row.p23                PASS (逐字节一致, n=256)
+[m15]   Ac.pool.row.p27                PASS (逐字节一致, n=256)
+[m15]   Ac.ring.row                    PASS (逐字节一致, n=1120)
+[m15]   Ac.pack.row                    PASS (逐字节一致, n=16416)
+[m15]   Ac.mainkv.kv                   PASS (逐字节一致, n=8421376)
+[m15]   Ac.comp.row.p23                PASS (T3 ε=16×2^-24；越界 0/128；报告项：≤1ulp 128/128、maxAbs=0.000e+00、maxRel=0.000e+00、最大占用=0.000@c0)
+[m15]   Ac.comp.row.p27                PASS (T3 ε=16×2^-24；越界 0/128；报告项：≤1ulp 128/128、maxAbs=0.000e+00、maxRel=0.000e+00、最大占用=0.000@c0)
+[m15]   Ac.comp.nospurious             PASS (期望行外非毒字节 0 个；期望行为空的 0/2 行)
+[m15]   Ac.gate.ring                   PASS (got=4 exp=4)
+[m15]   Ac.gate.comp                   PASS (got=2 exp=2)
+[m15]   Ac.gate.read                   PASS (got=2 exp=2)
+[m15]   Ac.gate.mask                   PASS (got=6 exp=6)
+[m15]   档 M 交代：chunk 22..29；环只写末尾 4 行 ⇒ 位置 26..29 落槽 2,3,0,1；压缩行 2 条落在页 1 的行 1/2（跨页边界用 OB 档）；跨 chunk 成员 2 个从环读（先读后写）
+[m15]   Ac.det.repeat                  PASS (逐字节一致, n=1120)
+[m15]   Ac.det.repeat.comp             PASS (逐字节一致, n=263168)
+[m15]   Ac.nonvac.sens                 PASS (环变=1、压缩平面变=1)
+[m15]   Ac.neg.plaimnorm               PASS（注入档（mode=2）下同一判据被打破 ⇒ 判据对这条方向级错误有判别力）
+[m15]   Ac.neg.ropelast                PASS（注入档（mode=3）下同一判据被打破 ⇒ 判据对这条方向级错误有判别力）
+[m15]   Ac.neg.noringread              PASS（注入档（mode=4）下同一判据被打破 ⇒ 判据对这条方向级错误有判别力）
+[m15]   Ac.neg.nocompstor              PASS（注入档（mode=6）下同一判据被打破 ⇒ 判据对这条方向级错误有判别力）
+[m15]   Ac.neg.noringstor              PASS（注入档（mode=5）下同一判据被打破 ⇒ 判据对这条方向级错误有判别力）
+[m15]   Ac.neg.ringsplit               PASS（拆两段（256 B 块 + 24 B Pad）与一次 280 B Pad 的环平面逐字节相同=1）
+[m15]   Ac.rep.sumnomean               报告项（**不算负向对照**）：注入档（池化不除 4）下压缩行判据仍成立 —— 官方链（pooled → RMSNorm）对池化常数尺度不变（常数被 rstd 精确抵消），只剩 eps 项与 pooled 的 bf16 格点留下痕迹 ⇒ **对压缩行判据**这条错误不可判别；但它对本段的**池化逐字节判据** `Ac.pool.row.*` 是**可判别**的（Σ 不除 4 ⇒ 设备写出 bf16(4·mean) ≠ 控制档的 bf16(mean)）——本轮未把该档的 `Ac.pool.row` 判一次（见 README §4.3 / §5 第 8 条）
+[m15]   Ac.ob.ring                     PASS (逐字节一致, n=1120)
+[m15]   Ac.ob.comp                     PASS (T3 ε=16×2^-24；越界 0/128；报告项：≤1ulp 128/128、maxAbs=0.000e+00、maxRel=0.000e+00、最大占用=0.000@c0)
+[m15]   Ac.ob.open                     PASS（开放组 1024 的行 @ off 262144 仍为毒值（pos 4096 属开放组，不得写））
+[m15]   Ac.neg.offbyone                PASS（注入档（边界判据写成 `pos % 4 == 0`）下开放组的行被写 ⇒ 判据对 off-by-one 有判别力；同时 `Ac.ob.comp` 同档也被打破）
+[m15]   Ac.dcpad.required              PASS（mode=9 走 `Block1(280)`：sync rc=507015；⇒ 单行 280 B **必须** DataCopyPad）
+[m15] 验证 Ac（cache 填数学）：本段判定项 26 条 + guard 9 条（累计 checks 215 / guards 191 / fails 0）
+[m15]   覆盖交代：本段**不覆盖** ① 压缩行的**选择语义**（打分/topk/expand）与 packed 行的内容来源（本段把 packed 行当①的声明输入，只判行距/传输/逐字节）；② 主 KV 的 paged 非恒等 block_table（归 M82 的 T-KV-PAGED）；③ 真实规模档（真实权重切片）**未做**（见 m15_layer_loop/evidence/attn_cache/README.md 的未完成项）。
+[m15]   覆盖交代（r2 重写）：**本段不覆盖** ① 主 KV 的 KV **向量来源**（`v_proj` 的输出由 prolog 段给：M88 已实现 prolog、M98 的 `Ac.mainkv.kv` 只判它的**落页字节**）；② 打分/topk/expand 与 packed 的**选择语义**（本段只判 packed 行的字节布局/行距）；③ 压缩行与主 KV 的 **paged 非恒等 block_table**（归 `Kv.neg.paged` / `T-KV-PAGED`）。
+[m15]   未决交代：raw ring 行宽 140 是**带时点的设计决定**（默认按规范宽，见 m15_attn_kv.h 的 D1）；「serving 栈是否逐字节要求 3 个 MRoPE 位置尾」未取证。
+[m15] 验证 Kv：本段判定项 83 条 + guard 142 条（累计 checks 215 / guards 191 / fails 0）
+
+[m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Pw 0 + Kv 83 + Prolog 0 + AttnWire 0 + Pf 0 = 215 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15]   ④ 与 M39 官方单层参考对拍的判据**不在这个数里**：它在 `check_chain_ref.py`（torch，独立三态退出码与计数），由本程序的 dump 驱动；运行方式见 README。
+[m15] guard：191 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 48 + 参考链锚点非空 0 + M65 链 0 + 其余 142
+[m15] ===== ALL PASS（checks=215, guards=191, fails=0）=====
+m15 runs=kv rc=0
+# done 2026-09-27T10:31:49+00:00

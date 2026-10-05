@@ -1,0 +1,18 @@
+# M35 Step4：跨核前缀为负的根因（**同一家族**：(S) 掩码/槽位类 plumbing bug）+ 新签名
+#
+# ① 根因（代码阅读 + 读数证实）：InitConsts 里 UB_LANEF 的赋值发生在 `And(idx, idx, 3)` **之后**
+#    ⇒ UB_LANEF 实际存的是 lane%4（0,1,2,3,0,1,2,...）而不是 lane 序号 0..63
+#    ⇒ ReadTotals 的前缀掩码 `lane < aiv` 变成 `(lane%4) < aiv` ⇒ 选错 lane 数、且把那些 lane 上的
+#      陈旧值一并求和 ⇒ 前缀可为负/乱。这就是"前缀为负"，**不是独立 root cause**，是同一类
+#      （掩码-槽位口径）bug 的另一个出口 —— 与 (B) 的"写错槽"同族。
+# ② 修法：在 AND 之前先 Cast 出 lane 序号存 UB_LANEF。
+#
+# 修复前后对比（默认 4 case，target 2048/2050/1024/2048）：
+#   before: A=232  B=286  C=1004  D=0
+#   after : A=2044 B=2046 C=1024(✅PASS) D=2044
+# 最小档（V=256, blkTopk=2）：C 8/8 PASS ✅、D 8/8 PASS ✅、A 4/8、B 8/10
+#
+# ③ 新签名：**所有未过档都恰好少 4 token = 1 个 block**，且只在走 radix 的档位出现
+#    （C 档 V<=blkTopk 不走 radix ⇒ PASS）⇒ 边界元素（score == K）没被补上：
+#    早前读数 gtTotal = blkTopk - 1（少 1）⇒ need = 1，但 tie 组（score==K）未产出。
+#    下一读数点：dump (gtTotal, eqTotal, myEqBase, myTieQuota, ctie 首个子块) 在 radix 档。

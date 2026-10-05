@@ -1,0 +1,61 @@
+== 判据链路自检 正向（合成 dump，不占设备）==
+[chk] m27 hc prefill 交叉校验：dump 目录 = /tmp/m27_self2；case 数 = 1
+
+===== case m33：m=33 mode=1(COMBINE_MIX) MT=8 tiles=5 arena_dumped=0 chain=1 mutant=none =====
+
+== m33_a1：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=33 mode=1(COMBINE_MIX) 权重档=a1 ij=m33_a1_ij(16 列) bo=m33_a1_bo
+[chk] 判定 m33_a1.hcp (H')          n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m33_a1.blk               n=84480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m33_a1.injw (fp32)       maxRel=5.446e-08 (tol 1e-06) n=132  PASS
+[chk] 判定 m33_a1.rstd (fp32)       maxRel=5.061e-08 (tol 1e-04) n=132  PASS
+[chk] 判定 m33_a1.ij_handoff (OH 列) n=132     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+== m33_a2：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=33 mode=1(COMBINE_MIX) 权重档=a2 ij=m33_a1_ij_handoff(16 列) bo=m33_a2_bo
+[chk] 判定 m33_a2.hcp (H')          n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m33_a2.blk               n=84480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m33_a2.injw (fp32)       maxRel=4.484e-08 (tol 1e-06) n=132  PASS
+[chk] 判定 m33_a2.rstd (fp32)       maxRel=5.220e-08 (tol 1e-04) n=132  PASS
+
+-- guard（非空洞性 / 结构性见证；不计入判定项）--
+[chk] guard a1.hin 值多样（非空洞）                        OK distinct=1013/337920
+[chk] guard a1.blk 值多样（非空洞）                        OK distinct=2487/84480
+[chk] guard a1.injw 值多样（非空洞）                       OK distinct=125/132
+[chk] guard H' != H（段体确实改了残差流）                     OK 
+[chk] guard a2.hcp != a1.hcp（第二边界确实在动）             OK 
+
+[chk] 计数：本脚本判定项 4；m20.judge 判定项 5；guard 5；SKIPPED 0
+[chk] RESULT: OK（判定项 9 + guard 5；SKIPPED 0）
+rc=0
+== 判据链路自检 负向（弄坏 a1.ij_handoff）==
+[chk] m27 hc prefill 交叉校验：dump 目录 = /tmp/m27_selfmut2；case 数 = 1
+
+===== case m33：m=33 mode=1(COMBINE_MIX) MT=8 tiles=5 arena_dumped=0 chain=1 mutant=none =====
+
+== m33_a1：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=33 mode=1(COMBINE_MIX) 权重档=a1 ij=m33_a1_ij(16 列) bo=m33_a1_bo
+[chk] 判定 m33_a1.hcp (H')          n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m33_a1.blk               n=84480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m33_a1.injw (fp32)       maxRel=5.446e-08 (tol 1e-06) n=132  PASS
+[chk] 判定 m33_a1.rstd (fp32)       maxRel=5.061e-08 (tol 1e-04) n=132  PASS
+[chk] 判定 m33_a1.ij_handoff (OH 列) n=132     逐位=0.6667 良态逐位=0.6721 ulpMax=64  归一maxAbs=4.961e-01  FAIL
+
+== m33_a2：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=33 mode=1(COMBINE_MIX) 权重档=a2 ij=m33_a1_ij_handoff(16 列) bo=m33_a2_bo
+[chk] 判定 m33_a2.hcp (H')          n=337920  逐位=0.7992 良态逐位=0.8035 ulpMax=251 归一maxAbs=4.511e-02  FAIL
+[chk] 判定 m33_a2.blk               n=84480   逐位=0.4384 良态逐位=0.4715 ulpMax=108 归一maxAbs=3.266e-02  FAIL
+[chk] 判定 m33_a2.injw (fp32)       maxRel=2.980e+03 (tol 1e-06) n=132  FAIL
+[chk] 判定 m33_a2.rstd (fp32)       maxRel=5.930e-02 (tol 1e-04) n=132  FAIL
+
+-- guard（非空洞性 / 结构性见证；不计入判定项）--
+[chk] guard a1.hin 值多样（非空洞）                        OK distinct=1013/337920
+[chk] guard a1.blk 值多样（非空洞）                        OK distinct=2487/84480
+[chk] guard a1.injw 值多样（非空洞）                       OK distinct=125/132
+[chk] guard H' != H（段体确实改了残差流）                     OK 
+[chk] guard a2.hcp != a1.hcp（第二边界确实在动）             OK 
+
+[chk] 计数：本脚本判定项 4；m20.judge 判定项 5；guard 5；SKIPPED 0
+[chk] 未过：m33_a1.ij_handoff (OH 列), m33_a2.hcp (H'), m33_a2.blk, m33_a2.injw (fp32), m33_a2.rstd (fp32)
+[chk] RESULT: FAILED（5 条未过）
+rc=1

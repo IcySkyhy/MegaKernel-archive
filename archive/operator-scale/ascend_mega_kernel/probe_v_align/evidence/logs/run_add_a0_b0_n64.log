@@ -1,0 +1,7 @@
+VARIANT op=add(id=19) a=0 b=0 n=64 model=5 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x3d63622a4a4b96a3
+HEAD32 42040000 420c0000 42140000 421c0000
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (bitwise model match over 1024 bytes; 1024/1024 bytes compared)

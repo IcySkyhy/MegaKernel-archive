@@ -1,0 +1,46 @@
+# M91-C 的负向对照（变异**只在 /tmp/m91_nc 副本**上做；仓库文件未动）
+# 每条给出：变异命令 -> check_rescale.py 的 FAIL 行 -> rc
+
+== nc1：资源表把 SZ_GU 退回 padded 算式（NUM_EXPERTS * M_MAX * GU_N * 2）==
+$ sed 's/AlignUp(TOTAL_MAX \* GU_N \* 2, WS_ALIGN)/AlignUp(NUM_EXPERTS * M_MAX * GU_N * 2, WS_ALIGN)/' m15_layer_loop/m15_moe_resources.h > /tmp/m91_nc/nc1_res.h
+rc=0
+
+$ grep -c 'NUM_EXPERTS \* M_MAX \* GU_N' /tmp/m91_nc/nc1_res.h
+1
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_rescale.py --res /tmp/m91_nc/nc1_res.h | grep -E 'FAIL'
+[check] FAIL  A1 6 项每专家张量的 RHS 已是 TOTAL_MAX 基且不含 NUM_EXPERTS: 不符项 = ['SZ_GU = AlignUp(NUM_EXPERTS * M_MAX * GU_N * 2, WS_ALIGN)']
+[check] FAIL  [E=512] SZ_GU == AlignUp(TOTAL_MAX * (GU_N * 2), WS_ALIGN): NUM_EXPERTS=512/TOPK_MAX=10: TOTAL_MAX = 640 行；单位 = 2560 B/行；读数 = 83886080（期望 1638400）
+[check] FAIL  E=512 档 WS_BYTES == M77 §3.2 的独立复算 13,891,392（紧凑档）: NUM_EXPERTS=512/TOPK_MAX=10: WS_BYTES = 96139072 B（M77 §3.2「真实·紧凑」= 13,891,392）
+[check] ===== 可 FAIL 的判据 30 条（FAIL 3 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+== nc2：生成物里把 routed 的 WS_Y 基址退回 padded（slot * M_MAX * HIDDEN * 2）==
+$ sed 's|(ws + WS_Y + rowBase \* HIDDEN \* 2)|(ws + WS_Y + slot * M_MAX * HIDDEN * 2)|' m15_layer_loop/m15_moe_layer.h > /tmp/m91_nc/nc2_hdr.h
+rc=0
+
+$ grep -c 'WS_Y + rowBase' m15_layer_loop/m15_moe_layer.h
+1
+rc=0
+
+$ grep -c 'WS_Y + rowBase' /tmp/m91_nc/nc2_hdr.h
+0
+rc=1
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_rescale.py --header /tmp/m91_nc/nc2_hdr.h | grep -E 'FAIL'
+[check] FAIL  A2 routed 侧用紧凑行号 rowBase 寻址的符号集 = 6 项: routed = ['WS_AQ', 'WS_AS', 'WS_GU', 'WS_HQ', 'WS_HS']；集外符号 = []
+[check] FAIL  A2 紧凑寻址符号集与被重定尺的 6 项**同一集合**: routed ∩ 6 项（按 SZ_↔WS_ 映射）= ['WS_AQ', 'WS_AS', 'WS_GU', 'WS_HQ', 'WS_HS']；routed − 6 项 = []；6 项 − routed = ['WS_Y']
+[check] ===== 可 FAIL 的判据 30 条（FAIL 2 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+== nc3：生成物里把 routed 的 WS_AQ 基址换成一个**集外**符号 WS_ROUTED（第 7 个被紧凑行号写的张量）==
+$ sed 's|(ws + WS_AQ + rowBase \* (HIDDEN / 2))|(ws + WS_ROUTED + rowBase * (HIDDEN / 2))|' m15_layer_loop/m15_moe_layer.h > /tmp/m91_nc/nc3_hdr.h
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_rescale.py --header /tmp/m91_nc/nc3_hdr.h | grep -E 'FAIL'
+[check] FAIL  A2 routed 侧用紧凑行号 rowBase 寻址的符号集 = 6 项: routed = ['WS_AS', 'WS_GU', 'WS_HQ', 'WS_HS', 'WS_Y']；集外符号 = ['WS_ROUTED']
+[check] FAIL  A2 紧凑寻址符号集与被重定尺的 6 项**同一集合**: routed ∩ 6 项（按 SZ_↔WS_ 映射）= ['WS_AS', 'WS_GU', 'WS_HQ', 'WS_HS', 'WS_Y']；routed − 6 项 = []；6 项 − routed = ['WS_AQ']
+[check] ===== 可 FAIL 的判据 30 条（FAIL 2 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+

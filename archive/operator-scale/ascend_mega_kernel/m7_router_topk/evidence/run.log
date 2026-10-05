@@ -1,0 +1,6 @@
+[M7] m=1   seed=7 : PASS | logits maxRel=7.83e-05 ids exact weights maxUlp=0 bf16-grid-ok
+[M7] m=2   seed=7 : PASS | logits maxRel=7.83e-05 ids exact weights maxUlp=0 bf16-grid-ok
+[M7] m=16  seed=7 : PASS | logits maxRel=1.80e-04 ids exact weights maxUlp=1 bf16-grid-ok
+[M7] m=33  seed=7 : PASS | logits maxRel=1.80e-04 ids exact weights maxUlp=1 bf16-grid-ok
+[M7] m=64  seed=7 : PASS | logits maxRel=1.80e-04 ids exact weights maxUlp=1 bf16-grid-ok
+[M7] ===== ALL PASS =====

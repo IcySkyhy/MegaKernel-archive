@@ -1,0 +1,39 @@
+== /workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links ==
+  [S2 m151_s2_Pf.gdn] a@b^T: PASS (bit-exact 16475/16480 = 0.999697, T3 超界 0, max|Δ|=3.815e-06)
+  [S2 m151_s2_Pf.gdn_mut1] a@b^T: PASS (bit-exact 16475/16480 = 0.999697, T3 超界 0, max|Δ|=3.815e-06)
+  [S2 m151_s2_Pf.prolog_mut1] a@b^T: PASS (bit-exact 16475/16480 = 0.999697, T3 超界 0, max|Δ|=3.815e-06)
+  [S2 m151_s2_Pf.prolog_mut2] a@b^T: PASS (bit-exact 16475/16480 = 0.999697, T3 超界 0, max|Δ|=3.815e-06)
+  [S2 m151_s2_Pf.prolog_mut3] a@b^T: FAIL (bit-exact 181/16480 = 0.010983, T3 超界 12086, max|Δ|=1.363e+00)
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn/m9mt_m1_b56_mut0_] m=1 blk=56 mut=0 qs=0 state=PASS qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn/m9mt_m1_b56_mut0_] q   : PASS maxRelDiff=3.957e-07 maxAbsDiff=1.192e-07
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn/m9mt_m1_b56_mut0_] k   : PASS maxRelDiff=3.270e-07 maxAbsDiff=5.960e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn/m9mt_m1_b56_mut0_] v   : PASS maxRelDiff=2.300e-07 maxAbsDiff=1.490e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn/m9mt_m1_b56_mut0_] g   : PASS maxRelDiff=1.760e-04 maxAbsDiff=5.722e-06
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn/m9mt_m1_b56_mut0_] beta: PASS maxRelDiff=1.452e-07 maxAbsDiff=5.960e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn_mut1/m9mt_m1_b56_mut0_] m=1 blk=56 mut=0 qs=0 state=PASS qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn_mut1/m9mt_m1_b56_mut0_] q   : PASS maxRelDiff=3.957e-07 maxAbsDiff=1.192e-07
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn_mut1/m9mt_m1_b56_mut0_] k   : PASS maxRelDiff=3.270e-07 maxAbsDiff=5.960e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn_mut1/m9mt_m1_b56_mut0_] v   : PASS maxRelDiff=2.300e-07 maxAbsDiff=1.490e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn_mut1/m9mt_m1_b56_mut0_] g   : PASS maxRelDiff=1.760e-04 maxAbsDiff=5.722e-06
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.gdn_mut1/m9mt_m1_b56_mut0_] beta: PASS maxRelDiff=1.452e-07 maxAbsDiff=5.960e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut1/m9mt_m1_b56_mut1_] m=1 blk=56 mut=1 qs=0 state=FAIL qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut1/m9mt_m1_b56_mut1_] q   : PASS maxRelDiff=3.957e-07 maxAbsDiff=1.192e-07
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut1/m9mt_m1_b56_mut1_] k   : PASS maxRelDiff=3.270e-07 maxAbsDiff=5.960e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut1/m9mt_m1_b56_mut1_] v   : PASS maxRelDiff=2.300e-07 maxAbsDiff=1.490e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut1/m9mt_m1_b56_mut1_] g   : PASS maxRelDiff=1.760e-04 maxAbsDiff=5.722e-06
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut1/m9mt_m1_b56_mut1_] beta: PASS maxRelDiff=1.452e-07 maxAbsDiff=5.960e-08
+    [NEGATIVE] S3 m151_s3_Pf.prolog_mut1 如预期变红 ✓
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut2/m9mt_m1_b56_mut2_] m=1 blk=56 mut=2 qs=0 state=PASS qpad=FAIL kpad=FAIL gpad=PASS bpad=PASS
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut2/m9mt_m1_b56_mut2_] q   : PASS maxRelDiff=3.957e-07 maxAbsDiff=1.192e-07
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut2/m9mt_m1_b56_mut2_] k   : PASS maxRelDiff=3.270e-07 maxAbsDiff=5.960e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut2/m9mt_m1_b56_mut2_] v   : PASS maxRelDiff=2.300e-07 maxAbsDiff=1.490e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut2/m9mt_m1_b56_mut2_] g   : PASS maxRelDiff=1.760e-04 maxAbsDiff=5.722e-06
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut2/m9mt_m1_b56_mut2_] beta: PASS maxRelDiff=1.452e-07 maxAbsDiff=5.960e-08
+    [NEGATIVE] S3 m151_s3_Pf.prolog_mut2 如预期变红 ✓
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut3/m9mt_m1_b56_mut3_] m=1 blk=56 mut=3 qs=0 state=PASS qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut3/m9mt_m1_b56_mut3_] q   : PASS maxRelDiff=3.238e-07 maxAbsDiff=5.960e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut3/m9mt_m1_b56_mut3_] k   : PASS maxRelDiff=3.050e-07 maxAbsDiff=1.192e-07
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut3/m9mt_m1_b56_mut3_] v   : PASS maxRelDiff=2.309e-07 maxAbsDiff=2.980e-08
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut3/m9mt_m1_b56_mut3_] g   : PASS maxRelDiff=1.713e-04 maxAbsDiff=3.815e-06
+[/workspace/ascend_mega_kernel/.tower/worktrees/wt-169/m15_layer_loop/evidence/m169_whole_layer_4phase/dumps_m1_p15_links/m151_s3_Pf.prolog_mut3/m9mt_m1_b56_mut3_] beta: PASS maxRelDiff=1.452e-07 maxAbsDiff=5.960e-08
+== check_prolog: ALL PASS ==

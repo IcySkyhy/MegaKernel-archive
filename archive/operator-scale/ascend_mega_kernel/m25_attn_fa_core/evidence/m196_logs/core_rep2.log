@@ -1,0 +1,22 @@
+	NPU ID                         : 0
+	Memory Usage Rate(%)           : 0
+	HBM Usage Rate(%)              : 4
+	Aicore Usage Rate(%)           : 0
+	Aicore Freq(MHZ)               : 1650
+	Aicore curFreq(MHZ)            : 100
+	Aicore Count                   : 28
+	Temperature(C)                 : 54
+[M25FA] aicNum=28 nBlk=28 mode=core
+[M25FA] pre-launch m=4097 posBase=0 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=core      m=4097  posBase=0     ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=4160
+[M25FA] OUT_FNV64=0x75c3a926b776bcd0  out_bytes=50343936
+[M25FA] out[0,0,:4]=0.851562 -0.636719 -0.867188 -0.648438
+[M25FA] pre-launch m=1 posBase=4096 ctx=4097 nBlk=28
+[M25FA] launched, waiting sync
+[M25FA] sync done err=0
+[M25FA] mode=core      m=1     posBase=4096  ctx=4097  nBlk=28  lane=0 blocks=257 rowsPadded=64
+[M25FA] OUT_FNV64=0x7ab5bbcd1488fe70  out_bytes=12288
+[M25FA] out[0,0,:4]=-0.005676 -0.011230 -0.003220 0.000328
+EXIT_CORE_REP2=0

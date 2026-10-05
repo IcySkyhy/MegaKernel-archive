@@ -1,0 +1,51 @@
+# m10_dup_probe —— AICore exception 507015 的隔离探针（reviewer r2 提供；本轮复现）
+# 探针源码 sha256: m10_dup_probe.asc abbfca70e007c7980951c513d160f6dbc30cb233c36887e2f66005c04efb1422
+#   （正文与 reviewer 原文件 /tmp/m24dup/dup_probe.asc 逐字相同，仅首行加注来源；原文件 sha256 b1a2d459c3f8a18e3bc8c784bc8989eeccb790de2c1c68a146d7f84db17cdc1d）
+# 复现命令（本机 Ascend950PR，每次 launch 约 8s）:
+#   cmake -B /tmp/m24dup/build -S <该目标目录> -DCMAKE_BUILD_TYPE=Release && cmake --build /tmp/m24dup/build -j4
+#   for m in $(seq 0 13); do /tmp/m24dup/build/m10_dup_probe $m; done
+# 结论：507015 由 UB 目的地址**非 32B 对齐**触发（4B/8B/16B 偏移必挂；32B 对齐正常），与 calCount 无关；
+#       mode8（calCount=1 + 经典 Exp）正常 ⇒ 早期'calCount=1 触发 507015'的归因**被推翻**。
+
+[DUP mode=0] launch
+[DUP mode=0] aclrtSynchronizeStream err=0 (0=OK)  out[0]=1 out[1]=0
+  -> exit=0
+[DUP mode=1] launch
+[DUP mode=1] aclrtSynchronizeStream err=0 (0=OK)  out[0]=1 out[1]=1
+  -> exit=0
+[DUP mode=2] launch
+[DUP mode=2] aclrtSynchronizeStream err=0 (0=OK)  out[0]=1 out[1]=1
+  -> exit=0
+[DUP mode=3] launch
+[DUP mode=3] aclrtSynchronizeStream err=0 (0=OK)  out[0]=1 out[1]=1
+  -> exit=0
+[DUP mode=4] launch
+[DUP mode=4] aclrtSynchronizeStream err=0 (0=OK)  out[0]=0 out[1]=0
+  -> exit=0
+[DUP mode=5] launch
+[DUP mode=5] aclrtSynchronizeStream err=507015 (0=OK)  out[0]=0 out[1]=0
+  -> exit=0
+[DUP mode=6] launch
+[DUP mode=6] aclrtSynchronizeStream err=0 (0=OK)  out[0]=1 out[1]=1
+  -> exit=0
+[DUP mode=7] launch
+[DUP mode=7] aclrtSynchronizeStream err=507015 (0=OK)  out[0]=0 out[1]=0
+  -> exit=0
+[DUP mode=8] launch
+[DUP mode=8] aclrtSynchronizeStream err=0 (0=OK)  out[0]=1.64872 out[1]=0
+  -> exit=0
+[DUP mode=9] launch
+[DUP mode=9] aclrtSynchronizeStream err=507015 (0=OK)  out[0]=0 out[1]=0
+  -> exit=0
+[DUP mode=10] launch
+[DUP mode=10] aclrtSynchronizeStream err=507015 (0=OK)  out[0]=0 out[1]=0
+  -> exit=0
+[DUP mode=11] launch
+[DUP mode=11] aclrtSynchronizeStream err=0 (0=OK)  out[0]=0 out[1]=0
+  -> exit=0
+[DUP mode=12] launch
+[DUP mode=12] aclrtSynchronizeStream err=507015 (0=OK)  out[0]=0 out[1]=0
+  -> exit=0
+[DUP mode=13] launch
+[DUP mode=13] aclrtSynchronizeStream err=0 (0=OK)  out[0]=0 out[1]=0
+  -> exit=0

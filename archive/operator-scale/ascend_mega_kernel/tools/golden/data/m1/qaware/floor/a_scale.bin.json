@@ -1,0 +1,18 @@
+{
+  "tensor": "a_scale.bin",
+  "shape": [
+    2,
+    80
+  ],
+  "dtype": "uint8",
+  "strides": [
+    80,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 160,
+  "sha256": "6e3954c2c1a1144468b410defe134997f7fd1dec40501f75d7f73d4f57815bc2",
+  "kind": "golden",
+  "description": "routed A E8M0 group scales [m*top_k, hidden/32]"
+}

@@ -1,0 +1,180 @@
+# M26 device cross-check provenance: the 140 m13_moe_layer dumps + the exact m13 source
+# revision they came from.
+#
+# WHY: M32 is changing m13_moe_layer/**, so the reproduction command in
+#      evidence/m13_device_regression.log will not rebuild the same binary later.
+#      The sha256 below pin 'that source revision + that dump batch' together.
+#
+# HOW the dumps were produced (m13_moe_layer source NOT modified, built out of tree):
+#   cp m13_moe_layer/{CMakeLists.txt,m13_moe_layer.asc,m13_resources.h} /tmp/m13_build/
+#   source /usr/local/Ascend/ascend-toolkit/set_env.sh
+#   cmake -B /tmp/m13_build/build -S /tmp/m13_build -DCMAKE_BUILD_TYPE=Release
+#   cmake --build /tmp/m13_build/build -j4
+#   mkdir -p /tmp/m13_dump_m26 && cd /tmp/m13_dump_m26
+#   M13_DUMP=1 /tmp/m13_build/build/m13_moe_layer <wt-26>/tools/golden/data m1 m33
+#   (m13 self-judgement: 683 PASS / 0 FAIL, rc=0, '===== ALL PASS =====')
+#
+# Datasets cross-checked against: tools/golden/data/{m1,m33} at commit 6f68f8e
+#   m1  x.bin  sha256 1ac7cbbb11eca87c6975b3531fd14c91398f8c36d61c42a05b4ae33f63598b41
+#   m1  x_sorted.bin sha256 fb87a344fcc5c30ed8a6e8d3ef352dae19894e6f2251f5a5eb97d3dbd14cb192
+#   m33 x.bin  sha256 aa132938e620213737980d161255c3d5ecd6366cf5bdd64947f0593dae89e408
+#   m33 x_sorted.bin sha256 dcc6d908366bf7901f481d10930e2d033a8192d615b1ccb8fb7470771579849e
+#
+# m13 source revision (== branch base commit 7880e63babba01b47c580ad1fce32a8b8f362708,
+# i.e. the m13 tree this worktree branched from; blobs unchanged since):
+#   m13_moe_layer.asc
+#     sha256    359def475eed37596ce22c00c45fa4e20744813fb826b217c0c29e5e6cce1f69
+#     git blob  7b43784aa87e7bf10e07f71e35205282b81d62be
+#   m13_resources.h
+#     sha256    6589225cdf31577bfe48dbe1c835270bdd199d27ca76d236fc16b71a16958d64
+#     git blob  8302257a7d0f1d41ec4e018c156af918282ef93f
+#   CMakeLists.txt
+#     sha256    8fdd65ab23e8e9749eaa26da06506aad53e670f4f3526633a423666655d18b1d
+#     git blob  48b5c5dbae304b6f4447db0891b8ed6627287628
+#
+# 140 dump .bin tensors + their 4 *_meta.txt + the accept log (145 files), /tmp/m13_dump_m26:
+c95dd97787a8830cc2651f9a89d72dde70cc653b4c97e0980b93570e9e65ecce         79533  accept_run.log
+90c586780eeb4f4236a3128c007cce770b793450deb075f39e84d7110a33eecf        327680  m1_mode0_a_qx_device.bin
+b611fb500460702b76bc6b84726b3554797846db9bb4a76cd863a71d886af3f7         81920  m1_mode0_a_qx_shd_device.bin
+353f0d946ebea093e63c0a9d434b436b20411bcb065adf7f7171522209419b75         20480  m1_mode0_a_scale_device.bin
+5cf915e42005f8c39d616cd08069a6b0cf9e754908875c29ce60bf4f1b6cbaba          5120  m1_mode0_a_scale_shd_device.bin
+162fe323c55cfd29fc7f8f2f8fea855f85bc3a27d114ded9774eee27c10bdf22            64  m1_mode0_expert_offsets_device.bin
+39169e9bced8a9aba2def574d5fc6b40fefe8213933435a585a5093d9fa6133e            32  m1_mode0_expert_token_counts_device.bin
+d8752cad0f660495869b00205924c25e9819f37c23b34e5834432a05bdad5028          5120  m1_mode0_gamma1_input_device.bin
+4ee21fee290fc03af05909ae9fc291894e30b9a577d5a9d60f94e36b6d865507          5120  m1_mode0_gamma2_input_device.bin
+05cd559434e875bbc2162a10f052d98e1928259d9b36b01bf7ebd2e438bc36f2        655360  m1_mode0_gu_device.bin
+275ddb82a158a1f456b37dca24e3577530b8f77870fc511e4c3ba1047f4f58a6        163840  m1_mode0_gu_shd_device.bin
+b704eb2d5d3dfa8d29c6a296d5df0a7ba7cdef136393a1981e34e3d872fcf501         81920  m1_mode0_h_qx_device.bin
+965f535b60f2da50f8babeabf50489487edcc68eaa4e685101939129abede210         20480  m1_mode0_h_qx_shd_device.bin
+4ee258ed8fcf808c8f5423303d2d4f35920ce9fe3bda9058d09a598ec947130e          8192  m1_mode0_h_scale_device.bin
+6144a852568927bd227cdcb80148e794c05ccf7c0b059116b6531ce472fea30c          2048  m1_mode0_h_scale_shd_device.bin
+bfeb1238f2ff56cb356cbbea9e9b0c06d0f3302a6c97bb0daf844b37eb148286        327680  m1_mode0_h_swiglu_device.bin
+3ca34764c9c87d544f408618cdbe06aafe6c23348770057417f395a39aeae859         81920  m1_mode0_h_swiglu_shd_device.bin
+d55db534043933c71af28e18e91f2db213fd359837b3cb9f29b0c3447fed841f          1024  m1_mode0_ids_device.bin
+f1c0ceb07394f25a70a24317f4846a3ae4731392ffae2af84aa1477b11a5c31e          1024  m1_mode0_inv_slot_device.bin
+ff023076f641886ac80903a295c1f86c2c8e695584b029f8f935bbac94750526          1024  m1_mode0_logits_device.bin
+89d0164ec45d00bfc21b24bbcae2993f5f6ee204c657e36d59eba0d9fa610765            76  m1_mode0_meta.txt
+68e031d2e15b8c9fa74421bad3abc1d5a5f4966bbe704f6ea75d84b02b123c98        327680  m1_mode0_moe_output_device.bin
+d55db534043933c71af28e18e91f2db213fd359837b3cb9f29b0c3447fed841f          1024  m1_mode0_perm_expert_device.bin
+97baae85b8a25ae55b2cbd4c6207fb37656a79cb8c16c5c9b779e69375daa192          1024  m1_mode0_perm_src_token_device.bin
+28e9ed29b31dbaa635c4282799cbdcf2098b4f3e202c76285447b292a103743c        655360  m1_mode0_res1_device.bin
+55b1687cb8d958416b90c70934b3c61983566f057edb5707bc34a988d8605354        655360  m1_mode0_res2_device.bin
+02416ebef56fe8ca9ec23c77ffd2a7dd334ca64a9acfbd4f5564ac0d7e57bc29        327680  m1_mode0_routed_output_device.bin
+2caad3e52afa3462d300a70ce5733e581632e8dd075f9ab57be7223341033eeb           256  m1_mode0_sgate_device.bin
+1fd4f91cd4afcb6cb548a42aa3dc78b212a47a42fa4882de2ad9a256d83e22cb        327680  m1_mode0_shared_output_device.bin
+455731bbfeaa13c38ae392d5217f93716c5172385be9c46b05c68dfac7151180          1024  m1_mode0_topk_weights_device.bin
+04f3f57dd619d35d4cbfe6f2712e6facda79cd1df1228045aa99e892e06346a0          4096  m1_mode0_w_tk_packed_device.bin
+6265e89f5564f533ea34847377d3004687f88b88cb40a7b43f46d8c436f325dd        327680  m1_mode0_x_input_device.bin
+e0558f380167c2f158aeb0d809ecb27d125be145f80835658ea20cd2d2d20817       1310720  m1_mode0_x_sorted_device.bin
+ccdb82aa427c064adfcc19b7fc567be7c4830a7aaeda3e14c51ae9835eb3b40e        327680  m1_mode0_xnorm_device.bin
+358a6a94a6abe36ca73622aaa80633c1842c117895f6e93dda835a57a74fb1b4        327680  m1_mode0_y_final_device.bin
+67abfcd3db295fc97929851dda27168dfd4f361d617247fb99c16fe381b7c372        327680  m1_mode0_y_shd_device.bin
+7ec3bcf2f8476ba8963b1c81d874a0120ca5c7cfa6069c2c1275535d96ab29aa       1310720  m1_mode0_y_sorted_device.bin
+abe1dcd17ed651df3ae73c79cd6769c18465c29e5b9348d84c5fa599dc34c52e        327680  m1_mode1_a_qx_device.bin
+47161be211ea04f44ca1f1bf819cd21e499527351cba68c4d282a0f6107036b7         81920  m1_mode1_a_qx_shd_device.bin
+c38a530baa4ce225217851d46824006941c42bb143630064f702997113fe392b         20480  m1_mode1_a_scale_device.bin
+454fc077760d9df513a7ac85c3e7a116c2dca163b1c5c7621d3b10ac06fd2089          5120  m1_mode1_a_scale_shd_device.bin
+b1b18910f7da486402c6c7b039638d76ec0873d24e11abe221d7d6899d9ed980            64  m1_mode1_expert_offsets_device.bin
+39169e9bced8a9aba2def574d5fc6b40fefe8213933435a585a5093d9fa6133e            32  m1_mode1_expert_token_counts_device.bin
+d8752cad0f660495869b00205924c25e9819f37c23b34e5834432a05bdad5028          5120  m1_mode1_gamma1_input_device.bin
+4ee21fee290fc03af05909ae9fc291894e30b9a577d5a9d60f94e36b6d865507          5120  m1_mode1_gamma2_input_device.bin
+f1de67994b5051ca8e29a75313002a0579e827241261b67fd3186e466e2e7bb5        655360  m1_mode1_gu_device.bin
+97a14b3254485f3cd28f6da37fb67e88184272f6f3f30e4241084870bb6c8985        163840  m1_mode1_gu_shd_device.bin
+e0c603c259370e61fd5524e4ba856ab2ae5752908de51398e11666d5019ec70e         81920  m1_mode1_h_qx_device.bin
+f5c98f3b24c2679f74d5afa0c8a17eb93285bf42cba2b3101a0b25d9598412e2         20480  m1_mode1_h_qx_shd_device.bin
+c3399818d238c1ba05e538805083b5aa17edd742abde4ad4cbae614d54f99d3f          8192  m1_mode1_h_scale_device.bin
+95e9fc3da0146d9ec555da892363ad6d89d3110a31a50d751d3fc12a1693daf3          2048  m1_mode1_h_scale_shd_device.bin
+a01fb3149bf1ce84e43274b1538ed95f8ff349aae5257e3021513d9af8ebe683        327680  m1_mode1_h_swiglu_device.bin
+ee5c9cdf115343b27633b59bc45e85ed4353daa878a859504301c92877d33873         81920  m1_mode1_h_swiglu_shd_device.bin
+d55db534043933c71af28e18e91f2db213fd359837b3cb9f29b0c3447fed841f          1024  m1_mode1_ids_device.bin
+f1c0ceb07394f25a70a24317f4846a3ae4731392ffae2af84aa1477b11a5c31e          1024  m1_mode1_inv_slot_device.bin
+4b69fa06d10b07581ab7db05b2bf13eef9a51bc418731970fe584620b93b9ce3          1024  m1_mode1_logits_device.bin
+b67a8e8d800224b5490f8f3ba2cf2660330a05bd27809cf3e2376d2ac3b30d60            76  m1_mode1_meta.txt
+ed9de1e423b6c07cd07232c9ac3ed7b57d28416713ac13788a5c9f9fd0bee2a6        327680  m1_mode1_moe_output_device.bin
+d55db534043933c71af28e18e91f2db213fd359837b3cb9f29b0c3447fed841f          1024  m1_mode1_perm_expert_device.bin
+97baae85b8a25ae55b2cbd4c6207fb37656a79cb8c16c5c9b779e69375daa192          1024  m1_mode1_perm_src_token_device.bin
+28e9ed29b31dbaa635c4282799cbdcf2098b4f3e202c76285447b292a103743c        655360  m1_mode1_res1_device.bin
+7bb1eec01efaf23b33e49b26eb8489931caa0bd027ef51eb443366e494a22b46        655360  m1_mode1_res2_device.bin
+9560bcc162331888d152bebf4533f568c5c2c384dfd478828fb89207453f936c        327680  m1_mode1_routed_output_device.bin
+e009e5c97dacf76d21e0dda8b23626b9ed4fd10377fe0235ccf32bc7a71d1b1a           256  m1_mode1_sgate_device.bin
+4520046653da94afc65e9d050a754358c143b3b17dd951ae6384c7c4ecc6b597        327680  m1_mode1_shared_output_device.bin
+2bde296efb0612fb54d43fc47d66bdc67bc0e4397e3c4c2cc3df86e238c002c6          1024  m1_mode1_topk_weights_device.bin
+b6e52a4f60c8a3f3c14bd8e960cd706689165fb150d1aa336a75a21059a39d95          4096  m1_mode1_w_tk_packed_device.bin
+6265e89f5564f533ea34847377d3004687f88b88cb40a7b43f46d8c436f325dd        327680  m1_mode1_x_input_device.bin
+4dd01e0312949548b82ce9a3e42bfd6e4cfb4839c77d317252e0b41b1629b129       1310720  m1_mode1_x_sorted_device.bin
+ccdb82aa427c064adfcc19b7fc567be7c4830a7aaeda3e14c51ae9835eb3b40e        327680  m1_mode1_xnorm_device.bin
+4d59cb35b7f358c3adfc759783c88d27bab0f76ab2836b00602490ee52f505b6        327680  m1_mode1_y_final_device.bin
+a89745550b944201cadfc278341068bc8718935186be636efcee813c9e66284f        327680  m1_mode1_y_shd_device.bin
+b6ce082fbd04806d03dc25cec0bbc87eeab9e34cc3897014be10a9d815b3ac03       1310720  m1_mode1_y_sorted_device.bin
+68bb25e17aeea7d24a5ff3f2aeb403b6acd685146d5198f71b6d90751ee9571d        327680  m33_mode0_a_qx_device.bin
+458bb6243a12f6cb4d91e35c2e6dcc20eee9693cfed361f2f22f6a4aab9acf39         81920  m33_mode0_a_qx_shd_device.bin
+aca5fab43bf45bae2d2c1ca3b2213212e9c107874dc96e843717b35ac05ed0ba         20480  m33_mode0_a_scale_device.bin
+cad0f60444e280514c27f07de8729042f2dde194c360b57334a25fb2c9331631          5120  m33_mode0_a_scale_shd_device.bin
+d5ab910400dc027d61e17758a9f082862322c8f29c43d7e3a82136835f8c2e6f            64  m33_mode0_expert_offsets_device.bin
+18bedb0a8006823fae949da345985c91caabd160e7b4bb5b811cbe3487583472            32  m33_mode0_expert_token_counts_device.bin
+d8752cad0f660495869b00205924c25e9819f37c23b34e5834432a05bdad5028          5120  m33_mode0_gamma1_input_device.bin
+4ee21fee290fc03af05909ae9fc291894e30b9a577d5a9d60f94e36b6d865507          5120  m33_mode0_gamma2_input_device.bin
+de3bbec2e43c843d298d91e61e7d91f6f0932b18ac31c64ecd512d2280619678        655360  m33_mode0_gu_device.bin
+783388f3f9925e2ba25546149983fb3a2fa43b65bd71350d592152819a238538        163840  m33_mode0_gu_shd_device.bin
+74e26db5362e07d28bd276a4e3c4b90d39f577920e3cf114014f721e15e5e47b         81920  m33_mode0_h_qx_device.bin
+100f7521c1e6c329eb117f023d2055e959df0eaf6cac19c034507f749fa50dfc         20480  m33_mode0_h_qx_shd_device.bin
+cac334a7420b383acd410e5dc6e1ef3c0b8ec259c8078503f6522a4723b61b33          8192  m33_mode0_h_scale_device.bin
+935175550e8890d8c7674ab7ac46bfc25648fb9e8550bac6aea657af7be58fd9          2048  m33_mode0_h_scale_shd_device.bin
+bfc2381654a8927c85417bfe0b9cd4f75d8778f3990a0449a2f5ada9204d37b9        327680  m33_mode0_h_swiglu_device.bin
+cc3852727ddb08444cfe4464a5a4c0d9299ed3521f7b11d042fa6f9085120406         81920  m33_mode0_h_swiglu_shd_device.bin
+ba1273e8370b33d5ecb3223d0d1f25c0fea20836d33c762a8e74ea4fbb4a747f          1024  m33_mode0_ids_device.bin
+7647e52e67f27a57403a9be76bfbd757e1917855e2dadedc7671c82c9f97355a          1024  m33_mode0_inv_slot_device.bin
+40678a3ae225fbb961c5ee9a40351f6bae7cddd4d589561fc80b2159166d0a8f          1024  m33_mode0_logits_device.bin
+c2f89d45c577d212934f1baa0499ccbbf58b406e6ce11af2d930de6c468264d2            79  m33_mode0_meta.txt
+40f20b231e5d509bd9505276307c609cc5d868b3f470750dfcbf5a7d69f1b914        327680  m33_mode0_moe_output_device.bin
+a108dbe8a20fac3ef445a931f5a873f2bdf84387d4219e3045dd39cdcca1bf3f          1024  m33_mode0_perm_expert_device.bin
+243d49e4a491e100a727afbf0fab306473af0a96928aa02885700630e1056e5a          1024  m33_mode0_perm_src_token_device.bin
+7109d8087e2851aa57ee12061989bf3c945f3367c58d8599e4bb1479c8f8d359        655360  m33_mode0_res1_device.bin
+79e648562f9ec30e642e456336489af9bccc45e987f9155aab93b4bf700a1515        655360  m33_mode0_res2_device.bin
+9f733db015c78516608af8ff2611c84fd4e47483df73d0492a7a45a28c56a614        327680  m33_mode0_routed_output_device.bin
+db162fb4730b21e9dea926acf28eca48daadedc86d5d42d2eb2b4dce3594f3e1           256  m33_mode0_sgate_device.bin
+3cf7d72c533ea6765e87eac75ed7ee7b90fb64d24eb497379348fc2e87169217        327680  m33_mode0_shared_output_device.bin
+62be32bc9459064402fcab5d0e326d59f42e63ecd44ed7422b6fcd043d6e356b          1024  m33_mode0_topk_weights_device.bin
+356780f448828e90889c67b075c7a888e81e6e68a0ad222e191821b66de1732a          4096  m33_mode0_w_tk_packed_device.bin
+4798afd1ae8869b9eeecd6ec9311a4212688d1d13c41c72bc39534d6666e17cc        327680  m33_mode0_x_input_device.bin
+421e11afc1c2e4f34d63512ae43f00112938e1bd44d579127cff05c8856f5eeb       1310720  m33_mode0_x_sorted_device.bin
+568d41f38cd1dd3b6eb2b354d26f3a444e27b8170dbacd58354b370546291e4f        327680  m33_mode0_xnorm_device.bin
+0d165bb2610d82ca3f61ddb22f70e6888003dfca34026cda57c2992057438195        327680  m33_mode0_y_final_device.bin
+ffb68b71e840ec1686e7d3d2707dc9c1daa512b61e8fee2f095fc9b377a3e21d        327680  m33_mode0_y_shd_device.bin
+53fec451634070eb67f1586efb94c8e25167e785b8ef47aa698a42474ab061cf       1310720  m33_mode0_y_sorted_device.bin
+3b4f37b66e2dcc74f1acf8f32185dfdc602216368447f0c08323489eabf694f6        327680  m33_mode1_a_qx_device.bin
+44e5360949a4942f9d1330403ce27055cb7504da57c17ddd196df4e9a41fbced         81920  m33_mode1_a_qx_shd_device.bin
+e7cf4ffd672d9d0322178de9caea172e38e56b3094fd5ad4d6d0b1fba8276d9e         20480  m33_mode1_a_scale_device.bin
+b239217deab8ee895f19effa32cd3ec5d3ac139daf4a813f91a0526f2ef77675          5120  m33_mode1_a_scale_shd_device.bin
+fcfb283ac7ef402f58a513224468fc46481f78f96c44a071f0a6f69c2f4a1ce9            64  m33_mode1_expert_offsets_device.bin
+66290f4e1b83760ce2db2e5108d69c4f01feac79082ff37222869ec669fd4990            32  m33_mode1_expert_token_counts_device.bin
+d8752cad0f660495869b00205924c25e9819f37c23b34e5834432a05bdad5028          5120  m33_mode1_gamma1_input_device.bin
+4ee21fee290fc03af05909ae9fc291894e30b9a577d5a9d60f94e36b6d865507          5120  m33_mode1_gamma2_input_device.bin
+3f55a0d04f7da3fcc2f6081efb9ea02e9931e5073d1df3bff75e884ddcf07a27        655360  m33_mode1_gu_device.bin
+1150abb0ba35ef9585af76a39b647a5b4bf4ed78b32e3576cc486b3a48286b24        163840  m33_mode1_gu_shd_device.bin
+ad26154a9052a7f103583edd0b55e14137110a0597350d11f0848201b26217db         81920  m33_mode1_h_qx_device.bin
+c2e8b304656fe15a4d0426d9c1df81aad83293839e34e3428e584543e50cd27c         20480  m33_mode1_h_qx_shd_device.bin
+a0c6897f0d0c173bdcadbd4b2ba15056f9de0b170b456b460ff501e553707259          8192  m33_mode1_h_scale_device.bin
+e16afae898772edff5f78f67a677db1c6db9661de417035d16af1156139505d5          2048  m33_mode1_h_scale_shd_device.bin
+b48e0fba059ce4df325465e21c166a50d3775127b5adf58fba61bf1b3719e31d        327680  m33_mode1_h_swiglu_device.bin
+64559edc31c4254dd0c753ed9e49f567de926409af087708b98ad583cff0deae         81920  m33_mode1_h_swiglu_shd_device.bin
+ee382a5d5310ed634358b073b923f37f179c8ca25addc90dc43673f62b8faab6          1024  m33_mode1_ids_device.bin
+cfc2dd65c3720ba9b487c2a75d4125ff1493178f0be85c4e19c416e1be825829          1024  m33_mode1_inv_slot_device.bin
+c9286db790ac292e805945b9ee0a8ae8c60aa7e90b1201bb7b6c14891b81d0f0          1024  m33_mode1_logits_device.bin
+652e1dbce8aa105cd9cd69f7da1e89297ccb947392213c91c2eda92be344e61b            79  m33_mode1_meta.txt
+a566bc7036ec3cdf11b647f88f31d459b6d86833c42761690542858818a7f3ff        327680  m33_mode1_moe_output_device.bin
+51061ada38bf634732f570aecaee56ef0d2d95fdd3097c661483160a94f2e762          1024  m33_mode1_perm_expert_device.bin
+007a7a2d1798a178941f6e4b177003d09d1c5f03eea14c17c57e078af9a469ac          1024  m33_mode1_perm_src_token_device.bin
+7109d8087e2851aa57ee12061989bf3c945f3367c58d8599e4bb1479c8f8d359        655360  m33_mode1_res1_device.bin
+02aece80e8b1afd78cc4d3da43cadc1f0d0c232dcf4d95a4d1412e4cbc350c62        655360  m33_mode1_res2_device.bin
+f3db606f8a2f67441b9427da6bfe92bc240370e92e047ce87c75a842096276c4        327680  m33_mode1_routed_output_device.bin
+0ae8cb86afee0c072575dc3b10cd3ee320ea743411589aed138c448e2e226419           256  m33_mode1_sgate_device.bin
+bdd973b3285f0aa73a401ed3ed256e214568dea83d17974197db5ea07f645a22        327680  m33_mode1_shared_output_device.bin
+6cbf1410ed9b5fdd3aa045c32beaa6fb663c62ad300b534c16287a8217d2c1d4          1024  m33_mode1_topk_weights_device.bin
+a83fcdb13e8c1fd4bcb2e446a4340ad2a6733b9e88284f937d44a058e0697a40          4096  m33_mode1_w_tk_packed_device.bin
+4798afd1ae8869b9eeecd6ec9311a4212688d1d13c41c72bc39534d6666e17cc        327680  m33_mode1_x_input_device.bin
+42fb1ce9252158b9622e934095e2ae989626bc59afd819e2b05a0564efbf206d       1310720  m33_mode1_x_sorted_device.bin
+568d41f38cd1dd3b6eb2b354d26f3a444e27b8170dbacd58354b370546291e4f        327680  m33_mode1_xnorm_device.bin
+6cc6f4fcdff3bae04170e62ad5db73242e2adb67ae6449e89275a26eb9d9200f        327680  m33_mode1_y_final_device.bin
+d1a532c25f86b3922add2fe61a9acabc419cc1451918ffc9fc15a757178edf84        327680  m33_mode1_y_shd_device.bin
+0f6df5b6397f543886d114ffa822502cb2ba6a726246a0ea4e890c53bbddd208       1310720  m33_mode1_y_sorted_device.bin

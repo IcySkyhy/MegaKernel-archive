@@ -1,0 +1,8 @@
+VARIANT name=row_sparse4_p512 kind=3 group=row sd=s32 md=m32 pat=all rows=4 pitchI=512 pitchW=256 im=0
+LAUNCH aclError=0 (sync timeout=120000ms)
+AREABYTES 12288
+WRANGES 0-256,512-768,1024-1280,1536-1792,4096-5120
+NZ bytes_written=2048 first_off=0 last_off=5120
+FNV 0xc294b86871b07f83
+OUTCOME: RAN
+rc=0

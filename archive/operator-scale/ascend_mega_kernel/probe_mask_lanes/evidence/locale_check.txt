@@ -1,0 +1,49 @@
+# M94 判据命令 locale 一致性 + 扫描正对照
+date: 2026-09-27T05:50:38+00:00
+
+===== LC_ALL=C =====
+===== LC_ALL=C =====
+run_row_m16_cur_r1.log | famount=0 | nz=8192 | fnv=0xc04ca12f9151c383 | nrange=1
+run_row_m1_cur_r1.log | famount=0 | nz=512 | fnv=0x781c90746f955383 | nrange=2
+run_row_nc_p192_r1.log | famount=0 | nz=7232 | fnv=0xe2835476ed809343 | nrange=2
+run_row_nc_p128_b16_r1.log | famount=0 | nz=1664 | fnv=0xcd58e4476c049903 | nrange=2
+run_row_sparse4_p512_r1.log | famount=0 | nz=2048 | fnv=0xc294b86871b07f83 | nrange=5
+run_lane_s32_m32_all_r1.log | famount=0 | nz=510 | fnv=0x8fbcdba5e17ac583 | nrange=4
+LANG=
+
+===== LC_ALL=C.UTF-8 =====
+===== LC_ALL=C.UTF-8 =====
+run_row_m16_cur_r1.log | famount=0 | nz=8192 | fnv=0xc04ca12f9151c383 | nrange=1
+run_row_m1_cur_r1.log | famount=0 | nz=512 | fnv=0x781c90746f955383 | nrange=2
+run_row_nc_p192_r1.log | famount=0 | nz=7232 | fnv=0xe2835476ed809343 | nrange=2
+run_row_nc_p128_b16_r1.log | famount=0 | nz=1664 | fnv=0xcd58e4476c049903 | nrange=2
+run_row_sparse4_p512_r1.log | famount=0 | nz=2048 | fnv=0xc294b86871b07f83 | nrange=5
+run_lane_s32_m32_all_r1.log | famount=0 | nz=510 | fnv=0x8fbcdba5e17ac583 | nrange=4
+LANG=
+
+===== LC_ALL=POSIX =====
+===== LC_ALL=POSIX =====
+run_row_m16_cur_r1.log | famount=0 | nz=8192 | fnv=0xc04ca12f9151c383 | nrange=1
+run_row_m1_cur_r1.log | famount=0 | nz=512 | fnv=0x781c90746f955383 | nrange=2
+run_row_nc_p192_r1.log | famount=0 | nz=7232 | fnv=0xe2835476ed809343 | nrange=2
+run_row_nc_p128_b16_r1.log | famount=0 | nz=1664 | fnv=0xcd58e4476c049903 | nrange=2
+run_row_sparse4_p512_r1.log | famount=0 | nz=2048 | fnv=0xc294b86871b07f83 | nrange=5
+run_lane_s32_m32_all_r1.log | famount=0 | nz=510 | fnv=0x8fbcdba5e17ac583 | nrange=4
+LANG=
+
+== 一致性判定（三份读数行逐字节 diff）==
+PASS: LC_ALL=C / C.UTF-8 / POSIX 三份读数行逐字节相同（6 行）
+
+== 正对照：同一套抽取在「越界形态」与「非越界形态」上必须给出不同读数 ==
+  非越界（判据 nrange == 1）:        run_row_m16_cur_r1.log | famount=0 | nz=8192 | fnv=0xc04ca12f9151c383 | nrange=1
+  越界对照（判据 nrange > 1）:       run_row_nc_p192_r1.log | famount=0 | nz=7232 | fnv=0xe2835476ed809343 | nrange=2
+  越界对照 b16（判据 nrange > 1）:   run_row_nc_p128_b16_r1.log | famount=0 | nz=1664 | fnv=0xcd58e4476c049903 | nrange=2
+
+== 断言（失败 ⇒ 本脚本 rc=1）==
+  ASSERT PASS: 判据量 nrange 非空洞：clean=1（应为 1）
+  ASSERT PASS: 越界档 nrange 必须 > 1：p192=2
+  ASSERT PASS: 越界档 nrange 必须 > 1：p128_b16=2
+  ASSERT PASS: 三档 nz 必须 > 0（非 0-vs-0）：clean=8192 p192=7232 p128b16=1664
+  ASSERT PASS: 越界档与 clean 的 dump 指纹必须不同：clean=0xc04ca12f9151c383 p192=0xe2835476ed809343
+  ASSERT PASS: 三 locale 读数行逐字节一致
+RESULT: PASS（locale 一致性 + 正对照断言全部成立）

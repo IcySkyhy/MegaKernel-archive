@@ -1,0 +1,18 @@
+# m10_probe 14 条 CrossCore 原语探针真机结果（每个探针一次 launch；挂死=timeout 18s）
+# 判据以"是否挂死"为准：完成标记用裸标量写 GM，按 m0 结论不可靠（实测仅 8~14/56 落盘）
+p1: [PROBE 1] sync=0 AIC0=4008636142 (want 1) AIVok=8/56 -> FAIL
+p2: [PROBE 2] sync=0 AIC0=2 (want 2) AIVok=11/56 -> FAIL
+p3: [PROBE 3] sync=0 AIC0=4008636142 (want 3) AIVok=9/56 -> FAIL
+p4: [PROBE 4] sync=0 AIC0=4008636142 (want 4) AIVok=8/56 -> FAIL
+p5: HANG
+p6: [PROBE 6] sync=0 AIC0=4008636142 (want 6) AIVok=11/56 -> FAIL
+p7: [PROBE 7] sync=0 AIC0=7 (want 7) AIVok=14/56 -> FAIL
+p8: HANG
+p9: [PROBE 9] sync=0 AIC0=4008636142 (want 9) AIVok=9/56 -> FAIL
+p10: [PROBE 10] sync=0 AIC0=4008636142 (want 10) AIVok=9/56 -> FAIL
+p11: [PROBE 11] sync=0 AIC0=4008636142 (want 11) AIVok=9/56 -> FAIL
+p12: [PROBE 12] sync=0 AIC0=12 (want 12) AIVok=8/56 -> FAIL
+p13: [PROBE 13] sync=0 AIC0=13 (want 13) AIVok=8/56 -> FAIL
+p14: [PROBE 14] sync=0 AIC0=4008636142 (want 14) AIVok=8/56 -> FAIL
+# 结论：仅 p5（AIC mode2 set 挂 PIPE_MTE3）与 p8（AIC mode0 屏障 set 挂 PIPE_MTE3）挂死，
+#       其余 12 条均 sync=0 完成 ⇒ AIC 侧 set/wait 只能用 PIPE_S/MTE1/MTE2/FIX/M（见 docs/05 §6.2）。

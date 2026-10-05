@@ -1,0 +1,18 @@
+== probe_host_dma mode=unreg tile=8192 repeats=8 launches=3 alignOff=0 ==
+[INIT] aclInit rc=0
+[INIT] aclrtSetDevice(0) rc=0
+[INIT] aclrtCreateStream rc=0
+[DEV ] AICORE=28 VECTOR=56 -> blocks=56
+[PREP] region=3670016 bytes (65536 per block) cyc=1792 blocks=56
+[ATTR] srcUnregistered    ptr=0x5610a11b0000 rc=0 location.type=2(UNREGISTERED) id=0 pageSize=4096
+[PREP] srcKind=host-UNREGISTERED(posix_memalign) srcForKernel=0x5610a11b0000 dst=0x12004c600000 cyc=0x120000017000
+[TIME] launches=3 perLaunch=-1.0 ns aclError_after_last=507035
+[ASYNC] aclrtStreamQuery immediately after launch: rc=0 status=1(NOT_READY)
+[ASYNC] aclrtSynchronizeStream rc=507035 (device-side MTE2 read loop is back-to-back, no per-tile wait)
+[COPY] aclrtMemcpy(D2H result) rc=0
+[COPY] aclrtMemcpy(D2H cycles) rc=0
+[VERIFY] bytes=3670016 mismatches=3655680 firstBadOff=0 (expect=90 got=255)
+[VERIFY] FAIL: byte mismatch
+[CYCLE] validBlocks=45 avgSpanPerBlock=583 aggSpan(all blocks)=575557805 syscnt
+== done mode=unreg overall=DEVICE-ERROR ==
+rc=1

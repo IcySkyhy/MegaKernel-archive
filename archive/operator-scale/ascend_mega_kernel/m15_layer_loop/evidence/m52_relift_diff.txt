@@ -1,0 +1,94 @@
+# M52 重抽的 device 段差异（`m15_layer_loop/m15_moe_layer.h`）
+#
+# 来源：`diff -u <改动前的 m15_moe_layer.h（分支 tip = M40 版）> <重抽后（m13/M50 版）>`。
+# 规模：**4 个 hunk、+29/−14 = 43 行**，全部落在 S2 router 内（2 处注释 + `SoftmaxTopkRow`）。
+# 复算：`git diff --numstat main...HEAD -- m15_layer_loop/m15_moe_layer.h` = `36  18`（54 行）；
+#       去掉文件头 PROLOGUE 那 1 个 hunk（+7/−4）即得上面的 **+29/−14**。
+#
+# **行号口径（照它 patch 前必须先读这一句）**：本 diff 生成时两侧文件用的都还是**旧 PROLOGUE**
+# （讲「7 类替换」的那一版，比入库版少 3 行）；而入库的 `m15_moe_layer.h` 用的是**新 PROLOGUE**（+3 行）。
+# ⇒ **本文件的 `+` 侧行号**比入库文件低 3（`-` 侧对应的是 **main 版** = `git show main:...`，
+#   行号与它一致）。可对照 `git diff main...HEAD` 的同名 hunk：
+#   本文件 `+730`/`+914`/`+940`/`+976` ↔ 那边 `+733`/`+917`/`+943`/`+979`。
+#   hunk 内容本身逐字节可用；要对照/套用到入库文件时，**只把 `+` 侧行号 +3**（`-` 侧与 main 版的行号一致，不要动）。
+--- /tmp/m15_moe_layer.h.before	2026-09-26 12:58:13.120385377 +0000
++++ /tmp/m15_moe_layer.h.after	2026-09-26 12:58:13.140385379 +0000
+@@ -730,7 +730,7 @@
+ }  // namespace
+ // ============================================================
+ // S2：Router 段（m7_router_topk 移植：GEMV 向量 MAC → max-shift softmax →
+-//     Sort32/Extract top-k 降序 → renorm），AIV0 单核
++//     Sort32 排序 + top-k 拆分（Extract 的 VF 内联）→ renorm），AIV0 单核
+ //     同一段内顺带算共享专家门裸点积 sgate[r]（sigmoid 在 S10 用向量做）
+ // ============================================================
+ 
+@@ -914,12 +914,13 @@
+         }
+     }
+ 
+-    // 行内 softmax(max-shift) + Sort32 + Extract + renorm → staging
++    // 行内 softmax(max-shift) + Sort32 + 前 32 对拆分（Extract 的 VF 内联）+ renorm → staging
+     __aicore__ inline void SoftmaxTopkRow(uint32_t r, uint32_t grow)
+     {
+         __ubuf__ float* rowUb = reinterpret_cast<__ubuf__ float*>(UB_RT_LOG + r * 64 * 4);
+         __ubuf__ float* valUb = reinterpret_cast<__ubuf__ float*>(UB_RT_VAL);
+-        // [M40-7] ovUb/oiUb 不再需要（经典 Extract 已 VF 化、不再落 UB 再读回）
++        __ubuf__ float* ovUb = reinterpret_cast<__ubuf__ float*>(UB_RT_OV);
++        __ubuf__ int32_t* oiUb = reinterpret_cast<__ubuf__ int32_t*>(UB_RT_OI);
+         __ubuf__ float* pairUb = reinterpret_cast<__ubuf__ float*>(UB_RT_PAIR);
+         __ubuf__ float* wsUb = reinterpret_cast<__ubuf__ float*>(UB_RT_WS + r * 64 * 4);
+         __ubuf__ int32_t* idsUb = reinterpret_cast<__ubuf__ int32_t*>(UB_RT_IDS + r * 64 * 4);
+@@ -939,12 +940,33 @@
+             StoreAlign(valUb, rowReg, m32);
+         }
+         {
++            // Sort32 属**裁定例外**（docs/05 §6.1 计算路径规则 ⓒ + §2 指令级原语白名单）：
++            //   ① Reg 侧**无**等价物（CANN 9.1.0 `reg_compute/**` 穷举无 Sort32/MrgSort）；
++            //   ② 官方 donor 同为 memory-based：ops-transformer/moe/moe_gating_top_k_softmax_v2/
++            //      op_kernel/arch35/moe_gating_top_k_softmax_v2_perf_arch35.h:187（Sort32）、
++            //      :225/:243（MrgSort）。仅限本 topk 排序段，不得扩散。
++            //   `MrgSort4` 是 dav-3510 上的 deprecated 空函数体（静默 no-op），本文件 0 处使用。
+             LocalTensor<float> pairT(TPosition::VECCALC, UB_RT_PAIR, 2 * RT_LANES);
+             LocalTensor<float> valT(TPosition::VECCALC, UB_RT_VAL, RT_LANES);
+             LocalTensor<uint32_t> idxT(TPosition::VECCALC, UB_RT_IDX, RT_LANES);
+-            // Sort32 保留：tower M44 裁决 ② 的白名单例外（排序单元 primitive）
+             Sort32(pairT, valT, idxT, 1);
+-
++        }
++        // 前 32 对 (value, idx) 拆分 = 经典 `Extract(..., 1)` 的 VF 内联。抄厂商 dav_3510
++        //   ExtractVf（asc/impl/basic_api/dav_3510/kernel_operator_vec_gather_mask_impl.h:426-481）
++        //   的 float 分支：repeatTime=1 ⇒ loopTimes=0/tail=1 的「单寄存器载入 + DeInterleave +
++        //   半寄存器存储」路径；与官方 topk donor 落盘同形（…perf_arch35.h:309-343：
++        //   LoadAlign<DIST_DINTLV_B32> 载入 (value, idx) 交错对 + 两条掩码 StoreAlign）。
++        //   纯 pair 拆分、无算术 ⇒ 与经典 Extract 逐位等价（判据 T1：topk_ids/weights 逐位）。
++        __VEC_SCOPE__
++        {
++            LocalMemBar<MemType::VEC_STORE, MemType::VEC_LOAD>();
++            RegTensor<float> vr, vi;
++            uint32_t n32 = RT_LANES;
++            MaskReg m32 = UpdateMask<float>(n32);
++            LoadAlign<float, LoadDist::DIST_DINTLV_B32>(vr, vi, pairUb);
++            StoreAlign(ovUb, vr, m32);
++            StoreAlign(reinterpret_cast<__ubuf__ uint32_t*>(UB_RT_OI),
++                       reinterpret_cast<RegTensor<uint32_t>&>(vi), m32);
+         }
+         __VEC_SCOPE__
+         {
+@@ -954,15 +976,8 @@
+             RegTensor<float> s, ds;
+             MaskReg maskAll = CreateMask<float, MaskPattern::ALL>();
+             MaskReg maskAllI = CreateMask<int32_t, MaskPattern::ALL>();
+-            // [M40-7] VF 化 Extract（tower M44 裁决 + M40 指派）：原经典 memory-based
+-            // `Extract(ovT, oiT, pairT, 1)` 换成**寄存器解交织** —— 与厂商 3510 自己的
+-            // `ExtractVf<float>`（asc/impl/basic_api/dav_3510/
+-            // kernel_operator_vec_gather_mask_impl.h:426-487）同款：一次 DIST_DINTLV_B32
+-            // 把 Sort32 输出的 (value,index) 交织对解成两个寄存器，并省掉落 UB 再读回。
+-            // **T1 逐位**（纯位重排、不参与算术）：见证 = check_moe_ref.py 的
+-            // `topk_ids 精确相等` + `topk_weights` + `inv_slot 与 perm 互洽` +
+-            // `w_tk_packed 低 16 位 = bf16(topk_weights)`（选中集合/顺序/权重全逐位）。
+-            LoadAlign<float, LoadDist::DIST_DINTLV_B32>(vals, (RegTensor<float>&)idxs, pairUb);
++            LoadAlign(vals, ovUb);
++            LoadAlign(idxs, oiUb);
+             uint32_t nk = TOPK;
+             MaskReg mk = UpdateMask<float>(nk);
+             Reduce<ReduceType::SUM, float>(s, vals, mk);

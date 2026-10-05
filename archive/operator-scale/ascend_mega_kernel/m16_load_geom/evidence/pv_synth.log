@@ -1,0 +1,5 @@
+[PV] 合成数据：P[16,256]、V[256,256]，[-8,8] 小整数（bf16 精确；K=256 的累加和 < 2^24 无舍入）
+[PV] 预测配方（与 kernel 共用同一组常量）：A(P) T0 {mStep=1, kStep=16, srcStride=1, dstStride=1}；B(V) T1 {mStep=16, kStep=8, srcStride=16, dstStride=8}
+[PV]   Nd2Nz: A nValue=16/dValue=256/srcDValue=256/dstNzC0Stride=16；B nValue=256/dValue=128(N_TILE)/srcDValue=256(nTotal)/dstNzC0Stride=256；mmad m=16 n=128 k=256
+[PV] device C vs host fp32 参考（RNE→bf16）：0/4096 逐位不等，maxRel=0.000e+00，device 零元素=1
+[PV] PASS（bf16 网格容差 1e-2 内）

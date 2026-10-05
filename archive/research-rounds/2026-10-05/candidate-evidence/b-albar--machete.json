@@ -1,0 +1,855 @@
+{
+  "repository": "b-albar/machete",
+  "url": "https://github.com/b-albar/machete",
+  "created_at": "2025-02-27T19:52:08Z",
+  "pushed_at": "2026-06-22T09:48:21Z",
+  "branch": "main",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 3520
+    },
+    {
+      "path": "LICENSE",
+      "size": 11357
+    },
+    {
+      "path": "README.md",
+      "size": 3093
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_attention.py",
+      "size": 17245
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_conv1d.py",
+      "size": 5616
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_cross_entropy.py",
+      "size": 3635
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_flash_decoding.py",
+      "size": 4546
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_fused_gemm.py",
+      "size": 4839
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_fusion_rmsnorm.py",
+      "size": 7981
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_gated_delta_net.py",
+      "size": 17323
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_gemm.py",
+      "size": 6034
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_gemm_rope_gdn.py",
+      "size": 20079
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_glu.py",
+      "size": 5631
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_l2_locality.py",
+      "size": 14710
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_moe_gemm.py",
+      "size": 5970
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_qwen3_5_attention_o_proj.py",
+      "size": 402
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_qwen3_5_layer.py",
+      "size": 346
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_qwen3_5_mxfp4_simt_decode.py",
+      "size": 593
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_qwen3_5_training.py",
+      "size": 355
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_rmsnorm.py",
+      "size": 6597
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_rope.py",
+      "size": 5940
+    },
+    {
+      "path": "benchmarks/kernels/benchmark_rope_gdn.py",
+      "size": 11649
+    },
+    {
+      "path": "benchmarks/kernels/qwen_3_5/benchmark_qwen3_5_attention_o_proj.py",
+      "size": 12926
+    },
+    {
+      "path": "benchmarks/kernels/qwen_3_5/benchmark_qwen3_5_layer.py",
+      "size": 36990
+    },
+    {
+      "path": "benchmarks/kernels/qwen_3_5/benchmark_qwen3_5_mxfp4_simt_decode.py",
+      "size": 25023
+    },
+    {
+      "path": "benchmarks/kernels/qwen_3_5/benchmark_qwen3_5_training.py",
+      "size": 12000
+    },
+    {
+      "path": "docs/interface.md",
+      "size": 5859
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 2357
+    },
+    {
+      "path": "requirements-dev.txt",
+      "size": 13
+    },
+    {
+      "path": "requirements.txt",
+      "size": 136
+    },
+    {
+      "path": "scripts/analyze_megakernel_trace.py",
+      "size": 4865
+    },
+    {
+      "path": "scripts/autotune_qwen_scheduler.py",
+      "size": 12228
+    },
+    {
+      "path": "scripts/benchmark_framework_scaling.py",
+      "size": 5673
+    },
+    {
+      "path": "scripts/benchmark_layer_sequential_vs_fused.py",
+      "size": 5891
+    },
+    {
+      "path": "scripts/benchmark_llamacpp_forward.py",
+      "size": 4569
+    },
+    {
+      "path": "scripts/benchmark_overlap_scheduler.py",
+      "size": 6967
+    },
+    {
+      "path": "scripts/benchmark_qwen_backward_scheduler.py",
+      "size": 3688
+    },
+    {
+      "path": "scripts/benchmark_qwen_forward_scheduler.py",
+      "size": 4054
+    },
+    {
+      "path": "scripts/benchmark_tma_vs_cpasync_overlap.py",
+      "size": 14316
+    },
+    {
+      "path": "scripts/check_qwen35_machete_decode_equivalence.py",
+      "size": 13468
+    },
+    {
+      "path": "scripts/compute_sanitizer_smoke.py",
+      "size": 9576
+    },
+    {
+      "path": "scripts/generate_qwen35_benchmark_graphics.py",
+      "size": 19577
+    },
+    {
+      "path": "scripts/measure_dma_register_caps.py",
+      "size": 3787
+    },
+    {
+      "path": "scripts/mxfp4_dp4a_matvec.py",
+      "size": 11803
+    },
+    {
+      "path": "scripts/repro_tma_store_sass.py",
+      "size": 24064
+    },
+    {
+      "path": "scripts/run_l2_locality_ncu.py",
+      "size": 4365
+    },
+    {
+      "path": "scripts/summarize_megakernel_timing.py",
+      "size": 1742
+    },
+    {
+      "path": "scripts/trace_deps.py",
+      "size": 17814
+    },
+    {
+      "path": "scripts/trace_qwen_layer.py",
+      "size": 14829
+    },
+    {
+      "path": "scripts/trace_rope.py",
+      "size": 2161
+    },
+    {
+      "path": "scripts/track_megakernel_perf.py",
+      "size": 19299
+    },
+    {
+      "path": "scripts/visualize_region_deps.py",
+      "size": 34178
+    },
+    {
+      "path": "src/machete/__init__.py",
+      "size": 167
+    },
+    {
+      "path": "src/machete/kernels/activation/__init__.py",
+      "size": 158
+    },
+    {
+      "path": "src/machete/kernels/activation/activation.py",
+      "size": 10882
+    },
+    {
+      "path": "src/machete/kernels/activation/ref.py",
+      "size": 596
+    },
+    {
+      "path": "src/machete/kernels/attention/__init__.py",
+      "size": 5002
+    },
+    {
+      "path": "src/machete/kernels/attention/dpsum.py",
+      "size": 4623
+    },
+    {
+      "path": "src/machete/kernels/attention/fast_math.py",
+      "size": 4033
+    },
+    {
+      "path": "src/machete/kernels/attention/flash_decoding.py",
+      "size": 146416
+    },
+    {
+      "path": "src/machete/kernels/attention/ref.py",
+      "size": 4086
+    },
+    {
+      "path": "src/machete/kernels/attention/sm_120.py",
+      "size": 65226
+    },
+    {
+      "path": "src/machete/kernels/attention/sm_120_bwd.py",
+      "size": 68361
+    },
+    {
+      "path": "src/machete/kernels/conv1d/__init__.py",
+      "size": 187
+    },
+    {
+      "path": "src/machete/kernels/conv1d/conv1d.py",
+      "size": 28150
+    },
+    {
+      "path": "src/machete/kernels/conv1d/ref.py",
+      "size": 3240
+    },
+    {
+      "path": "src/machete/kernels/cross_entropy/__init__.py",
+      "size": 168
+    },
+    {
+      "path": "src/machete/kernels/cross_entropy/cross_entropy.py",
+      "size": 17571
+    },
+    {
+      "path": "src/machete/kernels/cross_entropy/ref.py",
+      "size": 1079
+    },
+    {
+      "path": "src/machete/kernels/decode_matvec/__init__.py",
+      "size": 2390
+    },
+    {
+      "path": "src/machete/kernels/decode_matvec/sm120.py",
+      "size": 180773
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/__init__.py",
+      "size": 10466
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/chunk_size.py",
+      "size": 692
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/fused_op.py",
+      "size": 66906
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/grad.py",
+      "size": 4192
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/output.py",
+      "size": 3604
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/output_op.py",
+      "size": 28082
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/prep.py",
+      "size": 6395
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/prep_op.py",
+      "size": 35466
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/ref.py",
+      "size": 6624
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/solve_op.py",
+      "size": 20126
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/state.py",
+      "size": 4902
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/state_bwd.py",
+      "size": 4935
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/state_recurrence_op.py",
+      "size": 24873
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/vnew_op.py",
+      "size": 23439
+    },
+    {
+      "path": "src/machete/kernels/gated_delta_net/wu_op.py",
+      "size": 31991
+    },
+    {
+      "path": "src/machete/kernels/gemm/__init__.py",
+      "size": 293
+    },
+    {
+      "path": "src/machete/kernels/gemm/gemm.py",
+      "size": 65455
+    },
+    {
+      "path": "src/machete/kernels/glu/__init__.py",
+      "size": 240
+    },
+    {
+      "path": "src/machete/kernels/glu/glu.py",
+      "size": 56605
+    },
+    {
+      "path": "src/machete/kernels/glu/ref.py",
+      "size": 1857
+    },
+    {
+      "path": "src/machete/kernels/moe/__init__.py",
+      "size": 1080
+    },
+    {
+      "path": "src/machete/kernels/moe/align_sort.py",
+      "size": 4807
+    },
+    {
+      "path": "src/machete/kernels/moe/moe_gemm.py",
+      "size": 26461
+    },
+    {
+      "path": "src/machete/kernels/moe/moe_gemm_bwd.py",
+      "size": 26033
+    },
+    {
+      "path": "src/machete/kernels/moe/ref.py",
+      "size": 5206
+    },
+    {
+      "path": "src/machete/kernels/qknorm_rope/__init__.py",
+      "size": 227
+    },
+    {
+      "path": "src/machete/kernels/qknorm_rope/qknorm_rope.py",
+      "size": 48793
+    },
+    {
+      "path": "src/machete/kernels/qknorm_rope/ref.py",
+      "size": 1851
+    },
+    {
+      "path": "src/machete/kernels/qwen_3_5/__init__.py",
+      "size": 4948
+    },
+    {
+      "path": "src/machete/kernels/qwen_3_5/gqa_decode_attention.py",
+      "size": 18625
+    },
+    {
+      "path": "src/machete/kernels/qwen_3_5/mxfp4_ops.py",
+      "size": 75202
+    },
+    {
+      "path": "src/machete/kernels/qwen_3_5/qwen_3_5_forward.py",
+      "size": 219090
+    },
+    {
+      "path": "src/machete/kernels/qwen_3_5/sm120.py",
+      "size": 143047
+    },
+    {
+      "path": "src/machete/kernels/rms_norm/__init__.py",
+      "size": 205
+    },
+    {
+      "path": "src/machete/kernels/rms_norm/ref.py",
+      "size": 9474
+    },
+    {
+      "path": "src/machete/kernels/rms_norm/rms_norm.py",
+      "size": 44262
+    },
+    {
+      "path": "src/machete/kernels/rms_norm/rmsnorm_cutlass.py",
+      "size": 19608
+    },
+    {
+      "path": "src/machete/kernels/rmsnorm_gemm/__init__.py",
+      "size": 172
+    },
+    {
+      "path": "src/machete/kernels/rmsnorm_gemm/rmsnorm_gemm.py",
+      "size": 15615
+    },
+    {
+      "path": "src/machete/kernels/rope/__init__.py",
+      "size": 221
+    },
+    {
+      "path": "src/machete/kernels/rope/autograd.py",
+      "size": 1777
+    },
+    {
+      "path": "src/machete/kernels/rope/ref.py",
+      "size": 4682
+    },
+    {
+      "path": "src/machete/kernels/rope/rope.py",
+      "size": 21395
+    },
+    {
+      "path": "src/machete/kernels/utils/__init__.py",
+      "size": 206
+    },
+    {
+      "path": "src/machete/kernels/utils/reduce.py",
+      "size": 21795
+    },
+    {
+      "path": "src/machete/megakernel/__init__.py",
+      "size": 3489
+    },
+    {
+      "path": "src/machete/megakernel/autograd.py",
+      "size": 6929
+    },
+    {
+      "path": "src/machete/megakernel/autograd_op.py",
+      "size": 4181
+    },
+    {
+      "path": "src/machete/megakernel/backend.py",
+      "size": 15706
+    },
+    {
+      "path": "src/machete/megakernel/backend_dispatch.py",
+      "size": 56728
+    },
+    {
+      "path": "src/machete/megakernel/backend_ir.py",
+      "size": 1482
+    },
+    {
+      "path": "src/machete/megakernel/codegen_support.py",
+      "size": 5196
+    },
+    {
+      "path": "src/machete/megakernel/compile.py",
+      "size": 25162
+    },
+    {
+      "path": "src/machete/megakernel/compute_only_replay.py",
+      "size": 26820
+    },
+    {
+      "path": "src/machete/megakernel/dependency_graph_export.py",
+      "size": 7081
+    },
+    {
+      "path": "src/machete/megakernel/dim_windows.py",
+      "size": 5127
+    },
+    {
+      "path": "src/machete/megakernel/full_replay.py",
+      "size": 68348
+    },
+    {
+      "path": "src/machete/megakernel/functional.py",
+      "size": 2595
+    },
+    {
+      "path": "src/machete/megakernel/instruction_layout.py",
+      "size": 538
+    },
+    {
+      "path": "src/machete/megakernel/interpreter.py",
+      "size": 23977
+    },
+    {
+      "path": "src/machete/megakernel/kernel_cache.py",
+      "size": 3157
+    },
+    {
+      "path": "src/machete/megakernel/megakernel.py",
+      "size": 105621
+    },
+    {
+      "path": "src/machete/megakernel/noinline.py",
+      "size": 14542
+    },
+    {
+      "path": "src/machete/megakernel/ops.py",
+      "size": 70962
+    },
+    {
+      "path": "src/machete/megakernel/paged_memory.py",
+      "size": 20659
+    },
+    {
+      "path": "src/machete/megakernel/registries.py",
+      "size": 38617
+    },
+    {
+      "path": "src/machete/megakernel/replay_loops.py",
+      "size": 291
+    },
+    {
+      "path": "src/machete/megakernel/runtime_components.py",
+      "size": 18584
+    },
+    {
+      "path": "src/machete/megakernel/scheduler_config.py",
+      "size": 2193
+    },
+    {
+      "path": "src/machete/megakernel/scheduling.py",
+      "size": 161220
+    },
+    {
+      "path": "src/machete/megakernel/source_fragments.py",
+      "size": 10004
+    },
+    {
+      "path": "src/machete/megakernel/timing_profile.py",
+      "size": 4362
+    },
+    {
+      "path": "src/machete/megakernel/tma_codegen.py",
+      "size": 8531
+    },
+    {
+      "path": "src/machete/megakernel/tracing.py",
+      "size": 11040
+    },
+    {
+      "path": "src/machete/megakernel/transport.py",
+      "size": 20418
+    },
+    {
+      "path": "src/machete/megakernel/utils.py",
+      "size": 6236
+    },
+    {
+      "path": "src/machete/quantization/__init__.py",
+      "size": 284
+    },
+    {
+      "path": "src/machete/quantization/mxfp4.py",
+      "size": 6250
+    },
+    {
+      "path": "src/machete/quantization/nvfp4.py",
+      "size": 4665
+    },
+    {
+      "path": "src/machete/utils/benchmark.py",
+      "size": 22064
+    },
+    {
+      "path": "src/machete/utils/benchmark_utils.py",
+      "size": 24643
+    },
+    {
+      "path": "src/machete/utils/cluster_launch_control.py",
+      "size": 42561
+    },
+    {
+      "path": "src/machete/utils/output.py",
+      "size": 1294
+    },
+    {
+      "path": "src/machete/utils/testing.py",
+      "size": 3701
+    },
+    {
+      "path": "src/machete/utils/utils.py",
+      "size": 7052
+    },
+    {
+      "path": "tests/README.md",
+      "size": 2411
+    },
+    {
+      "path": "tests/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/conftest.py",
+      "size": 3922
+    },
+    {
+      "path": "tests/kernels/support.py",
+      "size": 922
+    },
+    {
+      "path": "tests/kernels/test_activation.py",
+      "size": 7406
+    },
+    {
+      "path": "tests/kernels/test_attention_sm_120.py",
+      "size": 19746
+    },
+    {
+      "path": "tests/kernels/test_conv1d.py",
+      "size": 9193
+    },
+    {
+      "path": "tests/kernels/test_conv1d_tp.py",
+      "size": 6409
+    },
+    {
+      "path": "tests/kernels/test_cross_entropy.py",
+      "size": 4822
+    },
+    {
+      "path": "tests/kernels/test_flash_decoding.py",
+      "size": 5027
+    },
+    {
+      "path": "tests/kernels/test_gated_delta_net.py",
+      "size": 27019
+    },
+    {
+      "path": "tests/kernels/test_gemm.py",
+      "size": 18735
+    },
+    {
+      "path": "tests/kernels/test_gemm_kblock_multipass.py",
+      "size": 7142
+    },
+    {
+      "path": "tests/kernels/test_gemm_rope_gdn.py",
+      "size": 14794
+    },
+    {
+      "path": "tests/kernels/test_gemm_tp.py",
+      "size": 16390
+    },
+    {
+      "path": "tests/kernels/test_glu.py",
+      "size": 9255
+    },
+    {
+      "path": "tests/kernels/test_moe_gemm.py",
+      "size": 11327
+    },
+    {
+      "path": "tests/kernels/test_moe_gemm_bwd.py",
+      "size": 7153
+    },
+    {
+      "path": "tests/kernels/test_moe_tp.py",
+      "size": 6477
+    },
+    {
+      "path": "tests/kernels/test_mxfp4_simt_sm120.py",
+      "size": 876
+    },
+    {
+      "path": "tests/kernels/test_nvfp4_decode_sm120.py",
+      "size": 5784
+    },
+    {
+      "path": "tests/kernels/test_qknorm_rope.py",
+      "size": 13734
+    },
+    {
+      "path": "tests/kernels/test_rmsnorm.py",
+      "size": 27891
+    },
+    {
+      "path": "tests/kernels/test_rmsnorm_gemm.py",
+      "size": 4085
+    },
+    {
+      "path": "tests/kernels/test_rope.py",
+      "size": 13924
+    },
+    {
+      "path": "tests/megakernel/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "tests/megakernel/deps/__init__.py",
+      "size": 1322
+    },
+    {
+      "path": "tests/megakernel/deps/test_chain_mixed_sizes.py",
+      "size": 11148
+    },
+    {
+      "path": "tests/megakernel/deps/test_diamond_dependency.py",
+      "size": 11981
+    },
+    {
+      "path": "tests/megakernel/deps/test_many_to_one_tile_ratio.py",
+      "size": 10881
+    },
+    {
+      "path": "tests/megakernel/deps/test_one_to_many_tile_ratio.py",
+      "size": 10754
+    },
+    {
+      "path": "tests/megakernel/deps/test_one_to_one_same_size.py",
+      "size": 9509
+    },
+    {
+      "path": "tests/megakernel/deps/test_tile_size_ratios.py",
+      "size": 12636
+    },
+    {
+      "path": "tests/megakernel/support.py",
+      "size": 331
+    },
+    {
+      "path": "tests/megakernel/support_tma.py",
+      "size": 3007
+    },
+    {
+      "path": "tests/megakernel/test_autograd.py",
+      "size": 2556
+    },
+    {
+      "path": "tests/megakernel/test_cluster_launch_control.py",
+      "size": 11376
+    },
+    {
+      "path": "tests/megakernel/test_communicate.py",
+      "size": 37353
+    },
+    {
+      "path": "tests/megakernel/test_cute_tensor_params.py",
+      "size": 11730
+    },
+    {
+      "path": "tests/megakernel/test_decode_pipeline_framework.py",
+      "size": 36705
+    },
+    {
+      "path": "tests/megakernel/test_fused_rmsnorm_rope.py",
+      "size": 4325
+    },
+    {
+      "path": "tests/megakernel/test_integration_gpu.py",
+      "size": 46308
+    },
+    {
+      "path": "tests/megakernel/test_megakernel.py",
+      "size": 8259
+    },
+    {
+      "path": "tests/megakernel/test_mul_add_smem_ops.py",
+      "size": 8879
+    },
+    {
+      "path": "tests/megakernel/test_multipage_alloc.py",
+      "size": 16586
+    },
+    {
+      "path": "tests/megakernel/test_ops.py",
+      "size": 89874
+    },
+    {
+      "path": "tests/megakernel/test_persistent_kernel.py",
+      "size": 5358
+    },
+    {
+      "path": "tests/megakernel/test_qwen_mxfp4_ops.py",
+      "size": 28079
+    },
+    {
+      "path": "tests/megakernel/test_tma_megakernel.py",
+      "size": 25981
+    },
+    {
+      "path": "tests/megakernel/test_tracing.py",
+      "size": 611
+    },
+    {
+      "path": "tests/support.py",
+      "size": 575
+    },
+    {
+      "path": "tests/test_benchmark_utils.py",
+      "size": 1571
+    },
+    {
+      "path": "traces/qwen_bwd_overlap_s32.json",
+      "size": 89
+    },
+    {
+      "path": "traces/qwen_fwd_overlap_s64.json",
+      "size": 89
+    }
+  ],
+  "recent_commits": [],
+  "readme": "# Machete\n\nMachete is a CuTe DSL kernel framework for building persistent GPU kernels from small, composable ops. An op declares tensors, tiling, and optional `load` / `compute` / `store` phases; the framework builds one instruction stream, schedules tiles across SMs, and manages shared-memory pages, barriers, TMA descriptors, and launch plumbing.\n\n## Core Ideas\n\n- **Ops stay local.** Each op owns its math and tensor interface.\n- **The framework owns replay.** Tile scheduling, dependencies, page allocation, barriers, and TMA metadata are prepared once for the whole megakernel.\n- **Streaming is explicit.** `PipelineSpec.streaming(...)` declares a load/compute/store page ring for ops that can overlap data movement with compute.\n\n## Install\n\n```bash\npip install machete\n```\n\nRequires NVIDIA CuTe DSL / CUTLASS and a Hopper or Blackwell GPU.\n\n## Basic Use\n\n```python\nimport torch\nfrom machete.megakernel import Megakernel\nfrom machete.kernels.gemm import GemmOp\n\nx = torch.randn(16, 1024, device=\"cuda\", dtype=torch.bfloat16)\nw = torch.randn(1024, 1024, device=\"cuda\", dtype=torch.bfloat16)\ny = torch.empty(16, 1024, device=\"cuda\", dtype=torch.bfloat16)\n\nops = GemmOp.schedule(a=x, b=w, c=y)\nkernel = Megakernel(ops)\nkernel.run()\n```\n\n## Defining An Op\n\n```python\nimport cutlass.cute as cute\nfrom cutlass import Float32, Int32\nfrom machete.megakernel import Op\n\nclass ScaleOp(Op):\n    reads = {\"x\": (None, (\"N\",))}\n    writes = {\"y\": (None, (\"N\",))}\n    tile = (\"N\",)\n\n    @classmethod\n    def schedule(cls, *, x, y, tile_n=256):\n        return [cls._schedule_single(tile_sizes={\"N\": tile_n}, x=x, y=y)]\n\n    @cute.jit\n    def compute(self, page_ptr, tile_N, x, y):\n        tidx = cute.arch.thread_idx()[0]\n        start = tile_N * Int32(self.tile_size_N)\n        i = tidx\n        while i < Int32(self.tile_size_N) and start + i < Int32(self.N):\n            y.iterator[start + i] = (x.iterator[start + i].to(Float32) * Float32(2.0)).to(self.y_dtype)\n            i = i + Int32(self.threads_per_row)\n```\n\n## Streaming Ops\n\nFor ops that benefit from load/compute/store overlap, declare a streaming pipeline and implement the phases. The op describes the resources; the framework decides how to replay phases safely.\n\n```python\nfrom machete.megakernel import Op, PipelineSpec\n\nclass StreamingOp(Op):\n    pipeline = PipelineSpec.streaming(\n        input_stages=3,\n        output_stages=3,\n        stage_pages=4,\n        page_bytes=16 * 1024,\n    )\n\n    # Optional phase methods:\n    # def load(...):    issue async loads into the current page/stage\n    # def compute(...): consume staged data\n    # def store(...):   write staged output\n```\n\n## Built-In Areas\n\n- Attention kernels for SM100/SM120.\n- GEMM, RMSNorm, RoPE, GLU, MoE, and cross entropy ops.\n- Decode-oriented Qwen 3.5 SM120/MXFP4 kernels.\n- Autograd helpers for composing megakernel-backed modules.\n- Trace export helpers for profiling persistent-kernel replay.\n\n## Development\n\nRun tests through the project environment:\n\n```bash\nenv PYTHONPATH=. venvmachete/bin/python -m pytest tests/megakernel -q\n```\n\n## License\n\nApache 2.0\n"
+}

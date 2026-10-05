@@ -1,0 +1,5 @@
+[PV] 合成数据：P[16,256]、V[256,256]，[-8,8] 小整数（bf16 精确；K=256 的累加和 < 2^24 无舍入）
+[PV] 预测配方（与 kernel 共用同一组常量）：A(P) T0 {mStep=1, kStep=16, srcStride=1, dstStride=1}；B(V) T1 {mStep=16, kStep=8, srcStride=16, dstStride=16}
+[PV]   Nd2Nz: A nValue=16/dValue=256/srcDValue=256/dstNzC0Stride=16；B nValue=256/dValue=128(N_TILE)/srcDValue=256(nTotal)/dstNzC0Stride=256；mmad m=16 n=128 k=256
+[PV][baddst] 对照（**故意错误**）：B 装载 dstStride 用 16（BMM1 的元组 K/16）而非 L0B 的 n 分形数 8
+[PV][FAIL] sync err 507015

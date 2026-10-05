@@ -1,0 +1,739 @@
+{
+  "repository": "RightNow-AI/AutoMegaKernel",
+  "url": "https://github.com/RightNow-AI/AutoMegaKernel",
+  "created_at": "2026-06-08T16:08:59Z",
+  "pushed_at": "2026-09-18T00:01:25Z",
+  "branch": "main",
+  "license": "MIT",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".claude/agents/amk-megakernel-optimizer.md",
+      "size": 6548
+    },
+    {
+      "path": ".claude/commands/amk-autoresearch.md",
+      "size": 2807
+    },
+    {
+      "path": ".claude/commands/amk-compile.md",
+      "size": 2339
+    },
+    {
+      "path": ".claude/commands/amk-optimize.md",
+      "size": 2728
+    },
+    {
+      "path": ".claude/goals/optimize-megakernel.md",
+      "size": 4277
+    },
+    {
+      "path": ".claude/skills/megakernel-optimization/SKILL.md",
+      "size": 7024
+    },
+    {
+      "path": ".claude/workflows/megakernel-autoresearch.js",
+      "size": 5982
+    },
+    {
+      "path": ".gitattributes",
+      "size": 295
+    },
+    {
+      "path": ".github/FUNDING.yml",
+      "size": 181
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "size": 1598
+    },
+    {
+      "path": ".gitignore",
+      "size": 1498
+    },
+    {
+      "path": ".mcp.json",
+      "size": 145
+    },
+    {
+      "path": ".python-version",
+      "size": 5
+    },
+    {
+      "path": "AGENTS.md",
+      "size": 8131
+    },
+    {
+      "path": "BASELINES.md",
+      "size": 8913
+    },
+    {
+      "path": "CHANGELOG.md",
+      "size": 4494
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 2607
+    },
+    {
+      "path": "DATACENTER_RESULTS.md",
+      "size": 14728
+    },
+    {
+      "path": "EXPERIMENTS.md",
+      "size": 45662
+    },
+    {
+      "path": "HARDENING.md",
+      "size": 3815
+    },
+    {
+      "path": "HARNESS.md",
+      "size": 27155
+    },
+    {
+      "path": "LICENSE",
+      "size": 1068
+    },
+    {
+      "path": "README.md",
+      "size": 15945
+    },
+    {
+      "path": "SECURITY.md",
+      "size": 1367
+    },
+    {
+      "path": "amk_cli.py",
+      "size": 18154
+    },
+    {
+      "path": "amk_mcp.py",
+      "size": 16733
+    },
+    {
+      "path": "amk_orchestrate.py",
+      "size": 19562
+    },
+    {
+      "path": "assets/automegakernel-social.png",
+      "size": 415297
+    },
+    {
+      "path": "autoresearch.py",
+      "size": 51831
+    },
+    {
+      "path": "compile.py",
+      "size": 17125
+    },
+    {
+      "path": "conftest.py",
+      "size": 917
+    },
+    {
+      "path": "docs/AGENT_HARNESS.md",
+      "size": 14839
+    },
+    {
+      "path": "docs/GEMV_OPTIMIZATION_PLAN.md",
+      "size": 38301
+    },
+    {
+      "path": "docs/IR_SPEC.md",
+      "size": 21624
+    },
+    {
+      "path": "dynamism/__init__.py",
+      "size": 322
+    },
+    {
+      "path": "eval/__init__.py",
+      "size": 1490
+    },
+    {
+      "path": "eval/baselines.py",
+      "size": 30289
+    },
+    {
+      "path": "eval/bench.py",
+      "size": 9226
+    },
+    {
+      "path": "eval/bench_baselines.py",
+      "size": 7680
+    },
+    {
+      "path": "eval/bench_cpasync_gemv.py",
+      "size": 9345
+    },
+    {
+      "path": "eval/bench_fat_tile_gemv.py",
+      "size": 14050
+    },
+    {
+      "path": "eval/bench_quant.py",
+      "size": 9659
+    },
+    {
+      "path": "eval/bench_r2_perf.py",
+      "size": 13398
+    },
+    {
+      "path": "eval/oracle.py",
+      "size": 13265
+    },
+    {
+      "path": "eval/peak_bandwidth.py",
+      "size": 8157
+    },
+    {
+      "path": "eval/perplexity.py",
+      "size": 8049
+    },
+    {
+      "path": "eval/roofline.py",
+      "size": 9260
+    },
+    {
+      "path": "examples/run_hf_model.py",
+      "size": 8919
+    },
+    {
+      "path": "flywheel/__init__.py",
+      "size": 231
+    },
+    {
+      "path": "flywheel/corpus.jsonl",
+      "size": 26845
+    },
+    {
+      "path": "flywheel/log.py",
+      "size": 4577
+    },
+    {
+      "path": "flywheel/prior.py",
+      "size": 22482
+    },
+    {
+      "path": "flywheel/record_datacenter.py",
+      "size": 2073
+    },
+    {
+      "path": "forge/.gitignore",
+      "size": 19
+    },
+    {
+      "path": "forge/__init__.py",
+      "size": 3500
+    },
+    {
+      "path": "forge/_scratch/adv_remeasure.json",
+      "size": 1970
+    },
+    {
+      "path": "forge/_scratch/adv_verdict.txt",
+      "size": 698
+    },
+    {
+      "path": "forge/_scratch/adversarial_remeasure.py",
+      "size": 12846
+    },
+    {
+      "path": "forge/_scratch/probe_latency_proto.py",
+      "size": 7109
+    },
+    {
+      "path": "forge/_scratch/run_profile_5090.out",
+      "size": 5088
+    },
+    {
+      "path": "forge/_scratch/run_profile_5090.py",
+      "size": 6819
+    },
+    {
+      "path": "forge/_scratch/run_profile_5090_v2.out",
+      "size": 5931
+    },
+    {
+      "path": "forge/_scratch/validate_advisor.py",
+      "size": 12611
+    },
+    {
+      "path": "forge/gpu_model.py",
+      "size": 19507
+    },
+    {
+      "path": "forge/gpu_model_rtx5090.json",
+      "size": 7437
+    },
+    {
+      "path": "forge/gpu_profiler.py",
+      "size": 28004
+    },
+    {
+      "path": "forge/kernel_advisor.py",
+      "size": 9239
+    },
+    {
+      "path": "generate.py",
+      "size": 14631
+    },
+    {
+      "path": "harness.py",
+      "size": 44271
+    },
+    {
+      "path": "instructions/__init__.py",
+      "size": 86
+    },
+    {
+      "path": "instructions/_build.py",
+      "size": 7255
+    },
+    {
+      "path": "instructions/cuda/add.cu",
+      "size": 3053
+    },
+    {
+      "path": "instructions/cuda/attention_tile.cu",
+      "size": 8741
+    },
+    {
+      "path": "instructions/cuda/embed.cu",
+      "size": 3080
+    },
+    {
+      "path": "instructions/cuda/gemv_tile.cu",
+      "size": 6744
+    },
+    {
+      "path": "instructions/cuda/rmsnorm.cu",
+      "size": 4580
+    },
+    {
+      "path": "instructions/cuda/rope.cu",
+      "size": 5096
+    },
+    {
+      "path": "instructions/cuda/silu_mul.cu",
+      "size": 3217
+    },
+    {
+      "path": "instructions/gen.py",
+      "size": 8852
+    },
+    {
+      "path": "instructions/reference.py",
+      "size": 25430
+    },
+    {
+      "path": "instructions/triton/__init__.py",
+      "size": 4160
+    },
+    {
+      "path": "instructions/verify_inst.py",
+      "size": 14104
+    },
+    {
+      "path": "loop1.py",
+      "size": 11293
+    },
+    {
+      "path": "models/__init__.py",
+      "size": 59
+    },
+    {
+      "path": "models/toy.py",
+      "size": 5792
+    },
+    {
+      "path": "paper/results/a100.json",
+      "size": 22358
+    },
+    {
+      "path": "paper/results/agent_in_the_loop.json",
+      "size": 4241
+    },
+    {
+      "path": "paper/results/autoresearch_measured.json",
+      "size": 11178
+    },
+    {
+      "path": "paper/results/coverage.json",
+      "size": 10697
+    },
+    {
+      "path": "paper/results/cpasync_gemv.json",
+      "size": 1975
+    },
+    {
+      "path": "paper/results/fat_tile_gemv.json",
+      "size": 6986
+    },
+    {
+      "path": "paper/results/flywheel_learning.json",
+      "size": 20551
+    },
+    {
+      "path": "paper/results/full_a100.json",
+      "size": 5053
+    },
+    {
+      "path": "paper/results/full_h100.json",
+      "size": 5055
+    },
+    {
+      "path": "paper/results/h100.json",
+      "size": 22906
+    },
+    {
+      "path": "paper/results/int8_l4_trajectory.json",
+      "size": 7532
+    },
+    {
+      "path": "paper/results/int8_pos_l4_2.7B.json",
+      "size": 4523
+    },
+    {
+      "path": "paper/results/int8_scale_a100.json",
+      "size": 55906
+    },
+    {
+      "path": "paper/results/int8_scale_a10g.json",
+      "size": 37451
+    },
+    {
+      "path": "paper/results/int8_scale_datacenter.json",
+      "size": 21781
+    },
+    {
+      "path": "paper/results/int8_scale_h100.json",
+      "size": 63255
+    },
+    {
+      "path": "paper/results/int8_scale_l4.json",
+      "size": 37432
+    },
+    {
+      "path": "paper/results/int8_scale_l40s.json",
+      "size": 19829
+    },
+    {
+      "path": "paper/results/int8_scale_t4.json",
+      "size": 18807
+    },
+    {
+      "path": "paper/results/int8_search.json",
+      "size": 2109
+    },
+    {
+      "path": "paper/results/int8_search_datacenter.json",
+      "size": 3553
+    },
+    {
+      "path": "paper/results/int8_search_multisize.json",
+      "size": 4405
+    },
+    {
+      "path": "paper/results/int8_vs_cublas.json",
+      "size": 1511
+    },
+    {
+      "path": "paper/results/int8_vs_cublas_datacenter.json",
+      "size": 2021
+    },
+    {
+      "path": "paper/results/local_5090.json",
+      "size": 46307
+    },
+    {
+      "path": "paper/results/overnight_a100.json",
+      "size": 2135
+    },
+    {
+      "path": "paper/results/overnight_h100.json",
+      "size": 2135
+    },
+    {
+      "path": "paper/results/perf_pinned_a100.json",
+      "size": 23440
+    },
+    {
+      "path": "paper/results/perf_pinned_h100.json",
+      "size": 23414
+    },
+    {
+      "path": "paper/results/pro_a100.json",
+      "size": 14061
+    },
+    {
+      "path": "paper/results/pro_h100.json",
+      "size": 14052
+    },
+    {
+      "path": "paper/results/quality.json",
+      "size": 3427
+    },
+    {
+      "path": "paper/results/quant_decode.json",
+      "size": 1538
+    },
+    {
+      "path": "paper/results/r2_vm_perf.json",
+      "size": 4199
+    },
+    {
+      "path": "paper/results/search.json",
+      "size": 157891
+    },
+    {
+      "path": "paper/results/self_improvement.json",
+      "size": 3711
+    },
+    {
+      "path": "paper/results/validator_soundness.json",
+      "size": 34146
+    },
+    {
+      "path": "paper/results/vm_autotune.json",
+      "size": 9763
+    },
+    {
+      "path": "paper/results/vs_cublas_10min.json",
+      "size": 1990
+    },
+    {
+      "path": "program.md",
+      "size": 33142
+    },
+    {
+      "path": "proposer.py",
+      "size": 3642
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 5431
+    },
+    {
+      "path": "schedule/__init__.py",
+      "size": 95
+    },
+    {
+      "path": "schedule/cost_model.py",
+      "size": 27608
+    },
+    {
+      "path": "schedule/graph.py",
+      "size": 29337
+    },
+    {
+      "path": "schedule/ir.py",
+      "size": 61253
+    },
+    {
+      "path": "schedule/lower.py",
+      "size": 35252
+    },
+    {
+      "path": "schedule/quantize.py",
+      "size": 12264
+    },
+    {
+      "path": "schedule/search.py",
+      "size": 22051
+    },
+    {
+      "path": "schemas/schedule_config.schema.json",
+      "size": 7278
+    },
+    {
+      "path": "tests/test_abi_sync.py",
+      "size": 3419
+    },
+    {
+      "path": "tests/test_autoresearch.py",
+      "size": 5081
+    },
+    {
+      "path": "tests/test_baselines.py",
+      "size": 8410
+    },
+    {
+      "path": "tests/test_compile.py",
+      "size": 2178
+    },
+    {
+      "path": "tests/test_cuda_autotune.py",
+      "size": 6372
+    },
+    {
+      "path": "tests/test_cuda_bf16.py",
+      "size": 9659
+    },
+    {
+      "path": "tests/test_cuda_decode.py",
+      "size": 6944
+    },
+    {
+      "path": "tests/test_cuda_fp16.py",
+      "size": 11728
+    },
+    {
+      "path": "tests/test_cuda_int4.py",
+      "size": 9833
+    },
+    {
+      "path": "tests/test_cuda_perf.py",
+      "size": 5855
+    },
+    {
+      "path": "tests/test_cuda_vm.py",
+      "size": 8438
+    },
+    {
+      "path": "tests/test_eval.py",
+      "size": 24271
+    },
+    {
+      "path": "tests/test_floor_guard.py",
+      "size": 4082
+    },
+    {
+      "path": "tests/test_fused.py",
+      "size": 3094
+    },
+    {
+      "path": "tests/test_generate.py",
+      "size": 6414
+    },
+    {
+      "path": "tests/test_harness.py",
+      "size": 7990
+    },
+    {
+      "path": "tests/test_hf_checkpoint.py",
+      "size": 9757
+    },
+    {
+      "path": "tests/test_hf_import.py",
+      "size": 7753
+    },
+    {
+      "path": "tests/test_ir_smoke.py",
+      "size": 3630
+    },
+    {
+      "path": "tests/test_lower.py",
+      "size": 8326
+    },
+    {
+      "path": "tests/test_mcp_server.py",
+      "size": 9174
+    },
+    {
+      "path": "tests/test_overnight.py",
+      "size": 4248
+    },
+    {
+      "path": "tests/test_persist_decode.py",
+      "size": 12702
+    },
+    {
+      "path": "tests/test_quantize.py",
+      "size": 10603
+    },
+    {
+      "path": "tests/test_robustness.py",
+      "size": 3539
+    },
+    {
+      "path": "tests/test_search.py",
+      "size": 16263
+    },
+    {
+      "path": "tests/test_validator_races.py",
+      "size": 10315
+    },
+    {
+      "path": "uv.lock",
+      "size": 368448
+    },
+    {
+      "path": "vm/__init__.py",
+      "size": 79
+    },
+    {
+      "path": "vm/abi.h",
+      "size": 14542
+    },
+    {
+      "path": "vm/amk_persist.cuh",
+      "size": 3284
+    },
+    {
+      "path": "vm/amk_vm.cuh",
+      "size": 3388
+    },
+    {
+      "path": "vm/autotune.py",
+      "size": 13627
+    },
+    {
+      "path": "vm/loader.py",
+      "size": 54502
+    },
+    {
+      "path": "vm/loader_persist.py",
+      "size": 13262
+    },
+    {
+      "path": "vm/ops.cuh",
+      "size": 111208
+    },
+    {
+      "path": "vm/pages.cu",
+      "size": 1090
+    },
+    {
+      "path": "vm/pages.cuh",
+      "size": 7616
+    },
+    {
+      "path": "vm/reference_vm.py",
+      "size": 6479
+    },
+    {
+      "path": "vm/scheduler.cu",
+      "size": 7581
+    },
+    {
+      "path": "vm/scheduler_persist.cu",
+      "size": 15878
+    },
+    {
+      "path": "vm/sync.cu",
+      "size": 1295
+    },
+    {
+      "path": "vm/sync.cuh",
+      "size": 6393
+    },
+    {
+      "path": "vm/verify_vm.py",
+      "size": 8163
+    },
+    {
+      "path": "vm/vm_ext.cpp",
+      "size": 10901
+    },
+    {
+      "path": "vm/vm_ext_persist.cpp",
+      "size": 4459
+    }
+  ],
+  "recent_commits": [],
+  "readme": "<p align=\"center\">\n  <img src=\"assets/automegakernel-social.png\" alt=\"AutoMegaKernel: a statically-checked agent harness for self-retargeting megakernel synthesis\" width=\"840\">\n</p>\n\n# AutoMegaKernel (AMK)\n\n> **A general agent harness for GPU megakernel synthesis.** A coding agent (Claude Code / Codex)\n> drives AMK to compile a model into one **provably-correct**, self-retargeting megakernel, the\n> whole forward pass fused into a single persistent launch, then self-tunes it, and it gets better\n> every time it runs.\n\n**Repo:** https://github.com/RightNow-AI/AutoMegaKernel &nbsp;·&nbsp; **License:** MIT &nbsp;·&nbsp; the open research harness ([Enterprise / Forge](#enterprise))\n\n```bash\namk compile <model> --gpu <arch> --regime single-stream\n# imports -> lowers -> validates (deadlock + race free) -> verifies vs eager -> builds the GPU\n# megakernel -> measures it against the HBM roofline -> emits a correct megakernel + report\n```\n\nAMK is the sibling of [AutoKernel](https://github.com/RightNow-AI/autokernel): AutoKernel\nauto-generates the single best *kernel*; AMK auto-generates the single best whole-model\n*megakernel*. It inherits AutoKernel's autoresearch loop (propose → fixed eval → keep/revert, for\nhours, unattended) and adds a new search axis: **the schedule**.\n\n> **Coverage today:** the HuggingFace Llama family on CUDA (sm\\_75 to sm\\_120).\n> **Roadmap (future work):** generalizing the importer and backends to more architectures,\n> languages, and targets. The harness (validator, oracle, search loop) is not model-specific; the\n> agent is what supplies that generality, and broadening it is the central direction of the work.\n\n---\n\n## Results: int8 beats cuBLAS across the inference fleet\n\nAMK's auto-tuned **int8** (W8A16, near-lossless) megakernel **beats CUDA-graphed cuBLAS bf16** at\nbatch-1 decode across NVIDIA's datacenter **inference-class** GPUs, found autonomously by AMK's own\nsearch and correctness-gated (argmax-exact). Ratio = cuBLAS / AMK, so **> 1 means AMK is faster.**\n\n| GPU | Class | int8 vs cuBLAS bf16 (best) | Verdict |\n|---|---|---:|---|\n| **L4** (sm_89, 300 GB/s) | inference | **1.18× → 1.33×** (1.3B→4B) | ✅ wins, grows with size |\n| **L40S** (sm_89, 864 GB/s) | inference flagship | **1.25× → 1.27×** (4B→6.7B) | ✅ wins |\n| **A10G** (sm_86, 600 GB/s) | inference | **1.04× → 1.08×** (≥3.5B) | ✅ wins at scale |\n| **RTX 5090** (sm_120) | consumer (local) | **1.19× → 1.23×** | ✅ wins |\n| A100 (sm_80, 1.4 TB/s) | training | 0.79× → 0.55× (1.3B→13B) | ✗ trails (declines w/ size) |\n| H100 (sm_90, 3.1 TB/s) | training | 0.72× → 0.60× | ✗ trails |\n\nInference / datacenter GPUs measured on **Modal** (reproducible; file-backed in\n`paper/results/int8_scale_*.json`). RTX 5090 measured **locally** (`int8_search_multisize.json`;\nModal has no RTX 5090 silicon, so it is not in the Modal sweep).\n\n**What governs the win is the inference-class vs. training-class regime, not bandwidth ordering:**\nthe 864 GB/s L40S wins by *more* than the 600 GB/s A10G. AMK reads ~half the weight bytes (int8), and\nthat advantage has to overcome a *fixed* per-tile cross-SM sync; larger, GEMV-dominated models amortize\nthat fixed cost. The training-class A100/H100 never cross (the ratio *declines* with size, the\nfingerprint of the sync deficit; a `cp.async` int8-GEMV probe even regressed to 0.82× on A100,\nconfirming cross-SM sync, not load latency, is the binder). The win is batch-1, pos-0 / low-context.\nFull data and analysis: [`DATACENTER_RESULTS.md`](DATACENTER_RESULTS.md).\n\n### The equal-precision gap (stated plainly)\n\nOn the **like-for-like bf16** path AMK *trails* cuBLAS. On a 622.9 MB model the bf16 kernel runs at\n**~1.38 ms/token, ~1.24× slower** than CUDA-graphed cuBLAS; the optimized bf16 GEMV sustains **~451 GB/s\n= ~51% of spec / ~63% of measured HBM peak** (cuBLAS ceiling ~90%). The int8 win therefore comes from\nstreaming fewer bytes, not from a faster kernel; the int8 kernel on the same model is ~1.22 ms/token\n(~1.09× slower than cuBLAS bf16). The remaining lever is a bandwidth-saturating `cp.async` GEMV with\ncoarser cross-SM sync, a kernel-quality push rather than a redesign, and the correctness-bearing\narchitecture that makes that safe and automatic is already in place. We do **not** beat cuBLAS/vLLM at\nbf16 batch-1, and we say so. Reproduce (GPU): `uv run pytest tests/test_cuda_perf.py`; the 10-minute\nself-improving run: `uv run python amk_cli.py autoresearch small --gpu rtx5090 --minutes 10`.\n\n---\n\n## What's built and measured\n\n- **The whole forward pass runs as one cooperative kernel launch.** The persistent megakernel (one\n  threadblock per SM, counter-synchronized) executes a full Llama-style decode and matches eager\n  PyTorch **and** the CPU reference VM to ~1e-7 (fp32) / bf16 tolerance.\n- **Self-retargeting, measured on three architectures.** The *same source* built and ran a correct\n  megakernel on **sm_120 (RTX 5090)**, **sm_80 (A100)**, and **sm_90 (H100)**, with the nvcc gencode\n  derived from the live device (the H100 ran a 3 GB / 3202-task Llama-1B-shaped decode correctly).\n  See [`DATACENTER_RESULTS.md`](DATACENTER_RESULTS.md).\n- **Multi-token generation that matches eager.** AMK greedily decodes a *sequence*, threading a\n  persistent KV cache across steps; the generated token ids are identical to eager greedy decode.\n  Reproduce: `uv run amk generate toy --gpu rtx5090 --prompt-ids \"1,2,3\" --max-tokens 32 --verify`.\n- **A real trained checkpoint, end-to-end.** AMK imports `HuggingFaceTB/SmolLM2-135M` (real weights +\n  tokenizer) and reproduces HuggingFace's own greedy `generate` token-for-token. Reproduce:\n  `uv run python examples/run_hf_model.py` (also `tests/test_hf_checkpoint.py`).\n- **A statically-checked schedule validator.** Across 7,160 adversarial schedules the validator had\n  **zero false-accepts**; an unsafe agent-proposed schedule is `REJECTED` at validation time instead of\n  hanging the GPU.\n- **A native coding-agent harness.** Drivable by any coding agent (Claude Code / Codex) through one\n  structured edit surface: MCP server + Claude Code skill/commands/subagent/workflow + Codex\n  `AGENTS.md`. See [`docs/AGENT_HARNESS.md`](docs/AGENT_HARNESS.md) and [`HARNESS.md`](HARNESS.md).\n- **A 10-minute unattended autoresearch run** self-improves the megakernel **1.47×** over its own\n  starting schedule.\n- **98 tests green** (`uv run pytest`): 78 pass on CPU; 20 CUDA tests auto-skip without a GPU.\n\n---\n\n## Why a megakernel\n\nSingle-stream decode is **bandwidth-bound**: each token must stream the whole weight set through the\nSMs once. The theoretical floor is `weights_bytes / HBM_bandwidth`. A normal PyTorch / cuBLAS execution\nlaunches *one kernel per op* and round-trips activations through HBM between every op, paying launch\nlatency and a memory bubble dozens of times per layer.\n\nA **megakernel** launches **once**, keeps the persistent threadblocks resident on every SM, and walks\nthe model's dependency graph in-place: activations live in on-chip pages, the next layer's weights are\nprefetched while the current layer computes, and there is no kernel-launch bubble between ops. The win\nregime is **single-stream / low-batch decode latency**: voice, realtime, agentic loops. We do **not**\nclaim to beat throughput-optimized serving at high batch; that is compute-bound and not this fight.\n\n## How it works\n\nGeneration is **confined inside a verified structure**, so correctness is a property of the\narchitecture, not of the model output.\n\n### Four layers\n\n| Layer | Role | Trust model |\n|------:|------|-------------|\n| **0: VM** ([`vm/`](vm/)) | Persistent kernel: per-SM scheduler loop, page-based scratchpad, counter-based sync. Launched once, runs the whole forward pass. | Trusted base. Hand-written, exhaustively verified, **frozen** per arch. |\n| **1: Instructions** ([`instructions/`](instructions/)) | ABI-conformant micro-kernels (gemv/gemm tile, attention tile, RMSNorm, RoPE, SwiGLU, dequant…). Triton for iteration, CUDA for max perf. | Each is correctness-checked vs its reference op **in isolation** before it can enter a megakernel. |\n| **2: Scheduler** ([`schedule/`](schedule/)) | `HF model → graph IR → tiled task-DAG → instruction stream + page allocation`. Cost-model explore + on-hardware exploit. | The research core. Proposes points in a search space the VM realizes **safely**. |\n| **3: Dynamism** ([`dynamism/`](dynamism/)) | Shape-parametric tiles + in-kernel dispatch: continuous batching, dynamic shapes, MoE routing. | The relevance gate for real serving. (Roadmap: placeholder package.) |\n\n### Deadlock-freedom by construction\n\nA forward pass is a **DAG**. Producers only *increment* counters; consumers only *wait* on\nstatically-known thresholds; execution is a topological walk with monotonic counters: no locks, no\narbitrary signalling. **The VM refuses to load any schedule that is not a valid DAG**: an invalid\nschedule becomes a clean `REJECTED` at validation time instead of a hung GPU. This is what makes\nauto-generated schedules safe to run unattended.\n\n### Two autoresearch loops\n\n- **Loop 1, Instruction optimization** (this *is* AutoKernel): edit one ABI-conformant micro-kernel,\n  isolated correctness-then-latency eval (~seconds), keep/revert. A wrong instruction fails its own\n  unit test; no persistent kernel, no hang.\n- **Loop 2, Schedule optimization** (the new loop): the agent's edit surface is the **schedule IR**, a\n  structured object `{tiling, fusion_grouping, sm_assignment, pipelining_depth, page_allocation}` plus\n  kernel knobs, *not* megakernel code. The frozen VM deterministically lowers it; every proposal is\n  statically DAG-validated **before launch**. The full contract is in [`HARNESS.md`](HARNESS.md).\n\n## The four properties (the product spec)\n\n1. **Generality**: one command compiles a model into a verified megakernel with zero per-model\n   hand-written CUDA (today: the HF Llama family; broadening coverage is the roadmap).\n2. **Self-retargeting**: when new silicon ships, AMK retargets in *days* via search + on-hardware\n   verification. Already measured across sm_120 / sm_80 / sm_90. This is the moat.\n3. **A standard IR**: AMK owns the canonical megakernel IR: the SM-level task-DAG, the instruction\n   ABI, the schedule format. See [`docs/IR_SPEC.md`](docs/IR_SPEC.md), [`schedule/ir.py`](schedule/ir.py), [`vm/abi.h`](vm/abi.h).\n4. **A data flywheel**: every run logs `(model, gpu, schedule, instruction, measured result)`; that\n   corpus trains a learned prior so every future run starts smarter.\n\n## Native coding-agent integration\n\nAMK exposes the verified loop substrate *natively* to coding agents, with the same behavior and the\nsame honesty rules. The single guide is [`docs/AGENT_HARNESS.md`](docs/AGENT_HARNESS.md).\n\n- **MCP server** ([`amk_mcp.py`](amk_mcp.py)): `amk_doctor` / `amk_propose` / `amk_eval` / `amk_loop` /\n  `amk_autoresearch` / `amk_orchestrate_*`. Enable with `uv sync --extra agent`; register via\n  `.mcp.json` (Claude Code) or `~/.codex/config.toml` (Codex).\n- **Claude Code**: the `megakernel-optimization` skill; the `/amk-optimize`, `/amk-autoresearch`,\n  `/amk-compile` slash commands; the `amk-megakernel-optimizer` subagent; a workflow and a goal under\n  `.claude/`.\n- **Codex**: `AGENTS.md` + the same MCP server.\n\n## Quickstart\n\nAMK installs as a real package (hatchling) and exposes a real `amk` console command. `uv sync`\nprovisions the full environment (torch cu128, numpy, transformers for the HF importer, ninja for the\nCUDA JIT build, pytest); **`uv` is the recommended path.** With pip:\n`pip install \"automegakernel[models,cuda]\"`, note the cu128 torch pin only applies under `uv`, so pip\nusers on Blackwell/sm_120 (or any specific CUDA build) should install the matching torch wheel first,\ne.g. `pip install torch --index-url https://download.pytorch.org/whl/cu128`.\n\n```bash\nuv sync                              # provision the env + install the `amk` command (editable)\n\n# --- No GPU required (works on a fresh CPU-only machine) ---\nuv run pytest                        # full suite (98 tests; 78 on CPU, 20 CUDA auto-skip without a GPU)\namk doctor                           # environment + GPU + nvcc + registered targets\namk eval toy --device cpu            # one structured correctness verdict on the CPU reference VM\n\n# --- Requires a CUDA GPU + nvcc ---\namk compile toy --gpu rtx5090 --regime single-stream                            # model -> verified megakernel + report\namk generate toy --gpu rtx5090 --prompt-ids \"1,2,3\" --max-tokens 32 --verify    # multi-token decode == eager\namk eval toy --gpu rtx5090                                                       # correctness + measured-GPU latency\n```\n\nEvery subcommand is also runnable as `uv run python amk_cli.py <cmd> ...` (identical behavior). A real\ntrained checkpoint runs end-to-end via `uv run python examples/run_hf_model.py`.\n\n## Honesty rules (enforced by the harness, not just stated)\n\n- **Never a latency number without its paired correctness result.** `eval/bench.py` refuses to emit a\n  latency without a verdict from `eval/oracle.py`.\n- Correctness = full-model logit equivalence within tolerance **plus** generated-token agreement vs\n  eager PyTorch over a sequence.\n- Always report **distance to the `weights / HBM_bandwidth` roofline** ([`eval/roofline.py`](eval/roofline.py)).\n- Measured numbers are produced on the hardware named in the flywheel corpus / `results.tsv`; the\n  datacenter numbers in [`DATACENTER_RESULTS.md`](DATACENTER_RESULTS.md) *are* measured. We do not\n  transcribe numbers we did not measure.\n- We are **near-bandwidth-bound nowhere yet** on the bf16 path, and we say so. The honest current\n  claims are: the int8 inference-fleet cuBLAS win, generality, self-retargeting, trust\n  (deadlock + race free by construction), and honest distance-to-roofline.\n\n## Repo layout\n\n```\nvm/            Layer 0, trusted megakernel VM (CUDA) + CPU reference simulator + verify\ninstructions/  Layer 1, ABI-conformant micro-kernels (Triton + CUDA) + generator + verify\nschedule/      Layer 2, graph import, lowering, the STANDARD IR, cost model, search\ndynamism/      Layer 3, continuous batching, dynamic shapes, MoE (roadmap placeholder)\neval/          oracle (logit equivalence) · bench (latency) · baselines · roofline\namk_cli.py     the `amk` console command (doctor/compile/generate/eval/propose/loop/...)\ncompile.py     THE PRODUCT: amk compile <hf-model> --gpu <arch>\ngenerate.py    autoregressive multi-token decode (KV cache threaded across steps)\nharness.py     the coding-agent integration surface (Loop 2, schedule search)\nexamples/      run_hf_model.py, a real HF checkpoint end-to-end (SmolLM2-135M)\ndocs/          IR_SPEC.md (the standard IR) · AGENT_HARNESS.md (agent integration)\nHARNESS.md     the coding-agent harness contract\nDATACENTER_RESULTS.md  measured inference-fleet + sm_80/sm_90 self-retargeting results\nprogram.md     the autonomous-operation brain (run AMK unattended)\nmodels/        self-contained test models (small dense -> MoE)\n```\n\n## Status\n\nThe correctness-bearing core, the GPU megakernel, self-retargeting, multi-token generation, the\nreal-checkpoint path, and the agent harness are all built and measured. The active push is\nkernel-quality perf toward the roofline (see [the gap](#the-equal-precision-gap-stated-plainly)). See\n[`program.md`](program.md) for the roadmap and the autonomous-loop discipline; the IR\n([`schedule/ir.py`](schedule/ir.py), [`docs/IR_SPEC.md`](docs/IR_SPEC.md)) and the instruction ABI\n([`vm/abi.h`](vm/abi.h)) are the two stable contracts everything is built against.\n\n## License\n\nMIT © 2026 RightNow AI\n\n## Enterprise\n\nAutoMegaKernel is our open research harness. For production and enterprise needs we are building\n**Forge**, an internal advanced kernel generator for enterprises. For enterprise requests, contact\n**[jaber@runinfra.ai](mailto:jaber@runinfra.ai)**.\n"
+}

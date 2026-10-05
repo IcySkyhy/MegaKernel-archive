@@ -1,0 +1,142 @@
+# M133 P2-2 取证批：trace=1（kernel 内逐次 printf；挂死档与对照档各一）
+# variant=ctrl_e3rls reps=2 timeout=30s date=2026-10-04T10:54:10+00:00
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 270.3       69                0     / 0             |
+lock_acquired=2026-10-04T10:54:11+00:00
+--- run 1 (timeout 30s) ---
+[probe] mode=tail variant=ctrl_e3rls vi=16 run=1 N=8 handoffs=1 idSame=1 apiV=1 apiE3=1 skipVrel=0 skipE3rel=0 copyForm=0 trace=1 blocks=1
+SUMMARY mode=tail variant=ctrl_e3rls run=1 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+[AIV Block 0/2] [TAIL] aiv=0 it=0 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=0 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=0 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=0 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=1 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=1 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=1 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=1 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=2 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=2 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=2 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=2 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=3 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=3 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=3 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=3 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=4 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=4 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=4 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=4 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=5 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=5 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=5 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=5 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=6 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=6 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=6 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=6 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=7 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=7 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=7 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=7 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=0 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=0 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=0 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=0 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=1 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=1 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=1 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=1 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=2 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=2 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=2 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=2 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=3 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=3 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=3 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=3 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=4 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=4 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=4 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=4 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=5 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=5 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=5 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=5 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=6 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=6 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=6 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=6 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=7 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=7 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=7 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=7 k=0 rlsE3
+exit=0
+--- run 2 (timeout 30s) ---
+[probe] mode=tail variant=ctrl_e3rls vi=16 run=2 N=8 handoffs=1 idSame=1 apiV=1 apiE3=1 skipVrel=0 skipE3rel=0 copyForm=0 trace=1 blocks=1
+SUMMARY mode=tail variant=ctrl_e3rls run=2 N=8 tiles=16 mismatched=0 elems=32768 match=32768 stale=0 zero=0 histOther=0 rc=0
+[AIV Block 0/2] [TAIL] aiv=0 it=0 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=0 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=0 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=0 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=1 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=1 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=1 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=1 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=2 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=2 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=2 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=2 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=3 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=3 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=3 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=3 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=4 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=4 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=4 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=4 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=5 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=5 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=5 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=5 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=6 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=6 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=6 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=6 k=0 rlsE3
+[AIV Block 0/2] [TAIL] aiv=0 it=7 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 0/2] [TAIL] aiv=0 it=7 k=0 rlsV
+[AIV Block 0/2] [TAIL] aiv=0 it=7 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 0/2] [TAIL] aiv=0 it=7 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=0 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=0 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=0 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=0 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=1 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=1 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=1 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=1 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=2 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=2 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=2 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=2 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=3 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=3 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=3 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=3 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=4 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=4 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=4 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=4 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=5 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=5 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=5 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=5 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=6 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=6 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=6 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=6 k=0 rlsE3
+[AIV Block 1/2] [TAIL] aiv=1 it=7 k=0 acqV id=0 apiV=1 skipV=0
+[AIV Block 1/2] [TAIL] aiv=1 it=7 k=0 rlsV
+[AIV Block 1/2] [TAIL] aiv=1 it=7 k=0 acqE3 id=0 apiE3=1 skipE3=0
+[AIV Block 1/2] [TAIL] aiv=1 it=7 k=0 rlsE3
+exit=0

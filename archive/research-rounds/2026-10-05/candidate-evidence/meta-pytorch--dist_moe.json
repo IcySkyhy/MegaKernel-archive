@@ -1,0 +1,571 @@
+{
+  "repository": "meta-pytorch/dist_moe",
+  "url": "https://github.com/meta-pytorch/dist_moe",
+  "created_at": "2026-09-18T23:50:12Z",
+  "pushed_at": "2026-10-04T22:13:26Z",
+  "branch": "main",
+  "license": "BSD-3-Clause",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".github/requirements/ci-cpu.in",
+      "size": 111
+    },
+    {
+      "path": ".github/requirements/ci-cpu.txt",
+      "size": 2335
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "size": 1500
+    },
+    {
+      "path": ".github/workflows/publish_release.yml",
+      "size": 4759
+    },
+    {
+      "path": ".gitignore",
+      "size": 83
+    },
+    {
+      "path": ".pre-commit-config.yaml",
+      "size": 538
+    },
+    {
+      "path": "AGENTS.md",
+      "size": 3540
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "size": 3537
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 2663
+    },
+    {
+      "path": "LICENSE",
+      "size": 1502
+    },
+    {
+      "path": "LICENSES/Apache-2.0.txt",
+      "size": 11357
+    },
+    {
+      "path": "MANIFEST.in",
+      "size": 290
+    },
+    {
+      "path": "NOTICE",
+      "size": 781
+    },
+    {
+      "path": "README.md",
+      "size": 26175
+    },
+    {
+      "path": "dist_moe/__init__.py",
+      "size": 1044
+    },
+    {
+      "path": "dist_moe/_activation_buffer.py",
+      "size": 106242
+    },
+    {
+      "path": "dist_moe/_activation_buffer_offsets.py",
+      "size": 11006
+    },
+    {
+      "path": "dist_moe/_activation_buffer_planner_kernel.py",
+      "size": 60227
+    },
+    {
+      "path": "dist_moe/_blockscaled.py",
+      "size": 161870
+    },
+    {
+      "path": "dist_moe/_blockscaled_ops.py",
+      "size": 34783
+    },
+    {
+      "path": "dist_moe/_blockscaled_weight.py",
+      "size": 1366
+    },
+    {
+      "path": "dist_moe/_buffers.py",
+      "size": 22370
+    },
+    {
+      "path": "dist_moe/_context.py",
+      "size": 2910
+    },
+    {
+      "path": "dist_moe/_execution.py",
+      "size": 29561
+    },
+    {
+      "path": "dist_moe/_postprocess.py",
+      "size": 49269
+    },
+    {
+      "path": "dist_moe/_quantization.py",
+      "size": 7501
+    },
+    {
+      "path": "dist_moe/_routing_metadata.py",
+      "size": 42106
+    },
+    {
+      "path": "dist_moe/_triton_ops.py",
+      "size": 2837
+    },
+    {
+      "path": "dist_moe/_vmm.py",
+      "size": 40373
+    },
+    {
+      "path": "dist_moe/api.py",
+      "size": 153194
+    },
+    {
+      "path": "dist_moe/formats.py",
+      "size": 14038
+    },
+    {
+      "path": "dist_moe/kernels/__init__.py",
+      "size": 301
+    },
+    {
+      "path": "dist_moe/kernels/_cuda_context.py",
+      "size": 1727
+    },
+    {
+      "path": "dist_moe/kernels/_dsl_compat.py",
+      "size": 3089
+    },
+    {
+      "path": "dist_moe/kernels/_environment.py",
+      "size": 2038
+    },
+    {
+      "path": "dist_moe/kernels/_grouped_gemm_config.py",
+      "size": 711
+    },
+    {
+      "path": "dist_moe/kernels/_iket_noop.py",
+      "size": 706
+    },
+    {
+      "path": "dist_moe/kernels/_iket_shim.py",
+      "size": 1410
+    },
+    {
+      "path": "dist_moe/kernels/_jit_cache.py",
+      "size": 351
+    },
+    {
+      "path": "dist_moe/kernels/_kernel_name_prefix.py",
+      "size": 4240
+    },
+    {
+      "path": "dist_moe/kernels/_quack/__init__.py",
+      "size": 539
+    },
+    {
+      "path": "dist_moe/kernels/_quack/copy_utils.py",
+      "size": 4575
+    },
+    {
+      "path": "dist_moe/kernels/_quack/cute_dsl_utils.py",
+      "size": 2304
+    },
+    {
+      "path": "dist_moe/kernels/_quack/cute_tensor.py",
+      "size": 6417
+    },
+    {
+      "path": "dist_moe/kernels/_quack/layout_utils.py",
+      "size": 466
+    },
+    {
+      "path": "dist_moe/kernels/_quack/pipeline.py",
+      "size": 7808
+    },
+    {
+      "path": "dist_moe/kernels/_quack/reduce.py",
+      "size": 10671
+    },
+    {
+      "path": "dist_moe/kernels/_quack/reduction_base.py",
+      "size": 4305
+    },
+    {
+      "path": "dist_moe/kernels/_quack/rmsnorm_config.py",
+      "size": 4589
+    },
+    {
+      "path": "dist_moe/kernels/_quack_compile_utils.py",
+      "size": 1835
+    },
+    {
+      "path": "dist_moe/kernels/_quack_utils.py",
+      "size": 2511
+    },
+    {
+      "path": "dist_moe/kernels/_quant_conversion.py",
+      "size": 16998
+    },
+    {
+      "path": "dist_moe/kernels/_quant_packing.py",
+      "size": 5621
+    },
+    {
+      "path": "dist_moe/kernels/_swiglu_quant.py",
+      "size": 28552
+    },
+    {
+      "path": "dist_moe/kernels/_tensor_views.py",
+      "size": 1495
+    },
+    {
+      "path": "dist_moe/kernels/activation_buffer.py",
+      "size": 9262
+    },
+    {
+      "path": "dist_moe/kernels/activation_buffer_kernel.py",
+      "size": 10595
+    },
+    {
+      "path": "dist_moe/kernels/blockscaled_config.py",
+      "size": 30272
+    },
+    {
+      "path": "dist_moe/kernels/blockscaled_gemm_tiles.py",
+      "size": 52766
+    },
+    {
+      "path": "dist_moe/kernels/blockscaled_grouped_gemm.py",
+      "size": 39690
+    },
+    {
+      "path": "dist_moe/kernels/blockscaled_grouped_gemm_kernel.py",
+      "size": 125346
+    },
+    {
+      "path": "dist_moe/kernels/blockscaled_quantization_common.py",
+      "size": 67607
+    },
+    {
+      "path": "dist_moe/kernels/blockscaled_quantize.py",
+      "size": 194719
+    },
+    {
+      "path": "dist_moe/kernels/chunked_mega_blockscaled_grouped_gemm.py",
+      "size": 74906
+    },
+    {
+      "path": "dist_moe/kernels/chunked_mega_blockscaled_grouped_gemm_kernel.py",
+      "size": 95773
+    },
+    {
+      "path": "dist_moe/kernels/combine_swiglu_quant.py",
+      "size": 40331
+    },
+    {
+      "path": "dist_moe/kernels/config.py",
+      "size": 78654
+    },
+    {
+      "path": "dist_moe/kernels/dispatch_quant.py",
+      "size": 57553
+    },
+    {
+      "path": "dist_moe/kernels/dist_blockscaled_grouped_gemm.py",
+      "size": 101749
+    },
+    {
+      "path": "dist_moe/kernels/dist_blockscaled_grouped_gemm_kernel.py",
+      "size": 152440
+    },
+    {
+      "path": "dist_moe/kernels/dist_grouped_gemm.py",
+      "size": 47315
+    },
+    {
+      "path": "dist_moe/kernels/dist_grouped_gemm_kernel.py",
+      "size": 98932
+    },
+    {
+      "path": "dist_moe/kernels/gemm_warp_roles.py",
+      "size": 52628
+    },
+    {
+      "path": "dist_moe/kernels/grouped_gemm.py",
+      "size": 28613
+    },
+    {
+      "path": "dist_moe/kernels/grouped_gemm_kernel.py",
+      "size": 123657
+    },
+    {
+      "path": "dist_moe/kernels/mega_blockscaled_grouped_gemm.py",
+      "size": 58015
+    },
+    {
+      "path": "dist_moe/kernels/mega_blockscaled_grouped_gemm_kernel.py",
+      "size": 143898
+    },
+    {
+      "path": "dist_moe/kernels/norm/__init__.py",
+      "size": 261
+    },
+    {
+      "path": "dist_moe/kernels/norm/_fused_dw_reduce_and_quant_kernel.py",
+      "size": 5841
+    },
+    {
+      "path": "dist_moe/kernels/norm/_fused_rmsnorm_combine_kernel.py",
+      "size": 44298
+    },
+    {
+      "path": "dist_moe/kernels/norm/_rmsnorm_bwd_kernel.py",
+      "size": 61131
+    },
+    {
+      "path": "dist_moe/kernels/norm/_rmsnorm_common.py",
+      "size": 10391
+    },
+    {
+      "path": "dist_moe/kernels/norm/_rmsnorm_fwd_kernel.py",
+      "size": 21265
+    },
+    {
+      "path": "dist_moe/kernels/norm/_rmsnorm_small_d_bwd_kernel.py",
+      "size": 26604
+    },
+    {
+      "path": "dist_moe/kernels/norm/_rmsnorm_small_d_fwd_kernel.py",
+      "size": 26384
+    },
+    {
+      "path": "dist_moe/kernels/norm/fused_rmsnorm_combine.py",
+      "size": 24762
+    },
+    {
+      "path": "dist_moe/kernels/norm/rmsnorm.py",
+      "size": 30437
+    },
+    {
+      "path": "dist_moe/kernels/params.py",
+      "size": 15254
+    },
+    {
+      "path": "dist_moe/kernels/sm103_blockscaled_helpers.py",
+      "size": 9123
+    },
+    {
+      "path": "dist_moe/kernels/swiglu_epilogue.py",
+      "size": 29938
+    },
+    {
+      "path": "dist_moe/kernels/tile_scheduler.py",
+      "size": 105373
+    },
+    {
+      "path": "dist_moe/kernels/triton/__init__.py",
+      "size": 255
+    },
+    {
+      "path": "dist_moe/kernels/triton/_thread_id.py",
+      "size": 695
+    },
+    {
+      "path": "dist_moe/kernels/triton/annotations.py",
+      "size": 1414
+    },
+    {
+      "path": "dist_moe/kernels/triton/barrier.py",
+      "size": 8489
+    },
+    {
+      "path": "dist_moe/kernels/triton/broadcast_n_reduction.py",
+      "size": 25381
+    },
+    {
+      "path": "dist_moe/kernels/triton/comm_utils.py",
+      "size": 8924
+    },
+    {
+      "path": "dist_moe/kernels/triton/conditional_copy.py",
+      "size": 17600
+    },
+    {
+      "path": "dist_moe/kernels/triton/device_trap.py",
+      "size": 697
+    },
+    {
+      "path": "dist_moe/kernels/triton/dist_dispatch_routing_kernel.py",
+      "size": 36749
+    },
+    {
+      "path": "dist_moe/kernels/triton/fp_math.py",
+      "size": 27043
+    },
+    {
+      "path": "dist_moe/kernels/triton/repr_utils.py",
+      "size": 3556
+    },
+    {
+      "path": "dist_moe/kernels/triton/swiglu.py",
+      "size": 35674
+    },
+    {
+      "path": "dist_moe/kernels/triton_quantization/__init__.py",
+      "size": 261
+    },
+    {
+      "path": "dist_moe/kernels/triton_quantization/blockscaled_quantize.py",
+      "size": 153770
+    },
+    {
+      "path": "dist_moe/kernels/triton_quantization/env.py",
+      "size": 742
+    },
+    {
+      "path": "dist_moe/kernels/triton_quantization/formats.py",
+      "size": 20497
+    },
+    {
+      "path": "dist_moe/kernels/triton_quantization/fp_math.py",
+      "size": 27043
+    },
+    {
+      "path": "dist_moe/kernels/triton_quantization/global_scale.py",
+      "size": 7305
+    },
+    {
+      "path": "dist_moe/kernels/triton_quantization/repr_utils.py",
+      "size": 3556
+    },
+    {
+      "path": "dist_moe/kernels/triton_quantization/tma_utils.py",
+      "size": 3265
+    },
+    {
+      "path": "dist_moe/kernels/weight_borrow.py",
+      "size": 17637
+    },
+    {
+      "path": "docs/bf16_execution.md",
+      "size": 18923
+    },
+    {
+      "path": "docs/bf16_kernel_design.md",
+      "size": 5597
+    },
+    {
+      "path": "docs/memory_planner.md",
+      "size": 14468
+    },
+    {
+      "path": "docs/mxfp8_execution.md",
+      "size": 22334
+    },
+    {
+      "path": "docs/mxfp8_kernel_design.md",
+      "size": 5967
+    },
+    {
+      "path": "docs/nvfp4_execution.md",
+      "size": 10941
+    },
+    {
+      "path": "docs/nvfp4_kernel_design.md",
+      "size": 4204
+    },
+    {
+      "path": "docs/pipeline_activation_slots.md",
+      "size": 7778
+    },
+    {
+      "path": "docs/postprocess.md",
+      "size": 8978
+    },
+    {
+      "path": "docs/vmm.md",
+      "size": 8199
+    },
+    {
+      "path": "docs/wgrad_accumulation.md",
+      "size": 8918
+    },
+    {
+      "path": "examples/_common.py",
+      "size": 5659
+    },
+    {
+      "path": "examples/bf16_training.py",
+      "size": 1507
+    },
+    {
+      "path": "examples/block_scaled_inference.py",
+      "size": 1440
+    },
+    {
+      "path": "examples/memory_planning.py",
+      "size": 472
+    },
+    {
+      "path": "examples/mxfp8_training.py",
+      "size": 1121
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 1748
+    },
+    {
+      "path": "tests/AGENTS.md",
+      "size": 2610
+    },
+    {
+      "path": "tests/test_dist_moe.py",
+      "size": 178933
+    },
+    {
+      "path": "tests/test_dist_moe_vmm.py",
+      "size": 52908
+    },
+    {
+      "path": "tests/test_examples.py",
+      "size": 2890
+    },
+    {
+      "path": "tests/test_package_boundary.py",
+      "size": 19664
+    },
+    {
+      "path": "tests/test_routing_shape_contract.py",
+      "size": 8965
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-10-04T22:10:46Z",
+      "subject": "Initialize FakePG peer-scatter destinations",
+      "url": "https://github.com/meta-pytorch/dist_moe/commit/18b4f4887ab9a97e35193d0921cff51a249202ee"
+    },
+    {
+      "date": "2026-10-03T06:58:38Z",
+      "subject": "Preserve BF16 activation slots through SAC",
+      "url": "https://github.com/meta-pytorch/dist_moe/commit/191b73f32f6bc60610d654618aa889cd7afeb259"
+    },
+    {
+      "date": "2026-10-03T02:06:53Z",
+      "subject": "Initial commit",
+      "url": "https://github.com/meta-pytorch/dist_moe/commit/ab56bced262e60b2bff70dde5cef214d24da4793"
+    }
+  ],
+  "readme": "# Dist-MoE\n\nDist-MoE provides speed-of-light distributed Mixture-of-Experts kernels for\nNVIDIA SM100 and newer GPUs. Its fused communication-compute pipelines combine\ntoken dispatch, grouped expert GEMMs, and token combine for high-throughput\ntraining and inference.\n\nThe `dist_moe` package consumes caller-provided top-k expert IDs and scores,\nand owns the communication buffers, activation planning, scratch memory, and\ngraph-stable PyTorch operations needed to execute routed experts.\n\n## Contents\n\n- [Supported modes](#supported-modes)\n- [Install](#install)\n- [Run the BF16 quickstart](#run-the-bf16-quickstart)\n- [Understand the execution model](#understand-the-execution-model)\n- [Choose a precision and pipeline](#choose-a-precision-and-pipeline)\n- [Plan memory](#plan-memory)\n- [Manage context lifetime](#manage-context-lifetime)\n- [Use graph and checkpoint features](#use-graph-and-checkpoint-features)\n- [Use advanced features](#use-advanced-features)\n- [Public API](#public-api)\n- [Read the detailed guides](#read-the-detailed-guides)\n- [Acknowledgements](#acknowledgements)\n\n<a id=\"supported-modes\"></a>\n## Supported modes\n\n| Precision | Pipeline | Training | Inference |\n| --- | --- | :---: | :---: |\n| BF16 | Standard | Yes | Yes |\n| MXFP8 E4M3 | Staged or Mega | Yes | Yes |\n| NVFP4 | Staged or Mega | No | Yes |\n\nAll supported modes work with non-strict `make_fx`, CUDA graphs, and optional\nVMM host-backed scratch. Training modes include forward and backward.\n\nThe package also supports prepared MXFP8 and NVFP4 weights, device-selected\nactivation slots, plain and clamped SwiGLU, fused post-expert RMSNorm, clip\nstatistics, and optional in-place accumulation into standard\n`parameter.grad` buffers.\n\n<details>\n<summary>Not supported in this release</summary>\n\nFull `torch.compile`, strict export, TLX or hierarchical execution,\nsynchronous block-scaled backends, MXFP8 E5M2, MXFP4, A8W4, NVFP4 training,\nexpert borrowing, activation rings, communication quantization, and\ninterleaved Mega inference weights.\n\n</details>\n\n<a id=\"install\"></a>\n## Install\n\nInstall from a source checkout into an environment that already provides a\nsupported NVIDIA driver and CUDA toolkit. With pip:\n\n```bash\npython -m pip install .\n```\n\nOr with uv:\n\n```bash\nuv venv --python 3.12\nsource .venv/bin/activate\nuv pip install .\n```\n\nThe initial release is validated with this runtime:\n\n| Layer | Validated release stack |\n| --- | --- |\n| Platform | Linux ARM64; NVIDIA Blackwell (SM100 class) |\n| Framework | Python 3.12; PyTorch 2.14.0+cu130 |\n| GPU runtime | CUDA toolkit 13.0.3.0; NVRTC 13.0.88; CUDA Python 13.4.1; NCCL 2.30.7 |\n| Kernel toolchain | Triton 3.8.0; NVIDIA CUTLASS DSL 4.6.1 |\n\nThe PyTorch wheel runtime and the toolkit used for JIT compilation are separate\ncompatibility requirements. Importing `dist_moe` does not initialize CUDA or a\nprocess group, but execution has no CPU fallback.\n\n### Verify the installation\n\nThe complete runtime test file requires at least two supported Blackwell GPUs.\nFor an editable pip installation:\n\n```bash\npython -m pip install -e .\npython -m pip install pytest\npython -m pytest -q tests/test_dist_moe.py\n```\n\nThe equivalent uv workflow is:\n\n```bash\nuv venv --python 3.12\nsource .venv/bin/activate\nuv pip install -e .\nuv pip install pytest\npython -m pytest -q tests/test_dist_moe.py\n```\n\nThis test file covers configuration, kernels, autograd, non-strict `make_fx`,\nCUDA graphs, and real two-rank execution. Real VMM tests use a separate isolated\ntest target.\n\nThis project leverages third-party code made available under its own licenses.\nSee [NOTICE](NOTICE) and [LICENSES](LICENSES).\n\n<a id=\"run-the-bf16-quickstart\"></a>\n## BF16 Quickstart\n\nThis quickstart shows the complete process lifecycle. The checked-in\n[BF16 training example](examples/bf16_training.py) extends the same flow with\nadvanced BF16 options. Run one process per expert-parallel GPU:\n\nThese examples run on one host and use the loopback address so rendezvous does\nnot depend on whether the host name is reachable from child processes.\n\n```bash\ntorchrun --standalone --local-addr=127.0.0.1 --nproc-per-node=2 examples/bf16_training.py\n```\n\n```python\nimport os\n\nimport torch\nimport torch.distributed as dist\n\nimport dist_moe\n\n\ndevice = torch.device(\"cuda\", int(os.environ[\"LOCAL_RANK\"]))\ntorch.cuda.set_device(device)\ndist.init_process_group(\"nccl\")\nep_group = dist.group.WORLD\n\nT, D, F, K, E_local = 16, 256, 256, 2, 4\nrank = dist.get_rank(ep_group)\nep_size = dist.get_world_size(ep_group)\nE = E_local * ep_size\n\nconfig = dist_moe.Config(\n    num_local_input_tokens=T,\n    hidden_dim=D,\n    intermediate_dim=F,\n    top_k=K,\n    num_experts=E,\n    max_moe_layers_per_activation_slot=1,\n    device_scratch_capacity_factor=1.0,\n    num_activation_slots=1,\n)\nprint(dist_moe.plan_memory(config, ep_size=ep_size, device=device).explain())\n\ncontext = dist_moe.create_context(\n    group=ep_group,\n    config=config,\n    device=device,\n)\n\ntry:\n    x_TD = torch.randn(\n        T,\n        D,\n        dtype=torch.bfloat16,\n        device=device,\n        requires_grad=True,\n    )\n    global_token_ids_T = rank * T + torch.arange(T, device=device)\n    topk_expert_ids_TK = (\n        global_token_ids_T[:, None] * K\n        + torch.arange(K, device=device)[None, :]\n    ) % E\n    topk_scores_TK = torch.full(\n        (T, K),\n        1.0 / K,\n        dtype=torch.float32,\n        device=device,\n        requires_grad=True,\n    )\n    w13_E2FD = torch.randn(\n        E_local,\n        2,\n        F,\n        D,\n        dtype=torch.bfloat16,\n        device=device,\n        requires_grad=True,\n    )\n    w2_EDF = torch.randn(\n        E_local,\n        D,\n        F,\n        dtype=torch.bfloat16,\n        device=device,\n        requires_grad=True,\n    )\n\n    output_TD = dist_moe.routed_experts(\n        x_TD,\n        topk_expert_ids_TK,\n        topk_scores_TK,\n        w13_E2FD,\n        w2_EDF,\n        context,\n    )\n    output_TD.float().sum().backward()\n    assert output_TD.shape == x_TD.shape\n    assert x_TD.grad is not None\nfinally:\n    context.close()\n    dist.destroy_process_group()\n```\n\nHere `T` is the number of local input tokens, `D` is the model hidden width,\n`F` is the per-expert intermediate width, `K` is top-k, and `E_local` is the\nnumber of experts owned by this rank. The global expert count is\n`E_local * ep_size`.\n\nThe W13 weight may have shape `[E_local, 2, F, D]` or `[E_local, 2F, D]`.\nThe flattened form `[E_local * 2F, D]` is also accepted\nwhen W2 is `[E_local * D, F]`. Inputs and weights must be contiguous CUDA BF16\ntensors. Expert IDs must be contiguous integers in `[0, num_experts)`; scores\nmust be contiguous BF16 or FP32 tensors.\n\n<a id=\"understand-the-execution-model\"></a>\n## Understand the execution model\n\nOne call has four inputs owned by the caller and one reusable context owned by\nDist-MoE:\n\n```text\ncaller routing\n  x_TD + expert IDs + scores\n        |\n        v\npublish rows -> route on GPU -> W13 -> SwiGLU -> W2 -> combine\n        |                                           |\n        +------ context-owned communication --------+\n                    and temporary memory\n```\n\nThe context owns:\n\n- **communication buffers**: symmetric device memory used to exchange routed\n  rows and gradients with expert-parallel peers;\n- **activation buffer**: one context-owned virtual address range containing\n  device-backed activation slots and scratch storage;\n- **activation slots**: logical regions that retain forward state until its\n  matching backward;\n- **device scratch**: temporary memory reused by one active Dist-MoE call; and\n- optional **host-backed scratch**: VMM overflow for routing beyond the device\n  scratch capacity.\n\nForward expert matrix multiplication is called **FPROP**. Backward computes\ninput gradients with **DGRAD** and weight gradients with **WGRAD**. The\ndetailed BF16 and MXFP8 guides show every kernel and saved value.\n\nThe context is collective to create, sequentially reusable, and not reentrant.\nAll expert-parallel ranks must create matching contexts in the same order.\n\n`Config.num_local_input_tokens` is one fixed physical shape, not a maximum.\nEvery rank and every invocation using the context must pass exactly that many\nrows. If a rank has fewer logical tokens, pad its inputs, assign zero routing\nscores to padded rows, and slice the returned output. Unequal physical token\ncounts across expert-parallel ranks trigger a device-side trap before routing\nmetadata is generated. That failure terminates the distributed iteration and\ninvalidates the CUDA execution context; it is not a recoverable Python input\nerror.\n\n<a id=\"choose-a-precision-and-pipeline\"></a>\n## Choose a precision and pipeline\n\nStart with BF16 unless the model and hardware require block-scaled compute.\n\n### BF16\n\nLeave `block_scaled=None`, which is the default. Activations and weights enter\nthe expert GEMMs in BF16; tensor-core products accumulate in FP32. See\n[BF16 execution](docs/bf16_execution.md).\n\n### MXFP8\n\nMXFP8 E4M3 supports training and inference. Activations are quantized after\nrouting, and weights may be prepared once and reused. Run the complete\n[training](examples/mxfp8_training.py) or\n[inference](examples/block_scaled_inference.py) program with:\n\nThe block-scaled paths use the concatenated W13 shape `[E_local, 2F, D]`, named\n`w13_EFD`. The BF16 quickstart keeps the gate/up axis explicit as\n`w13_E2FD`, with shape `[E_local, 2, F, D]`.\n\n```bash\ntorchrun --standalone --local-addr=127.0.0.1 --nproc-per-node=2 examples/mxfp8_training.py\ntorchrun --standalone --local-addr=127.0.0.1 --nproc-per-node=2 examples/block_scaled_inference.py\n```\n\n```python\npolicy = dist_moe.BlockScaledConfig(\n    format=dist_moe.BlockScaledFormat.MXFP8_E4M3,\n    pipeline=\"staged\",\n)\nconfig = dist_moe.Config(\n    num_local_input_tokens=T,\n    hidden_dim=D,\n    intermediate_dim=F,\n    top_k=K,\n    num_experts=E,\n    max_moe_layers_per_activation_slot=1,\n    block_scaled=policy,\n)\n```\n\nThe **staged** pipeline uses separate distributed W13 and SwiGLU/W2 kernels.\nThe **Mega** pipeline fuses both projections into a chunked pipeline. They use\nthe same public tensor and memory contracts. See\n[MXFP8 execution](docs/mxfp8_execution.md).\n\n### NVFP4\n\nNVFP4 is inference-only. It requires `Config(inference=True)`, zero activation\nslots, and prepared weights. The complete\n[NVFP4 inference example](examples/block_scaled_inference.py) runs with:\n\n```bash\ntorchrun --standalone --local-addr=127.0.0.1 --nproc-per-node=2 examples/block_scaled_inference.py\n```\n\n```python\npolicy = dist_moe.BlockScaledConfig(\n    format=dist_moe.BlockScaledFormat.NVFP4,\n    pipeline=\"staged\",\n)\nconfig = dist_moe.Config(\n    num_local_input_tokens=T,\n    hidden_dim=D,\n    intermediate_dim=F,\n    top_k=K,\n    num_experts=E,\n    max_moe_layers_per_activation_slot=1,\n    num_activation_slots=0,\n    block_scaled=policy,\n    inference=True,\n)\n```\n\nSee [NVFP4 inference](docs/nvfp4_execution.md).\n\n<a id=\"plan-memory\"></a>\n## Plan memory\n\nPlan before creating the context. The complete\n[memory-planning example](examples/memory_planning.py) runs without a process\ngroup:\n\n```bash\npython examples/memory_planning.py\n```\n\n```python\nconfig = dist_moe.Config(\n    num_local_input_tokens=4,\n    hidden_dim=128,\n    intermediate_dim=128,\n    top_k=2,\n    num_experts=4,\n    max_moe_layers_per_activation_slot=2,\n    activation_slot_capacity_factor=1.0,\n    device_scratch_capacity_factor=1.0,\n    num_activation_slots=1,\n    vmm=dist_moe.VmmConfig(total_scratch_capacity_factor=2.0),\n)\nprint(dist_moe.plan_memory(config, ep_size=2).explain())\n```\n\nThe three capacity controls have different meanings:\n\n| Setting | Controls | Limit | If exceeded |\n| --- | --- | --- | --- |\n| `activation_slot_capacity_factor` | Optional saved state across all layers sharing one activation slot | Soft | The device planner recomputes eligible intermediates in backward |\n| `device_scratch_capacity_factor` | Temporary scratch for one active layer in device memory | Hard without VMM | Execution reports overflow, or uses host-backed scratch when configured |\n| `VmmConfig.total_scratch_capacity_factor` | Device plus host-backed scratch for one active layer | Hard | Execution reports overflow |\n\nLeave both activation-slot controls unset to retain only mandatory layer inputs\nand recompute all eligible intermediates. Set\n`activation_slot_capacity_factor=1.0` to retain all eligible state when the\nslot's aggregate routing matches balanced routing. Expert users may instead\nset an exact `activation_slot_bytes`; the two controls are mutually exclusive.\n\nAn activation-slot overflow is safe and selects dynamic recomputation. A total\nscratch overflow is fatal: the first routing kernel that knows the final local\nreceive-row count prints the required and available rows, then traps before it\npublishes unsafe routing metadata. Only the overflowing rank is guaranteed to\nprint that diagnostic; peers may time out or be terminated by the job\nsupervisor. The failed CUDA context cannot be reused. See the\n[memory planner guide](docs/memory_planner.md) for formulas and a complete\n`plan.explain()` example.\n\n### Reading `plan.explain()`\n\nMemory planning is pure: it does not allocate a context or initialize\ncommunication. The example above makes every part of the plan visible.\n\nRead the result from routing capacity to physical storage:\n\n- **Receive capacity:** `8 balanced -> 8 device -> 16 total`. Balanced routing\n  stays in HBM; VMM covers up to twice that routing load.\n- **Activation slot:** `1 x 16 KiB`. Capacity factor 1 retains every eligible\n  intermediate at balanced routing.\n- **Scratch:** `12 KiB device + 12 KiB host`. Scratch grows into host backing\n  only after the device budget is exhausted.\n- **Allocation:** `28 KiB device / 40 KiB virtual`. Device bytes contain the\n  slot and hot scratch; the virtual range also includes host overflow.\n\nThe useful range for one slot is 2 KiB for mandatory inputs, 16 KiB for a\nbalanced full save, and 28 KiB for the maximum executable routing load.\n\n<details>\n<summary>Exact <code>plan.explain()</code> output</summary>\n\n```text\nDistributed MoE memory plan:\n  balanced/device/total rows: 8/8/16\n  device/total scratch capacity factors: 1/2\n  activation slots: 1 x 0.000 GiB (16,384 bytes) = 0.000 GiB (16,384 bytes) (balanced capacity factor 1)\n  device scratch: 0.000 GiB (12,288 bytes)\n  host overflow scratch: 0.000 GiB (12,288 bytes)\n  total device buffer: 0.000 GiB (28,672 bytes)\n  activation slot minimum/balanced full-save/maximum useful: 0.000 GiB (2,048 bytes) / 0.000 GiB (16,384 bytes) / 0.000 GiB (28,672 bytes)\n  virtual address range: 0.000 GiB (40,960 bytes); balanced routing fits without recompute; larger saved-state usage may recompute\n  activation slots are a soft limit (recompute on exhaustion); total scratch capacity is a hard limit\n```\n\n</details>\n\nThe activation slot is a soft budget: exhaustion selects recomputation. Total\nscratch is a hard bound. Exact byte alignment remains the planner's\nresponsibility.\n\n<a id=\"manage-context-lifetime\"></a>\n## Manage context lifetime\n\nA context's static mode and an individual call's autograd behavior are\ndifferent decisions:\n\n| Context | Invocation | Behavior |\n| --- | --- | --- |\n| Training | Gradients required | Saves eligible state or records dynamic recomputation in the selected activation slot |\n| Training | `torch.no_grad()` or no differentiable input | Uses training-compatible kernels, puts intermediates in scratch, and leaves activation-slot state unchanged |\n| Inference | Forward only | Uses inference-specialized routing, formats, and scratch-only planning |\n\nThe [MXFP8 training example](examples/mxfp8_training.py) demonstrates that\nevaluation can reuse a training context:\n\n```python\nwith torch.no_grad():\n    dist_moe.routed_experts(\n        x_TD,\n        topk_expert_ids_TK,\n        topk_scores_TK,\n        w13_EFD,\n        w2_EDF,\n        context,\n    )\n```\n\n`torch.no_grad()` does not turn a training context into an inference context.\nUse `Config(inference=True)` for an inference-only context. Training,\ntraining-context evaluation, and specialized inference have different CUDA\ngraph topologies and must be captured separately.\n\nCall `context.reset()` only after an aborted schedule. Call `context.close()`\nafter every eager call, trace, and CUDA-graph replay using the context has\nfinished.\n\n<a id=\"use-graph-and-checkpoint-features\"></a>\n## Use graph and checkpoint features\n\nThe supported graph boundary includes:\n\n- FakeTensor metadata propagation;\n- non-strict `make_fx` with opaque registered Dist-MoE operations;\n- activation checkpointing with effectful planner transitions; and\n- CUDA graph capture and replay over stable context-owned addresses.\n\nFull `torch.compile`, strict export, and general functionalization of mutable\nactivation and communication buffers are not supported. A registered operation\ndoes not imply those broader compiler guarantees.\n\nDynamic activation recomputation remains CUDA-graph compatible because the\nhost launches one fixed sequence. Device predicates decide whether the\nrecompute kernels perform work; the host does not branch on the planner result.\nEach training forward also returns an immutable snapshot of its selected\nactivation slot with its planner offsets. Autograd saves that produced state,\nso selective activation-checkpoint recomputation cannot substitute a newer\nlive slot selection. See the\n[BF16 execution guide](docs/bf16_execution.md#execution-and-graph-boundary) for\nthe exact saved-state contract.\n\n<a id=\"use-advanced-features\"></a>\n## Use advanced features\n\n### Prepared block-scaled weights\n\n`dist_moe.prepare_block_scaled_weight()` creates caller-owned quantized data\nand scales. The complete\n[block-scaled inference example](examples/block_scaled_inference.py)\nprepares both expert weights before execution:\n\n```python\nprepared_w13 = dist_moe.prepare_block_scaled_weight(\n    w13_EFD,\n    policy,\n    inference=True,\n)\nprepared_w2 = dist_moe.prepare_block_scaled_weight(\n    w2_EDF,\n    policy,\n    inference=True,\n)\n```\n\nTraining integrations may refill compatible prepared MXFP8 storage with the\n`out=` argument after a new weight unshard.\n\nSee [MXFP8 execution](docs/mxfp8_execution.md) and\n[NVFP4 inference](docs/nvfp4_execution.md) for format-specific fields.\n\n### In-place WGRAD accumulation\n\n`ExecutionOptions(inplace_wgrad_accum=True)` lets serialized backward calls\naccumulate W13 and W2 gradients directly into existing standard\n`parameter.grad` storage. The first contribution is returned normally; later\ncontributions use graph-visible mutable destinations and return no duplicate\nweight gradient to autograd. See the complete\n[BF16 training example](examples/bf16_training.py).\n\nFor direct accumulation, `Config.wgrad_dtype` and the parameter declaration\nresolve as follows. The examples assume a BF16 parameter.\n\n| `parameter.grad_dtype` | `Config.wgrad_dtype` | Existing `parameter.grad` | Result |\n| --- | --- | --- | --- |\n| `None` | `None` | `None` | BF16 from `parameter.dtype` |\n| FP32 | `None` | `None` | FP32 from the parameter declaration |\n| `None` | FP32 | `None` | Explicit FP32 |\n| `None` | `None` | FP32 | FP32 from existing storage |\n| BF16 | FP32 | any | Error: conflicting declaration |\n| `None` | FP32 | BF16 | Error: incompatible storage |\n\nOnly BF16 and FP32 are supported, and W13 and W2 must resolve to the same\ndtype before either kernel writes. Outside direct accumulation, `None` uses the\ncompute-weight dtype. A parameter's default `grad_dtype` is its own dtype; set\nit to `None` only when an explicitly selected or pre-existing gradient dtype\nshould take precedence.\n\n```python\noptions = dist_moe.ExecutionOptions(inplace_wgrad_accum=True)\nfor _ in range(2):\n    output_TD = dist_moe.routed_experts(\n        x_TD,\n        topk_expert_ids_TK,\n        topk_scores_TK,\n        w13_E2FD,\n        w2_EDF,\n        context,\n        options=options,\n    )\n    output_TD.float().sum().backward()\n```\n\nThis is an opt-in serialized-writer contract. Read\n[WGRAD accumulation](docs/wgrad_accumulation.md) before integrating it with a\ndistributed optimizer or pipeline schedule.\n\n### Post-expert processing\n\n`ExecutionOptions.experts_output_postprocess` accepts either a direct eager\ncallback or a typed `RMSNormPostprocess`. The typed policy fuses route-wise\nRMSNorm, router-score weighting, and top-k reduction. See the complete\n[BF16 training example](examples/bf16_training.py).\n\n```python\noptions = dist_moe.ExecutionOptions(\n    experts_output_postprocess=dist_moe.RMSNormPostprocess(\n        eps=1e-6,\n        norm_output_dtype=torch.float32,\n        output_dtype=torch.bfloat16,\n        require_bitwise=False,\n        recompute_rstd=True,\n    )\n)\n```\n\nCallback-free typed policies use the registered graph path. Arbitrary Python\ncallbacks and observers use the eager extension path. See\n[post-expert processing](docs/postprocess.md).\n\n### Clamped SwiGLU\n\nSet `activation=\"swiglu_clamped\"` with positive `swiglu_alpha` and\n`swiglu_limit`. The fused kernels use the same parameters in forward,\nbackward, and dynamic recomputation. The complete\n[BF16 training example](examples/bf16_training.py) configures the public\npolicy:\n\n```python\nconfig = dataclasses.replace(\n    config,\n    activation=\"swiglu_clamped\",\n    swiglu_alpha=1.702,\n    swiglu_limit=7.0,\n)\n```\n\nSee the precision-specific execution guides for the exact formula.\n\n### Clip statistics\n\nBF16 execution can rewrite caller-owned SwiGLU counters on every forward. The\ncomplete [BF16 training example](examples/bf16_training.py) supplies the\ngraph-visible destination:\n\n```python\nclip_stats_out_3 = torch.empty(3, dtype=torch.float32, device=device)\noptions = dist_moe.ExecutionOptions(\n    swiglu_clip_stats_out_3=clip_stats_out_3,\n    swiglu_clip_limit=7.0,\n)\n```\n\n### Pipeline activation slots\n\nA pipeline framework derives static activation-slot assignments from schedule\nliveness. The complete\n[BF16 training example](examples/bf16_training.py) selects one\nresolved physical slot:\n\n```python\ncontext.select_activation_slot(\n    activation_slot=1,\n    num_moe_layers_in_slot=1,\n)\n```\n\nThe context saves the selected device scalar for backward. See\n[pipeline activation slots](docs/pipeline_activation_slots.md) for microbatch\nand stage-microbatch coloring.\n\n### VMM host-backed scratch\n\nVMM can extend device scratch with pinned host memory while preserving one\nstable virtual address range. The complete\n[memory-planning example](examples/memory_planning.py) resolves both device and\nhost-backed scratch before context creation:\n\n```python\nconfig = dataclasses.replace(\n    config,\n    device_scratch_capacity_factor=1.0,\n    vmm=dist_moe.VmmConfig(\n        total_scratch_capacity_factor=2.0,\n        prefetch=False,\n    ),\n)\n```\n\nSaved activations always remain in device memory. Only scratch beyond the\ndevice capacity may use host backing. See [VMM host-backed scratch](docs/vmm.md).\n\n<a id=\"public-api\"></a>\n## Public API\n\n| API | Purpose |\n| --- | --- |\n| [`dist_moe.Config`](docs/memory_planner.md) | Static shape, precision, capacity, activation-slot, and execution policy |\n| [`dist_moe.VmmConfig`](docs/vmm.md) | Optional device-plus-host scratch policy |\n| [`dist_moe.Bf16GroupedGemmPreset`](docs/bf16_execution.md) | Named BF16 FPROP/DGRAD launch preset |\n| [`dist_moe.BlockScaledFormat`](docs/mxfp8_execution.md) | Supported MXFP8 and NVFP4 formats |\n| [`dist_moe.BlockScaledConfig`](docs/mxfp8_execution.md) | Block-scaled precision and staged/Mega pipeline policy |\n| [`dist_moe.BlockScaledKernelConfig`](docs/mxfp8_execution.md) | Expert-only complete CuTe launch override |\n| [`dist_moe.ExecutionOptions`](docs/wgrad_accumulation.md) | Per-call accumulation, postprocess, observer, and callback controls |\n| [`dist_moe.RMSNormPostprocess`](docs/postprocess.md) | Typed fused post-expert RMSNorm policy |\n| [`dist_moe.MemoryPlan`](docs/memory_planner.md) / [`dist_moe.plan_memory`](docs/memory_planner.md) | Immutable memory plan and pure planning function |\n| [`dist_moe.Context`](docs/bf16_execution.md) / [`dist_moe.create_context`](docs/bf16_execution.md) | Reusable distributed runtime state and collective factory |\n| [`dist_moe.PreparedWeight`](docs/mxfp8_execution.md) / [`dist_moe.prepare_block_scaled_weight`](docs/mxfp8_execution.md) | Caller-owned block-scaled weight storage and preparation |\n| [`dist_moe.routed_experts`](docs/bf16_execution.md) | BF16/MXFP8 training or BF16/MXFP8/NVFP4 inference |\n| [`dist_moe.supports_fused_post_expert_rmsnorm`](docs/postprocess.md) | Query fused RMSNorm shape/dtype support |\n\nThe API docstrings are authoritative for individual arguments and validation\nerrors. The guides below explain how those APIs compose.\n\n<a id=\"read-the-detailed-guides\"></a>\n## Read the detailed guides\n\nStart with the execution guide for the selected precision:\n\n- [BF16 end-to-end execution](docs/bf16_execution.md)\n- [Asynchronous MXFP8 end-to-end execution](docs/mxfp8_execution.md)\n- [NVFP4 inference execution](docs/nvfp4_execution.md)\n\nThen use the focused guides as needed:\n\n- [Activation and scratch memory planner](docs/memory_planner.md)\n- [VMM host-backed scratch](docs/vmm.md)\n- [Pipeline activation slots](docs/pipeline_activation_slots.md)\n- [Post-expert processing](docs/postprocess.md)\n- [WGRAD accumulation](docs/wgrad_accumulation.md)\n- [BF16 kernel design](docs/bf16_kernel_design.md)\n- [MXFP8 kernel design](docs/mxfp8_kernel_design.md)\n- [NVFP4 kernel design](docs/nvfp4_kernel_design.md)\n\n<a id=\"acknowledgements\"></a>\n## Acknowledgements\n\nShikai Li is the primary author of this work, for designing and building its\ncore: the distributed MoE implementation, the SyncFree execution model, the\nactivation planning and memory management layers, and the grouped-GEMM and\nlow-precision kernels. Additional contributions came from Jongsoo Park, Summer\nDeng, Jianyu Huang, Jie Wang, Xiaozhu Meng, Vijay Thakkar, Jiecao Yu, Edward\nYang, and others. We also acknowledge the earlier work on mxfp8 dropless\nCUDA-Graphable MoE by Daniel Haziza, Luca Wehrstedt, Simon Layton and Driss\nGuessous. This work is open-sourced by Sanket Purandare, advised by Tianyu Liu,\nNatalia Gimelshein, and Edward Yang.\n"
+}

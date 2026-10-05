@@ -1,0 +1,17 @@
+### 2026-09-26T11:23:11+00:00  venv isolation check (system interpreter must stay clean)
+
+## system interpreter /usr/local/python3.12.13/bin/python3
+Python 3.12.13
+$ python3 -c "import torch"
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'torch'
+
+## system pip: is torch/torch_npu installed there?
+(no torch / torch-npu / triton in the system interpreter)
+
+## venv interpreter
+torch 2.10.0+cpu | torch_npu 2.10.0.post4
+
+## /root/.bashrc untouched: no venv/torch lines added by this mission
+0
+0 matches

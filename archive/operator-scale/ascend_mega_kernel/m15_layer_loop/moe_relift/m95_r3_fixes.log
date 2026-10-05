@@ -1,0 +1,67 @@
+# M95 第 3 轮：r2 复审 2 条 p2 的处置（每条「命令 → 输出」都在 tip 上实跑，输出原样重定向）
+#
+# 复审文件：.tower/comms/reviews/review-feat-m95-moe-topk-merge-tree-at-large-expert-reviewer-m95-r2.md
+# 复审结论：p2-2items / fix-then-merge（审的是 2e46a55）
+# 本轮只动判据与文档（check_prep.py 的共享剥注释器属 moe_relift/**）⇒ 不跑设备；
+# 生成物与设备读数同源的核对见文末「生成物未变」一节。
+
+### C) 单趟扫描器在受检头文件上的读数（无残留、无吞并）
+  m15_layer_loop/m15_moe_layer.h                       行数= 2293 残留'/*'=False 残留'*/'=False
+  m15_layer_loop/m15_moe_resources.h                   行数=  404 残留'/*'=False 残留'*/'=False
+  m15_layer_loop/m15_gdn_resources.h                   行数=  301 残留'/*'=False 残留'*/'=False
+  m15_layer_loop/m15_layer_resources.h                 行数=  548 残留'/*'=False 残留'*/'=False
+  m15_layer_loop/m15_hc_resources.h                    行数=  312 残留'/*'=False 残留'*/'=False
+
+### D) 后置自检的三条触发演示（构造输入 ⇒ 必须 raise，不给假绿）
+  未闭合块注释（/* 无 */）            → raise ValueError: strip_comments: 输入含未闭合的块注释（/* 之后没有 */）
+  未闭合字符串字面量                  → raise ValueError: strip_comments: 输入含未闭合的 字符串字面量
+  代码里残留 */（注释外）              → raise ValueError: strip_comments: 剥完仍残留 /* 或 */ —— 剥注释器与输入不自洽（拒绝给假绿）
+  （合法输入对照：块注释里 `close // */` ⇒ 正常剥离，见下）
+  'int a;  
+
+ 
+int b;
+'
+
+### E) 独立工具交叉核对：GNU cpp 的剥注释结果 vs 本扫描器（非空白字符序列逐字符比）
+  m15_moe_layer.h          本扫描器= 63378 字符  cpp= 63378 字符  逐字符相同=True
+  m15_moe_resources.h      本扫描器=  9056 字符  cpp=  9056 字符  逐字符相同=True
+
+### F) 静态判据（单趟扫描器，两档 locale；读数与 r2 相同）
+  check_prep LC_ALL=C rc=0 可 FAIL 的判据 16 条（FAIL 0 条）
+  check_rescale LC_ALL=C rc=0 可 FAIL 的判据 30 条（FAIL 0 条）
+  check_stream LC_ALL=C rc=0 可 FAIL 的判据 22 条（FAIL 0 条）
+  lift_moe_segment.py --check LC_ALL=C rc=0
+  check_prep LC_ALL=C.UTF-8 rc=0 可 FAIL 的判据 16 条（FAIL 0 条）
+  check_rescale LC_ALL=C.UTF-8 rc=0 可 FAIL 的判据 30 条（FAIL 0 条）
+  check_stream LC_ALL=C.UTF-8 rc=0 可 FAIL 的判据 22 条（FAIL 0 条）
+  lift_moe_segment.py --check LC_ALL=C.UTF-8 rc=0
+  check_prep 输出在 LC_ALL=C.UTF-8 与 C 逐字节相同
+  check_rescale 输出在 LC_ALL=C.UTF-8 与 C 逐字节相同
+  check_stream 输出在 LC_ALL=C.UTF-8 与 C 逐字节相同
+
+======================================================================
+## P2-2 陈旧计数：check_stream.py 写「12 条」，实为脚本自报的 13 条（r3 加了 2 条反向对照）
+======================================================================
+$ grep -c '^run ' m15_layer_loop/moe_relift/m95_negctl.sh   # 脚本里的对照条数（权威）
+13
+$ bash m15_layer_loop/moe_relift/m95_negctl.sh | tail -2
+# 副本目录：/tmp/m95_negctl.y13BXf
+# 全部对照按预期变红（对照有效）
+$ grep -rn '12 条\|11 条' m15_layer_loop/moe_relift/*.py m15_layer_loop/moe_relift/*.sh m15_layer_loop/moe_relift/*.md | grep -v m95_r2_fixes.log
+m15_layer_loop/moe_relift/check_stream.py:67:    # 常备对照：`moe_relift/m95_negctl.sh`（**13 条 = 12 条破坏 +
+m15_layer_loop/moe_relift/m95_negctl.sh:10:# 对照清单（13 条 = 12 条破坏 + 1 条健全性正对照；脚本结�
+m15_layer_loop/moe_relift/m95_README.md:133:常备对照脚本 **`moe_relift/m95_negctl.sh`**（**13 条 = 12 条破坏�
+m15_layer_loop/moe_relift/m95_README.md:134:`/tmp` 副本；`rc=0` 表示「12 条破坏对照全红 + 正对照绿」�
+m15_layer_loop/moe_relift/m95_README.md:206:| 静态 12 条破坏 + 1 条正对照 | 见 §4 的表（`m95_negctl.sh` �
+m15_layer_loop/moe_relift/m95_README.md:236:# 静态判据的常备负向对照（12 条破坏对照必须全红 + 1 条
+  ⇒ tip 上「13 条 = 12 破坏 + 1 正对照」在三处（check_stream.py / m95_negctl.sh / m95_README）口径一致；
+    m95_r2_fixes.log 里的「11 条」是 r2 当轮快照、已加带时点说明（纯追加，不改旧读数）。
+
+======================================================================
+## 生成物未变（⇒ 本轮不需要重新见证 E=4 设备验收）
+======================================================================
+$ sha256sum m15_layer_loop/m15_moe_layer.h
+0af84032dc194e8a0350caf822e91ae005833dae8df52b0ce98ea65c577b2a64  m15_layer_loop/m15_moe_layer.h
+（= r1/r2 tip 同值 0af84032…：本轮只改判据与文档）
+  资源表「代码视图」（去注释）相对 r2 tip 逐字节相同 = True（长度 11802）

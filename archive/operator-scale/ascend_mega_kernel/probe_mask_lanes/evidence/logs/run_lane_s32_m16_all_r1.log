@@ -1,0 +1,8 @@
+VARIANT name=lane_s32_m16_all kind=0 group=lane-cross sd=s32 md=m16 pat=all rows=0 pitchI=0 pitchW=0 im=0
+LAUNCH aclError=0 (sync timeout=120000ms)
+AREABYTES 12288
+WRANGES 0-254,255-256,1024-1124,1125-1280
+NZ bytes_written=510 first_off=0 last_off=1280
+FNV 0x8fbcdba5e17ac583
+OUTCOME: RAN
+rc=0

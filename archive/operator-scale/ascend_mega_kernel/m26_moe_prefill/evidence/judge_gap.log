@@ -1,0 +1,774 @@
+# M155：m26 判据空档补强 —— 离线复算 + 自检（零设备）
+date=2026-10-04T13:24:46+00:00
+head_at_generation=6c054cb75a356a11512004f0ed164b7346c9ecef   # 生成本日志时的 HEAD；本文件 commit 后分支 tip 会前移（权威锚点是下面的 judge_sha256）
+python=/usr/local/python3.12.13/bin/python3 (numpy 2.5.1 py 3.12.13)
+judge_sha256=3ec3bb55ac6b652d553b3ef95674bf6b5a5d7cc1f3875261b5869f1eab85005c
+archive=/workspace/ascend_mega_kernel/.tower/worktrees/wt-155/m15_layer_loop/evidence/m140_prefill_full_layer
+
+==================================================================
+== A. 回归矩阵（断言旧结论不变：0=PASS 1=FAIL 2=SKIPPED）==
+==================================================================
+---- m1_p8/clean（期望 rc=0）----
+== 判定项 6 条：6 PASS / 0 FAIL（判定元素 551，超界 0）
+   [PASS] J1 topk_ids（safe 行；1/1 行） (10/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (8/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        1.0466e-06
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.6897e-02
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 1
+   weights max|Δ|                                       7.8020e-08
+   sgate max|Δ|                                         3.4925e-10
+   logits 行内跨专家极差（min over rows）                        6.7593e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+
+---- m1_p8/mut1（期望 rc=0）----
+== 判定项 6 条：6 PASS / 0 FAIL（判定元素 551，超界 0）
+   [PASS] J1 topk_ids（safe 行；1/1 行） (10/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (8/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        1.0466e-06
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.6897e-02
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 1
+   weights max|Δ|                                       7.8020e-08
+   sgate max|Δ|                                         3.4925e-10
+   logits 行内跨专家极差（min over rows）                        6.7593e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+
+---- m1_p8/mut2（期望 rc=0）----
+== 判定项 6 条：6 PASS / 0 FAIL（判定元素 551，超界 0）
+   [PASS] J1 topk_ids（safe 行；1/1 行） (10/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (8/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        1.0466e-06
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.6897e-02
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 1
+   weights max|Δ|                                       7.8020e-08
+   sgate max|Δ|                                         3.4925e-10
+   logits 行内跨专家极差（min over rows）                        6.7593e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+
+---- m1_p12/clean（期望 rc=1）----
+== 判定项 4 条：0 PASS / 4 FAIL（判定元素 533，超界 532）
+   [FAIL] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (1/10)
+   [FAIL] J2 router_logits（T3） (0/512)
+   [FAIL] J3 sgate 裸点积（T3） (0/1)
+   [FAIL] J4 topk_weights（T3，梯度上界） (0/10)
+== 报告项 11 条
+   J1c 行内顺序判据未生效                                        本档无「集合一致 + 参考间隔显著」的相邻对 ⇒ 行内顺序**未被本判据覆盖**（集合错由 J1b 判；tie 对参考自己也分不出）
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        6.8160e+08
+   logits 容差占用（max |Δ|/tol）                             410548934507.1039
+   min 10/11 名间隔（reference）                             1.1172e-02
+   tie-risk 行数（gap ≤ 4×tol）                             1 / 1
+   weights max|Δ|                                       7.5677e-01
+   sgate max|Δ|                                         3.7677e+07
+   logits 行内跨专家极差（min over rows）                        1.1456e+09
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：红: G5 权重非退化（行内不是单一 1.0 全给第一名）
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [RED] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+
+---- m1_p12/mut1（期望 rc=0）----
+== 判定项 5 条：5 PASS / 0 FAIL（判定元素 541，超界 0）
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (8/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        7.0618e-07
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.1172e-02
+   tie-risk 行数（gap ≤ 4×tol）                             1 / 1
+   weights max|Δ|                                       4.3313e-08
+   sgate max|Δ|                                         1.4261e-09
+   logits 行内跨专家极差（min over rows）                        4.4287e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+
+---- m1_p12/mut2（期望 rc=0）----
+== 判定项 5 条：5 PASS / 0 FAIL（判定元素 541，超界 0）
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (8/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        7.0618e-07
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.1172e-02
+   tie-risk 行数（gap ≤ 4×tol）                             1 / 1
+   weights max|Δ|                                       4.3313e-08
+   sgate max|Δ|                                         1.4261e-09
+   logits 行内跨专家极差（min over rows）                        4.4287e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+
+---- m1_p15/clean（期望 rc=1）----
+== 判定项 5 条：0 PASS / 5 FAIL（判定元素 543，超界 543）
+   [FAIL] J1 topk_ids（safe 行；1/1 行） (0/10)
+   [FAIL] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (0/10)
+   [FAIL] J2 router_logits（T3） (0/512)
+   [FAIL] J3 sgate 裸点积（T3） (0/1)
+   [FAIL] J4 topk_weights（T3，梯度上界） (0/10)
+== 报告项 11 条
+   J1c 行内顺序判据未生效                                        本档无「集合一致 + 参考间隔显著」的相邻对 ⇒ 行内顺序**未被本判据覆盖**（集合错由 J1b 判；tie 对参考自己也分不出）
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        6.8160e+08
+   logits 容差占用（max |Δ|/tol）                             504328079130.9672
+   min 10/11 名间隔（reference）                             1.9322e-02
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 1
+   weights max|Δ|                                       8.3929e-01
+   sgate max|Δ|                                         3.7677e+07
+   logits 行内跨专家极差（min over rows）                        1.1456e+09
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：红: G5 权重非退化（行内不是单一 1.0 全给第一名）
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [RED] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+
+---- m1_p15/mut1（期望 rc=0）----
+== 判定项 6 条：6 PASS / 0 FAIL（判定元素 551，超界 0）
+   [PASS] J1 topk_ids（safe 行；1/1 行） (10/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (8/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        6.8892e-07
+   logits 容差占用（max |Δ|/tol）                             0.0003
+   min 10/11 名间隔（reference）                             1.9322e-02
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 1
+   weights max|Δ|                                       4.2884e-08
+   sgate max|Δ|                                         6.3803e-08
+   logits 行内跨专家极差（min over rows）                        3.8282e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+
+---- m1_p15/mut2（期望 rc=1）----
+== 判定项 6 条：1 PASS / 5 FAIL（判定元素 550，超界 513）
+   [FAIL] J1 topk_ids（safe 行；1/1 行） (6/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [FAIL] J1c topk_ids 行内顺序（set 一致行；显著相邻对 7 个） (5/7)
+   [FAIL] J2 router_logits（T3） (16/512)
+   [FAIL] J3 sgate 裸点积（T3） (0/1)
+   [FAIL] J4 topk_weights（T3，梯度上界） (0/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 7；逆序 2
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        3.1578e-01
+   logits 容差占用（max |Δ|/tol）                             169.4256
+   min 10/11 名间隔（reference）                             7.3045e-02
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 1
+   weights max|Δ|                                       3.1118e-02
+   sgate max|Δ|                                         2.0986e-02
+   logits 行内跨专家极差（min over rows）                        3.7707e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+
+---- m4097_p15/clean（期望 rc=2）----
+== 判定项 0 条：0 PASS / 0 FAIL（判定元素 0，超界 0）
+== 报告项 2 条
+   块数据缺失（SKIPPED）                                       FAIL: /tmp/m155_judge_4MYMU0/arch/m4097_p15/clean/m26_x.bin 缺文件/不可读（[Errno 2] No such file or directory: '/tmp/m155_judge_4MYMU0/arch/m4097_p15/clean/m26_x.bin'）
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 0 条：全绿
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: SKIPPED（1 块全部缺数据，无可比）
+-- rc=2（期望 2）
+
+---- m4097_p15/mut1（期望 rc=2）----
+== 判定项 0 条：0 PASS / 0 FAIL（判定元素 0，超界 0）
+== 报告项 2 条
+   块数据缺失（SKIPPED）                                       FAIL: /tmp/m155_judge_4MYMU0/arch/m4097_p15/mut1/m26_x.bin 缺文件/不可读（[Errno 2] No such file or directory: '/tmp/m155_judge_4MYMU0/arch/m4097_p15/mut1/m26_x.bin'）
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 0 条：全绿
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: SKIPPED（1 块全部缺数据，无可比）
+-- rc=2（期望 2）
+
+---- m4097_p15/mut2（期望 rc=2）----
+== 判定项 0 条：0 PASS / 0 FAIL（判定元素 0，超界 0）
+== 报告项 2 条
+   块数据缺失（SKIPPED）                                       FAIL: /tmp/m155_judge_4MYMU0/arch/m4097_p15/mut2/m26_x.bin 缺文件/不可读（[Errno 2] No such file or directory: '/tmp/m155_judge_4MYMU0/arch/m4097_p15/mut2/m26_x.bin'）
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 0 条：全绿
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: SKIPPED（1 块全部缺数据，无可比）
+-- rc=2（期望 2）
+
+==================================================================
+== B. 负向对照（(a) J1c 必须能变红）==
+==================================================================
+---- B1 p12/mut1 --negctl 8：只在 J1 跳过的行置换 top-k 0/1 列 ⇒ **只有 J1c 能抓** ----
+== 判定项 5 条：4 PASS / 1 FAIL（判定元素 541，超界 1）
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [FAIL] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (7/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 1
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        7.0618e-07
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.1172e-02
+   tie-risk 行数（gap ≤ 4×tol）                             1 / 1
+   weights max|Δ|                                       4.3313e-08
+   sgate max|Δ|                                         1.4261e-09
+   logits 行内跨专家极差（min over rows）                        4.4287e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+-- [FAIL] 条目数=1（期望 1）
+SIGNATURE-B1 J1c_bite_only=1/1 m1_p12_mut1
+
+---- B2 p12/mut1 --negctl 7：**全行**置换 ⇒ J1c 也红（p12 档 J1 被跳过）----
+== 判定项 5 条：4 PASS / 1 FAIL（判定元素 541，超界 1）
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [FAIL] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (7/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 1
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        7.0618e-07
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.1172e-02
+   tie-risk 行数（gap ≤ 4×tol）                             1 / 1
+   weights max|Δ|                                       4.3313e-08
+   sgate max|Δ|                                         1.4261e-09
+   logits 行内跨专家极差（min over rows）                        4.4287e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+
+---- B3 p8/mut1 --negctl 8：V8 的门在此档空转（该行 J1 会判）⇒ 期望仍 PASS ----
+== 判定项 6 条：6 PASS / 0 FAIL（判定元素 551，超界 0）
+   [PASS] J1 topk_ids（safe 行；1/1 行） (10/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (8/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 12 条
+   负向对照未生效                                              V8 不适用：被判的 1 行（MT=1）没有一行被 J1 跳过 ⇒ 该档没有「J1 抓不到的行内置换」可造
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        1.0466e-06
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.6897e-02
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 1
+   weights max|Δ|                                       7.8020e-08
+   sgate max|Δ|                                         3.4925e-10
+   logits 行内跨专家极差（min over rows）                        6.7593e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+
+---- B4 p8/mut1 --negctl 7：J1 与 J1c 都该红 ----
+== 判定项 6 条：4 PASS / 2 FAIL（判定元素 551，超界 3）
+   [FAIL] J1 topk_ids（safe 行；1/1 行） (8/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [FAIL] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (7/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 1
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        1.0466e-06
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.6897e-02
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 1
+   weights max|Δ|                                       7.8020e-08
+   sgate max|Δ|                                         3.4925e-10
+   logits 行内跨专家极差（min over rows）                        6.7593e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+SIGNATURE-B4 J1_and_J1c_bite=1/1 m1_p8_mut1
+
+---- B5 p12/mut2 --negctl 8（第二个 clean-ish 档，同样只有 J1c 能抓）----
+== 判定项 5 条：4 PASS / 1 FAIL（判定元素 541，超界 1）
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [FAIL] J1c topk_ids 行内顺序（set 一致行；显著相邻对 8 个） (7/8)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 1/1；显著相邻对 8；逆序 1
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        7.0618e-07
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             1.1172e-02
+   tie-risk 行数（gap ≤ 4×tol）                             1 / 1
+   weights max|Δ|                                       4.3313e-08
+   sgate max|Δ|                                         1.4261e-09
+   logits 行内跨专家极差（min over rows）                        4.4287e+00
+   sgate 跨行极差                                           0.0000e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+SIGNATURE-B5 J1c_bite_only=1/1 m1_p12_mut2
+
+==================================================================
+== C. 合成夹具（只涉判据脚本，不涉设备）==
+==================================================================
+fixtures → /tmp/m155_judge_4MYMU0/fx
+  blocks/m26_ids.b0.bin                               160  3ec9cb5443ca
+  blocks/m26_ids.b2.bin                               160  375e81caf0b9
+  blocks/m26_logits.b0.bin                          10240  f4c6b78ca8d1
+  blocks/m26_logits.b2.bin                          10240  02621cacc12f
+  blocks/m26_meta.b0.txt                              105  14c69dbc6b9b
+  blocks/m26_meta.b2.txt                              105  0e04c6d98ce3
+  blocks/m26_sgate.b0.bin                              16  e00b640d88e0
+  blocks/m26_sgate.b2.bin                              16  b73e17979bef
+  blocks/m26_w.b0.bin                                 160  8485fcf9f2d5
+  blocks/m26_w.b2.bin                                 160  8cc8d6312509
+  blocks/m26_wpad.bin                             3276800  a6ca137bb99e
+  blocks/m26_x.b0.bin                               20480  6bc39b37843a
+  blocks/m26_x.b2.bin                               20480  e4378a7467e6
+  consumed_read/m26_ids.bin                           160  e0a9467bb0cc
+  consumed_read/m26_logits.bin                      10240  2d1d99909165
+  consumed_read/m26_meta.txt                          104  2a4f941c6313
+  consumed_read/m26_sgate.bin                          16  13f2406144ea
+  consumed_read/m26_w.bin                             160  8d6f4a5aa45f
+  consumed_read/m26_wpad.bin                      3276800  7a4f1ba8fa6f
+  consumed_read/m26_x.bin                           20480  d228324806a0
+  consumed_read/m26_x_consumed.bin                  20480  0ec53a3b3e20
+  consumed_calc/m26_ids.bin                           160  e484b1e81aa1
+  consumed_calc/m26_logits.bin                      10240  d10e65ea84c1
+  consumed_calc/m26_meta.txt                          104  2a4f941c6313
+  consumed_calc/m26_sgate.bin                          16  8286690535bd
+  consumed_calc/m26_w.bin                             160  a8c1c180fd8a
+  consumed_calc/m26_wpad.bin                      3276800  8084e7387f67
+  consumed_calc/m26_x.bin                           20480  a24e206352b1
+  consumed_calc/m26_x_consumed.bin                  20480  96474e0833f1
+  no_witness/m26_ids.bin                              160  e0a9467bb0cc
+  no_witness/m26_logits.bin                         10240  2d1d99909165
+  no_witness/m26_meta.txt                             104  2a4f941c6313
+  no_witness/m26_sgate.bin                             16  13f2406144ea
+  no_witness/m26_w.bin                                160  8d6f4a5aa45f
+  no_witness/m26_wpad.bin                         3276800  7a4f1ba8fa6f
+  no_witness/m26_x.bin                              20480  d228324806a0
+  tail_tie/m26_ids.bin                                320  79a1242e5e1a
+  tail_tie/m26_logits.bin                             512  087d52413f20
+  tail_tie/m26_meta.txt                                69  7ece7daf1c59
+  tail_tie/m26_sgate.bin                               32  83d88aab3955
+  tail_tie/m26_w.bin                                  320  d34d5361640c
+  tail_tie/m26_wpad.bin                             81920  8dea44612a91
+  tail_tie/m26_x.bin                                40960  802e0c696e42
+  tail_plain/m26_ids.bin                              320  a2f315fe21c5
+  tail_plain/m26_logits.bin                           512  dca4221c875b
+  tail_plain/m26_meta.txt                              69  7ece7daf1c59
+  tail_plain/m26_sgate.bin                             32  6906405514e0
+  tail_plain/m26_w.bin                                320  e0646a9958fe
+  tail_plain/m26_wpad.bin                           81920  9b6bbbf62e57
+  tail_plain/m26_x.bin                              40960  126910903278
+
+---- C1 逐块/首块覆盖：块 0、2 在档、块 1 缺 ----
+== 判定项 12 条：12 PASS / 0 FAIL（判定元素 4398，超界 0）
+   [PASS] [b0] J1 topk_ids（safe 行；4/4 行） (40/40)
+   [PASS] [b0] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (40/40)
+   [PASS] [b0] J1c topk_ids 行内顺序（set 一致行；显著相邻对 32 个） (32/32)
+   [PASS] [b0] J2 router_logits（T3） (2048/2048)
+   [PASS] [b0] J3 sgate 裸点积（T3） (4/4)
+   [PASS] [b0] J4 topk_weights（T3，梯度上界） (40/40)
+   [PASS] [b2] J1 topk_ids（safe 行；3/4 行） (30/30)
+   [PASS] [b2] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (40/40)
+   [PASS] [b2] J1c topk_ids 行内顺序（set 一致行；显著相邻对 32 个） (32/32)
+   [PASS] [b2] J2 router_logits（T3） (2048/2048)
+   [PASS] [b2] J3 sgate 裸点积（T3） (4/4)
+   [PASS] [b2] J4 topk_weights（T3，梯度上界） (40/40)
+== 报告项 22 条
+   [b0] J1c 覆盖                                          set 一致行 4/4；显著相邻对 32；逆序 0
+   [b0] W1 输入面消费见证                                      **未提供**（无 m26_x_consumed.b0.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   [b0] logits max|Δ|                                   2.1703e-07
+   [b0] logits 容差占用（max |Δ|/tol）                        0.0000
+   [b0] min 10/11 名间隔（reference）                        2.9871e-02
+   [b0] tie-risk 行数（gap ≤ 4×tol）                        0 / 4
+   [b0] weights max|Δ|                                  6.4685e-09
+   [b0] sgate max|Δ|                                    7.0955e-08
+   [b0] logits 行内跨专家极差（min over rows）                   7.6009e+00
+   [b0] sgate 跨行极差                                      2.7826e+00
+   [b2] J1c 覆盖                                          set 一致行 4/4；显著相邻对 32；逆序 0
+   [b2] W1 输入面消费见证                                      **未提供**（无 m26_x_consumed.b2.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   [b2] logits max|Δ|                                   1.4808e-07
+   [b2] logits 容差占用（max |Δ|/tol）                        0.0000
+   [b2] min 10/11 名间隔（reference）                        9.5692e-03
+   [b2] tie-risk 行数（gap ≤ 4×tol）                        1 / 4
+   [b2] weights max|Δ|                                  5.9130e-09
+   [b2] sgate max|Δ|                                    9.1037e-08
+   [b2] logits 行内跨专家极差（min over rows）                   7.1154e+00
+   [b2] sgate 跨行极差                                      2.5440e+00
+   覆盖：档位块范围                                             已判块 [0, 2] / 共 3 块；**缺块 [1]（本档无判据）**
+   覆盖：首块(blk=0)                                         已覆盖
+== guard 12 条：全绿
+   [OK ] [b0] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] [b0] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] [b0] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] [b0] G4 weights 行和为 1（±1e-5） 
+   [OK ] [b0] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] [b0] G6 sgate 跨行非常量 
+   [OK ] [b2] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] [b2] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] [b2] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] [b2] G4 weights 行和为 1（±1e-5） 
+   [OK ] [b2] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] [b2] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+
+---- C2 W1「读错输入」：logits 由消费快照算出、与回读面不同 ----
+== 判定项 6 条：5 PASS / 1 FAIL（判定元素 2167，超界 2041）
+   [PASS] J1 topk_ids（safe 行；1/4 行） (10/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (40/40)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 25 个） (25/25)
+   [FAIL] J2 router_logits（T3） (7/2048)
+   [PASS] J3 sgate 裸点积（T3） (4/4)
+   [PASS] J4 topk_weights（T3，梯度上界） (40/40)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 4/4；显著相邻对 25；逆序 0
+   W1 输入面消费见证                                           消费快照 != 回读面（10233/10240 元素不同）⇒ **读错输入**：logits 与消费快照一致（超界 0），与回读面不一致（超界 2041）
+   logits max|Δ|                                        7.0812e+00
+   logits 容差占用（max |Δ|/tol）                             1165.4522
+   min 10/11 名间隔（reference）                             1.6005e-03
+   tie-risk 行数（gap ≤ 4×tol）                             3 / 4
+   weights max|Δ|                                       6.7489e-09
+   sgate max|Δ|                                         4.5926e-08
+   logits 行内跨专家极差（min over rows）                        6.5824e+00
+   sgate 跨行极差                                           4.4045e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+
+---- C3 W1「算错」：logits 与快照、回读面都不一致 ----
+== 判定项 6 条：5 PASS / 1 FAIL（判定元素 2182，超界 2046）
+   [PASS] J1 topk_ids（safe 行；2/4 行） (20/20)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (40/40)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 30 个） (30/30)
+   [FAIL] J2 router_logits（T3） (2/2048)
+   [PASS] J3 sgate 裸点积（T3） (4/4)
+   [PASS] J4 topk_weights（T3，梯度上界） (40/40)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 4/4；显著相邻对 30；逆序 0
+   W1 输入面消费见证                                           消费快照 != 回读面（10228/10240 元素不同）⇒ **算错**：logits 与消费快照、回读面都不一致（超界 2046 / 2046）
+   logits max|Δ|                                        1.9614e+01
+   logits 容差占用（max |Δ|/tol）                             3241.0439
+   min 10/11 名间隔（reference）                             1.1479e-02
+   tie-risk 行数（gap ≤ 4×tol）                             2 / 4
+   weights max|Δ|                                       7.4058e-09
+   sgate max|Δ|                                         4.3423e-08
+   logits 行内跨专家极差（min over rows）                        2.8419e+01
+   sgate 跨行极差                                           2.6158e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+
+---- C4 W1「未提供、不可区分」：无快照、无 checksum ----
+== 判定项 6 条：5 PASS / 1 FAIL（判定元素 2167，超界 2041）
+   [PASS] J1 topk_ids（safe 行；1/4 行） (10/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (40/40)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 25 个） (25/25)
+   [FAIL] J2 router_logits（T3） (7/2048)
+   [PASS] J3 sgate 裸点积（T3） (4/4)
+   [PASS] J4 topk_weights（T3，梯度上界） (40/40)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 4/4；显著相邻对 25；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        7.0812e+00
+   logits 容差占用（max |Δ|/tol）                             1165.4522
+   min 10/11 名间隔（reference）                             1.6005e-03
+   tie-risk 行数（gap ≤ 4×tol）                             3 / 4
+   weights max|Δ|                                       6.7489e-09
+   sgate max|Δ|                                         4.5926e-08
+   logits 行内跨专家极差（min over rows）                        6.5824e+00
+   sgate 跨行极差                                           4.4045e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+
+---- C5 尾块 MT=8 > m=4（tie-risk 被判行）：正常应 PASS 且 tie-risk 4/4 ----
+== 判定项 5 条：5 PASS / 0 FAIL（判定元素 168，超界 0）
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (40/40)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 36 个） (36/36)
+   [PASS] J2 router_logits（T3） (48/48)
+   [PASS] J3 sgate 裸点积（T3） (4/4)
+   [PASS] J4 topk_weights（T3，梯度上界） (40/40)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 4/4；显著相邻对 36；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        8.5996e-07
+   logits 容差占用（max |Δ|/tol）                             0.0003
+   min 10/11 名间隔（reference）                             2.0446e-03
+   tie-risk 行数（gap ≤ 4×tol）                             4 / 4
+   weights max|Δ|                                       2.0221e-08
+   sgate max|Δ|                                         1.4435e-08
+   logits 行内跨专家极差（min over rows）                        1.0993e+01
+   sgate 跨行极差                                           5.9486e-01
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+SIGNATURE-C5 tail_MT_gt_m_normal_pass=1/1
+
+---- C6 尾块 MT=8 > m=4 + --negctl 8：修复前抛 IndexError；现在**只有 J1c 变红**（pad 行不置换）----
+== 判定项 5 条：4 PASS / 1 FAIL（判定元素 168，超界 4）
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (40/40)
+   [FAIL] J1c topk_ids 行内顺序（set 一致行；显著相邻对 36 个） (32/36)
+   [PASS] J2 router_logits（T3） (48/48)
+   [PASS] J3 sgate 裸点积（T3） (4/4)
+   [PASS] J4 topk_weights（T3，梯度上界） (40/40)
+== 报告项 11 条
+   J1c 覆盖                                               set 一致行 4/4；显著相邻对 36；逆序 4
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        8.5996e-07
+   logits 容差占用（max |Δ|/tol）                             0.0003
+   min 10/11 名间隔（reference）                             2.0446e-03
+   tie-risk 行数（gap ≤ 4×tol）                             4 / 4
+   weights max|Δ|                                       2.0221e-08
+   sgate max|Δ|                                         1.4435e-08
+   logits 行内跨专家极差（min over rows）                        1.0993e+01
+   sgate 跨行极差                                           5.9486e-01
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: FAIL
+-- rc=1（期望 1）
+-- [FAIL] 条目数=1（期望 1）
+SIGNATURE-C6 tail_MT_gt_m_J1c_bite_only=1/1
+
+---- C7 尾块 MT=8 > m=4（被判行全被 J1 判）+ --negctl 8：应报「负向对照未生效」而不是空转/崩 ----
+== 判定项 6 条：6 PASS / 0 FAIL（判定元素 208，超界 0）
+   [PASS] J1 topk_ids（safe 行；4/4 行） (40/40)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (40/40)
+   [PASS] J1c topk_ids 行内顺序（set 一致行；显著相邻对 36 个） (36/36)
+   [PASS] J2 router_logits（T3） (48/48)
+   [PASS] J3 sgate 裸点积（T3） (4/4)
+   [PASS] J4 topk_weights（T3，梯度上界） (40/40)
+== 报告项 12 条
+   负向对照未生效                                              V8 不适用：被判的 4 行（MT=8）没有一行被 J1 跳过 ⇒ 该档没有「J1 抓不到的行内置换」可造
+   J1c 覆盖                                               set 一致行 4/4；显著相邻对 36；逆序 0
+   W1 输入面消费见证                                           **未提供**（无 m26_x_consumed.bin、meta 无 x_consumed_sha256）⇒ 本档**不可区分**「算错」与「读错输入」
+   logits max|Δ|                                        6.5286e-07
+   logits 容差占用（max |Δ|/tol）                             0.0004
+   min 10/11 名间隔（reference）                             2.0001e+00
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 4
+   weights max|Δ|                                       2.6808e-08
+   sgate max|Δ|                                         2.7008e-08
+   logits 行内跨专家极差（min over rows）                        1.2004e+01
+   sgate 跨行极差                                           1.3271e+00
+   覆盖：档位块范围                                             legacy 单块 dump（meta 无 blk/m_total/n_tiles）⇒ 本档判据**只覆盖 1 块**；无法从 meta 判定它是首块还是末块（落盘实现固定为**最后一块**）⇒ m>MT 时**首块及其余块无判据**
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS
+-- rc=0（期望 0）
+SIGNATURE-C7 tail_MT_gt_m_V8_inapplicable_reported=1/1
+
+==================================================================
+SELFTEST: OK（全部断言通过）

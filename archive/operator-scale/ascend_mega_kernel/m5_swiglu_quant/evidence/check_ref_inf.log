@@ -1,0 +1,36 @@
+== m5 m=17 seed=0 inf=0：dump + check_ref.py（numpy 独立见证）
+(a1 C-ref) silu bf16: maxULP=0 exact=10880/10880 : PASS
+(a2 device) silu bf16: maxULP=0 exact=10880/10880 : PASS
+(b1 C-ref) mxfp4 byte-exact: qx=True scale=True (5440 B + 340 B) : PASS
+(b2 device) mxfp4 byte-exact: qx=True scale=True (5440 B + 340 B) : PASS
+info: full-chain numpy-silu -> numpy-quant vs device qx: 5440/5440 bytes agree
+===== ALL PASS =====
+exit=0
+
+== m5 m=17 seed=0 inf=1：dump + check_ref.py（numpy 独立见证）
+(a1 C-ref) silu bf16: maxULP=0 exact=10880/10880 : PASS
+(a2 device) silu bf16: maxULP=0 exact=10880/10880 : PASS
+(b1 C-ref) mxfp4 byte-exact: qx=True scale=True (5440 B + 340 B) : PASS
+(b2 device) mxfp4 byte-exact: qx=True scale=True (5440 B + 340 B) : PASS
+info: full-chain numpy-silu -> numpy-quant vs device qx: 5440/5440 bytes agree
+===== ALL PASS =====
+exit=0
+
+== m5 m=17 seed=0 inf=2：dump + check_ref.py（numpy 独立见证）
+(a1 C-ref) silu bf16: maxULP=0 exact=10880/10880 : PASS
+(a2 device) silu bf16: maxULP=0 exact=10880/10880 : PASS
+(b1 C-ref) mxfp4 byte-exact: qx=True scale=True (5440 B + 340 B) : PASS
+(b2 device) mxfp4 byte-exact: qx=True scale=True (5440 B + 340 B) : PASS
+info: full-chain numpy-silu -> numpy-quant vs device qx: 5440/5440 bytes agree
+===== ALL PASS =====
+exit=0
+
+== m5 m=17 seed=0 inf=3：dump + check_ref.py（numpy 独立见证）
+(a1 C-ref) silu bf16: maxULP=0 exact=10880/10880 : PASS
+(a2 device) silu bf16: maxULP=0 exact=10880/10880 : PASS
+(b1 C-ref) mxfp4 byte-exact: qx=True scale=True (5440 B + 340 B) : PASS
+(b2 device) mxfp4 byte-exact: qx=True scale=True (5440 B + 340 B) : PASS
+info: full-chain numpy-silu -> numpy-quant vs device qx: 4080/5440 bytes agree
+===== ALL PASS =====
+exit=0
+

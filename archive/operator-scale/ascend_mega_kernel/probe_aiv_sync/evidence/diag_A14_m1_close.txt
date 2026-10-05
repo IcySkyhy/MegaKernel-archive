@@ -1,0 +1,97 @@
+############ diag A14_m1_close（run 1，--snap --trace）
+SUMMARY variant=A14_m1_close run=1 vi=14 bk=7 ck=1 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=3/56 core_round_clean=86/896 rounds_clean=0/16 headOK_min=13 viol=810 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=18706 missing_rows=0 snap=1 rc=1 negctrl_selfonly=0 viol_under_selfonly_criterion=0
+
+---- 设备侧自读数（本次运行的 ROUND 行；与下面的 host 逐词归因互证）----
+ROUND variant=A14_m1_close run=1 round=0 headOK_min=13 headOK_max=56 cores_clean=21/56 converged=0
+ROUND variant=A14_m1_close run=1 round=1 headOK_min=45 headOK_max=56 cores_clean=7/56 converged=0
+ROUND variant=A14_m1_close run=1 round=2 headOK_min=52 headOK_max=56 cores_clean=5/56 converged=0
+ROUND variant=A14_m1_close run=1 round=3 headOK_min=52 headOK_max=56 cores_clean=5/56 converged=0
+ROUND variant=A14_m1_close run=1 round=4 headOK_min=54 headOK_max=56 cores_clean=4/56 converged=0
+ROUND variant=A14_m1_close run=1 round=5 headOK_min=53 headOK_max=56 cores_clean=4/56 converged=0
+ROUND variant=A14_m1_close run=1 round=6 headOK_min=54 headOK_max=56 cores_clean=4/56 converged=0
+ROUND variant=A14_m1_close run=1 round=7 headOK_min=53 headOK_max=56 cores_clean=4/56 converged=0
+ROUND variant=A14_m1_close run=1 round=8 headOK_min=53 headOK_max=56 cores_clean=4/56 converged=0
+ROUND variant=A14_m1_close run=1 round=9 headOK_min=46 headOK_max=56 cores_clean=4/56 converged=0
+ROUND variant=A14_m1_close run=1 round=10 headOK_min=46 headOK_max=56 cores_clean=4/56 converged=0
+ROUND variant=A14_m1_close run=1 round=11 headOK_min=54 headOK_max=56 cores_clean=4/56 converged=0
+ROUND variant=A14_m1_close run=1 round=12 headOK_min=47 headOK_max=56 cores_clean=4/56 converged=0
+ROUND variant=A14_m1_close run=1 round=13 headOK_min=54 headOK_max=56 cores_clean=3/56 converged=0
+ROUND variant=A14_m1_close run=1 round=14 headOK_min=55 headOK_max=56 cores_clean=3/56 converged=0
+ROUND variant=A14_m1_close run=1 round=15 headOK_min=44 headOK_max=56 cores_clean=6/56 converged=0
+# snapshot snap_A14_m1_close_run1.bin: naiv=56 rounds=16 st=16 wl=64 words=1024
+# ---- 逐轮：head 命中分布 + 词级归因（对所有核求和）----
+round  cores_headOK=naiv  headOK_min  word_match  word_future  word_past  word_zero  word_other  future_rounds(前3)
+    0     21/56                13       43312            0          0       6864           0  -
+    1      7/56                45       45600            0       4576          0           0  -
+    2      5/56                52       47072            0       3104          0           0  -
+    3      5/56                52       47024            0       3152          0           0  -
+    4      4/56                54       48544            0       1632          0           0  -
+    5      4/56                53       47760            0       2416          0           0  -
+    6      4/56                54       48528            0       1648          0           0  -
+    7      4/56                53       47808            0       2368          0           0  -
+    8      4/56                53       47760            0       2416          0           0  -
+    9      4/56                46       43664            0       6512          0           0  -
+   10      4/56                46       44016            0       6160          0           0  -
+   11      4/56                54       48544            0       1632          0           0  -
+   12      4/56                47       44928            0       5248          0           0  -
+   13      3/56                54       48784            0       1392          0           0  -
+   14      3/56                55       49328            0        848          0           0  -
+   15      6/56                44       44464            0       5712          0           0  -
+
+# ---- 被污染读的样例 (round, core, 槽, 观测到的轮次) ----
+
+# ---- 逐 (round, core) headOK 分布直方 ----
+  round= 0 13:2 18:1 19:2 28:1 38:1 39:3 43:1 45:4 46:2 48:1 50:1 51:3 52:3 54:6 55:4 56:21
+  round= 1 45:5 48:5 49:8 50:5 51:11 52:11 54:2 55:2 56:7
+  round= 2 52:47 53:1 55:3 56:5
+  round= 3 52:48 53:1 55:2 56:5
+  round= 4 54:50 55:2 56:4
+  round= 5 53:49 54:1 55:2 56:4
+  round= 6 54:51 55:1 56:4
+  round= 7 53:47 54:2 55:3 56:4
+  round= 8 53:49 54:1 55:2 56:4
+  round= 9 46:38 54:13 55:1 56:4
+  round=10 46:32 49:4 52:6 54:3 55:7 56:4
+  round=11 54:50 55:2 56:4
+  round=12 47:26 49:8 52:1 53:6 54:5 55:6 56:4
+  round=13 54:34 55:19 56:3
+  round=14 55:53 56:3
+  round=15 44:8 45:16 50:11 51:1 55:14 56:6
+# ---- 逐轮：违规核 vs 快核的时序（设备侧 SYS_CNT，模 2^32 差）----
+round  slowest_core(tRd-T)  its_headOK   earliest_next_write(tWr(r+1)-T)  slow_read_after_fast_write
+    0  core23          30945          56                        31695  no
+    1  core31          21880          56                        22245  no
+    2  core31          21798          56                        22165  no
+    3  core31          21532          56                        21901  no
+    4  core31          17355          56                        17717  no
+    5  core31          21269          56                        21626  no
+    6  core31          16750          56                        17122  no
+    7  core31          20776          56                        21145  no
+    8  core31          19272          56                        19636  no
+    9  core31          19645          56                        19998  no
+   10  core31          18091          56                        18463  no
+   11  core31          20843          56                        21221  no
+   12  core31          19194          56                        19560  no
+   13  core31          20416          56                        20774  no
+   14  core31          11128          56                        11502  no
+   15  core31          10461          56                           -1  n/a(末轮)
+# 双源交叉核对（设备侧 VF 计数 vs host 逐词归因）
+round    设备侧 cores_clean   host 归因 cores_clean  一致?
+    0           (21, 56)              (21, 56)  OK
+    1            (7, 56)               (7, 56)  OK
+    2            (5, 56)               (5, 56)  OK
+    3            (5, 56)               (5, 56)  OK
+    4            (4, 56)               (4, 56)  OK
+    5            (4, 56)               (4, 56)  OK
+    6            (4, 56)               (4, 56)  OK
+    7            (4, 56)               (4, 56)  OK
+    8            (4, 56)               (4, 56)  OK
+    9            (4, 56)               (4, 56)  OK
+   10            (4, 56)               (4, 56)  OK
+   11            (4, 56)               (4, 56)  OK
+   12            (4, 56)               (4, 56)  OK
+   13            (3, 56)               (3, 56)  OK
+   14            (3, 56)               (3, 56)  OK
+   15            (6, 56)               (6, 56)  OK
+
+不一致轮次：0    （两源不同路径、同一份数据；不一致即其中一条计数路径有 bug）

@@ -1,0 +1,68 @@
+[m9_case_b56_] state: PASS(bit-exact)
+[m9_case_b56_] q   : PASS maxRelDiff=3.630e-07 maxAbsDiff=5.588e-09
+[m9_case_b56_] k   : PASS maxRelDiff=3.653e-07 maxAbsDiff=5.960e-08
+[m9_case_b56_] v   : PASS maxRelDiff=2.577e-07 maxAbsDiff=5.960e-08
+[m9_case_b56_] g   : PASS maxRelDiff=1.115e-05 maxAbsDiff=3.815e-06
+[m9_case_b56_] beta: PASS maxRelDiff=1.250e-07 maxAbsDiff=5.960e-08
+[m9_case_b28_] state: PASS(bit-exact)
+[m9_case_b28_] q   : PASS maxRelDiff=3.525e-07 maxAbsDiff=5.588e-09
+[m9_case_b28_] k   : PASS maxRelDiff=3.262e-07 maxAbsDiff=5.960e-08
+[m9_case_b28_] v   : PASS maxRelDiff=2.180e-07 maxAbsDiff=1.192e-07
+[m9_case_b28_] g   : PASS maxRelDiff=2.964e-06 maxAbsDiff=7.629e-06
+[m9_case_b28_] beta: PASS maxRelDiff=1.000e-07 maxAbsDiff=5.960e-08
+[m9_case_b16_] state: PASS(bit-exact)
+[m9_case_b16_] q   : PASS maxRelDiff=3.189e-07 maxAbsDiff=5.588e-09
+[m9_case_b16_] k   : PASS maxRelDiff=2.864e-07 maxAbsDiff=4.470e-08
+[m9_case_b16_] v   : PASS maxRelDiff=2.185e-07 maxAbsDiff=1.192e-07
+[m9_case_b16_] g   : PASS maxRelDiff=4.185e-06 maxAbsDiff=1.907e-06
+[m9_case_b16_] beta: PASS maxRelDiff=1.288e-07 maxAbsDiff=1.192e-07
+[m9_case_b08_] state: PASS(bit-exact)
+[m9_case_b08_] q   : PASS maxRelDiff=2.937e-07 maxAbsDiff=3.725e-09
+[m9_case_b08_] k   : PASS maxRelDiff=3.355e-07 maxAbsDiff=5.960e-08
+[m9_case_b08_] v   : PASS maxRelDiff=2.265e-07 maxAbsDiff=1.192e-07
+[m9_case_b08_] g   : PASS maxRelDiff=4.489e-06 maxAbsDiff=3.815e-06
+[m9_case_b08_] beta: PASS maxRelDiff=1.134e-07 maxAbsDiff=5.960e-08
+[m9_case_b04_] state: PASS(bit-exact)
+[m9_case_b04_] q   : PASS maxRelDiff=2.945e-07 maxAbsDiff=3.725e-09
+[m9_case_b04_] k   : PASS maxRelDiff=2.350e-07 maxAbsDiff=5.960e-08
+[m9_case_b04_] v   : PASS maxRelDiff=2.276e-07 maxAbsDiff=1.192e-07
+[m9_case_b04_] g   : PASS maxRelDiff=3.172e-06 maxAbsDiff=3.815e-06
+[m9_case_b04_] beta: PASS maxRelDiff=1.484e-07 maxAbsDiff=5.960e-08
+[m9mt_m1_b56_mut0_] m=1 blk=56 mut=0 qs=1 state=PASS qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[m9mt_m1_b56_mut0_] q   : PASS maxRelDiff=3.120e-07 maxAbsDiff=3.725e-09
+[m9mt_m1_b56_mut0_] k   : PASS maxRelDiff=3.496e-07 maxAbsDiff=5.960e-08
+[m9mt_m1_b56_mut0_] v   : PASS maxRelDiff=2.163e-07 maxAbsDiff=1.192e-07
+[m9mt_m1_b56_mut0_] g   : PASS maxRelDiff=2.709e-06 maxAbsDiff=3.815e-06
+[m9mt_m1_b56_mut0_] beta: PASS maxRelDiff=1.268e-07 maxAbsDiff=5.960e-08
+[m9mt_m257_b56_mut0_] m=257 blk=56 mut=0 qs=0 state=PASS qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[m9mt_m257_b56_mut0_] q   : PASS maxRelDiff=4.611e-07 maxAbsDiff=8.941e-08
+[m9mt_m257_b56_mut0_] k   : PASS maxRelDiff=4.171e-07 maxAbsDiff=8.941e-08
+[m9mt_m257_b56_mut0_] v   : PASS maxRelDiff=3.235e-07 maxAbsDiff=1.192e-07
+[m9mt_m257_b56_mut0_] g   : PASS maxRelDiff=9.757e-06 maxAbsDiff=7.629e-06
+[m9mt_m257_b56_mut0_] beta: PASS maxRelDiff=1.791e-07 maxAbsDiff=1.192e-07
+[m9mt_m4_b56_mut0_] m=4 blk=56 mut=0 qs=0 state=PASS qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[m9mt_m4_b56_mut0_] q   : PASS maxRelDiff=3.332e-07 maxAbsDiff=5.960e-08
+[m9mt_m4_b56_mut0_] k   : PASS maxRelDiff=4.130e-07 maxAbsDiff=8.941e-08
+[m9mt_m4_b56_mut0_] v   : PASS maxRelDiff=2.704e-07 maxAbsDiff=1.192e-07
+[m9mt_m4_b56_mut0_] g   : PASS maxRelDiff=1.020e-05 maxAbsDiff=1.526e-05
+[m9mt_m4_b56_mut0_] beta: PASS maxRelDiff=1.502e-07 maxAbsDiff=1.192e-07
+[m9mt_m65_b04_mut0_] m=65 blk=4 mut=0 qs=0 state=PASS qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[m9mt_m65_b04_mut0_] q   : PASS maxRelDiff=3.780e-07 maxAbsDiff=8.941e-08
+[m9mt_m65_b04_mut0_] k   : PASS maxRelDiff=4.070e-07 maxAbsDiff=8.941e-08
+[m9mt_m65_b04_mut0_] v   : PASS maxRelDiff=3.002e-07 maxAbsDiff=1.192e-07
+[m9mt_m65_b04_mut0_] g   : PASS maxRelDiff=1.875e-05 maxAbsDiff=7.629e-06
+[m9mt_m65_b04_mut0_] beta: PASS maxRelDiff=1.667e-07 maxAbsDiff=1.192e-07
+[m9mt_m65_b16_mut0_] m=65 blk=16 mut=0 qs=0 state=PASS qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[m9mt_m65_b16_mut0_] q   : PASS maxRelDiff=4.043e-07 maxAbsDiff=8.941e-08
+[m9mt_m65_b16_mut0_] k   : PASS maxRelDiff=4.149e-07 maxAbsDiff=8.941e-08
+[m9mt_m65_b16_mut0_] v   : PASS maxRelDiff=3.126e-07 maxAbsDiff=1.192e-07
+[m9mt_m65_b16_mut0_] g   : PASS maxRelDiff=7.667e-06 maxAbsDiff=7.629e-06
+[m9mt_m65_b16_mut0_] beta: PASS maxRelDiff=1.818e-07 maxAbsDiff=1.192e-07
+[m9mt_m65_b56_mut0_] m=65 blk=56 mut=0 qs=0 state=PASS qpad=PASS kpad=PASS gpad=PASS bpad=PASS
+[m9mt_m65_b56_mut0_] q   : PASS maxRelDiff=4.241e-07 maxAbsDiff=8.941e-08
+[m9mt_m65_b56_mut0_] k   : PASS maxRelDiff=3.813e-07 maxAbsDiff=8.941e-08
+[m9mt_m65_b56_mut0_] v   : PASS maxRelDiff=2.948e-07 maxAbsDiff=1.192e-07
+[m9mt_m65_b56_mut0_] g   : PASS maxRelDiff=1.636e-05 maxAbsDiff=3.815e-06
+[m9mt_m65_b56_mut0_] beta: PASS maxRelDiff=1.667e-07 maxAbsDiff=1.192e-07
+[M9MT] ALL PASS（6 档）
+[M9] numpy fp32 reference check (rtol 1e-05 + atol 1e-06; state/pad bit-exact): ALL PASS

@@ -1,0 +1,21 @@
+### m174_inject_controls.log at=2026-10-04T14:28:55+00:00
+### 命令（每档）: python3 m20_hyperconn/evidence/h2_blk_recalib.py <M169_DUMP_ROOT>/dumps_m4097_p15_nolinks Pf.gdn 4097 --inject {scale,zero,shift}
+
+######## --inject scale ########
+[recalib] **负向对照**：h2.blk 前 64 行注入 scale 缺陷
+[recalib] h2.blk+inj n=10488320  良态n=6441452   逐位=0.9644 良态逐位=0.9748 ulpMax=11  良态ulp>2占比=1.567e-02 归一maxAbs=1.980e-02 | 旧=FAIL 新=FAIL
+[recalib]   h2.blk+inj 良态 ulp>2: 100919/6441452 (1.567e-02)，最大 ulp=11，|ref|/scale ∈ [0.0501, 0.9554]
+[recalib] 新口径：判定项 4 条，红 1 条：h2.blk+inj
+rc=1
+######## --inject zero ########
+[recalib] **负向对照**：h2.blk 前 64 行注入 zero 缺陷
+[recalib] h2.blk+inj n=10488320  良态n=6441452   逐位=0.9644 良态逐位=0.9748 ulpMax=16449 良态ulp>2占比=1.571e-02 归一maxAbs=9.554e-01 | 旧=FAIL 新=FAIL
+[recalib]   h2.blk+inj 良态 ulp>2: 101172/6441452 (1.571e-02)，最大 ulp=16449，|ref|/scale ∈ [0.0501, 0.9554]
+[recalib] 新口径：判定项 4 条，红 1 条：h2.blk+inj
+rc=1
+######## --inject shift ########
+[recalib] **负向对照**：h2.blk 前 64 行注入 shift 缺陷
+[recalib] h2.blk+inj n=10488320  良态n=6441452   逐位=0.9644 良态逐位=0.9748 ulpMax=37  良态ulp>2占比=1.567e-02 归一maxAbs=1.238e-02 | 旧=FAIL 新=FAIL
+[recalib]   h2.blk+inj 良态 ulp>2: 100915/6441452 (1.567e-02)，最大 ulp=37，|ref|/scale ∈ [0.0501, 0.6386]
+[recalib] 新口径：判定项 4 条，红 1 条：h2.blk+inj
+rc=1

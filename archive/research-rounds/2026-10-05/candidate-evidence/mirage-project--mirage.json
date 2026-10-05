@@ -1,0 +1,3567 @@
+{
+  "repository": "mirage-project/mirage",
+  "url": "https://github.com/mirage-project/mirage",
+  "created_at": "2024-05-08T04:14:42Z",
+  "pushed_at": "2026-10-04T01:45:41Z",
+  "branch": "mpk",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".clang-format",
+      "size": 5041
+    },
+    {
+      "path": ".claude/agents/ferret-kernel-agent.md",
+      "size": 25104
+    },
+    {
+      "path": ".claude/agents/ferret-optimizer.md",
+      "size": 9399
+    },
+    {
+      "path": ".claude/agents/ferret-test-writer.md",
+      "size": 18093
+    },
+    {
+      "path": ".claude/agents/kda-kernel-agent.md",
+      "size": 42419
+    },
+    {
+      "path": ".claude/agents/mpk-commit-reviewer.md",
+      "size": 14378
+    },
+    {
+      "path": ".claude/agents/mpk-correctness-gate.md",
+      "size": 9271
+    },
+    {
+      "path": ".claude/agents/mpk-iterator.md",
+      "size": 8496
+    },
+    {
+      "path": ".claude/agents/mpk-memory-keeper.md",
+      "size": 7110
+    },
+    {
+      "path": ".claude/agents/mpk-optimization-planner.md",
+      "size": 14560
+    },
+    {
+      "path": ".claude/agents/mpk-profiler.md",
+      "size": 9427
+    },
+    {
+      "path": ".claude/agents/v2-kernel-engineer.md",
+      "size": 4585
+    },
+    {
+      "path": ".claude/agents/v2-model-support-orchestrator.md",
+      "size": 5087
+    },
+    {
+      "path": ".claude/skills/README.md",
+      "size": 4886
+    },
+    {
+      "path": ".claude/skills/add-mpk-model/SKILL.md",
+      "size": 6383
+    },
+    {
+      "path": ".claude/skills/add-mpk-task/SKILL.md",
+      "size": 18083
+    },
+    {
+      "path": ".claude/skills/b200-cluster-persistent-scheduler/SKILL.md",
+      "size": 7188
+    },
+    {
+      "path": ".claude/skills/b200-cluster-persistent-scheduler/test-prompts.json",
+      "size": 2830
+    },
+    {
+      "path": ".claude/skills/b200-flash-attention4-planner/SKILL.md",
+      "size": 7798
+    },
+    {
+      "path": ".claude/skills/b200-flash-attention4-planner/test-prompts.json",
+      "size": 2819
+    },
+    {
+      "path": ".claude/skills/b200-gemm-optimization-ladder/SKILL.md",
+      "size": 7693
+    },
+    {
+      "path": ".claude/skills/b200-gemm-optimization-ladder/test-prompts.json",
+      "size": 2801
+    },
+    {
+      "path": ".claude/skills/b200-kernel-roofline-triage/SKILL.md",
+      "size": 8762
+    },
+    {
+      "path": ".claude/skills/b200-kernel-roofline-triage/test-prompts.json",
+      "size": 2996
+    },
+    {
+      "path": ".claude/skills/b200-layout-contract-auditor/SKILL.md",
+      "size": 7236
+    },
+    {
+      "path": ".claude/skills/b200-layout-contract-auditor/test-prompts.json",
+      "size": 2818
+    },
+    {
+      "path": ".claude/skills/b200-mbarrier-protocol-auditor/SKILL.md",
+      "size": 7285
+    },
+    {
+      "path": ".claude/skills/b200-mbarrier-protocol-auditor/test-prompts.json",
+      "size": 2812
+    },
+    {
+      "path": ".claude/skills/b200-scope-layout-dispatch/SKILL.md",
+      "size": 7610
+    },
+    {
+      "path": ".claude/skills/b200-scope-layout-dispatch/test-prompts.json",
+      "size": 2793
+    },
+    {
+      "path": ".claude/skills/b200-tcgen05-mma-contract-builder/SKILL.md",
+      "size": 7376
+    },
+    {
+      "path": ".claude/skills/b200-tcgen05-mma-contract-builder/test-prompts.json",
+      "size": 2810
+    },
+    {
+      "path": ".claude/skills/b200-tma-pipeline-designer/SKILL.md",
+      "size": 7449
+    },
+    {
+      "path": ".claude/skills/b200-tma-pipeline-designer/test-prompts.json",
+      "size": 2756
+    },
+    {
+      "path": ".claude/skills/b200-tmem-lifecycle-planner/SKILL.md",
+      "size": 6787
+    },
+    {
+      "path": ".claude/skills/b200-tmem-lifecycle-planner/test-prompts.json",
+      "size": 2787
+    },
+    {
+      "path": ".claude/skills/b200-warp-specialized-debugger/SKILL.md",
+      "size": 7534
+    },
+    {
+      "path": ".claude/skills/b200-warp-specialized-debugger/test-prompts.json",
+      "size": 2868
+    },
+    {
+      "path": ".claude/skills/blackwell-build-compatibility-auditor/SKILL.md",
+      "size": 7010
+    },
+    {
+      "path": ".claude/skills/blackwell-build-compatibility-auditor/test-prompts.json",
+      "size": 2789
+    },
+    {
+      "path": ".claude/skills/dpskv3-logistic-review/SKILL.md",
+      "size": 18553
+    },
+    {
+      "path": ".claude/skills/ferret-kernel-system/DESIGN.md",
+      "size": 7141
+    },
+    {
+      "path": ".claude/skills/ferret-kernel-system/SKILL.md",
+      "size": 5102
+    },
+    {
+      "path": ".claude/skills/mpk-development-norms/SKILL.md",
+      "size": 10779
+    },
+    {
+      "path": ".claude/skills/mpk-development-norms/references/codex-checklist.md",
+      "size": 8348
+    },
+    {
+      "path": ".claude/skills/mpk-development-norms/references/exemplar-prs.md",
+      "size": 6152
+    },
+    {
+      "path": ".claude/skills/mpk-faithful-gate/SKILL.md",
+      "size": 10586
+    },
+    {
+      "path": ".claude/skills/mpk-internals/SKILL.md",
+      "size": 21665
+    },
+    {
+      "path": ".claude/skills/mpk-lever-cleanup/SKILL.md",
+      "size": 8874
+    },
+    {
+      "path": ".claude/skills/test-mode/SKILL.md",
+      "size": 18366
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/SKILL.md",
+      "size": 15132
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/applications/attn-ffn-reference-rewrite-plan.md",
+      "size": 7940
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/applications/ferret_dispatch_w13w2.md",
+      "size": 11034
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/applications/ffn_item1_spec.md",
+      "size": 40496
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/references/ferret-v2-dispatch.md",
+      "size": 9469
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/references/house-style.md",
+      "size": 19935
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/references/m1-decode-evidence.md",
+      "size": 10134
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/references/upstream-kernel-catalog.md",
+      "size": 15089
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/references/validation-debug.md",
+      "size": 12566
+    },
+    {
+      "path": ".claude/skills/v2-kernel-writing/references/wiring-recipe.md",
+      "size": 10569
+    },
+    {
+      "path": ".claude/skills/v2-model-support/SKILL.md",
+      "size": 21465
+    },
+    {
+      "path": ".claude/skills/v2-model-support/references/V2_DSV3_DECODE_MASTER_PLAN.md",
+      "size": 46057
+    },
+    {
+      "path": ".claude/skills/v2-model-support/references/box-orchestration.md",
+      "size": 8950
+    },
+    {
+      "path": ".claude/skills/v2-model-support/references/debug-gates.md",
+      "size": 9502
+    },
+    {
+      "path": ".claude/skills/v2-model-support/references/demo-stage.md",
+      "size": 10535
+    },
+    {
+      "path": ".claude/skills/v2-model-support/references/graph-to-plan.md",
+      "size": 9644
+    },
+    {
+      "path": ".claude/skills/v2-perf-iteration/SKILL.md",
+      "size": 16079
+    },
+    {
+      "path": ".claude/skills/v2-perf-iteration/references/loop-agents.md",
+      "size": 7505
+    },
+    {
+      "path": ".claude/skills/v2-perf-iteration/tools/perfetto_analyze.py",
+      "size": 23995
+    },
+    {
+      "path": ".claude/skills/v2-perf-iteration/tools/perfetto_depgraph.py",
+      "size": 37264
+    },
+    {
+      "path": ".claude/skills/v2-perf-iteration/tools/v2_perfetto_export.py",
+      "size": 25644
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/1_Report_Bug.yml",
+      "size": 895
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/2_Request_Feature.yml",
+      "size": 388
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/3_Installation.yml",
+      "size": 948
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/4_Call_For_Comment.yml",
+      "size": 388
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/5_General.yml",
+      "size": 367
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "size": 117
+    },
+    {
+      "path": ".github/runs-on.yml",
+      "size": 230
+    },
+    {
+      "path": ".github/workflows/build-test.yml",
+      "size": 1425
+    },
+    {
+      "path": ".github/workflows/ci-tests-online.yml",
+      "size": 1728
+    },
+    {
+      "path": ".github/workflows/ci-tests-qwen3.yml",
+      "size": 2792
+    },
+    {
+      "path": ".github/workflows/code-format.yml",
+      "size": 654
+    },
+    {
+      "path": ".github/workflows/gpu-tests.yml",
+      "size": 1829
+    },
+    {
+      "path": ".github/workflows/helpers/build_mirage_from_source.sh",
+      "size": 1269
+    },
+    {
+      "path": ".github/workflows/helpers/free_space_on_runner.sh",
+      "size": 832
+    },
+    {
+      "path": ".github/workflows/helpers/install_dependencies.sh",
+      "size": 4286
+    },
+    {
+      "path": ".github/workflows/helpers/install_dependencies_manylinux.sh",
+      "size": 4766
+    },
+    {
+      "path": ".github/workflows/helpers/set_env.sh",
+      "size": 1996
+    },
+    {
+      "path": ".github/workflows/pypi-deploy.yml",
+      "size": 1886
+    },
+    {
+      "path": ".github/workflows/release-wheels.yml",
+      "size": 6648
+    },
+    {
+      "path": ".github/workflows/shell-check.yml",
+      "size": 335
+    },
+    {
+      "path": ".gitignore",
+      "size": 1494
+    },
+    {
+      "path": ".gitmodules",
+      "size": 259
+    },
+    {
+      "path": ".readthedocs.yaml",
+      "size": 821
+    },
+    {
+      "path": ".tools/clang-format-15-master-1d7ec53d",
+      "size": 3813968
+    },
+    {
+      "path": "CMakeLists.txt",
+      "size": 15016
+    },
+    {
+      "path": "INSTALL.md",
+      "size": 2915
+    },
+    {
+      "path": "LICENSE",
+      "size": 11357
+    },
+    {
+      "path": "MANIFEST.in",
+      "size": 589
+    },
+    {
+      "path": "NCU_Usage_Manual.md",
+      "size": 2218
+    },
+    {
+      "path": "README.md",
+      "size": 6800
+    },
+    {
+      "path": "analyze.sh",
+      "size": 1627
+    },
+    {
+      "path": "benchmark/baselines/pytorch/gated_mlp.py",
+      "size": 1086
+    },
+    {
+      "path": "benchmark/baselines/pytorch/gqa.py",
+      "size": 1130
+    },
+    {
+      "path": "benchmark/baselines/pytorch/lora.py",
+      "size": 1087
+    },
+    {
+      "path": "benchmark/baselines/pytorch/norm_transformer.py",
+      "size": 1205
+    },
+    {
+      "path": "benchmark/baselines/pytorch/qknorm_gqa.py",
+      "size": 1353
+    },
+    {
+      "path": "benchmark/baselines/pytorch/rms_norm.py",
+      "size": 960
+    },
+    {
+      "path": "benchmark/benchmark_serving.py",
+      "size": 21363
+    },
+    {
+      "path": "benchmark/end-to-end/chameleon.py",
+      "size": 4015
+    },
+    {
+      "path": "benchmark/end-to-end/llama.py",
+      "size": 3272
+    },
+    {
+      "path": "benchmark/end-to-end/lora.py",
+      "size": 5847
+    },
+    {
+      "path": "benchmark/end-to-end/ngpt.py",
+      "size": 3813
+    },
+    {
+      "path": "benchmark/gated_mlp.py",
+      "size": 1950
+    },
+    {
+      "path": "benchmark/group_query_attention.py",
+      "size": 2075
+    },
+    {
+      "path": "benchmark/lora.py",
+      "size": 2049
+    },
+    {
+      "path": "benchmark/microbench/Makefile",
+      "size": 1320
+    },
+    {
+      "path": "benchmark/microbench/README.md",
+      "size": 18159
+    },
+    {
+      "path": "benchmark/microbench/microbench_common.cuh",
+      "size": 15037
+    },
+    {
+      "path": "benchmark/microbench/sync_primitives.cu",
+      "size": 28119
+    },
+    {
+      "path": "benchmark/microbench/tma_bandwidth.cu",
+      "size": 32242
+    },
+    {
+      "path": "benchmark/moe.py",
+      "size": 1920
+    },
+    {
+      "path": "benchmark/multi_head_attention.py",
+      "size": 2078
+    },
+    {
+      "path": "benchmark/multi_query_attention.py",
+      "size": 2046
+    },
+    {
+      "path": "benchmark/norm_transformer.py",
+      "size": 2204
+    },
+    {
+      "path": "benchmark/qknorm_gqa.py",
+      "size": 2168
+    },
+    {
+      "path": "benchmark/rmsnorm.py",
+      "size": 1958
+    },
+    {
+      "path": "benchmark/saved_mugraphs/gated_mlp.json",
+      "size": 169177
+    },
+    {
+      "path": "benchmark/saved_mugraphs/gqa_bs1.json",
+      "size": 217604
+    },
+    {
+      "path": "benchmark/saved_mugraphs/gqa_bs8.json",
+      "size": 77955
+    },
+    {
+      "path": "benchmark/saved_mugraphs/lora.json",
+      "size": 22440
+    },
+    {
+      "path": "benchmark/saved_mugraphs/mha_bs1.json",
+      "size": 149127
+    },
+    {
+      "path": "benchmark/saved_mugraphs/mha_bs8.json",
+      "size": 269435
+    },
+    {
+      "path": "benchmark/saved_mugraphs/mqa_bs1.json",
+      "size": 93599
+    },
+    {
+      "path": "benchmark/saved_mugraphs/mqa_bs8.json",
+      "size": 132486
+    },
+    {
+      "path": "benchmark/saved_mugraphs/ntrans_bs1.json",
+      "size": 48643
+    },
+    {
+      "path": "benchmark/saved_mugraphs/ntrans_bs8.json",
+      "size": 48775
+    },
+    {
+      "path": "benchmark/saved_mugraphs/qknorm_gqa_bs1.json",
+      "size": 1816387
+    },
+    {
+      "path": "benchmark/saved_mugraphs/qknorm_gqa_bs8.json",
+      "size": 1823547
+    },
+    {
+      "path": "benchmark/saved_mugraphs/rmsnorm_bs1.json",
+      "size": 67205
+    },
+    {
+      "path": "benchmark/saved_mugraphs/rmsnorm_bs8.json",
+      "size": 74766
+    },
+    {
+      "path": "benchmark/saved_mugraphs/single_gated_mlp.json",
+      "size": 22276
+    },
+    {
+      "path": "benchmark/saved_mugraphs/single_lora.json",
+      "size": 23028
+    },
+    {
+      "path": "benchmark/saved_mugraphs/single_mqa_bs1.json",
+      "size": 32313
+    },
+    {
+      "path": "cmake/cuda.cmake",
+      "size": 2823
+    },
+    {
+      "path": "conda/mirage.yml",
+      "size": 627
+    },
+    {
+      "path": "config.cmake",
+      "size": 110
+    },
+    {
+      "path": "cpp_examples/chameleon.cc",
+      "size": 6506
+    },
+    {
+      "path": "cpp_examples/common.h",
+      "size": 110
+    },
+    {
+      "path": "cpp_examples/dnn.cc",
+      "size": 5346
+    },
+    {
+      "path": "cpp_examples/egg_tests.cc",
+      "size": 1596
+    },
+    {
+      "path": "cpp_examples/gated_mlp.cc",
+      "size": 3433
+    },
+    {
+      "path": "cpp_examples/group_query_attn_inc_decode.cc",
+      "size": 6154
+    },
+    {
+      "path": "cpp_examples/group_query_attn_prefill.cc",
+      "size": 6236
+    },
+    {
+      "path": "cpp_examples/group_query_attn_spec_decode.cc",
+      "size": 6541
+    },
+    {
+      "path": "cpp_examples/lora.cc",
+      "size": 3772
+    },
+    {
+      "path": "cpp_examples/mlp.cc",
+      "size": 3861
+    },
+    {
+      "path": "cpp_examples/moe.cc",
+      "size": 4278
+    },
+    {
+      "path": "cpp_examples/multi_head_attn_inc_decode.cc",
+      "size": 5878
+    },
+    {
+      "path": "cpp_examples/multi_head_attn_prefill.cc",
+      "size": 5895
+    },
+    {
+      "path": "cpp_examples/multi_head_attn_spec_decode.cc",
+      "size": 5784
+    },
+    {
+      "path": "cpp_examples/multi_query_attn_inc_decode.cc",
+      "size": 5675
+    },
+    {
+      "path": "cpp_examples/multi_query_attn_prefill.cc",
+      "size": 6138
+    },
+    {
+      "path": "cpp_examples/multi_query_attn_spec_decode.cc",
+      "size": 6024
+    },
+    {
+      "path": "cpp_examples/profile.cc",
+      "size": 751
+    },
+    {
+      "path": "cpp_examples/rms.cc",
+      "size": 2751
+    },
+    {
+      "path": "demo/checkpoint_lora.json",
+      "size": 67455
+    },
+    {
+      "path": "demo/deepseek_v3/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "demo/deepseek_v3/demo.py",
+      "size": 49810
+    },
+    {
+      "path": "demo/deepseek_v3/models/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "demo/deepseek_v3/models/convert.py",
+      "size": 22287
+    },
+    {
+      "path": "demo/deepseek_v3/readme.md",
+      "size": 5438
+    },
+    {
+      "path": "demo/demo_blackwell/matmul-256x4096x4096.py",
+      "size": 1258
+    },
+    {
+      "path": "demo/demo_blackwell/matmul-512x1024x256.py",
+      "size": 2423
+    },
+    {
+      "path": "demo/demo_blackwell/rmsnorm.py",
+      "size": 1329
+    },
+    {
+      "path": "demo/demo_chameleon_attn.py",
+      "size": 1226
+    },
+    {
+      "path": "demo/demo_gated_mlp.py",
+      "size": 1191
+    },
+    {
+      "path": "demo/demo_group_query_attention.py",
+      "size": 1421
+    },
+    {
+      "path": "demo/demo_hopper/linear.py",
+      "size": 2233
+    },
+    {
+      "path": "demo/demo_hopper/main.py",
+      "size": 1987
+    },
+    {
+      "path": "demo/demo_hopper/mirage_hopper_matmul.py",
+      "size": 1566
+    },
+    {
+      "path": "demo/demo_hopper/utils.py",
+      "size": 620
+    },
+    {
+      "path": "demo/demo_jit.py",
+      "size": 1179
+    },
+    {
+      "path": "demo/demo_llama3-8b.py",
+      "size": 2707
+    },
+    {
+      "path": "demo/demo_lora.py",
+      "size": 1279
+    },
+    {
+      "path": "demo/demo_rms_norm.py",
+      "size": 1445
+    },
+    {
+      "path": "demo/glm4_moe/demo.py",
+      "size": 12389
+    },
+    {
+      "path": "demo/glm4_moe/readme.md",
+      "size": 2099
+    },
+    {
+      "path": "demo/gpt_oss/demo.py",
+      "size": 7843
+    },
+    {
+      "path": "demo/llama3/demo.py",
+      "size": 34049
+    },
+    {
+      "path": "demo/llama3/models/configuration_llama3.py",
+      "size": 11399
+    },
+    {
+      "path": "demo/llama3/models/modeling_llama3.py",
+      "size": 16746
+    },
+    {
+      "path": "demo/llama3/models/rope.py",
+      "size": 5460
+    },
+    {
+      "path": "demo/nki_rms_norm.py",
+      "size": 541
+    },
+    {
+      "path": "demo/profiler/profile_rmsnorm.py",
+      "size": 1254
+    },
+    {
+      "path": "demo/profiler/rmsnorm.png",
+      "size": 239084
+    },
+    {
+      "path": "demo/pytorch/chameleon-7b.py",
+      "size": 2351
+    },
+    {
+      "path": "demo/pytorch/llama3-8b.py",
+      "size": 2295
+    },
+    {
+      "path": "demo/pytorch/lora.py",
+      "size": 2980
+    },
+    {
+      "path": "demo/pytorch/ngpt.py",
+      "size": 2600
+    },
+    {
+      "path": "demo/qwen2.5/demo.py",
+      "size": 4028
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_64644b2e7bbffb94.json",
+      "size": 61409
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_647dd41aeaf656b4.json",
+      "size": 48363
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_6508b4ab6af4f866.json",
+      "size": 78867
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_659704256b064506.json",
+      "size": 184015
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_659774a49fe1cbf2.json",
+      "size": 174071
+    },
+    {
+      "path": "demo/qwen2.5/mirage_cached_mugraphs_659774eb06d5ca86.json",
+      "size": 427323
+    },
+    {
+      "path": "demo/qwen2.5/models/configuration_qwen2.py",
+      "size": 10050
+    },
+    {
+      "path": "demo/qwen2.5/models/modeling_qwen2.py",
+      "size": 21246
+    },
+    {
+      "path": "demo/qwen2.5/models/rope.py",
+      "size": 4952
+    },
+    {
+      "path": "demo/qwen3/demo.py",
+      "size": 41926
+    },
+    {
+      "path": "demo/qwen3/demo_30B_A3B.py",
+      "size": 32524
+    },
+    {
+      "path": "demo/qwen3/demo_30B_A3B_eagle3.py",
+      "size": 43595
+    },
+    {
+      "path": "demo/qwen3/demo_30B_A3B_hopper.py",
+      "size": 34223
+    },
+    {
+      "path": "demo/qwen3/demo_chat.py",
+      "size": 15366
+    },
+    {
+      "path": "demo/qwen3/demo_debug.py",
+      "size": 22857
+    },
+    {
+      "path": "demo/qwen3/demo_hopper.py",
+      "size": 30241
+    },
+    {
+      "path": "demo/qwen3/demo_kernel_reuse.py",
+      "size": 24524
+    },
+    {
+      "path": "demo/qwen3/demo_modal.py",
+      "size": 1053
+    },
+    {
+      "path": "demo/qwen3/demo_modal_ssh.py",
+      "size": 3409
+    },
+    {
+      "path": "demo/qwen3/demo_mpk_wrapper.py",
+      "size": 6495
+    },
+    {
+      "path": "demo/qwen3/demo_online.py",
+      "size": 6031
+    },
+    {
+      "path": "demo/qwen3/demo_sampling.py",
+      "size": 29080
+    },
+    {
+      "path": "demo/qwen3/models/configuration_qwen3.py",
+      "size": 11149
+    },
+    {
+      "path": "demo/qwen3/models/convert.py",
+      "size": 4090
+    },
+    {
+      "path": "demo/qwen3/models/modeling_qwen3.py",
+      "size": 20567
+    },
+    {
+      "path": "demo/qwen3/models/qwen3_shard_loader.py",
+      "size": 1169
+    },
+    {
+      "path": "demo/qwen3/models/rope.py",
+      "size": 5460
+    },
+    {
+      "path": "demo/reference_mugraphs/chameleon-7b.py",
+      "size": 5704
+    },
+    {
+      "path": "demo/reference_mugraphs/chameleon.py",
+      "size": 2937
+    },
+    {
+      "path": "demo/reference_mugraphs/gated_mlp.py",
+      "size": 2345
+    },
+    {
+      "path": "demo/reference_mugraphs/group_query_attention.py",
+      "size": 2519
+    },
+    {
+      "path": "demo/reference_mugraphs/group_query_attention_customized.py",
+      "size": 3712
+    },
+    {
+      "path": "demo/reference_mugraphs/group_query_attention_online.py",
+      "size": 3011
+    },
+    {
+      "path": "demo/reference_mugraphs/llama3-8b.py",
+      "size": 3949
+    },
+    {
+      "path": "demo/reference_mugraphs/lora.py",
+      "size": 1826
+    },
+    {
+      "path": "demo/reference_mugraphs/qwen_mlp.py",
+      "size": 2254
+    },
+    {
+      "path": "demo/reference_mugraphs/qwen_mlp_part2.py",
+      "size": 1559
+    },
+    {
+      "path": "demo/reference_mugraphs/qwen_prenorm.py",
+      "size": 1192
+    },
+    {
+      "path": "demo/reference_mugraphs/rms_norm.py",
+      "size": 1984
+    },
+    {
+      "path": "demo/runtime/runtime.py",
+      "size": 464
+    },
+    {
+      "path": "demo/triton_rms_norm.py",
+      "size": 1515
+    },
+    {
+      "path": "docker-build/Dockerfile",
+      "size": 2299
+    },
+    {
+      "path": "docker-build/build_wheel.sh",
+      "size": 1199
+    },
+    {
+      "path": "docker/Dockerfile",
+      "size": 1633
+    },
+    {
+      "path": "docker/install_mirage.sh",
+      "size": 1028
+    },
+    {
+      "path": "docker/run_docker.sh",
+      "size": 844
+    },
+    {
+      "path": "docs/Makefile",
+      "size": 771
+    },
+    {
+      "path": "docs/deepseek_v3_architecture.mmd",
+      "size": 7628
+    },
+    {
+      "path": "docs/doxygen/Doxyfile",
+      "size": 117912
+    },
+    {
+      "path": "docs/doxygen/README.md",
+      "size": 676
+    },
+    {
+      "path": "docs/doxygen/theme/rust_customdoxygen.css",
+      "size": 33776
+    },
+    {
+      "path": "docs/doxygen/theme/rust_footer.html",
+      "size": 987
+    },
+    {
+      "path": "docs/doxygen/theme/rust_header.html",
+      "size": 2064
+    },
+    {
+      "path": "docs/make.bat",
+      "size": 799
+    },
+    {
+      "path": "docs/mpk/tma.md",
+      "size": 6183
+    },
+    {
+      "path": "docs/requirements.txt",
+      "size": 80
+    },
+    {
+      "path": "docs/source/conf.py",
+      "size": 5261
+    },
+    {
+      "path": "docs/source/cuda-transpiler.rst",
+      "size": 27578
+    },
+    {
+      "path": "docs/source/images/gated_mlp.png",
+      "size": 212901
+    },
+    {
+      "path": "docs/source/images/gpu_hierarchy.png",
+      "size": 200222
+    },
+    {
+      "path": "docs/source/images/mma-non-divisible-example.drawio.svg",
+      "size": 13115
+    },
+    {
+      "path": "docs/source/images/mma-thr-layout-example.drawio.svg",
+      "size": 131155
+    },
+    {
+      "path": "docs/source/images/mugraph_gqa.png",
+      "size": 1215082
+    },
+    {
+      "path": "docs/source/images/swizzle-shift-example.drawio.svg",
+      "size": 32723
+    },
+    {
+      "path": "docs/source/images/swizzle-xor-example.drawio.svg",
+      "size": 32802
+    },
+    {
+      "path": "docs/source/images/tb-fusion-chain.drawio.svg",
+      "size": 18918
+    },
+    {
+      "path": "docs/source/images/tb-sched-conflict-example.drawio.svg",
+      "size": 29216
+    },
+    {
+      "path": "docs/source/images/tensor-lifecycle.drawio.svg",
+      "size": 16920
+    },
+    {
+      "path": "docs/source/index.rst",
+      "size": 1299
+    },
+    {
+      "path": "docs/source/installation.rst",
+      "size": 113
+    },
+    {
+      "path": "docs/source/linear_kernel.rst",
+      "size": 23109
+    },
+    {
+      "path": "docs/source/mugraph.rst",
+      "size": 6917
+    },
+    {
+      "path": "docs/source/triton-transpiler.rst",
+      "size": 4593
+    },
+    {
+      "path": "docs/source/tutorials/attention-with-kv-norm.rst",
+      "size": 1213
+    },
+    {
+      "path": "docs/source/tutorials/gated-mlp.rst",
+      "size": 1407
+    },
+    {
+      "path": "docs/source/tutorials/group-query-attention.rst",
+      "size": 2674
+    },
+    {
+      "path": "docs/source/tutorials/images/lora_kernel_graph.png",
+      "size": 145479
+    },
+    {
+      "path": "docs/source/tutorials/images/lora_performance.png",
+      "size": 21121
+    },
+    {
+      "path": "docs/source/tutorials/images/lora_ugraph.png",
+      "size": 555654
+    },
+    {
+      "path": "docs/source/tutorials/images/rms_norm_linear_original.png",
+      "size": 60131
+    },
+    {
+      "path": "docs/source/tutorials/images/rms_norm_linear_performance.png",
+      "size": 24835
+    },
+    {
+      "path": "docs/source/tutorials/images/rms_norm_linear_ugraph.png",
+      "size": 445065
+    },
+    {
+      "path": "docs/source/tutorials/index.rst",
+      "size": 227
+    },
+    {
+      "path": "docs/source/tutorials/lora.rst",
+      "size": 2052
+    },
+    {
+      "path": "docs/source/tutorials/multi-latent-attention.rst",
+      "size": 643
+    },
+    {
+      "path": "docs/source/tutorials/rms-norm-linear.rst",
+      "size": 2530
+    },
+    {
+      "path": "docs/source/visualizer.rst",
+      "size": 6141
+    },
+    {
+      "path": "docs/source/welcome.rst",
+      "size": 100
+    },
+    {
+      "path": "docs/transpiler/mma-non-divisible-example.drawio.svg",
+      "size": 13115
+    },
+    {
+      "path": "docs/transpiler/mma-thr-layout-example.drawio.svg",
+      "size": 131155
+    },
+    {
+      "path": "docs/transpiler/nki_transpiler.md",
+      "size": 3086
+    },
+    {
+      "path": "docs/transpiler/swizzle-shift-example.drawio.svg",
+      "size": 32723
+    },
+    {
+      "path": "docs/transpiler/swizzle-xor-example.drawio.svg",
+      "size": 32802
+    },
+    {
+      "path": "docs/transpiler/tb-fusion-chain.drawio.svg",
+      "size": 18918
+    },
+    {
+      "path": "docs/transpiler/tb-sched-conflict-example.drawio.svg",
+      "size": 29216
+    },
+    {
+      "path": "docs/transpiler/tensor-lifecycle.drawio.svg",
+      "size": 16920
+    },
+    {
+      "path": "docs/transpiler/transpiler.md",
+      "size": 26627
+    },
+    {
+      "path": "docs/transpiler/triton_transpiler.md",
+      "size": 4207
+    },
+    {
+      "path": "img/group_query_attnetion_spec_decode.png",
+      "size": 38231
+    },
+    {
+      "path": "img/llama-3-8b-rms-norm-linear.png",
+      "size": 223371
+    },
+    {
+      "path": "include/mirage/config.h",
+      "size": 2923
+    },
+    {
+      "path": "include/mirage/cpu/cmem_tensor.h",
+      "size": 2187
+    },
+    {
+      "path": "include/mirage/kernel/all_reduce.h",
+      "size": 1028
+    },
+    {
+      "path": "include/mirage/kernel/annotated_graph.h",
+      "size": 8684
+    },
+    {
+      "path": "include/mirage/kernel/chunk.h",
+      "size": 1036
+    },
+    {
+      "path": "include/mirage/kernel/customized.h",
+      "size": 1357
+    },
+    {
+      "path": "include/mirage/kernel/device_memory_manager.h",
+      "size": 1996
+    },
+    {
+      "path": "include/mirage/kernel/device_tensor.h",
+      "size": 6858
+    },
+    {
+      "path": "include/mirage/kernel/element_binary.h",
+      "size": 1069
+    },
+    {
+      "path": "include/mirage/kernel/element_unary.h",
+      "size": 1260
+    },
+    {
+      "path": "include/mirage/kernel/graph.h",
+      "size": 11137
+    },
+    {
+      "path": "include/mirage/kernel/matmul.h",
+      "size": 991
+    },
+    {
+      "path": "include/mirage/kernel/operator.h",
+      "size": 2490
+    },
+    {
+      "path": "include/mirage/kernel/reduction.h",
+      "size": 1011
+    },
+    {
+      "path": "include/mirage/kernel/rms_norm.h",
+      "size": 1034
+    },
+    {
+      "path": "include/mirage/kernel/runtime.h",
+      "size": 1355
+    },
+    {
+      "path": "include/mirage/kernel/task_register.h",
+      "size": 13903
+    },
+    {
+      "path": "include/mirage/layout.h",
+      "size": 2610
+    },
+    {
+      "path": "include/mirage/nki_transpiler/helper_function.h",
+      "size": 523
+    },
+    {
+      "path": "include/mirage/nki_transpiler/transpile.h",
+      "size": 4033
+    },
+    {
+      "path": "include/mirage/nki_transpiler/utils.h",
+      "size": 3203
+    },
+    {
+      "path": "include/mirage/persistent_kernel/mpk_atoms.cuh",
+      "size": 3362
+    },
+    {
+      "path": "include/mirage/persistent_kernel/persistent_kernel.cuh",
+      "size": 85943
+    },
+    {
+      "path": "include/mirage/persistent_kernel/profiler.h",
+      "size": 7124
+    },
+    {
+      "path": "include/mirage/persistent_kernel/runtime_header.h",
+      "size": 18722
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/allreduce.cuh",
+      "size": 3496
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/argmax.cuh",
+      "size": 5606
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/clamped_swiglu.cuh",
+      "size": 2088
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/element_binary.cuh",
+      "size": 2212
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/element_unary.cuh",
+      "size": 3708
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/embedding.cuh",
+      "size": 2745
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/identity.cuh",
+      "size": 1421
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/linear.cuh",
+      "size": 17017
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/linear_cutlass.cuh",
+      "size": 24169
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/merge_splitkv.cuh",
+      "size": 5011
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/mma.cuh",
+      "size": 2045
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/moe_linear.cuh",
+      "size": 32180
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention.cuh",
+      "size": 3863
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_32_64.cuh",
+      "size": 27849
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_32_64_split_kv.cuh",
+      "size": 32238
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_4_16.cuh",
+      "size": 26721
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_4_16_split_kv.cuh",
+      "size": 29574
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/multitoken_paged_attention_split_kv.cuh",
+      "size": 4809
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/norm.cuh",
+      "size": 4806
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/norm_linear.cuh",
+      "size": 18893
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/norm_linear_new.cuh",
+      "size": 18408
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/reduction.cuh",
+      "size": 5026
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/rmsnorm.cuh",
+      "size": 5544
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/rotary_embedding.cuh",
+      "size": 2862
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/silu_mul.cuh",
+      "size": 1654
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/silu_mul_linear.cuh",
+      "size": 14488
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/single_batch_decoding.cuh",
+      "size": 15843
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/single_batch_extend.cuh",
+      "size": 25579
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/single_batch_gqa.cuh",
+      "size": 11746
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/smem_layout.cuh",
+      "size": 18495
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/ampere/task_header.cuh",
+      "size": 659
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/allreduce.cuh",
+      "size": 19232
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/argmax_sm100.cuh",
+      "size": 6080
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/attention_sm100.cuh",
+      "size": 33280
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/dflash_attention_sm100.cuh",
+      "size": 23655
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/dflash_kv_store_sm100.cuh",
+      "size": 2760
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/dflash_norm_rope_sm100.cuh",
+      "size": 3606
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/elementwise_add_sm100.cuh",
+      "size": 1661
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/fp8_group_gemm_sm100.cuh",
+      "size": 81368
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/glm_moe_router_sm100.cuh",
+      "size": 5815
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/inkling_attention_sm100.cuh",
+      "size": 9620
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/inkling_moe_router_sm100.cuh",
+      "size": 6094
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/inkling_sconv_sm100.cuh",
+      "size": 3528
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_1d2d_sm100.cuh",
+      "size": 28651
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_sm100.cuh",
+      "size": 36247
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_sm100_common.cuh",
+      "size": 265
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_sm100_cute_tie.cuh",
+      "size": 2948
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_sm100_epilogue_utils.cuh",
+      "size": 887
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_sm100_scheduler.cuh",
+      "size": 7790
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_sm100_sm100_utils.cuh",
+      "size": 8407
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_sm100_tma_utils.cuh",
+      "size": 4200
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_sm100_types.hpp",
+      "size": 923
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_fp8_sm100_utils.cuh",
+      "size": 4235
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/linear_sm100_mpk.cuh",
+      "size": 31072
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_decode_sm100.cuh",
+      "size": 15041
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_dispatch_sm100.cuh",
+      "size": 2603
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_kv_cache_gather_sm100.cuh",
+      "size": 6510
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_kv_cache_gather_split_sm100.cuh",
+      "size": 5540
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_mtp_decode_sm100.cuh",
+      "size": 25376
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_mtp_decode_tp2_sm100.cuh",
+      "size": 27023
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_mtp_decode_tp4_sm100.cuh",
+      "size": 26293
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_mtp_decode_tp8_sm100.cuh",
+      "size": 25252
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_prefill_sm100.cuh",
+      "size": 27327
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_prefill_tp8_sm100.cuh",
+      "size": 16591
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_reduce_sm100.cuh",
+      "size": 2678
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mla_sm100_2sm.cuh",
+      "size": 114156
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/moe_linear_sm100.cuh",
+      "size": 32985
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/mul_sum_add_sm100.cuh",
+      "size": 2042
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/norm_sm100.cuh",
+      "size": 5707
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/per_token_group_quantize_fp8.cuh",
+      "size": 6706
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/prob_scatter_sm100.cuh",
+      "size": 2777
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/rotary_embedding_sm100.cuh",
+      "size": 2874
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/sampling_sm100.cuh",
+      "size": 16177
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/sm100_ptx.cuh",
+      "size": 2788
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/sm100_utils.cuh",
+      "size": 5761
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/softmax_gather_sm100.cuh",
+      "size": 4080
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/storage.cuh",
+      "size": 6569
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/task_header.cuh",
+      "size": 2593
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/tensor_init.cuh",
+      "size": 1153
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/topk_sigmoid_sm100.cuh",
+      "size": 13442
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/blackwell/topk_softmax_sm100.cuh",
+      "size": 13562
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/bfloat16.h",
+      "size": 8567
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/common_header.cuh",
+      "size": 810
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/copy_sm80.cuh",
+      "size": 3521
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/dmem_layout.cuh",
+      "size": 3734
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/sampling.cuh",
+      "size": 7338
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/utils.cuh",
+      "size": 4406
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/common/worker_config.h",
+      "size": 1076
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/epilogue.cuh",
+      "size": 15583
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/gemm_ws.cuh",
+      "size": 11587
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/gemm_ws_cooperative.cuh",
+      "size": 19055
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/gemm_ws_mpk.cuh",
+      "size": 22151
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/kernel_traits.cuh",
+      "size": 7791
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/cute/hopper/mma_tma_ws_mainloop.cuh",
+      "size": 18627
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/deprecated/paged_attention.cuh",
+      "size": 18218
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/allreduce.cuh",
+      "size": 2486
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/barrier.cuh",
+      "size": 3848
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/embedding_hopper.cuh",
+      "size": 1858
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/linear_hopper.cuh",
+      "size": 13808
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/linear_swapAB_hopper.cuh",
+      "size": 14812
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/matmul_demo_hopper.cuh",
+      "size": 9709
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/moe_linear_swapAB_hopper.cuh",
+      "size": 23651
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/multitoken_paged_attention_hopper.cuh",
+      "size": 32208
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/norm_hopper.cuh",
+      "size": 5259
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/norm_linear_hopper.cuh",
+      "size": 14119
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/rmsnorm_hopper.cuh",
+      "size": 6572
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/rotary_embedding_hopper.cuh",
+      "size": 3118
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/silu_mul_hopper.cuh",
+      "size": 1660
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/smem_layout_tma.cuh",
+      "size": 4968
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/task_header.cuh",
+      "size": 1133
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/tma.cuh",
+      "size": 1390
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/tma_2d.cuh",
+      "size": 15444
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/tma_3d.cuh",
+      "size": 14312
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/tma_4d.cuh",
+      "size": 14534
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/utils.cuh",
+      "size": 1612
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/hopper/wgmma.cuh",
+      "size": 67447
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/speculative_decoding/eagle3_ops.cuh",
+      "size": 14622
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/speculative_decoding/mtp_token_ops.cuh",
+      "size": 7931
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/speculative_decoding/prompt_lookup.cuh",
+      "size": 5076
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/speculative_decoding/target_verify.cuh",
+      "size": 2155
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tasks/speculative_decoding/target_verify_mtp.cuh",
+      "size": 11127
+    },
+    {
+      "path": "include/mirage/persistent_kernel/tma.cuh",
+      "size": 77125
+    },
+    {
+      "path": "include/mirage/search/abstract_expr/abstract_expr.h",
+      "size": 7232
+    },
+    {
+      "path": "include/mirage/search/abstract_expr/abstract_expr_eval.h",
+      "size": 820
+    },
+    {
+      "path": "include/mirage/search/abstract_expr/abstract_expr_for_ops.h",
+      "size": 1148
+    },
+    {
+      "path": "include/mirage/search/config.h",
+      "size": 2990
+    },
+    {
+      "path": "include/mirage/search/dim_strategy.h",
+      "size": 2472
+    },
+    {
+      "path": "include/mirage/search/op_utils.h",
+      "size": 2179
+    },
+    {
+      "path": "include/mirage/search/order.h",
+      "size": 293
+    },
+    {
+      "path": "include/mirage/search/range_propagation/irange.h",
+      "size": 6116
+    },
+    {
+      "path": "include/mirage/search/range_propagation/propagation_path.h",
+      "size": 772
+    },
+    {
+      "path": "include/mirage/search/range_propagation/range.h",
+      "size": 1532
+    },
+    {
+      "path": "include/mirage/search/range_propagation/range_set.h",
+      "size": 3136
+    },
+    {
+      "path": "include/mirage/search/range_propagation/tbrange.h",
+      "size": 910
+    },
+    {
+      "path": "include/mirage/search/search.h",
+      "size": 2931
+    },
+    {
+      "path": "include/mirage/search/search_c.h",
+      "size": 1097
+    },
+    {
+      "path": "include/mirage/search/search_context.h",
+      "size": 658
+    },
+    {
+      "path": "include/mirage/search/search_state_manager.h",
+      "size": 2201
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/dim_var_assignments.h",
+      "size": 889
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/op_args.h",
+      "size": 2778
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_graph.h",
+      "size": 3267
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_map.h",
+      "size": 875
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_op.h",
+      "size": 742
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_tensor.h",
+      "size": 569
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/symbolic_tensor_dim.h",
+      "size": 847
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/tensor_dim_constraint.h",
+      "size": 2223
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/tensor_dim_constraints.h",
+      "size": 1775
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/tensor_dim_expr.h",
+      "size": 6920
+    },
+    {
+      "path": "include/mirage/search/symbolic_graph/types.h",
+      "size": 139
+    },
+    {
+      "path": "include/mirage/search/verification/formal_verifier.h",
+      "size": 776
+    },
+    {
+      "path": "include/mirage/search/verification/output_match.h",
+      "size": 437
+    },
+    {
+      "path": "include/mirage/search/verification/probabilistic_verifier.h",
+      "size": 445
+    },
+    {
+      "path": "include/mirage/search/verification/verifier.h",
+      "size": 332
+    },
+    {
+      "path": "include/mirage/threadblock/concat.h",
+      "size": 949
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/concat.h",
+      "size": 2165
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/element_binary.h",
+      "size": 3380
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/element_unary.h",
+      "size": 3201
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/forloop_accum.h",
+      "size": 4901
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/input_loader.h",
+      "size": 2092
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/matmul.h",
+      "size": 2397
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/output_saver.h",
+      "size": 2162
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/reduction.h",
+      "size": 2182
+    },
+    {
+      "path": "include/mirage/threadblock/cuda/rms_norm.h",
+      "size": 2616
+    },
+    {
+      "path": "include/mirage/threadblock/element_binary.h",
+      "size": 1062
+    },
+    {
+      "path": "include/mirage/threadblock/element_unary.h",
+      "size": 1350
+    },
+    {
+      "path": "include/mirage/threadblock/forloop_accum.h",
+      "size": 1157
+    },
+    {
+      "path": "include/mirage/threadblock/graph.h",
+      "size": 8711
+    },
+    {
+      "path": "include/mirage/threadblock/matmul.h",
+      "size": 996
+    },
+    {
+      "path": "include/mirage/threadblock/operator.h",
+      "size": 2603
+    },
+    {
+      "path": "include/mirage/threadblock/reduction.h",
+      "size": 1049
+    },
+    {
+      "path": "include/mirage/threadblock/rms_norm.h",
+      "size": 923
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/concat_serializer.h",
+      "size": 2503
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/element_binary_serializer.h",
+      "size": 2556
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/element_unary_serializer.h",
+      "size": 1513
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/forloop_accum_serializer.h",
+      "size": 2269
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/input_loader_serializer.h",
+      "size": 4090
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/kernel_params.h",
+      "size": 2450
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/matmul_serializer.h",
+      "size": 2126
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/output_saver_serializer.h",
+      "size": 4341
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/reduction_serializer.h",
+      "size": 2149
+    },
+    {
+      "path": "include/mirage/threadblock/serializer/rms_norm_serializer.h",
+      "size": 1991
+    },
+    {
+      "path": "include/mirage/threadblock/smem_tensor.h",
+      "size": 4846
+    },
+    {
+      "path": "include/mirage/transpiler/common.h",
+      "size": 519
+    },
+    {
+      "path": "include/mirage/transpiler/error_types.h",
+      "size": 863
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/README.md",
+      "size": 420
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/config.h",
+      "size": 393
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/kernel/element_binary.h",
+      "size": 3572
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/kernel/element_unary.h",
+      "size": 3201
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/kernel/matmul.h",
+      "size": 4574
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/kernel/reduction.h",
+      "size": 3277
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/nvshmem.h",
+      "size": 145
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/runtime.h",
+      "size": 2110
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/blackwell_matmul.h",
+      "size": 8364
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/blackwell_pipeline.h",
+      "size": 3490
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/element_binary.h",
+      "size": 3730
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/element_unary.h",
+      "size": 2702
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/epilogues.h",
+      "size": 4488
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/forloop_accum.h",
+      "size": 4003
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/hopper_matmul.h",
+      "size": 9026
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/input.h",
+      "size": 14552
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/matmul.h",
+      "size": 19374
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/output.h",
+      "size": 989
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/pipeline.h",
+      "size": 3070
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/profiler.h",
+      "size": 6957
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/reduction.h",
+      "size": 5878
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/threadblock.h",
+      "size": 520
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/threadblock/utils.h",
+      "size": 4025
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/triton_kernels.py",
+      "size": 2063
+    },
+    {
+      "path": "include/mirage/transpiler/runtime/utils.h",
+      "size": 2684
+    },
+    {
+      "path": "include/mirage/transpiler/sched_tb_graph.h",
+      "size": 1596
+    },
+    {
+      "path": "include/mirage/transpiler/structs.h",
+      "size": 8678
+    },
+    {
+      "path": "include/mirage/transpiler/transpile.h",
+      "size": 971
+    },
+    {
+      "path": "include/mirage/transpiler/transpiler.h",
+      "size": 4984
+    },
+    {
+      "path": "include/mirage/transpiler/utils.h",
+      "size": 13373
+    },
+    {
+      "path": "include/mirage/triton_transpiler/runtime/triton_kernels.py",
+      "size": 2061
+    },
+    {
+      "path": "include/mirage/triton_transpiler/transpile.h",
+      "size": 2454
+    },
+    {
+      "path": "include/mirage/type.h",
+      "size": 10871
+    },
+    {
+      "path": "include/mirage/utils/containers.h",
+      "size": 2706
+    },
+    {
+      "path": "include/mirage/utils/cuda_helper.h",
+      "size": 5717
+    },
+    {
+      "path": "include/mirage/utils/fingerprint_functions.h",
+      "size": 7518
+    },
+    {
+      "path": "include/mirage/utils/hash_utils.h",
+      "size": 2347
+    },
+    {
+      "path": "include/mirage/utils/json_utils.h",
+      "size": 409
+    },
+    {
+      "path": "include/mirage/utils/math_utils.h",
+      "size": 600
+    },
+    {
+      "path": "include/mirage/utils/static_switch.h",
+      "size": 5727
+    },
+    {
+      "path": "include/mirage/utils/z3_utils.h",
+      "size": 919
+    },
+    {
+      "path": "include/mirage/vector_types.h",
+      "size": 938
+    },
+    {
+      "path": "include/mirage/warp/cuda/matmul.h",
+      "size": 7855
+    },
+    {
+      "path": "pyproject.toml",
+      "size": 764
+    },
+    {
+      "path": "python/cython_setup.py",
+      "size": 3230
+    },
+    {
+      "path": "python/mirage/__init__.py",
+      "size": 2408
+    },
+    {
+      "path": "python/mirage/_cython/CCore.pxd",
+      "size": 15884
+    },
+    {
+      "path": "python/mirage/_cython/core.pyx",
+      "size": 52363
+    },
+    {
+      "path": "python/mirage/core.pyx",
+      "size": 0
+    },
+    {
+      "path": "python/mirage/engine/__init__.py",
+      "size": 229
+    },
+    {
+      "path": "python/mirage/engine/launch_server.py",
+      "size": 8280
+    },
+    {
+      "path": "python/mirage/engine/llm_engine.py",
+      "size": 13186
+    },
+    {
+      "path": "python/mirage/engine/model_runner.py",
+      "size": 9206
+    },
+    {
+      "path": "python/mirage/engine/tokenizer_manager.py",
+      "size": 1393
+    },
+    {
+      "path": "python/mirage/global_config.py",
+      "size": 304
+    },
+    {
+      "path": "python/mirage/graph_dataset.py",
+      "size": 2055
+    },
+    {
+      "path": "python/mirage/kernel.py",
+      "size": 29639
+    },
+    {
+      "path": "python/mirage/mpk/__init__.py",
+      "size": 279
+    },
+    {
+      "path": "python/mirage/mpk/base_dynamic_shard_loader.py",
+      "size": 19456
+    },
+    {
+      "path": "python/mirage/mpk/cuda_utils.py",
+      "size": 3631
+    },
+    {
+      "path": "python/mirage/mpk/kv_planner.py",
+      "size": 28189
+    },
+    {
+      "path": "python/mirage/mpk/model_registry.py",
+      "size": 876
+    },
+    {
+      "path": "python/mirage/mpk/models/__init__.py",
+      "size": 471
+    },
+    {
+      "path": "python/mirage/mpk/models/deepseek_v3/__init__.py",
+      "size": 0
+    },
+    {
+      "path": "python/mirage/mpk/models/deepseek_v3/builder.py",
+      "size": 108032
+    },
+    {
+      "path": "python/mirage/mpk/models/dflash/__init__.py",
+      "size": 64
+    },
+    {
+      "path": "python/mirage/mpk/models/dflash/builder.py",
+      "size": 20525
+    },
+    {
+      "path": "python/mirage/mpk/models/eagle3/__init__.py",
+      "size": 64
+    },
+    {
+      "path": "python/mirage/mpk/models/eagle3/builder.py",
+      "size": 19973
+    },
+    {
+      "path": "python/mirage/mpk/models/glm4_moe/__init__.py",
+      "size": 66
+    },
+    {
+      "path": "python/mirage/mpk/models/glm4_moe/builder.py",
+      "size": 21466
+    },
+    {
+      "path": "python/mirage/mpk/models/gpt_oss/builder.py",
+      "size": 19395
+    },
+    {
+      "path": "python/mirage/mpk/models/graph_builder.py",
+      "size": 2380
+    },
+    {
+      "path": "python/mirage/mpk/models/inkling/__init__.py",
+      "size": 66
+    },
+    {
+      "path": "python/mirage/mpk/models/inkling/builder.py",
+      "size": 32549
+    },
+    {
+      "path": "python/mirage/mpk/models/qwen3/builder.py",
+      "size": 34664
+    },
+    {
+      "path": "python/mirage/mpk/models/utils.py",
+      "size": 6318
+    },
+    {
+      "path": "python/mirage/mpk/mpk.py",
+      "size": 25394
+    },
+    {
+      "path": "python/mirage/mpk/multigpu.py",
+      "size": 11147
+    },
+    {
+      "path": "python/mirage/mpk/online_pinned_runtime.py",
+      "size": 16076
+    },
+    {
+      "path": "python/mirage/mpk/persistent_kernel.py",
+      "size": 160163
+    },
+    {
+      "path": "python/mirage/mpk/profiler_persistent.py",
+      "size": 8963
+    },
+    {
+      "path": "python/mirage/mpk/speculative.py",
+      "size": 2031
+    },
+    {
+      "path": "python/mirage/profiler.py",
+      "size": 3823
+    },
+    {
+      "path": "python/mirage/threadblock.py",
+      "size": 2275
+    },
+    {
+      "path": "python/mirage/triton_profiler.py",
+      "size": 9024
+    },
+    {
+      "path": "python/mirage/utils.py",
+      "size": 1472
+    },
+    {
+      "path": "python/mirage/version.py",
+      "size": 57
+    },
+    {
+      "path": "python/mirage/visualizer.py",
+      "size": 24551
+    },
+    {
+      "path": "requirements.txt",
+      "size": 219
+    },
+    {
+      "path": "scripts/display_task_graph.py",
+      "size": 5175
+    },
+    {
+      "path": "scripts/draw_graph.py",
+      "size": 4344
+    },
+    {
+      "path": "scripts/find_idle_gpus.sh",
+      "size": 1109
+    },
+    {
+      "path": "scripts/format.sh",
+      "size": 1504
+    },
+    {
+      "path": "scripts/parse_profile.py",
+      "size": 4184
+    },
+    {
+      "path": "scripts/parse_task_graph.py",
+      "size": 7366
+    },
+    {
+      "path": "scripts/partition_graph.py",
+      "size": 5138
+    },
+    {
+      "path": "setup.py",
+      "size": 13507
+    },
+    {
+      "path": "src/base/data_type.cc",
+      "size": 2032
+    },
+    {
+      "path": "src/base/layout.cc",
+      "size": 1008
+    },
+    {
+      "path": "src/kernel/all_reduce.cc",
+      "size": 3096
+    },
+    {
+      "path": "src/kernel/annotated_graph.cc",
+      "size": 39150
+    },
+    {
+      "path": "src/kernel/chunk.cc",
+      "size": 3690
+    },
+    {
+      "path": "src/kernel/cuda/all_reduce_kernel.cu",
+      "size": 2631
+    },
+    {
+      "path": "src/kernel/cuda/customized_kernel.cu",
+      "size": 24824
+    },
+    {
+      "path": "src/kernel/cuda/device_tensor_kernel.cu",
+      "size": 3358
+    },
+    {
+      "path": "src/kernel/cuda/element_binary_kernel.cu",
+      "size": 6847
+    },
+    {
+      "path": "src/kernel/cuda/element_unary_kernel.cu",
+      "size": 4099
+    },
+    {
+      "path": "src/kernel/cuda/input_kernel.cu",
+      "size": 2901
+    },
+    {
+      "path": "src/kernel/cuda/matmul_kernel.cu",
+      "size": 4127
+    },
+    {
+      "path": "src/kernel/cuda/output_kernel.cu",
+      "size": 974
+    },
+    {
+      "path": "src/kernel/cuda/reduction_kernel.cu",
+      "size": 3563
+    },
+    {
+      "path": "src/kernel/cuda/rms_norm_kernel.cu",
+      "size": 3918
+    },
+    {
+      "path": "src/kernel/customized.cc",
+      "size": 20551
+    },
+    {
+      "path": "src/kernel/device_memory_manager.cc",
+      "size": 2371
+    },
+    {
+      "path": "src/kernel/device_memory_manager.cu",
+      "size": 6338
+    },
+    {
+      "path": "src/kernel/device_tensor.cc",
+      "size": 6108
+    },
+    {
+      "path": "src/kernel/element_binary.cc",
+      "size": 5377
+    },
+    {
+      "path": "src/kernel/element_unary.cc",
+      "size": 6340
+    },
+    {
+      "path": "src/kernel/graph.cc",
+      "size": 40843
+    },
+    {
+      "path": "src/kernel/input.cc",
+      "size": 4073
+    },
+    {
+      "path": "src/kernel/matmul.cc",
+      "size": 4496
+    },
+    {
+      "path": "src/kernel/operator.cc",
+      "size": 2464
+    },
+    {
+      "path": "src/kernel/output.cc",
+      "size": 2615
+    },
+    {
+      "path": "src/kernel/reduction.cc",
+      "size": 3478
+    },
+    {
+      "path": "src/kernel/rms_norm.cc",
+      "size": 5535
+    },
+    {
+      "path": "src/kernel/runtime.cc",
+      "size": 88957
+    },
+    {
+      "path": "src/kernel/task_register.cc",
+      "size": 224578
+    },
+    {
+      "path": "src/kernel/triton_code_gen.cc",
+      "size": 22582
+    },
+    {
+      "path": "src/kernel/view.cc",
+      "size": 6947
+    },
+    {
+      "path": "src/layout.cc",
+      "size": 416
+    },
+    {
+      "path": "src/nki_transpiler/helper_function.cc",
+      "size": 5213
+    },
+    {
+      "path": "src/nki_transpiler/transpile.cc",
+      "size": 26956
+    },
+    {
+      "path": "src/nki_transpiler/transpile_tb.cc",
+      "size": 29435
+    },
+    {
+      "path": "src/nki_transpiler/utils.cc",
+      "size": 1395
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_expr.cc",
+      "size": 9459
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_expr_eval.cc",
+      "size": 7183
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_expr_for_ops.cc",
+      "size": 12510
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_subexpr/Cargo.lock",
+      "size": 14044
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_subexpr/Cargo.toml",
+      "size": 255
+    },
+    {
+      "path": "src/search/abstract_expr/abstract_subexpr/src/lib.rs",
+      "size": 6159
+    },
+    {
+      "path": "src/search/config.cc",
+      "size": 5210
+    },
+    {
+      "path": "src/search/dim_strategy.cc",
+      "size": 17871
+    },
+    {
+      "path": "src/search/op_utils.cc",
+      "size": 9959
+    },
+    {
+      "path": "src/search/order.cc",
+      "size": 685
+    },
+    {
+      "path": "src/search/range_propagation/irange.cc",
+      "size": 41804
+    },
+    {
+      "path": "src/search/range_propagation/range.cc",
+      "size": 2644
+    },
+    {
+      "path": "src/search/range_propagation/tbrange.cc",
+      "size": 2056
+    },
+    {
+      "path": "src/search/search.cc",
+      "size": 33636
+    },
+    {
+      "path": "src/search/search_c.cc",
+      "size": 4369
+    },
+    {
+      "path": "src/search/search_context.cc",
+      "size": 1605
+    },
+    {
+      "path": "src/search/symbolic_graph/dim_var_assignments.cc",
+      "size": 1447
+    },
+    {
+      "path": "src/search/symbolic_graph/op_args.cc",
+      "size": 3192
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_graph.cc",
+      "size": 25805
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_map.cc",
+      "size": 1199
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_op.cc",
+      "size": 976
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_tensor.cc",
+      "size": 617
+    },
+    {
+      "path": "src/search/symbolic_graph/symbolic_tensor_dim.cc",
+      "size": 1334
+    },
+    {
+      "path": "src/search/symbolic_graph/tensor_dim_constraint.cc",
+      "size": 5577
+    },
+    {
+      "path": "src/search/symbolic_graph/tensor_dim_constraints.cc",
+      "size": 1451
+    },
+    {
+      "path": "src/search/symbolic_graph/tensor_dim_expr.cc",
+      "size": 12344
+    },
+    {
+      "path": "src/search/verification/formal_verifier.cc",
+      "size": 19882
+    },
+    {
+      "path": "src/search/verification/formal_verifier_equiv/Cargo.lock",
+      "size": 14043
+    },
+    {
+      "path": "src/search/verification/formal_verifier_equiv/Cargo.toml",
+      "size": 253
+    },
+    {
+      "path": "src/search/verification/formal_verifier_equiv/src/lib.rs",
+      "size": 17666
+    },
+    {
+      "path": "src/search/verification/output_match.cc",
+      "size": 766
+    },
+    {
+      "path": "src/search/verification/probabilistic_verifier.cc",
+      "size": 2062
+    },
+    {
+      "path": "src/threadblock/concat.cc",
+      "size": 2945
+    },
+    {
+      "path": "src/threadblock/cuda/element_unary.cu",
+      "size": 713
+    },
+    {
+      "path": "src/threadblock/cuda/input_executor.cu",
+      "size": 723
+    },
+    {
+      "path": "src/threadblock/cuda/matmul.cu",
+      "size": 923
+    },
+    {
+      "path": "src/threadblock/element_binary.cc",
+      "size": 4796
+    },
+    {
+      "path": "src/threadblock/element_unary.cc",
+      "size": 6107
+    },
+    {
+      "path": "src/threadblock/forloop_accum.cc",
+      "size": 6774
+    },
+    {
+      "path": "src/threadblock/graph.cc",
+      "size": 39547
+    },
+    {
+      "path": "src/threadblock/input_loader.cc",
+      "size": 4417
+    },
+    {
+      "path": "src/threadblock/matmul.cc",
+      "size": 2947
+    },
+    {
+      "path": "src/threadblock/operator.cc",
+      "size": 1799
+    },
+    {
+      "path": "src/threadblock/output.cc",
+      "size": 4467
+    },
+    {
+      "path": "src/threadblock/reduction.cc",
+      "size": 4681
+    },
+    {
+      "path": "src/threadblock/rms_norm.cc",
+      "size": 2133
+    },
+    {
+      "path": "src/threadblock/smem_tensor.cc",
+      "size": 1378
+    },
+    {
+      "path": "src/transpiler/plan_dtensor_memory.cc",
+      "size": 1944
+    },
+    {
+      "path": "src/transpiler/plan_stensor_memory.cc",
+      "size": 20926
+    },
+    {
+      "path": "src/transpiler/plan_tb_swizzle.cc",
+      "size": 7026
+    },
+    {
+      "path": "src/transpiler/plan_tb_swizzle_blackwell.cc",
+      "size": 6995
+    },
+    {
+      "path": "src/transpiler/plan_tb_swizzle_hopper.cc",
+      "size": 6490
+    },
+    {
+      "path": "src/transpiler/resolve_dtensor_meta.cc",
+      "size": 2012
+    },
+    {
+      "path": "src/transpiler/resolve_tb_fusion.cc",
+      "size": 3592
+    },
+    {
+      "path": "src/transpiler/resolve_tensor_layout.cc",
+      "size": 35321
+    },
+    {
+      "path": "src/transpiler/sched_tb_graph.cc",
+      "size": 16558
+    },
+    {
+      "path": "src/transpiler/transpile.cc",
+      "size": 34316
+    },
+    {
+      "path": "src/transpiler/transpiler_kn.cc",
+      "size": 35940
+    },
+    {
+      "path": "src/transpiler/transpiler_tb.cc",
+      "size": 62436
+    },
+    {
+      "path": "src/transpiler/transpiler_tb_blackwell.cc",
+      "size": 61787
+    },
+    {
+      "path": "src/transpiler/transpiler_tb_hopper.cc",
+      "size": 59993
+    },
+    {
+      "path": "src/triton_transpiler/transpile.cc",
+      "size": 22069
+    },
+    {
+      "path": "src/triton_transpiler/transpile_tb.cc",
+      "size": 21743
+    },
+    {
+      "path": "src/utils/containers.cc",
+      "size": 423
+    },
+    {
+      "path": "src/utils/cuda_helper.cu",
+      "size": 1255
+    },
+    {
+      "path": "src/utils/json_utils.cc",
+      "size": 455
+    },
+    {
+      "path": "src/utils/z3_utils.cc",
+      "size": 886
+    },
+    {
+      "path": "tests/CMakeLists.txt",
+      "size": 29
+    },
+    {
+      "path": "tests/ci-tests/perf_comparison.py",
+      "size": 1482
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/demo.py",
+      "size": 4907
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_64644b2e7bbffb94.json",
+      "size": 61409
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_647dd41aeaf656b4.json",
+      "size": 48363
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_6508b4ab6af4f866.json",
+      "size": 78867
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_659704256b064506.json",
+      "size": 184015
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_659774a49fe1cbf2.json",
+      "size": 174071
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_cached_mugraphs_659774eb06d5ca86.json",
+      "size": 427323
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/mirage_search_checkpoint.json",
+      "size": 174071
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/models/configuration_qwen2.py",
+      "size": 10050
+    },
+    {
+      "path": "tests/ci-tests/qwen2.5/models/modeling_qwen2.py",
+      "size": 22055
+    },
+    {
+      "path": "tests/ci-tests/run_batch_perf.py",
+      "size": 17282
+    },
+    {
+      "path": "tests/ci-tests/run_ci_tests_online.sh",
+      "size": 4058
+    },
+    {
+      "path": "tests/ci-tests/run_ci_tests_qwen3.sh",
+      "size": 511
+    },
+    {
+      "path": "tests/ci-tests/run_python_tests.sh",
+      "size": 3591
+    },
+    {
+      "path": "tests/ci-tests/test_inference_output.py",
+      "size": 1548
+    },
+    {
+      "path": "tests/python/test_packaging.py",
+      "size": 5686
+    },
+    {
+      "path": "tests/python/test_tensor_program.py",
+      "size": 10701
+    },
+    {
+      "path": "tests/runtime_python/blackwell/common/sm100_fp8_runtime_registry.h",
+      "size": 6337
+    },
+    {
+      "path": "tests/runtime_python/blackwell/common/sm100_fp8_scale_layout.h",
+      "size": 1904
+    },
+    {
+      "path": "tests/runtime_python/blackwell/common/sm100_fp8_scale_layout.py",
+      "size": 5227
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_dflash_attention/pytorch_reference.py",
+      "size": 1688
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_dflash_attention/test_dflash_attention_testmode.py",
+      "size": 3784
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_fp8_moe/bench_fp8_moe_gemm.py",
+      "size": 22312
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_fp8_moe/runtime_kernel_wrapper.cu",
+      "size": 36165
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_fp8_moe/runtime_kernel_wrapper_bf16.cu",
+      "size": 14582
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_fp8_moe/setup.py",
+      "size": 2951
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_fp8_moe/test_fp8_moe_gemm.py",
+      "size": 16638
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_glm4_moe/pytorch_reference.py",
+      "size": 3402
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_glm4_moe/test_glm4_moe_builder_testmode.py",
+      "size": 4704
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_glm4_moe/test_glm_attention_testmode.py",
+      "size": 5517
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_glm4_moe/test_glm_moe_router_testmode.py",
+      "size": 4750
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_inkling/pytorch_reference.py",
+      "size": 4701
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_inkling/test_inkling_attention_testmode.py",
+      "size": 4064
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_inkling/test_inkling_moe_router_testmode.py",
+      "size": 4657
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_inkling/test_inkling_sconv_testmode.py",
+      "size": 2953
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear/runtime_kernel_wrapper_sm100.cu",
+      "size": 26145
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear/setup.py",
+      "size": 2025
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear/test_matmul_mpk.py",
+      "size": 2060
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear/test_matmul_splitk.py",
+      "size": 2030
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear_fp8/runtime_kernel_wrapper_sm100.cu",
+      "size": 48860
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear_fp8/setup.py",
+      "size": 3582
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear_fp8/test_linear_1d2d_fp8.py",
+      "size": 12373
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_linear_fp8/test_runtime_quantize_linear_fp8.py",
+      "size": 4054
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/runtime_kernel_wrapper_mla_decode.cu",
+      "size": 6613
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/runtime_kernel_wrapper_mla_mtp.cu",
+      "size": 7740
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/runtime_kernel_wrapper_mla_prefill.cu",
+      "size": 4643
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/runtime_kernel_wrapper_sm100_mla.cu",
+      "size": 11778
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/setup.py",
+      "size": 2513
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/setup_mla_decode.py",
+      "size": 1494
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/setup_mla_mtp.py",
+      "size": 1406
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/setup_mla_prefill.py",
+      "size": 1418
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/test_mla_attention.py",
+      "size": 17708
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/test_mla_decode.py",
+      "size": 6453
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/test_mla_mtp.py",
+      "size": 9861
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla/test_mla_prefill.py",
+      "size": 5868
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla_mtp_decode/test_tp2_wrapper.cu",
+      "size": 10740
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla_mtp_decode/test_tp4_wrapper.cu",
+      "size": 10908
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla_mtp_decode/test_tp8_wrapper.cu",
+      "size": 11134
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla_prefill_tp8/setup.py",
+      "size": 1430
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_mla_prefill_tp8/test_mla_prefill_tp8.py",
+      "size": 3974
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/runtime_kernel_wrapper_sm100.cu",
+      "size": 29311
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/setup.py",
+      "size": 2345
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_gate_topk.py",
+      "size": 4254
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_silu_mul.py",
+      "size": 1829
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_w13_linear.py",
+      "size": 4452
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_w2_linear.py",
+      "size": 4449
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe/test_weighted_sum.py",
+      "size": 3432
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe_sigmoid/runtime_kernel_wrapper_sm100.cu",
+      "size": 8058
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe_sigmoid/setup.py",
+      "size": 2111
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe_sigmoid/test_gate_topk_sigmoid.py",
+      "size": 7948
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_moe_sigmoid/test_topk_sigmoid_testmode.py",
+      "size": 7407
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_paged_attention/runtime_kernel_wrapper_sm100.cu",
+      "size": 7539
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_paged_attention/setup.py",
+      "size": 1917
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_paged_attention/test_window_skip.py",
+      "size": 6048
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_quantize_fp8/runtime_kernel_wrapper_sm100.cu",
+      "size": 7778
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_quantize_fp8/setup.py",
+      "size": 3586
+    },
+    {
+      "path": "tests/runtime_python/blackwell/sm100_quantize_fp8/test_quantize_fp8.py",
+      "size": 5088
+    },
+    {
+      "path": "tests/runtime_python/cute/hopper/gemm.cu",
+      "size": 24515
+    },
+    {
+      "path": "tests/runtime_python/cute/hopper/setup.py",
+      "size": 1694
+    },
+    {
+      "path": "tests/runtime_python/cute/hopper/test_matmul_ws_hopper.py",
+      "size": 961
+    },
+    {
+      "path": "tests/runtime_python/cute/hopper/test_matmul_ws_mpk.py",
+      "size": 965
+    },
+    {
+      "path": "tests/runtime_python/hopper-moe/runtime_kernel_wrapper_moe_hopper.cu",
+      "size": 21173
+    },
+    {
+      "path": "tests/runtime_python/hopper-moe/setup.py",
+      "size": 2115
+    },
+    {
+      "path": "tests/runtime_python/hopper-moe/test_moe_w13_linear_hopper.py",
+      "size": 4368
+    },
+    {
+      "path": "tests/runtime_python/hopper-moe/test_moe_w2_linear_hopper.py",
+      "size": 4366
+    },
+    {
+      "path": "tests/runtime_python/hopper/allreduce/runtime_kernel_wrapper_hopper.cu",
+      "size": 7543
+    },
+    {
+      "path": "tests/runtime_python/hopper/allreduce/setup.py",
+      "size": 4984
+    },
+    {
+      "path": "tests/runtime_python/hopper/allreduce/test_allreduce.py",
+      "size": 9861
+    },
+    {
+      "path": "tests/runtime_python/hopper/attention_tail_wrapper.cu",
+      "size": 3705
+    },
+    {
+      "path": "tests/runtime_python/hopper/runtime_kernel_wrapper_hopper.cu",
+      "size": 62303
+    },
+    {
+      "path": "tests/runtime_python/hopper/setup.py",
+      "size": 1881
+    },
+    {
+      "path": "tests/runtime_python/hopper/test_attention_tail_hopper.py",
+      "size": 3457
+    },
+    {
+      "path": "tests/runtime_python/hopper/test_linear_hopper.py",
+      "size": 1862
+    },
+    {
+      "path": "tests/runtime_python/hopper/test_multitoken_paged_attention_hopper.py",
+      "size": 7026
+    },
+    {
+      "path": "tests/runtime_python/hopper/test_norm_linear_hopper.py",
+      "size": 1713
+    },
+    {
+      "path": "tests/runtime_python/runtime_kernel_wrapper.cu",
+      "size": 79553
+    },
+    {
+      "path": "tests/runtime_python/setup.py",
+      "size": 1890
+    },
+    {
+      "path": "tests/runtime_python/test_alignment_norm_linear.py",
+      "size": 2715
+    },
+    {
+      "path": "tests/runtime_python/test_argmax.py",
+      "size": 1828
+    },
+    {
+      "path": "tests/runtime_python/test_attention/runtime_kernel_wrapper.cu",
+      "size": 30652
+    },
+    {
+      "path": "tests/runtime_python/test_attention/setup.py",
+      "size": 2695
+    },
+    {
+      "path": "tests/runtime_python/test_attention/test_decoding_flash.py",
+      "size": 4520
+    },
+    {
+      "path": "tests/runtime_python/test_attention/test_multitoken_paged_attention.py",
+      "size": 9361
+    },
+    {
+      "path": "tests/runtime_python/test_decoding_flash.py",
+      "size": 2049
+    },
+    {
+      "path": "tests/runtime_python/test_decoding_no_qknorm.py",
+      "size": 4516
+    },
+    {
+      "path": "tests/runtime_python/test_decoding_no_sfm.py",
+      "size": 1958
+    },
+    {
+      "path": "tests/runtime_python/test_decoding_w_norm.py",
+      "size": 4383
+    },
+    {
+      "path": "tests/runtime_python/test_embedding.py",
+      "size": 1397
+    },
+    {
+      "path": "tests/runtime_python/test_extend_w_norm.py",
+      "size": 15886
+    },
+    {
+      "path": "tests/runtime_python/test_linear.py",
+      "size": 2872
+    },
+    {
+      "path": "tests/runtime_python/test_linear/pyproject.toml",
+      "size": 98
+    },
+    {
+      "path": "tests/runtime_python/test_linear/runtime_kernel_wrapper.cu",
+      "size": 2217
+    },
+    {
+      "path": "tests/runtime_python/test_linear/setup.py",
+      "size": 2567
+    },
+    {
+      "path": "tests/runtime_python/test_linear/test_linear_cutlass.py",
+      "size": 1761
+    },
+    {
+      "path": "tests/runtime_python/test_mode/.gitignore",
+      "size": 34
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_argmax_vocab_bound_testmode.py",
+      "size": 3661
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_attention_sinks_testmode.py",
+      "size": 6209
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_case2_case3_negative_testmode.py",
+      "size": 7481
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_diamond_fork_join_testmode.py",
+      "size": 6064
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_fork_point_testmode.py",
+      "size": 3627
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_fp8_moe_pipeline_testmode.py",
+      "size": 17241
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_grid_dim_sweep_testmode.py",
+      "size": 4568
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_join_point_testmode.py",
+      "size": 4348
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_kv_planner.py",
+      "size": 22495
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_linear_bias_testmode.py",
+      "size": 4425
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_moe_gptoss_testmode.py",
+      "size": 6744
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_moe_pipeline_batch_testmode.py",
+      "size": 9187
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_moe_residual_rank_guard_testmode.py",
+      "size": 6975
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_moe_router_batch_testmode.py",
+      "size": 2897
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_moe_w13_linear_testmode.py",
+      "size": 5365
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_qwen3_mlp_testmode.py",
+      "size": 11882
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_residual_stripping_testmode.py",
+      "size": 4366
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_rmsnorm_testmode.py",
+      "size": 2625
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_rmsnorm_uneven_testmode.py",
+      "size": 3301
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_sampling_edges_testmode.py",
+      "size": 4774
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_sampling_topk_topp_testmode.py",
+      "size": 7734
+    },
+    {
+      "path": "tests/runtime_python/test_mode/test_windowed_attention_testmode.py",
+      "size": 5871
+    },
+    {
+      "path": "tests/runtime_python/test_moe_linear.py",
+      "size": 4439
+    },
+    {
+      "path": "tests/runtime_python/test_multitoken_paged_attention.py",
+      "size": 6831
+    },
+    {
+      "path": "tests/runtime_python/test_norm_linear.py",
+      "size": 3694
+    },
+    {
+      "path": "tests/runtime_python/test_paged_attention.py",
+      "size": 4716
+    },
+    {
+      "path": "tests/runtime_python/test_prompt_lookup.py",
+      "size": 2967
+    },
+    {
+      "path": "tests/runtime_python/test_rmsnorm.py",
+      "size": 4748
+    },
+    {
+      "path": "tests/runtime_python/test_rotary_embedding.py",
+      "size": 5021
+    },
+    {
+      "path": "tests/runtime_python/test_sampling.py",
+      "size": 7783
+    },
+    {
+      "path": "tests/runtime_python/test_silu_mul_linear.py",
+      "size": 3399
+    },
+    {
+      "path": "tests/runtime_python/test_verify.py",
+      "size": 2195
+    },
+    {
+      "path": "tests/transpiler/CMakeLists.txt",
+      "size": 360
+    },
+    {
+      "path": "tests/transpiler/all_testcases.h",
+      "size": 377
+    },
+    {
+      "path": "tests/transpiler/config.h",
+      "size": 3348
+    },
+    {
+      "path": "tests/transpiler/lib.h",
+      "size": 22369
+    },
+    {
+      "path": "tests/transpiler/test_cuda_transpiler.cc",
+      "size": 3056
+    },
+    {
+      "path": "tests/transpiler/testcases/kernel/elemwise.h",
+      "size": 6662
+    },
+    {
+      "path": "tests/transpiler/testcases/kernel/matmul.h",
+      "size": 1672
+    },
+    {
+      "path": "tests/transpiler/testcases/kernel/reduction.h",
+      "size": 828
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/elemwise.h",
+      "size": 4322
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/elemwise_bcast.h",
+      "size": 3598
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/io.h",
+      "size": 4569
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/matmul.h",
+      "size": 5706
+    },
+    {
+      "path": "tests/transpiler/testcases/threadblock/reduction.h",
+      "size": 3852
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-10-01T16:04:50Z",
+      "subject": "Add conference paper citation to README",
+      "url": "https://github.com/mirage-project/mirage/commit/60ae655cf418125227314825279852a719f1d713"
+    },
+    {
+      "date": "2026-09-28T15:03:18Z",
+      "subject": "Raise the SM100 attention max_num_batched_tokens ceiling (#778)",
+      "url": "https://github.com/mirage-project/mirage/commit/6ce3a6b836a69ddc91742798166cdae2ef498cfc"
+    },
+    {
+      "date": "2026-09-28T15:01:46Z",
+      "subject": "benchmark: primitive microbenchmarks for synchronization and TMA (#783)",
+      "url": "https://github.com/mirage-project/mirage/commit/ed44f798a404ae33ca2f3d10111a144e0c468dea"
+    },
+    {
+      "date": "2026-09-28T15:01:00Z",
+      "subject": "Unified KV Cache Pool for Hybrid KV Specs (#747)",
+      "url": "https://github.com/mirage-project/mirage/commit/fb181082148b96fc04fc03520c605d76574910c1"
+    },
+    {
+      "date": "2026-09-24T20:27:02Z",
+      "subject": "Fix Hopper multitoken_paged_attention mbt>1 stale-tail NaN (#768)",
+      "url": "https://github.com/mirage-project/mirage/commit/97de25929c0945a90b2b8870d5d9b186224a890f"
+    },
+    {
+      "date": "2026-09-20T17:56:28Z",
+      "subject": "Merge pull request #775 from phamson02/fix/split-launch-scheduler-packing",
+      "url": "https://github.com/mirage-project/mirage/commit/bc5d69612a345efe502a4dfb28faa672dd35dbeb"
+    },
+    {
+      "date": "2026-09-20T05:34:28Z",
+      "subject": "fix: simplify scheduler count validation",
+      "url": "https://github.com/mirage-project/mirage/commit/0ef4b0fb17ce11f64091f7ef9596e1f2dfbf3d42"
+    },
+    {
+      "date": "2026-09-19T20:26:23Z",
+      "subject": "fix: use four schedulers per block",
+      "url": "https://github.com/mirage-project/mirage/commit/3c1a82abfc509bcf2b95fcd434f08c9b0ab5afdb"
+    },
+    {
+      "date": "2026-09-17T15:54:35Z",
+      "subject": "fix: prevent split-launch deadlocks by packing schedulers",
+      "url": "https://github.com/mirage-project/mirage/commit/39a82aa2be19c1d19273e33feaa383cd1bb2fe5f"
+    },
+    {
+      "date": "2026-09-12T04:44:14Z",
+      "subject": "fix: MoE router drops rows past the first CTA block (#764)",
+      "url": "https://github.com/mirage-project/mirage/commit/1f3338f9ae084559726fb1fc898ae077ff7d171a"
+    },
+    {
+      "date": "2026-09-12T02:40:05Z",
+      "subject": "feat: temperature / top-k / top-p sampling on SM100 (#766)",
+      "url": "https://github.com/mirage-project/mirage/commit/2b6fc0c1d4e0804fbe91084765d79711d5e3d791"
+    }
+  ],
+  "readme": "<div align=\"center\">\n\n# Mirage Persistent Kernel: Compiling LLMs into a MegaKernel\n    \n| [Join Slack](https://join.slack.com/t/miragesystem/shared_invite/zt-37reobr1i-SKjxeYF3GXdPDoCvtVbjTQ) | [Roadmap](https://github.com/mirage-project/mirage/issues/325) | [Blog Post](https://zhihaojia.medium.com/compiling-llms-into-a-megakernel-a-path-to-low-latency-inference-cf7840913c17) | \n\n</div>\n\n*Latest News* 🔥\n* [2025/06] We released [Mirage Persistent Kernel (MPK)](https://github.com/mirage-project/mirage/tree/mpk), a compiler and runtime that automatically transforms multi-GPU LLM inference into a high-performance megakernel.\n\n## About\n\n**Mirage Persistent Kernel (MPK)** is a compiler and runtime system that automatically transforms LLM inference into a single megakernel—a fused GPU kernel that performs all necessary computation and communication within a single kernel launch. This end-to-end GPU fusion approach reduces LLM inference latency by 1.2× to 6.7×, all while requiring minimal developer effort.\n\n## Quick Installation\n\nThe fastest way to try MPK is to install it directly from source:\n```bash\ngit clone --recursive --branch mpk https://www.github.com/mirage-project/mirage\ncd mirage\npip install -e . -v\nexport MIRAGE_HOME=$(pwd)\n```\n\n> 🔧[2025/06/19] We are working on pre-built binary wheels for MPK and will update the installation instructions once they are available.\n\n## Quickstart\nMirage allows you to compile LLMs from the Hugging Face model zoo into a megakernel using just a few dozen lines of Python—mainly to define the kernel’s inputs and outputs. See [this demo script](https://github.com/mirage-project/mirage/blob/mpk/demo/qwen3/demo.py) that compiles the Qwen3-8B model into a megakernel.\n\nWe start by running the demo with native Triton and FlashInfer kernels:\n```bash\npython demo/qwen3/demo.py\n```\n\nTo compile and execute the megakernel using MPK:\n```bash\npython demo/qwen3/demo.py --use-mirage\n```\n\nTo enable profiling (which visualizes the execution timeline of each task):\n```bash\npython demo/qwen3/demo.py --use-mirage --profiling\n```\n\n## How MPK Works\nOnce you've imported the Mirage package, you can instantiate a persistent kernel using the following API:\n```python\nimport mirage as mi\nmpk = mi.PersistentKernel(\n    world_size=world_size,\n    mpi_rank=rank,\n    num_workers=96,\n    num_local_schedulers=48,\n    num_remote_schedulers=0,\n    meta_tensors=[step, tokens],\n    profiler_tensor=profiler_tensor,\n)\n```\n* `world_size` and `mpi_rank`: number of GPUs and current GPU rank.\n* `num_workers`, `num_local_schedulers`, `num_remote_schedulers`: the number of workers, local schedulers, and remote schedulers. They must match the number of physical SMs (`num_workers` + (`num_local_schedulers` + `num_remote_schedulers`) / 4).\n* The megakernel currently requires two meta tensors: `step` is an array of integer tracking the current decoding step, and is incremented by MPK after each decoding iteration; `tokens` is a tensor of shape [`num_requests`, `seq_length`] storing prompts and MPK generated tokens.\n\nTo attach an existing `PyTorch.Tensor`:\n```python\nx = mpk.attach_input(torch_tensor=torch_tensor, name=\"torch_tensor_name\")\n```\n* `name` is used by MPK to refer to the tensor in the generated megakernel in CUDA.\n\nTo allocate a new tensor:\n```python\ny = mpk.new_tensor(\n    dims=(batch_size, hidden_size),\n    dtype=mi.bfloat16,\n    name=\"embed_out\",\n    io_category=\"cuda_tensor\",\n)\n```\n* `dims` and `dtype` specify the dimensions and data type of the tensor. \n* `name` is used by MPK to refer to this new tensor in the megakernel. \n* `io_category` indicates how the tensor is allocated and must be `cuda_tensor` or `nvshmem_tensor` (the latter is required for remote GPU access, e.g., during all-reduce).\n\n### Defining the Computation Graph\nYou can compose the LLM’s computation graph by chaining fused operations. For example: `rmsnorm_linear_layer` fuses an RMSNorm layer and a Linear layer in the megakernel.\n```python\nmpk.rmsnorm_linear_layer(\n    input=x,\n    weight_norm=w_norm,\n    weight_linear=w_qkv,\n    output=attn_in,\n    grid_dim=(96, 1, 1),\n    block_dim=(128, 1, 1),\n)\n```\n* `weight_norm` and `weight_linear` are the weight tensors for RMSNorm and Linear.\n* `input` and `output` are the input and output tensors of this fused layer. \n* `grid_dim` and `block_dim` specifies the number of thread blocks (i.e., number of tasks in the task graph) and number of thread within each thread block. To minimize latency, it is suggested that the total number of thread blocks is a multiplier of the number of workers to avoid outliers.\n\n### Compilation & Execution\nOnce the computation graph is defined, compile it with:\n```python\nmpk.compile()\n```\nThen, run the optimized megakernel as:\n```python\nmpk()\n```\n\n## Contribution\nWe welcome feedback, contributions, and collaborations from the community! Please join our [Slack channel](https://join.slack.com/t/mirage-ag11870/shared_invite/zt-37reobr1i-SKjxeYF3GXdPDoCvtVbjTQ).\n\nPlease let us know if you encounter any bugs or have any suggestions by [submitting an issue](https://github.com/mirage-project/mirage/issues).\n\n## Citation\nA paper describing Mirage's techniques is available [on arxiv](https://arxiv.org/abs/2405.05751). Please cite Mirage as:\n\n``` bibtex\n@inproceedings {wu2025mirage,\ntitle={Mirage: A Multi-Level Superoptimizer for Tensor Programs}, \nauthor={Mengdi Wu and Xinhao Cheng and Shengyu Liu and Chunan Shi and Jianan Ji and Kit Ao and Praveen Velliengiri and Xupeng Miao and Oded Padon and Zhihao Jia},\nbooktitle = {19th USENIX Symposium on Operating Systems Design and Implementation (OSDI 25)},\nyear = {2025},\naddress = {Boston, MA},\npublisher = {USENIX Association},\nmonth = jul\n}\n\n@inproceedings{cheng2026mpk,\ntitle={MPK: A Compiler and Runtime for Mega-Kernelizing Tensor Programs}, \nauthor={Xinhao Cheng and Zhihao Zhang and Yu Zhou and Jianan Ji and Jinchen Jiang and Zepeng Zhao and Ziruo Xiao and Zihao Ye and Yingyi Huang and Ruihang Lai and Hongyi Jin and Bohan Hou and Mengdi Wu and Yixin Dong and Anthony Yip and Zihao Ye and Songting Wang and Wenqin Yang and Xupeng Miao and Tianqi Chen and Zhihao Jia},\nbooktitle = {20th USENIX Symposium on Operating Systems Design and Implementation (OSDI 26)},\nyear={2026},\naddress={Seattle, WA},\npublisher = {USENIX Association},\nmonth = jul \n}\n```\n\n## Publications\n\n- **MPK: A Compiler and Runtime for Mega-Kernelizing Tensor Programs**. *OSDI 2026*. [[arXiv]](https://arxiv.org/abs/2512.22219)\n- **Mirage: A Multi-Level Superoptimizer for Tensor Programs**. *OSDI 2025*. [[PDF]](https://www.usenix.org/system/files/osdi25-wu-mengdi.pdf)\n- **Identity Testing for Circuits with Exponentiation Gates**. *ITCS 2026* [[arXiv]](https://arxiv.org/pdf/2506.04529)\n\n## License\nMirage uses Apache License 2.0.\n"
+}

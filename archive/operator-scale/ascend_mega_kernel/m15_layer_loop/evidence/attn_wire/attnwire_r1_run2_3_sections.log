@@ -1,0 +1,115 @@
+# runs=attnwire 第 2 / 第 3 次的 AttnWire 段（第 1 次全文见 attnwire_r1_run1.log）；三次逐字节一致
+
+===== run2 头部 =====
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 48 层，token 3，reps 10，权重=checkpoint，dump=关
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+===== run2 AttnWire 段 =====
+[m15] ===== 验证 AttnWire（M97）：attention 相位 A 接进融合 kernel 后的 device 见证 =====
+[m15]   入口 = `m15_layer_kernel_attn_hc`（四相位融合形态），层 = 3（KindOf=1）
+[m15]   与前档 `runs=prolog` 的差别：那档是**独立探针**入口；本档是**融合 kernel 的相位 A**。
+[m15] prolog 权重：layer=3，8 个 role 71435776 B（平面 71435776 B，512 B 对齐）→ device
+[m15] prolog 输入/表：x 2 行 × 2560 bf16、cos/sin 表 4097 行 × 64 bf16（524416 B）→ device
+[m15]   Ap.nonvac.x0：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.nonvac.x1：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.wire.nonvac     报告项  毒化 0xCD 之后设备写出的非零：y0 13952/13952、out 13952/13952
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.wire.sens                   PASS (与输入不同，非恒等)
+[m15]   Ap.wire.repeat      报告项  重跑与首次的不同元素：y0 0/13952、out 0/13952
+[m15]   Ap.wire.pos                    PASS (与输入不同，非恒等)
+[m15]   Ap.wire.neg mode=1(PLAIN_NORM)：被打破的判据 7168 条
+[m15]   Ap.wire.neg mode=2(ROPE_SIGN )：被打破的判据 1692 条
+[m15]   Ap.wire.neg mode=3(NO_ROPE   )：被打破的判据 1584 条
+[m15]   Ap.wire.mut mode=4(NO_COPY )：被打破的判据 6145 条
+[m15]   Ap.wire.mut mode=5(NO_GEMM )：被打破的判据 27884 条
+[m15]   Ap.wire.miswire(a) 实参错位（喂 x1 / 按 x0 判）：被打破的判据 27859 条
+[m15]   Ap.wire.miswire(b) 接线关掉（apW=nullptr）：被打破的判据 27904 条
+[m15] 验证 AttnWire：本段判定项 41 条 + guard 14 条（累计 checks 173 / guards 63 / fails 0）
+[m15]   覆盖交代：本段只覆盖**相位 A 的 attention 前端**在融合 kernel 里的接线；不覆盖打分/topk/expand、attention 核心、`o_proj`、层 4..11 的铺设（见 evidence/attn_wire/README.md）。
+
+[m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Kv 0 + Prolog 0 + AttnWire 41 = 173 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15]   ④ 与 M39 官方单层参考对拍的判据**不在这个数里**：它在 `check_chain_ref.py`（torch，独立三态退出码与计数），由本程序的 dump 驱动；运行方式见 README。
+[m15] guard：63 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 48 + 参考链锚点非空 0 + M65 链 0 + 其余 14
+[m15] ===== ALL PASS（checks=173, guards=63, fails=0）=====
+
+===== run3 头部 =====
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 48 层，token 3，reps 10，权重=checkpoint，dump=关
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+===== run3 AttnWire 段 =====
+[m15] ===== 验证 AttnWire（M97）：attention 相位 A 接进融合 kernel 后的 device 见证 =====
+[m15]   入口 = `m15_layer_kernel_attn_hc`（四相位融合形态），层 = 3（KindOf=1）
+[m15]   与前档 `runs=prolog` 的差别：那档是**独立探针**入口；本档是**融合 kernel 的相位 A**。
+[m15] prolog 权重：layer=3，8 个 role 71435776 B（平面 71435776 B，512 B 对齐）→ device
+[m15] prolog 输入/表：x 2 行 × 2560 bf16、cos/sin 表 4097 行 × 64 bf16（524416 B）→ device
+[m15]   Ap.nonvac.x0：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.nonvac.x1：期望非零 out 13952/13952、y0 13952/13952（整片为 0 会让判据空过 ⇒ 这是 guard）
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.wire.nonvac     报告项  毒化 0xCD 之后设备写出的非零：y0 13952/13952、out 13952/13952
+[m15]   Ap.y0.qg                     T2'    PASS  n=12288 差异=2 越界=0
+[m15]   Ap.y0.k                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.v                      T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.y0.idx                    T2'    PASS  n=640 差异=0 越界=0
+[m15]   Ap.out.q                     T3     PASS  n=6144 差异=2 越界=0
+[m15]   Ap.out.k                     T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.qidx                  T3     PASS  n=512 差异=0 越界=0
+[m15]   Ap.copy.gate                  T1字节 PASS  n=6144（24 个头 × 256，vs 设备自己的 y0 交织源）坏头=0
+[m15]   Ap.copy.v                     T1字节 PASS  n=512（vs 设备自己的 y0 段）
+[m15]   Ap.copy.kraw                  T1字节 PASS  n=128（vs 设备自己的 y0 段）
+[m15]   Ap.out.gate                  T2'    PASS  n=6144 差异=0 越界=0
+[m15]   Ap.out.v                     T2'    PASS  n=512 差异=0 越界=0
+[m15]   Ap.out.kraw                  T2'    PASS  n=128 差异=0 越界=0
+[m15]   Ap.wire.sens                   PASS (与输入不同，非恒等)
+[m15]   Ap.wire.repeat      报告项  重跑与首次的不同元素：y0 0/13952、out 0/13952
+[m15]   Ap.wire.pos                    PASS (与输入不同，非恒等)
+[m15]   Ap.wire.neg mode=1(PLAIN_NORM)：被打破的判据 7168 条
+[m15]   Ap.wire.neg mode=2(ROPE_SIGN )：被打破的判据 1692 条
+[m15]   Ap.wire.neg mode=3(NO_ROPE   )：被打破的判据 1584 条
+[m15]   Ap.wire.mut mode=4(NO_COPY )：被打破的判据 6145 条
+[m15]   Ap.wire.mut mode=5(NO_GEMM )：被打破的判据 27884 条
+[m15]   Ap.wire.miswire(a) 实参错位（喂 x1 / 按 x0 判）：被打破的判据 27859 条
+[m15]   Ap.wire.miswire(b) 接线关掉（apW=nullptr）：被打破的判据 27904 条
+[m15] 验证 AttnWire：本段判定项 41 条 + guard 14 条（累计 checks 173 / guards 63 / fails 0）
+[m15]   覆盖交代：本段只覆盖**相位 A 的 attention 前端**在融合 kernel 里的接线；不覆盖打分/topk/expand、attention 核心、`o_proj`、层 4..11 的铺设（见 evidence/attn_wire/README.md）。
+
+[m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Kv 0 + Prolog 0 + AttnWire 41 = 173 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15]   ④ 与 M39 官方单层参考对拍的判据**不在这个数里**：它在 `check_chain_ref.py`（torch，独立三态退出码与计数），由本程序的 dump 驱动；运行方式见 README。
+[m15] guard：63 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 48 + 参考链锚点非空 0 + M65 链 0 + 其余 14
+[m15] ===== ALL PASS（checks=173, guards=63, fails=0）=====

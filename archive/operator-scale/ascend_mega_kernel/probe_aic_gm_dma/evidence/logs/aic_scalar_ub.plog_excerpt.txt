@@ -1,0 +1,13 @@
+# M141 aic_scalar_ub 变体的 plog 摘录（原始二进制未入库；来源：/root/ascend/log/debug/plog/plog-325990_20261004114510258.log）
+# 命令：grep -aE 'probe_aic_gm_dma|Error from device|errorStr|aicore exception|rtStreamSynchronize' /root/ascend/log/debug/plog/plog-325990_20261004114510258.log
+
+[ERROR] RUNTIME(325990,probe_aic_gm_dma):2026-10-04-11:45:10.257.450 [device_error_proc_c.cc:716]325999 ProcessDavidStarsCoreErrorInfo:The error from device(chipId:0, dieId:0), serial number is 47, there is an aicore error exception, core id is 0, error code = 271, dump info: pc start: 0x12004ca00000, current: 0x12004ca02458, sc error info: 0xffffffffffff, su error info: 0xfbfddffb1d34091b,0xfd74f2add800ffff, mte error info: 0xaa01f58000020bd8, vec error info: 0, cube error info: 0, l1 error info: 0xffbf000eff7e, aic error mask: 0x395856, para base: 0x120000200000, mte error: 0, aic cond: 0.
+The extend info: errcode:(271) errorStr: The address for scalar to access the internal buffer is out of bounds. subErrType: 0x4.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+The extend info: errcode:(0) errorStr: timeout or trap error. subErrType: 0x4.
+[ERROR] RUNTIME(325990,probe_aic_gm_dma):2026-10-04-11:45:10.257.535 [davinci_kernel_task_v200_base.cc:255]325999 SetStarsResultByErrorType:AI Core kernel task execution failed, retCode=0x26.
+[ERROR] RUNTIME(325990,probe_aic_gm_dma):2026-10-04-11:45:10.257.539 [davinci_kernel_task.cc:1262]325999 PreCheckTaskErr:An error occurred in the kernel task, retCode=0x26, [aicore exception].
+[ERROR] RUNTIME(325990,probe_aic_gm_dma):2026-10-04-11:45:10.258.264 [stream.cc:1743]325990 GetError:Stream Synchronize failed, stream_id=61, retCode=0x26, [aicore exception].
+[ERROR] RUNTIME(325990,probe_aic_gm_dma):2026-10-04-11:45:10.258.270 [stream.cc:1746]325990 GetError:AI Core kernel task execution failed, retCode=0x26.
+[ERROR] RUNTIME(325990,probe_aic_gm_dma):2026-10-04-11:45:10.258.329 [api_c_stream.cc:158]325990 rtStreamSynchronize:ErrCode=507015, desc=[aicore exception], InnerCode=0x7150026
+[ERROR] RUNTIME(325990,probe_aic_gm_dma):2026-10-04-11:45:10.258.332 [error_message_manage.cc:69]325990 FuncErrorReason:rtStreamSynchronize execution failed, reason=aicore exception

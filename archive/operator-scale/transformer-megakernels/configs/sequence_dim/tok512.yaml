@@ -1,0 +1,10 @@
+input_config:
+  bs: 8
+  embed_dim: 1024
+  kv_len: 512
+  q_len: 512
+  num_q_heads: 8
+  num_kv_heads: 8
+  num_layers: 8
+  is_causal: true
+  ff_dim: 4096

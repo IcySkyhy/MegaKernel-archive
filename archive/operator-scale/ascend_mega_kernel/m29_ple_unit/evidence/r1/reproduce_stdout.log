@@ -1,0 +1,13 @@
+== [1/5] 构建（独立工程，不碰 m15_layer_loop/CMakeLists.txt）==
+   built /workspace/ascend_mega_kernel/.tower/worktrees/wt-161/m29_ple_unit/build/m29_ple_unit
+== [2/5] 数据（synth / real / real_miss）==
+== [3/5] 正档（synth 合成表 / real 真实表多槽全覆盖）==
+   [synth] dev rc=0  check rc=0  VERDICT=OK
+   [real] dev rc=0  check rc=0  VERDICT=OK
+== [4/5] 真实表越窗档（只 stage 1 个分片的槽 ⇒ 设备 miss 计数 > 0；covered 行仍须逐字节正确）==
+   [real_miss] dev rc=0  check rc=0  VERDICT=OK
+== [5/5] 负向对照（必须变红）==
+   [neg_table] dev rc=0  check rc=1（期望 1，红档数=11）
+   [neg_state] dev rc=0  check rc=1（期望 1，红档数=3）
+   [neg_slot_real] dev rc=0  check rc=1（期望 1，红档数=9）
+== 汇总：ALL-AS-EXPECTED  （日志在 /tmp/m29_repro_r1/*/{run.log,check.log,npu_smi.txt}）==

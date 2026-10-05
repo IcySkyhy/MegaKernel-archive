@@ -1,0 +1,235 @@
+# probe_vf_ldst run_matrix.txt —— 逐（变体组 × 独立进程）判读一行
+# 列：组名 / mask / 进程号 / rc / 判读 / 读数
+# rc 列来源：正常全量跑时由当次 `$?` 直接记录；若本文件按既有 run_*.log 重生成，
+#   则 rc 由二进制自己的退出码契约推得（RUN PASS→0 / RUN FAIL→1 / 其它→2，
+#   契约见各 .asc 末尾的 `return`）。两种来源在通过/失败两种路径上实测一致。
+probe_a_first_elem                       mask=0   p=0 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=0   p=1 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=0   p=2 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=0   p=3 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=0   p=4 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=1   p=0 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=1   p=1 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=1   p=2 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=1   p=3 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=1   p=4 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=8   p=0 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=8   p=1 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=8   p=2 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=8   p=3 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=8   p=4 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=64  p=0 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=64  p=1 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=64  p=2 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=64  p=3 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem                       mask=64  p=4 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_norm_b32                         mask=0   p=0 rc=0  RUN PASS  写出 0 lane（期望 0）、未触碰 64 lane
+probe_a_norm_b32                         mask=0   p=1 rc=0  RUN PASS  写出 0 lane（期望 0）、未触碰 64 lane
+probe_a_norm_b32                         mask=0   p=2 rc=0  RUN PASS  写出 0 lane（期望 0）、未触碰 64 lane
+probe_a_norm_b32                         mask=0   p=3 rc=0  RUN PASS  写出 0 lane（期望 0）、未触碰 64 lane
+probe_a_norm_b32                         mask=0   p=4 rc=0  RUN PASS  写出 0 lane（期望 0）、未触碰 64 lane
+probe_a_norm_b32                         mask=1   p=0 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_norm_b32                         mask=1   p=1 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_norm_b32                         mask=1   p=2 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_norm_b32                         mask=1   p=3 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_norm_b32                         mask=1   p=4 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_norm_b32                         mask=8   p=0 rc=0  RUN PASS  写出 8 lane（期望 8）、未触碰 56 lane
+probe_a_norm_b32                         mask=8   p=1 rc=0  RUN PASS  写出 8 lane（期望 8）、未触碰 56 lane
+probe_a_norm_b32                         mask=8   p=2 rc=0  RUN PASS  写出 8 lane（期望 8）、未触碰 56 lane
+probe_a_norm_b32                         mask=8   p=3 rc=0  RUN PASS  写出 8 lane（期望 8）、未触碰 56 lane
+probe_a_norm_b32                         mask=8   p=4 rc=0  RUN PASS  写出 8 lane（期望 8）、未触碰 56 lane
+probe_a_norm_b32                         mask=64  p=0 rc=0  RUN PASS  写出 64 lane（期望 64）、未触碰 0 lane
+probe_a_norm_b32                         mask=64  p=1 rc=0  RUN PASS  写出 64 lane（期望 64）、未触碰 0 lane
+probe_a_norm_b32                         mask=64  p=2 rc=0  RUN PASS  写出 64 lane（期望 64）、未触碰 0 lane
+probe_a_norm_b32                         mask=64  p=3 rc=0  RUN PASS  写出 64 lane（期望 64）、未触碰 0 lane
+probe_a_norm_b32                         mask=64  p=4 rc=0  RUN PASS  写出 64 lane（期望 64）、未触碰 0 lane
+probe_a_first_elem_nc                    mask=0   p=0 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=0   p=1 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=0   p=2 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=0   p=3 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=0   p=4 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=1   p=0 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=1   p=1 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=1   p=2 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=1   p=3 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=1   p=4 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=2   p=0 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=2   p=1 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=2   p=2 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=2   p=3 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=2   p=4 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=3   p=0 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=3   p=1 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=3   p=2 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=3   p=3 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_first_elem_nc                    mask=3   p=4 rc=0  RUN PASS  写出 1 lane（期望 1）、未触碰 63 lane
+probe_a_norm_b32_nc                      mask=0   p=0 rc=0  RUN PASS  写出 16 lane（期望 16）、未触碰 48 lane
+probe_a_norm_b32_nc                      mask=0   p=1 rc=0  RUN PASS  写出 16 lane（期望 16）、未触碰 48 lane
+probe_a_norm_b32_nc                      mask=0   p=2 rc=0  RUN PASS  写出 16 lane（期望 16）、未触碰 48 lane
+probe_a_norm_b32_nc                      mask=0   p=3 rc=0  RUN PASS  写出 16 lane（期望 16）、未触碰 48 lane
+probe_a_norm_b32_nc                      mask=0   p=4 rc=0  RUN PASS  写出 16 lane（期望 16）、未触碰 48 lane
+probe_a_norm_b32_nc                      mask=1   p=0 rc=0  RUN PASS  写出 22 lane（期望 22）、未触碰 42 lane
+probe_a_norm_b32_nc                      mask=1   p=1 rc=0  RUN PASS  写出 22 lane（期望 22）、未触碰 42 lane
+probe_a_norm_b32_nc                      mask=1   p=2 rc=0  RUN PASS  写出 22 lane（期望 22）、未触碰 42 lane
+probe_a_norm_b32_nc                      mask=1   p=3 rc=0  RUN PASS  写出 22 lane（期望 22）、未触碰 42 lane
+probe_a_norm_b32_nc                      mask=1   p=4 rc=0  RUN PASS  写出 22 lane（期望 22）、未触碰 42 lane
+probe_a_norm_b32_nc                      mask=2   p=0 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全偶
+probe_a_norm_b32_nc                      mask=2   p=1 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全偶
+probe_a_norm_b32_nc                      mask=2   p=2 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全偶
+probe_a_norm_b32_nc                      mask=2   p=3 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全偶
+probe_a_norm_b32_nc                      mask=2   p=4 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全偶
+probe_a_norm_b32_nc                      mask=3   p=0 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全奇
+probe_a_norm_b32_nc                      mask=3   p=1 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全奇
+probe_a_norm_b32_nc                      mask=3   p=2 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全奇
+probe_a_norm_b32_nc                      mask=3   p=3 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全奇
+probe_a_norm_b32_nc                      mask=3   p=4 rc=0  RUN PASS  交替掩码被严格遵守（32 个 lane、全奇
+probe_b_rel0_brc             p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_brc             p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_brc             p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_brc             p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_brc             p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc             p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc             p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc             p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc             p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc             p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_brc             p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_brc             p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_brc             p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_brc             p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_brc             p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_norm            p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_norm            p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_norm            p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_norm            p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_norm            p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_norm            p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_norm            p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_norm            p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_norm            p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_norm            p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_norm            p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_norm            p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_norm            p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_norm            p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_norm            p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_getval          p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_getval          p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_getval          p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_getval          p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_getval          p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_getval          p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_getval          p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_getval          p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_getval          p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_getval          p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_getval          p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_getval          p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_getval          p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_getval          p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel2_getval          p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_membar      p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_membar      p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_membar      p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_membar      p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_membar      p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_mid         p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_mid         p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_mid         p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_mid         p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_mid         p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g32         p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g32         p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g32         p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g32         p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g32         p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g4          p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g4          p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g4          p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g4          p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_g4          p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_perchunk    p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_perchunk    p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_perchunk    p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_perchunk    p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_perchunk    p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_vprod       p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_vprod       p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_vprod       p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_vprod       p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_vprod       p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_off4        p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_off4        p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_off4        p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_off4        p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel1_brc_off4        p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_noprod               p=0 rc=0  RUN PASS  ok=0 stale_prev=0 ahead=0 poison=64 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_b_noprod               p=1 rc=0  RUN PASS  ok=0 stale_prev=0 ahead=0 poison=64 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_b_noprod               p=2 rc=0  RUN PASS  ok=0 stale_prev=0 ahead=0 poison=64 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_b_noprod               p=3 rc=0  RUN PASS  ok=0 stale_prev=0 ahead=0 poison=64 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_b_noprod               p=4 rc=0  RUN PASS  ok=0 stale_prev=0 ahead=0 poison=64 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_b_vrelimm              p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_vrelimm              p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_vrelimm              p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_vrelimm              p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_vrelimm              p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_vrelimm         p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_vrelimm         p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_vrelimm         p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_vrelimm         p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_rel0_vrelimm         p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel1         p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel1         p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel1         p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel1         p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel1         p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel0         p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel0         p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel0         p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel0         p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel0         p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel2         p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel2         p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel2         p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel2         p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_backlog_rel2         p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_b_prod3_selftest       p=0 rc=1  RUN FAIL  ok=1 stale_prev=63 ahead=0 poison=0 zero=0 other=0 首个不符 chunk=1 得到 1000 期望 1001
+probe_b_prod3_selftest       p=1 rc=1  RUN FAIL  ok=1 stale_prev=63 ahead=0 poison=0 zero=0 other=0 首个不符 chunk=1 得到 1000 期望 1001
+probe_b_prod3_selftest       p=2 rc=1  RUN FAIL  ok=1 stale_prev=63 ahead=0 poison=0 zero=0 other=0 首个不符 chunk=1 得到 1000 期望 1001
+probe_b_prod3_selftest       p=3 rc=1  RUN FAIL  ok=1 stale_prev=63 ahead=0 poison=0 zero=0 other=0 首个不符 chunk=1 得到 1000 期望 1001
+probe_b_prod3_selftest       p=4 rc=1  RUN FAIL  ok=1 stale_prev=63 ahead=0 poison=0 zero=0 other=0 首个不符 chunk=1 得到 1000 期望 1001
+probe_c_rt_unordered   p=0 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_unordered   p=1 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_unordered   p=2 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_unordered   p=3 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_unordered   p=4 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_event       p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_event       p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_event       p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_event       p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_event       p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_bufid       p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_twotok      p=0 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_twotok      p=1 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_twotok      p=2 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_twotok      p=3 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_twotok      p=4 rc=1  RUN FAIL  ok=63 stale_prev=0 ahead=0 poison=1 zero=0 other=0 首个不符 chunk=0 得到 -999 期望 1000
+probe_c_rt_small_unordered p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_unordered p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_unordered p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_unordered p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_unordered p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_twotok p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=0 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=1 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=2 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=3 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 
+probe_c_rt_small_bufid p=4 rc=0  RUN PASS  ok=64 stale_prev=0 ahead=0 poison=0 zero=0 other=0 

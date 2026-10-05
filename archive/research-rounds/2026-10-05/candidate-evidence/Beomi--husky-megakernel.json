@@ -1,0 +1,181 @@
+{
+  "repository": "Beomi/husky-megakernel",
+  "url": "https://github.com/Beomi/husky-megakernel",
+  "created_at": "2026-09-23T03:52:38Z",
+  "pushed_at": "2026-09-23T03:56:11Z",
+  "branch": "main",
+  "license": null,
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 9
+    },
+    {
+      "path": "Package.swift",
+      "size": 383
+    },
+    {
+      "path": "README.md",
+      "size": 5178
+    },
+    {
+      "path": "Sources/husky/Arena.swift",
+      "size": 13768
+    },
+    {
+      "path": "Sources/husky/BatchModel.swift",
+      "size": 11763
+    },
+    {
+      "path": "Sources/husky/Bench.swift",
+      "size": 5985
+    },
+    {
+      "path": "Sources/husky/Config.swift",
+      "size": 2865
+    },
+    {
+      "path": "Sources/husky/HardwareBench.swift",
+      "size": 5237
+    },
+    {
+      "path": "Sources/husky/KernelChecks.swift",
+      "size": 6869
+    },
+    {
+      "path": "Sources/husky/Megakernel.swift",
+      "size": 2880
+    },
+    {
+      "path": "Sources/husky/MetalEngine.swift",
+      "size": 9260
+    },
+    {
+      "path": "Sources/husky/Model.swift",
+      "size": 17691
+    },
+    {
+      "path": "Sources/husky/PrefillModel.swift",
+      "size": 13530
+    },
+    {
+      "path": "Sources/husky/Safetensors.swift",
+      "size": 4607
+    },
+    {
+      "path": "Sources/husky/Tokenizer.swift",
+      "size": 5961
+    },
+    {
+      "path": "Sources/husky/Weights.swift",
+      "size": 5194
+    },
+    {
+      "path": "Sources/husky/batchkernel.metal",
+      "size": 17057
+    },
+    {
+      "path": "Sources/husky/kernels.metal",
+      "size": 22905
+    },
+    {
+      "path": "Sources/husky/main.swift",
+      "size": 5830
+    },
+    {
+      "path": "Sources/husky/megakernel.metal",
+      "size": 25799
+    },
+    {
+      "path": "Sources/husky/prefillkernel.metal",
+      "size": 25919
+    },
+    {
+      "path": "docs/README.md",
+      "size": 6086
+    },
+    {
+      "path": "docs/architecture.md",
+      "size": 5910
+    },
+    {
+      "path": "docs/benchmarks.md",
+      "size": 4168
+    },
+    {
+      "path": "docs/measurements/2026-09-23/README.md",
+      "size": 907
+    },
+    {
+      "path": "docs/measurements/2026-09-23/cli-shader-validation.txt",
+      "size": 418
+    },
+    {
+      "path": "docs/measurements/2026-09-23/hardware.txt",
+      "size": 526
+    },
+    {
+      "path": "docs/measurements/2026-09-23/kernel-validation.txt",
+      "size": 1200
+    },
+    {
+      "path": "docs/measurements/2026-09-23/megakernel-optimized.txt",
+      "size": 174
+    },
+    {
+      "path": "docs/measurements/2026-09-23/megakernel-original.txt",
+      "size": 174
+    },
+    {
+      "path": "docs/measurements/2026-09-23/prefill-integration.txt",
+      "size": 1098
+    },
+    {
+      "path": "docs/measurements/2026-09-23/prefill-optimized-warmed.txt",
+      "size": 920
+    },
+    {
+      "path": "docs/measurements/2026-09-23/prefill-original.txt",
+      "size": 890
+    },
+    {
+      "path": "docs/measurements/2026-09-23/prefill-reference-warmed.txt",
+      "size": 415
+    },
+    {
+      "path": "docs/measurements/2026-09-23/stages-optimized.txt",
+      "size": 2261
+    },
+    {
+      "path": "docs/measurements/2026-09-23/stages-original.txt",
+      "size": 1510
+    },
+    {
+      "path": "docs/megakernel-and-memory-model.md",
+      "size": 7437
+    },
+    {
+      "path": "docs/performance.md",
+      "size": 5398
+    },
+    {
+      "path": "docs/porting-log.md",
+      "size": 6682
+    },
+    {
+      "path": "docs/prefill.md",
+      "size": 7655
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-23T03:54:22Z",
+      "subject": "Init",
+      "url": "https://github.com/Beomi/husky-megakernel/commit/854462613d9d7eda009f5a9625e574746b30b625"
+    }
+  ],
+  "readme": "# Husky\n\nA native Swift + Metal inference engine for\n`ConwayResearch/Underdog-Woof-4B-1.1`, a 4-bit hybrid language model. Husky runs\ngreedy text generation on Apple silicon, with chunked prefill and quantized\ndecode. Inference requires neither Python nor MLX.\n\n## Requirements\n\n- An Apple silicon Mac running macOS 14 or later.\n- An installed Xcode/Swift toolchain with Metal support.\n- The Woof model files, downloaded to a local directory.\n\nFast prefill prepares an additional **7.14 GB of fp16 weights**, alongside the\nquantized weights, activations, and caches. The benchmarks below used a Mac with\n48 GB of unified memory.\n\n## Quick start\n\nFrom the repository root, build the executable:\n\n```sh\nswift build -c release\n```\n\nIf the weights are not already available, download them using the Hugging Face\nCLI (`hf` must be installed separately):\n\n```sh\nhf download ConwayResearch/Underdog-Woof-4B-1.1 --local-dir /tmp/woof\n```\n\nGenerate text:\n\n```sh\n.build/release/husky \\\n  --model /tmp/woof \\\n  --prompt \"Explain how transformer language models work.\" \\\n  --max-tokens 128\n```\n\nThe executable prints generated token IDs and text, plus timing information.\n`--max-tokens` controls the number of generated tokens. The final end-to-end\ntiming includes weight loading, prefill, and decode; the separate prefill timing\nexcludes weight loading.\n\nTo use a longer prompt saved in `prompt.txt`:\n\n```sh\n.build/release/husky \\\n  --model /tmp/woof \\\n  --prompt \"$(cat prompt.txt)\" \\\n  --max-tokens 256\n```\n\n## Prefill and generation options\n\nNormal generation automatically uses **256-token prefill chunks for prompts of\nat least 64 tokens**, then passes the populated caches directly to decode.\nShorter prompts use token-by-token prefill to avoid weight preparation and\nunderfilled matrix tiles.\n\n| Option | Behavior |\n|---|---|\n| `--model PATH` | Model directory; defaults to `/tmp/woof`. |\n| `--prompt TEXT` | Text to continue. |\n| `--ids \"760,6511,314,9338,369\"` | Explicit input token IDs; overrides `--prompt`. |\n| `--max-tokens N` | Maximum generated tokens; defaults to 16. |\n| `--max-seq N` | Cache capacity in tokens; defaults to 4096. Allow room for the prompt and continuation. |\n| `--prefill-chunk N` | Explicitly enable chunked prefill with chunk size N, including for short prompts. |\n| `--prefill-chunk 0` | Use token-by-token prefill. |\n\nThe normal generation path is recommended. The separate `--megakernel` option\nis an experimental single-dispatch implementation and remains much slower.\nOnly `--groups 1` is correct; multiple groups have unresolved synchronization\nissues.\n\n## Measured performance\n\nApple M4 Pro, 20 GPU cores, 48 GB memory; measured on September 23, 2026.\nPrefill figures are medians of three warmed runs with weights resident, using\n256-token chunks. Loading and weight preparation are excluded.\n\n| Prompt length | Before optimization | Current prefill |\n|---:|---:|---:|\n| 128 tokens | 523 tokens/s | 662 tokens/s |\n| 256 tokens | 510 tokens/s | 669 tokens/s |\n| 512 tokens | 462 tokens/s | 635 tokens/s |\n\nThe checked matrix benchmark measured up to 3.56 TMAC/s. The model's transformer\nprojections require 3.569 GMAC per prompt token, giving an estimated\n**~1,000 tokens/s projection-only ceiling** at that measured rate. Attention,\nrecurrence, staging, and output logits reduce end-to-end throughput. This is an\nempirical estimate, not a proven absolute hardware maximum.\n\nSee the [prefill report](docs/prefill.md) for calculations, validation, and\n[raw measurements](docs/measurements/2026-09-23/README.md).\n\n## Benchmarks and checks\n\n```sh\n# Hardware throughput; no model files required\n.build/release/husky --bench-hardware\n\n# Prefill throughput sweep\n.build/release/husky --model /tmp/woof --bench-prefill\n\n# Numerical kernel checks; no model files required\nMTL_SHADER_VALIDATION=1 .build/release/husky --check-kernels\n\n# Prefill logits, chunk boundaries, and decode continuation\n.build/release/husky --model /tmp/woof --check-prefill\n\n# Experimental single-threadgroup megakernel benchmark\n.build/release/husky --model /tmp/woof --bench-megakernel\n```\n\nTo narrow the prefill sweep:\n\n```sh\nHUSKY_CHUNKS=256 HUSKY_LENGTHS=128,256,512 HUSKY_REPEATS=3 \\\n  .build/release/husky --model /tmp/woof --bench-prefill\n```\n\nAdd `HUSKY_PREFILL_REFERENCE=1` to compare against the retained original\nrecurrence and attention kernels. `HUSKY_PREFILL_PROF=1` prints isolated stage\ntimings, but serializes submissions and is unsuitable for normal TPS comparisons.\n\n## Documentation\n\n- [Engine overview and source layout](docs/README.md)\n- [Architecture](docs/architecture.md)\n- [Prefill optimization and hardware estimates](docs/prefill.md)\n- [Decode performance and reference accuracy](docs/performance.md)\n- [Megakernel design and synchronization limits](docs/megakernel-and-memory-model.md)\n- [Historical batched token-by-token benchmarks](docs/benchmarks.md)\n\nThe optimized prefill matches the retained reference logits exactly on the\ndocumented integration cases. The `2+2=` continuation matches the 12-token golden\nsequence. Open-ended generation can diverge from MLX because of floating-point\naccumulation differences; see the accuracy notes above.\n"
+}

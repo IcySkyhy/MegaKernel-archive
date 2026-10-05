@@ -1,0 +1,18 @@
+{
+  "tensor": "h_swiglu_shd.bin",
+  "shape": [
+    1,
+    640
+  ],
+  "dtype": "bf16",
+  "strides": [
+    640,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 1280,
+  "sha256": "2bd047e84c74fbbb9d049b94f571e1841954691a31bd07b620cadace334b5ccb",
+  "kind": "golden",
+  "description": "shared-expert SwiGLU output [m, moe_inter]"
+}

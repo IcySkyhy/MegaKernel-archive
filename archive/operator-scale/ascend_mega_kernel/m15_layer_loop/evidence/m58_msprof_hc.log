@@ -1,0 +1,112 @@
+# M58 · 段级设备侧分解的原始取证（msprof，device 口径；host 墙钟不作数——见主 README §6.1 的 24× 抖动实测）
+# 二进制 sha256 = c20d73f63ce768afecd8099b630021727122e41af2a4bf962a0073388aeb7666
+# 采集环境：共享卡。**同一会话内可能夹进别人的进程**（本文件 §4 记录了三次现场）——
+#   因此本节同时给 Avg 与 Min 两个口径，并用同一命令的多次重复给出抖动范围。
+
+##################################################################
+## §1 同会话 A/B（两相位 vs 四相位符号出现在**同一次采集**里；3 次采样）
+# 命令（每次只换 --output 与日志名）：
+#   mkdir -p /tmp/m58_prof2 && cd /tmp/m58_prof2
+#   msprof --output=prof_all<N> --task-time=l1 --ai-core=on --ascendcl=off --runtime-api=off \
+#       env M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,2,3,4,5,6,7,8,9,10,11 \
+#           /workspace/ascend_mega_kernel/.tower/worktrees/wt-58/m15_layer_loop/evidence/m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt all
+# 层表 0..11 = 9 个 GDN + 3 个 attention（48 层的前 12 层，kind 与全表一致）
+
+### all1（CSV = m58_msprof_all1.csv）
+Device_id,OP Type,Core Type,Count,Total Time(us),Min Time(us),Avg Time(us),Max Time(us),Ratio(%)
+_Z20m15_gdn_layer_kern   count=1162   total=162996.63     min=108.399   avg=140.272   max=150.626  
+_ZN4M15L20m15_layer_ke   count=360    total=74041.807     min=193.369   avg=205.671   max=212.836  
+_ZN4M15L22m15_moe_segm   count=192    total=11854.666     min=43.211    avg=61.743    max=66.44    
+_ZN4M15L21m15_layer_ke   count=120    total=7510.838      min=60.372    avg=62.59     max=68.173   
+_ZN4M15L23m15_layer_ke   count=18     total=6060.145      min=297.311   avg=336.674   max=367.587  
+_ZN4M15L21m15_hc_segme   count=37     total=1735.358      min=14.494    avg=46.901    max=83.051   
+_ZN4M15L24m15_layer_ke   count=6      total=1105.244      min=145.931   avg=184.207   max=222.236  
+_Z27m15_attn_placehold   count=384    total=953.211       min=2.011     avg=2.482     max=3.076    
+
+### all2（CSV = m58_msprof_all2.csv）
+Device_id,OP Type,Core Type,Count,Total Time(us),Min Time(us),Avg Time(us),Max Time(us),Ratio(%)
+_Z20m15_gdn_layer_kern   count=1162   total=162427.551    min=107.147   avg=139.782   max=151.905  
+_ZN4M15L20m15_layer_ke   count=360    total=73716.577     min=197.582   avg=204.768   max=213.264  
+_ZN4M15L22m15_moe_segm   count=192    total=11705.894     min=42.456    avg=60.968    max=65.889   
+_ZN4M15L21m15_layer_ke   count=120    total=7469.952      min=60.249    avg=62.249    max=68.032   
+_ZN4M15L23m15_layer_ke   count=18     total=6062.263      min=297.985   avg=336.792   max=367.677  
+_ZN4M15L21m15_hc_segme   count=37     total=1746.449      min=14.538    avg=47.201    max=82.124   
+_ZN4M15L24m15_layer_ke   count=6      total=1096.246      min=145.362   avg=182.707   max=222.833  
+_Z27m15_attn_placehold   count=384    total=930.716       min=1.933     avg=2.423     max=2.877    
+
+### all3（CSV = m58_msprof_all3.csv）
+Device_id,OP Type,Core Type,Count,Total Time(us),Min Time(us),Avg Time(us),Max Time(us),Ratio(%)
+_Z20m15_gdn_layer_kern   count=1162   total=163905.711    min=107.814   avg=141.054   max=153.596  
+_ZN4M15L20m15_layer_ke   count=360    total=74132.809     min=197.813   avg=205.924   max=215.625  
+_ZN4M15L22m15_moe_segm   count=192    total=11843.709     min=43.114    avg=61.685    max=66.64    
+_ZN4M15L21m15_layer_ke   count=120    total=7506.894      min=60.636    avg=62.557    max=68.815   
+_ZN4M15L23m15_layer_ke   count=18     total=6082.555      min=308.538   avg=337.919   max=368.648  
+_ZN4M15L21m15_hc_segme   count=37     total=1724.035      min=14.288    avg=46.595    max=82.986   
+_ZN4M15L24m15_layer_ke   count=6      total=1096.037      min=145.018   avg=182.672   max=221.889  
+_Z27m15_attn_placehold   count=384    total=972.573       min=1.997     avg=2.532     max=3.291    
+
+### 由 §1 推导的段级增量（µs/层）
+#   Δavg(gdn_hc − gdn)   = 336.674−205.671 = 131.003 / 336.792−204.768 = 132.024 / 337.919−205.924 = 131.995
+#   Δavg(attn_hc − attn) = 184.207−62.590 = 121.617 / 182.707−62.249 = 120.458 / 182.672−62.557 = 120.115
+#   Δmin(gdn_hc − gdn)   = 297.311−193.369 = 103.942 / 297.985−197.582 = 100.403 / 308.538−197.813 = 110.725
+#   每 step（48 层 3:1）：两相位 36×205.4+12×62.5 = 8.13 ms；四相位 36×337.1+12×182.8 = 14.33 ms；Δ=+6.19 ms（+76%）
+
+##################################################################
+## §2 hc 符号的 5 次重复（同一二进制、同一命令；用于抖动范围）
+# 命令（每次只换 --output）：
+#   cd /tmp/m58_prof3
+#   msprof --output=prof_rep<N> --task-time=l1 --ai-core=on --ascendcl=off --runtime-api=off \
+#       env M15_LAYERS=48 M15_HC_LAYERS=0,1,2,3,4,5,6,7 \
+#           /workspace/ascend_mega_kernel/.tower/worktrees/wt-58/m15_layer_loop/evidence/m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt h
+# **桩数据说明（review r1 的 P2-2 就此发问）**：层表 0..7（6 GDN + 2 ATTN）⇒
+#   m15_layer_kernel_gdn_hc 的 Count = 6×2 = 12（与 §1 的 18 不同，因为 §1 的层表是 0..11=9 GDN）；
+#   本节的 5 个 CSV 之间 Count 完全一致（都是 12），因为命令逐字相同。
+
+### rep1（CSV = m58_msprof_rep1.csv）
+_ZN4M15L23m15_layer_ke   count=12     total=4012.462      min=296.613   avg=334.371   max=366.638  
+_ZN4M15L21m15_hc_segme   count=25     total=1159.461      min=14.47     avg=46.378    max=81.659   
+_ZN4M15L24m15_layer_ke   count=4      total=727.8         min=143.895   avg=181.95    max=221.288  
+
+### rep2（CSV = m58_msprof_rep2.csv）
+_ZN4M15L23m15_layer_ke   count=12     total=4027.883      min=299.512   avg=335.656   max=367.813  
+_ZN4M15L21m15_hc_segme   count=25     total=3968.487      min=14.869    avg=158.739   max=2808.542 
+_ZN4M15L24m15_layer_ke   count=4      total=730.835       min=144.475   avg=182.708   max=222.115  
+
+### rep3（CSV = m58_msprof_rep3.csv）
+_ZN4M15L23m15_layer_ke   count=12     total=4038.431      min=302.758   avg=336.535   max=369.454  
+_ZN4M15L21m15_hc_segme   count=25     total=1169.453      min=14.467    avg=46.778    max=83.472   
+_ZN4M15L24m15_layer_ke   count=4      total=730.556       min=145.201   avg=182.639   max=220.962  
+
+### rep4（CSV = m58_msprof_rep4.csv）
+_ZN4M15L23m15_layer_ke   count=12     total=4020.687      min=295.476   avg=335.057   max=365.516  
+_ZN4M15L21m15_hc_segme   count=25     total=1176.439      min=14.572    avg=47.057    max=83.024   
+_ZN4M15L24m15_layer_ke   count=4      total=728.15        min=144.214   avg=182.037   max=221.64   
+
+### rep5（CSV = m58_msprof_rep5.csv）
+_ZN4M15L23m15_layer_ke   count=12     total=3995.227      min=297.446   avg=332.935   max=365.917  
+_ZN4M15L21m15_hc_segme   count=25     total=1175.71       min=14.626    avg=47.028    max=82.784   
+_ZN4M15L24m15_layer_ke   count=4      total=728.401       min=144.017   avg=182.1     max=220.914  
+
+### 抖动范围（Avg / Min，µs）
+#   gdn_hc   Avg = 334.371 / 335.656 / 336.535 / 335.057 / 332.935  ⇒ min 332.935 max 336.535（极差 1.08%）
+#   gdn_hc   Min = 296.613 / 299.512 / 302.758 / 295.476 / 297.446
+#   hc_seg   Avg =  46.378 / 158.739 /  46.778 /  47.057 /  47.028   ← rep2 被污染（Max 列 2808.542）
+#   hc_seg   Min =  14.470 /  14.869 /  14.467 /  14.572 /  14.626
+# 与 §1 的 3 个采样合计 8 个：gdn_hc 的 Avg 全部落在 332.9–337.9（极差 1.5%）
+
+##################################################################
+## §3 单边界符号的两种档（min/max 各对应一档）
+#   max 列（W0+S1-S6 全链，MODE_MIX / MODE_COMBINE_MIX）：81.659 / 83.472 / 82.784 / 83.024（§2）
+#      与 83.051 / 82.124 / 82.986（§1）
+#   min 列（combine-only，只 W0+S1）：14.467–14.869（§2）/ 14.288–14.538（§1）
+
+##################################################################
+## §4 共享卡污染的三个现场（如实记录；tower 规则：抖动大于待断言差异时不得下结论）
+#  (1) 第一轮 5 次重复的第 1 次：m15_layer_kernel_gdn_hc 有一次启动 88067.351 µs（88.07 ms），
+#      该次 Avg 虚高到 7339254.655 µs；同一批 Min 列仍 309.177 µs。
+#  (2) 单独的 runs=p 采样：m15_layer_kernel_gdn 有一次启动 72728199.272 µs（72.7 s），
+#      该次 Avg 虚高到 673613.7 µs；同一批 Min 列仍 199.494 µs。
+#  (3) 第二轮 5 次重复的第 2 次：m15_hc_segment_kernel 被击中（Max 2808.542 µs、Avg 158.739 µs），
+#      同批 Min 列仍 14.869 µs；其余 4 次 Avg 为 46.4–47.1 µs。
+#  ⇒ 被放大的是哪个符号、哪一次启动是**随机**的（与主 README §6.1 / M40 r2 同机制）；
+#     Avg 会被污染、Min 相对稳 ⇒ 本文件的结论同时给两个口径，且 Δ 远大于抖动。

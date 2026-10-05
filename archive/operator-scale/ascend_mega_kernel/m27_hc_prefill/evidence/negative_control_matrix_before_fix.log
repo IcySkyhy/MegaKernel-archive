@@ -1,0 +1,54 @@
+== M119 负向对照矩阵（零设备可复算；逐条读数）==
+   生成：bash m27_hc_prefill/tools/negative_control_matrix.sh
+
+### 0) 判据链路自检（合成 dump；不占设备）
+   [正向：合成 dump（= 理想设备输出）⇒ 期望 rc=0] rc=0
+[chk] 计数：本脚本判定项 4；m20.judge 判定项 5；guard 5；SKIPPED 0
+[chk] RESULT: OK（判定项 9 + guard 5；SKIPPED 0）
+   判定项记 SKIP 的条数 = 0
+   [--mutate a1.blk ⇒ 期望 rc=1] rc=1
+[chk] 计数：本脚本判定项 4；m20.judge 判定项 5；guard 5；SKIPPED 0
+[chk] 未过：m33_a1.blk
+[chk] RESULT: FAILED（1 条未过）
+   判定项记 SKIP 的条数 = 0
+
+### 1) 三态：空目录
+   [空目录] rc=2（期望 2）
+[chk] RESULT: SKIPPED (缺 /tmp/m27_mx3/m27_case_*.txt：先在设备上跑 M27_DUMP=1 再复核)
+
+### 2) **现形** norel（reloc_mask=0 + 四个产物毒值）= 配置档，不是值级负向对照
+    谁保证 rc：→ 见下面未过项（本档四个产物记 SKIP，red 来自消费那些面的下游项）
+   [norel 现形（mask=0）] rc=1
+[chk] 计数：本脚本判定项 0；m20.judge 判定项 2；guard 6；SKIPPED 7
+[chk] 未过：m33_a2.hcp (H')
+[chk] RESULT: FAILED（1 条未过）
+   判定项记 SKIP 的条数 = 7
+[chk] guard a1.blk 未当重定位目标 ⇒ 平面仍是毒值                OK （reloc_mask=0x0 的第 0 位为 0；这条让该配置不是空洞档）
+[chk] guard a1.injw 未当重定位目标 ⇒ 平面仍是毒值               OK （reloc_mask=0x0 的第 1 位为 0；这条让该配置不是空洞档）
+[chk] guard a1.rstd 未当重定位目标 ⇒ 平面仍是毒值               OK （reloc_mask=0x0 的第 2 位为 0；这条让该配置不是空洞档）
+
+m27_hc_prefill/tools/negative_control_matrix.sh: line 53: sinkreloc: command not found
+### 3)  的**判据半**（reloc_mask=0xF + 四个产物毒值）⇒ 值级红（零设备可跑，就是本步）
+    设备半（落点真被旁路到 scratch）本轮**未取得读数**（设备冻结；探锁返回忙）
+   [sinkreloc 判据半（mask=0xF）] rc=1
+[chk] 计数：本脚本判定项 4；m20.judge 判定项 5；guard 5；SKIPPED 0
+[chk] 未过：m33_a1.blk, m33_a1.ij_handoff (OH 列), m33_a2.hcp (H'), m33_a2.blk, m33_a1.injw (fp32), m33_a1.rstd (fp32), m33_a2.injw (fp32), m33_a2.rstd (fp32), a1.blk 值多样（非空洞）, a1.injw 值多样（非空洞）
+[chk] RESULT: FAILED（10 条未过）
+   判定项记 SKIP 的条数 = 0
+
+### 4) 设备档读数（归档；不是本轮跑的）
+--- rowsteal（reloc_mask=0xF，块推进量少一行）
+[chk] 未过：m33_a1.hcp (H'), m33_a1.blk, m33_a1.ij_handoff (OH 列), m33_a2.blk, m257_a1.hcp (H'), m257_a1.blk, m257_a1.ij_handoff (OH 列), m257_a2.blk, m33_a1.rstd (fp32), m257_a1.rstd (fp32)
+[chk] RESULT: FAILED（10 条未过）
+--- norel **改前**（掩码引入之前：判据不按掩码 SKIP，36 条红的**历史**读数）
+[chk] 未过：m1_a1.blk, m1_a1.ij_handoff (OH 列), m1_a2.blk, m33_a1.blk, m33_a1.ij_handoff (OH 列), m33_a2.blk, m257_a1.blk, m257_a1.ij_handoff (OH 列), m257_a2.blk, m1_a1.injw (fp32), m1_a1.rstd (fp32), m1_a2.injw (fp32), m1_a2.rstd (fp32), m33_a1.injw (fp32), m33_a1.rstd (fp32), m33_a2.injw (fp32), m33_a2.rstd (fp32), m257_a1.injw (fp32), m257_a1.rstd (fp32), m257_a2.injw (fp32), m257_a2.rstd (fp32), a1.blk 值多样（非空洞）, a1.injw 值多样（非空洞）, a2.hcp != a1.hcp（第二边界确实在动）, arena 全部 1 块的阻塞 blk == 设备平铺面, arena 末 1 块的阻塞 rstd == 设备平铺面, a1.blk 值多样（非空洞）, a1.injw 值多样（非空洞）, a2.hcp != a1.hcp（第二边界确实在动）, arena 全部 5 块的阻塞 blk == 设备平铺面, arena 末 5 块的阻塞 rstd == 设备平铺面, a1.blk 值多样（非空洞）, a1.injw 值多样（非空洞）, a2.hcp != a1.hcp（第二边界确实在动）, arena 末 8 块的阻塞 blk == 设备平铺面, arena 末 8 块的阻塞 rstd == 设备平铺面
+[chk] RESULT: FAILED（36 条未过）
+--- 主档（reloc_mask=0xF，真实权重）
+[chk] 未过：m33_a2.blk, m64_a2.blk, m257_a2.blk, m4097_a1.blk, m4097_a2.blk, m4097_mix_a1.blk
+[chk] RESULT: FAILED（6 条未过）
+
+### 5) 判别力账（重定位路径的**值级**红，按档数）
+   改前 norel：36 条红，其中**四个产物的判定项 22 条**（值级）
+   现形 norel：四个产物记 SKIP（7 条@m33）⇒ 该档对产物**没有值级红**；red 只剩下游 a2.hcp
+   sinkreloc（新）：掩码不变 + 落点旁路 ⇒ 四个产物**恢复值级红**（判据半零设备可复现；设备半待解冻）
+   rowsteal（不变）：10 条红里含 a1.blk / a1.ij_handoff / a1.rstd（值级），但它是扰动输入、不隔离重定位

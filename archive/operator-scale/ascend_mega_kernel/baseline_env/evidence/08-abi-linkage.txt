@@ -1,0 +1,55 @@
+### collected: 2026-09-26T11:20:32+00:00
+
+## torch_npu native libs: which CANN/ATB libraries are linked
+/workspace/venvs/baseline/lib/python3.12/site-packages/torch_npu/lib/libnpu_profiler.so
+/workspace/venvs/baseline/lib/python3.12/site-packages/torch_npu/lib/libop_plugin_atb.so
+/workspace/venvs/baseline/lib/python3.12/site-packages/torch_npu/lib/libtensorpipe.so
+--- /workspace/venvs/baseline/lib/python3.12/site-packages/torch_npu/lib/libnpu_profiler.so
+	libtorch_cpu.so => not found
+	libc10.so => not found
+--- /workspace/venvs/baseline/lib/python3.12/site-packages/torch_npu/lib/libop_plugin_atb.so
+	libtorch_npu.so => /workspace/venvs/baseline/lib/python3.12/site-packages/torch_npu/lib/libtorch_npu.so (0x00007f7145e8c000)
+	libatb.so => /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/lib/libatb.so (0x00007f7145978000)
+	libtorch_python.so => not found
+	libascendcl.so => /usr/local/Ascend/cann-9.1.0/lib64/libascendcl.so (0x00007f7144e9c000)
+	libacl_op_compiler.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_op_compiler.so (0x00007f7144e3d000)
+	libtensorpipe.so => /workspace/venvs/baseline/lib/python3.12/site-packages/torch_npu/lib/libtensorpipe.so (0x00007f7144769000)
+	libtorch.so => not found
+	libtorch_cpu.so => not found
+	libc10.so => not found
+	libtorch_python.so => not found
+	libtorch.so => not found
+	libnpu_profiler.so => /workspace/venvs/baseline/lib/python3.12/site-packages/torch_npu/lib/libnpu_profiler.so (0x00007f714430d000)
+	libtorch_cpu.so => not found
+	libc10.so => not found
+	libmki.so => /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/lib/libmki.so (0x00007f7144159000)
+	libasdops.so => /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/lib/libasdops.so (0x00007f7143c56000)
+	libatb_mixops.so => /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/lib/libatb_mixops.so (0x00007f714311f000)
+	liblcal.so => /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/lib/liblcal.so (0x00007f7140825000)
+	libacl_rt.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_rt.so (0x00007f713ec0a000)
+	libacl_op_executor.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_op_executor.so (0x00007f713ea21000)
+	libacl_op_executor_impl.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_op_executor_impl.so (0x00007f713e93a000)
+	libacl_tdt_channel.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_tdt_channel.so (0x00007f71393c8000)
+	libtorch_cpu.so => not found
+	libc10.so => not found
+	libtbe_adapter.so => /usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/lib/libtbe_adapter.so (0x00007f71284e4000)
+	libacl_rt_impl.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_rt_impl.so (0x00007f71258cb000)
+	libacl_mdl.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_mdl.so (0x00007f71258b6000)
+	libacl_mdl_impl.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_mdl_impl.so (0x00007f712583d000)
+	libacl_mdl_impl_om2.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_mdl_impl_om2.so (0x00007f7121ed7000)
+--- /workspace/venvs/baseline/lib/python3.12/site-packages/torch_npu/lib/libtensorpipe.so
+	libascendcl.so => /usr/local/Ascend/cann-9.1.0/lib64/libascendcl.so (0x00007fd3ec8eb000)
+	libacl_op_compiler.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_op_compiler.so (0x00007fd3ec88a000)
+	libacl_tdt_channel.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_tdt_channel.so (0x00007fd3ec4d3000)
+	libacl_rt.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_rt.so (0x00007fd3eaf7c000)
+	libacl_op_executor.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_op_executor.so (0x00007fd3ead7e000)
+	libacl_op_executor_impl.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_op_executor_impl.so (0x00007fd3eac97000)
+	libacl_rt_impl.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_rt_impl.so (0x00007fd3e54e3000)
+	libacl_mdl.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_mdl.so (0x00007fd3e6221000)
+	libacl_mdl_impl.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_mdl_impl.so (0x00007fd3e29fa000)
+	libacl_mdl_impl_om2.so => /usr/local/Ascend/cann-9.1.0/lib64/libacl_mdl_impl_om2.so (0x00007fd3df049000)
+
+## cxx11 ABI symbols in the CANN/ATB libs actually loaded
+/usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_0/lib/libatb.so: 0
+/usr/local/Ascend/nnal/atb/latest/atb/cxx_abi_1/lib/libatb.so: 262
+libascendcl.so(cann lib64): 0

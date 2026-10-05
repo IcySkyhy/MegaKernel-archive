@@ -1,0 +1,38 @@
+[check] seq=  256 (seq_pad=256)
+  判定项（边界感知）: PASS | 常规元素 6130 个（判 ≤1 ulp）：越界 0 | 边界元素 14 个（判 ≤2 ulp + 绝对界）：ulp 越界 0、绝对界越界 0 | max 1 ulp
+    边界判据: |ref − 相邻格点中点| ≤ ε·(Σ|acc·w|/den)，ε = (S2T 256 + nsplit 1 + 2·nTile 2 + Exp 2)·2^-24 = 1.556e-05 ⇒ 边界元素 δ = noise_ub/ulp(out) 最大 0.0038（无边界元素时 δ=0）
+    绝对界（仅边界元素）: ε·(Σ|acc·w|/den) + 0.5·ulp(out)，最大 2.458e-04
+  非空洞性: out 非全零 PASS | out 非常数 PASS | 每行 256 列非零 PASS (min 256)
+  报告项: 位级一致率 98.1771% | ≤1ulp 100.0000% | ≤2ulp 100.0000% | maxAbsErr 2.476e-04
+  报告项: maxRel 7.576e-03 —— 由相消区元素主导 out[0][7][35]: |ref|=1.007e-03、|dev−ref|=7.629e-06、该行量级 9.229e-02（相消 92×）；报告项，小分母不由判定项承担
+  报告项: 单一相对累加界 ε·(Σ|acc·w|/den) 覆盖 40/6144 处（不足 6104 处中的 14 个即边界元素/相消区；见 README §6.6）
+  guard(报告): host mask tail=0 全 0（无尾 tile）
+[gp] seq=256: **范围 = unit0/parity0（= split0 的第一个 tile）、前 12 行**，vs numpy P̃(列 0..256) maxAbsErr=0.000e+00（容差 5e-3 = bf16 网格） | 非零 unit 元素数=8192 -> PASS
+     注：**本函数只覆盖这一个 tile 的窄范围**，不得据此宣称 gp 全数组逐位；全数组事实 = 4096 的 131071/131072 逐位、唯一差异 1 个 bf16 ulp 翻转（定位见 check_partials.py；reviewer 亦独立复现）
+[pv] seq=256: BMM2 L0C vs P·V maxAbsErr=1.431e-06 | 非零 4096/4096 -> PASS
+[check] seq=  300 (seq_pad=512)
+  判定项（边界感知）: PASS | 常规元素 6086 个（判 ≤1 ulp）：越界 0 | 边界元素 58 个（判 ≤2 ulp + 绝对界）：ulp 越界 0、绝对界越界 0 | max 1 ulp
+    边界判据: |ref − 相邻格点中点| ≤ ε·(Σ|acc·w|/den)，ε = (S2T 256 + nsplit 2 + 2·nTile 2 + Exp 2)·2^-24 = 1.562e-05 ⇒ 边界元素 δ = noise_ub/ulp(out) 最大 27.2828（无边界元素时 δ=0）
+    绝对界（仅边界元素）: ε·(Σ|acc·w|/den) + 0.5·ulp(out)，最大 2.456e-04
+  非空洞性: out 非全零 PASS | out 非常数 PASS | 每行 256 列非零 PASS (min 256)
+  报告项: 位级一致率 98.6165% | ≤1ulp 100.0000% | ≤2ulp 100.0000% | maxAbsErr 2.442e-04
+  报告项: maxRel 7.576e-03 —— 由相消区元素主导 out[0][3][155]: |ref|=3.223e-02、|dev−ref|=2.441e-04、该行量级 7.080e-02（相消 2×）；报告项，小分母不由判定项承担
+  报告项: 单一相对累加界 ε·(Σ|acc·w|/den) 覆盖 124/6144 处（不足 6020 处中的 58 个即边界元素/相消区；见 README §6.6）
+  guard(报告): host mask tail=44 212 列被屏蔽
+[gp] seq=300: **范围 = unit0/parity0（= split0 的第一个 tile）、前 12 行**，vs numpy P̃(列 0..256) maxAbsErr=0.000e+00（容差 5e-3 = bf16 网格） | 非零 unit 元素数=9600 -> PASS
+     注：**本函数只覆盖这一个 tile 的窄范围**，不得据此宣称 gp 全数组逐位；全数组事实 = 4096 的 131071/131072 逐位、唯一差异 1 个 bf16 ulp 翻转（定位见 check_partials.py；reviewer 亦独立复现）
+[pv] seq=300: BMM2 L0C vs P·V maxAbsErr=1.848e-06 | 非零 4096/4096 -> PASS
+[check] seq= 4096 (seq_pad=4096)
+  判定项（边界感知）: FAIL | 常规元素 5925 个（判 ≤1 ulp）：越界 0 | 边界元素 219 个（判 ≤2 ulp + 绝对界）：ulp 越界 0、绝对界越界 1 | max 2 ulp
+    边界判据: |ref − 相邻格点中点| ≤ ε·(Σ|acc·w|/den)，ε = (S2T 256 + nsplit 8 + 2·nTile 4 + Exp 2)·2^-24 = 1.609e-05 ⇒ 边界元素 δ = noise_ub/ulp(out) 最大 9.2135（无边界元素时 δ=0）
+    绝对界（仅边界元素）: ε·(Σ|acc·w|/den) + 0.5·ulp(out)，最大 6.160e-05
+  非空洞性: out 非全零 PASS | out 非常数 PASS | 每行 256 列非零 PASS (min 256)
+  报告项: 位级一致率 99.3652% | ≤1ulp 99.9837% | ≤2ulp 100.0000% | maxAbsErr 5.992e-05
+  报告项: maxRel 1.005e-02 —— 由相消区元素主导 out[0][11][217]: |ref|=4.745e-05、|dev−ref|=4.768e-07、该行量级 2.087e-02（相消 440×）；报告项，小分母不由判定项承担
+  报告项: 单一相对累加界 ε·(Σ|acc·w|/den) 覆盖 328/6144 处（不足 5816 处中的 219 个即边界元素/相消区；见 README §6.6）
+  首个越界位置 out[0][11][217]: got 0xb849 expect 0xb847 (2 ulp, 边界元素=True, absErr 4.213e-07 vs 界 3.692e-07), 共 1 处
+  guard(报告): host mask tail=0 全 0（无尾 tile）
+[gp] seq=4096: **范围 = unit0/parity0（= split0 的第一个 tile）、前 12 行**，vs numpy P̃(列 0..256) maxAbsErr=0.000e+00（容差 5e-3 = bf16 网格） | 非零 unit 元素数=131072 -> PASS
+     注：**本函数只覆盖这一个 tile 的窄范围**，不得据此宣称 gp 全数组逐位；全数组事实 = 4096 的 131071/131072 逐位、唯一差异 1 个 bf16 ulp 翻转（定位见 check_partials.py；reviewer 亦独立复现）
+[pv] seq=4096: BMM2 L0C vs P·V maxAbsErr=1.609e-06 | 非零 4096/4096 -> PASS
+[check] FAILED

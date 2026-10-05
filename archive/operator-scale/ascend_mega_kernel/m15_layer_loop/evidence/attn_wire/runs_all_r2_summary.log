@@ -1,0 +1,9 @@
+# runs=all（零回归）在 r2 二进制上的读数：头部 + 汇总
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 48 层，token 3，reps 10，权重=checkpoint，dump=关
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+...
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+[m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 216 + B 506 + C 3 + M1 348 + M2 8 + H 21 + Ch 778 + Kv 56 + Prolog 0 + AttnWire 0 = 2068 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15] guard：290 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 48 + 参考链锚点非空 108 + M65 链 3 + 其余 130
+[m15] ===== ALL PASS（checks=2068, guards=290, fails=0）=====

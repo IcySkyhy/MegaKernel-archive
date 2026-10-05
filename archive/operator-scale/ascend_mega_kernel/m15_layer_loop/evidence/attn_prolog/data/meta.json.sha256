@@ -1,0 +1,19 @@
+# M88 oracle `gen` 生成的 device 侧输入/期望的 sha256（**冻结身份上重跑可复现**）
+# 复跑：cd m15_layer_loop/evidence/attn_prolog && /usr/local/python3.12.13/bin/python3.12 oracle_attn_prolog.py gen
+#       sha256sum -c data/meta.json.sha256
+# 注：`*.bin` 被 m15_layer_loop/.gitignore:2 忽略、不入库 ⇒ 本文件是它们的**唯一可复现锚**
+dcc99172cc178976935b4470636bcc8678b14b3d986483dfcfc371344f3678af  data/cos_sin.bin
+926c279265038d8a88e2931dbf4758506d216c37e86b1d02867deb4b854229d7  data/exp_normonly_x0.bin
+2b3ab74a1ac277990f4709fdb60b55e9a193c49aa8fcfe1b3eae9b0f8441c344  data/exp_normonly_x1.bin
+202d057fa6eb3237002756f7c7550650278acac2cf244e9f3bd401692cd01737  data/exp_out_x0.bin
+076b772877ad345918a9d59df6119b1a124a74d2150658a0213fbb8e1beb9fba  data/exp_out_x1.bin
+c1881bf9c72e2de8508a6567f4e05dbec61b84d961529ab9b4b8455c5b2cc3ee  data/exp_terms_out_x0.bin
+4aefaf16e2965f818c844833b7077e64bb916d93dcc12053ec596b68e305d8ab  data/exp_terms_out_x1.bin
+34b3a0adb73e12202a7b1212b39c0648f1b0565740bf8e709dd73eafd8668017  data/exp_terms_y0_x0.bin
+56671ad055444f52fe9a938131a5d2024733baf426440ee3177952db1906318b  data/exp_terms_y0_x1.bin
+228ec2fd25a841470d059b44cc38432a16af6ad8608b6ace280c6fb78d2f456f  data/exp_y0_exact_x0.bin
+52c5600f0bc028668a7f0bee243cfb50f163ae43c3798c5cd57c22a63ed572b5  data/exp_y0_exact_x1.bin
+583f7261ca6d94480ee61e6365997a831355d08c792fd04cf1a6371ea02594c0  data/exp_y0_x0.bin
+2b11c18fbdde4bf8db7dcd9fe1126c089af0adc9ca890cfbef4bd70059f969a2  data/exp_y0_x1.bin
+c1e531aad7e8d827989c86f29aa7b633cba3edbca09b8deb298f83aaa8fabc6d  data/x0.bin
+1bd42161b462767177ccc5d45bfe70b9832b0a9a98a8fb2e657c1504055f4130  data/x1.bin

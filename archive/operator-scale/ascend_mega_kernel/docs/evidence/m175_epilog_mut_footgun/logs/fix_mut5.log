@@ -1,0 +1,57 @@
+=== lock acquired 2026-10-04T15:10:49+00:00 tag=fix mut=5 ===
+--- npu-smi (lock entry) ---
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.10                              Version: 25.7.rc1.10                           |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 195.6       55                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5243  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+--- command (verbatim) ---
+M15_LAYERS=1 M15_SKIP_WCHECK=1 M15_PREFILL_KIND=1 M15_PREFILL_WIRE=1 M15_PREFILL_PHASES=7 M15_PREFILL_PROLOG=1 M15_PREFILL_EPILOG=1 M15_PREFILL_EPILOG_MUT=5 M15_PREFILL_M=1 M15_PREFILL_DUMPDIR=WORK/dumps/mut5 WORK/fix_build/m15_layer_loop REPO/m15_layer_loop/weights_manifest.txt prefill
+--- program output ---
+[m15][WARN] M15_PREFILL_EPILOG_MUT=5 越界（只有 0..4 有定义：0=干净 / 1=转位 / 2,3=S5 / 4=S6）→ 取 0；挂 epilog 的档将计为失败
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 1 层，token 3，reps 10，权重=checkpoint，dump=关
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+[m15] device 缓冲：weights 4174.15 MB（36 层 × 115.95 MB）+ states 115.5 MB + ws 5.3 MB + MoE 权重 628.4 MB（48 层 × 13.09 MB）+ 融合 ws 12.94 MB（GDN 5.26 + MoE 7.69）
+[m15] M58 hc 缓冲：权重 1318.63 MB（49 槽 × 26.91 MB/槽；49 = 48 个层槽（每层 2 个边界子槽 × 13.46 MB）+ 1 个全局 mixer 槽，该槽只用到 13.13 MB（norm+down+up），槽 stride 仍为 26.91 MB）+ hc ws 452.71 MB（52 槽 × 8.71 MB/槽 = 每层 2 块 + 3 块 scratch + 1 块全局 mixer ws）
+[m15] M65 层链缓冲：pending BO 双缓冲 0.66 MB（2 块 × 327680 B）；三态入口平面复用 hc_hin
+[m15] M82 attention cache 平面（跨 12 个 attention 层长寿，按第 k 层编址 k=0..11）：主 KV 101.06 MB（12 层 × 8.421 MB/层 = 257 页/层 × 32768 B）；compressed 3.16 MB（12 层 × 0.263 MB/层 = 1028 行/层 × 256 B）；raw ring 0.01344 MB（12 层 × 1120 B = 4 行/层 × 280 B）；packed 33.63 MB（4097 行 × 8208 B，**层间复用一块**）
+[m15] M136 prefill 段体平面：2341.0 MB（q/k 34086912B×2 + v/o 100687872B×2 + g/β 787968B×2 + state 3145728B + scratch 21102592B + MoE ws 18850624B + routerWPad 3276800B + hc arena 88239104B×2 + blk 20976640B×2 + ij 133152B）
+[m15] M140 prefill 四相位平面：hcH 83906560B + hcBo 20976640B + hcIj 133152B + hcAttnOut 20976640B + MoE(E=512) 1342182400B（1 层 × 1342.18 MB）
+[m15] M164 prefill epilog 平面：oTok 100687872B + zTok 50343936B + yTok 50343936B（201.4 MB）
+[m15] 权重装载完成（真实 checkpoint 切片）：前 1 层内 1 个 GDN 层，4174.15 MB → device，耗时 3848.9 ms
+[m15] MoE 段权重装载完成（真实 checkpoint 4 专家切片 + 真实共享专家）：1 层 × 13.09 MB = 13.1 MB → device，耗时 624.7 ms
+[m15] hc 段权重装载完成（真实 checkpoint（hc 权重不量化、原样消费））：本 run H2D 2 槽 × 26.91 MB/槽 = 53.8 MB（1 个层槽，每层 2 个边界子槽 × 13.46 MB，+ 1 个全局 mixer 槽）；权重区分配 49 槽 × 26.91 MB/槽 = 1318.6 MB → device，耗时 1301.0 ms
+[m15] sha256 自检（NIST 向量："abc" 与 1e6×'a'）：PASS
+[m15]   M136：编译期接线门 PREFILL_WIRED=0（0 = attention 峰值槽未填）；运行期 M15_PREFILL_WIRE=1（1 = GDN 走真段体）
+[m15] M110 prefill 契约与挂载点档：入口 = m15_layer_kernel_gdn_prefill / m15_layer_kernel_attn_prefill（ENTRY_TABLE 登记；wired 缺省 0），行宽 5120 B，平面按 4097 行定尺 = 20976640 B/面（decode 档 327680 B/面的 64.02 倍）
+[m15]   prefill 峰值断言位：未填 3/8 个（Wave C 填实数后才允许 PREFILL_WIRED=1）；MoE 权重槽 prefill 档 stride = 1342182400 B/层（decode 档 13091840）
+[m15]   decode 档的 ctx 容量（KV 权威 m15_attn_kv.h）：257 页/层 × 16 token/页 = 4112 token ≥ 4097；本文件的 M_PREFILL=4097 与它的 PREFILL_M=4097 同一值
+[m15]   ENTRY_TABLE 里的两个 prefill 项：gdn=登记正确 attn=登记正确（kind/prefill/wired/hc 四项逐项核）
+[m15]   Pf.gdn：M140 相位掩码 = 0x7（H1=1 A=1 H2=1 B=0）；M151 prolog=1/mut=0
+[m15][FAIL] Pf.gdn：M15_PREFILL_EPILOG_MUT=5 越界（只有 0..4 有定义）⇒ 本档按失败处理
+[m15]   Pf.gdn_mut1：段体真产出的负向对照（只搅动送设备的 h0；对拍命令由 dump 行给出）
+[m15]   Pf.gdn_mut1：M140 相位掩码 = 0x7（H1=1 A=1 H2=1 B=0）；M151 prolog=1/mut=0
+[m15][FAIL] Pf.gdn_mut1：M15_PREFILL_EPILOG_MUT=5 越界（只有 0..4 有定义）⇒ 本档按失败处理
+[m15]   Pf.prolog_mut1：M151 prolog 负向对照（mut=1）
+[m15]   Pf.prolog_mut1：M140 相位掩码 = 0x7（H1=1 A=1 H2=1 B=0）；M151 prolog=1/mut=1
+[m15][FAIL] Pf.prolog_mut1：M15_PREFILL_EPILOG_MUT=5 越界（只有 0..4 有定义）⇒ 本档按失败处理
+[m15]   Pf.prolog_mut2：M151 prolog 负向对照（mut=2）
+[m15]   Pf.prolog_mut2：M140 相位掩码 = 0x7（H1=1 A=1 H2=1 B=0）；M151 prolog=1/mut=2
+[m15][FAIL] Pf.prolog_mut2：M15_PREFILL_EPILOG_MUT=5 越界（只有 0..4 有定义）⇒ 本档按失败处理
+[m15]   Pf.prolog_mut3：M151 prolog 负向对照（mut=3）
+[m15]   Pf.prolog_mut3：M140 相位掩码 = 0x7（H1=1 A=1 H2=1 B=0）；M151 prolog=1/mut=3
+[m15][FAIL] Pf.prolog_mut3：M15_PREFILL_EPILOG_MUT=5 越界（只有 0..4 有定义）⇒ 本档按失败处理
+
+[m15] 判据分账：权重来源 0（GDN+MoE）+ 0（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Pw 0 + Kv 0 + Prolog 0 + AttnWire 0 + Pf 2 = 2 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15]   ④ 与 M39 官方单层参考对拍的判据**不在这个数里**：它在 `check_chain_ref.py`（torch，独立三态退出码与计数），由本程序的 dump 驱动；运行方式见 README。
+[m15] guard：9 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 0 + 参考链锚点非空 0 + M65 链 0 + 其余 8
+[m15] ===== FAILURES PRESENT（checks=2, guards=9, fails=5）=====
+--- exit=1 ---

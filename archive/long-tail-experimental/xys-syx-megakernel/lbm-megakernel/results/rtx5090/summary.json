@@ -1,0 +1,926 @@
+{
+  "100": {
+    "B0": {
+      "median_us": 290.151672363,
+      "minimum_us": 289.403839111,
+      "p90_us": 290.428161621,
+      "trials": 40,
+      "round_medians_us": [
+        290.126247406,
+        290.193119049
+      ],
+      "resource": {
+        "name": "B0",
+        "threads": "120",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "120x150x1",
+        "block": "120x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "C1": {
+      "median_us": 289.407672882,
+      "minimum_us": 288.99520874,
+      "p90_us": 289.639358521,
+      "trials": 40,
+      "round_medians_us": [
+        289.368638992,
+        289.45487976050003
+      ],
+      "resource": {
+        "name": "C1",
+        "threads": "128",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "4x30x150",
+        "block": "32x4x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "C2": {
+      "median_us": 290.505437851,
+      "minimum_us": 289.957447052,
+      "p90_us": 290.833911896,
+      "trials": 40,
+      "round_medians_us": [
+        290.505437851,
+        290.51456451399997
+      ],
+      "resource": {
+        "name": "C2",
+        "threads": "128",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "4x60x75",
+        "block": "32x2x2",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "C3": {
+      "median_us": 288.0060768125,
+      "minimum_us": 287.551364899,
+      "p90_us": 288.204479218,
+      "trials": 40,
+      "round_medians_us": [
+        288.0123233795,
+        288.001594543
+      ],
+      "resource": {
+        "name": "C3",
+        "threads": "128",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "2x60x150",
+        "block": "64x2x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "S2-C128": {
+      "median_us": 302.95952796899996,
+      "minimum_us": 302.551364899,
+      "p90_us": 303.154563904,
+      "trials": 40,
+      "round_medians_us": [
+        302.95952796899996,
+        302.936000824
+      ],
+      "resource": {
+        "name": "S2-C128",
+        "threads": "128",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "15x15x19",
+        "block": "128x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "S2-D128": {
+      "median_us": 290.351200104,
+      "minimum_us": 289.763202667,
+      "p90_us": 290.509433746,
+      "trials": 40,
+      "round_medians_us": [
+        290.326242447,
+        290.386886597
+      ],
+      "resource": {
+        "name": "S2-D128",
+        "threads": "128",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "8x15x38",
+        "block": "128x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "S2-C256": {
+      "median_us": 292.14816093449997,
+      "minimum_us": 291.769924164,
+      "p90_us": 292.31136322,
+      "trials": 40,
+      "round_medians_us": [
+        292.145442963,
+        292.1585559845
+      ],
+      "resource": {
+        "name": "S2-C256",
+        "threads": "256",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "5",
+        "grid": "15x15x19",
+        "block": "256x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "S2-D256": {
+      "median_us": 281.698884964,
+      "minimum_us": 281.343040466,
+      "p90_us": 281.93983078,
+      "trials": 40,
+      "round_medians_us": [
+        281.80032730100004,
+        281.574716568
+      ],
+      "resource": {
+        "name": "S2-D256",
+        "threads": "256",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "5",
+        "grid": "8x15x38",
+        "block": "256x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "C-V1-128": {
+      "median_us": 154.342722893,
+      "minimum_us": 154.040956497,
+      "p90_us": 154.492797852,
+      "trials": 40,
+      "round_medians_us": [
+        154.3681621555,
+        154.3268823625
+      ],
+      "resource": {
+        "name": "C-V1-128",
+        "threads": "128",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "76000",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "1",
+        "grid": "15x15x19",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "8.333333"
+      }
+    },
+    "C-V1-256": {
+      "median_us": 145.4097604755,
+      "minimum_us": 145.031042099,
+      "p90_us": 145.621757507,
+      "trials": 40,
+      "round_medians_us": [
+        145.3216028215,
+        145.588159561
+      ],
+      "resource": {
+        "name": "C-V1-256",
+        "threads": "256",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "76000",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "1",
+        "grid": "15x15x19",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "C-V2-128": {
+      "median_us": 155.12239933,
+      "minimum_us": 154.888963699,
+      "p90_us": 155.206718445,
+      "trials": 40,
+      "round_medians_us": [
+        155.1313638685,
+        155.11727809899998
+      ],
+      "resource": {
+        "name": "C-V2-128",
+        "threads": "128",
+        "registers": "61",
+        "static_shared": "0",
+        "dynamic_shared": "38912",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "15x15x19",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "C-V2-256": {
+      "median_us": 141.333117485,
+      "minimum_us": 141.191358566,
+      "p90_us": 141.405439377,
+      "trials": 40,
+      "round_medians_us": [
+        141.3086366655,
+        141.33935928350002
+      ],
+      "resource": {
+        "name": "C-V2-256",
+        "threads": "256",
+        "registers": "61",
+        "static_shared": "0",
+        "dynamic_shared": "38912",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "15x15x19",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "33.333333"
+      }
+    },
+    "D-V1-128": {
+      "median_us": 148.931679726,
+      "minimum_us": 148.808317184,
+      "p90_us": 149.034557343,
+      "trials": 40,
+      "round_medians_us": [
+        148.870882988,
+        149.018559456
+      ],
+      "resource": {
+        "name": "D-V1-128",
+        "threads": "128",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "82080",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "1",
+        "grid": "8x15x38",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "8.333333"
+      }
+    },
+    "D-V1-256": {
+      "median_us": 137.06319808950002,
+      "minimum_us": 136.94975853,
+      "p90_us": 137.124156952,
+      "trials": 40,
+      "round_medians_us": [
+        137.042078972,
+        137.084479332
+      ],
+      "resource": {
+        "name": "D-V1-256",
+        "threads": "256",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "82080",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "1",
+        "grid": "8x15x38",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "D-V2-128": {
+      "median_us": 148.9009618755,
+      "minimum_us": 148.704004288,
+      "p90_us": 149.043197632,
+      "trials": 40,
+      "round_medians_us": [
+        148.8247966765,
+        148.9784002305
+      ],
+      "resource": {
+        "name": "D-V2-128",
+        "threads": "128",
+        "registers": "56",
+        "static_shared": "0",
+        "dynamic_shared": "38912",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "8x15x38",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "D-V2-256": {
+      "median_us": 135.70672035249999,
+      "minimum_us": 135.525760651,
+      "p90_us": 135.792961121,
+      "trials": 40,
+      "round_medians_us": [
+        135.686879158,
+        135.733118057
+      ],
+      "resource": {
+        "name": "D-V2-256",
+        "threads": "256",
+        "registers": "56",
+        "static_shared": "0",
+        "dynamic_shared": "38912",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "8x15x38",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "33.333333"
+      }
+    },
+    "T30-S1-128": {
+      "median_us": 363.53055954,
+      "minimum_us": 362.537269592,
+      "p90_us": 364.084815979,
+      "trials": 40,
+      "round_medians_us": [
+        363.7153625485,
+        363.414382935
+      ],
+      "resource": {
+        "name": "T30-S1-128",
+        "threads": "128",
+        "registers": "56",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "9",
+        "grid": "4x30x38",
+        "block": "128x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "75.000000"
+      }
+    },
+    "T30-S1-256": {
+      "median_us": 328.100795746,
+      "minimum_us": 327.077102661,
+      "p90_us": 329.063987732,
+      "trials": 40,
+      "round_medians_us": [
+        328.09135437,
+        328.2025527955
+      ],
+      "resource": {
+        "name": "T30-S1-256",
+        "threads": "256",
+        "registers": "56",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "4",
+        "grid": "4x30x38",
+        "block": "256x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "66.666667"
+      }
+    },
+    "T30-V2-128": {
+      "median_us": 144.90623950949998,
+      "minimum_us": 144.752960205,
+      "p90_us": 145.010242462,
+      "trials": 40,
+      "round_medians_us": [
+        144.913282394,
+        144.896798134
+      ],
+      "resource": {
+        "name": "T30-V2-128",
+        "threads": "128",
+        "registers": "63",
+        "static_shared": "0",
+        "dynamic_shared": "36480",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "4x30x38",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "T30-V2-256": {
+      "median_us": 147.94960021999998,
+      "minimum_us": 147.508802414,
+      "p90_us": 148.092803955,
+      "trials": 40,
+      "round_medians_us": [
+        147.990398407,
+        147.8777599335
+      ],
+      "resource": {
+        "name": "T30-V2-256",
+        "threads": "256",
+        "registers": "63",
+        "static_shared": "0",
+        "dynamic_shared": "36480",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "4x30x38",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "33.333333"
+      }
+    }
+  },
+  "1000": {
+    "B0": {
+      "median_us": 290.134613037,
+      "minimum_us": 290.037963867,
+      "p90_us": 290.212005615,
+      "trials": 40,
+      "round_medians_us": [
+        290.1271209715,
+        290.1566619875
+      ],
+      "resource": {
+        "name": "B0",
+        "threads": "120",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "120x150x1",
+        "block": "120x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "C1": {
+      "median_us": 289.422531128,
+      "minimum_us": 289.20324707,
+      "p90_us": 289.538208008,
+      "trials": 40,
+      "round_medians_us": [
+        289.422531128,
+        289.42095947300004
+      ],
+      "resource": {
+        "name": "C1",
+        "threads": "128",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "4x30x150",
+        "block": "32x4x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "C2": {
+      "median_us": 290.5857849125,
+      "minimum_us": 290.444488525,
+      "p90_us": 290.697784424,
+      "trials": 40,
+      "round_medians_us": [
+        290.594970703,
+        290.580032349
+      ],
+      "resource": {
+        "name": "C2",
+        "threads": "128",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "4x60x75",
+        "block": "32x2x2",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "C3": {
+      "median_us": 288.037750244,
+      "minimum_us": 287.910552979,
+      "p90_us": 288.159332275,
+      "trials": 40,
+      "round_medians_us": [
+        288.0070648195,
+        288.04269409150004
+      ],
+      "resource": {
+        "name": "C3",
+        "threads": "128",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "2x60x150",
+        "block": "64x2x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "S2-C128": {
+      "median_us": 302.874252319,
+      "minimum_us": 302.724243164,
+      "p90_us": 302.975128174,
+      "trials": 40,
+      "round_medians_us": [
+        302.816848755,
+        302.89669799800004
+      ],
+      "resource": {
+        "name": "S2-C128",
+        "threads": "128",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "15x15x19",
+        "block": "128x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "S2-D128": {
+      "median_us": 290.3389282225,
+      "minimum_us": 290.117523193,
+      "p90_us": 290.421905518,
+      "trials": 40,
+      "round_medians_us": [
+        290.3359069825,
+        290.343032837
+      ],
+      "resource": {
+        "name": "S2-D128",
+        "threads": "128",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "10",
+        "grid": "8x15x38",
+        "block": "128x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "S2-C256": {
+      "median_us": 292.31089782699996,
+      "minimum_us": 292.137512207,
+      "p90_us": 292.385894775,
+      "trials": 40,
+      "round_medians_us": [
+        292.2717895505,
+        292.34391784649995
+      ],
+      "resource": {
+        "name": "S2-C256",
+        "threads": "256",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "5",
+        "grid": "15x15x19",
+        "block": "256x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "S2-D256": {
+      "median_us": 281.6881561275,
+      "minimum_us": 281.517700195,
+      "p90_us": 281.762268066,
+      "trials": 40,
+      "round_medians_us": [
+        281.675888062,
+        281.707138062
+      ],
+      "resource": {
+        "name": "S2-D256",
+        "threads": "256",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "5",
+        "grid": "8x15x38",
+        "block": "256x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "83.333333"
+      }
+    },
+    "C-V1-128": {
+      "median_us": 154.7064285275,
+      "minimum_us": 154.611846924,
+      "p90_us": 154.793121338,
+      "trials": 40,
+      "round_medians_us": [
+        154.67842102050002,
+        154.72499084499998
+      ],
+      "resource": {
+        "name": "C-V1-128",
+        "threads": "128",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "76000",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "1",
+        "grid": "15x15x19",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "8.333333"
+      }
+    },
+    "C-V1-256": {
+      "median_us": 145.62207794199998,
+      "minimum_us": 145.491012573,
+      "p90_us": 145.693893433,
+      "trials": 40,
+      "round_medians_us": [
+        145.642578125,
+        145.5960617065
+      ],
+      "resource": {
+        "name": "C-V1-256",
+        "threads": "256",
+        "registers": "48",
+        "static_shared": "0",
+        "dynamic_shared": "76000",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "1",
+        "grid": "15x15x19",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "C-V2-128": {
+      "median_us": 155.5160903935,
+      "minimum_us": 155.289764404,
+      "p90_us": 155.828216553,
+      "trials": 40,
+      "round_medians_us": [
+        155.3222732545,
+        155.800239563
+      ],
+      "resource": {
+        "name": "C-V2-128",
+        "threads": "128",
+        "registers": "61",
+        "static_shared": "0",
+        "dynamic_shared": "38912",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "15x15x19",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "C-V2-256": {
+      "median_us": 142.11900329600002,
+      "minimum_us": 141.383865356,
+      "p90_us": 142.596282959,
+      "trials": 40,
+      "round_medians_us": [
+        141.542251587,
+        142.56588745099998
+      ],
+      "resource": {
+        "name": "C-V2-256",
+        "threads": "256",
+        "registers": "61",
+        "static_shared": "0",
+        "dynamic_shared": "38912",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "15x15x19",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "33.333333"
+      }
+    },
+    "D-V1-128": {
+      "median_us": 149.0254440305,
+      "minimum_us": 148.933181763,
+      "p90_us": 149.098693848,
+      "trials": 40,
+      "round_medians_us": [
+        148.963920593,
+        149.085281372
+      ],
+      "resource": {
+        "name": "D-V1-128",
+        "threads": "128",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "82080",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "1",
+        "grid": "8x15x38",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "8.333333"
+      }
+    },
+    "D-V1-256": {
+      "median_us": 137.207443237,
+      "minimum_us": 137.00831604,
+      "p90_us": 137.240768433,
+      "trials": 40,
+      "round_medians_us": [
+        137.0460357665,
+        137.220291138
+      ],
+      "resource": {
+        "name": "D-V1-256",
+        "threads": "256",
+        "registers": "44",
+        "static_shared": "0",
+        "dynamic_shared": "82080",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "1",
+        "grid": "8x15x38",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "D-V2-128": {
+      "median_us": 149.344596863,
+      "minimum_us": 149.078201294,
+      "p90_us": 149.839035034,
+      "trials": 40,
+      "round_medians_us": [
+        149.0935668945,
+        149.78721618650002
+      ],
+      "resource": {
+        "name": "D-V2-128",
+        "threads": "128",
+        "registers": "56",
+        "static_shared": "0",
+        "dynamic_shared": "38912",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "8x15x38",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "D-V2-256": {
+      "median_us": 135.823524475,
+      "minimum_us": 135.682235718,
+      "p90_us": 135.882949829,
+      "trials": 40,
+      "round_medians_us": [
+        135.72830200200002,
+        135.854270935
+      ],
+      "resource": {
+        "name": "D-V2-256",
+        "threads": "256",
+        "registers": "56",
+        "static_shared": "0",
+        "dynamic_shared": "38912",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "8x15x38",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "33.333333"
+      }
+    },
+    "T30-S1-128": {
+      "median_us": 363.224227905,
+      "minimum_us": 362.670257568,
+      "p90_us": 363.484313965,
+      "trials": 40,
+      "round_medians_us": [
+        363.21194458,
+        363.224227905
+      ],
+      "resource": {
+        "name": "T30-S1-128",
+        "threads": "128",
+        "registers": "56",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "9",
+        "grid": "4x30x38",
+        "block": "128x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "75.000000"
+      }
+    },
+    "T30-S1-256": {
+      "median_us": 328.205947876,
+      "minimum_us": 327.788665771,
+      "p90_us": 328.502471924,
+      "trials": 40,
+      "round_medians_us": [
+        328.20332336449997,
+        328.2080078125
+      ],
+      "resource": {
+        "name": "T30-S1-256",
+        "threads": "256",
+        "registers": "56",
+        "static_shared": "0",
+        "dynamic_shared": "0",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "4",
+        "grid": "4x30x38",
+        "block": "256x1x1",
+        "steps_per_launch": "1",
+        "theoretical_occupancy_pct": "66.666667"
+      }
+    },
+    "T30-V2-128": {
+      "median_us": 144.94168090800002,
+      "minimum_us": 144.880828857,
+      "p90_us": 144.978118896,
+      "trials": 40,
+      "round_medians_us": [
+        144.93510437,
+        144.9513168335
+      ],
+      "resource": {
+        "name": "T30-V2-128",
+        "threads": "128",
+        "registers": "63",
+        "static_shared": "0",
+        "dynamic_shared": "36480",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "4x30x38",
+        "block": "128x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "16.666667"
+      }
+    },
+    "T30-V2-256": {
+      "median_us": 147.8109741215,
+      "minimum_us": 147.421401978,
+      "p90_us": 148.096160889,
+      "trials": 40,
+      "round_medians_us": [
+        147.8590393065,
+        147.7690200805
+      ],
+      "resource": {
+        "name": "T30-V2-256",
+        "threads": "256",
+        "registers": "63",
+        "static_shared": "0",
+        "dynamic_shared": "36480",
+        "local_bytes": "0",
+        "active_blocks_per_sm": "2",
+        "grid": "4x30x38",
+        "block": "256x1x1",
+        "steps_per_launch": "2",
+        "theoretical_occupancy_pct": "33.333333"
+      }
+    }
+  }
+}

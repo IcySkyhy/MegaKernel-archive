@@ -1,0 +1,21 @@
+# variant N=16：由 tools/summarize.sh 从逐次日志的 AGG 行重算（每档 3 次独立进程）
+a_nowait           variant=a_nowait N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+b_via_gm           variant=b_via_gm N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+base               variant=base N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+c_broadcast        variant=c_broadcast N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+c_m2canon          variant=c_m2canon N=16 rc0=0 rc1=3 rc2=0 hang=0 reps=3
+c_m2mte3           variant=c_m2mte3 N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+c_m2sameid         variant=c_m2sameid N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+c_m2setonly        variant=c_m2setonly N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+c_mode4free        variant=c_mode4free N=16 rc0=0 rc1=3 rc2=0 hang=0 reps=3
+c_mode4full        variant=c_mode4full N=16 rc0=0 rc1=3 rc2=0 hang=0 reps=3
+c_preset           variant=c_preset N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+c_rotate           variant=c_rotate N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+c_wait1            variant=c_wait1 N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+d_no_acquire       variant=d_no_acquire N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+dbg_nobar          variant=dbg_nobar N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+dbg_nodata         variant=dbg_nodata N=16 rc0=0 rc1=3 rc2=0 hang=0 reps=3
+dbg_nosync         variant=dbg_nosync N=16 rc0=0 rc1=3 rc2=0 hang=0 reps=3
+dbg_rdyonly        variant=dbg_rdyonly N=16 rc0=0 rc1=3 rc2=0 hang=0 reps=3
+neg_nofree         variant=neg_nofree N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3
+neg_wrongval       variant=neg_wrongval N=16 rc0=0 rc1=0 rc2=0 hang=3 reps=3

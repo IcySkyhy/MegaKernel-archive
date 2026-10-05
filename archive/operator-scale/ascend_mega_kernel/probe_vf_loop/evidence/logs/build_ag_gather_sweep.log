@@ -1,0 +1,21 @@
+/usr/bin/cmake -S/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -B/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/gmake  -f CMakeFiles/Makefile2 ag_gather_sweep
+gmake[1]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/cmake -S/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -B/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles 2
+/usr/bin/gmake  -f CMakeFiles/Makefile2 CMakeFiles/ag_gather_sweep.dir/all
+gmake[2]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/gmake  -f CMakeFiles/ag_gather_sweep.dir/build.make CMakeFiles/ag_gather_sweep.dir/depend
+gmake[3]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles/ag_gather_sweep.dir/DependInfo.cmake "--color="
+Dependencies file "CMakeFiles/ag_gather_sweep.dir/probe_arange_gather.asc.o.d" is newer than depends file "/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles/ag_gather_sweep.dir/compiler_depend.internal".
+Consolidate compiler generated dependencies of target ag_gather_sweep
+gmake[3]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/gmake  -f CMakeFiles/ag_gather_sweep.dir/build.make CMakeFiles/ag_gather_sweep.dir/build
+gmake[3]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+gmake[3]: Nothing to be done for 'CMakeFiles/ag_gather_sweep.dir/build'.
+gmake[3]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+[100%] Built target ag_gather_sweep
+gmake[2]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/cmake -E cmake_progress_start /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles 0
+gmake[1]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'

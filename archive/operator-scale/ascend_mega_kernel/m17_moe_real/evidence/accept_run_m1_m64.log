@@ -1,0 +1,374 @@
+# M17 验收运行日志 —— MoE block 真实 MXFP4 权重端到端（M29 / agent-moereal，round-2 修复后）
+# 权重源：/workspace/Qwen3.8-Flash-Next-MXFP4（131 safetensors；quant_method=ascend / mxfp4-pack-quantized-e8m0 /
+#         e2m1 / uint8-nibble-lohi / group_size 32 / scale_dtype e8m0）
+# host 判据 = 12 条不变量 + 1 条 cube 解包探针（--no-probe 时只有 12 条）；判据口径见 docs/17 §1
+# ⚠ host 墙钟不是证据（tower 规则 12:45，共享卡实测 24× 抖动）：日志里的 wall 值只作定性，
+#   下面的「连跑块」给出同一二进制/同一命令连续 5 次的 min/max；本 mission 不作性能断言。
+# 复现命令：见 m17_moe_real/README.md §6
+
+########## layer=0 token=1000 m=1 ##########
+[M17] ================ M29 MoE block 真实权重端到端 ================
+[M17] SHA-256 自检 PASS（"abc" 向量）
+[M17] manifest=m17_moe_real/m17_weight_manifest.txt  model_dir=/workspace/Qwen3.8-Flash-Next-MXFP4  layer=0  token=1000  m=1  stageLimit=8 subLimit=9
+[M17] checkpoint 形状：hidden=2560 inter=640 group=32 E=512 topk=10
+[M17] ---- 从真实 checkpoint pread 权重（字节原样，与 manifest 的 Python sha256 比对）----
+[M17][src] router_w            2621440 B  sha256=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6 == manifest
+[M17][src] sgate_w                5120 B  sha256=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45 == manifest
+[M17][src] gu_packed         838860800 B  sha256=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b == manifest
+[M17][src] gu_scale           52428800 B  sha256=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e == manifest
+[M17][src] dn_packed         419430400 B  sha256=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79 == manifest
+[M17][src] dn_scale           26214400 B  sha256=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8 == manifest
+[M17][src] shd_gate             819200 B  sha256=cc947b2961c7f60beadd71bc5039002481a87772541f4cba35745e0dd5c4bb65 == manifest
+[M17][src] shd_up               819200 B  sha256=d239874f7581e3614be86051a8b9df20ad75deaff8915d61442f02b3c28b15d6 == manifest
+[M17][src] shd_down             819200 B  sha256=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531 == manifest
+[M17][src] shd_gate_scale        51200 B  sha256=f5f74fa7ea0d3e45efc1499e812ab32d64b4075ebc948ebcf41fbd65eded7941 == manifest
+[M17][src] shd_up_scale          51200 B  sha256=6ec21ee39472b16931c3d02218833b69398e4b1b4af7b9592b23412e9079150f == manifest
+[M17][src] shd_down_scale        51200 B  sha256=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4 == manifest
+[M17][src] gamma1                 5120 B  sha256=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d == manifest
+[M17][src] gamma2                 5120 B  sha256=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4 == manifest
+[M17][src] 合计 1342182400 B（1.250 GiB），与 manifest 的 Python 独立 sha256 全部一致 = YES
+[M17] 共享专家 gate|up 行拼接：w [640,1280] → [1280,1280]，scale [640,80] → [1280,80]（权重字节不变）
+[M17][src] x (1 行 embed_tokens[1000..1000)) sha256=d2001e7c71c1e50e34d4b7b57c9a76b3b5cdf9940222c96fb511f72143a696dc
+[M17] device: 28 AIC（mix(1,2) → 56 AIV）；workspace = 315637568 B（301.0 MB）
+[M17] ---- device GM D2H 回读逐字节核对（含 1.24GiB 专家权重全量）----
+[M17][bytes] x_embed_rows               327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=fd4670a44d6e88ae7100007c3c4e7902d8d1ff632298670a62bf401369ef1e69
+[M17][bytes] res_zero                   327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=dae4d3dce1bb0a9414f61a65ee07622fa225ec01e6efe6df6e78f9ad5c58480d
+[M17][bytes] gamma1                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d
+[M17][bytes] gamma2                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4
+[M17][bytes] router_w                  2621440 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6
+[M17][bytes] sgate_w                      5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45
+[M17][bytes] experts.gate_up_proj    838860800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b
+[M17][bytes] experts.gate_up_proj.scale   52428800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e
+[M17][bytes] experts.down_proj       419430400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79
+[M17][bytes] experts.down_proj.scale   26214400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8
+[M17][bytes] shared.gate_up            1638400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c9c191f5377ca84bd237a01bcc9acd62e0a8bc055682f32b8dee600fcbbf17fa
+[M17][bytes] shared.gate_up.scale       102400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=0bc8dfe65acca3699e525a743bd5a5e29dd409f104d6ce9efcecda9e5f23e3dd
+[M17][bytes] shared.down                819200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531
+[M17][bytes] shared.down.scale           51200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4
+[M17][bytes] 合计逐字节核对 1342837760 B（1.251 GiB），全部一致 = YES
+[M17] ---- 启动 m17_moe_layer_kernel（mix(1,2)，段序 S1-S10）----
+[M17] kernel 完成：host 墙钟 162.573 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+[M17][dump] workspace (315637568 bytes) → /tmp/m17_accept/ws_layer0_tok1000_m1.bin
+[M17][dump] meta → /tmp/m17_accept/ws_meta_layer0_tok1000_m1.txt（32 段 sha256）
+[M17] ---- host 不变量自检（m=1 topk=10）----
+[M17]   IG 越界计数 diag == 0 (got 0)              PASS
+[M17]   counts 求和 == m*topk (10 vs 10)             PASS
+[M17]   offsets 与 counts 前缀和一致 (bad 0)     PASS
+[M17]   每个槽位 t_e ∈ [0, BASE_M=64] (bad 0)    PASS
+[M17]   topk_ids ∈ [0,E) 且行内唯一 (bad 0)     PASS
+[M17]   perm 按 (expert, token) 分组有序 (bad 0)  PASS
+[M17]   每个 (token, expert) 都在 perm 里出现 (bad 0) PASS
+[M17]   inv_slot 与 perm 自洽 (bad 0)               PASS
+[M17]   x_sorted == gather(x_norm, perm_src) 逐位 (bad 0) PASS
+[M17]   w_tk_packed 低 16 位 == bf16(topk_weights) (bad 0) PASS
+[M17]   logits/权重/输出全体有限 (bad 0)       PASS
+[M17]   topk_weights 行和 ≈ 1 (max |Σ-1| = 2.24e-08) PASS
+[M17]   [报告] topk_weights 区间 [0.0875654, 0.110312]（真实 512 专家 top-10 的期望量级 1e-1..1e-3）
+[M17] ---- MXFP4 权重 nibble 解包探针（cube：A=单位阵 → C[i][n]=dequant(W_e[n][i])）----
+[M17]   解包探针 C[i][n] == host 独立解包（0/16384 不符，0 跳过） PASS
+[M17][dump] probe_c_bf16.bin（163840 B）+ probe_spec.txt
+[M17] ---- 数值摘要 ----
+[M17]   logits[0][top-10 ids] 行 max-shift 后：min=-9.2242 max=0.0000
+[M17]   top-10 ids = 320 188 462 41 74 167 138 444 277 266
+[M17]   moe[0][0..3]  = 0.0527344 -0.00386047 -0.0275879 -0.00469971 (bf16)
+[M17]   moe[0] rms = 0.0181353；y_final[0] rms = 0.491537
+[M17] ================ 结果：host 判据 13 PASS / 0 FAIL（其中不变量 12 条 + cube 解包探针 1 条）================
+[M17]   不变量 12 PASS / 0 FAIL；解包探针 1 PASS / 0 FAIL（--no-probe 时无探针）
+[M17][dump] dump 目录 /tmp/m17_accept（ws_layer0_tok1000_m1.bin + ws_meta_layer0_tok1000_m1.txt + weight_bytecheck.log）
+
+########## layer=0 token=1000 m=8 ##########
+[M17] ================ M29 MoE block 真实权重端到端 ================
+[M17] SHA-256 自检 PASS（"abc" 向量）
+[M17] manifest=m17_moe_real/m17_weight_manifest.txt  model_dir=/workspace/Qwen3.8-Flash-Next-MXFP4  layer=0  token=1000  m=8  stageLimit=8 subLimit=9
+[M17] checkpoint 形状：hidden=2560 inter=640 group=32 E=512 topk=10
+[M17] ---- 从真实 checkpoint pread 权重（字节原样，与 manifest 的 Python sha256 比对）----
+[M17][src] router_w            2621440 B  sha256=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6 == manifest
+[M17][src] sgate_w                5120 B  sha256=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45 == manifest
+[M17][src] gu_packed         838860800 B  sha256=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b == manifest
+[M17][src] gu_scale           52428800 B  sha256=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e == manifest
+[M17][src] dn_packed         419430400 B  sha256=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79 == manifest
+[M17][src] dn_scale           26214400 B  sha256=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8 == manifest
+[M17][src] shd_gate             819200 B  sha256=cc947b2961c7f60beadd71bc5039002481a87772541f4cba35745e0dd5c4bb65 == manifest
+[M17][src] shd_up               819200 B  sha256=d239874f7581e3614be86051a8b9df20ad75deaff8915d61442f02b3c28b15d6 == manifest
+[M17][src] shd_down             819200 B  sha256=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531 == manifest
+[M17][src] shd_gate_scale        51200 B  sha256=f5f74fa7ea0d3e45efc1499e812ab32d64b4075ebc948ebcf41fbd65eded7941 == manifest
+[M17][src] shd_up_scale          51200 B  sha256=6ec21ee39472b16931c3d02218833b69398e4b1b4af7b9592b23412e9079150f == manifest
+[M17][src] shd_down_scale        51200 B  sha256=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4 == manifest
+[M17][src] gamma1                 5120 B  sha256=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d == manifest
+[M17][src] gamma2                 5120 B  sha256=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4 == manifest
+[M17][src] 合计 1342182400 B（1.250 GiB），与 manifest 的 Python 独立 sha256 全部一致 = YES
+[M17] 共享专家 gate|up 行拼接：w [640,1280] → [1280,1280]，scale [640,80] → [1280,80]（权重字节不变）
+[M17][src] x (8 行 embed_tokens[1000..1007)) sha256=fbe9fd50dc498b7babcb5a40b047c1e611f245e2a856f78ab616e5add4e4e149
+[M17] device: 28 AIC（mix(1,2) → 56 AIV）；workspace = 315637568 B（301.0 MB）
+[M17] ---- device GM D2H 回读逐字节核对（含 1.24GiB 专家权重全量）----
+[M17][bytes] x_embed_rows               327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=85a6abf2ed521c4942f8b73f3a477c8e5d880db4e8ba3f226a598dc8971e5076
+[M17][bytes] res_zero                   327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=dae4d3dce1bb0a9414f61a65ee07622fa225ec01e6efe6df6e78f9ad5c58480d
+[M17][bytes] gamma1                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d
+[M17][bytes] gamma2                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4
+[M17][bytes] router_w                  2621440 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6
+[M17][bytes] sgate_w                      5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45
+[M17][bytes] experts.gate_up_proj    838860800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b
+[M17][bytes] experts.gate_up_proj.scale   52428800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e
+[M17][bytes] experts.down_proj       419430400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79
+[M17][bytes] experts.down_proj.scale   26214400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8
+[M17][bytes] shared.gate_up            1638400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c9c191f5377ca84bd237a01bcc9acd62e0a8bc055682f32b8dee600fcbbf17fa
+[M17][bytes] shared.gate_up.scale       102400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=0bc8dfe65acca3699e525a743bd5a5e29dd409f104d6ce9efcecda9e5f23e3dd
+[M17][bytes] shared.down                819200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531
+[M17][bytes] shared.down.scale           51200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4
+[M17][bytes] 合计逐字节核对 1342837760 B（1.251 GiB），全部一致 = YES
+[M17] ---- 启动 m17_moe_layer_kernel（mix(1,2)，段序 S1-S10）----
+[M17] kernel 完成：host 墙钟 5.647 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+[M17][dump] workspace (315637568 bytes) → /tmp/m17_accept/ws_layer0_tok1000_m8.bin
+[M17][dump] meta → /tmp/m17_accept/ws_meta_layer0_tok1000_m8.txt（32 段 sha256）
+[M17] ---- host 不变量自检（m=8 topk=10）----
+[M17]   IG 越界计数 diag == 0 (got 0)              PASS
+[M17]   counts 求和 == m*topk (80 vs 80)             PASS
+[M17]   offsets 与 counts 前缀和一致 (bad 0)     PASS
+[M17]   每个槽位 t_e ∈ [0, BASE_M=64] (bad 0)    PASS
+[M17]   topk_ids ∈ [0,E) 且行内唯一 (bad 0)     PASS
+[M17]   perm 按 (expert, token) 分组有序 (bad 0)  PASS
+[M17]   每个 (token, expert) 都在 perm 里出现 (bad 0) PASS
+[M17]   inv_slot 与 perm 自洽 (bad 0)               PASS
+[M17]   x_sorted == gather(x_norm, perm_src) 逐位 (bad 0) PASS
+[M17]   w_tk_packed 低 16 位 == bf16(topk_weights) (bad 0) PASS
+[M17]   logits/权重/输出全体有限 (bad 0)       PASS
+[M17]   topk_weights 行和 ≈ 1 (max |Σ-1| = 6.33e-08) PASS
+[M17]   [报告] topk_weights 区间 [0.0219124, 0.649015]（真实 512 专家 top-10 的期望量级 1e-1..1e-3）
+[M17] ---- MXFP4 权重 nibble 解包探针（cube：A=单位阵 → C[i][n]=dequant(W_e[n][i])）----
+[M17]   解包探针 C[i][n] == host 独立解包（0/16384 不符，0 跳过） PASS
+[M17][dump] probe_c_bf16.bin（163840 B）+ probe_spec.txt
+[M17] ---- 数值摘要 ----
+[M17]   logits[0][top-10 ids] 行 max-shift 后：min=-9.2242 max=0.0000
+[M17]   top-10 ids = 320 188 462 41 74 167 138 444 277 266
+[M17]   moe[0][0..3]  = 0.0527344 -0.00386047 -0.0275879 -0.00469971 (bf16)
+[M17]   moe[0] rms = 0.0181353；y_final[0] rms = 0.491537
+[M17] ================ 结果：host 判据 13 PASS / 0 FAIL（其中不变量 12 条 + cube 解包探针 1 条）================
+[M17]   不变量 12 PASS / 0 FAIL；解包探针 1 PASS / 0 FAIL（--no-probe 时无探针）
+[M17][dump] dump 目录 /tmp/m17_accept（ws_layer0_tok1000_m8.bin + ws_meta_layer0_tok1000_m8.txt + weight_bytecheck.log）
+
+########## layer=0 token=1000 m=33 ##########
+[M17] ================ M29 MoE block 真实权重端到端 ================
+[M17] SHA-256 自检 PASS（"abc" 向量）
+[M17] manifest=m17_moe_real/m17_weight_manifest.txt  model_dir=/workspace/Qwen3.8-Flash-Next-MXFP4  layer=0  token=1000  m=33  stageLimit=8 subLimit=9
+[M17] checkpoint 形状：hidden=2560 inter=640 group=32 E=512 topk=10
+[M17] ---- 从真实 checkpoint pread 权重（字节原样，与 manifest 的 Python sha256 比对）----
+[M17][src] router_w            2621440 B  sha256=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6 == manifest
+[M17][src] sgate_w                5120 B  sha256=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45 == manifest
+[M17][src] gu_packed         838860800 B  sha256=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b == manifest
+[M17][src] gu_scale           52428800 B  sha256=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e == manifest
+[M17][src] dn_packed         419430400 B  sha256=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79 == manifest
+[M17][src] dn_scale           26214400 B  sha256=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8 == manifest
+[M17][src] shd_gate             819200 B  sha256=cc947b2961c7f60beadd71bc5039002481a87772541f4cba35745e0dd5c4bb65 == manifest
+[M17][src] shd_up               819200 B  sha256=d239874f7581e3614be86051a8b9df20ad75deaff8915d61442f02b3c28b15d6 == manifest
+[M17][src] shd_down             819200 B  sha256=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531 == manifest
+[M17][src] shd_gate_scale        51200 B  sha256=f5f74fa7ea0d3e45efc1499e812ab32d64b4075ebc948ebcf41fbd65eded7941 == manifest
+[M17][src] shd_up_scale          51200 B  sha256=6ec21ee39472b16931c3d02218833b69398e4b1b4af7b9592b23412e9079150f == manifest
+[M17][src] shd_down_scale        51200 B  sha256=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4 == manifest
+[M17][src] gamma1                 5120 B  sha256=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d == manifest
+[M17][src] gamma2                 5120 B  sha256=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4 == manifest
+[M17][src] 合计 1342182400 B（1.250 GiB），与 manifest 的 Python 独立 sha256 全部一致 = YES
+[M17] 共享专家 gate|up 行拼接：w [640,1280] → [1280,1280]，scale [640,80] → [1280,80]（权重字节不变）
+[M17][src] x (33 行 embed_tokens[1000..1032)) sha256=84d6a4b9347f124a1cab56fe252a595605ed50854516517241867340a7e98241
+[M17] device: 28 AIC（mix(1,2) → 56 AIV）；workspace = 315637568 B（301.0 MB）
+[M17] ---- device GM D2H 回读逐字节核对（含 1.24GiB 专家权重全量）----
+[M17][bytes] x_embed_rows               327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=d7d3a4b0ea88018f268c60360d9516d41fc494a78350e9fb63ad2b3d8a6ec44b
+[M17][bytes] res_zero                   327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=dae4d3dce1bb0a9414f61a65ee07622fa225ec01e6efe6df6e78f9ad5c58480d
+[M17][bytes] gamma1                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d
+[M17][bytes] gamma2                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4
+[M17][bytes] router_w                  2621440 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6
+[M17][bytes] sgate_w                      5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45
+[M17][bytes] experts.gate_up_proj    838860800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b
+[M17][bytes] experts.gate_up_proj.scale   52428800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e
+[M17][bytes] experts.down_proj       419430400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79
+[M17][bytes] experts.down_proj.scale   26214400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8
+[M17][bytes] shared.gate_up            1638400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c9c191f5377ca84bd237a01bcc9acd62e0a8bc055682f32b8dee600fcbbf17fa
+[M17][bytes] shared.gate_up.scale       102400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=0bc8dfe65acca3699e525a743bd5a5e29dd409f104d6ce9efcecda9e5f23e3dd
+[M17][bytes] shared.down                819200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531
+[M17][bytes] shared.down.scale           51200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4
+[M17][bytes] 合计逐字节核对 1342837760 B（1.251 GiB），全部一致 = YES
+[M17] ---- 启动 m17_moe_layer_kernel（mix(1,2)，段序 S1-S10）----
+[M17] kernel 完成：host 墙钟 210.220 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+[M17][dump] workspace (315637568 bytes) → /tmp/m17_accept/ws_layer0_tok1000_m33.bin
+[M17][dump] meta → /tmp/m17_accept/ws_meta_layer0_tok1000_m33.txt（32 段 sha256）
+[M17] ---- host 不变量自检（m=33 topk=10）----
+[M17]   IG 越界计数 diag == 0 (got 0)              PASS
+[M17]   counts 求和 == m*topk (330 vs 330)           PASS
+[M17]   offsets 与 counts 前缀和一致 (bad 0)     PASS
+[M17]   每个槽位 t_e ∈ [0, BASE_M=64] (bad 0)    PASS
+[M17]   topk_ids ∈ [0,E) 且行内唯一 (bad 0)     PASS
+[M17]   perm 按 (expert, token) 分组有序 (bad 0)  PASS
+[M17]   每个 (token, expert) 都在 perm 里出现 (bad 0) PASS
+[M17]   inv_slot 与 perm 自洽 (bad 0)               PASS
+[M17]   x_sorted == gather(x_norm, perm_src) 逐位 (bad 0) PASS
+[M17]   w_tk_packed 低 16 位 == bf16(topk_weights) (bad 0) PASS
+[M17]   logits/权重/输出全体有限 (bad 0)       PASS
+[M17]   topk_weights 行和 ≈ 1 (max |Σ-1| = 7.45e-08) PASS
+[M17]   [报告] topk_weights 区间 [0.0219124, 0.649015]（真实 512 专家 top-10 的期望量级 1e-1..1e-3）
+[M17] ---- MXFP4 权重 nibble 解包探针（cube：A=单位阵 → C[i][n]=dequant(W_e[n][i])）----
+[M17]   解包探针 C[i][n] == host 独立解包（0/16384 不符，0 跳过） PASS
+[M17][dump] probe_c_bf16.bin（163840 B）+ probe_spec.txt
+[M17] ---- 数值摘要 ----
+[M17]   logits[0][top-10 ids] 行 max-shift 后：min=-9.2242 max=0.0000
+[M17]   top-10 ids = 320 188 462 41 74 167 138 444 277 266
+[M17]   moe[0][0..3]  = 0.0527344 -0.00386047 -0.0275879 -0.00469971 (bf16)
+[M17]   moe[0] rms = 0.0181353；y_final[0] rms = 0.491537
+[M17] ================ 结果：host 判据 13 PASS / 0 FAIL（其中不变量 12 条 + cube 解包探针 1 条）================
+[M17]   不变量 12 PASS / 0 FAIL；解包探针 1 PASS / 0 FAIL（--no-probe 时无探针）
+[M17][dump] dump 目录 /tmp/m17_accept（ws_layer0_tok1000_m33.bin + ws_meta_layer0_tok1000_m33.txt + weight_bytecheck.log）
+
+########## layer=0 token=1000 m=64 ##########
+[M17] ================ M29 MoE block 真实权重端到端 ================
+[M17] SHA-256 自检 PASS（"abc" 向量）
+[M17] manifest=m17_moe_real/m17_weight_manifest.txt  model_dir=/workspace/Qwen3.8-Flash-Next-MXFP4  layer=0  token=1000  m=64  stageLimit=8 subLimit=9
+[M17] checkpoint 形状：hidden=2560 inter=640 group=32 E=512 topk=10
+[M17] ---- 从真实 checkpoint pread 权重（字节原样，与 manifest 的 Python sha256 比对）----
+[M17][src] router_w            2621440 B  sha256=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6 == manifest
+[M17][src] sgate_w                5120 B  sha256=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45 == manifest
+[M17][src] gu_packed         838860800 B  sha256=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b == manifest
+[M17][src] gu_scale           52428800 B  sha256=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e == manifest
+[M17][src] dn_packed         419430400 B  sha256=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79 == manifest
+[M17][src] dn_scale           26214400 B  sha256=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8 == manifest
+[M17][src] shd_gate             819200 B  sha256=cc947b2961c7f60beadd71bc5039002481a87772541f4cba35745e0dd5c4bb65 == manifest
+[M17][src] shd_up               819200 B  sha256=d239874f7581e3614be86051a8b9df20ad75deaff8915d61442f02b3c28b15d6 == manifest
+[M17][src] shd_down             819200 B  sha256=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531 == manifest
+[M17][src] shd_gate_scale        51200 B  sha256=f5f74fa7ea0d3e45efc1499e812ab32d64b4075ebc948ebcf41fbd65eded7941 == manifest
+[M17][src] shd_up_scale          51200 B  sha256=6ec21ee39472b16931c3d02218833b69398e4b1b4af7b9592b23412e9079150f == manifest
+[M17][src] shd_down_scale        51200 B  sha256=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4 == manifest
+[M17][src] gamma1                 5120 B  sha256=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d == manifest
+[M17][src] gamma2                 5120 B  sha256=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4 == manifest
+[M17][src] 合计 1342182400 B（1.250 GiB），与 manifest 的 Python 独立 sha256 全部一致 = YES
+[M17] 共享专家 gate|up 行拼接：w [640,1280] → [1280,1280]，scale [640,80] → [1280,80]（权重字节不变）
+[M17][src] x (64 行 embed_tokens[1000..1063)) sha256=39266999a5ca54dfd44beda134c283152db0d352c89708f24b366484c0167cc0
+[M17] device: 28 AIC（mix(1,2) → 56 AIV）；workspace = 315637568 B（301.0 MB）
+[M17] ---- device GM D2H 回读逐字节核对（含 1.24GiB 专家权重全量）----
+[M17][bytes] x_embed_rows               327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=39266999a5ca54dfd44beda134c283152db0d352c89708f24b366484c0167cc0
+[M17][bytes] res_zero                   327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=dae4d3dce1bb0a9414f61a65ee07622fa225ec01e6efe6df6e78f9ad5c58480d
+[M17][bytes] gamma1                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d
+[M17][bytes] gamma2                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4
+[M17][bytes] router_w                  2621440 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6
+[M17][bytes] sgate_w                      5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45
+[M17][bytes] experts.gate_up_proj    838860800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b
+[M17][bytes] experts.gate_up_proj.scale   52428800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e
+[M17][bytes] experts.down_proj       419430400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79
+[M17][bytes] experts.down_proj.scale   26214400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8
+[M17][bytes] shared.gate_up            1638400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c9c191f5377ca84bd237a01bcc9acd62e0a8bc055682f32b8dee600fcbbf17fa
+[M17][bytes] shared.gate_up.scale       102400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=0bc8dfe65acca3699e525a743bd5a5e29dd409f104d6ce9efcecda9e5f23e3dd
+[M17][bytes] shared.down                819200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531
+[M17][bytes] shared.down.scale           51200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4
+[M17][bytes] 合计逐字节核对 1342837760 B（1.251 GiB），全部一致 = YES
+[M17] ---- 启动 m17_moe_layer_kernel（mix(1,2)，段序 S1-S10）----
+[M17] kernel 完成：host 墙钟 13.135 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+[M17][dump] workspace (315637568 bytes) → /tmp/m17_accept/ws_layer0_tok1000_m64.bin
+[M17][dump] meta → /tmp/m17_accept/ws_meta_layer0_tok1000_m64.txt（32 段 sha256）
+[M17] ---- host 不变量自检（m=64 topk=10）----
+[M17]   IG 越界计数 diag == 0 (got 0)              PASS
+[M17]   counts 求和 == m*topk (640 vs 640)           PASS
+[M17]   offsets 与 counts 前缀和一致 (bad 0)     PASS
+[M17]   每个槽位 t_e ∈ [0, BASE_M=64] (bad 0)    PASS
+[M17]   topk_ids ∈ [0,E) 且行内唯一 (bad 0)     PASS
+[M17]   perm 按 (expert, token) 分组有序 (bad 0)  PASS
+[M17]   每个 (token, expert) 都在 perm 里出现 (bad 0) PASS
+[M17]   inv_slot 与 perm 自洽 (bad 0)               PASS
+[M17]   x_sorted == gather(x_norm, perm_src) 逐位 (bad 0) PASS
+[M17]   w_tk_packed 低 16 位 == bf16(topk_weights) (bad 0) PASS
+[M17]   logits/权重/输出全体有限 (bad 0)       PASS
+[M17]   topk_weights 行和 ≈ 1 (max |Σ-1| = 1.08e-07) PASS
+[M17]   [报告] topk_weights 区间 [0.0165506, 0.659781]（真实 512 专家 top-10 的期望量级 1e-1..1e-3）
+[M17] ---- MXFP4 权重 nibble 解包探针（cube：A=单位阵 → C[i][n]=dequant(W_e[n][i])）----
+[M17]   解包探针 C[i][n] == host 独立解包（0/16384 不符，0 跳过） PASS
+[M17][dump] probe_c_bf16.bin（163840 B）+ probe_spec.txt
+[M17] ---- 数值摘要 ----
+[M17]   logits[0][top-10 ids] 行 max-shift 后：min=-9.2242 max=0.0000
+[M17]   top-10 ids = 320 188 462 41 74 167 138 444 277 266
+[M17]   moe[0][0..3]  = 0.0527344 -0.00386047 -0.0275879 -0.00469971 (bf16)
+[M17]   moe[0] rms = 0.0181353；y_final[0] rms = 0.491537
+[M17] ================ 结果：host 判据 13 PASS / 0 FAIL（其中不变量 12 条 + cube 解包探针 1 条）================
+[M17]   不变量 12 PASS / 0 FAIL；解包探针 1 PASS / 0 FAIL（--no-probe 时无探针）
+[M17][dump] dump 目录 /tmp/m17_accept（ws_layer0_tok1000_m64.bin + ws_meta_layer0_tok1000_m64.txt + weight_bytecheck.log）
+
+########## 泛化复核：换一层（layer=8）换 token（2000）——manifest 现生成 ##########
+[ok] 写出 /tmp/m17_L8/manifest_layer8.txt（layer=8，16 条张量记录）
+     512 专家的 packed 权重量 = 1.172 GiB
+[M17] ================ M29 MoE block 真实权重端到端 ================
+[M17] SHA-256 自检 PASS（"abc" 向量）
+[M17] manifest=/tmp/m17_L8/manifest_layer8.txt  model_dir=/workspace/Qwen3.8-Flash-Next-MXFP4  layer=8  token=2000  m=1  stageLimit=8 subLimit=9
+[M17] checkpoint 形状：hidden=2560 inter=640 group=32 E=512 topk=10
+[M17] ---- 从真实 checkpoint pread 权重（字节原样，与 manifest 的 Python sha256 比对）----
+[M17][src] router_w            2621440 B  sha256=dc704ea74fb6f27b27eb9b673f89d9a8944354efa2c60745603e60c34db0bee2 == manifest
+[M17][src] sgate_w                5120 B  sha256=e45c5cbc164fe59b703cf2a70e17f2e0cbd6a5c0352afd142418c4f5c3276904 == manifest
+[M17][src] gu_packed         838860800 B  sha256=80cbaa45af49fc26f92a24a41bdf07db8e6efdb6f116455658c3360a176e3b8b == manifest
+[M17][src] gu_scale           52428800 B  sha256=b865d4e040e56e6226c9e23081a56869d233c6f13ce829d076a30c53d58f7eaa == manifest
+[M17][src] dn_packed         419430400 B  sha256=81d4e11aa6fb6e0e8563cb300c5ca97d398821034bc279c64280d935aa67aee5 == manifest
+[M17][src] dn_scale           26214400 B  sha256=55f1e18455b071621123d882428c24db2ce45601c012581fa1985649f94c8be3 == manifest
+[M17][src] shd_gate             819200 B  sha256=084d1fb91a43cd95a13d33616cd9eb24fc18b54bf2945f7e6d899651a1ca9207 == manifest
+[M17][src] shd_up               819200 B  sha256=3c31d04b7b6ad09824498fa828a5118d32668d458deaf107b14c447d08c30dc9 == manifest
+[M17][src] shd_down             819200 B  sha256=484a7bce1416408bfd30c28a4acda75a6a49693c589b4992fa94b1ed9b41cfbc == manifest
+[M17][src] shd_gate_scale        51200 B  sha256=09756593bb6ee54948cf464bda65b861f9ebe4863ce6a0f204dfe9b144769d96 == manifest
+[M17][src] shd_up_scale          51200 B  sha256=203e0479f800e88dcaa843b581fdd28f1532e789c3d795faddd435a2cfaae5d1 == manifest
+[M17][src] shd_down_scale        51200 B  sha256=2fa331d89f42c7213a93f38f018bb621effe6db8ff9967a0d5f3e5e0d474a4e1 == manifest
+[M17][src] gamma1                 5120 B  sha256=f286fdd71a75703d75c092616e1818c1266b2d81294df91fbb33230cef3387e1 == manifest
+[M17][src] gamma2                 5120 B  sha256=cc1ee119ff4c714ec662ef79f8f667bc7ccfdc092ab57b69b4ed7d80a8ba2bd2 == manifest
+[M17][src] 合计 1342182400 B（1.250 GiB），与 manifest 的 Python 独立 sha256 全部一致 = YES
+[M17] 共享专家 gate|up 行拼接：w [640,1280] → [1280,1280]，scale [640,80] → [1280,80]（权重字节不变）
+[M17][src] x (1 行 embed_tokens[2000..2000)) sha256=cd93d8a392b1754feb6476eb55d01268296120e211f45c5358546bc215ef8bb1
+[M17] device: 28 AIC（mix(1,2) → 56 AIV）；workspace = 315637568 B（301.0 MB）
+[M17] ---- device GM D2H 回读逐字节核对（含 1.24GiB 专家权重全量）----
+[M17][bytes] x_embed_rows               327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=41a270cfe75623697dfd7fe5e9c292f49f90bff75f2938a4c4dee1fb07f12550
+[M17][bytes] res_zero                   327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=dae4d3dce1bb0a9414f61a65ee07622fa225ec01e6efe6df6e78f9ad5c58480d
+[M17][bytes] gamma1                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=f286fdd71a75703d75c092616e1818c1266b2d81294df91fbb33230cef3387e1
+[M17][bytes] gamma2                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=cc1ee119ff4c714ec662ef79f8f667bc7ccfdc092ab57b69b4ed7d80a8ba2bd2
+[M17][bytes] router_w                  2621440 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=dc704ea74fb6f27b27eb9b673f89d9a8944354efa2c60745603e60c34db0bee2
+[M17][bytes] sgate_w                      5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=e45c5cbc164fe59b703cf2a70e17f2e0cbd6a5c0352afd142418c4f5c3276904
+[M17][bytes] experts.gate_up_proj    838860800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=80cbaa45af49fc26f92a24a41bdf07db8e6efdb6f116455658c3360a176e3b8b
+[M17][bytes] experts.gate_up_proj.scale   52428800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=b865d4e040e56e6226c9e23081a56869d233c6f13ce829d076a30c53d58f7eaa
+[M17][bytes] experts.down_proj       419430400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=81d4e11aa6fb6e0e8563cb300c5ca97d398821034bc279c64280d935aa67aee5
+[M17][bytes] experts.down_proj.scale   26214400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=55f1e18455b071621123d882428c24db2ce45601c012581fa1985649f94c8be3
+[M17][bytes] shared.gate_up            1638400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=0c3c29f6814623576af9106ca699ac502954ac00c3d36bbb99a52fab3e73b987
+[M17][bytes] shared.gate_up.scale       102400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=f2e6e9a4d85a8ab91b97dbe383d6195de49a0ed052c0899042d81980eee1d8c5
+[M17][bytes] shared.down                819200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=484a7bce1416408bfd30c28a4acda75a6a49693c589b4992fa94b1ed9b41cfbc
+[M17][bytes] shared.down.scale           51200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=2fa331d89f42c7213a93f38f018bb621effe6db8ff9967a0d5f3e5e0d474a4e1
+[M17][bytes] 合计逐字节核对 1342837760 B（1.251 GiB），全部一致 = YES
+[M17] ---- 启动 m17_moe_layer_kernel（mix(1,2)，段序 S1-S10）----
+[M17] kernel 完成：host 墙钟 1.211 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+[M17][dump] workspace (315637568 bytes) → /tmp/m17_L8/ws_layer8_tok2000_m1.bin
+[M17][dump] meta → /tmp/m17_L8/ws_meta_layer8_tok2000_m1.txt（32 段 sha256）
+[M17] ---- host 不变量自检（m=1 topk=10）----
+[M17]   IG 越界计数 diag == 0 (got 0)              PASS
+[M17]   counts 求和 == m*topk (10 vs 10)             PASS
+[M17]   offsets 与 counts 前缀和一致 (bad 0)     PASS
+[M17]   每个槽位 t_e ∈ [0, BASE_M=64] (bad 0)    PASS
+[M17]   topk_ids ∈ [0,E) 且行内唯一 (bad 0)     PASS
+[M17]   perm 按 (expert, token) 分组有序 (bad 0)  PASS
+[M17]   每个 (token, expert) 都在 perm 里出现 (bad 0) PASS
+[M17]   inv_slot 与 perm 自洽 (bad 0)               PASS
+[M17]   x_sorted == gather(x_norm, perm_src) 逐位 (bad 0) PASS
+[M17]   w_tk_packed 低 16 位 == bf16(topk_weights) (bad 0) PASS
+[M17]   logits/权重/输出全体有限 (bad 0)       PASS
+[M17]   topk_weights 行和 ≈ 1 (max |Σ-1| = 1.49e-08) PASS
+[M17]   [报告] topk_weights 区间 [0.0908067, 0.128895]（真实 512 专家 top-10 的期望量级 1e-1..1e-3）
+[M17] ---- MXFP4 权重 nibble 解包探针（cube：A=单位阵 → C[i][n]=dequant(W_e[n][i])）----
+[M17]   解包探针 C[i][n] == host 独立解包（0/16384 不符，0 跳过） PASS
+[M17][dump] probe_c_bf16.bin（163840 B）+ probe_spec.txt
+[M17] ---- 数值摘要 ----
+[M17]   logits[0][top-10 ids] 行 max-shift 后：min=-1.5259 max=0.0000
+[M17]   top-10 ids = 295 507 143 79 39 124 186 118 251 10
+[M17]   moe[0][0..3]  = -0.00062561 -0.00121307 0.00162506 -0.000324249 (bf16)
+[M17]   moe[0] rms = 0.00312614；y_final[0] rms = 0.456362
+[M17] ================ 结果：host 判据 13 PASS / 0 FAIL（其中不变量 12 条 + cube 解包探针 1 条）================
+[M17]   不变量 12 PASS / 0 FAIL；解包探针 1 PASS / 0 FAIL（--no-probe 时无探针）
+[M17][dump] dump 目录 /tmp/m17_L8（ws_layer8_tok2000_m1.bin + ws_meta_layer8_tok2000_m1.txt + weight_bytecheck.log）
+
+########## 确定性复核：m=1 的整段 workspace 落盘 2 份（批内 1 次 + 抖动块最后一次），sha256 应完全相同（历史轮次为 3 份相同） ##########
+1a0f4883c38d4455701cef9b1d817ccf1a270b77e6e91788445200a0815f51a5  /tmp/m17_accept/ws_layer0_tok1000_m1.bin
+1a0f4883c38d4455701cef9b1d817ccf1a270b77e6e91788445200a0815f51a5  /tmp/m17_jit/ws_layer0_tok1000_m1.bin
+
+########## host 墙钟抖动块（同一二进制、同一命令连续 5 次；tower 规则 12:45）##########
+[M17] kernel 完成：host 墙钟 12.594 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+[M17] kernel 完成：host 墙钟 5.284 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+[M17] kernel 完成：host 墙钟 18.564 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+[M17] kernel 完成：host 墙钟 1.180 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+[M17] kernel 完成：host 墙钟 5.319 ms（含 launch/同步）—— host 墙钟在共享卡上**不构成证据**（抖动范围见 README §7.5），本 mission 不作任何性能断言
+
+########## 参数护栏：--m 越界必须拒绝（docs/17 §4 非空洞性/边界）##########
+[M17][FAIL] --m=65 超出实现包络 [1, M_MAX=64]（BASE_M 单 tile；prefill m>64 未实现，见 README §7.2）
+  --m=65 被拒绝，rc=2（期望 2）

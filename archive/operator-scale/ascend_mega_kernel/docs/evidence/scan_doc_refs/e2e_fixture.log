@@ -1,0 +1,28 @@
+--- 探针[before]：见 docs/20 §3.2 与 docs/20 §5（两条都真实存在）
+$ cd /tmp/m114_e2e && LC_ALL=C python3 docs/scan_doc_refs.py    # 扫描器 = before
+SEC-REF  98-m114-probe.md: docs/20 §3.2
+SEC-REF  98-m114-probe.md: docs/20 §5
+docs scanned=18  doc refs=219 (unresolved=0)  section refs=214 (unresolved=2)
+RESULT: FAIL (0 doc + 2 sec + 0 path out-of-range)
+rc=1
+
+--- 探针[after]：见 docs/20 §3.2 与 docs/20 §5（两条都真实存在）
+$ cd /tmp/m114_e2e && LC_ALL=C python3 docs/scan_doc_refs.py    # 扫描器 = after
+docs scanned=18  doc refs=219 (unresolved=0)  section refs=214 (unresolved=0)
+RESULT: OK (18 files scanned, 219 doc refs, 214 section refs, 347 path refs, 2 allowlisted, 0 out-of-range)
+rc=0
+
+--- 探针[before]：见 docs/20 §99.7（不存在）
+$ cd /tmp/m114_e2e && LC_ALL=C python3 docs/scan_doc_refs.py    # 扫描器 = before
+SEC-REF  98-m114-probe.md: docs/20 §99.7
+docs scanned=18  doc refs=219 (unresolved=0)  section refs=213 (unresolved=1)
+RESULT: FAIL (0 doc + 1 sec + 0 path out-of-range)
+rc=1
+
+--- 探针[after]：见 docs/20 §99.7（不存在）
+$ cd /tmp/m114_e2e && LC_ALL=C python3 docs/scan_doc_refs.py    # 扫描器 = after
+SEC-REF  98-m114-probe.md: docs/20 §99.7
+docs scanned=18  doc refs=219 (unresolved=0)  section refs=213 (unresolved=1)
+RESULT: FAIL (0 doc + 1 sec + 0 path out-of-range)
+rc=1
+

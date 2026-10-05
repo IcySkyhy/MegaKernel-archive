@@ -1,0 +1,108 @@
+=== FFN block re-measure, 2026-08-31, box, RTX 5070 Ti ===
+claim under test: README.md:102  'clock locked 2700): 551 TFLOPS effective'
+binary: nvcc -O3 -arch=sm_120a -DFFN_BLOCK fp4_ffn_block.cu  (nvcc 13.1.115, cutlass 4ca61d06)
+
+############ clock lock 2700 MHz, power 330 W
+2692 MHz, 330.00 W
+--- lock=2700 iterations=10 run 1 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0662 ms
+  g1   1.4492 ms  663.9 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3253 ms
+  g2   0.7113 ms  676.2 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5521 ms   BLOCK 2.5724 ms  561.0 TFLOPS(gemm)
+2692 MHz, 87.91 W, 50
+--- lock=2700 iterations=10 run 2 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0661 ms
+  g1   1.4476 ms  664.6 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3243 ms
+  g2   0.7104 ms  677.2 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5483 ms   BLOCK 2.5707 ms  561.4 TFLOPS(gemm)
+2692 MHz, 88.08 W, 52
+--- lock=2700 iterations=10 run 3 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0660 ms
+  g1   1.4477 ms  664.6 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3271 ms
+  g2   0.7095 ms  678.0 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5503 ms   BLOCK 2.5729 ms  560.9 TFLOPS(gemm)
+2692 MHz, 84.50 W, 55
+--- lock=2700 iterations=300 run 1 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0651 ms
+  g1   1.4684 ms  655.2 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3246 ms
+  g2   0.7114 ms  676.2 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5695 ms   BLOCK 2.5826 ms  558.8 TFLOPS(gemm)
+2685 MHz, 273.99 W, 71
+--- lock=2700 iterations=300 run 2 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0651 ms
+  g1   1.4697 ms  654.6 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3257 ms
+  g2   0.7121 ms  675.5 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5725 ms   BLOCK 2.5838 ms  558.5 TFLOPS(gemm)
+2677 MHz, 285.16 W, 72
+--- lock=2700 iterations=300 run 3 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0651 ms
+  g1   1.4713 ms  653.9 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3241 ms
+  g2   0.7124 ms  675.3 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5729 ms   BLOCK 2.5864 ms  558.0 TFLOPS(gemm)
+2677 MHz, 272.75 W, 73
+############ clock lock 3090 MHz, power 330 W
+3015 MHz, 330.00 W
+--- lock=3090 iterations=10 run 1 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0595 ms
+  g1   1.3853 ms  694.5 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3236 ms
+  g2   0.6837 ms  703.6 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.4522 ms   BLOCK 2.5492 ms  566.1 TFLOPS(gemm)
+3022 MHz, 100.55 W, 50
+--- lock=3090 iterations=10 run 2 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0594 ms
+  g1   1.3874 ms  693.4 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3249 ms
+  g2   0.6830 ms  704.3 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.4547 ms   BLOCK 2.5325 ms  569.8 TFLOPS(gemm)
+3022 MHz, 100.25 W, 50
+--- lock=3090 iterations=10 run 3 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0596 ms
+  g1   1.3856 ms  694.4 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3241 ms
+  g2   0.6803 ms  707.1 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.4496 ms   BLOCK 2.5324 ms  569.8 TFLOPS(gemm)
+3022 MHz, 95.64 W, 49
+--- lock=3090 iterations=300 run 1 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0586 ms
+  g1   1.4542 ms  661.6 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3242 ms
+  g2   0.7227 ms  665.6 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5596 ms   BLOCK 2.5937 ms  556.4 TFLOPS(gemm)
+2752 MHz, 276.38 W, 73
+--- lock=3090 iterations=300 run 2 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0586 ms
+  g1   1.4552 ms  661.1 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3241 ms
+  g2   0.7232 ms  665.2 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5611 ms   BLOCK 2.5956 ms  556.0 TFLOPS(gemm)
+2745 MHz, 278.60 W, 74
+--- lock=3090 iterations=300 run 3 ---
+FFN_BLOCK T=4096 dm=4096 dff=14336
+  rms  0.0585 ms
+  g1   1.4565 ms  660.6 TFLOPS  (gate+up N=28672 K=4096)
+  swi  0.3244 ms
+  g2   0.7247 ms  663.7 TFLOPS  (down    N=4096 K=14336)
+  SUM  2.5642 ms   BLOCK 2.5965 ms  555.8 TFLOPS(gemm)
+2760 MHz, 283.37 W, 56
+=== revert ===
+2760 MHz, 300.00 W
+DONE 2026-08-31T14:14:40-07:00
+EXIT=0

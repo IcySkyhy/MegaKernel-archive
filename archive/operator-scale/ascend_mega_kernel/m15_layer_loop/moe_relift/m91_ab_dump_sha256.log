@@ -1,0 +1,44 @@
+# M91-C 的 A/B dump 逐字节对拍（写法照 M84 留在本目录的那套：两个二进制各 dump 一次，比 sha256）
+# 二进制 ① = 改前（tip 26d644b 原样构建，已拷到 /tmp 供本轮对照）；② = 改后（只改 m15_moe_resources.h 的 6 项定尺）
+# 环境：source /usr/local/Ascend/ascend-toolkit/set_env.sh ; Ascend950PR
+# 说明：① 的 dump 目录 /tmp/m91_dump_base + 日志 /tmp/m91_dump_base_run.log 是本轮实跑产物（不是历史读数）。
+
+$ sha256sum /tmp/m91_base/m15_layer_loop_base
+c6ee3ca0e2164be7603821bba5a6590274cfdc7500457a3756c24c717bf853c8  /tmp/m91_base/m15_layer_loop_base
+rc=0
+
+$ sha256sum m15_layer_loop/build/m15_layer_loop
+c6ee3ca0e2164be7603821bba5a6590274cfdc7500457a3756c24c717bf853c8  m15_layer_loop/build/m15_layer_loop
+rc=0
+
+$ tail -1 /tmp/m91_dump_base_run.log
+[m15] ===== ALL PASS（checks=2068, guards=291, fails=0）=====
+rc=0
+
+$ tail -1 /tmp/m91_dump_new_run.log
+[m15] ===== ALL PASS（checks=2068, guards=291, fails=0）=====
+rc=0
+
+$ ls /tmp/m91_dump_base | wc -l
+1307
+rc=0
+
+$ ls /tmp/m91_dump_new | wc -l
+1307
+rc=0
+
+$ (cd /tmp/m91_dump_base && LC_ALL=C sha256sum * | sort -k2) > /tmp/m91_base_sha.txt
+rc=0
+
+$ (cd /tmp/m91_dump_new && LC_ALL=C sha256sum * | sort -k2) > /tmp/m91_new_sha.txt
+rc=0
+
+$ wc -l /tmp/m91_base_sha.txt /tmp/m91_new_sha.txt
+  1307 /tmp/m91_base_sha.txt
+  1307 /tmp/m91_new_sha.txt
+  2614 total
+rc=0
+
+$ diff /tmp/m91_base_sha.txt /tmp/m91_new_sha.txt
+rc=0
+

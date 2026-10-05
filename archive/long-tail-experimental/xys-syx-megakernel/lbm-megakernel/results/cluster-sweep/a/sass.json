@@ -1,0 +1,44 @@
+{
+  "V2_C0": {
+    "symbol": "_ZN8temporal2v2ILi16ELi8ELi4EEEvPKfPf",
+    "sha256": "c8950a0d7c38fac14644566e99a8e6c24f8d81dc810f35c962aed25a83dced5a",
+    "barrier_instructions": [
+      "/*3090*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */"
+    ],
+    "no_atomics_or_asserts": true
+  },
+  "C2": {
+    "symbol": "_ZN8temporal8z2_dedupEPKfPf",
+    "sha256": "6d50482aaddcaa592fc9f8f2de5183310fad2b5b8cc8a8c9438f13e82438fb3b",
+    "barrier_instructions": [
+      "/*00a0*/                   MEMBAR.ALL.GPU ;                                                   /* 0x0000000000007992 */",
+      "/*00c0*/                   CGAERRBAR ;                                                        /* 0x00000000000075ab */",
+      "/*00d0*/                   UCGABAR_ARV ;                                                      /* 0x00000000000079c7 */",
+      "/*0110*/                   UCGABAR_WAIT ;                                                     /* 0x0000000000007dc7 */",
+      "/*0140*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */",
+      "/*3de0*/                   MEMBAR.ALL.GPU ;                                                   /* 0x0000000000007992 */",
+      "/*3e00*/                   CGAERRBAR ;                                                        /* 0x00000000000075ab */",
+      "/*3e10*/                   UCGABAR_ARV ;                                                      /* 0x00000000000079c7 */",
+      "/*3e50*/                   UCGABAR_WAIT ;                                                     /* 0x0000000000007dc7 */",
+      "/*3e80*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */"
+    ],
+    "no_atomics_or_asserts": true
+  },
+  "C1": {
+    "symbol": "_ZN8temporal7z2_syncEPKfPf",
+    "sha256": "ab5e00ae967e8b103734285fc332eae0bd32b73aebf4a0965b405c3bf3bc7d7c",
+    "barrier_instructions": [
+      "/*0050*/                   MEMBAR.ALL.GPU ;                                                   /* 0x0000000000007992 */",
+      "/*0070*/                   CGAERRBAR ;                                                        /* 0x00000000000075ab */",
+      "/*0080*/                   UCGABAR_ARV ;                                                      /* 0x00000000000079c7 */",
+      "/*00c0*/                   UCGABAR_WAIT ;                                                     /* 0x0000000000007dc7 */",
+      "/*00f0*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */",
+      "/*31a0*/                   MEMBAR.ALL.GPU ;                                                   /* 0x0000000000007992 */",
+      "/*31c0*/                   CGAERRBAR ;                                                        /* 0x00000000000075ab */",
+      "/*31d0*/                   UCGABAR_ARV ;                                                      /* 0x00000000000079c7 */",
+      "/*3210*/                   UCGABAR_WAIT ;                                                     /* 0x0000000000007dc7 */",
+      "/*3240*/                   BAR.SYNC.DEFER_BLOCKING 0x0 ;                                      /* 0x0000000000007b1d */"
+    ],
+    "no_atomics_or_asserts": true
+  }
+}

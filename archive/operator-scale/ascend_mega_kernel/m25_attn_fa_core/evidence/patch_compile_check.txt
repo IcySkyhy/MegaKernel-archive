@@ -1,0 +1,20 @@
+=== M117 p2-1 复核：按挂载点补丁文本贴一次能否编译 ===
+日期: 2026-10-04T10:43:58Z  基准: 6962d956554ea9a50dbd5697621a5bf5319710d7
+
+$ cat /tmp/m117_patchcheck/patchcheck.asc        # 与 evidence/mount_patch.md §2 的 hunk 逐字对应（11 参）
+$ ccec -x asc --npu-arch=dav-3510 -I m15_layer_loop -c /tmp/m117_patchcheck/patchcheck.asc -o /tmp/m117_patchcheck/patchcheck.o
+In file included from /tmp/m117_patchcheck/patchcheck.asc:9:
+m15_layer_loop/m15_hc_layer.h:740:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+                for (uint16_t c = 0; c < NCH_H; ++c) {
+m15_layer_loop/m15_hc_layer.h:766:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+                for (uint16_t c = 0; c < NCH_H; ++c) {
+2 warnings generated.
+rc=0
+
+--- 负向对照：把 11 参里的 witScratch 去掉（= 修之前的 10 参写法）---
+$ ccec ... -c /tmp/m117_patchcheck/patchcheck_old.asc -o /tmp/m117_patchcheck/patchcheck_old.o
+/tmp/m117_patchcheck/patchcheck_old.asc:39:9: error: no matching function for call to 'FaCoreBody'
+1 error generated.
+m15_layer_loop/m15_hc_layer.h:740:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+m15_layer_loop/m15_hc_layer.h:766:42: warning: expected type of ops in vector loop cond is uint16_t. unexpected types may cause errors [-Wcce-compat]
+(上行为错误行；出现 error 即证明修之前那份『可直接用』的文本确实编译不过)

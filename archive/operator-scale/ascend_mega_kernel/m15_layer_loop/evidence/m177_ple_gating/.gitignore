@@ -1,0 +1,10 @@
+# M177 证据目录：只入日志与脚本；挡掉设备/构建产生的 dump 与大文件。
+*.bin
+*.dump
+*.npy
+*.dat
+*.raw
+out/
+dump/
+prof/
+guard.log

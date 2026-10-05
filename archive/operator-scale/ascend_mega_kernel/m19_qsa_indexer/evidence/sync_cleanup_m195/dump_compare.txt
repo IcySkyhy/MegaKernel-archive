@@ -1,0 +1,74 @@
+M195 device dumps: before(/tmp/m195_base) vs after(/tmp/m195_after) -- per-file
+case/dump                              before_sha256[:16]  after_sha256[:16]  same
+A_close_2048_ckout.bin                 f20fb3da5bc566c0  f20fb3da5bc566c0  same
+A_close_2048_cnt.bin                   ebba6bd66545379c  ebba6bd66545379c  same
+A_close_2048_comp.bin                  bb8be67f65c7cfd2  bb8be67f65c7cfd2  same
+A_close_2048_cosg.bin                  23ef822f4c9355f0  23ef822f4c9355f0  same
+A_close_2048_cosq.bin                  2f0a5eb79301fafb  2f0a5eb79301fafb  same
+A_close_2048_kout.bin                  67d115972bbf7926  67d115972bbf7926  same
+A_close_2048_logits.bin                3acc95212dc6eb32  3acc95212dc6eb32  same
+A_close_2048_meta.txt                  f28fdadddcbe1060  f28fdadddcbe1060  same
+A_close_2048_out.bin                   d858fd4f97b8319c  d858fd4f97b8319c  same
+A_close_2048_qk.bin                    4534f44062b9cd21  4534f44062b9cd21  same
+A_close_2048_qout.bin                  3c3ab3a6618ec0e7  3c3ab3a6618ec0e7  same
+A_close_2048_ring.bin                  71e13d39588cd405  71e13d39588cd405  same
+A_close_2048_sing.bin                  0aac22380ef2a00f  0aac22380ef2a00f  same
+A_close_2048_sinq.bin                  5bc49bf1744cb9cc  5bc49bf1744cb9cc  same
+A_close_2048_stats.bin                 c6d596c6e8e20987  88e2864aba8d3e80  DIFF
+A_close_2048_x.bin                     390f45e96d8631f4  390f45e96d8631f4  same
+B_open_2048_ckout.bin                  5341e6b2646979a7  5341e6b2646979a7  same
+B_open_2048_cnt.bin                    ebba6bd66545379c  ebba6bd66545379c  same
+B_open_2048_comp.bin                   8d184ec1fb61eb55  8d184ec1fb61eb55  same
+B_open_2048_cosg.bin                   2e53b5df1a7dc5fa  2e53b5df1a7dc5fa  same
+B_open_2048_cosq.bin                   d5c4ca5068799659  d5c4ca5068799659  same
+B_open_2048_kout.bin                   3281c2a951501920  3281c2a951501920  same
+B_open_2048_logits.bin                 bde486482039fb96  bde486482039fb96  same
+B_open_2048_meta.txt                   fefa67163387c0a4  fefa67163387c0a4  same
+B_open_2048_out.bin                    99567130e5594878  99567130e5594878  same
+B_open_2048_qk.bin                     44c44adc2eb832a2  44c44adc2eb832a2  same
+B_open_2048_qout.bin                   6de3d3fda3700be8  6de3d3fda3700be8  same
+B_open_2048_ring.bin                   7423e9d4aa8c3cd5  7423e9d4aa8c3cd5  same
+B_open_2048_sing.bin                   59ff872a36b410de  59ff872a36b410de  same
+B_open_2048_sinq.bin                   cf7531918f896fd0  cf7531918f896fd0  same
+B_open_2048_stats.bin                  cf0577152b85e7cc  e284548522ffa3dd  DIFF
+B_open_2048_x.bin                      1087dbd43c6a367c  1087dbd43c6a367c  same
+C_small_256_ckout.bin                  a7c36786326eb7a7  a7c36786326eb7a7  same
+C_small_256_cnt.bin                    ebba6bd66545379c  ebba6bd66545379c  same
+C_small_256_comp.bin                   3666c47d24dada52  3666c47d24dada52  same
+C_small_256_cosg.bin                   ca20d96f71aebcf4  ca20d96f71aebcf4  same
+C_small_256_cosq.bin                   c83f07f0646bcb51  c83f07f0646bcb51  same
+C_small_256_kout.bin                   04db279a63c0b771  04db279a63c0b771  same
+C_small_256_logits.bin                 a2a238071a2f4850  a2a238071a2f4850  same
+C_small_256_meta.txt                   ae84068d88ce8096  ae84068d88ce8096  same
+C_small_256_out.bin                    3580f7c629022cc5  3580f7c629022cc5  same
+C_small_256_qk.bin                     7290789d792a9b98  7290789d792a9b98  same
+C_small_256_qout.bin                   7eb7a1eeffd1139b  7eb7a1eeffd1139b  same
+C_small_256_ring.bin                   29b830015709f16d  29b830015709f16d  same
+C_small_256_sing.bin                   31b42b8d4a97430e  31b42b8d4a97430e  same
+C_small_256_sinq.bin                   94d293344323472a  94d293344323472a  same
+C_small_256_stats.bin                  d4c415a3b7f5b13f  8a85ae31a7220c5e  DIFF
+C_small_256_x.bin                      24fc6a0f9fbafd2b  24fc6a0f9fbafd2b  same
+D_max_65536_ckout.bin                  bec26d52cbe1cc8d  bec26d52cbe1cc8d  same
+D_max_65536_cnt.bin                    ebba6bd66545379c  ebba6bd66545379c  same
+D_max_65536_comp.bin                   845eab7f90005707  845eab7f90005707  same
+D_max_65536_cosg.bin                   7eeab731109ef4ba  7eeab731109ef4ba  same
+D_max_65536_cosq.bin                   a776b33b690a209d  a776b33b690a209d  same
+D_max_65536_kout.bin                   30cc904bac8daae0  30cc904bac8daae0  same
+D_max_65536_logits.bin                 ddbcc45192a0335b  ddbcc45192a0335b  same
+D_max_65536_meta.txt                   64931154dbadfb58  64931154dbadfb58  same
+D_max_65536_out.bin                    bd1b16c97bdcdb39  bd1b16c97bdcdb39  same
+D_max_65536_qk.bin                     18e62a78b801f91a  18e62a78b801f91a  same
+D_max_65536_qout.bin                   54401ccbef416bfe  54401ccbef416bfe  same
+D_max_65536_ring.bin                   3f361330d695b804  3f361330d695b804  same
+D_max_65536_sing.bin                   f333d8e1a6bf3b7a  f333d8e1a6bf3b7a  same
+D_max_65536_sinq.bin                   1ac8033015da9019  1ac8033015da9019  same
+D_max_65536_stats.bin                  d35c6496332d0df6  6100927d4146d423  DIFF
+D_max_65536_x.bin                      1dbb51b3a3d3c0c4  1dbb51b3a3d3c0c4  same
+
+all non-stats dumps bit-identical: True
+
+=== *_stats.bin: only fields 23..31 differ (documented-reserved / uninitialized UB_TRACE tail) ===
+A_close_2048   differing int32 idx count=288  fields=[23, 24, 25, 26, 27, 28, 29, 30, 31]  fields[0..22] identical=True
+B_open_2048    differing int32 idx count=288  fields=[23, 24, 25, 26, 27, 28, 29, 30, 31]  fields[0..22] identical=True
+C_small_256    differing int32 idx count=288  fields=[23, 24, 25, 26, 27, 28, 29, 30, 31]  fields[0..22] identical=True
+D_max_65536    differing int32 idx count=288  fields=[23, 24, 25, 26, 27, 28, 29, 30, 31]  fields[0..22] identical=True

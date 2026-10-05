@@ -1,0 +1,379 @@
+{
+  "format_version": 1,
+  "name": "layer0_e0-8",
+  "kind": "moe_weight_slice",
+  "weights_only": true,
+  "layer": 0,
+  "expert_offset": 0,
+  "num_experts": 8,
+  "hidden": 2560,
+  "moe_intermediate": 640,
+  "shared_expert_intermediate": 640,
+  "group_size": 32,
+  "quantization": {
+    "format": "mxfp4-pack-quantized-e8m0",
+    "weight": "e2m1 nibbles, lohi byte order, group 32 along K",
+    "scale": "e8m0 bias-127, scale = 2**ceil(log2(amax/6)) per group",
+    "note": "byte-verbatim slice of the checkpoint; no requantization"
+  },
+  "source": {
+    "model_dir": "/workspace/Qwen3.8-Flash-Next-MXFP4",
+    "model_type": "qwen4_exp",
+    "extracted_utc": "2026-09-26T05:24:24.255312+00:00",
+    "tensors": {
+      "experts.gate_up_proj.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.experts.gate_up_proj",
+        "shard": "model-00002-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          512,
+          1280,
+          1280
+        ],
+        "slice": [
+          0,
+          8
+        ]
+      },
+      "experts.gate_up_proj.weight_scale.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.experts.gate_up_proj.weight_scale",
+        "shard": "model-00002-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          512,
+          1280,
+          80
+        ],
+        "slice": [
+          0,
+          8
+        ]
+      },
+      "experts.down_proj.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.experts.down_proj",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          512,
+          2560,
+          320
+        ],
+        "slice": [
+          0,
+          8
+        ]
+      },
+      "experts.down_proj.weight_scale.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.experts.down_proj.weight_scale",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          512,
+          2560,
+          20
+        ],
+        "slice": [
+          0,
+          8
+        ]
+      },
+      "router_weight.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.gate.weight",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "BF16",
+        "source_shape": [
+          512,
+          2560
+        ],
+        "slice": [
+          0,
+          8
+        ]
+      },
+      "shared_expert_gate_weight.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.shared_expert_gate.weight",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "BF16",
+        "source_shape": [
+          1,
+          2560
+        ],
+        "slice": null
+      },
+      "shared_expert.gate_proj.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.shared_expert.gate_proj.weight",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          640,
+          1280
+        ],
+        "slice": null
+      },
+      "shared_expert.gate_proj.weight_scale.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.shared_expert.gate_proj.weight_scale",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          640,
+          80
+        ],
+        "slice": null
+      },
+      "shared_expert.up_proj.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.shared_expert.up_proj.weight",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          640,
+          1280
+        ],
+        "slice": null
+      },
+      "shared_expert.up_proj.weight_scale.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.shared_expert.up_proj.weight_scale",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          640,
+          80
+        ],
+        "slice": null
+      },
+      "shared_expert.down_proj.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.shared_expert.down_proj.weight",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          2560,
+          320
+        ],
+        "slice": null
+      },
+      "shared_expert.down_proj.weight_scale.bin": {
+        "checkpoint_tensor": "model.language_model.layers.0.mlp.shared_expert.down_proj.weight_scale",
+        "shard": "model-00003-of-00131.safetensors",
+        "source_dtype": "U8",
+        "source_shape": [
+          2560,
+          20
+        ],
+        "slice": null
+      }
+    }
+  },
+  "files": [
+    {
+      "tensor": "experts.gate_up_proj.bin",
+      "shape": [
+        8,
+        1280,
+        1280
+      ],
+      "dtype": "uint8",
+      "strides": [
+        1638400,
+        1280,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 13107200,
+      "kind": "input",
+      "description": "MXFP4 packed weights [E, N, K//2], lohi nibbles along K"
+    },
+    {
+      "tensor": "experts.gate_up_proj.weight_scale.bin",
+      "shape": [
+        8,
+        1280,
+        80
+      ],
+      "dtype": "uint8",
+      "strides": [
+        102400,
+        80,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 819200,
+      "kind": "input",
+      "description": "E8M0 group scales [E, N, K//32], bias 127, group 32 along K"
+    },
+    {
+      "tensor": "experts.down_proj.bin",
+      "shape": [
+        8,
+        2560,
+        320
+      ],
+      "dtype": "uint8",
+      "strides": [
+        819200,
+        320,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 6553600,
+      "kind": "input",
+      "description": "MXFP4 packed weights [E, N, K//2], lohi nibbles along K"
+    },
+    {
+      "tensor": "experts.down_proj.weight_scale.bin",
+      "shape": [
+        8,
+        2560,
+        20
+      ],
+      "dtype": "uint8",
+      "strides": [
+        51200,
+        20,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 409600,
+      "kind": "input",
+      "description": "E8M0 group scales [E, N, K//32], bias 127, group 32 along K"
+    },
+    {
+      "tensor": "router_weight.bin",
+      "shape": [
+        8,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 40960,
+      "kind": "input",
+      "description": "router gate weight [num_experts, hidden], bf16"
+    },
+    {
+      "tensor": "shared_expert_gate_weight.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "kind": "input",
+      "description": "shared expert gate weight [1, hidden], bf16"
+    },
+    {
+      "tensor": "shared_expert.gate_proj.bin",
+      "shape": [
+        640,
+        1280
+      ],
+      "dtype": "uint8",
+      "strides": [
+        1280,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 819200,
+      "kind": "input",
+      "description": "MXFP4 packed weights [N, K//2], lohi nibbles along K"
+    },
+    {
+      "tensor": "shared_expert.gate_proj.weight_scale.bin",
+      "shape": [
+        640,
+        80
+      ],
+      "dtype": "uint8",
+      "strides": [
+        80,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 51200,
+      "kind": "input",
+      "description": "E8M0 group scales [N, K//32], bias 127, group 32 along K"
+    },
+    {
+      "tensor": "shared_expert.up_proj.bin",
+      "shape": [
+        640,
+        1280
+      ],
+      "dtype": "uint8",
+      "strides": [
+        1280,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 819200,
+      "kind": "input",
+      "description": "MXFP4 packed weights [N, K//2], lohi nibbles along K"
+    },
+    {
+      "tensor": "shared_expert.up_proj.weight_scale.bin",
+      "shape": [
+        640,
+        80
+      ],
+      "dtype": "uint8",
+      "strides": [
+        80,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 51200,
+      "kind": "input",
+      "description": "E8M0 group scales [N, K//32], bias 127, group 32 along K"
+    },
+    {
+      "tensor": "shared_expert.down_proj.bin",
+      "shape": [
+        2560,
+        320
+      ],
+      "dtype": "uint8",
+      "strides": [
+        320,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 819200,
+      "kind": "input",
+      "description": "MXFP4 packed weights [N, K//2], lohi nibbles along K"
+    },
+    {
+      "tensor": "shared_expert.down_proj.weight_scale.bin",
+      "shape": [
+        2560,
+        20
+      ],
+      "dtype": "uint8",
+      "strides": [
+        20,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 51200,
+      "kind": "input",
+      "description": "E8M0 group scales [N, K//32], bias 127, group 32 along K"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+DEVICE name=NVIDIA GeForce RTX 5090 cc=12.0 sms=170
+RESOURCE name=D-V2-256 threads=256 registers=56 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+CLUSTER runtime_cluster=0 dim=0x0x0 size=0 policy=None active_clusters_device=340 potential_cluster_size=8
+LBM_allocateGrid: allocated 185.2 MByte
+LBM_showGridStatistics:
+	nObstacleCells:   99248 nAccelCells:   26912 nFluidCells: 2033840
+	minRho:   0.9347 maxRho:   1.0662 mass: 2.160000e+06
+	minU: 7.450572e-09 maxU: 2.634733e-02
+
+DONE physical_steps=100 kernel_launches=50 final_buffer=A patterned=0
+Collecting data...
+Generating '/mnt2/xys-syx/Project/megakernel/lbm-megakernel/results/cluster-sweep/a2/tmp/nsys-report-ad19.qdstrm'
+[1/1] [0%                          ] D-V2-256-nsys.nsys-rep[1/1] [0%                          ] D-V2-256-nsys.nsys-rep[1/1] [=======39%                  ] D-V2-256-nsys.nsys-rep[1/1] [==================75%       ] D-V2-256-nsys.nsys-rep[1/1] [=====================87%    ] D-V2-256-nsys.nsys-rep[1/1] [========================99% ] D-V2-256-nsys.nsys-rep[1/1] [========================100%] D-V2-256-nsys.nsys-rep[1/1] [========================100%] D-V2-256-nsys.nsys-rep
+Generated:
+	/mnt2/xys-syx/Project/megakernel/lbm-megakernel/results/cluster-sweep/a2/D-V2-256-nsys.nsys-rep

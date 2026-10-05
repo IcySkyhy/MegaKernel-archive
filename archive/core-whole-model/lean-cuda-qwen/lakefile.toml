@@ -1,0 +1,15 @@
+name = "lean-cuda-qwen"
+version = "0.1.0"
+description = "Qwen inference and training kernels for the experimental Lean CUDA backend"
+license = "Apache-2.0"
+defaultTargets = ["LeanCudaQwen"]
+
+[[require]]
+name = "LeanTest"
+git = "https://github.com/cpehle/lean_test.git"
+rev = "fbfea9210f4f2eb1fc7c3b9e3c86f57c5dfa6e28"
+
+[[lean_lib]]
+name = "LeanCudaQwen"
+srcDir = "lib"
+globs = ["LeanCudaQwen", "LeanCudaQwen.+"]

@@ -1,0 +1,263 @@
+M75 环境识别取证 —— selfcheck 的失败信号能否区分「.bin 真漂移」与「换了数值环境」
+date: 2026-09-27T00:37:25Z   host: Linux 6.6.0-132.0.0.111.oe2403sp3.x86_64
+tree: tools/golden @ 569113d（M75 分支基点）+ M75 改动（selfcheck.py / README.md / evidence/）
+note: 行为实验全部在 /tmp 副本里做；已发布 data/**.bin 与 m1/m33 归档读数未改动。
+note: 同一批读数首测于 2026-09-26；本转录为 M75 交卷前复跑（逐项读数相同）。
+
+==============================================================
+[0] 建 /tmp 干净树 + 注入 1 个 bit 的变异副本
+==============================================================
+$ rm -rf /tmp/m75_ev && mkdir -p /tmp/m75_ev
+$ (cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-75 && git archive 569113d | tar -x -C /tmp/m75_ev)
+$ cp /workspace/ascend_mega_kernel/.tower/worktrees/wt-75/tools/golden/selfcheck.py /tmp/m75_ev/tools/golden/selfcheck.py
+$ /usr/local/python3.12.13/bin/python3.12 -c "from pathlib import Path; p=Path(\"/tmp/m75_ev/tools/golden/data/m33/routed_output.bin\"); b=bytearray(p.read_bytes()); b[1]^=1; p.write_bytes(bytes(b))"
+  -> 变异：m33/routed_output.bin 的 byte[1] 低 1 bit 翻转（其余全部不动）
+  -> rc=0
+
+==============================================================
+[1] pin 的解释器（canonical），完整默认组：env 头 + 末行 + rc
+    （判据体与 selfcheck_run_m46.log 同，本 mission 未改判据，故此处只留首尾）
+==============================================================
+$ cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-75 && /usr/local/python3.12.13/bin/python3.12 tools/golden/selfcheck.py
+env: interpreter=/usr/local/python3.12.13/bin/python3.12
+env: numpy=2.5.1 blas=scipy-openblas 0.3.33.112.0
+  [ENV] canonical numeric environment: numpy 2.5.1 / scipy-openblas 0.3.33.112.0 (README pins numpy 2.5.1 / scipy-openblas via /usr/local/python3.12.13/bin/python3.12)
+   [... 完整输出 670 行，可用上面那条命令原样重放 ...]
+  [GUARD] qaware default rule is floor = the official ops-nn sequence (harness invariant)
+all selfchecks passed — 644 判定项 + 6 guard 项
+rc=0
+
+==============================================================
+[2] 仓里基线 venv（non-canonical）：连 3 段完整输出（env 头 / 失败行 / stderr 说明）
+==============================================================
+$ cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-75 && /workspace/venvs/baseline/bin/python tools/golden/selfcheck.py --no-regen --groups m33
+env: interpreter=/workspace/venvs/baseline/bin/python
+env: numpy=1.26.4 blas=openblas64 0.3.23.dev
+  [ENV] non-canonical numeric environment: numpy 1.26.4 != 2.5.1; BLAS openblas64 != scipy-openblas
+  [ENV] README pins numpy 2.5.1 / scipy-openblas via /usr/local/python3.12.13/bin/python3.12 for the frozen `.bin` comparisons.
+  [ENV] those comparisons are bit-exact, so a FAIL here is environment-ambiguous rather than a `.bin` drift: measured 2026-09-26 on numpy 1.26.4 / openblas64 0.3.23.dev, m33 flipped 17/84480 `routed_output` codes (max 2 ulp), 15/84480 `shared_output` (max 4 ulp), 11/84480 `moe_output` (max 2 ulp).
+  [ENV] a failing judgement item will exit 3 instead of 1; re-run with /usr/local/python3.12.13/bin/python3.12, or pass --env-ok to grade this stack as authoritative (then a failure exits 1).
+check 1: e2m1 encode/decode
+  [PASS] all 16 e2m1 codes round-trip
+  [PASS] e2m1 levels are 0,.5,1,1.5,2,3,4,6 with sign
+  [PASS] encode picks a nearest level everywhere
+  [PASS] -0.0 encodes to sign-bit code 0x8
+check 2: e8m0 scales (weight-packing ceil rule)
+  [PASS] e8m0 encode/decode round trip
+  [PASS] scale=2**ceil(log2(amax/6)) keeps max|q|<=6
+check 3: activation quantization — official OCP/floor sequence vs legacy ceil
+  [PASS] official finite path: byte = clip(bf16 exponent field of amax - 2, 0, 254) (= 127 + floor(log2 amax) - 2)
+  [PASS] legacy ceil byte = 127 + ceil(log2(amax/6))
+  [PASS] scale_rule_bytes dispatches both rules
+  [PASS] official == legacy while amax in [4*2^k, 6*2^k]
+  [PASS] official = legacy - 1 on amax in (6*2^k, 8*2^k] (the legacy rule is the deviating one)
+  [PASS] floor rule: |q-v| <= analytic per-element bound (0 violations)
+  [PASS] floor rule: bound is tight (utilization 1.00 > 0.5)
+  [PASS] ceil rule: |q-v| <= analytic per-element bound (0 violations)
+  [PASS] ceil rule: bound is tight (utilization 1.00 > 0.5)
+  [PASS] CAST_ROUND path: ties away from zero, saturating at ±6
+  [PASS] =6 saturation uses e2m1 code 7 (=6.0)
+  [PASS] official corner: a group whose field clamps to emax gets byte 0 + all-zero codes (halfScale 0, :402-403/:414)
+  [PASS] official corner: non-finite group -> E8M0 NaN byte 0xFF (:406 / docs/13 §4.2)
+  [PASS] official corner: non-finite group -> Mul(±Inf, NaN) = NaN -> cast -> all-zero codes (:413, docs/13 §6)
+  [note] device side of the :413 halfScale override (non-finite group -> halfScale 0x7f81, then Mul(±Inf, NaN) = NaN -> cast -> all-zero codes). Counts per kernel, because a case-sensitive grep is NOT a valid locator here:
+        (a) grep 'Duplicate(nanRegTensor, NAN_CUSTOMIZATION)' = {'m2_mxfp4_quant/m2_mxfp4_quant.asc': 1, 'm5_swiglu_quant/m5_swiglu_quant.asc': 1, 'm13_moe_layer/m13_moe_layer.asc': 1}  <- 真正的设备侧覆盖点，在 MxQuantComputeScale 内
+        (b) grep 'NAN_CUSTOMIZATION' = {'m2_mxfp4_quant/m2_mxfp4_quant.asc': 3, 'm5_swiglu_quant/m5_swiglu_quant.asc': 3, 'm13_moe_layer/m13_moe_layer.asc': 3}
+        (c) grep '0x7F81'（大写）= {'m2_mxfp4_quant/m2_mxfp4_quant.asc': 3, 'm5_swiglu_quant/m5_swiglu_quant.asc': 3, 'm13_moe_layer/m13_moe_layer.asc': 3}：这些命中都**不在设备路径上**（设备侧的常量是**小写** `0x7f81`，见下面那栏 —— 大小写敏感的 `0x7F81` 不匹配它，故 (c) 数不到任何设备侧覆盖点）
+        (c') grep '0x7f81'（小写）= {'m2_mxfp4_quant/m2_mxfp4_quant.asc': 1, 'm5_swiglu_quant/m5_swiglu_quant.asc': 1, 'm13_moe_layer/m13_moe_layer.asc': 1}：设备侧 `constexpr uint16_t NAN_CUSTOMIZATION = 0x7f81;`（定义处），被 (a) 消费
+        -1 = 文件不存在。 As of 2026-09-26 (M32) reference and device agree on the Inf corner; see m13_moe_layer/README §5.4 and docs/13 §6.
+check 4: mxfp4 pack/unpack round trip
+  [PASS] amax=1.5 group encodes e8m0 byte 125 (2^-2)
+  [PASS] lohi: byte0 = code(w0/s)=0 | code(w1/s)=4 <<4
+  [PASS] lohi: byte1 = code(w2/s)=6 | code(w3/s)=7 <<4
+  [PASS] known-answer unpack exact
+  [PASS] dequant fixed point: unpack(pack(unpack(pack(w)))) == unpack(pack(w)) [640x2560]
+  [PASS] dequant == e2m1(level) * e8m0(scale) [640x2560]
+  [PASS] dequant error bounded [640x2560] max|err|=0.02621
+  [PASS] dequant fixed point: unpack(pack(unpack(pack(w)))) == unpack(pack(w)) [2560x640]
+  [PASS] dequant == e2m1(level) * e8m0(scale) [2560x640]
+  [PASS] dequant error bounded [2560x640] max|err|=0.02678
+  [PASS] dequant fixed point: unpack(pack(unpack(pack(w)))) == unpack(pack(w)) [1280x2560]
+  [PASS] dequant == e2m1(level) * e8m0(scale) [1280x2560]
+  [PASS] dequant error bounded [1280x2560] max|err|=0.02866
+  [PASS] dequant fixed point: unpack(pack(unpack(pack(w)))) == unpack(pack(w)) [17x32]
+  [PASS] dequant == e2m1(level) * e8m0(scale) [17x32]
+  [PASS] dequant error bounded [17x32] max|err|=0.01431
+  [PASS] quantize_activations(floor) layout [rows, K/2] / [rows, K/32]
+  [PASS] quantize_activations(floor) dequant == e2m1(level) * e8m0(scale)
+  [PASS] quantize_activations(floor) is a value fixed point
+  [PASS] quantize_activations(ceil) layout [rows, K/2] / [rows, K/32]
+  [PASS] quantize_activations(ceil) dequant == e2m1(level) * e8m0(scale)
+  [PASS] quantize_activations(ceil) is a value fixed point
+check 5: bf16 RNE conversion
+  [PASS] f32->bf16 is idempotent (RNE)
+  [PASS] bf16 round trip stable
+  [PASS] inf/zero preserved through bf16 conversion
+check 6: agreement with m13_moe_layer/check_ref.py quantizers
+  [PASS] floor (official OCP sequence) == m13 quant_mxfp4_hw byte-for-byte (8192+512 bytes, bf16-grid activations)
+  [PASS] legacy ceil rule == m13 quant_mxfp4_f32 byte-for-byte (8192+512 bytes)
+check 7: dataset 'm33' (m=33, E=4, top_k=2)
+  [PASS] /workspace/ascend_mega_kernel/.tower/worktrees/wt-75/tools/golden/data/m33 exists
+  [PASS] m33: tensor set / dtypes / shapes as declared (extra=[], missing=[])
+  [PASS] m33: real model K/N kept (hidden=2560, inter=640, group=32)
+  [PASS] m33/x.bin size matches
+  [PASS] m33/router_weight.bin size matches
+  [PASS] m33/shared_expert_gate_weight.bin size matches
+  [PASS] m33/x_res.bin size matches
+  [PASS] m33/gamma1.bin size matches
+  [PASS] m33/gamma2.bin size matches
+  [PASS] m33/experts.gate_up_proj.bin size matches
+  [PASS] m33/experts.gate_up_proj.weight_scale.bin size matches
+  [PASS] m33/experts.down_proj.bin size matches
+  [PASS] m33/experts.down_proj.weight_scale.bin size matches
+  [PASS] m33/shared_expert.gate_proj.bin size matches
+  [PASS] m33/shared_expert.gate_proj.weight_scale.bin size matches
+  [PASS] m33/shared_expert.up_proj.bin size matches
+  [PASS] m33/shared_expert.up_proj.weight_scale.bin size matches
+  [PASS] m33/shared_expert.down_proj.bin size matches
+  [PASS] m33/shared_expert.down_proj.weight_scale.bin size matches
+  [PASS] m33/router_logits.bin size matches
+  [PASS] m33/shared_gate_logits.bin size matches
+  [PASS] m33/topk_ids.bin size matches
+  [PASS] m33/topk_weights.bin size matches
+  [PASS] m33/perm_src_token.bin size matches
+  [PASS] m33/perm_expert.bin size matches
+  [PASS] m33/expert_token_counts.bin size matches
+  [PASS] m33/x_sorted.bin size matches
+  [PASS] m33/routed_output.bin size matches
+  [PASS] m33/shared_output.bin size matches
+  [PASS] m33/moe_output.bin size matches
+  [PASS] m33/x_norm1.bin size matches
+  [PASS] m33/res1.bin size matches
+  [PASS] m33/y_final.bin size matches
+  [PASS] m33/res2.bin size matches
+  [GUARD] m33: manifest format_version == 2 (generator/harness invariant)
+  [SKIP] m33: regeneration skipped (--no-regen); sizes + sha256 only
+  [PASS] m33: recomputed 'router_logits' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'topk_ids' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'topk_weights' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'perm_src_token' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'perm_expert' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'expert_token_counts' matches stored bin bit-exactly
+  [PASS] m33: recomputed 'x_sorted' matches stored bin bit-exactly
+  [FAIL] m33: recomputed 'routed_output' matches stored bin bit-exactly
+selfcheck failed: m33: recomputed 'routed_output' matches stored bin bit-exactly
+  [ENV] the failure above is environment-ambiguous (rc=3): this stack is not the pinned one (numpy 1.26.4 != 2.5.1; BLAS openblas64 != scipy-openblas) and the frozen `.bin` comparisons are bit-exact.
+  [ENV] re-run with /usr/local/python3.12.13/bin/python3.12, or pass --env-ok to grade this stack as authoritative (then a failure exits 1).
+rc=3
+
+==============================================================
+[3] 基线 venv + --env-ok：显式认这个栈 ⇒ 判定项失败退 1
+==============================================================
+$ cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-75 && /workspace/venvs/baseline/bin/python tools/golden/selfcheck.py --no-regen --groups m33 --env-ok
+env: interpreter=/workspace/venvs/baseline/bin/python
+env: numpy=1.26.4 blas=openblas64 0.3.23.dev
+  [ENV] --env-ok: this run declares its numeric stack authoritative; a failing judgement item will exit 1
+   [... 与 [2] 同的判据体 ...]
+  [PASS] m33: recomputed 'x_sorted' matches stored bin bit-exactly
+  [FAIL] m33: recomputed 'routed_output' matches stored bin bit-exactly
+selfcheck failed: m33: recomputed 'routed_output' matches stored bin bit-exactly
+rc=1
+
+==============================================================
+[4] 负向对照：注入 1 bit 真漂移，在 pin 的栈上跑（应给 rc=1，不被环境识别豁免）
+==============================================================
+$ cd /tmp/m75_ev && /usr/local/python3.12.13/bin/python3.12 tools/golden/selfcheck.py --no-regen --groups m33
+env: interpreter=/usr/local/python3.12.13/bin/python3.12
+env: numpy=2.5.1 blas=scipy-openblas 0.3.33.112.0
+  [ENV] canonical numeric environment: numpy 2.5.1 / scipy-openblas 0.3.33.112.0 (README pins numpy 2.5.1 / scipy-openblas via /usr/local/python3.12.13/bin/python3.12)
+   [... 判据体 ...]
+  [PASS] m33: recomputed 'x_sorted' matches stored bin bit-exactly
+  [FAIL] m33: recomputed 'routed_output' matches stored bin bit-exactly
+selfcheck failed: m33: recomputed 'routed_output' matches stored bin bit-exactly
+rc=1
+
+==============================================================
+[5] 同一份注入漂移，在基线 venv 上跑（环境不明 ⇒ 退回 rc=3，明说不可归因）
+==============================================================
+$ cd /tmp/m75_ev && /workspace/venvs/baseline/bin/python tools/golden/selfcheck.py --no-regen --groups m33
+env: interpreter=/workspace/venvs/baseline/bin/python
+env: numpy=1.26.4 blas=openblas64 0.3.23.dev
+  [ENV] non-canonical numeric environment: numpy 1.26.4 != 2.5.1; BLAS openblas64 != scipy-openblas
+   [... 判据体 ...]
+selfcheck failed: m33: recomputed 'routed_output' matches stored bin bit-exactly
+  [ENV] the failure above is environment-ambiguous (rc=3): this stack is not the pinned one (numpy 1.26.4 != 2.5.1; BLAS openblas64 != scipy-openblas) and the frozen `.bin` comparisons are bit-exact.
+  [ENV] re-run with /usr/local/python3.12.13/bin/python3.12, or pass --env-ok to grade this stack as authoritative (then a failure exits 1).
+rc=3
+
+==============================================================
+[6] 用法错误（未知 --groups 值）在基线 venv 上：仍是 rc=1，不被误标成环境问题
+==============================================================
+$ cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-75 && /workspace/venvs/baseline/bin/python tools/golden/selfcheck.py --groups nope
+unknown group 'nope'; available ['m1', 'm33', 'real']
+rc=1
+
+==============================================================
+[7] 逐元素读数：bf16 码漂移 + qaware measured.max_abs 容差（同一份 data，只换解释器）
+    脚本：tools/golden/evidence/numeric_env_probe.py（只读；判据同 selfcheck.py 的两类）
+==============================================================
+$ cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-75 && /usr/local/python3.12.13/bin/python3.12 tools/golden/evidence/numeric_env_probe.py
+interpreter /usr/local/python3.12.13/bin/python3.12
+numpy 2.5.1
+blas scipy-openblas 0.3.33.112.0
+  m1/routed_output: codes differing 0/2560 max code delta 0
+  m1/shared_output: codes differing 0/2560 max code delta 0
+  m1/moe_output: codes differing 0/2560 max code delta 0
+  m33/routed_output: codes differing 0/84480 max code delta 0
+  m33/shared_output: codes differing 0/84480 max code delta 0
+  m33/moe_output: codes differing 0/84480 max code delta 0
+  m1/qaware/ceil routed_output: stored 0.624189794 recomputed 0.624189794 |d| 0.000e+00 ok
+  m1/qaware/ceil shared_output: stored 0.644997656 recomputed 0.644997656 |d| 0.000e+00 ok
+  m1/qaware/ceil moe_output: stored 0.850142121 recomputed 0.850142121 |d| 0.000e+00 ok
+  m1/qaware/ceil y_final: stored 0.6796875 recomputed 0.6796875 |d| 0.000e+00 ok
+  m1/qaware/ceil res2: stored 0.8515625 recomputed 0.8515625 |d| 0.000e+00 ok
+  m1/qaware/floor routed_output: stored 0.604351446 recomputed 0.604351446 |d| 0.000e+00 ok
+  m1/qaware/floor shared_output: stored 0.62667501 recomputed 0.62667501 |d| 0.000e+00 ok
+  m1/qaware/floor moe_output: stored 0.762910113 recomputed 0.762910113 |d| 0.000e+00 ok
+  m1/qaware/floor y_final: stored 0.703125 recomputed 0.703125 |d| 0.000e+00 ok
+  m1/qaware/floor res2: stored 0.762695312 recomputed 0.762695312 |d| 0.000e+00 ok
+  m33/qaware/ceil routed_output: stored 0.99814415 recomputed 0.99814415 |d| 0.000e+00 ok
+  m33/qaware/ceil shared_output: stored 0.831953943 recomputed 0.831953943 |d| 0.000e+00 ok
+  m33/qaware/ceil moe_output: stored 1.32473683 recomputed 1.32473683 |d| 0.000e+00 ok
+  m33/qaware/ceil y_final: stored 0.984375 recomputed 0.984375 |d| 0.000e+00 ok
+  m33/qaware/ceil res2: stored 1.328125 recomputed 1.328125 |d| 0.000e+00 ok
+  m33/qaware/floor routed_output: stored 0.962812781 recomputed 0.962812781 |d| 0.000e+00 ok
+  m33/qaware/floor shared_output: stored 0.860623121 recomputed 0.860623121 |d| 0.000e+00 ok
+  m33/qaware/floor moe_output: stored 1.19158959 recomputed 1.19158959 |d| 0.000e+00 ok
+  m33/qaware/floor y_final: stored 0.978515625 recomputed 0.978515625 |d| 0.000e+00 ok
+  m33/qaware/floor res2: stored 1.1875 recomputed 1.1875 |d| 0.000e+00 ok
+measured.max_abs over the 1e-09 tolerance: 0
+rc=0
+
+$ cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-75 && /workspace/venvs/baseline/bin/python tools/golden/evidence/numeric_env_probe.py
+interpreter /workspace/venvs/baseline/bin/python
+numpy 1.26.4
+blas openblas64 0.3.23.dev
+  m1/routed_output: codes differing 0/2560 max code delta 0
+  m1/shared_output: codes differing 0/2560 max code delta 0
+  m1/moe_output: codes differing 0/2560 max code delta 0
+  m33/routed_output: codes differing 17/84480 max code delta 2
+  m33/shared_output: codes differing 15/84480 max code delta 4
+  m33/moe_output: codes differing 11/84480 max code delta 2
+  m1/qaware/ceil routed_output: stored 0.624189794 recomputed 0.624189794 |d| 0.000e+00 ok
+  m1/qaware/ceil shared_output: stored 0.644997656 recomputed 0.644997656 |d| 0.000e+00 ok
+  m1/qaware/ceil moe_output: stored 0.850142121 recomputed 0.850142121 |d| 0.000e+00 ok
+  m1/qaware/ceil y_final: stored 0.6796875 recomputed 0.6796875 |d| 0.000e+00 ok
+  m1/qaware/ceil res2: stored 0.8515625 recomputed 0.8515625 |d| 0.000e+00 ok
+  m1/qaware/floor routed_output: stored 0.604351446 recomputed 0.604351446 |d| 0.000e+00 ok
+  m1/qaware/floor shared_output: stored 0.62667501 recomputed 0.62667501 |d| 0.000e+00 ok
+  m1/qaware/floor moe_output: stored 0.762910113 recomputed 0.762910113 |d| 0.000e+00 ok
+  m1/qaware/floor y_final: stored 0.703125 recomputed 0.703125 |d| 0.000e+00 ok
+  m1/qaware/floor res2: stored 0.762695312 recomputed 0.762695312 |d| 0.000e+00 ok
+  m33/qaware/ceil routed_output: stored 0.99814415 recomputed 0.99814415 |d| 0.000e+00 ok
+  m33/qaware/ceil shared_output: stored 0.831953943 recomputed 0.831954122 |d| 1.788e-07 FAIL(>1e-09)
+  m33/qaware/ceil moe_output: stored 1.32473683 recomputed 1.32473707 |d| 2.384e-07 FAIL(>1e-09)
+  m33/qaware/ceil y_final: stored 0.984375 recomputed 0.984375 |d| 0.000e+00 ok
+  m33/qaware/ceil res2: stored 1.328125 recomputed 1.328125 |d| 0.000e+00 ok
+  m33/qaware/floor routed_output: stored 0.962812781 recomputed 0.962812901 |d| 1.192e-07 FAIL(>1e-09)
+  m33/qaware/floor shared_output: stored 0.860623121 recomputed 0.860622883 |d| 2.384e-07 FAIL(>1e-09)
+  m33/qaware/floor moe_output: stored 1.19158959 recomputed 1.19158959 |d| 0.000e+00 ok
+  m33/qaware/floor y_final: stored 0.978515625 recomputed 0.978515625 |d| 0.000e+00 ok
+  m33/qaware/floor res2: stored 1.1875 recomputed 1.1875 |d| 0.000e+00 ok
+measured.max_abs over the 1e-09 tolerance: 4
+rc=0

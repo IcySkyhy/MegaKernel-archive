@@ -1,0 +1,24 @@
+=== lock acquired 2026-10-04T11:35:40+00:00 variant=dbg_rdyonly N=16 reps=3 timeout=20s ===
+--- npu-smi (lock entry) ---
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.10                              Version: 25.7.rc1.10                           |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 197.6       59                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5241  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+--- run 1 (timeout 20s) ---
+SUMMARY variant=dbg_rdyonly run=1 N=16 total=65536 mismatched=31264 rounds_bad=10 first_bad_round=0 bad_elems_first=1632 sentinel=0 zeros=0 rc=1
+exit=1
+--- run 2 (timeout 20s) ---
+SUMMARY variant=dbg_rdyonly run=2 N=16 total=65536 mismatched=30944 rounds_bad=9 first_bad_round=0 bad_elems_first=1696 sentinel=0 zeros=0 rc=1
+exit=1
+--- run 3 (timeout 20s) ---
+SUMMARY variant=dbg_rdyonly run=3 N=16 total=65536 mismatched=30880 rounds_bad=10 first_bad_round=0 bad_elems_first=1632 sentinel=0 zeros=0 rc=1
+exit=1
+AGG variant=dbg_rdyonly N=16 rc0=0 rc1=3 rc2=0 hang=0 reps=3

@@ -1,0 +1,31 @@
+== 判定项 10 条：10 PASS / 0 FAIL（判定元素 27198，超界 0）
+   [PASS] J1 topk_ids（safe 行；1/1 行） (10/10)
+   [PASS] J1b topk_ids 的**集合**（全部行：忽略列内顺序） (10/10)
+   [PASS] J2 router_logits（T3） (512/512)
+   [PASS] J3 sgate 裸点积（T3） (1/1)
+   [PASS] J4 topk_weights（T3，梯度上界） (10/10)
+   [PASS] J5 S3 counts[E] (512/512)
+   [PASS] J6 S3 offsets[E+1] (513/513)
+   [PASS] J7 S3 perm_src/perm_expert（稳定计数排序） (20/20)
+   [PASS] J8 S3 inv_slot[t,k] = 该 (t,k) 在 permuted 序里的位置 (10/10)
+   [PASS] J9 S4 xsorted[pos] == xnorm[perm_src[pos]]（逐字节） (25600/25600)
+== 报告项 10 条
+   S3 Σt_e                                              10 (期望 m*TOPK = 10)
+   G7 小 m 档（m=1）：S3 的多写者路径本档不覆盖                         nAiv=56；多写者覆盖见 m=64 档的 G7
+   logits max|Δ|                                        1.1733e-08
+   logits 容差占用（max |Δ|/tol）                             0.0010
+   min 10/11 名间隔（reference）                             1.2466e-03
+   tie-risk 行数（gap ≤ 4×tol）                             0 / 1
+   weights max|Δ|                                       7.8480e-09
+   sgate max|Δ|                                         2.6432e-12
+   logits 行内跨专家极差（min over rows）                        4.2923e-02
+   sgate 跨行极差                                           0.0000e+00
+== guard 6 条：全绿
+   [OK ] G1 logits 行内跨专家非常量（极差 > 1e-3） 
+   [OK ] G2 logits 跨行非常量（行 0 与行 m-1 不相等） 
+   [OK ] G3 ids 全在 [0, E) 且行内互异 
+   [OK ] G4 weights 行和为 1（±1e-5） 
+   [OK ] G5 权重非退化（行内不是单一 1.0 全给第一名） 
+   [OK ] G6 sgate 跨行非常量 
+== 被测源 sha256: e7167e4b5f87aab3
+RESULT: PASS

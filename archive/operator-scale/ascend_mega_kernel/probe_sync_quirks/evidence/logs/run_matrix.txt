@@ -1,0 +1,21 @@
+probe_b_idx_s16_f0_raw             RUN PASS 
+probe_b_idx_s16_f1_hoistub         RUN PASS 
+probe_b_idx_s16_f4_ubget           RUN PASS 
+probe_b_idx_s32_f0_raw             RUN PASS 
+probe_b_idx_s32_f1_hoistub         RUN PASS 
+probe_b_idx_s32_f2_ctbound         RUN PASS 
+probe_b_idx_s32_f3_constidx        RUN PASS 
+probe_b_idx_s32_f4_ubget           RUN PASS 
+probe_b_idx_s32_f6_acc             RUN FAIL RUN FAIL：351/400 点不符
+probe_b_idx_s32_f7_gmhoist         RUN PASS 
+probe_b_idx_s32_f9_misalign_demo   EXPECTED-FAIL（归档靶子）：运行 aclError=507035 —— 见 logs/run_probe_b_idx_s32_f9_misalign_demo.log
+probe_b_idx_s64_f0_raw             RUN PASS 
+probe_b_idx_s64_f1_hoistub         RUN FAIL RUN FAIL：8/400 点不符
+probe_b_idx_s64_f2_ctbound         RUN PASS 
+probe_b_idx_s64_f4_ubget           RUN PASS 
+probe_b_idx_s64_f6_acc             RUN FAIL RUN FAIL：350/400 点不符
+probe_b_idx_s64_f7_gmhoist         RUN PASS 
+probe_b_idx_u16_f0_raw             RUN PASS 
+probe_b_idx_u32_f0_raw             RUN PASS 
+probe_b_idx_u32_f1_hoistub         RUN FAIL RUN FAIL：8/400 点不符
+probe_b_idx_u64_f0_raw             RUN PASS 

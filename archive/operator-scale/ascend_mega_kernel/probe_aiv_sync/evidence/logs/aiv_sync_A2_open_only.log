@@ -1,0 +1,171 @@
+SUMMARY variant=A2_open_only run=1 vi=2 bk=1 ck=0 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=27/56 core_round_clean=794/896 rounds_clean=1/16 headOK_min=5 viol=102 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=21072 missing_rows=0 snap=0 rc=1
+ROUND variant=A2_open_only run=1 round=0 headOK_min=13 headOK_max=56 cores_clean=36/56 converged=0
+ROUND variant=A2_open_only run=1 round=1 headOK_min=5 headOK_max=56 cores_clean=49/56 converged=0
+ROUND variant=A2_open_only run=1 round=2 headOK_min=20 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=1 round=3 headOK_min=5 headOK_max=56 cores_clean=50/56 converged=0
+ROUND variant=A2_open_only run=1 round=4 headOK_min=8 headOK_max=56 cores_clean=45/56 converged=0
+ROUND variant=A2_open_only run=1 round=5 headOK_min=7 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=1 round=6 headOK_min=39 headOK_max=56 cores_clean=55/56 converged=0
+ROUND variant=A2_open_only run=1 round=7 headOK_min=9 headOK_max=56 cores_clean=50/56 converged=0
+ROUND variant=A2_open_only run=1 round=8 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=1 round=9 headOK_min=8 headOK_max=56 cores_clean=46/56 converged=0
+ROUND variant=A2_open_only run=1 round=10 headOK_min=8 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=1 round=11 headOK_min=13 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=1 round=12 headOK_min=6 headOK_max=56 cores_clean=50/56 converged=0
+ROUND variant=A2_open_only run=1 round=13 headOK_min=26 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=1 round=14 headOK_min=8 headOK_max=56 cores_clean=46/56 converged=0
+ROUND variant=A2_open_only run=1 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=A2_open_only run=1 2,1,0,1,1,1,1,2,2,1,0,1,0,2,3,1,0,1,0,0,0,1,1,1,0,0,0,0,0,2,2,15,0,0,0,0,0,3,1,14,0,0,0,0,0,2,3,14,0,0,0,0,0,4,6,13
+CYCLE variant=A2_open_only run=1 -448125348,-448125127,-448124285,-448124785,-448125247,-448124824,-448123597,-448123739,-448123704,-448123608,-448123900,-448123506,-448124114,-448124160,-448124218,-448125039,-448124704,-448124678,-448124641,-448125234,-448124404,-448124568,-448125386,-448125470,-448123947,-448123994,-448124146,-448123649,-448126264,-448126228,-448125326,-448125720,-448125458,-448125004,-448126249,-448126238,-448126236,-448126235,-448125703,-448124764,-448124802,-448124492,-448125098,-448125658,-448124945,-448124436,-448125388,-448124792,-448125772,-448125967,-448125065,-448124591,-448126031,-448124632,-448124740,-448125189
+SUMMARY variant=A2_open_only run=2 vi=2 bk=1 ck=0 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=29/56 core_round_clean=796/896 rounds_clean=2/16 headOK_min=7 viol=100 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=21547 missing_rows=0 snap=0 rc=1
+ROUND variant=A2_open_only run=2 round=0 headOK_min=11 headOK_max=56 cores_clean=35/56 converged=0
+ROUND variant=A2_open_only run=2 round=1 headOK_min=7 headOK_max=56 cores_clean=48/56 converged=0
+ROUND variant=A2_open_only run=2 round=2 headOK_min=7 headOK_max=56 cores_clean=42/56 converged=0
+ROUND variant=A2_open_only run=2 round=3 headOK_min=13 headOK_max=56 cores_clean=55/56 converged=0
+ROUND variant=A2_open_only run=2 round=4 headOK_min=7 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=2 round=5 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=2 round=6 headOK_min=14 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=2 round=7 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=2 round=8 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=2 round=9 headOK_min=20 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=2 round=10 headOK_min=7 headOK_max=56 cores_clean=48/56 converged=0
+ROUND variant=A2_open_only run=2 round=11 headOK_min=7 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=2 round=12 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+ROUND variant=A2_open_only run=2 round=13 headOK_min=11 headOK_max=56 cores_clean=40/56 converged=0
+ROUND variant=A2_open_only run=2 round=14 headOK_min=8 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=2 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=A2_open_only run=2 1,1,0,1,0,1,1,3,1,1,1,0,0,1,3,3,0,0,0,0,0,1,1,3,0,0,0,0,0,3,5,11,0,0,0,0,0,2,4,13,0,0,0,0,0,2,2,14,0,0,0,0,0,4,4,13
+CYCLE variant=A2_open_only run=2 -562725367,-562725992,-562726380,-562726333,-562726636,-562726228,-562726546,-562726886,-562725703,-562725608,-562725946,-562725637,-562726858,-562726088,-562725406,-562725484,-562727242,-562726807,-562725884,-562727090,-562726071,-562725598,-562727121,-562727280,-562725424,-562725757,-562725814,-562725789,-562727622,-562726048,-562725758,-562726065,-562726383,-562726122,-562726293,-562726999,-562726263,-562726191,-562726917,-562725905,-562725991,-562726858,-562725862,-562727454,-562727604,-562727467,-562727020,-562725840,-562727061,-562727610,-562725781,-562725875,-562726012,-562726753,-562725680,-562727615
+SUMMARY variant=A2_open_only run=3 vi=2 bk=1 ck=0 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=29/56 core_round_clean=788/896 rounds_clean=1/16 headOK_min=2 viol=108 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=24501 missing_rows=0 snap=0 rc=1
+ROUND variant=A2_open_only run=3 round=0 headOK_min=2 headOK_max=56 cores_clean=34/56 converged=0
+ROUND variant=A2_open_only run=3 round=1 headOK_min=9 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=3 round=2 headOK_min=8 headOK_max=56 cores_clean=39/56 converged=0
+ROUND variant=A2_open_only run=3 round=3 headOK_min=6 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=3 round=4 headOK_min=16 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=3 round=5 headOK_min=7 headOK_max=56 cores_clean=50/56 converged=0
+ROUND variant=A2_open_only run=3 round=6 headOK_min=20 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=3 round=7 headOK_min=7 headOK_max=56 cores_clean=49/56 converged=0
+ROUND variant=A2_open_only run=3 round=8 headOK_min=20 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=3 round=9 headOK_min=8 headOK_max=56 cores_clean=48/56 converged=0
+ROUND variant=A2_open_only run=3 round=10 headOK_min=21 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=3 round=11 headOK_min=7 headOK_max=56 cores_clean=48/56 converged=0
+ROUND variant=A2_open_only run=3 round=12 headOK_min=9 headOK_max=56 cores_clean=49/56 converged=0
+ROUND variant=A2_open_only run=3 round=13 headOK_min=6 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=3 round=14 headOK_min=18 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=3 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=A2_open_only run=3 0,1,0,0,1,1,2,3,0,0,0,1,0,1,2,3,0,0,0,1,0,1,0,2,0,0,0,0,0,3,4,14,0,0,0,0,0,5,2,14,0,0,0,1,1,3,6,13,0,0,0,1,0,2,5,15
+CYCLE variant=A2_open_only run=3 228438996,228438666,228438920,228439252,228439202,228438770,228438403,228438326,228439028,228438798,228439722,228439776,228439799,228439127,228438223,228438584,228439829,228439614,228437769,228437991,228439457,228439637,228437742,228437798,228438254,228438097,228439057,228439363,228437489,228437522,228439532,228439049,228439505,228438399,228439663,228438183,228438471,228438047,228437740,228439122,228437492,228439249,228439093,228439475,228439637,228439323,228439550,228438989,228437817,228438575,228439584,228439276,228438883,228438935,228439168,228439447
+SUMMARY variant=A2_open_only run=4 vi=2 bk=1 ck=0 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=38/56 core_round_clean=818/896 rounds_clean=1/16 headOK_min=4 viol=78 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=21893 missing_rows=0 snap=0 rc=1
+ROUND variant=A2_open_only run=4 round=0 headOK_min=6 headOK_max=56 cores_clean=43/56 converged=0
+ROUND variant=A2_open_only run=4 round=1 headOK_min=4 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=4 round=2 headOK_min=7 headOK_max=56 cores_clean=48/56 converged=0
+ROUND variant=A2_open_only run=4 round=3 headOK_min=11 headOK_max=56 cores_clean=55/56 converged=0
+ROUND variant=A2_open_only run=4 round=4 headOK_min=7 headOK_max=56 cores_clean=50/56 converged=0
+ROUND variant=A2_open_only run=4 round=5 headOK_min=10 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=4 round=6 headOK_min=16 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=4 round=7 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=4 round=8 headOK_min=21 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=4 round=9 headOK_min=8 headOK_max=56 cores_clean=49/56 converged=0
+ROUND variant=A2_open_only run=4 round=10 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=4 round=11 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=4 round=12 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=4 round=13 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=4 round=14 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=4 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=A2_open_only run=4 0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,2,6,14,0,0,0,1,0,1,1,13,0,0,0,0,0,1,2,15,0,0,0,0,0,1,2,14
+CYCLE variant=A2_open_only run=4 -904261318,-904261520,-904260986,-904261240,-904261112,-904262033,-904261392,-904262434,-904260868,-904261540,-904261183,-904261029,-904260956,-904261644,-904260902,-904261467,-904262728,-904262728,-904261618,-904261135,-904262284,-904261442,-904262818,-904262724,-904261359,-904262076,-904261410,-904261283,-904260364,-904261432,-904260211,-904260313,-904261815,-904261306,-904260192,-904260166,-904260245,-904260983,-904261541,-904261106,-904260774,-904260053,-904262140,-904261788,-904260497,-904261057,-904260678,-904260142,-904261467,-904261492,-904261332,-904261181,-904260828,-904261031,-904260113,-904260474
+SUMMARY variant=A2_open_only run=5 vi=2 bk=1 ck=0 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=34/56 core_round_clean=784/896 rounds_clean=3/16 headOK_min=1 viol=112 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=25380 missing_rows=0 snap=0 rc=1
+ROUND variant=A2_open_only run=5 round=0 headOK_min=1 headOK_max=56 cores_clean=36/56 converged=0
+ROUND variant=A2_open_only run=5 round=1 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+ROUND variant=A2_open_only run=5 round=2 headOK_min=12 headOK_max=56 cores_clean=40/56 converged=0
+ROUND variant=A2_open_only run=5 round=3 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=5 round=4 headOK_min=21 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=5 round=5 headOK_min=8 headOK_max=56 cores_clean=48/56 converged=0
+ROUND variant=A2_open_only run=5 round=6 headOK_min=7 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=5 round=7 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+ROUND variant=A2_open_only run=5 round=8 headOK_min=9 headOK_max=56 cores_clean=40/56 converged=0
+ROUND variant=A2_open_only run=5 round=9 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=5 round=10 headOK_min=20 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=5 round=11 headOK_min=6 headOK_max=56 cores_clean=45/56 converged=0
+ROUND variant=A2_open_only run=5 round=12 headOK_min=21 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=5 round=13 headOK_min=8 headOK_max=56 cores_clean=41/56 converged=0
+ROUND variant=A2_open_only run=5 round=14 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=5 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=A2_open_only run=5 0,0,0,0,0,1,2,4,0,0,0,0,0,0,1,4,0,0,0,0,0,2,1,4,0,0,0,0,0,5,4,13,0,0,0,0,0,4,5,13,0,0,0,0,1,6,6,12,0,0,0,0,1,5,6,12
+CYCLE variant=A2_open_only run=5 -208313662,-208313664,-208312141,-208313217,-208313201,-208312518,-208311295,-208311238,-208311570,-208313177,-208311690,-208313254,-208313490,-208313548,-208313398,-208313372,-208312255,-208311437,-208311963,-208312355,-208311938,-208311321,-208312672,-208313129,-208311663,-208313113,-208311604,-208311375,-208312927,-208312753,-208312711,-208312885,-208311127,-208311330,-208311631,-208311454,-208311206,-208311358,-208312373,-208311894,-208312436,-208311698,-208311383,-208312473,-208311060,-208310921,-208312316,-208311608,-208312679,-208310946,-208311542,-208311518,-208311982,-208311802,-208311025,-208311409
+SUMMARY variant=A2_open_only run=6 vi=2 bk=1 ck=0 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=31/56 core_round_clean=798/896 rounds_clean=2/16 headOK_min=6 viol=98 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=22302 missing_rows=0 snap=0 rc=1
+ROUND variant=A2_open_only run=6 round=0 headOK_min=10 headOK_max=56 cores_clean=35/56 converged=0
+ROUND variant=A2_open_only run=6 round=1 headOK_min=6 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=6 round=2 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+ROUND variant=A2_open_only run=6 round=3 headOK_min=8 headOK_max=56 cores_clean=44/56 converged=0
+ROUND variant=A2_open_only run=6 round=4 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=6 round=5 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=6 round=6 headOK_min=11 headOK_max=56 cores_clean=50/56 converged=0
+ROUND variant=A2_open_only run=6 round=7 headOK_min=8 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=6 round=8 headOK_min=9 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=6 round=9 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=6 round=10 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=6 round=11 headOK_min=18 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=6 round=12 headOK_min=6 headOK_max=56 cores_clean=47/56 converged=0
+ROUND variant=A2_open_only run=6 round=13 headOK_min=20 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=6 round=14 headOK_min=6 headOK_max=56 cores_clean=43/56 converged=0
+ROUND variant=A2_open_only run=6 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=A2_open_only run=6 0,0,0,0,0,1,1,2,0,0,0,0,1,1,1,2,0,0,0,0,0,1,1,2,0,0,0,0,0,1,3,14,0,0,1,0,1,3,3,14,0,0,0,0,1,4,4,14,0,0,0,0,0,4,4,14
+CYCLE variant=A2_open_only run=6 241864840,241864867,241865417,241864995,241865444,241865521,241865777,241866312,241864897,241866366,241865579,241865630,241866555,241866470,241865368,241865219,241866085,241865958,241866338,241864723,241865121,241865147,241864594,241864646,241866165,241866293,241866395,241864980,241863459,241864031,241864329,241864785,241863612,241863973,241863895,241865389,241864954,241865500,241864499,241864226,241864704,241864054,241865447,241865338,241865237,241865530,241865157,241865183,241864522,241864198,241864276,241864477,241865262,241865060,241863709,241864546
+SUMMARY variant=A2_open_only run=7 vi=2 bk=1 ck=0 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=36/56 core_round_clean=804/896 rounds_clean=2/16 headOK_min=5 viol=92 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=22582 missing_rows=0 snap=0 rc=1
+ROUND variant=A2_open_only run=7 round=0 headOK_min=5 headOK_max=56 cores_clean=41/56 converged=0
+ROUND variant=A2_open_only run=7 round=1 headOK_min=19 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=7 round=2 headOK_min=8 headOK_max=56 cores_clean=49/56 converged=0
+ROUND variant=A2_open_only run=7 round=3 headOK_min=22 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=7 round=4 headOK_min=8 headOK_max=56 cores_clean=50/56 converged=0
+ROUND variant=A2_open_only run=7 round=5 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=7 round=6 headOK_min=19 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=7 round=7 headOK_min=7 headOK_max=56 cores_clean=46/56 converged=0
+ROUND variant=A2_open_only run=7 round=8 headOK_min=16 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=7 round=9 headOK_min=7 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=7 round=10 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+ROUND variant=A2_open_only run=7 round=11 headOK_min=9 headOK_max=56 cores_clean=39/56 converged=0
+ROUND variant=A2_open_only run=7 round=12 headOK_min=6 headOK_max=56 cores_clean=51/56 converged=0
+ROUND variant=A2_open_only run=7 round=13 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=7 round=14 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=7 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=A2_open_only run=7 0,0,0,1,0,1,1,2,0,0,0,0,0,0,1,2,0,0,0,0,0,1,0,1,0,0,0,0,0,4,3,14,0,0,0,0,0,3,2,14,0,0,0,0,0,4,5,13,0,0,0,0,0,5,2,13
+CYCLE variant=A2_open_only run=7 142095013,142095865,142094465,142094416,142095251,142095678,142094520,142094691,142095469,142094679,142095603,142095628,142095704,142095231,142095481,142095813,142095423,142094926,142094260,142095530,142095916,142095845,142093982,142094091,142094563,142095096,142095181,142095654,142093586,142093837,142095666,142095721,142094791,142093705,142094322,142094252,142095540,142094716,142094687,142095320,142095235,142095498,142094658,142094396,142095772,142095472,142094887,142094986,142093649,142094164,142095440,142095297,142095798,142095280,142095728,142094513
+SUMMARY variant=A2_open_only run=8 vi=2 bk=1 ck=0 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=20/56 core_round_clean=779/896 rounds_clean=2/16 headOK_min=5 viol=117 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=21851 missing_rows=0 snap=0 rc=1
+ROUND variant=A2_open_only run=8 round=0 headOK_min=12 headOK_max=56 cores_clean=34/56 converged=0
+ROUND variant=A2_open_only run=8 round=1 headOK_min=5 headOK_max=56 cores_clean=49/56 converged=0
+ROUND variant=A2_open_only run=8 round=2 headOK_min=7 headOK_max=56 cores_clean=44/56 converged=0
+ROUND variant=A2_open_only run=8 round=3 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=8 round=4 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+ROUND variant=A2_open_only run=8 round=5 headOK_min=8 headOK_max=56 cores_clean=45/56 converged=0
+ROUND variant=A2_open_only run=8 round=6 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=8 round=7 headOK_min=47 headOK_max=56 cores_clean=43/56 converged=0
+ROUND variant=A2_open_only run=8 round=8 headOK_min=7 headOK_max=56 cores_clean=42/56 converged=0
+ROUND variant=A2_open_only run=8 round=9 headOK_min=17 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=8 round=10 headOK_min=9 headOK_max=56 cores_clean=48/56 converged=0
+ROUND variant=A2_open_only run=8 round=11 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=8 round=12 headOK_min=6 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=8 round=13 headOK_min=19 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=8 round=14 headOK_min=6 headOK_max=56 cores_clean=49/56 converged=0
+ROUND variant=A2_open_only run=8 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=A2_open_only run=8 1,1,2,2,1,1,1,2,1,1,2,1,3,3,1,2,0,0,0,0,0,1,3,4,1,1,1,1,0,2,5,13,0,0,0,0,1,1,1,12,0,0,0,0,0,4,7,12,0,0,0,0,0,4,5,13
+CYCLE variant=A2_open_only run=8 93894459,93895885,93895970,93896112,93895792,93895248,93896139,93895359,93894691,93896056,93895151,93895341,93895865,93896102,93895903,93894928,93896227,93895939,93895195,93895315,93896006,93895012,93894409,93894309,93896083,93895730,93896253,93895556,93892636,93892692,93894530,93894102,93893878,93893259,93894181,93894563,93894381,93894405,93892978,93893852,93894646,93894004,93893463,93893382,93894549,93893907,93893657,93894655,93893365,93893975,93894494,93894159,93894119,93894024,93894464,93894035
+SUMMARY variant=A2_open_only run=9 vi=2 bk=1 ck=0 dk=2 fk=1 st=16 wl=64 sep=0 rounds=16 naiv=56 blocks=28 cores_clean=43/56 core_round_clean=821/896 rounds_clean=2/16 headOK_min=7 viol=75 final_head_ok=56 stale=0 zero=0 other=0 scribble=0 rel_spread_max=21524 missing_rows=0 snap=0 rc=1
+ROUND variant=A2_open_only run=9 round=0 headOK_min=10 headOK_max=56 cores_clean=45/56 converged=0
+ROUND variant=A2_open_only run=9 round=1 headOK_min=7 headOK_max=56 cores_clean=50/56 converged=0
+ROUND variant=A2_open_only run=9 round=2 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=9 round=3 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=9 round=4 headOK_min=8 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=9 round=5 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+ROUND variant=A2_open_only run=9 round=6 headOK_min=7 headOK_max=56 cores_clean=47/56 converged=0
+ROUND variant=A2_open_only run=9 round=7 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=9 round=8 headOK_min=41 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=9 round=9 headOK_min=8 headOK_max=56 cores_clean=49/56 converged=0
+ROUND variant=A2_open_only run=9 round=10 headOK_min=21 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=9 round=11 headOK_min=8 headOK_max=56 cores_clean=45/56 converged=0
+ROUND variant=A2_open_only run=9 round=12 headOK_min=7 headOK_max=56 cores_clean=52/56 converged=0
+ROUND variant=A2_open_only run=9 round=13 headOK_min=7 headOK_max=56 cores_clean=53/56 converged=0
+ROUND variant=A2_open_only run=9 round=14 headOK_min=55 headOK_max=56 cores_clean=55/56 converged=0
+ROUND variant=A2_open_only run=9 round=15 headOK_min=56 headOK_max=56 cores_clean=56/56 converged=0
+COREVIOL variant=A2_open_only run=9 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,2,13,0,0,0,0,0,2,3,14,0,1,0,0,0,1,5,12,0,0,0,0,0,3,4,12
+CYCLE variant=A2_open_only run=9 -1384384454,-1384384527,-1384383931,-1384383904,-1384384221,-1384384350,-1384383220,-1384383372,-1384383664,-1384384434,-1384384269,-1384384576,-1384383862,-1384383061,-1384383444,-1384384364,-1384383636,-1384383838,-1384383498,-1384383395,-1384383575,-1384383165,-1384385151,-1384385153,-1384383351,-1384383606,-1384383547,-1384384006,-1384384618,-1384384565,-1384384114,-1384382707,-1384384328,-1384383847,-1384382820,-1384383508,-1384382801,-1384383413,-1384383056,-1384383030,-1384382632,-1384382887,-1384382724,-1384382774,-1384383089,-1384383397,-1384382564,-1384383156,-1384384366,-1384384496,-1384382655,-1384382934,-1384382966,-1384382762,-1384382509,-1384383338

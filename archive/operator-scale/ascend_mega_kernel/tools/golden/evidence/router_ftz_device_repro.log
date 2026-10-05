@@ -1,0 +1,32 @@
+# 设备 dump : /workspace/ascend_mega_kernel/.tower/worktrees/wt-42/m22_router512/evidence/mode2/real_m4097  m=4097
+# 权重       : /workspace/ascend_mega_kernel/.tower/worktrees/wt-42/m22_router512/data/router_weight.bin
+# x 重生成   : m=4097 seed=5 sha256=539ec35f6a931afbb8a1286df4ba6cae447e162324c2f14b1c3c5d2393d8d4b9
+# x sha256   : == 记录 (539ec35f6a931afbb8a1286df4ba6cae447e162324c2f14b1c3c5d2393d8d4b9)
+
+# 与设备 topk_ids 对拍（判定 = top-10 集合不同）
+# 说明：第一行是脚本内联重建的『不建模 FTZ』旧口径；第二行是本 module 的 router_topk。
+#       在 M46 修正后的 module 上第二行 = 建模 FTZ 口径（应为 0）；在 M46 修正前的 module 上（对照日志 *_pre_m46.log）第二行与第一行相同（都是 20）。
+内联旧口径（不建模 FTZ）     :   125 槽 / 20 行  (20/4097)
+本 module router_topk        :     0 槽 / 0 行  (0/4097)
+golden 新 topk_weights  : bf16 |ulp|>1 0 槽, max ulp 1, 行和 ∈ [0.997237, 1.002593]
+
+# 期望口径扫描（flush 阈值 → 与设备的差异）
+参考口径                                               槽       行
+原样（保留次正规）                                        125      20
+< 2^-126 = 1.1755e-38（最小正规数）                       0       0
+< 1e-35                                          103      17
+< 1e-30                                          251      40
+< 1e-25                                          689     128
+< 1e-20                                         2210     388
+< 1e-15                                         5262     873
+
+# FTZ 落点口径 vs 设备 topk_weights（bf16 ulp）
+落点口径                                             ids行差   ulp>1槽  max ulp
+A                                                    0        0        1
+B                                                    0        0        1
+C                                                    0        0        1
+D                                                    0        0        1
+
+# 选中 exp ∈ [2^-126, sum·2^-126)（除法-FTZ 可观测的槽）: 0
+# 选中 exp 已被 flush 成 0 的槽: 127
+# max-shift 后非零 logits 的 min|x| = 1.583e-04（< 2^-126 即 logits 侧也需 FTZ）

@@ -1,0 +1,35 @@
+COMPILE-OK    ag_gather_sweep
+COMPILE-OK    nest_o0i0b0
+COMPILE-OK    nest_o0i0b1
+COMPILE-OK    nest_o0i0b3
+COMPILE-OK    nest_o0i1b1
+COMPILE-OK    nest_o0i2b1
+COMPILE-OK    nest_o0i3b0
+COMPILE-OK    nest_o0i3b1
+COMPILE-OK    nest_o0i3b3
+COMPILE-OK    nest_o0i4b0
+COMPILE-OK    nest_o0i4b1
+COMPILE-OK    nest_o0i5b1
+COMPILE-OK    nest_o0i6b1
+COMPILE-FAIL  nest_o0i7b0  (exit=2, 见 logs/build_nest_o0i7b0.log)
+COMPILE-FAIL  nest_o0i7b1  (exit=2, 见 logs/build_nest_o0i7b1.log)
+COMPILE-OK    nest_o1i0b1
+COMPILE-OK    nest_o1i3b1
+COMPILE-OK    nest_o2i0b1_ct1
+COMPILE-OK    nest_o2i0b1_ct2
+COMPILE-OK    nest_o2i0b1_ct3
+COMPILE-OK    nest_o2i0b1_ct4
+COMPILE-OK    nest_o2i0b1_ct64
+COMPILE-OK    nest_o2i3b1_ct4
+COMPILE-OK    nest_o3i0b1
+COMPILE-OK    nest_o4i0b1
+COMPILE-OK    nest_o5i0b1
+COMPILE-OK    nest_o0i0b1_O2
+COMPILE-OK    nest_o0i3b1_O2
+COMPILE-OK    nest_o0i0b0_NOUNROT
+COMPILE-OK    nest_o0i0b1_NOUNROT
+COMPILE-FAIL  nest_o0i0b2_scal  (exit=2, 见 logs/build_nest_o0i0b2_scal.log)  [预期失败：归档靶子，见 README §变体矩阵]
+COMPILE-FAIL  ag_arange_u32  (exit=2, 见 logs/build_ag_arange_u32.log)  [预期失败：归档靶子，见 README §变体矩阵]
+COMPILE-FAIL  nest_o0i0b2_scal  (exit=2, 见 logs/build_nest_o0i0b2_scal.log)  [预期失败：归档靶子，见 README §变体矩阵/§3.1 C15]
+COMPILE-FAIL  nest_o0i0b2s_scalstore  (exit=2, 见 logs/build_nest_o0i0b2s_scalstore.log)  [预期失败：归档靶子，见 README §变体矩阵/§3.1 C15]
+COMPILE-OK    nest_o0i0b4_marker_ctl

@@ -1,0 +1,12 @@
+# M50 判据 1/2：check_ref.py::quant_mxfp4_hw（**M50 修复后**）对 device dump 的逐字节判据
+#   口径：40 条判定项（10 用例 × 4）+ 2 条报告项（用例集合完整性 guard、tools/golden 交叉见证），
+#         按 docs/17 §2.1 分栏，报告项不计入 PASS/FAIL 计数
+#   命令：/usr/local/python3.12.13/bin/python3 m13_moe_layer/check_ref.py quant-inf m13_moe_layer/evidence/quant_inf_dumps
+#   被判量化器：check_ref.py:quant_mxfp4_hw（本 commit）
+[check_ref] quant-inf：dump 目录 /workspace/ascend_mega_kernel/.tower/worktrees/wt-50/m13_moe_layer/evidence/quant_inf_dumps
+[check_ref] quant-inf：被判量化器 check_ref.py:quant_mxfp4_hw
+
+[check_ref] quant-inf 判定项：40 条，40 PASS / 0 FAIL
+[check_ref] quant-inf 报告项：OK   quant-inf 用例集合完整（2 侧 × 5 kinds，r1/s0）: 实到 10
+[check_ref] quant-inf 报告项：OK   tools/golden 交叉见证（moe_block_ref.quantize_ocp vs device 逐字节）: 0/8500 字节不符，10 个用例
+[check_ref] quant-inf ===== ALL PASS =====

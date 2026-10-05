@@ -1,0 +1,5 @@
+[<out>/pos/m4097_s0] m=4097: o(T1)=True z(T1)=True | S5 bf16 rel<= 0.01: True (max 0.00781) | S6 T3-isolated over: 0/10488320 (worst 0.00269 of Σ|terms|) | chain T3 over-frac 3.81e-07 (worst 0.00269) | m21 out_proj vs bf16(fp64): 2373 diff -> PASS
+    (info) strict 1e-5|exp|+1e-6 count — S5 20/25171968, S6 10449360/10488320
+[<out>/pos/m4_s0] m=4: o(T1)=True z(T1)=True | S5 bf16 rel<= 0.01: True (max 0.00559) | S6 T3-isolated over: 0/10240 (worst 0.00177 of Σ|terms|) | chain T3 over-frac 0 (worst 0.00177) | m21 out_proj vs bf16(fp64): 4 diff -> PASS
+    (info) strict 1e-5|exp|+1e-6 count — S5 0/24576, S6 10207/10240
+===== chain check mode=pos: PASS =====

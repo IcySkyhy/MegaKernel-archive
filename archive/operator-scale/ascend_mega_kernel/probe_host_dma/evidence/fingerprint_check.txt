@@ -1,0 +1,10 @@
+== 源码指纹核对：commands.txt 记录 vs 当前工作树 ==
+  probe_host_dma.asc       OK (41fc346588bc)
+  CMakeLists.txt           OK (15632cdb5db6)
+  run_probes.sh            OK (8af328b1bd79)
+  mmap_ngram_plan.py       OK (ba7b1eed7889)
+  check_locale.sh          OK (d0e145587e62)
+  check_fingerprints.sh    OK (404cc3ad9ac8)
+
+PASS: commands.txt 记的源码指纹与当前工作树逐字节一致
+      （⇒ 该批 log 由**当前这份源码**产出；HEAD_at_run 早晚于提交是正常的，见脚本注释）

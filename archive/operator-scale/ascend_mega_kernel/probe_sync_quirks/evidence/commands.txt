@@ -1,0 +1,20 @@
+# probe_sync_quirks 证据生成记录
+date            : 2026-09-26T10:00:26+00:00
+host            : Linux 6.6.0-132.0.0.111.oe2403sp3.x86_64 x86_64
+npu             : +========+==================+===============+=====================================================+
+CANN/compiler   : /usr/local/Ascend/cann-9.1.0/bin/bisheng
+bisheng version : 2026-07-30T20:53:21+08:00 clang version 15.0.5 (clang-5c68a1cb1231 flang-5c68a1cb1231) Target: x86_64-unknown-linux-gnu 
+ASC arch        : dav-3510
+cmake           : cmake version 3.27.9
+reps (probe B)  : 50
+
+## 复现命令（本目录执行）
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j8                     # 默认 target（不含预期编译失败的 form 5/8 与 u32loop 靶子）
+bash run_probes.sh 50                     # 本文；含 form 5/8/u32loop 的单独构建与 stderr 归档、form 9 的运行归档
+
+## 单变体手工复现（不经 CMake，直接调编译器——form 5 的错误原文就是这样抓的）
+# /usr/local/Ascend/cann-9.1.0/bin/bisheng -DNPU_ARCH_DAV_3510 -DPROBE_B_IDX_T=int32_t -DPROBE_B_FORM=5 \
+#     -DPROBE_B_TAG=probe_b_idx_s32_f5_gmget -std=c++17 --npu-arch=dav-3510 -O3 -DNDEBUG \
+#     -c --asc-aicore-lang probe_b_vec_idx.asc -o /tmp/o.o

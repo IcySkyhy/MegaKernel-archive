@@ -1,0 +1,94 @@
+=== lock acquired 2026-10-04T14:03:43+00:00 tag=base_m1 m=1 ===
+--- npu-smi (lock entry) ---
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.10                              Version: 25.7.rc1.10                           |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 194.6       54                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5240  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 1 层，token 3，reps 10，权重=checkpoint，dump=关
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+[m15] device 缓冲：weights 4174.15 MB（36 层 × 115.95 MB）+ states 115.5 MB + ws 5.3 MB + MoE 权重 628.4 MB（48 层 × 13.09 MB）+ 融合 ws 12.94 MB（GDN 5.26 + MoE 7.69）
+[m15] M58 hc 缓冲：权重 1318.63 MB（49 槽 × 26.91 MB/槽；49 = 48 个层槽（每层 2 个边界子槽 × 13.46 MB）+ 1 个全局 mixer 槽，该槽只用到 13.13 MB（norm+down+up），槽 stride 仍为 26.91 MB）+ hc ws 452.71 MB（52 槽 × 8.71 MB/槽 = 每层 2 块 + 3 块 scratch + 1 块全局 mixer ws）
+[m15] M65 层链缓冲：pending BO 双缓冲 0.66 MB（2 块 × 327680 B）；三态入口平面复用 hc_hin
+[m15] M82 attention cache 平面（跨 12 个 attention 层长寿，按第 k 层编址 k=0..11）：主 KV 101.06 MB（12 层 × 8.421 MB/层 = 257 页/层 × 32768 B）；compressed 3.16 MB（12 层 × 0.263 MB/层 = 1028 行/层 × 256 B）；raw ring 0.01344 MB（12 层 × 1120 B = 4 行/层 × 280 B）；packed 33.63 MB（4097 行 × 8208 B，**层间复用一块**）
+[m15] M136 prefill 段体平面：2139.7 MB（q/k 34086912B×2 + v/o 100687872B×2 + g/β 787968B×2 + state 3145728B + scratch 21102592B + MoE ws 18850624B + routerWPad 3276800B + hc arena 88239104B×2 + blk 20976640B×2 + ij 133152B）
+[m15] M140 prefill 四相位平面：hcH 83906560B + hcBo 20976640B + hcIj 133152B + hcAttnOut 20976640B + MoE(E=512) 1342182400B（1 层 × 1342.18 MB）
+[m15] 权重装载完成（真实 checkpoint 切片）：前 1 层内 1 个 GDN 层，4174.15 MB → device，耗时 4400.1 ms
+[m15] MoE 段权重装载完成（真实 checkpoint 4 专家切片 + 真实共享专家）：1 层 × 13.09 MB = 13.1 MB → device，耗时 652.3 ms
+[m15] hc 段权重装载完成（真实 checkpoint（hc 权重不量化、原样消费））：本 run H2D 2 槽 × 26.91 MB/槽 = 53.8 MB（1 个层槽，每层 2 个边界子槽 × 13.46 MB，+ 1 个全局 mixer 槽）；权重区分配 49 槽 × 26.91 MB/槽 = 1318.6 MB → device，耗时 1413.3 ms
+[m15] sha256 自检（NIST 向量："abc" 与 1e6×'a'）：PASS
+[m15]   M136：编译期接线门 PREFILL_WIRED=0（0 = attention 峰值槽未填）；运行期 M15_PREFILL_WIRE=1（1 = GDN 走真段体）
+[m15] M110 prefill 契约与挂载点档：入口 = m15_layer_kernel_gdn_prefill / m15_layer_kernel_attn_prefill（ENTRY_TABLE 登记；wired 缺省 0），行宽 5120 B，平面按 4097 行定尺 = 20976640 B/面（decode 档 327680 B/面的 64.02 倍）
+[m15]   prefill 峰值断言位：未填 3/8 个（Wave C 填实数后才允许 PREFILL_WIRED=1）；MoE 权重槽 prefill 档 stride = 1342182400 B/层（decode 档 13091840）
+[m15]   decode 档的 ctx 容量（KV 权威 m15_attn_kv.h）：257 页/层 × 16 token/页 = 4112 token ≥ 4097；本文件的 M_PREFILL=4097 与它的 PREFILL_M=4097 同一值
+[m15]   ENTRY_TABLE 里的两个 prefill 项：gdn=登记正确 attn=登记正确（kind/prefill/wired/hc 四项逐项核）
+[m15]   Pf.gdn：M140 相位掩码 = 0x3（H1=1 A=1 H2=0 B=0）；M151 prolog=1/mut=0
+[m15]   Pf.gdn：M151 prolog 档 —— ① H1 起（产 BLK）→ ② S2+S3 → ③ 相位掩码 0x2
+[m15]   Pf.gdn：S2 in_proj 启动（A=H1.BLK [1,2560] bf16 → C=[1,16480] bf16，mode=0）
+[m15]   Pf.gdn：S3 prolog 启动（x=qkvzba → q/k/v/g/β；blk=56，qScaleOn=0，noShift=0，noPad=0）
+[m15]   Pf.gdn：prolog 回读 ⇒ pad 全零=1、全有限=1、conv_state 前进=1（q=8.3296e-02 max|v|=3.4970e-01）
+[m15]   Pf.gdn：prolog dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s2_Pf.gdn/（m11 布局）、/workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s3_Pf.gdn/（m9 布局）
+[m15]   Pf.gdn：GDN 段入口同步返回（D2H o/ht）
+[m15]   Pf.gdn：m=1 mutant=0 ⇒ o 非有限 0、max|o|=1.7200e-02、零元素 0/6144；ht 非有限 0、max|ht|=1.2812e-01
+[m15]   Pf.gdn：hc H1 ⇒ H' 毒值 0/10240、零 0；BLK 毒值 0/2560、零 0；hc H2 ⇒ H' 毒值 10240/10240、零 0；BLK 毒值 2560/2560、零 0
+[m15]   Pf.gdn：dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m23_Pf.gdn_*.bin（对拍：python3 m23_gdn_prefill/check_ref.py --dir /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1）
+[m15]   Pf.gdn_mut1：段体真产出的负向对照（只搅动送设备的 h0；对拍命令由 dump 行给出）
+[m15]   Pf.gdn_mut1：M140 相位掩码 = 0x3（H1=1 A=1 H2=0 B=0）；M151 prolog=1/mut=0
+[m15]   Pf.gdn_mut1：M151 prolog 档 —— ① H1 起（产 BLK）→ ② S2+S3 → ③ 相位掩码 0x2
+[m15]   Pf.gdn_mut1：S2 in_proj 启动（A=H1.BLK [1,2560] bf16 → C=[1,16480] bf16，mode=0）
+[m15]   Pf.gdn_mut1：S3 prolog 启动（x=qkvzba → q/k/v/g/β；blk=56，qScaleOn=0，noShift=0，noPad=0）
+[m15]   Pf.gdn_mut1：prolog 回读 ⇒ pad 全零=1、全有限=1、conv_state 前进=1（q=8.3296e-02 max|v|=3.4970e-01）
+[m15]   Pf.gdn_mut1：prolog dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s2_Pf.gdn_mut1/（m11 布局）、/workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s3_Pf.gdn_mut1/（m9 布局）
+[m15]   Pf.gdn_mut1：GDN 段入口同步返回（D2H o/ht）
+[m15]   Pf.gdn_mut1：m=1 mutant=1 ⇒ o 非有限 0、max|o|=3.4397e-02、零元素 0/6144；ht 非有限 0、max|ht|=2.2919e-01
+[m15]   Pf.gdn_mut1：hc H1 ⇒ H' 毒值 0/10240、零 0；BLK 毒值 0/2560、零 0；hc H2 ⇒ H' 毒值 10240/10240、零 0；BLK 毒值 2560/2560、零 0
+[m15]   Pf.gdn_mut1：dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m23_Pf.gdn_mut1_*.bin（对拍：python3 m23_gdn_prefill/check_ref.py --dir /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1）
+[m15]   Pf.prolog_mut1：M151 prolog 负向对照（mut=1）
+[m15]   Pf.prolog_mut1：M140 相位掩码 = 0x3（H1=1 A=1 H2=0 B=0）；M151 prolog=1/mut=1
+[m15]   Pf.prolog_mut1：M151 prolog 档 —— ① H1 起（产 BLK）→ ② S2+S3 → ③ 相位掩码 0x2
+[m15]   Pf.prolog_mut1：S2 in_proj 启动（A=H1.BLK [1,2560] bf16 → C=[1,16480] bf16，mode=0）
+[m15]   Pf.prolog_mut1：S3 prolog 启动（x=qkvzba → q/k/v/g/β；blk=56，qScaleOn=0，noShift=1，noPad=0）
+[m15]   Pf.prolog_mut1：prolog 回读 ⇒ pad 全零=1、全有限=1、conv_state 前进=0（q=8.3296e-02 max|v|=3.4970e-01）
+[m15]   Pf.prolog_mut1：prolog dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s2_Pf.prolog_mut1/（m11 布局）、/workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s3_Pf.prolog_mut1/（m9 布局）
+[m15]   Pf.prolog_mut1：GDN 段入口同步返回（D2H o/ht）
+[m15]   Pf.prolog_mut1：m=1 mutant=0 ⇒ o 非有限 0、max|o|=1.7200e-02、零元素 0/6144；ht 非有限 0、max|ht|=1.2812e-01
+[m15]   Pf.prolog_mut1：hc H1 ⇒ H' 毒值 0/10240、零 0；BLK 毒值 0/2560、零 0；hc H2 ⇒ H' 毒值 10240/10240、零 0；BLK 毒值 2560/2560、零 0
+[m15]   Pf.prolog_mut1：dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m23_Pf.prolog_mut1_*.bin（对拍：python3 m23_gdn_prefill/check_ref.py --dir /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1）
+[m15]   Pf.prolog_mut2：M151 prolog 负向对照（mut=2）
+[m15]   Pf.prolog_mut2：M140 相位掩码 = 0x3（H1=1 A=1 H2=0 B=0）；M151 prolog=1/mut=2
+[m15]   Pf.prolog_mut2：M151 prolog 档 —— ① H1 起（产 BLK）→ ② S2+S3 → ③ 相位掩码 0x2
+[m15]   Pf.prolog_mut2：S2 in_proj 启动（A=H1.BLK [1,2560] bf16 → C=[1,16480] bf16，mode=0）
+[m15]   Pf.prolog_mut2：S3 prolog 启动（x=qkvzba → q/k/v/g/β；blk=56，qScaleOn=0，noShift=0，noPad=1）
+[m15]   Pf.prolog_mut2：prolog 回读 ⇒ pad 全零=0、全有限=1、conv_state 前进=1（q=8.3296e-02 max|v|=3.4970e-01）
+[m15]   Pf.prolog_mut2：prolog dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s2_Pf.prolog_mut2/（m11 布局）、/workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s3_Pf.prolog_mut2/（m9 布局）
+[m15]   Pf.prolog_mut2：GDN 段入口同步返回（D2H o/ht）
+[m15]   Pf.prolog_mut2：m=1 mutant=0 ⇒ o 非有限 0、max|o|=1.7200e-02、零元素 0/6144；ht 非有限 0、max|ht|=1.2812e-01
+[m15]   Pf.prolog_mut2：hc H1 ⇒ H' 毒值 0/10240、零 0；BLK 毒值 0/2560、零 0；hc H2 ⇒ H' 毒值 10240/10240、零 0；BLK 毒值 2560/2560、零 0
+[m15]   Pf.prolog_mut2：dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m23_Pf.prolog_mut2_*.bin（对拍：python3 m23_gdn_prefill/check_ref.py --dir /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1）
+[m15]   Pf.prolog_mut3：M151 prolog 负向对照（mut=3）
+[m15]   Pf.prolog_mut3：M140 相位掩码 = 0x3（H1=1 A=1 H2=0 B=0）；M151 prolog=1/mut=3
+[m15]   Pf.prolog_mut3：M151 prolog 档 —— ① H1 起（产 BLK）→ ② S2+S3 → ③ 相位掩码 0x2
+[m15]   Pf.prolog_mut3：S2 in_proj 启动（A=H1.BLK [1,2560] bf16 → C=[1,16480] bf16，mode=1）
+[m15]   Pf.prolog_mut3：S3 prolog 启动（x=qkvzba → q/k/v/g/β；blk=56，qScaleOn=0，noShift=0，noPad=0）
+[m15]   Pf.prolog_mut3：prolog 回读 ⇒ pad 全零=1、全有限=1、conv_state 前进=1（q=7.9713e-02 max|v|=2.8860e-01）
+[m15]   Pf.prolog_mut3：prolog dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s2_Pf.prolog_mut3/（m11 布局）、/workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m151_s3_Pf.prolog_mut3/（m9 布局）
+[m15]   Pf.prolog_mut3：GDN 段入口同步返回（D2H o/ht）
+[m15]   Pf.prolog_mut3：m=1 mutant=0 ⇒ o 非有限 0、max|o|=1.7620e-02、零元素 0/6144；ht 非有限 0、max|ht|=1.2298e-01
+[m15]   Pf.prolog_mut3：hc H1 ⇒ H' 毒值 0/10240、零 0；BLK 毒值 0/2560、零 0；hc H2 ⇒ H' 毒值 10240/10240、零 0；BLK 毒值 2560/2560、零 0
+[m15]   Pf.prolog_mut3：dump → /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1/m23_Pf.prolog_mut3_*.bin（对拍：python3 m23_gdn_prefill/check_ref.py --dir /workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m15_layer_loop/evidence/m163_stab/dumps_base_m1）
+
+[m15] 判据分账：权重来源 0（GDN+MoE）+ 0（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Pw 0 + Kv 0 + Prolog 0 + AttnWire 0 + Pf 37 = 59 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15]   ④ 与 M39 官方单层参考对拍的判据**不在这个数里**：它在 `check_chain_ref.py`（torch，独立三态退出码与计数），由本程序的 dump 驱动；运行方式见 README。
+[m15] guard：9 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 0 + 参考链锚点非空 0 + M65 链 0 + 其余 8
+[m15] ===== ALL PASS（checks=59, guards=9, fails=0）=====
+exit=0

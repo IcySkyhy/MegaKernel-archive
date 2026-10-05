@@ -1,0 +1,14 @@
+[probe vf nest] tag=nest_o0i1b1 outer=0 inner=1 body=1 ct_rows=0
+  rows=0 
+    i      :
+    cnt    :
+    expect :
+    tri    :
+    acc_maxdiff vs ref(cnt)=0.0  ref(cnt-1)=0.0  ref(expect)=0.0   jset_odd=0
+    lane_mismatch=0  tri_odd=0  少一次的行数=0/0  hash=0x5e509dc5
+    rows=0 verdict=PASS
+  rows=2  运行失败 aclError=507035
+  rows=3  运行失败 aclError=507035
+  rows=4  运行失败 aclError=507035
+  rows=64 运行失败 aclError=507035
+[probe vf nest] tag=nest_o0i1b1 RUN FAIL  (rows 档位 5，失败 4)

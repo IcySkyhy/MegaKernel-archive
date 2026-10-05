@@ -1,0 +1,7 @@
+VARIANT op=exp(id=21) a=0 b=0 n=64 model=13 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x9eb3eb30b709e9ec
+HEAD32 3fd3094c 408f69ff 4142eb7f 42047639
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (structural only: model=13; window 256B non-empty, 255 non-sentinel bytes, 0 bytes written outside window)

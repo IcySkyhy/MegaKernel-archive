@@ -1,0 +1,14 @@
+# M88 r2 —— dbg 诊断矩阵（冻结 tip；命令 → 输出）
+#
+# 命令：for d in 0 1 2 3 4 6 7 8; do M15_AP_DBG=$d <bin> <manifest> prolog; done
+# 闸的代码口径见 m15_layer_loop/evidence/attn_prolog/README.md §5d（r1 那张表与代码相反，已更正）
+#
+== dbg 矩阵 ==
+dbg=0 rc=1 Ap.out.q                     T3     PASS Ap.out.k                     T3     PASS fails=12
+dbg=1 rc=1 Ap.out.q                     T3     FAIL Ap.out.k                     T3     FAIL fails=43
+dbg=2 rc=1 Ap.out.q                     T3     FAIL Ap.out.k                     T3     FAIL fails=41
+dbg=3 rc=1 Ap.out.q                     T3     FAIL Ap.out.k                     T3     FAIL fails=45
+dbg=4 rc=1 Ap.out.q                     T3     FAIL Ap.out.k                     T3     FAIL fails=45
+dbg=6 rc=1 Ap.out.q                     T3     FAIL Ap.out.k                     T3     PASS fails=16
+dbg=7 rc=1 Ap.out.q                     T3     PASS Ap.out.k                     T3     FAIL fails=37
+dbg=8 rc=1 Ap.out.q                     T3     FAIL Ap.out.k                     T3     FAIL fails=44

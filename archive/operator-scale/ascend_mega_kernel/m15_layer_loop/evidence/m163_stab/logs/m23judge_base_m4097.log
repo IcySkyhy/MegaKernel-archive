@@ -1,0 +1,7 @@
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m23_gdn_prefill/check_ref.py:64: RuntimeWarning: overflow encountered in exp
+  eg = np.exp(gcum); ig = np.exp(-gcum); egL = eg[cv - 1]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m23_gdn_prefill/check_ref.py:66: RuntimeWarning: invalid value encountered in multiply
+  Gs = np.where(ii > jj, eg[:, None] * ig[None, :], 0.0)     # 严格下三角
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-162/m23_gdn_prefill/check_ref.py:67: RuntimeWarning: invalid value encountered in multiply
+  Gi = np.where(ii >= jj, eg[:, None] * ig[None, :], 0.0)    # 含对角
+[REF] Pf.gdn         H=48 T=4097 nAic=28 rtol=2.0e-03 | o 超界 0/25171968 max|Δ|=1.892e-07 max|ref|=3.604e-01 | ht 超界 0/786432 max|Δ|=5.543e-07 max|ref|=4.144e+00 | PASS

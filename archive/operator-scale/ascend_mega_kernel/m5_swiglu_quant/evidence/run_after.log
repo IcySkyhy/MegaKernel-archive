@@ -1,0 +1,132 @@
+[M5] (a) silu bf16 m=1   seed=0 inf=0: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=0 inf=0: qx 320 B + scale 20 B bit-exact : PASS
+[M5] (a) silu bf16 m=2   seed=0 inf=0: maxULP=0 exact=1280/1280 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=2   seed=0 inf=0: qx 640 B + scale 40 B bit-exact : PASS
+[M5] (a) silu bf16 m=17  seed=0 inf=0: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=0 inf=0: qx 5440 B + scale 340 B bit-exact : PASS
+[M5] (a) silu bf16 m=128 seed=0 inf=0: maxULP=0 exact=81920/81920 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=128 seed=0 inf=0: qx 40960 B + scale 2560 B bit-exact : PASS
+[M5] (a) silu bf16 m=256 seed=0 inf=0: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=0 inf=0: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5] (a) silu bf16 m=1   seed=1 inf=0: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=1 inf=0: qx 320 B + scale 20 B bit-exact : PASS
+[M5] (a) silu bf16 m=2   seed=1 inf=0: maxULP=0 exact=1280/1280 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=2   seed=1 inf=0: qx 640 B + scale 40 B bit-exact : PASS
+[M5] (a) silu bf16 m=17  seed=1 inf=0: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=1 inf=0: qx 5440 B + scale 340 B bit-exact : PASS
+[M5] (a) silu bf16 m=128 seed=1 inf=0: maxULP=0 exact=81920/81920 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=128 seed=1 inf=0: qx 40960 B + scale 2560 B bit-exact : PASS
+[M5] (a) silu bf16 m=256 seed=1 inf=0: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=1 inf=0: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5] (a) silu bf16 m=1   seed=2 inf=0: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=2 inf=0: qx 320 B + scale 20 B bit-exact : PASS
+[M5] (a) silu bf16 m=2   seed=2 inf=0: maxULP=0 exact=1280/1280 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=2   seed=2 inf=0: qx 640 B + scale 40 B bit-exact : PASS
+[M5] (a) silu bf16 m=17  seed=2 inf=0: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=2 inf=0: qx 5440 B + scale 340 B bit-exact : PASS
+[M5] (a) silu bf16 m=128 seed=2 inf=0: maxULP=0 exact=81920/81920 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=128 seed=2 inf=0: qx 40960 B + scale 2560 B bit-exact : PASS
+[M5] (a) silu bf16 m=256 seed=2 inf=0: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=2 inf=0: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5] (a) silu bf16 m=1   seed=3 inf=0: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=3 inf=0: qx 320 B + scale 20 B bit-exact : PASS
+[M5] (a) silu bf16 m=2   seed=3 inf=0: maxULP=0 exact=1280/1280 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=2   seed=3 inf=0: qx 640 B + scale 40 B bit-exact : PASS
+[M5] (a) silu bf16 m=17  seed=3 inf=0: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=3 inf=0: qx 5440 B + scale 340 B bit-exact : PASS
+[M5] (a) silu bf16 m=128 seed=3 inf=0: maxULP=0 exact=81920/81920 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=128 seed=3 inf=0: qx 40960 B + scale 2560 B bit-exact : PASS
+[M5] (a) silu bf16 m=256 seed=3 inf=0: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=3 inf=0: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5] (a) silu bf16 m=1   seed=4 inf=0: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=4 inf=0: qx 320 B + scale 20 B bit-exact : PASS
+[M5] (a) silu bf16 m=2   seed=4 inf=0: maxULP=0 exact=1280/1280 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=2   seed=4 inf=0: qx 640 B + scale 40 B bit-exact : PASS
+[M5] (a) silu bf16 m=17  seed=4 inf=0: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=4 inf=0: qx 5440 B + scale 340 B bit-exact : PASS
+[M5] (a) silu bf16 m=128 seed=4 inf=0: maxULP=0 exact=81920/81920 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=128 seed=4 inf=0: qx 40960 B + scale 2560 B bit-exact : PASS
+[M5] (a) silu bf16 m=256 seed=4 inf=0: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=4 inf=0: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5] (a) silu bf16 m=1   seed=0 inf=1: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=0 inf=1: qx 320 B + scale 20 B bit-exact : PASS
+[M5]   inf=1 注入组=5/组总=20 device scale=0xFF 5 组（参考 5），注入组 nibble 非零 0/160（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=17  seed=0 inf=1: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=0 inf=1: qx 5440 B + scale 340 B bit-exact : PASS
+[M5]   inf=1 注入组=85/组总=340 device scale=0xFF 85 组（参考 85），注入组 nibble 非零 0/2720（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=256 seed=0 inf=1: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=0 inf=1: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5]   inf=1 注入组=1280/组总=5120 device scale=0xFF 1280 组（参考 1280），注入组 nibble 非零 0/40960（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=1   seed=1 inf=1: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=1 inf=1: qx 320 B + scale 20 B bit-exact : PASS
+[M5]   inf=1 注入组=5/组总=20 device scale=0xFF 5 组（参考 5），注入组 nibble 非零 0/160（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=17  seed=1 inf=1: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=1 inf=1: qx 5440 B + scale 340 B bit-exact : PASS
+[M5]   inf=1 注入组=85/组总=340 device scale=0xFF 85 组（参考 85），注入组 nibble 非零 0/2720（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=256 seed=1 inf=1: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=1 inf=1: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5]   inf=1 注入组=1280/组总=5120 device scale=0xFF 1280 组（参考 1280），注入组 nibble 非零 0/40960（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=1   seed=2 inf=1: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=2 inf=1: qx 320 B + scale 20 B bit-exact : PASS
+[M5]   inf=1 注入组=5/组总=20 device scale=0xFF 5 组（参考 5），注入组 nibble 非零 0/160（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=17  seed=2 inf=1: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=2 inf=1: qx 5440 B + scale 340 B bit-exact : PASS
+[M5]   inf=1 注入组=85/组总=340 device scale=0xFF 85 组（参考 85），注入组 nibble 非零 0/2720（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=256 seed=2 inf=1: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=2 inf=1: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5]   inf=1 注入组=1280/组总=5120 device scale=0xFF 1280 组（参考 1280），注入组 nibble 非零 0/40960（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=1   seed=0 inf=2: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=0 inf=2: qx 320 B + scale 20 B bit-exact : PASS
+[M5]   inf=2 注入组=5/组总=20 device scale=0xFF 5 组（参考 5），注入组 nibble 非零 0/160（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=17  seed=0 inf=2: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=0 inf=2: qx 5440 B + scale 340 B bit-exact : PASS
+[M5]   inf=2 注入组=85/组总=340 device scale=0xFF 85 组（参考 85），注入组 nibble 非零 0/2720（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=256 seed=0 inf=2: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=0 inf=2: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5]   inf=2 注入组=1280/组总=5120 device scale=0xFF 1280 组（参考 1280），注入组 nibble 非零 0/40960（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=1   seed=1 inf=2: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=1 inf=2: qx 320 B + scale 20 B bit-exact : PASS
+[M5]   inf=2 注入组=5/组总=20 device scale=0xFF 5 组（参考 5），注入组 nibble 非零 0/160（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=17  seed=1 inf=2: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=1 inf=2: qx 5440 B + scale 340 B bit-exact : PASS
+[M5]   inf=2 注入组=85/组总=340 device scale=0xFF 85 组（参考 85），注入组 nibble 非零 0/2720（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=256 seed=1 inf=2: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=1 inf=2: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5]   inf=2 注入组=1280/组总=5120 device scale=0xFF 1280 组（参考 1280），注入组 nibble 非零 0/40960（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=1   seed=2 inf=2: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=2 inf=2: qx 320 B + scale 20 B bit-exact : PASS
+[M5]   inf=2 注入组=5/组总=20 device scale=0xFF 5 组（参考 5），注入组 nibble 非零 0/160（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=17  seed=2 inf=2: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=2 inf=2: qx 5440 B + scale 340 B bit-exact : PASS
+[M5]   inf=2 注入组=85/组总=340 device scale=0xFF 85 组（参考 85），注入组 nibble 非零 0/2720（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=256 seed=2 inf=2: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=2 inf=2: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5]   inf=2 注入组=1280/组总=5120 device scale=0xFF 1280 组（参考 1280），注入组 nibble 非零 0/40960（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=1   seed=0 inf=3: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=0 inf=3: qx 320 B + scale 20 B bit-exact : PASS
+[M5]   inf=3 注入组=5/组总=20 device scale=0xFF 5 组（参考 5），注入组 nibble 非零 0/160（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=17  seed=0 inf=3: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=0 inf=3: qx 5440 B + scale 340 B bit-exact : PASS
+[M5]   inf=3 注入组=85/组总=340 device scale=0xFF 85 组（参考 85），注入组 nibble 非零 0/2720（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=256 seed=0 inf=3: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=0 inf=3: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5]   inf=3 注入组=1280/组总=5120 device scale=0xFF 1280 组（参考 1280），注入组 nibble 非零 0/40960（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=1   seed=1 inf=3: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=1 inf=3: qx 320 B + scale 20 B bit-exact : PASS
+[M5]   inf=3 注入组=5/组总=20 device scale=0xFF 5 组（参考 5），注入组 nibble 非零 0/160（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=17  seed=1 inf=3: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=1 inf=3: qx 5440 B + scale 340 B bit-exact : PASS
+[M5]   inf=3 注入组=85/组总=340 device scale=0xFF 85 组（参考 85），注入组 nibble 非零 0/2720（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=256 seed=1 inf=3: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=1 inf=3: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5]   inf=3 注入组=1280/组总=5120 device scale=0xFF 1280 组（参考 1280），注入组 nibble 非零 0/40960（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=1   seed=2 inf=3: maxULP=0 exact=640/640 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=1   seed=2 inf=3: qx 320 B + scale 20 B bit-exact : PASS
+[M5]   inf=3 注入组=5/组总=20 device scale=0xFF 5 组（参考 5），注入组 nibble 非零 0/160（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=17  seed=2 inf=3: maxULP=0 exact=10880/10880 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=17  seed=2 inf=3: qx 5440 B + scale 340 B bit-exact : PASS
+[M5]   inf=3 注入组=85/组总=340 device scale=0xFF 85 组（参考 85），注入组 nibble 非零 0/2720（参考 0；修复前应为 ±6 饱和码）
+[M5] (a) silu bf16 m=256 seed=2 inf=3: maxULP=0 exact=163840/163840 非有限归类不一致=0 : PASS
+[M5] (b) mxfp4  m=256 seed=2 inf=3: qx 81920 B + scale 5120 B bit-exact : PASS
+[M5]   inf=3 注入组=1280/组总=5120 device scale=0xFF 1280 组（参考 1280），注入组 nibble 非零 0/40960（参考 0；修复前应为 ±6 饱和码）
+[M5] ===== ALL PASS =====

@@ -1,0 +1,10 @@
+# runs=prolog（含本轮更正的横幅）在 r2 二进制上的读数
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 48 层，token 3，reps 10，权重=checkpoint，dump=关
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+...
+[m15]   ⚠ 上面那 2 行（rc=124 / mode-2 配对）是 M88 当时的原话，**已过期**：挂死在
+[m15]      `if ASCEND_IS_AIC {` 内部），与 mode-2 配对**无关**；修后本档 rc=0 / ALL PASS
+[m15] 验证 prolog：本段判定项 41 条 + guard 10 条（累计 checks 173 / guards 59 / fails 0）
+[m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 0 + B 0 + C 0 + M1 0 + M2 0 + H 0 + Ch 0 + Kv 0 + Prolog 41 + AttnWire 0 = 173 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15] ===== ALL PASS（checks=173, guards=59, fails=0）=====

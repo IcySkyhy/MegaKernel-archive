@@ -1,0 +1,20 @@
+== inf=1：修复前 check_ref.py（HEAD 版 numpy 参考，算术式 bf16 解码 + digitize）==
+C-ref qx == quant_ref-algorithm qx: False
+C-ref scale == quant_ref-algorithm scale: True
+qx mismatches: 1360, first at byte 16: C=0x00 py=0x77
+exit=1
+== inf=1：修复后 check_ref.py ==
+C-ref qx == quant_ref-algorithm qx: True
+C-ref scale == quant_ref-algorithm scale: True
+exit=0
+
+== inf=3：修复前 check_ref.py（HEAD 版 numpy 参考，算术式 bf16 解码 + digitize）==
+C-ref qx == quant_ref-algorithm qx: False
+C-ref scale == quant_ref-algorithm scale: True
+qx mismatches: 1360, first at byte 16: C=0x00 py=0x7f
+exit=1
+== inf=3：修复后 check_ref.py ==
+C-ref qx == quant_ref-algorithm qx: True
+C-ref scale == quant_ref-algorithm scale: True
+exit=0
+

@@ -1,0 +1,18 @@
+{
+  "tensor": "h_scale.bin",
+  "shape": [
+    66,
+    20
+  ],
+  "dtype": "uint8",
+  "strides": [
+    20,
+    1
+  ],
+  "elem_size": 1,
+  "byte_order": "little",
+  "size_bytes": 1320,
+  "sha256": "c466caa0488deac29693cdfcf90142958196f5d46232139f244eeb032a0b2d90",
+  "kind": "golden",
+  "description": "routed H E8M0 group scales [m*top_k, moe_inter/32]"
+}

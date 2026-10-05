@@ -1,0 +1,67 @@
+# M60 归档 dump 身份核对（W0 的输入来源；check_ref.py 的 `W0 dump 身份 pin` 用的是同一条对照）
+#
+# 口径：M60 的 device 侧判据（W4/W5/W6）声明「输入 = 已归档 dump」。这里把「归档」钉成可核对的字据：
+#   `m17_moe_real/evidence/dump_manifest.md` 里每个 case 的**整段 sha256**（该清单本身由 M29 的
+#   device 日志与 5 次确定性复跑见证）与本机 dump 目录逐份比对。
+#
+# 复跑命令（在 worktree 根）：
+#   sha256sum /tmp/m17_accept/ws_layer0_tok1000_m{1,8,33,64}.bin /tmp/m17_L8/ws_layer8_tok2000_m1.bin
+#   # 段级：按下表 offset/size 切段后逐段 sha256（见 §2 脚本）
+
+## §1 整段 sha256（5 份 dump）
+
+| case | 本机路径 | 整段 sha256（实测） | dump_manifest.md | 结论 |
+|---|---|---|---|---|
+| `layer0_tok1000_m1` | `/tmp/m17_accept/` | `1a0f4883c38d4455701cef9b1d817ccf1a270b77e6e91788445200a0815f51a5` | `1a0f4883c38d4455701cef9b1d817ccf1a270b77e6e91788445200a0815f51a5` | **相符** |
+| `layer0_tok1000_m8` | `/tmp/m17_accept/` | `641e075b697714a525b7182d78f801e24780f93948643106c71e2cbd655792e1` | `641e075b697714a525b7182d78f801e24780f93948643106c71e2cbd655792e1` | **相符** |
+| `layer0_tok1000_m33` | `/tmp/m17_accept/` | `fd364638542d8d92ced2eacfa95ebff4c8f1d0ecba8ad06a3cb2156b3c1bf1f8` | `fd364638542d8d92ced2eacfa95ebff4c8f1d0ecba8ad06a3cb2156b3c1bf1f8` | **相符** |
+| `layer0_tok1000_m64` | `/tmp/m17_accept/` | `2ce489114a973d598a26fcf683a3e09489e2c79c879d7b8ab995417abe3697ed` | `2ce489114a973d598a26fcf683a3e09489e2c79c879d7b8ab995417abe3697ed` | **相符** |
+| `layer8_tok2000_m1` | `/tmp/m17_L8/` | `63e21d554817e7cfeae751a3d7ea43fbcffe423ac43f4180f17c610654c5cce7` | `63e21d554817e7cfeae751a3d7ea43fbcffe423ac43f4180f17c610654c5cce7` | **相符** |
+
+整段核对：5 份，全部相符 = True（0 不符 / 0 缺失；两份都不是「另一份的子串」——每个 tag 在清单里唯一）
+
+## §2 段级抽查（`layer0_tok1000_m1` 的 32 段 offset/size/sha256 逐段复算）
+
+| 段 | offset | bytes | sha256（复算） | 与清单 |
+|---|---|---|---|---|
+| `x_norm` | 0 | 327680 | `8da6c610b0cdedb116005a7c368fd7e70c30ef1990c077e6f9177ac1829c8dad` | 相符 |
+| `res1` | 327680 | 655360 | `acc0008ec60dbe0eb7cb06810f27536146e0187ac9c9224ea0cc744b94f2e94c` | 相符 |
+| `logits` | 983040 | 131072 | `5a0f7f9aafcdd34d1f5ea9d1055b3fc52a67f80b0de5c0a390eb8baff565ce8e` | 相符 |
+| `topk_ids` | 1114112 | 2560 | `a77007925dcc4a5977f85fe74e122cdb72b729244add2a9046c80f9505ccc34d` | 相符 |
+| `topk_weights` | 1116672 | 2560 | `a61df9041a8bfe97f50c911b2b663450b879d5c7d8e10087aa356d3fddfcdb37` | 相符 |
+| `perm_src` | 1119232 | 2560 | `ab62fb7aadb381da4c5f1846abeca4313a31bc82a927b7bc4638d91544edcd19` | 相符 |
+| `perm_expert` | 1121792 | 2560 | `d7236f9461966510a552ebc694a5add535dd9384729368b70ccfebde580dc1bc` | 相符 |
+| `counts` | 1124352 | 2048 | `467039ce2f69eac5d6c018012a43c520d5e0f64e532e6f70a65e871d131844c0` | 相符 |
+| `offsets` | 1126400 | 2112 | `05e9b3816e5aae451a2e4825e1363b9c3be93c0e49e9c7268cb507b72db8d3c8` | 相符 |
+| `inv_slot` | 1128512 | 2560 | `a5462967e1ff033a6cfb511b847c78d9ead894404744c0cc397b2d46d7cdf60a` | 相符 |
+| `w_tk_packed` | 1131072 | 4096 | `1ff3b20bf4c67402be13ada15f062e86d13924006a49b9241dcf4c3d63be97b0` | 相符 |
+| `sgate` | 1135168 | 256 | `102819e6910726d49f40fd2dc160dfcd7be119440bf1edda92a0a198e144fc2d` | 相符 |
+| `x_sorted` | 1135424 | 3276800 | `89750d375afa91bac3098989e796d014f0f563e0b7c54d918c9e1b177123fd3f` | 相符 |
+| `aq` | 4412224 | 41943040 | `dde375eedde7be13fe2dad94079875413f4924cb67196f6ae935756726bcf787` | 相符 |
+| `as` | 46355264 | 2621440 | `7be566e010f69398cee734e00205cdc0aee93ceda22bb698103e5f47b16ea265` | 相符 |
+| `aq_shd` | 48976704 | 81920 | `8d9e102e3d5188946cac0390b095b0aec80b1b4290cd71e72763df65b84e9a16` | 相符 |
+| `as_shd` | 49058624 | 5120 | `b07657a847353f536342b83381c7ad04a14b724d272dc61f2b0e495fec1cf1d7` | 相符 |
+| `gu` | 49063744 | 83886080 | `99d8a744b00c03721b8e15ae4090f9eeb062eb23eb502e401b6a29c0a2cf0165` | 相符 |
+| `gu_shd` | 132949824 | 163840 | `dbe8f4bee52c43f562f3209c91b2e4b0232627009788a80f4dd3fed7297303aa` | 相符 |
+| `h_swiglu` | 133113664 | 819200 | `facc34b4b3a7d5dc8397a27338a3c9c0c639046fe45781222ef807522d54e417` | 相符 |
+| `h_swiglu_shd` | 133932864 | 81920 | `554f4295db399c8ee25e818e06b6c8c0b852005f46e026d4e79521fc55b0490b` | 相符 |
+| `hq` | 134014784 | 10485760 | `d9d6df3a992331b50d2aae8b779dd72b9699f2bf162aa053a6062ae94b907da6` | 相符 |
+| `hs` | 144500544 | 1048576 | `9cf2165a6e642a2768eb8d31935c2680be2f734828641d51ab9cc3fa6ce46bf2` | 相符 |
+| `hq_shd` | 145549120 | 20480 | `c2f49da991905e9d7ec58f20f3c8fa897ce2b7da869eb6faa050d077f0c1f05b` | 相符 |
+| `hs_shd` | 145569600 | 2048 | `8c470b3140b6d2fd1aee0916574c64c973288168526fa6ea76e2ff46e4068ec3` | 相符 |
+| `y` | 145571648 | 167772160 | `4c60b29678fc188c60383f6b205e8454d33f281c62d3e80429c3dcab778a3566` | 相符 |
+| `y_shd` | 313343808 | 327680 | `0423dd8b149cb8a53580670a5a2a4535c1e08bb1d2e3552cbad15a43d06c0f54` | 相符 |
+| `routed` | 313671488 | 327680 | `02d25842e6f020836f14bfbecb7ccb1768c80498fa42951abbc340227c49d26b` | 相符 |
+| `shared` | 313999168 | 327680 | `64e0047cafd294138924dd9eb5193cb5bf8312213470d511bdadc88038ba6dd4` | 相符 |
+| `moe` | 314326848 | 327680 | `38de8aef492d489cfe3c4c3e040e99faba9a782e17d42d6d2cacc2865c584bc2` | 相符 |
+| `y_final` | 314654528 | 327680 | `967993faa2336998d8f620055732d49d91b3129afda7d42980513643b6c3ea1d` | 相符 |
+| `res2` | 314982208 | 655360 | `3fc2065e935e38ec554906b6dbfcee229086ca6b22e13850d91a9b7398b32b37` | 相符 |
+
+段级核对：32 段，不符 0（该 case 的 workspace 总字节 = 315637568，与清单首行一致 = True）
+
+⇒ 结论：M60 的 W4/W5/W6 跑的 device 字节**就是** `evidence/dump_manifest.md` 归档的那 5 份。
+  本轮**未新跑 device** —— 理由：① 归档 dump 已覆盖 m=1/8/33/64 + 换层换 token，且其字节身份
+  由本文件 §1/§2 逐份证明（315 637 568 B 整段 + 32 段）；② device 侧算件本轮**零改动**
+  （`git diff --stat` 只有 `check_ref.py` / `README.md` / `evidence/*`），没有需要新 dump 的理由。
+  竞争情况：本轮不占用 device，故无竞争；顺带记录 —— 复核时 `npu-smi info` 显示 HBM 上有
+  另一个 agent 的进程（`ag_gather_sweep`）在跑，这本身也支持「优先复用归档 dump」的选择。

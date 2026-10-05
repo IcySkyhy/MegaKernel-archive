@@ -1,0 +1,8 @@
+[probe B] probe_b_noprod
+[probe B]   rel=drain(mode=true)  read=LoadAlign<DIST_BRC_B32>  gran=0  mid=0  layout=0  prod=2  off=0  vrel=0  backlog=0
+[probe B]   iters=64 VL=64  一次 launch 只跑一种配置  proc=2
+[probe B] chunk 判读(.=ok p=读到上一chunk n=读到下一chunk X=poison z=读到0 ?=其它): XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+[probe B] chunk: ok=0 stale_prev=0 ahead=0 poison=64 zero=0 other=0 / 64
+[probe B] lane0 不符点数=64  全 lane 不符=4096/4096
+[probe B] 首个不符 chunk=0 得到 -999 期望 1000
+[probe B] probe_b_noprod RUN PASS（非空洞性对照：期望 64/64 全为 POISON）

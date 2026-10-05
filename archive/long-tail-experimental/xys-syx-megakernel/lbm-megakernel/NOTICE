@@ -1,0 +1,21 @@
+LBM source provenance
+
+The original LBM layout, macros, grid utilities, and numerical cell body are
+from wsmoses/Enzyme-GPU-Tests (LBM), derived from the University of Illinois
+benchmark code. Their copyright notices are retained:
+
+(C) Copyright 2010 The Board of Trustees of the University of Illinois
+All Rights Reserved
+
+The spatial and temporal experiments were extracted from the local opt-c,
+opt-d128, opt-d128-2, opt-c128, opt-c128-2, opt-3044 and opt-3044-2 work.
+The common collision body is copied without expression changes. Temporal
+tile sizes are template parameters; debug-only instrumentation is omitted.
+The standalone launch registry, experiment scripts and documentation were
+assembled for this repository. See docs/provenance.json for exact source
+paths and hashes, including local changes beyond the upstream commit.
+
+No repository-wide license text for these LBM sources was present in the
+inspected source snapshot. This extraction does not assign a new blanket
+license to the imported code. The upstream project is:
+https://github.com/wsmoses/Enzyme-GPU-Tests

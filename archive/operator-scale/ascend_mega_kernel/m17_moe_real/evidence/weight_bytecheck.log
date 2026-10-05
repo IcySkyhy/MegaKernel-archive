@@ -1,0 +1,15 @@
+[M17][bytes] x_embed_rows               327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=39266999a5ca54dfd44beda134c283152db0d352c89708f24b366484c0167cc0
+[M17][bytes] res_zero                   327680 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=dae4d3dce1bb0a9414f61a65ee07622fa225ec01e6efe6df6e78f9ad5c58480d
+[M17][bytes] gamma1                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5862b53e5517f869ced34e63ad15132faa2439e7b8a8fa45951b13358374802d
+[M17][bytes] gamma2                       5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6360b8b0b238701b8f648c202bea8a811777c52b9a84b21ea2fa234ed01595b4
+[M17][bytes] router_w                  2621440 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6
+[M17][bytes] sgate_w                      5120 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=a43a13457ded04d02a6ff9904c177b383e2d52ea34e3637c84e63dbb59d7dd45
+[M17][bytes] experts.gate_up_proj    838860800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=9cee4faa4a17060ed245404ad606db936c54768bad69accf794a9392fa766e2b
+[M17][bytes] experts.gate_up_proj.scale   52428800 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=6784845df7e5f94696fba6de295efcf07b0a6382def01376d695276842475a5e
+[M17][bytes] experts.down_proj       419430400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=5f36f463f1539ad30cb4ef1ebee3bec4913df9c6c648ab5082ab591228c85a79
+[M17][bytes] experts.down_proj.scale   26214400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=ac04a4ef890bd4bca366571aa4c99ed7c8141b48f7b4d92640d6e766049dccf8
+[M17][bytes] shared.gate_up            1638400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c9c191f5377ca84bd237a01bcc9acd62e0a8bc055682f32b8dee600fcbbf17fa
+[M17][bytes] shared.gate_up.scale       102400 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=0bc8dfe65acca3699e525a743bd5a5e29dd409f104d6ce9efcecda9e5f23e3dd
+[M17][bytes] shared.down                819200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=69a2082d25f0f19f7135a5817821c419d3a7bbf36e3ffe504c077df144b8f531
+[M17][bytes] shared.down.scale           51200 B  D2H==HOST OK   (diff 0)  sha256(device D2H)=c611c265649ce0531ebcdcddb41b8d088a5bb2b7411b884903c5e5cdd319f8e4
+[M17][bytes] 合计逐字节核对 1342837760 B（1.251 GiB），全部一致 = YES

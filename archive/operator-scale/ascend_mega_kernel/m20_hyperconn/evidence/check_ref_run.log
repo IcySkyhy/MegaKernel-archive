@@ -1,0 +1,484 @@
+########## case exact0 ##########
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:181: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-g[:, s, :]))) * xx[:, s, :]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:323: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-gg[:, s, :]))) * xx[:, s, :]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:170: RuntimeWarning: overflow encountered in exp
+  ls = q(u / (1.0 + np.exp(-u)))
+[chk] case=exact0 m=1 mode=1（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 xn (norm 输出)             n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 lora (OH[:, :320])       n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 inject (OH[:,320:324])   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=320     逐位=0.9812 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.055e-40  PASS
+[chk] 判定 gate (up GEMM 输出)        n=10240   逐位=0.9999 良态逐位=0.9999 ulpMax=1   归一maxAbs=1.316e-03  PASS
+[chk] 判定 blk (gate mix 输出)        n=2560    逐位=0.9996 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.970e-12  PASS
+[chk] 判定 injw (fp32)          maxRel=0.000e+00  PASS
+[chk] 判定 rstd (fp32)          maxRel=7.216e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=0.000e+00  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.227e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=7.216e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.860e-03  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=9.545e-04  PASS
+[chk] 判定 B6 ls<-dev lora          n=320     逐位=0.9812 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.174e-05  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=10240   逐位=0.9999 良态逐位=0.9999 ulpMax=1   归一maxAbs=2.621e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=2560    逐位=0.9996 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.951e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.150400e+04  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=2.406400e+04  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=2.406400e+04  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=1.072000e+03  sensitive
+[chk] guard C BO                Δout(maxAbs over all outputs)=9.664000e+03  sensitive
+[chk] guard C IJ                输入恒 0 → 探针不适用 → SKIPPED（unverified）
+[chk] guard C h' 取值多样性          dev 取值数=33       ref 取值数=33        OK
+[chk] guard C xn 取值多样性          dev 取值数=229      ref 取值数=229       OK
+[chk] guard C gate 取值多样性        dev 取值数=1780     ref 取值数=1780      OK
+[chk] guard C blk 取值多样性         dev 取值数=638      ref 取值数=640       OK
+
+[chk] 覆盖：判定项 18 条 + guard 9 条（共比较 27 条）；unverified/SKIPPED 1 条（见上，逐条打印）
+[chk] RESULT: OK (27/27 条比较过：判定项 18 + guard 9；SKIPPED 1)
+########## case exact0m33 ##########
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:170: RuntimeWarning: overflow encountered in exp
+  ls = q(u / (1.0 + np.exp(-u)))
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:181: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-g[:, s, :]))) * xx[:, s, :]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:313: RuntimeWarning: overflow encountered in exp
+  judge("B6 ls<-dev lora", dev["ls"][:m], u / (1.0 + np.exp(-u)), res)
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:323: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-gg[:, s, :]))) * xx[:, s, :]
+[chk] case=exact0m33 m=33 mode=1（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 xn (norm 输出)             n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 lora (OH[:, :320])       n=10560   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 inject (OH[:,320:324])   n=132     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=10560   逐位=0.9816 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.111e-39  PASS
+[chk] 判定 gate (up GEMM 输出)        n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=1.046e-03  PASS
+[chk] 判定 blk (gate mix 输出)        n=84480   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.858e-10  PASS
+[chk] 判定 injw (fp32)          maxRel=0.000e+00  PASS
+[chk] 判定 rstd (fp32)          maxRel=7.493e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=0.000e+00  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.171e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=7.493e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=10560   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.420e-03  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=132     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.633e-03  PASS
+[chk] 判定 B6 ls<-dev lora          n=10560   逐位=0.9816 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.951e-05  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=2.093e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=84480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.783e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.611200e+04  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=3.046400e+04  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=3.046400e+04  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=1.072000e+03  sensitive
+[chk] guard C BO                Δout(maxAbs over all outputs)=1.241600e+04  sensitive
+[chk] guard C IJ                输入恒 0 → 探针不适用 → SKIPPED（unverified）
+[chk] guard C h' 取值多样性          dev 取值数=33       ref 取值数=33        OK
+[chk] guard C xn 取值多样性          dev 取值数=715      ref 取值数=715       OK
+[chk] guard C gate 取值多样性        dev 取值数=3158     ref 取值数=3156      OK
+[chk] guard C blk 取值多样性         dev 取值数=1709     ref 取值数=1714      OK
+
+[chk] 覆盖：判定项 18 条 + guard 9 条（共比较 27 条）；unverified/SKIPPED 1 条（见上，逐条打印）
+[chk] RESULT: OK (27/27 条比较过：判定项 18 + guard 9；SKIPPED 1)
+########## case int ##########
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:181: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-g[:, s, :]))) * xx[:, s, :]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:323: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-gg[:, s, :]))) * xx[:, s, :]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:170: RuntimeWarning: overflow encountered in exp
+  ls = q(u / (1.0 + np.exp(-u)))
+[chk] case=int m=1 mode=1（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 xn (norm 输出)             n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 lora (OH[:, :320])       n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 inject (OH[:,320:324])   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=320     逐位=0.9938 良态逐位=1.0000 ulpMax=0   归一maxAbs=4.358e-41  PASS
+[chk] 判定 gate (up GEMM 输出)        n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 blk (gate mix 输出)        n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 injw (fp32)          maxRel=7.264e-08  PASS
+[chk] 判定 rstd (fp32)          maxRel=7.223e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.889e-03  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=7.264e-08  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.283e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=7.223e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.743e-03  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.861e-03  PASS
+[chk] 判定 B6 ls<-dev lora          n=320     逐位=0.9938 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.820e-05  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.712e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.372e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.252800e+04  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=2.329600e+04  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=2.329600e+04  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=1.152000e+03  sensitive
+[chk] guard C BO                Δout(maxAbs over all outputs)=8.256000e+03  sensitive
+[chk] guard C IJ                Δout(maxAbs over all outputs)=7.040000e+03  sensitive
+[chk] guard C h' 取值多样性          dev 取值数=777      ref 取值数=777       OK
+[chk] guard C xn 取值多样性          dev 取值数=1231     ref 取值数=1231      OK
+[chk] guard C gate 取值多样性        dev 取值数=1749     ref 取值数=1749      OK
+[chk] guard C blk 取值多样性         dev 取值数=1096     ref 取值数=1097      OK
+
+[chk] 覆盖：判定项 18 条 + guard 10 条（共比较 28 条）；unverified/SKIPPED 0 条（见上，逐条打印）
+[chk] RESULT: OK (28/28 条比较过：判定项 18 + guard 10；SKIPPED 0)
+########## case int_mix ##########
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:181: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-g[:, s, :]))) * xx[:, s, :]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:323: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-gg[:, s, :]))) * xx[:, s, :]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:170: RuntimeWarning: overflow encountered in exp
+  ls = q(u / (1.0 + np.exp(-u)))
+[chk] case=int_mix m=1 mode=0（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 xn (norm 输出)             n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 lora (OH[:, :320])       n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 inject (OH[:,320:324])   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=320     逐位=0.9625 良态逐位=1.0000 ulpMax=0   归一maxAbs=5.677e-40  PASS
+[chk] 判定 gate (up GEMM 输出)        n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 blk (gate mix 输出)        n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 rstd (fp32)          maxRel=3.763e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B3 xn<-dev H',hc_norm    n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.962e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=3.763e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.181e-03  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.396e-03  PASS
+[chk] 判定 B6 ls<-dev lora          n=320     逐位=0.9625 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.277e-05  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.331e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.451e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C BO / C IJ          mode 0 不消费 pending combine → SKIPPED（unverified）×2
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.355200e+04  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=2.688000e+04  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=2.688000e+04  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=8.000000e+02  sensitive
+[chk] guard C xn 取值多样性          dev 取值数=123      ref 取值数=123       OK
+[chk] guard C gate 取值多样性        dev 取值数=1730     ref 取值数=1730      OK
+[chk] guard C blk 取值多样性         dev 取值数=554      ref 取值数=555       OK
+
+[chk] 覆盖：判定项 14 条 + guard 7 条（共比较 21 条）；unverified/SKIPPED 2 条（见上，逐条打印）
+[chk] RESULT: OK (21/21 条比较过：判定项 14 + guard 7；SKIPPED 2)
+########## case int_final ##########
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:181: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-g[:, s, :]))) * xx[:, s, :]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:323: RuntimeWarning: overflow encountered in exp
+  sacc += (1.0 / (1.0 + np.exp(-gg[:, s, :]))) * xx[:, s, :]
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-36/m20_hyperconn/check_ref.py:170: RuntimeWarning: overflow encountered in exp
+  ls = q(u / (1.0 + np.exp(-u)))
+[chk] case=int_final m=1 mode=2（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 xn (norm 输出)             n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 lora (OH[:, :320])       n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=320     逐位=0.9938 良态逐位=1.0000 ulpMax=0   归一maxAbs=4.358e-41  PASS
+[chk] 判定 gate (up GEMM 输出)        n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 blk (gate mix 输出)        n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 injw (fp32)          maxRel=7.264e-08  PASS
+[chk] 判定 rstd (fp32)          maxRel=7.223e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.889e-03  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=7.264e-08  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.283e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=7.223e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.743e-03  PASS
+[chk] 判定 B6 ls<-dev lora          n=320     逐位=0.9938 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.820e-05  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.712e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.372e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.252800e+04  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=2.329600e+04  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=2.329600e+04  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=1.152000e+03  sensitive
+[chk] guard C BO                Δout(maxAbs over all outputs)=8.256000e+03  sensitive
+[chk] guard C IJ                Δout(maxAbs over all outputs)=7.040000e+03  sensitive
+[chk] guard C h' 取值多样性          dev 取值数=777      ref 取值数=777       OK
+[chk] guard C xn 取值多样性          dev 取值数=1231     ref 取值数=1231      OK
+[chk] guard C gate 取值多样性        dev 取值数=1749     ref 取值数=1749      OK
+[chk] guard C blk 取值多样性         dev 取值数=1096     ref 取值数=1097      OK
+
+[chk] 覆盖：判定项 16 条 + guard 10 条（共比较 26 条）；unverified/SKIPPED 0 条（见上，逐条打印）
+[chk] RESULT: OK (26/26 条比较过：判定项 16 + guard 10；SKIPPED 0)
+########## case real_m1 ##########
+[chk] case=real_m1 m=1 mode=1（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=10240   逐位=0.9998 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.093e-04  PASS
+[chk] 判定 xn (norm 输出)             n=10240   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=5.830e-05  PASS
+[chk] 判定 lora (OH[:, :320])       n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 inject (OH[:,320:324])   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 gate (up GEMM 输出)        n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 blk (gate mix 输出)        n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 injw (fp32)          maxRel=5.156e-08  PASS
+[chk] 判定 rstd (fp32)          maxRel=4.163e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=10240   逐位=0.9998 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.474e-03  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=5.156e-08  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.210e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=4.163e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.936e-03  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.958e-03  PASS
+[chk] 判定 B6 ls<-dev lora          n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.355e-03  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.304e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.522e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.093750e+00  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=5.937500e+00  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=1.093750e+00  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=8.359375e-01  sensitive
+[chk] guard C BO                Δout(maxAbs over all outputs)=1.894531e+00  sensitive
+[chk] guard C IJ                Δout(maxAbs over all outputs)=2.500000e-01  sensitive
+[chk] guard C h' 取值多样性          dev 取值数=1702     ref 取值数=1701      OK
+[chk] guard C xn 取值多样性          dev 取值数=2019     ref 取值数=2018      OK
+[chk] guard C gate 取值多样性        dev 取值数=1747     ref 取值数=1747      OK
+[chk] guard C blk 取值多样性         dev 取值数=1100     ref 取值数=1100      OK
+
+[chk] 覆盖：判定项 18 条 + guard 10 条（共比较 28 条）；unverified/SKIPPED 0 条（见上，逐条打印）
+[chk] RESULT: OK (28/28 条比较过：判定项 18 + guard 10；SKIPPED 0)
+########## case real_m2 ##########
+[chk] case=real_m2 m=2 mode=1（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=20480   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.093e-04  PASS
+[chk] 判定 xn (norm 输出)             n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=5.830e-05  PASS
+[chk] 判定 lora (OH[:, :320])       n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 inject (OH[:,320:324])   n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 gate (up GEMM 输出)        n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=6.975e-06  PASS
+[chk] 判定 blk (gate mix 输出)        n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 injw (fp32)          maxRel=6.021e-08  PASS
+[chk] 判定 rstd (fp32)          maxRel=4.163e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=20480   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.474e-03  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=6.021e-08  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.210e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=4.163e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.936e-03  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=8       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.711e-03  PASS
+[chk] 判定 B6 ls<-dev lora          n=640     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.355e-03  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.353e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=5120    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.576e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.386719e+00  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=5.937500e+00  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=1.093750e+00  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=9.687500e-01  sensitive
+[chk] guard C BO                Δout(maxAbs over all outputs)=2.117188e+00  sensitive
+[chk] guard C IJ                Δout(maxAbs over all outputs)=8.671875e-01  sensitive
+[chk] guard C h' 取值多样性          dev 取值数=1971     ref 取值数=1971      OK
+[chk] guard C xn 取值多样性          dev 取值数=2287     ref 取值数=2287      OK
+[chk] guard C gate 取值多样性        dev 取值数=2050     ref 取值数=2051      OK
+[chk] guard C blk 取值多样性         dev 取值数=1445     ref 取值数=1445      OK
+
+[chk] 覆盖：判定项 18 条 + guard 10 条（共比较 28 条）；unverified/SKIPPED 0 条（见上，逐条打印）
+[chk] RESULT: OK (28/28 条比较过：判定项 18 + guard 10；SKIPPED 0)
+########## case real_m33 ##########
+[chk] case=real_m33 m=33 mode=1（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.002e-04  PASS
+[chk] 判定 xn (norm 输出)             n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=1.866e-03  PASS
+[chk] 判定 lora (OH[:, :320])       n=10560   逐位=0.9981 良态逐位=0.9995 ulpMax=1   归一maxAbs=1.185e-03  PASS
+[chk] 判定 inject (OH[:,320:324])   n=132     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=10560   逐位=0.9984 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.539e-04  PASS
+[chk] 判定 gate (up GEMM 输出)        n=337920  逐位=0.9982 良态逐位=0.9993 ulpMax=1   归一maxAbs=2.941e-03  PASS
+[chk] 判定 blk (gate mix 输出)        n=84480   逐位=0.9997 良态逐位=0.9999 ulpMax=1   归一maxAbs=2.128e-03  PASS
+[chk] 判定 injw (fp32)          maxRel=1.037e-07  PASS
+[chk] 判定 rstd (fp32)          maxRel=9.350e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.197e-03  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=1.037e-07  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=337920  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=3.612e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=9.350e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=10560   逐位=0.9997 良态逐位=0.9999 ulpMax=1   归一maxAbs=2.352e-03  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=132     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.085e-03  PASS
+[chk] 判定 B6 ls<-dev lora          n=10560   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.319e-03  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=337920  逐位=0.9999 良态逐位=1.0000 ulpMax=1   归一maxAbs=2.910e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=84480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.128e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=3.015625e+00  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=6.562500e+00  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=1.328125e+00  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=1.250000e+00  sensitive
+[chk] guard C BO                Δout(maxAbs over all outputs)=2.373047e+00  sensitive
+[chk] guard C IJ                Δout(maxAbs over all outputs)=1.312500e+00  sensitive
+[chk] guard C h' 取值多样性          dev 取值数=3032     ref 取值数=3031      OK
+[chk] guard C xn 取值多样性          dev 取值数=3354     ref 取值数=3354      OK
+[chk] guard C gate 取值多样性        dev 取值数=3176     ref 取值数=3178      OK
+[chk] guard C blk 取值多样性         dev 取值数=2603     ref 取值数=2602      OK
+
+[chk] 覆盖：判定项 18 条 + guard 10 条（共比较 28 条）；unverified/SKIPPED 0 条（见上，逐条打印）
+[chk] RESULT: OK (28/28 条比较过：判定项 18 + guard 10；SKIPPED 0)
+########## case real_m64 ##########
+[chk] case=real_m64 m=64 mode=1（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=655360  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=6.410e-03  PASS
+[chk] 判定 xn (norm 输出)             n=655360  逐位=0.9999 良态逐位=1.0000 ulpMax=2   归一maxAbs=7.463e-03  PASS
+[chk] 判定 lora (OH[:, :320])       n=20480   逐位=0.9962 良态逐位=0.9985 ulpMax=1   归一maxAbs=2.370e-03  PASS
+[chk] 判定 inject (OH[:,320:324])   n=256     逐位=0.9961 良态逐位=0.9957 ulpMax=1   归一maxAbs=6.313e-04  PASS
+[chk] 判定 ls (silu 输出)             n=20480   逐位=0.9966 良态逐位=0.9994 ulpMax=2   归一maxAbs=2.463e-03  PASS
+[chk] 判定 gate (up GEMM 输出)        n=655360  逐位=0.9872 良态逐位=0.9923 ulpMax=2   归一maxAbs=2.941e-03  PASS
+[chk] 判定 blk (gate mix 输出)        n=163840  逐位=0.9972 良态逐位=0.9984 ulpMax=1   归一maxAbs=4.255e-03  PASS
+[chk] 判定 injw (fp32)          maxRel=1.098e-07  PASS
+[chk] 判定 rstd (fp32)          maxRel=2.246e-05  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=655360  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=3.199e-03  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=1.098e-07  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=655360  逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=3.719e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=1.140e-07  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=20480   逐位=0.9998 良态逐位=0.9999 ulpMax=1   归一maxAbs=2.365e-03  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=256     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.492e-03  PASS
+[chk] 判定 B6 ls<-dev lora          n=20480   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.360e-03  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=655360  逐位=0.9999 良态逐位=1.0000 ulpMax=1   归一maxAbs=2.913e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=163840  逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.128e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=3.015625e+00  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=6.562500e+00  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=1.328125e+00  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=1.562500e+00  sensitive
+[chk] guard C BO                Δout(maxAbs over all outputs)=2.373047e+00  sensitive
+[chk] guard C IJ                Δout(maxAbs over all outputs)=1.312500e+00  sensitive
+[chk] guard C h' 取值多样性          dev 取值数=3272     ref 取值数=3271      OK
+[chk] guard C xn 取值多样性          dev 取值数=3598     ref 取值数=3599      OK
+[chk] guard C gate 取值多样性        dev 取值数=3432     ref 取值数=3437      OK
+[chk] guard C blk 取值多样性         dev 取值数=2863     ref 取值数=2865      OK
+
+[chk] 覆盖：判定项 18 条 + guard 10 条（共比较 28 条）；unverified/SKIPPED 0 条（见上，逐条打印）
+[chk] RESULT: OK (28/28 条比较过：判定项 18 + guard 10；SKIPPED 0)
+########## case real_mix ##########
+[chk] case=real_mix m=1 mode=0（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 xn (norm 输出)             n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 lora (OH[:, :320])       n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 inject (OH[:,320:324])   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 gate (up GEMM 输出)        n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 blk (gate mix 输出)        n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 rstd (fp32)          maxRel=4.367e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B3 xn<-dev H',hc_norm    n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.553e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=4.367e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.027e-03  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=8.552e-04  PASS
+[chk] 判定 B6 ls<-dev lora          n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.061e-03  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.774e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.097e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C BO / C IJ          mode 0 不消费 pending combine → SKIPPED（unverified）×2
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.437500e+00  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=4.687500e+00  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=1.093750e+00  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=1.328125e+00  sensitive
+[chk] guard C xn 取值多样性          dev 取值数=1823     ref 取值数=1823      OK
+[chk] guard C gate 取值多样性        dev 取值数=1764     ref 取值数=1764      OK
+[chk] guard C blk 取值多样性         dev 取值数=1133     ref 取值数=1133      OK
+
+[chk] 覆盖：判定项 14 条 + guard 7 条（共比较 21 条）；unverified/SKIPPED 2 条（见上，逐条打印）
+[chk] RESULT: OK (21/21 条比较过：判定项 14 + guard 7；SKIPPED 2)
+########## case real_final ##########
+[chk] case=real_final m=1 mode=2（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=10240   逐位=0.9998 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.093e-04  PASS
+[chk] 判定 xn (norm 输出)             n=10240   逐位=0.9999 良态逐位=1.0000 ulpMax=0   归一maxAbs=5.830e-05  PASS
+[chk] 判定 lora (OH[:, :320])       n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 gate (up GEMM 输出)        n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 blk (gate mix 输出)        n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 injw (fp32)          maxRel=5.156e-08  PASS
+[chk] 判定 rstd (fp32)          maxRel=4.163e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=10240   逐位=0.9998 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.474e-03  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=5.156e-08  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=3.210e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=4.163e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.936e-03  PASS
+[chk] 判定 B6 ls<-dev lora          n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.355e-03  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.304e-03  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.522e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.093750e+00  sensitive
+[chk] guard C wDown             Δout(maxAbs over all outputs)=5.937500e+00  sensitive
+[chk] guard C wUp               Δout(maxAbs over all outputs)=1.093750e+00  sensitive
+[chk] guard C wInj              Δout(maxAbs over all outputs)=8.359375e-01  sensitive
+[chk] guard C BO                Δout(maxAbs over all outputs)=1.894531e+00  sensitive
+[chk] guard C IJ                Δout(maxAbs over all outputs)=2.500000e-01  sensitive
+[chk] guard C h' 取值多样性          dev 取值数=1702     ref 取值数=1701      OK
+[chk] guard C xn 取值多样性          dev 取值数=2019     ref 取值数=2018      OK
+[chk] guard C gate 取值多样性        dev 取值数=1747     ref 取值数=1747      OK
+[chk] guard C blk 取值多样性         dev 取值数=1100     ref 取值数=1100      OK
+
+[chk] 覆盖：判定项 16 条 + guard 10 条（共比较 26 条）；unverified/SKIPPED 0 条（见上，逐条打印）
+[chk] RESULT: OK (26/26 条比较过：判定项 16 + guard 10；SKIPPED 0)
+########## case zerow ##########
+[chk] case=zerow m=1 mode=1（数学口径见 README §1.3）
+
+== A. 端到端（设备 vs 独立 numpy double 参考）==
+[chk] 判定 h' (combine 输出)          n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 xn (norm 输出)             n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 lora (OH[:, :320])       n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 inject (OH[:,320:324])   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 ls (silu 输出)             n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 gate (up GEMM 输出)        n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 blk (gate mix 输出)        n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 injw (fp32)          maxRel=7.264e-08  PASS
+[chk] 判定 rstd (fp32)          maxRel=7.223e-08  PASS
+
+== B. 分段链（输入 = 设备自己的上游 dump；考察设备内部自洽）==
+[chk] 判定 B1 H'<-ij,hin,bo         n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.889e-03  PASS
+[chk] 判定 B2 injW<-dev vs ref  maxRel=7.264e-08  PASS
+[chk] 判定 B3 xn<-dev H',hc_norm    n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=2.283e-03  PASS
+[chk] 判定 B3b rstd<-dev H'     maxRel=7.223e-08  PASS
+[chk] 判定 B4 lora<-dev xn,wdown    n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B5 inject<-dev xn,winj   n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B6 ls<-dev lora          n=320     逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B7 gate<-dev ls,wup      n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 B8 blk<-dev gate,xn      n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=1.898e-03  PASS
+
+== C. 非空洞性（输入整张量 ×1.5 → 参考任一输出必须显著变化）==
+[chk] guard C hc_norm           Δout(maxAbs over all outputs)=2.281250e+00  sensitive
+[chk] guard C wDown             输入恒 0 → 探针不适用 → SKIPPED（unverified）
+[chk] guard C wUp               输入恒 0 → 探针不适用 → SKIPPED（unverified）
+[chk] guard C wInj              输入恒 0 → 探针不适用 → SKIPPED（unverified）
+[chk] guard C BO                Δout(maxAbs over all outputs)=6.562500e+00  sensitive
+[chk] guard C IJ                Δout(maxAbs over all outputs)=1.437500e+00  sensitive
+[chk] guard C h' 取值多样性          dev 取值数=777      ref 取值数=777       OK
+[chk] guard C xn 取值多样性          dev 取值数=1231     ref 取值数=1231      OK
+[chk] guard C gate 取值多样性        dev 取值数=1        ref 取值数=1         OK
+[chk] guard C blk 取值多样性         dev 取值数=1156     ref 取值数=1156      OK
+
+[chk] 覆盖：判定项 18 条 + guard 7 条（共比较 25 条）；unverified/SKIPPED 3 条（见上，逐条打印）
+[chk] RESULT: OK (25/25 条比较过：判定项 18 + guard 7；SKIPPED 3)

@@ -1,0 +1,12 @@
+# rebuild wall time, mode=dumps, 5 consecutive runs, M39_THREADS=8
+# host wall clock on a SHARED box -> read as a range, not a number
+# (project rule 2026-09-26: single-number host timings are not evidence)
+# 2026-09-26T12:56:59Z  load=29.43 18.07 12.77
+
+run 1: 41.6 s
+run 2: 67.2 s
+run 3: 46.6 s
+run 4: 39.5 s
+run 5: 54.6 s
+RESULT: OK (5/5 runs measured)
+dumps only: min 39.5 s / max 67.2 s / median 46.6 s / spread 1.70x

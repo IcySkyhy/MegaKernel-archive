@@ -1,0 +1,218 @@
+===== check_ref  evidence/mode4/real_m1  --w data/router_weight.bin
+[check_ref] J1   PASS  topk_ids 逐元素相等（10 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 0）
+[check_ref] J3   PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 3.815e-05，界占用 0.03%）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（10 项）
+[check_ref] J7   PASS  perm_expert == golden（10 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 10（实到 10/10）
+[check_ref] J10  PASS  Σ counts == 10（实到 10）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: evidence/mode4/real_m1/x.bin（dump）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits: max abs 3.815e-05 / max rel 4.349e-06
+[check_ref] R2 分布画像: 活跃专家 10/512, 空专家 502, 单 token 专家 10, 最大槽位 1
+[check_ref] R3 每行 topk 权重行和: min 1.000027 max 1.000027
+[check_ref] guard G1   ok  logits 每行 max == 0（max-shift）
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=1 : PASS | 判定 10/10 | guard 3/3
+[check_ref] RESULT: OK (10/10 判定项通过，guard 3/3)
+===== check_ref  evidence/mode4/real_m2  --w data/router_weight.bin
+[check_ref] J1   PASS  topk_ids 逐元素相等（20 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 0）
+[check_ref] J3   PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 2.289e-05，界占用 0.01%）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（20 项）
+[check_ref] J7   PASS  perm_expert == golden（20 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 20（实到 20/20）
+[check_ref] J10  PASS  Σ counts == 20（实到 20）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: evidence/mode4/real_m2/x.bin（dump）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits: max abs 2.289e-05 / max rel 1.739e-05
+[check_ref] R2 分布画像: 活跃专家 19/512, 空专家 493, 单 token 专家 18, 最大槽位 2
+[check_ref] R3 每行 topk 权重行和: min 0.999615 max 1.000027
+[check_ref] guard G1   ok  logits 每行 max == 0（max-shift）
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=2 : PASS | 判定 10/10 | guard 3/3
+[check_ref] RESULT: OK (10/10 判定项通过，guard 3/3)
+===== check_ref  evidence/mode4/real_m16  --w data/router_weight.bin
+[check_ref] J1   PASS  topk_ids 逐元素相等（160 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 0）
+[check_ref] J3   PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 4.578e-05，界占用 0.03%）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（160 项）
+[check_ref] J7   PASS  perm_expert == golden（160 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 160（实到 160/160）
+[check_ref] J10  PASS  Σ counts == 160（实到 160）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: evidence/mode4/real_m16/x.bin（dump）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits: max abs 4.578e-05 / max rel 1.809e-05
+[check_ref] R2 分布画像: 活跃专家 117/512, 空专家 395, 单 token 专家 84, 最大槽位 4
+[check_ref] R3 每行 topk 权重行和: min 0.998877 max 1.001601
+[check_ref] guard G1   ok  logits 每行 max == 0（max-shift）
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=16 : PASS | 判定 10/10 | guard 3/3
+[check_ref] RESULT: OK (10/10 判定项通过，guard 3/3)
+===== check_ref  evidence/mode4/real_m33  --w data/router_weight.bin
+[check_ref] J1   PASS  topk_ids 逐元素相等（330 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 0）
+[check_ref] J3   PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 4.578e-05，界占用 0.03%）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（330 项）
+[check_ref] J7   PASS  perm_expert == golden（330 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 330（实到 330/330）
+[check_ref] J10  PASS  Σ counts == 330（实到 330）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: evidence/mode4/real_m33/x.bin（dump）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits: max abs 4.578e-05 / max rel 3.090e-05
+[check_ref] R2 分布画像: 活跃专家 179/512, 空专家 333, 单 token 专家 100, 最大槽位 7
+[check_ref] R3 每行 topk 权重行和: min 0.998408 max 1.001787
+[check_ref] guard G1   ok  logits 每行 max == 0（max-shift）
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=33 : PASS | 判定 10/10 | guard 3/3
+[check_ref] RESULT: OK (10/10 判定项通过，guard 3/3)
+===== check_ref  evidence/mode4/real_m64  --w data/router_weight.bin
+[check_ref] J1   PASS  topk_ids 逐元素相等（640 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 0）
+[check_ref] J3   PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 6.866e-05，界占用 0.04%）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（640 项）
+[check_ref] J7   PASS  perm_expert == golden（640 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 640（实到 640/640）
+[check_ref] J10  PASS  Σ counts == 640（实到 640）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: evidence/mode4/real_m64/x.bin（dump）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits: max abs 6.866e-05 / max rel 3.090e-05
+[check_ref] R2 分布画像: 活跃专家 229/512, 空专家 283, 单 token 专家 89, 最大槽位 14
+[check_ref] R3 每行 topk 权重行和: min 0.998408 max 1.001787
+[check_ref] guard G1   ok  logits 每行 max == 0（max-shift）
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=64 : PASS | 判定 10/10 | guard 3/3
+[check_ref] RESULT: OK (10/10 判定项通过，guard 3/3)
+===== check_ref  evidence/mode4/real_m4097  --w data/router_weight.bin --x-seed 5 --x-sha256 539ec35f6a931afbb8a1286df4ba6cae447e162324c2f14b1c3c5d2393d8d4b9 --no-logits
+[check_ref] J1   PASS  topk_ids 逐元素相等（40970 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 1）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（40970 项）
+[check_ref] J7   PASS  perm_expert == golden（40970 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 40970（实到 40970/40970）
+[check_ref] J10  PASS  Σ counts == 40970（实到 40970）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: 重建(m=4097, seed=5) sha256=539ec35f6a931afbb8a1286df4ba6cae447e162324c2f14b1c3c5d2393d8d4b9（已与归档记录核对一致）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits max abs: N/A（--no-logits：该档 logits dump 未入库；机内 J3 见 evidence/run_mode2.log 的 T3 界占用列）
+[check_ref] R2 分布画像: 活跃专家 479/512, 空专家 33, 单 token 专家 5, 最大槽位 1003
+[check_ref] R3 每行 topk 权重行和: min 0.997237 max 1.002593
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=4097 : PASS | 判定 9/9 | guard 2/2
+[check_ref] RESULT: OK (9/9 判定项通过，guard 2/2)
+===== check_ref  evidence/mode4/nu_m1  --w onehot
+[check_ref] J1   PASS  topk_ids 逐元素相等（10 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 0）
+[check_ref] J3   PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 0.000e+00，界占用 0.00%）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（10 项）
+[check_ref] J7   PASS  perm_expert == golden（10 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 10（实到 10/10）
+[check_ref] J10  PASS  Σ counts == 10（实到 10）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: evidence/mode4/nu_m1/x.bin（dump）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits: max abs 0.000e+00 / max rel 0.000e+00
+[check_ref] R2 分布画像: 活跃专家 10/512, 空专家 502, 单 token 专家 10, 最大槽位 1
+[check_ref] R3 每行 topk 权重行和: min 1.000183 max 1.000183
+[check_ref] guard G1   ok  logits 每行 max == 0（max-shift）
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=1 : PASS | 判定 10/10 | guard 3/3
+[check_ref] RESULT: OK (10/10 判定项通过，guard 3/3)
+===== check_ref  evidence/mode4/nu_m7  --w onehot
+[check_ref] J1   PASS  topk_ids 逐元素相等（70 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 0）
+[check_ref] J3   PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 0.000e+00，界占用 0.00%）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（70 项）
+[check_ref] J7   PASS  perm_expert == golden（70 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 70（实到 70/70）
+[check_ref] J10  PASS  Σ counts == 70（实到 70）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: evidence/mode4/nu_m7/x.bin（dump）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits: max abs 0.000e+00 / max rel 0.000e+00
+[check_ref] R2 分布画像: 活跃专家 67/512, 空专家 445, 单 token 专家 65, 最大槽位 3
+[check_ref] R3 每行 topk 权重行和: min 1.000183 max 1.000183
+[check_ref] guard G1   ok  logits 每行 max == 0（max-shift）
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=7 : PASS | 判定 10/10 | guard 3/3
+[check_ref] RESULT: OK (10/10 判定项通过，guard 3/3)
+===== check_ref  evidence/mode4/nu_m33  --w onehot
+[check_ref] J1   PASS  topk_ids 逐元素相等（330 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 0）
+[check_ref] J3   PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 0.000e+00，界占用 0.00%）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（330 项）
+[check_ref] J7   PASS  perm_expert == golden（330 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 330（实到 330/330）
+[check_ref] J10  PASS  Σ counts == 330（实到 330）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: evidence/mode4/nu_m33/x.bin（dump）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits: max abs 0.000e+00 / max rel 0.000e+00
+[check_ref] R2 分布画像: 活跃专家 301/512, 空专家 211, 单 token 专家 298, 最大槽位 20
+[check_ref] R3 每行 topk 权重行和: min 1.000183 max 1.000183
+[check_ref] guard G1   ok  logits 每行 max == 0（max-shift）
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=33 : PASS | 判定 10/10 | guard 3/3
+[check_ref] RESULT: OK (10/10 判定项通过，guard 3/3)
+===== check_ref  evidence/mode4/nu_m64  --w onehot
+[check_ref] J1   PASS  topk_ids 逐元素相等（640 项）
+[check_ref] J2   PASS  topk_weights |ulp| ≤ 1（max 0）
+[check_ref] J3   PASS  router_logits 逐元素 ≤ T3 界（ε=1.553e-04；越界 0 元素；max abs 0.000e+00，界占用 0.00%）
+[check_ref] J4   PASS  expert_counts == golden expert_token_counts
+[check_ref] J5   PASS  expert_slot_base == golden expert_offsets[:512]
+[check_ref] J6   PASS  perm_src_token == golden（640 项）
+[check_ref] J7   PASS  perm_expert == golden（640 项）
+[check_ref] J8   PASS  group_list_i64 == int64(expert_counts)
+[check_ref] J9   PASS  route_scalars[0]/[3] == m*topk = 640（实到 640/640）
+[check_ref] J10  PASS  Σ counts == 640（实到 640）
+[check_ref] ---- 报告项（不参与判定）----
+[check_ref] x 来源: evidence/mode4/nu_m64/x.bin（dump）
+[check_ref] R0 golden(已建模 FTZ) 与本参考的 ids 差（0 槽/行 = 两套 FTZ 实现一致）：0 槽 / 0 行
+[check_ref] R1 logits: max abs 0.000e+00 / max rel 0.000e+00
+[check_ref] R2 分布画像: 活跃专家 404/512, 空专家 108, 单 token 专家 262, 最大槽位 60
+[check_ref] R3 每行 topk 权重行和: min 1.000183 max 1.000183
+[check_ref] guard G1   ok  logits 每行 max == 0（max-shift）
+[check_ref] guard G2   ok  perm 值域合法且与 counts 自洽
+[check_ref] guard G3   ok  route_scalars[2]（脏 id 计数）== 0
+[check_ref] m=64 : PASS | 判定 10/10 | guard 3/3
+[check_ref] RESULT: OK (10/10 判定项通过，guard 3/3)

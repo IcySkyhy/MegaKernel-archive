@@ -1,0 +1,50 @@
+# M46 取证：router FTZ 复现所用设备 dump / 权重 / 上游证据的 sha256
+
+## 为什么需要这份文件
+M46 的整改判据是"设备行为是对的、golden 缺 FTZ 建模"——所以本 mission 的对拍必须能回溯到
+**具体那批设备 dump**。dump 由 M42 的分支 worktree（`.tower/worktrees/wt-42`，只读使用，本
+mission 未改动它）产出；wt-42 未合并、随时可能被改动或回收，故用 sha256 把"那版 m22 kernel +
+那批 dump"钉住。本 mission 的重跑命令见 `router_ftz_device_repro.{log,_pre_m46.log}` 文件头。
+
+## 设备 dump（M42 / wt-42，mode2 = 真实规模路由档）
+```
+16b46af95390a25a0db627a86ff821504207c10535c65077274d6262a19c4bd8  mode2/real_m4097/topk_ids.bin
+6c5ca9bb3f8dd2dd645f49e3ad9ded592752d1b0dda7413969bc1d4d18cb17e3  mode2/real_m4097/topk_weights.bin
+5dfbcc9d102219c653eb9623dd74a7ebc48068d66b0a630429b691e7b4ad27d6  mode2/real_m4097/expert_counts.bin
+dd767209eb1cb63235d24a8eea89a865e1610211a283ae4b0bce72545deeee09  mode2/real_m4097/perm_src_token.bin
+3292586ba6f311dfb85f55525bd047863c4e2e4073f11b5589d100b603259d78  mode2/real_m4097/perm_expert.bin
+```
+路径前缀：`.tower/worktrees/wt-42/m22_router512/evidence/`；
+mode4（同一次运行的改配置复跑）下这 5 个文件的 sha256 与 mode2 完全相同（M42 的
+`evidence/dump_sha256.txt`）。`real_m4097` 没有 `x.bin`（21 MB 未入库），本 mission 用
+M42 记录的 seed=5 重生成 `x` 并**逐字节核对**：
+
+```
+539ec35f6a931afbb8a1286df4ba6cae447e162324c2f14b1c3c5d2393d8d4b9  x(bf16 [4097, 2560], GenActivationsUniform seed=5)
+```
+（本 mission 的复现脚本自行实现了同一生成器，算出的 sha256 与上面**相等**，见日志第 4 行
+`# x sha256   : == 记录`。）
+
+## 真实权重
+```
+966e4d1ca7c18994a9311e82f0074584fe09e65e81eb8ddefe0a4dceebfc6ac6  wt-42/m22_router512/data/router_weight.bin  (bf16 [512, 2560] = 真实 checkpoint mlp.gate.weight 切片)
+```
+
+## 上游证据（M42 finding 及其日志；只读引用，未改动）
+```
+47c1ce2d59a14249389c5900439d469e41bf50e5da876a74e8e8564cbdb1f5cb  .tower/comms/findings/20260926-agent-router512-bug-tools-golden-moe-block-ref-py-router-topk-fp32-ftz-512-logit.md
+90ded59a5ded432fb029d1da071853935a0702e832b3eafcfc3fb33f03f17b38  wt-42/m22_router512/evidence/ftz_modeling_scan.txt        (M42 的阈值扫描原始输出)
+5e1490ff41c0d484538f00562adab93c11dc26bd5adc4aa78cf69be8b3a10149  wt-42/m22_router512/evidence/dump_sha256.txt
+7fe891bd0f1d7ff57cb1d32ea1e58acdf2ac1612fc59e7a0afa958d636c84847  wt-42/m22_router512/check_ref.py                          (M42 自己的 FTZ 参考)
+```
+wt-42 分支/提交：`feat/real-scale-moe-router-top10` @ `29049d931e9ea251932bd2ad4a26f9c0c3e0fdf4`。
+
+## 本 mission 独立复现的对应关系（不采信 M42 日志）
+`router_ftz_device_repro.log`（M46 修正后 module）与 `router_ftz_device_repro_pre_m46.log`
+（M26 合并版 module）是**同一脚本**在两个 module 版本上的原始输出，两张阈值扫描表与 M42 的
+`ftz_modeling_scan.txt` 逐项一致（20/0 行；只有 `< 2^-126` 口径给出 0 行）。
+
+| 口径 | 与设备不同（本 mission 实测） | M42 finding 记载 |
+|---|---|---|
+| 不建模 FTZ（旧） | 125 槽 / **20 行**（权重最大 96 bf16 ulp、32 槽 > 1 ulp） | 20 行 / 125 槽，最大 weight ulp 96 |
+| 建模 FTZ（新） | 0 槽 / **0 行**（权重最大 1 ulp） | 0 行，ulp ≤ 1 |

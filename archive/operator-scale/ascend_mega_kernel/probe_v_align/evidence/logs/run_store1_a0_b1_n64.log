@@ -1,0 +1,7 @@
+VARIANT op=store1(id=11) a=0 b=1 n=64 model=1 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x1f72d7c014bfc2d3
+HEAD32 000000a5 c000003f 2000003f 60000040
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (bitwise model match over 1024 bytes; 1024/1024 bytes compared)

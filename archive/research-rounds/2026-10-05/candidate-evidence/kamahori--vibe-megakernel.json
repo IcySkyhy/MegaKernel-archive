@@ -1,0 +1,324 @@
+{
+  "repository": "kamahori/vibe-megakernel",
+  "url": "https://github.com/kamahori/vibe-megakernel",
+  "created_at": "2026-09-28T21:18:24Z",
+  "pushed_at": "2026-10-04T23:23:40Z",
+  "branch": "main",
+  "license": null,
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": "MEGAKERNEL_LANDSCAPE.md",
+      "size": 86637
+    },
+    {
+      "path": "README.md",
+      "size": 18
+    },
+    {
+      "path": "megabench/.gitignore",
+      "size": 140
+    },
+    {
+      "path": "megabench/README.md",
+      "size": 9728
+    },
+    {
+      "path": "megabench/__init__.py",
+      "size": 63
+    },
+    {
+      "path": "megabench/__main__.py",
+      "size": 91
+    },
+    {
+      "path": "megabench/cases.py",
+      "size": 7167
+    },
+    {
+      "path": "megabench/docs/AGENT_TASK.md",
+      "size": 2614
+    },
+    {
+      "path": "megabench/docs/MODEL_STEP_TASKS.md",
+      "size": 12322
+    },
+    {
+      "path": "megabench/docs/SESSION_PROTOCOL.md",
+      "size": 4593
+    },
+    {
+      "path": "megabench/examples/reference_submission.py",
+      "size": 370
+    },
+    {
+      "path": "megabench/harness/__init__.py",
+      "size": 64
+    },
+    {
+      "path": "megabench/harness/benchmark.py",
+      "size": 2912
+    },
+    {
+      "path": "megabench/harness/correctness.py",
+      "size": 4289
+    },
+    {
+      "path": "megabench/harness/runner.py",
+      "size": 21467
+    },
+    {
+      "path": "megabench/integrations/__init__.py",
+      "size": 61
+    },
+    {
+      "path": "megabench/integrations/make_vibesys_case_task.py",
+      "size": 2896
+    },
+    {
+      "path": "megabench/integrations/ncu_capture.sh",
+      "size": 327
+    },
+    {
+      "path": "megabench/integrations/ncu_profile_case.py",
+      "size": 1819
+    },
+    {
+      "path": "megabench/integrations/vibesys-agent.example.toml",
+      "size": 150
+    },
+    {
+      "path": "megabench/integrations/vibesys_case_evaluator.py",
+      "size": 3258
+    },
+    {
+      "path": "megabench/integrations/vibesys_ncu_mcp.patch",
+      "size": 9649
+    },
+    {
+      "path": "megabench/runner.py",
+      "size": 480
+    },
+    {
+      "path": "megabench/tasks/__init__.py",
+      "size": 59
+    },
+    {
+      "path": "megabench/tasks/common.py",
+      "size": 2065
+    },
+    {
+      "path": "megabench/tasks/dense.py",
+      "size": 3242
+    },
+    {
+      "path": "megabench/tasks/eagle3.py",
+      "size": 8512
+    },
+    {
+      "path": "megabench/tasks/gemma.py",
+      "size": 6167
+    },
+    {
+      "path": "megabench/tasks/moe.py",
+      "size": 3211
+    },
+    {
+      "path": "megabench/tasks/references/__init__.py",
+      "size": 62
+    },
+    {
+      "path": "megabench/tasks/references/moe.py",
+      "size": 2962
+    },
+    {
+      "path": "megabench/tasks/references/qwen3.py",
+      "size": 3403
+    },
+    {
+      "path": "megabench/tasks/workloads.py",
+      "size": 2052
+    },
+    {
+      "path": "megabench/tests/__init__.py",
+      "size": 32
+    },
+    {
+      "path": "megabench/tests/test_suite.py",
+      "size": 14834
+    },
+    {
+      "path": "megabench/workloads.py",
+      "size": 125
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/.gitignore",
+      "size": 13
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/README.md",
+      "size": 17104
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/__init__.py",
+      "size": 61
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/campaign.py",
+      "size": 14664
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/candidate.py",
+      "size": 3083
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/checkpoint.py",
+      "size": 4011
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/codex_adapter.py",
+      "size": 6574
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/config.py",
+      "size": 2063
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/milestones.py",
+      "size": 11932
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/oracle.py",
+      "size": 8332
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/p0_campaign.py",
+      "size": 17892
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/p0_workspace.py",
+      "size": 5594
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/qwen3_gate.py",
+      "size": 5603
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/reference.py",
+      "size": 4693
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/run.py",
+      "size": 1577
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/run_checkpoint.py",
+      "size": 5179
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/schedule.py",
+      "size": 4736
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/seeds/qwen3_b1s128/dense_binding.cpp",
+      "size": 338
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/seeds/qwen3_b1s128/dense_kernel.cu",
+      "size": 4851
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/seeds/qwen3_b1s128/dense_launch.cu",
+      "size": 1103
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/seeds/qwen3_b1s128/submission.py",
+      "size": 2372
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/test_campaign.py",
+      "size": 8057
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/test_codex_adapter.py",
+      "size": 3182
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/test_p0_campaign.py",
+      "size": 6750
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/test_qwen3_gate.py",
+      "size": 3653
+    },
+    {
+      "path": "reproductions/ForgeMegakernel/test_reproduction.py",
+      "size": 6306
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-10-02T20:45:52Z",
+      "subject": "Add ForgeMegakernel agent pipeline reproduction",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/0fb61ea2b7e9b048f88ee0183bd4fbbd0156e155"
+    },
+    {
+      "date": "2026-10-01T21:17:14Z",
+      "subject": "Keep NCU entry points under MegaBench integrations",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/e943448c15cfd84fff7ccadb532c1b23e2d0994c"
+    },
+    {
+      "date": "2026-10-01T21:12:49Z",
+      "subject": "Trim MegaBench references and root wrappers",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/b27ce6f6507742ce198f0994a209bf6980fa9fef"
+    },
+    {
+      "date": "2026-10-01T20:57:18Z",
+      "subject": "Give MegaBench independent decoder references",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/b673703a3c27b6a92c92270238457b7be5ad4107"
+    },
+    {
+      "date": "2026-10-01T20:45:32Z",
+      "subject": "Organize MegaBench tasks and harness",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/7ccaf321505d0d083be36a2427d2a144483fe240"
+    },
+    {
+      "date": "2026-10-01T06:47:14Z",
+      "subject": "Organize MegaBench docs and integrations",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/43a6b393094eec7ea5cbc203bafd04e8af170bc1"
+    },
+    {
+      "date": "2026-10-01T03:35:38Z",
+      "subject": "Record submission paths for timed-out evaluations",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/a6dd085d9a03a99147abb0980f9abe96284c3246"
+    },
+    {
+      "date": "2026-10-01T03:05:57Z",
+      "subject": "Add NCU feedback support for whole-model sessions",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/e447d0b1b0fe4ecb120f903a9ff792f9dc60d3c6"
+    },
+    {
+      "date": "2026-10-01T00:22:27Z",
+      "subject": "Complete whole-model P0 benchmark contracts and per-case session protocol",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/7836d0aaec6ca2d0b3abda4ea2feea55604c9a17"
+    },
+    {
+      "date": "2026-09-30T21:02:29Z",
+      "subject": "Replace MegaBench fusion tasks with whole-model cases",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/67ba96cc13bf50ed76a623f58d6eeeca00540ff4"
+    },
+    {
+      "date": "2026-09-30T07:26:49Z",
+      "subject": "Add agent-focused MegaBench and megakernel landscape",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/8e670dd91a177a4ffb8edab815d08546096eb3e7"
+    },
+    {
+      "date": "2026-09-28T21:19:16Z",
+      "subject": "first commit",
+      "url": "https://github.com/kamahori/vibe-megakernel/commit/b56cd89135a9b4e63813366c75f3327426df39d3"
+    }
+  ],
+  "readme": "# vibe-megakernel\n"
+}

@@ -1,0 +1,20 @@
+--- run 1 (timeout 30s) ---
+[probe] mode=tail variant=rel_neg_twoids vi=26 run=1 N=32 handoffs=1 idSame=0 apiV=1 apiE3=1 skipVrel=0 skipE3rel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=rel_neg_twoids run=1 N=32 tiles=64 mismatched=61 elems=131072 match=6848 stale=0 zero=0 histOther=0 rc=1
+TILEFAIL first idx=0 (aiv=0 tile=0)
+exit=1
+--- run 2 (timeout 30s) ---
+[probe] mode=tail variant=rel_neg_twoids vi=26 run=2 N=32 handoffs=1 idSame=0 apiV=1 apiE3=1 skipVrel=0 skipE3rel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=rel_neg_twoids run=2 N=32 tiles=64 mismatched=61 elems=131072 match=6848 stale=0 zero=0 histOther=0 rc=1
+TILEFAIL first idx=1 (aiv=0 tile=1)
+exit=1
+--- run 3 (timeout 30s) ---
+[probe] mode=tail variant=rel_neg_twoids vi=26 run=3 N=32 handoffs=1 idSame=0 apiV=1 apiE3=1 skipVrel=0 skipE3rel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=rel_neg_twoids run=3 N=32 tiles=64 mismatched=62 elems=131072 match=4864 stale=0 zero=0 histOther=0 rc=1
+TILEFAIL first idx=0 (aiv=0 tile=0)
+exit=1
+--- run 4 (timeout 30s) ---
+[probe] mode=tail variant=rel_neg_twoids vi=26 run=4 N=32 handoffs=1 idSame=0 apiV=1 apiE3=1 skipVrel=0 skipE3rel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=rel_neg_twoids run=4 N=32 tiles=64 mismatched=62 elems=131072 match=4864 stale=0 zero=0 histOther=0 rc=1
+TILEFAIL first idx=0 (aiv=0 tile=0)
+exit=1

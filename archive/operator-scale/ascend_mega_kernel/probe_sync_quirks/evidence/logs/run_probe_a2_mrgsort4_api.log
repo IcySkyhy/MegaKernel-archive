@@ -1,0 +1,6 @@
+[probe A2] MrgSort4 API vs MrgSort(MrgSort4Info) API @3510
+[A200] A2_00_mrgsort4_api_4way   写出=合法0 非法0 sentinel=128  前缀序匹配=0/128  PASS（期望 静默 no-op = dst 全 sentinel）
+[A201] A2_01_mrgsort_api_4way    写出=合法128 非法0 sentinel=0  前缀序匹配=128/128  PASS（期望 写出且与真值全序逐项一致）
+[A202] A2_02_mrgsort4_api_2way   写出=合法0 非法0 sentinel=128  前缀序匹配=0/64  PASS（期望 静默 no-op = dst 全 sentinel）
+[A203] A2_03_mrgsort_api_2way    写出=合法64 非法0 sentinel=64  前缀序匹配=64/64  PASS（期望 写出且与真值全序逐项一致）
+[probe A2] 变体总数=4 未达期望=0

@@ -1,0 +1,8 @@
+RESOURCE name=T30-S1-128 threads=128 registers=56 static_shared=0 dynamic_shared=0 local_bytes=0 active_blocks_per_sm=9 grid=4x30x38 block=128x1x1 steps_per_launch=1 theoretical_occupancy_pct=75.000000
+LBM_allocateGrid: allocated 185.2 MByte
+LBM_showGridStatistics:
+	nObstacleCells:   99248 nAccelCells:   26912 nFluidCells: 2033840
+	minRho:   0.9901 maxRho:   1.0101 mass: 2.160000e+06
+	minU: 0.000000e+00 maxU: 7.938424e-03
+
+DONE physical_steps=6 kernel_launches=6 final_buffer=A patterned=0

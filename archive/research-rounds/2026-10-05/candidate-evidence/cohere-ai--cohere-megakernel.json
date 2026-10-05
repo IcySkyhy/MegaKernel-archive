@@ -1,0 +1,219 @@
+{
+  "repository": "cohere-ai/cohere-megakernel",
+  "url": "https://github.com/cohere-ai/cohere-megakernel",
+  "created_at": "2026-09-04T18:26:51Z",
+  "pushed_at": "2026-09-08T16:27:12Z",
+  "branch": "main",
+  "license": "Apache-2.0",
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 85
+    },
+    {
+      "path": ".gitmodules",
+      "size": 208
+    },
+    {
+      "path": "BUILD_AND_RUN.md",
+      "size": 12122
+    },
+    {
+      "path": "CMakeLists.txt",
+      "size": 4693
+    },
+    {
+      "path": "CODEOWNERS",
+      "size": 30
+    },
+    {
+      "path": "LICENSE",
+      "size": 11337
+    },
+    {
+      "path": "README.md",
+      "size": 8135
+    },
+    {
+      "path": "figures/boundary_backfill.svg",
+      "size": 157307
+    },
+    {
+      "path": "figures/decode_throughput_bars_8k_real.svg",
+      "size": 52366
+    },
+    {
+      "path": "figures/decode_throughput_real_bs1.svg",
+      "size": 49463
+    },
+    {
+      "path": "pyrightconfig.json",
+      "size": 28
+    },
+    {
+      "path": "requirements.txt",
+      "size": 80
+    },
+    {
+      "path": "src/bindings/bindings.h",
+      "size": 1749
+    },
+    {
+      "path": "src/bindings/kv.cpp",
+      "size": 16624
+    },
+    {
+      "path": "src/bindings/launch.cpp",
+      "size": 23845
+    },
+    {
+      "path": "src/bindings/mk_ext.cpp",
+      "size": 3642
+    },
+    {
+      "path": "src/bindings/service.cpp",
+      "size": 6902
+    },
+    {
+      "path": "src/decode/__init__.py",
+      "size": 371
+    },
+    {
+      "path": "src/decode/abi.h",
+      "size": 16302
+    },
+    {
+      "path": "src/decode/gemm-n8-wgmma.cuh",
+      "size": 10287
+    },
+    {
+      "path": "src/decode/launch.cuh",
+      "size": 6932
+    },
+    {
+      "path": "src/decode/megakernel.cuh",
+      "size": 144593
+    },
+    {
+      "path": "src/decode/runtime.cu",
+      "size": 147459
+    },
+    {
+      "path": "src/decode/schedule.py",
+      "size": 126669
+    },
+    {
+      "path": "src/jit.cpp",
+      "size": 13249
+    },
+    {
+      "path": "src/jit.hpp",
+      "size": 1697
+    },
+    {
+      "path": "src/kv/__init__.py",
+      "size": 254
+    },
+    {
+      "path": "src/kv/cache.cpp",
+      "size": 42043
+    },
+    {
+      "path": "src/kv/cache.h",
+      "size": 10119
+    },
+    {
+      "path": "src/kv/pool.py",
+      "size": 21560
+    },
+    {
+      "path": "src/native.py",
+      "size": 7101
+    },
+    {
+      "path": "src/nlohmann/json.hpp",
+      "size": 993716
+    },
+    {
+      "path": "src/prefill/__init__.py",
+      "size": 314
+    },
+    {
+      "path": "src/prefill/torch_prefill.py",
+      "size": 96299
+    },
+    {
+      "path": "src/runner.py",
+      "size": 61956
+    },
+    {
+      "path": "src/serving/__init__.py",
+      "size": 289
+    },
+    {
+      "path": "src/serving/parse.py",
+      "size": 7295
+    },
+    {
+      "path": "src/serving/server.py",
+      "size": 72671
+    },
+    {
+      "path": "src/serving/session.py",
+      "size": 55250
+    },
+    {
+      "path": "src/sm-profiler/README.md",
+      "size": 2040
+    },
+    {
+      "path": "src/sm-profiler/sm_profiler.cu",
+      "size": 14916
+    },
+    {
+      "path": "src/sm-profiler/sm_profiler.h",
+      "size": 10554
+    },
+    {
+      "path": "src/tests/test_binding_invariants.py",
+      "size": 7417
+    },
+    {
+      "path": "src/tests/test_decode_layers.py",
+      "size": 33993
+    },
+    {
+      "path": "src/tests/test_kv_bindings.py",
+      "size": 29545
+    },
+    {
+      "path": "src/tests/test_token_callback.py",
+      "size": 12265
+    },
+    {
+      "path": "tools/print_perf_table.py",
+      "size": 6254
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-08T16:27:09Z",
+      "subject": "update blog link",
+      "url": "https://github.com/cohere-ai/cohere-megakernel/commit/67d0b9ca22ea3652796b715d1d1863459e0e2c3c"
+    },
+    {
+      "date": "2026-09-08T15:18:48Z",
+      "subject": "update README",
+      "url": "https://github.com/cohere-ai/cohere-megakernel/commit/42d9ab70c220245b7968c6cb172fdd5d1f7f1fb3"
+    },
+    {
+      "date": "2026-09-07T10:10:59Z",
+      "subject": "update megakernel evaluation score with mean and stddev",
+      "url": "https://github.com/cohere-ai/cohere-megakernel/commit/6d2fae39562a3542b4d4cd611611ca8b445d0c47"
+    }
+  ],
+  "readme": "# Megakernel Serving Engine for North Mini Code\n\n**A fully-fledged serving system built around a decode megakernel —\n62% of H100 speed-of-light at batch size 1, 1.25×–1.41× faster than vLLM v0.24\nend-to-end.**\n\nA research release of a single-H100 inference engine that serves\nNorth Mini Code with a persistent decode megakernel, behind an\nOpenAI-compatible API.\n\nRead the [blog post](https://cohere.com/blog/megakernels) for the full design story.\n\n> [!IMPORTANT]\n> This is an early research release, not a general-purpose inference engine.\n> Tested on: single NVIDIA H100 (`sm_90a`), CUDA 13+, CPython 3.12+, Linux,\n> batch sizes up to 8. Other configurations are not yet built or tuned.\n\n\n## Highlights\n\n- **Megakernel: one persistent CUDA kernel executes the complete decode forward pass.**\n  No per-op launch overhead, no full-grid barriers between ops. \n- **1.58× vLLM at BS=1 decode**, speedup over vLLM across batch sizes and out to\n  256K context, with no measurable accuracy loss.\n- OpenAI-compatible completions and chat-completions endpoints, streaming,\n  tool calling.\n- Continuous batching, ragged sequence lengths, paged KV cache,\n  sliding-window attention, prefix caching, preemption.\n\n## Quick start\n\nRequires one H100, CUDA 13+, Python 3.12+, and a local North Mini Code\ncheckpoint. For anything beyond these three steps — detailed install, server\nflags, benchmarks, profiling, tests — see **[BUILD_AND_RUN.md](BUILD_AND_RUN.md)**.\n\n```bash\n# 1. Clone (submodules required)\ngit clone --recurse-submodules https://github.com/cohere-ai/megakernel.git\ncd megakernel\n\n# 2. Install deps and build\nuv venv && source .venv/bin/activate\nuv pip install -r requirements.txt\nuv pip install flash-attn-3 --index-url https://download.pytorch.org/whl/cu130\nsudo apt install -y libssl-dev ninja-build   # OpenSSL dev headers for CMake\n\ncmake -S . -B build -G Ninja \\\n  -DPython_EXECUTABLE=\"$(which python)\" -DCMAKE_BUILD_TYPE=Release\ncmake --build build\n\n# 3. Start the OpenAI-compatible server (replace <checkpoint-path>)\npython src/serving/server.py \\\n  --host 127.0.0.1 --port 8000 \\\n  --lib \"$PWD/build/libmk_release.so\" \\\n  --ckpt <checkpoint-path> \\\n  --device cuda:0 --bs 8 --frac-vram-utilization 0.7\n```\n\nThe build must be done with the interpreter you intend to run with — pass it\nexplicitly via `-DPython_EXECUTABLE` or CMake may pick a system Python.\n\nThen send a chat-completion:\n\n```bash\ncurl http://127.0.0.1:8000/v1/chat/completions \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"model\": \"North-Mini-Code-1.0\",\n    \"messages\": [{\"role\": \"user\", \"content\": \"Write a Python Fibonacci function.\"}],\n    \"max_tokens\": 128,\n    \"temperature\": 0\n  }'\n```\n\nThe server also exposes `POST /v1/completions` and `GET /v1/models`.\n\n## Performance\n\nAll results use one NVIDIA H100, BF16, North Mini Code. The baseline is vLLM\nv0.24 with the FlashAttention-3 attention backend and the Triton MoE backend.\nDecode benchmarks disable prefill and use a synthetic KV cache (mean 0,\nstd 0.01) so the comparison isolates decode compute.\n\n### Decode throughput (8K context, real checkpoint)\n\n![Decode throughput at 8K context](figures/decode_throughput_bars_8k_real.svg)\n\n<!-- | Batch size | Megakernel | vLLM | Speedup |\n| ---: | ---: | ---: | ---: |\n| 1 | 292 tok/s | 185 tok/s | **1.58×** |\n| 2 | 465 tok/s | 307 tok/s | **1.52×** |\n| 4 | 703 tok/s | 453 tok/s | **1.55×** |\n| 8 | 1,000 tok/s | 757 tok/s | **1.32×** | -->\n\nThe speedup holds across context lengths — out to 256K at BS=1:\n\n![Decode throughput across context lengths, BS=1](figures/decode_throughput_real_bs1.svg)\n\n### End-to-end serving (real prompts, BS=8)\n\nReal prompts through the API, including prefill, continuous batching, and\nrequests finishing at different times. The engines generate slightly\ndifferent token counts, so average decode throughput is the primary\ncomparison (full wall-time and token-count data is in\nthe [blog post](https://cohere.com/blog/megakernels)).\n\n| Benchmark | Megakernel | vLLM | Speedup |\n| --- | ---: | ---: | ---: |\n| AIME 2025 | 935 tok/s | 661 tok/s | **1.41×** |\n| SciCode | 711 tok/s | 560 tok/s | **1.37×** |\n| MMLU-Pro (CS) | 948 tok/s | 713 tok/s | **1.33×** |\n| LiveCodeBench v6 | 803 tok/s | 625 tok/s | **1.28×** |\n| GPQA | 787 tok/s | 631 tok/s | **1.25×** |\n\nEnd-to-end gains are smaller than decode-only for two reasons: prefill still\nruns as separate PyTorch kernels and currently pauses decode, and expert\nrouting varies per batch, so the megakernel's speedup is not constant. AIME\nand MMLU-Pro sit at the high end because their requests are similar and tend\nto hit the same experts.\n\nTo reproduce these numbers, see\n[BUILD_AND_RUN.md — Benchmark](BUILD_AND_RUN.md#benchmark).\n\n## How it works\nOur megakernel decomposes the decode step into a fine-grained task graph, where each task\ncorresponds to a single GEMM tile or a single split of attention. \nThe kernel itself is ordinary tiled GEMMs and ordinary paged attention, \nstitched together using a single calling convention.\n\nA conventional engine launches one kernel per operation — RMSNorm, QKV,\nattention, MoE, O-proj — and pays full-grid synchronization at each boundary.\nDecode is memory-bound, so those gaps are lost HBM bandwidth.\n\nThis engine launches **one thread block per SM and keeps it resident for the\nentire decode step**. Each block walks a host-built task list; dependencies\nare explicit counters in global memory, so work starts as soon as its\ninputs are ready rather than at a kernel boundary.\n\n\n![MK backfilling idle SMs](figures/boundary_backfill.svg)\n\nThe finer-grained schedule buys three things:\n\n1. **Fill partial waves** — ready MoE tiles occupy SMs idled by the tail of\n   attention (North Mini Code's parallel transformer layers make attention\n   and MoE independent, so this backfill is aggressive).\n2. **Drop false dependencies** — a consumer starts when its own producer\n   finishes, not when the whole grid does.\n3. **Prefetch immutable weights** — tasks stream weights from HBM while\n   waiting on activation dependencies.\n\n\nThe host side splits ownership: a Python control plane admits requests and\nruns prefill; a native C++ thread owns the decode loop while the megakernel\nis running, parking between steps so Python can safely mutate batch state.\n\nThe full story — the task calling convention, the full task graph, the scheduler, and how\nto port an existing kernel into the megakernel — is in\nthe [blog post](https://cohere.com/blog/megakernels).\n\n## Correctness\n\nWe compared the megakernel server with the vLLM baseline on the following benchmarks.\nWe report the mean score and standard deviation over 7 runs.\n| Benchmark | Megakernel | vLLM |\n| --- | ---: | ---: |\n| SciCode | 38.9%±1.6%| 38.2% |\n| LiveCodeBench v6 | 70.3%±1.1% | 70.3% |\n\nUnit tests live in `src/tests/`;\nsee [BUILD_AND_RUN.md — Tests](BUILD_AND_RUN.md#tests).\n\n## Known limitations\n\n- Decode only — prefill uses ordinary PyTorch kernels.\n- Prefill pauses decode; mixed prefill/decode is not yet supported.\n- H100 / SM90a / BF16 only.\n- Batch sizes 1-8 only.\n- Sampling: greedy or temperature; `top_p` must be `1.0`, `top_k` must be\n  `1` or unset, `n` must be `1`.\n- Model-specific: the current megakernel task schedule is specific to North Mini Code.\n\n## Acknowledgements\n\nThe megakernel design builds on ideas from Hazy Research's\n[Look Ma, No Bubbles!](https://hazyresearch.stanford.edu/blog/2025-05-27-no-bubbles)\nand uses [ThunderKittens](https://github.com/HazyResearch/ThunderKittens)\ntile primitives.\n\nPer-SM profiling is adapted from\n[leepoly/sm-profiler](https://github.com/leepoly/sm-profiler); see\n`src/sm-profiler/README.md` for the changes.\n\nSeveral components follow [vLLM](https://github.com/vllm-project/vllm)\nclosely and are credited in the source: the paged KV cache\n([Kwon et al., SOSP 2023](https://arxiv.org/abs/2309.06180)), the seeded\nGumbel-max sampler, and the streaming response format.\n\nThanks also to the authors and maintainers of nanobind, nlhomann json, FlashAttention, PyTorch, and\nTransformers.\n\n## License\nLicensed under the Apache License 2.0. See [LICENSE](LICENSE)."
+}

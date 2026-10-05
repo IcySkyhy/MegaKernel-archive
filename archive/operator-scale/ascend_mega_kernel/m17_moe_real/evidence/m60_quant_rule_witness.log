@@ -1,0 +1,232 @@
+# M60 量化规则见证：外部 pin + 设备无关交叉见证 + 定点/往返判据（`check_ref.py` 的 W0–W6）
+#
+# 读数汇总（**由本提取器当场从输入派生**，不是手写常量）：cases=5（其中 5 个有读数）｜§1 `W*` 30 条（PASS 30 / FAIL 0）｜§2 `自检-*` 25 条（PASS 25 / FAIL 0）
+#
+# 任务（M60）：`quant_hw` 的 docstring 此前只写「m5 MxQuant 全 VEC 路径的 numpy 镜像」，
+#   无任何 `文件:符号` 外部引用；S5/S7 与 e2e 的字节判据全托在它上面 ⇒ M59 判为 **S2 残余**
+#   （m3 型的规则/方向错会两侧一起错、逐字节 0 失配而全 PASS）。本文件是补完后的**原始读数**。
+#
+# 生成方式（本文件是**提取器**的输出，不是手写的；提取器 = `m17_moe_real/gen_witness_log.py`）：
+#   /usr/local/python3.12.13/bin/python3 m17_moe_real/gen_witness_log.py m17_moe_real/evidence/m60_check_ref_run.log \
+#       m17_moe_real/evidence/m60_dump_pin.log \
+#       m17_moe_real/evidence/m60_tamper_experiment.log \
+#       m17_moe_real/evidence/check_ref_run.log > m17_moe_real/evidence/m60_quant_rule_witness.log
+#   （上面四个参数一律按「相对仓库根」echo —— 与 worktree 位置无关；不带参数跑也一样，
+#     因为默认参数也会过同一函数。）
+#
+# 来源逐块标注（**派生** = 数字当场由输入算出；**引用/说明** = 不由本工具派生，已注明出处）：
+#   派生：§0（pin_log 的摘要行）｜§1/§2（运行日志的逐条读数、条数、PASS/FAIL 计数）｜
+#         §3（tamper log 的判定项计数与 FAIL 名）｜§4 的**读数**（逐字取自 §2 的 `自检-W3n` 行）｜
+#         §5②（逐字引自运行日志的 `[coverage]` 行）｜§5④（两份日志的逐行集合比对）｜
+#         §5⑥ 的改动范围（`git diff --name-only main...HEAD`）与计时项计数（当场扫 `check_ref.py`）
+#   引用/说明（非派生）：§3 的实验描述文字｜§4 的**语义解释**与「真实数据 0 个角落组」｜
+#         §5① 的管线说明｜§5③ 的形态声明｜§5⑤ 的 M59/m3 标尺数字（逐条注明出处）｜
+#         §5⑥ 的两句规则陈述
+
+## §0 输入来历：W4/W5/W6 跑的字节 = 归档 dump（摘要，明细见 `m60_dump_pin.log`）
+
+- 整段核对：5 份，全部相符 = True（0 不符 / 0 缺失；两份都不是「另一份的子串」——每个 tag 在清单里唯一）
+- 段级核对：32 段，不符 0（该 case 的 workspace 总字节 = 315637568，与清单首行一致 = True）
+- `check_ref.py` 自己也把这条钉成判定项 **W0**（整段 sha256 vs `evidence/dump_manifest.md`），
+  每个 case 的读数见 §1；**本轮未新跑 device**（device 侧算件零改动，理由见 `m60_dump_pin.log` 末）。
+
+## §1 正向判据（设备无关的规则级 W1/W3 + device 侧的 W0/W4/W5/W6）：30 条读数（PASS 30 / FAIL 0），分布于 5/5 个 case
+
+### `layer0_tok1000_m1`：6 条（PASS 6 / FAIL 0）
+
+- **PASS** `W0 dump 身份 pin：本轮的 ws_*.bin 整段 sha256 == evidence/dump_manifest.md`：1a0f4883c38d4455701cef9b1d817ccf1a270b77e6e91788445200a0815f51a5 vs 1a0f4883c38d4455701cef9b1d817ccf1a270b77e6e91788445200a0815f51a5（= 归档字节）
+- **PASS** `W1 量化规则方向定点（amax∈{0.5,1,2} ⇒ scale 字节 124/125/126、code 6、反量化回 amax；设备无关、规则不敏感）`：quant_hw: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0) | quantize_ocp: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0)
+- **PASS** `W3 角落平价：quant_hw == tools/golden::quantize_ocp（±Inf/NaN / 次正规 / 全零，逐字节；设备无关）`：±Inf/NaN 组: byte=(255, 255) code=((0, 0, 0, 0), (0, 0, 0, 0)) == quantize_ocp | 次正规/最小正规组: byte=(0, 0) code=((0, 0, 0, 0), (8, 0, 0, 0)) == quantize_ocp | 全零组: byte=(0,) code=((0, 0, 0, 0),) == quantize_ocp
+- **PASS** `W4 device 量化字节 == tools/golden::quantize_ocp（A/H routed + 共享，含 scale 与 nibble，逐字节；S1 输入 + 同源转录规则）`：0/18700 字节不符
+- **PASS** `W5 设备侧方向定点：每个活动组的 |amax| 元素码必须 ∈ {6,7}（= 值 4.0/6.0）`：违反 0/1100 组（A/H routed + 共享；分母 = 全部活动组）
+- **PASS** `W6 值域往返：|dequant(device H 字节) − h_ref| ≤ 2·scale + (1×spacing + EPS_FAST·|h_ref|)（h_ref = host double SwiGLU，**不由 device 字节反推**）`：n=7040 越界=0 | |Δ| p50=8.089e-03 p99=6.372e-02 max=3.310e-01 | 预算 max=5.182e-01 最差占预算=0.953 | 相对误差（h_ref ≠ 0，p50/p99/max）=2.447e-01/1.000e+00/1.003e+00
+
+### `layer0_tok1000_m8`：6 条（PASS 6 / FAIL 0）
+
+- **PASS** `W0 dump 身份 pin：本轮的 ws_*.bin 整段 sha256 == evidence/dump_manifest.md`：641e075b697714a525b7182d78f801e24780f93948643106c71e2cbd655792e1 vs 641e075b697714a525b7182d78f801e24780f93948643106c71e2cbd655792e1（= 归档字节）
+- **PASS** `W1 量化规则方向定点（amax∈{0.5,1,2} ⇒ scale 字节 124/125/126、code 6、反量化回 amax；设备无关、规则不敏感）`：quant_hw: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0) | quantize_ocp: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0)
+- **PASS** `W3 角落平价：quant_hw == tools/golden::quantize_ocp（±Inf/NaN / 次正规 / 全零，逐字节；设备无关）`：±Inf/NaN 组: byte=(255, 255) code=((0, 0, 0, 0), (0, 0, 0, 0)) == quantize_ocp | 次正规/最小正规组: byte=(0, 0) code=((0, 0, 0, 0), (8, 0, 0, 0)) == quantize_ocp | 全零组: byte=(0,) code=((0, 0, 0, 0),) == quantize_ocp
+- **PASS** `W4 device 量化字节 == tools/golden::quantize_ocp（A/H routed + 共享，含 scale 与 nibble，逐字节；S1 输入 + 同源转录规则）`：0/149600 字节不符
+- **PASS** `W5 设备侧方向定点：每个活动组的 |amax| 元素码必须 ∈ {6,7}（= 值 4.0/6.0）`：违反 0/8800 组（A/H routed + 共享；分母 = 全部活动组）
+- **PASS** `W6 值域往返：|dequant(device H 字节) − h_ref| ≤ 2·scale + (1×spacing + EPS_FAST·|h_ref|)（h_ref = host double SwiGLU，**不由 device 字节反推**）`：n=56320 越界=0 | |Δ| p50=8.819e-03 p99=7.640e-02 max=5.240e-01 | 预算 max=2.051e+00 最差占预算=0.955 | 相对误差（h_ref ≠ 0，p50/p99/max）=2.420e-01/1.000e+00/1.004e+00
+
+### `layer0_tok1000_m33`：6 条（PASS 6 / FAIL 0）
+
+- **PASS** `W0 dump 身份 pin：本轮的 ws_*.bin 整段 sha256 == evidence/dump_manifest.md`：fd364638542d8d92ced2eacfa95ebff4c8f1d0ecba8ad06a3cb2156b3c1bf1f8 vs fd364638542d8d92ced2eacfa95ebff4c8f1d0ecba8ad06a3cb2156b3c1bf1f8（= 归档字节）
+- **PASS** `W1 量化规则方向定点（amax∈{0.5,1,2} ⇒ scale 字节 124/125/126、code 6、反量化回 amax；设备无关、规则不敏感）`：quant_hw: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0) | quantize_ocp: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0)
+- **PASS** `W3 角落平价：quant_hw == tools/golden::quantize_ocp（±Inf/NaN / 次正规 / 全零，逐字节；设备无关）`：±Inf/NaN 组: byte=(255, 255) code=((0, 0, 0, 0), (0, 0, 0, 0)) == quantize_ocp | 次正规/最小正规组: byte=(0, 0) code=((0, 0, 0, 0), (8, 0, 0, 0)) == quantize_ocp | 全零组: byte=(0,) code=((0, 0, 0, 0),) == quantize_ocp
+- **PASS** `W4 device 量化字节 == tools/golden::quantize_ocp（A/H routed + 共享，含 scale 与 nibble，逐字节；S1 输入 + 同源转录规则）`：0/617100 字节不符
+- **PASS** `W5 设备侧方向定点：每个活动组的 |amax| 元素码必须 ∈ {6,7}（= 值 4.0/6.0）`：违反 0/36300 组（A/H routed + 共享；分母 = 全部活动组）
+- **PASS** `W6 值域往返：|dequant(device H 字节) − h_ref| ≤ 2·scale + (1×spacing + EPS_FAST·|h_ref|)（h_ref = host double SwiGLU，**不由 device 字节反推**）`：n=232320 越界=0 | |Δ| p50=8.977e-03 p99=7.711e-02 max=5.240e-01 | 预算 max=2.051e+00 最差占预算=0.955 | 相对误差（h_ref ≠ 0，p50/p99/max）=2.403e-01/1.000e+00/1.004e+00
+
+### `layer0_tok1000_m64`：6 条（PASS 6 / FAIL 0）
+
+- **PASS** `W0 dump 身份 pin：本轮的 ws_*.bin 整段 sha256 == evidence/dump_manifest.md`：2ce489114a973d598a26fcf683a3e09489e2c79c879d7b8ab995417abe3697ed vs 2ce489114a973d598a26fcf683a3e09489e2c79c879d7b8ab995417abe3697ed（= 归档字节）
+- **PASS** `W1 量化规则方向定点（amax∈{0.5,1,2} ⇒ scale 字节 124/125/126、code 6、反量化回 amax；设备无关、规则不敏感）`：quant_hw: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0) | quantize_ocp: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0)
+- **PASS** `W3 角落平价：quant_hw == tools/golden::quantize_ocp（±Inf/NaN / 次正规 / 全零，逐字节；设备无关）`：±Inf/NaN 组: byte=(255, 255) code=((0, 0, 0, 0), (0, 0, 0, 0)) == quantize_ocp | 次正规/最小正规组: byte=(0, 0) code=((0, 0, 0, 0), (8, 0, 0, 0)) == quantize_ocp | 全零组: byte=(0,) code=((0, 0, 0, 0),) == quantize_ocp
+- **PASS** `W4 device 量化字节 == tools/golden::quantize_ocp（A/H routed + 共享，含 scale 与 nibble，逐字节；S1 输入 + 同源转录规则）`：0/1196800 字节不符
+- **PASS** `W5 设备侧方向定点：每个活动组的 |amax| 元素码必须 ∈ {6,7}（= 值 4.0/6.0）`：违反 0/70400 组（A/H routed + 共享；分母 = 全部活动组）
+- **PASS** `W6 值域往返：|dequant(device H 字节) − h_ref| ≤ 2·scale + (1×spacing + EPS_FAST·|h_ref|)（h_ref = host double SwiGLU，**不由 device 字节反推**）`：n=450560 越界=0 | |Δ| p50=9.083e-03 p99=7.882e-02 max=5.240e-01 | 预算 max=2.060e+00 最差占预算=0.955 | 相对误差（h_ref ≠ 0，p50/p99/max）=2.423e-01/1.000e+00/1.004e+00
+
+### `layer8_tok2000_m1`：6 条（PASS 6 / FAIL 0）
+
+- **PASS** `W0 dump 身份 pin：本轮的 ws_*.bin 整段 sha256 == evidence/dump_manifest.md`：63e21d554817e7cfeae751a3d7ea43fbcffe423ac43f4180f17c610654c5cce7 vs 63e21d554817e7cfeae751a3d7ea43fbcffe423ac43f4180f17c610654c5cce7（= 归档字节）
+- **PASS** `W1 量化规则方向定点（amax∈{0.5,1,2} ⇒ scale 字节 124/125/126、code 6、反量化回 amax；设备无关、规则不敏感）`：quant_hw: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0) | quantize_ocp: byte=(124, 125, 126) code=(6, 6, 6) 反量化=(0.5, 1.0, 2.0)
+- **PASS** `W3 角落平价：quant_hw == tools/golden::quantize_ocp（±Inf/NaN / 次正规 / 全零，逐字节；设备无关）`：±Inf/NaN 组: byte=(255, 255) code=((0, 0, 0, 0), (0, 0, 0, 0)) == quantize_ocp | 次正规/最小正规组: byte=(0, 0) code=((0, 0, 0, 0), (8, 0, 0, 0)) == quantize_ocp | 全零组: byte=(0,) code=((0, 0, 0, 0),) == quantize_ocp
+- **PASS** `W4 device 量化字节 == tools/golden::quantize_ocp（A/H routed + 共享，含 scale 与 nibble，逐字节；S1 输入 + 同源转录规则）`：0/18700 字节不符
+- **PASS** `W5 设备侧方向定点：每个活动组的 |amax| 元素码必须 ∈ {6,7}（= 值 4.0/6.0）`：违反 0/1100 组（A/H routed + 共享；分母 = 全部活动组）
+- **PASS** `W6 值域往返：|dequant(device H 字节) − h_ref| ≤ 2·scale + (1×spacing + EPS_FAST·|h_ref|)（h_ref = host double SwiGLU，**不由 device 字节反推**）`：n=7040 越界=0 | |Δ| p50=1.285e-03 p99=1.039e-02 max=3.081e-02 | 预算 max=6.462e-02 最差占预算=0.951 | 相对误差（h_ref ≠ 0，p50/p99/max）=1.870e-01/1.000e+00/1.004e+00
+
+## §2 负向对照（`自检-*`；不 FAIL 即说明见证失明）：25 条读数（PASS 25 / FAIL 0），分布于 5/5 个 case
+
+### `layer0_tok1000_m1`：5 条（PASS 5 / FAIL 0）
+
+- **PASS** `自检-W2 负向对照：方向反的 legacy 规则必须在定点上分叉（code ≠ 6）`：方向反（x × 2^(byte−127)）：code=(0, 1, 2)，而 scale 字节与正确规则**逐字节相同** = (124, 125, 126) ⇒ 只比 scale 字节的 vf-probe 对 data 侧翻转完全无感（M59 §6 第 3 步）
+- **PASS** `自检-W3n 负向对照：M60 修复前的镜像必须在角落上与官方分叉`：f0286f6:m17_moe_real/check_ref.py::quant_hw：与 quantize_ocp 失配 5/85 字节（+Inf 组给 scale 253/code 7，官方 255/code 0；`amax=2⁻¹²⁶` 组给 code 4，官方 code 0）⇒ M29 以来既有判据从未覆盖这两个角落（真实数据 0 个这样的组）
+- **PASS** `自检-W4n 负向对照：方向反的 legacy 规则 vs device 字节必须失配`：16490/18700 字节不符 = 88.2%（M59 在 m3 上的归档同类读数 94.8%、在 m1 golden 上 44.2%）
+- **PASS** `自检-W5n 负向对照：方向反的规则在同一统计上必须违反`：违反 1089/1100 组 ⇒ 该统计对方向翻转是活的
+- **PASS** `自检-W6n 负向对照：方向反的编码在同一判据上必须越界`：越界=1123/7040 | 相对误差 p50/max=1.000e+00/1.000e+00（同口径下 M59 在 m3 上的归档读数 = p50 142 / max 5.79e76；本数据组的尺度更小，方向反后码被压到 0，相对误差饱和在 1.0 —— 这也是本判据用**绝对界 + 预算比**而不是相对误差作判定的原因）
+
+### `layer0_tok1000_m8`：5 条（PASS 5 / FAIL 0）
+
+- **PASS** `自检-W2 负向对照：方向反的 legacy 规则必须在定点上分叉（code ≠ 6）`：方向反（x × 2^(byte−127)）：code=(0, 1, 2)，而 scale 字节与正确规则**逐字节相同** = (124, 125, 126) ⇒ 只比 scale 字节的 vf-probe 对 data 侧翻转完全无感（M59 §6 第 3 步）
+- **PASS** `自检-W3n 负向对照：M60 修复前的镜像必须在角落上与官方分叉`：f0286f6:m17_moe_real/check_ref.py::quant_hw：与 quantize_ocp 失配 5/85 字节（+Inf 组给 scale 253/code 7，官方 255/code 0；`amax=2⁻¹²⁶` 组给 code 4，官方 code 0）⇒ M29 以来既有判据从未覆盖这两个角落（真实数据 0 个这样的组）
+- **PASS** `自检-W4n 负向对照：方向反的 legacy 规则 vs device 字节必须失配`：131384/149600 字节不符 = 87.8%（M59 在 m3 上的归档同类读数 94.8%、在 m1 golden 上 44.2%）
+- **PASS** `自检-W5n 负向对照：方向反的规则在同一统计上必须违反`：违反 8601/8800 组 ⇒ 该统计对方向翻转是活的
+- **PASS** `自检-W6n 负向对照：方向反的编码在同一判据上必须越界`：越界=9047/56320 | 相对误差 p50/max=1.000e+00/1.000e+00（同口径下 M59 在 m3 上的归档读数 = p50 142 / max 5.79e76；本数据组的尺度更小，方向反后码被压到 0，相对误差饱和在 1.0 —— 这也是本判据用**绝对界 + 预算比**而不是相对误差作判定的原因）
+
+### `layer0_tok1000_m33`：5 条（PASS 5 / FAIL 0）
+
+- **PASS** `自检-W2 负向对照：方向反的 legacy 规则必须在定点上分叉（code ≠ 6）`：方向反（x × 2^(byte−127)）：code=(0, 1, 2)，而 scale 字节与正确规则**逐字节相同** = (124, 125, 126) ⇒ 只比 scale 字节的 vf-probe 对 data 侧翻转完全无感（M59 §6 第 3 步）
+- **PASS** `自检-W3n 负向对照：M60 修复前的镜像必须在角落上与官方分叉`：f0286f6:m17_moe_real/check_ref.py::quant_hw：与 quantize_ocp 失配 5/85 字节（+Inf 组给 scale 253/code 7，官方 255/code 0；`amax=2⁻¹²⁶` 组给 code 4，官方 code 0）⇒ M29 以来既有判据从未覆盖这两个角落（真实数据 0 个这样的组）
+- **PASS** `自检-W4n 负向对照：方向反的 legacy 规则 vs device 字节必须失配`：545160/617100 字节不符 = 88.3%（M59 在 m3 上的归档同类读数 94.8%、在 m1 golden 上 44.2%）
+- **PASS** `自检-W5n 负向对照：方向反的规则在同一统计上必须违反`：违反 35716/36300 组 ⇒ 该统计对方向翻转是活的
+- **PASS** `自检-W6n 负向对照：方向反的编码在同一判据上必须越界`：越界=37159/232320 | 相对误差 p50/max=1.000e+00/1.000e+00（同口径下 M59 在 m3 上的归档读数 = p50 142 / max 5.79e76；本数据组的尺度更小，方向反后码被压到 0，相对误差饱和在 1.0 —— 这也是本判据用**绝对界 + 预算比**而不是相对误差作判定的原因）
+
+### `layer0_tok1000_m64`：5 条（PASS 5 / FAIL 0）
+
+- **PASS** `自检-W2 负向对照：方向反的 legacy 规则必须在定点上分叉（code ≠ 6）`：方向反（x × 2^(byte−127)）：code=(0, 1, 2)，而 scale 字节与正确规则**逐字节相同** = (124, 125, 126) ⇒ 只比 scale 字节的 vf-probe 对 data 侧翻转完全无感（M59 §6 第 3 步）
+- **PASS** `自检-W3n 负向对照：M60 修复前的镜像必须在角落上与官方分叉`：f0286f6:m17_moe_real/check_ref.py::quant_hw：与 quantize_ocp 失配 5/85 字节（+Inf 组给 scale 253/code 7，官方 255/code 0；`amax=2⁻¹²⁶` 组给 code 4，官方 code 0）⇒ M29 以来既有判据从未覆盖这两个角落（真实数据 0 个这样的组）
+- **PASS** `自检-W4n 负向对照：方向反的 legacy 规则 vs device 字节必须失配`：1058817/1196800 字节不符 = 88.5%（M59 在 m3 上的归档同类读数 94.8%、在 m1 golden 上 44.2%）
+- **PASS** `自检-W5n 负向对照：方向反的规则在同一统计上必须违反`：违反 69329/70400 组 ⇒ 该统计对方向翻转是活的
+- **PASS** `自检-W6n 负向对照：方向反的编码在同一判据上必须越界`：越界=71756/450560 | 相对误差 p50/max=1.000e+00/1.000e+00（同口径下 M59 在 m3 上的归档读数 = p50 142 / max 5.79e76；本数据组的尺度更小，方向反后码被压到 0，相对误差饱和在 1.0 —— 这也是本判据用**绝对界 + 预算比**而不是相对误差作判定的原因）
+
+### `layer8_tok2000_m1`：5 条（PASS 5 / FAIL 0）
+
+- **PASS** `自检-W2 负向对照：方向反的 legacy 规则必须在定点上分叉（code ≠ 6）`：方向反（x × 2^(byte−127)）：code=(0, 1, 2)，而 scale 字节与正确规则**逐字节相同** = (124, 125, 126) ⇒ 只比 scale 字节的 vf-probe 对 data 侧翻转完全无感（M59 §6 第 3 步）
+- **PASS** `自检-W3n 负向对照：M60 修复前的镜像必须在角落上与官方分叉`：f0286f6:m17_moe_real/check_ref.py::quant_hw：与 quantize_ocp 失配 5/85 字节（+Inf 组给 scale 253/code 7，官方 255/code 0；`amax=2⁻¹²⁶` 组给 code 4，官方 code 0）⇒ M29 以来既有判据从未覆盖这两个角落（真实数据 0 个这样的组）
+- **PASS** `自检-W4n 负向对照：方向反的 legacy 规则 vs device 字节必须失配`：16700/18700 字节不符 = 89.3%（M59 在 m3 上的归档同类读数 94.8%、在 m1 golden 上 44.2%）
+- **PASS** `自检-W5n 负向对照：方向反的规则在同一统计上必须违反`：违反 1100/1100 组 ⇒ 该统计对方向翻转是活的
+- **PASS** `自检-W6n 负向对照：方向反的编码在同一判据上必须越界`：越界=1360/7040 | 相对误差 p50/max=1.000e+00/1.000e+00（同口径下 M59 在 m3 上的归档读数 = p50 142 / max 5.79e76；本数据组的尺度更小，方向反后码被压到 0，相对误差饱和在 1.0 —— 这也是本判据用**绝对界 + 预算比**而不是相对误差作判定的原因）
+
+## §3 「已知会被漏掉」的负向对照（M60 新增）：篡改 dump 后**内容判据仍 OK**，但 W0 会咬住
+
+口径：`docs/17` §2.1 与 tower 规则要求审校工具交代自己的覆盖边界，并**实测**一条会漏掉的对照。
+本目录 M29 时代的对照是「篡改一个空槽位的 `A_qx` 字节 → 脚本仍报 OK」；M60 起这条**行为变了**：
+`W0`（dump 身份 pin）会把「整段 sha 变了」直接判 FAIL —— 即整段字节层面的篡改**不再漏**。
+为把 M60 后的覆盖边界仍然**实测**出来，该实验对同一份 m=1 归档 dump 做两处**内容层面**的篡改
+（空槽位 `hq[0][0][0]`、活动行行距尾部 `hs[41][0][20]`，各 XOR 0x01），完整输出与复现命令见
+`m17_moe_real/evidence/m60_tamper_experiment.log`（仓内文件，§3 的输入）。
+
+实测读数（**当场从 `m60_tamper_experiment.log` 提取**，口径 = 该日志里**每一条**`[check_ref] PASS|FAIL` 行）：判定项 74 条（PASS 73 / FAIL 1）；FAIL 项 = `W0`；**内容判据（除 `W0` 身份 pin）= 73 条（PASS 73 / FAIL 0）**；RESULT 行 = `FAIL (1/74 条判定项越界) —— 退出码 1`
+
+| 被篡改的字节 | 谁负责咬 | 实测（当场提取） | 结论 |
+|---|---|---|---|
+| 任意字节（整段层面） | `W0` 整段 sha256 pin | FAIL | **不再是盲区** —— M60 起「跑的是不是归档字节」可判定 |
+| 空槽位 `hq[0][0][0]` | 无（W4/W5/W6 只遍历活动槽；不变量/guard 也不覆盖） | 内容判据 73 PASS / 0 FAIL | 覆盖边界，**已披露**（`[coverage]` 每次都打印，且打印的就是「除 W0 外全 PASS」这读法） |
+| 活动行 `hs[41][0][20]`（行距尾部） | 无（判据只读 `[:K/32]`） | 同上 | 覆盖边界，**已披露** |
+
+⇒ 这两处是「已知会被漏掉」的对照；它们与 M29 的 `S5/S7` 字节判据的边界**完全相同**
+  （既有判据也只比 `[:HIDDEN/32]` / `[:INTER/32]` 与活动槽前 t_e 行），M60 既没扩大也没缩小它。
+
+## §4 base 版镜像的角落分叉（M60 的修复点，设备无关、可复算）
+
+`自检-W3n` 用 `git show f0286f6:m17_moe_real/check_ref.py` 取出 **M60 修复前**的 `quant_hw`（用
+`exec` 装进临时模块，不写盘）与 `tools/golden::quantize_ocp` 逐字节比。**本节的读数不是手抄的**：
+下面并列 §2 里 `自检-W3n` 那一行的原文（含失配字节数与具体角落数值），按取值去重后给出命中的 case。
+
+- **5/5 个 case 相同**：f0286f6:m17_moe_real/check_ref.py::quant_hw：与 quantize_ocp 失配 5/85 字节（+Inf 组给 scale 253/code 7，官方 255/code 0；`amax=2⁻¹²⁶` 组给 code 4，官方 code 0）⇒ M29 以来既有判据从未覆盖这两个角落（真实数据 0 个这样的组）
+
+**语义解释（说明性文字，非派生；读数以上面 §2 的原文为准）**：修复前的镜像缺官方两条覆盖 ——
+① 组内含 ±Inf/NaN 时，官方 `:406`/`:413` 把 scale 写成 E8M0 NaN、把 `halfScale` 覆盖成 bf16 NaN，
+   于是 `Mul` 出 NaN、`Cast` 收成全 0 码；旧实现只把指数域字段减 2 并裁剪，因此给出一个**可表示**
+   的 scale 字节、并把该元素饱和成最大码（具体数值见上）。
+② 指数域 < 2 的退化组：官方 `:402-403` 把 `shared` 夹到 0、`:414` 令 `halfScale = 0` ⇒ 全组只剩符号位；
+   旧实现仍按 `2^(byte−127)` 反算，于是给出非零码（具体数值见上）。
+
+**「真实数据 0 个这样的组」—— 非派生量，出处与复算路径如下**（本工具不读 dump，无法派生它）：
+该读数是 M60 用 5 份归档 dump 的活动组直接扫描得出的；独立复查记录在评审文件里——
+`.tower/comms/reviews/review-feat-m60-m17-quant-rule-external-pin-and-witn-reviewer-m60-r1.md`
+独立重数过同一读数；`…-reviewer-m60-r2.md` **未重数**（它用的是「`check_ref.py` 代码树
+AST 相同 ⇒ 读数不变」这条论证）。
+复算路径（不依赖任何人的叙述）：按 `m17_moe_real/evidence/dump_manifest.md` 的 5 份 dump，
+对每个活动组取 `max(bf16 bits & 0x7F80)`，数「等于 `0x7F80`」（非有限组）与「< `0x0100`」（退化组）的组数。
+
+## §5 口径、自指形态与覆盖范围交代
+
+**① 计数与匹配器同源**：§1/§2 的字节数、组数、越界数由 `check_ref.py` 的**同一个循环**
+产出（`w4_tot` / `w5_n` / `rt['n']`），本文件由提取器正则从运行日志取数、计数当场统计；
+`[coverage]` 行里的活动槽数、行数同样取自同一次运行的 `counts_dev`。哪些块是派生、哪些是
+引用/说明，见文件头的「来源逐块标注」——那里逐块列了，不用「全部/唯一」这类量词概括。
+
+**② 三态分栏**（哪些判据吃 dump、哪些不吃、哪些不在覆盖内）—— 原文引自运行日志：
+
+-   量化规则见证（M60）的三态分栏：**W1/W2/W3/W3n 设备无关**（只吃合成输入，不读 dump；可与装置无关地复跑）；**W0/W4/W4n/W5/W5n/W6/W6n 吃已归档 dump**（`W0` 读整段 `ws_*.bin` 的 sha256，其余读段内字节；身份与 `evidence/dump_manifest.md` 逐份核对），覆盖 = 全部 10 个活动槽（A/H routed + 共享）的**前 t_e 行**，即 18700 个 A/H 量化字节与 1100 个活动组 —— 计数与匹配器同源（同一循环，不另写数字）；**不在覆盖内**：空槽（502 个）与各行 padding、scale 行距尾部字节（`hs[:, :, 20:]` 等 device 不写或不用的槽位）、`W6` 的 h_ref 自身误差（由 S7 判据见证，本判据只把它的界并入预算）
+-   ⇒ **本脚本的 OK 不等于「整个 workspace 都比过了」**：空槽位/各段 padding 行/上述 host 侧项不在**内容**判据的比较范围（负向对照见 README §5.3.1：**在归档 dump 上篡改空槽位或行距尾部的字节 ⇒ 内容判据仍全 OK，但 `W0` 会因整段 sha 变化而 FAIL** —— 此时要按「**除 W0 外全 PASS**」读；内容是覆盖边界、不是漏判。历史口径：M29 时这条篡改只报「内容判据 OK」，M60 新增的 `W0`（整段身份 pin）把它变成「内容 OK + 身份 FAIL」，逐条对照见 README §5.3.1 的「M29 → M60 的一处行为变化」注）
+
+**③ 自指形态（M59 §1 代号）**：
+
+| 判据 | 输入 | 规则来源 | 形态 | 能不能计入「独立端到端」 |
+|---|---|---|---|---|
+| W0 | `ws_*.bin` 整段字节 | `evidence/dump_manifest.md`（M29 device 日志 + 确定性复跑） | structural（**T4**，无正确性咬合力） | 不计 |
+| W1/W2 | 合成定点输入（amax∈{0.5,1,2}） | 官方 `:404-405` / `:412` / `:753-758` | **N2 外部 pin + 规则不敏感** | 不计（不是端到端） |
+| W3/W3n | 合成角落输入 | 官方 `:402-414` / `tools/golden::quantize_ocp` | **N2 + 同源转录**（两个转写互为对照） | 不计 |
+| W4/W4n | device `x_sorted` / bf16 `GU` / `xnorm` | `tools/golden::quantize_ocp` | **S1（输入取设备中间量）+ 同源转录** | **不得计入** |
+| W5/W5n | device 打包字节 + host 复算的组内 amax 位置 | 「MXFP4 group32 的数学」（只引用数学，不拿任一量化实现当基准） | **S1 + 规则不敏感** | **不得计入** |
+| W6/W6n | device `hq/hs` 字节 + host double SwiGLU 参考值 | 同上 | **S1 + 规则不敏感** | **不得计入** |
+| `[报告] W6b` | device `hq/hs` 字节 + §5.4 A 链的 H（输入 = 真实 x） | 同上 | **S1-free（除 device 字节本身）** | 可作参考，本轮只报不判 |
+
+⇒ 明确声明：W4/W5/W6 **都是隔离判据（S1）**，因为它们的参考值/位置的输入含 device 中间量；
+  它们**不得**被计入「独立端到端」。真正的 S1-free 锚点仍是 §5.4 的 e2e A 链（从真实 x 起步）。
+  `quantize_ocp` 与本镜像的关系是**同源转录**（correlated transcription：同一工作区两个 agent 对
+  同一份官方头文件的两次转写，共用同一组常量与同一份读法），**不是两处独立** —— 它能咬住转录
+  笔误与角落分支差异（§4 就是实例），但**咬不住**对规范的共同误读；补这个缺口的是 W1/W5/W6 的
+  「方向 + 值域」口径（它们只引用 MXFP4 group32 的数学；量化实现只以「两份转写并列」出现）。
+
+**④ 回归核对（修改 `quant_hw` 角落分支后，既有判据是否被改动）—— 本表由提取器当场比对得出**：
+
+基线 = `m17_moe_real/evidence/check_ref_run.log`（M29 存档）；被核 = `m17_moe_real/evidence/m60_check_ref_run.log`；口径 = 剔除 `W*`/`自检-*` 行后的 `PASS/FAIL` 行**逐行集合比对**
+
+| case | M29 归档 | M60 本次 | 逐行比对 |
+|---|---|---|---|
+| `layer0_tok1000_m1` | 63 条 | 63 条 | **逐行相同** |
+| `layer0_tok1000_m8` | 240 条 | 240 条 | **逐行相同** |
+| `layer0_tok1000_m33` | 534 条 | 534 条 | **逐行相同** |
+| `layer0_tok1000_m64` | 705 条 | 705 条 | **逐行相同** |
+
+⇒ 当场比对结果：**4/4 个 case 的既有判定项逐行相同**（含每个分位数字）—— 修复只触及真实数据不出现的角落（§4）。
+
+**⑤ 与 M59 归档标尺的对照（判据必须先会咬）—— 本表是「引用」，不由本工具派生**：
+
+| 标尺（引自括号里的归档） | M60 在同一口径下的读数 |
+|---|---|
+| m3 修复前 pack 字节差异 **94.8%**（引自 `wt-54/m3_grouped_gemm/evidence/m54_quant_rebaseline.log`，见 M59 审计报告） | 方向反的规则 vs device 字节：§2 的 `自检-W4n` 行（每个 case 给出实测百分比） |
+| m1 golden 上把方向反过来 **283/640 = 44.2%**（引自 M59 审计报告 §4 的负向对照） | 同上（不同数据，量级一致） |
+| m3 的 H 反量化 p50 **142**、p99 2.04e39、max **5.79e76**（引自 M59 审计报告 §2） | §2 的 `自检-W6n` 行（相对误差 p50/max；本数据组尺度更小，方向反后码被压进 e2m1 的 0 档，相对误差饱和在 1.0） |
+
+⇒ 读数一致性的关键差别是**数据尺度**：m3 那边的激活幅度大（`scale > 1` ⇒ 反向后 `deq ≈ h·scale²` 反而变大），
+  本目录的真实 MoE 激活幅度小（`scale < 1` ⇒ 反向后码被压到 0）。这正是 M60 把 W6 的**判定**口径取成
+  「绝对界 `2·scale + 1·spacing + EPS_FAST·|h_ref|` + 预算比」而不是相对误差的原因 —— 相对误差在
+  `h_ref → 0` 处无界，不能当判据；绝对界的 `2·scale` 项直接来自 e2m1 码表的最大间距，与数据无关。
+
+**⑥ 两条 tower 硬规则的落实**：
+
+- **禁 memory-based API**：本 mission **未改 device 代码**（判据 = 下面这份当场 diff 里没有 `.asc`/`.h`）—— `git diff --name-only main...HEAD` **当场**打印 9 个路径，落在 `m17_moe_real/` 的 9 个、scope 外 0 个：`README.md`, `check_ref.py`, `m60_check_ref_run.log`, `m60_dump_pin.log`, `m60_extractor_selftest.log`, `m60_quant_rule_witness.log`, `m60_scan_negcontrol.log`, `m60_tamper_experiment.log`, `gen_witness_log.py`
+  ⇒ W0–W6 都是 host 侧 numpy/字节判据。device 侧符号的引用情况**当场扫**`check_ref.py`：`MxQuantComputeScale` / `MxQuantComputeDataFP4` 命中 3 行（pin 用的只读符号）；`m17_moe_layer.asc` 的 `Sort32`/`MrgSort` 白名单与依据注释在 S2 段，本轮未触碰（见 README §7.13）。
+- **host 墙钟不得作为证据**：W0–W6 的判定量只有三类 —— 字节相等（sha256/nibble/scale 字节）、
+  整数计数（失配数/越界数/违反组数）、推导界下的分位（T3 口径）。这一条**当场核**（不是自称）：
+  `m17_moe_real/check_ref.py`（判定项所在脚本）里 `time`/`perf_counter`/`clock`/`monotonic` 命中 **0** 行 ⇒ 计时调用 0 行。
+  对照 README §7.5 对 host 墙钟的定性声明（本文件的判定量里没有时间量）。
+  （本提取器自身不参与该统计：它的源码里含这条检查所用的正则字面量，计进来会自我命中。）
+
+RESULT: OK（§1 30 条 + §2 25 条读数均 PASS，覆盖 5 个 case：layer0_tok1000_m1, layer0_tok1000_m8, layer0_tok1000_m33, layer0_tok1000_m64, layer8_tok2000_m1） —— 退出码 0

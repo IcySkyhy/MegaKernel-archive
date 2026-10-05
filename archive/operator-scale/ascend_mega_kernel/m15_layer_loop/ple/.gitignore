@@ -1,0 +1,7 @@
+# M85 PLE 独立 kernel：生成物（输入/权重/落盘 dump）一律不入库
+data/
+# M92：host-mapped 真实表路径的输入（真实行 id / 期望行 / HM 侧小输入）—— 同属生成物
+data_hm/
+out*/
+build/
+__pycache__/

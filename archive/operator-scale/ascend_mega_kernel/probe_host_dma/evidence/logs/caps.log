@@ -1,0 +1,27 @@
+== probe_host_dma mode=caps tile=8192 repeats=8 launches=20 alignOff=0 ==
+[INIT] aclInit rc=0
+[INIT] aclrtSetDevice(0) rc=0
+[INIT] aclrtCreateStream rc=0
+[DEV ] AICORE=28 VECTOR=56 -> blocks=56
+[CAPS] aclrtHostMemMapCapabilities(hac=STARS   ) rc=0 capability=1(SUPPORTED)
+[CAPS] aclrtHostMemMapCapabilities(hac=AICPU   ) rc=0 capability=0(NOT_SUPPORTED)
+[CAPS] aclrtHostMemMapCapabilities(hac=AIC     ) rc=0 capability=0(NOT_SUPPORTED)
+[CAPS] aclrtHostMemMapCapabilities(hac=AIV     ) rc=0 capability=1(SUPPORTED)
+[CAPS] aclrtHostMemMapCapabilities(hac=PCIEDMA ) rc=0 capability=0(NOT_SUPPORTED)
+[CAPS] aclrtHostMemMapCapabilities(hac=RDMA    ) rc=0 capability=0(NOT_SUPPORTED)
+[CAPS] aclrtHostMemMapCapabilities(hac=SDMA    ) rc=0 capability=0(NOT_SUPPORTED)
+[CAPS] aclrtHostMemMapCapabilities(hac=DVPP    ) rc=0 capability=0(NOT_SUPPORTED)
+[CAPS] aclrtHostMemMapCapabilities(hac=UDMA    ) rc=0 capability=0(NOT_SUPPORTED)
+[CAPS] aclrtHostMemMapCapabilities(hac=CCU     ) rc=0 capability=0(NOT_SUPPORTED)
+[CAPS] aclrtMallocHost(1048576) rc=0 ptr=0x100000280000
+[ATTR] mallocHost         ptr=0x100000280000 rc=0 location.type=0(HOST) id=0 pageSize=4096
+[CAPS] aclrtHostRegisterV2(MAPPED=0x2) rc=0
+[CAPS] aclrtHostGetDevicePointer rc=0 hostPtr=0x100000280000 devPtr=0x40000000000
+[ATTR] mappedDev          ptr=0x40000000000 rc=507899 (aclrtPointerGetAttributes failed)
+[CAPS] aclrtMalloc(1048576) rc=0 ptr=0x120000017000
+[ATTR] plainDev           ptr=0x120000017000 rc=0 location.type=1(DEVICE) id=0 pageSize=4096
+[CAPS] std::malloc(1048576) ptr=0x55d5a9f58220 (never registered)
+[ATTR] rawMalloc          ptr=0x55d5a9f58220 rc=0 location.type=2(UNREGISTERED) id=0 pageSize=4096
+[CAPS] aclrtHostUnregister rc=0
+[CAPS] done
+rc=0

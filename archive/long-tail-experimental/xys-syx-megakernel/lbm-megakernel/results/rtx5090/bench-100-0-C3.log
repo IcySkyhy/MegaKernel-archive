@@ -1,0 +1,23 @@
+RESOURCE name=C3 threads=128 registers=44 static_shared=0 dynamic_shared=0 local_bytes=0 active_blocks_per_sm=10 grid=2x60x150 block=64x2x1 steps_per_launch=1 theoretical_occupancy_pct=83.333333
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=288.020477295
+TRIAL 1 us_per_step=287.835521698
+TRIAL 2 us_per_step=288.204479218
+TRIAL 3 us_per_step=288.215351105
+TRIAL 4 us_per_step=287.965126038
+TRIAL 5 us_per_step=287.836475372
+TRIAL 6 us_per_step=287.990074158
+TRIAL 7 us_per_step=288.012485504
+TRIAL 8 us_per_step=287.868804932
+TRIAL 9 us_per_step=288.049602509
+TRIAL 10 us_per_step=288.244476318
+TRIAL 11 us_per_step=287.974071503
+TRIAL 12 us_per_step=287.684803009
+TRIAL 13 us_per_step=287.735042572
+TRIAL 14 us_per_step=288.165435791
+TRIAL 15 us_per_step=288.072967529
+TRIAL 16 us_per_step=288.114242554
+TRIAL 17 us_per_step=287.551364899
+TRIAL 18 us_per_step=288.063354492
+TRIAL 19 us_per_step=288.012161255
+BENCH mode=C3 warmups=5 trials=20 steps=100 launches=100 median_us=288.012323380 min_us=287.551364899 p90_us=288.204479218 mlups=7499.679092390 equivalent_population_TB_s=1.139951222

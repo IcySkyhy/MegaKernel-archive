@@ -1,0 +1,110 @@
+# [M129] docs 引文保真扫描 —— 逐对明细（--dump-pairs）
+# 命令：cd <repo root> && python3 docs/scan_quote_refs.py --dump-pairs ; echo rc=$?
+
+$ python3 docs/scan_quote_refs.py --dump-pairs
+== docs 引文保真扫描（scan_quote_refs.py） ==
+docs scanned=19  read-fail=0
+成对样本(pairs)=31  verified=11  unverified=12  finding=8
+引文「…」总数=952  其中成对受检=30  未成对(计入 quote-unpaired)=922
+源侧跨行引文(开闭不在同一行)=31 ｜ 开行有出处→成对检查=8 ｜ 无→计入 quote-unpaired=23
+文件:行 总数=2001  其中成对受检=23  未成对(计入 cite-unpaired)=1978
+-- 分类计数（分母 = 上面的成对样本 31） --
+   finding:FIND-NOTINFILE             6
+   finding:FIND-PARTIAL               2
+   ok:OK                              5
+   ok:OK-EMPH                         3
+   ok:OK-PARTIAL                      3
+   unverified:bare-name               3
+   unverified:external-prefix         1
+   unverified:shorthand-no-path       8
+-- finding（逐条：判据 + 出处） --
+   FIND 17-verification-standard.md:672 [FIND-NOTINFILE]
+        引文：`docs/17` §9.5、§8.1
+        所引：docs/05:379
+        判据：所引行与被引文件里都找不到该引文
+   FIND 17-verification-standard.md:678 [FIND-NOTINFILE]
+        引文：`docs/17` §9.5、§8.1
+        所引：docs/05:379
+        判据：所引行与被引文件里都找不到该引文
+   FIND 18-vector-api-audit.md:52 [FIND-NOTINFILE]
+        引文：Reg API 必须在 vector function（`__VEC_SCOPE__`）内使用
+        所引：docs/05:114
+        判据：所引行与被引文件里都找不到该引文
+   FIND 18-vector-api-audit.md:459 [FIND-NOTINFILE]
+        引文：halfScale 非有限覆盖 = 缺失
+        所引：docs/13:117
+        判据：所引行与被引文件里都找不到该引文
+   FIND 18-vector-api-audit.md:459 [FIND-PARTIAL]
+        引文：已立 mission…修复前不要声称位级一致
+        所引：(裸行号):139
+        判据：省略号切段后有所引行里找不到的段  ｜裸行号→docs/13
+   FIND 20-kernel-compliance-sweep.md:522 [FIND-NOTINFILE]
+        引文：unlock 之前的 S 写对 MTE3 可见
+        所引：docs/05:19/135/143
+        判据：所引行与被引文件里都找不到该引文
+   FIND 20-kernel-compliance-sweep.md:593 [FIND-NOTINFILE]
+        引文：事件 **或** drain BufferID
+        所引：docs/06:76
+        判据：所引行与被引文件里都找不到该引文
+   FIND 20-kernel-compliance-sweep.md:673 [FIND-PARTIAL]  20-kernel-compliance-sweep.md:673-675（源侧跨行引文，按拼接后核）
+        引文：跨 pipe 的 UB 数据交接**必须走\n> `SetFlag/WaitFlag` 事件 或 **drain BufferI…
+        所引：docs/06:76
+        判据：省略号切段后有所引行里找不到的段
+-- verified（逐条：判定 + 命中处） --
+   OK             17-verification-standard.md:450  引文=与 live 一致  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/baseline_env/README.md:493-494
+   OK-EMPH        20-kernel-compliance-sweep.md:511  引文=跨 pipe 数据交接（如 MTE2→V）用 **drain 模式 BufferID release**（`RlsBufInte…  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/05-megakernel-design.md:19
+   OK-EMPH        20-kernel-compliance-sweep.md:512  引文=**`mode=false` rls 立即生效（互斥交接），`mode=true` rls 延迟到 pipe drain（同步点…  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/05-megakernel-design.md:135
+   OK             20-kernel-compliance-sweep.md:513  引文=公开 `Mutex::Lock/Unlock` 的 mode 硬编码为 0——**就用 mode 0**  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/05-megakernel-design.md:143
+   OK-PARTIAL     20-kernel-compliance-sweep.md:514  引文=**跨 pipe 的 UB 数据交接必须走 `SetFlag/WaitFlag` 事件**（MTE2_V、V_MTE3、MTE2…  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/06-m0-bringup.md:76
+   OK-EMPH        20-kernel-compliance-sweep.md:47（跨行）  引文=m=1 在 mmad 被 pad 成 16（`matmul.h:670-672` "m==1→16"——\n**mega ker…  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/11-attn-analysis.md:103
+   OK             20-kernel-compliance-sweep.md:597（跨行）  引文=`PipeBarrier<PIPE_X>` 只能阻塞标量等\n     pipe 指令退休，**不能保证 UB 数据路径对另一 …  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/06-m0-bringup.md:76
+   OK-PARTIAL     20-kernel-compliance-sweep.md:614（跨行）  引文=…否则 `aclrtSynchronizeStream` 返回成功而 host 读回丢失/滞后\n（**标量 `SetValue…  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/06-m0-bringup.md:78
+   OK             20-kernel-compliance-sweep.md:616（跨行）  引文=| 标量 `SetValue` 写 GM | kernel 退出时可见性无保证，\n元数据一律走 MTE3 |  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/06-m0-bringup.md:91
+   OK-PARTIAL     20-kernel-compliance-sweep.md:900（跨行）  引文=…否则 `aclrtSynchronizeStream` 返回成功而\n   host 读回丢失/滞后（**标量 `SetVal…  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/06-m0-bringup.md:78
+   OK             20-kernel-compliance-sweep.md:902（跨行）  引文=| 标量 `SetValue` 写 GM | kernel 退出时\n   可见性无保证，元数据一律走 MTE3 |  命中=/workspace/ascend_mega_kernel/.tower/worktrees/wt-129/docs/06-m0-bringup.md:91
+-- unverified（未抽为 finding 的成对样本） --
+   UNVERIFIED 16-vllm-ascend-qwen4exp-plan.md:27  所引=docs/source/tutorials/models/Qwen3.8-Flash-Next.md:9  原因=external-prefix
+   UNVERIFIED 16-vllm-ascend-qwen4exp-plan.md:92  所引=README.md:82  原因=bare-name
+   UNVERIFIED 16-vllm-ascend-qwen4exp-plan.md:92  所引=(裸行号):136  原因=bare-name
+   UNVERIFIED 20-kernel-compliance-sweep.md:688  所引=(裸行号):22  原因=shorthand-no-path
+   UNVERIFIED 20-kernel-compliance-sweep.md:907  所引=(裸行号):891  原因=shorthand-no-path
+   UNVERIFIED 20-kernel-compliance-sweep.md:1226  所引=(裸行号):662  原因=shorthand-no-path
+   UNVERIFIED 21-scalar-computation-sweep.md:259  所引=(裸行号):188  原因=shorthand-no-path
+   UNVERIFIED 21-scalar-computation-sweep.md:981  所引=(裸行号):793  原因=shorthand-no-path
+   UNVERIFIED 21-scalar-computation-sweep.md:983  所引=(裸行号):845  原因=shorthand-no-path
+   UNVERIFIED 21-scalar-computation-sweep.md:984  所引=(裸行号):870  原因=shorthand-no-path
+   UNVERIFIED 21-scalar-computation-sweep.md:985  所引=(裸行号):883  原因=shorthand-no-path
+   UNVERIFIED 21-scalar-computation-sweep.md:389（跨行）  所引=m15_moe_layer.h:1887  原因=bare-name
+-- 全部成对样本 --
+   UNVERIFIED     16-vllm-ascend-qwen4exp-plan.md:27  引文=Atlas 950DT and 950PR products are not yet supported
+   UNVERIFIED     16-vllm-ascend-qwen4exp-plan.md:92  引文=pre-quantized Qwen3.8-27B models
+   UNVERIFIED     16-vllm-ascend-qwen4exp-plan.md:92  引文=pre-quantized Qwen3.8-27B models
+   OK             17-verification-standard.md:450  引文=与 live 一致
+   FIND-NOTINFILE 17-verification-standard.md:672  引文=`docs/17` §9.5、§8.1
+   FIND-NOTINFILE 17-verification-standard.md:678  引文=`docs/17` §9.5、§8.1
+   FIND-NOTINFILE 18-vector-api-audit.md:52  引文=Reg API 必须在 vector function（`__VEC_SCOPE__`）内使用
+   FIND-NOTINFILE 18-vector-api-audit.md:459  引文=halfScale 非有限覆盖 = 缺失
+   FIND-PARTIAL   18-vector-api-audit.md:459  引文=已立 mission…修复前不要声称位级一致
+   OK-EMPH        20-kernel-compliance-sweep.md:511  引文=跨 pipe 数据交接（如 MTE2→V）用 **drain 模式 BufferID release**（`RlsBufInte…
+   OK-EMPH        20-kernel-compliance-sweep.md:512  引文=**`mode=false` rls 立即生效（互斥交接），`mode=true` rls 延迟到 pipe drain（同步点…
+   OK             20-kernel-compliance-sweep.md:513  引文=公开 `Mutex::Lock/Unlock` 的 mode 硬编码为 0——**就用 mode 0**
+   OK-PARTIAL     20-kernel-compliance-sweep.md:514  引文=**跨 pipe 的 UB 数据交接必须走 `SetFlag/WaitFlag` 事件**（MTE2_V、V_MTE3、MTE2…
+   FIND-NOTINFILE 20-kernel-compliance-sweep.md:522  引文=unlock 之前的 S 写对 MTE3 可见
+   FIND-NOTINFILE 20-kernel-compliance-sweep.md:593  引文=事件 **或** drain BufferID
+   UNVERIFIED     20-kernel-compliance-sweep.md:688  引文=**没有**用 `M15H::BufAcquire/BufRelease`
+   UNVERIFIED     20-kernel-compliance-sweep.md:907  引文=不用 SetValue
+   UNVERIFIED     20-kernel-compliance-sweep.md:1226  引文=34–40 处（命令见 §6）
+   OK-EMPH        20-kernel-compliance-sweep.md:47  引文=m=1 在 mmad 被 pad 成 16（`matmul.h:670-672` "m==1→16"——\n**mega ker…
+   OK             20-kernel-compliance-sweep.md:597  引文=`PipeBarrier<PIPE_X>` 只能阻塞标量等\n     pipe 指令退休，**不能保证 UB 数据路径对另一 …
+   OK-PARTIAL     20-kernel-compliance-sweep.md:614  引文=…否则 `aclrtSynchronizeStream` 返回成功而 host 读回丢失/滞后\n（**标量 `SetValue…
+   OK             20-kernel-compliance-sweep.md:616  引文=| 标量 `SetValue` 写 GM | kernel 退出时可见性无保证，\n元数据一律走 MTE3 |
+   FIND-PARTIAL   20-kernel-compliance-sweep.md:673  引文=跨 pipe 的 UB 数据交接**必须走\n> `SetFlag/WaitFlag` 事件 或 **drain BufferI…
+   OK-PARTIAL     20-kernel-compliance-sweep.md:900  引文=…否则 `aclrtSynchronizeStream` 返回成功而\n   host 读回丢失/滞后（**标量 `SetVal…
+   OK             20-kernel-compliance-sweep.md:902  引文=| 标量 `SetValue` 写 GM | kernel 退出时\n   可见性无保证，元数据一律走 MTE3 |
+   UNVERIFIED     21-scalar-computation-sweep.md:259  引文=**64 次迭代/元素**
+   UNVERIFIED     21-scalar-computation-sweep.md:981  引文=C3b 对 `section refs` 的**贡献是 0**
+   UNVERIFIED     21-scalar-computation-sweep.md:983  引文=『C3b **新增了一处** `§7` 段内引用』**不成立**
+   UNVERIFIED     21-scalar-computation-sweep.md:984  引文=`path refs` 的 `+13 / **零删除**` …
+   UNVERIFIED     21-scalar-computation-sweep.md:985  引文=三个分栏的净增量 … **三轮都是零删除**
+   UNVERIFIED     21-scalar-computation-sweep.md:389  引文=sgate 的 sigmoid 在这里用向量做（S2 只出裸点积，\n避免 AIV 内标量浮点）
+rc=1

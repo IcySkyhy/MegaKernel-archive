@@ -1,0 +1,53 @@
+=== $ M15_PLE_OUT=m15_layer_loop/ple/out ./m15_layer_loop/build/m15_ple
+[m15ple] M85 PLE 独立 kernel | aic=28 aiv=56 | out=m15_layer_loop/ple/out data=m15_layer_loop/ple/data neg=0
+[m15ple] A    ① ids: 10 tok × 16 head, dev_range_fail=0 -> A_ids.bin
+[m15ple] B    ① ids: 2 tok × 16 head, dev_range_fail=0 -> B_ids.bin
+[m15ple] body ②③④⑤: stage_mask=15 n_tok=2 table_rows=1470 dev_fail=0
+[m15ple] ===== kernel-side OK =====
+kernel rc=0
+
+=== $ python3.12 m15_layer_loop/m15_ple_check.py m15_layer_loop/ple/out
+[PASS] B1.ids.A                     tier=T1  n=160      bad=0      元素逐位（差 0 元素 / 0 字节）
+       └ 能 FAIL 掉的错误类别: mod 方向、乘子下标、xor 归 head、EOS 回退、chunk 边界取 ctx、offset 前缀和任一错
+RESULT|B1.ids.A|T1|160|0|PASS
+[PASS] B1.ids.A.range               tier=T1-struct n=160      bad=0      值域 [0,320001536)
+       └ 能 FAIL 掉的错误类别: offset 缺失、mod 未做、负余数未修正
+RESULT|B1.ids.A.range|T1-struct|160|0|PASS
+[PASS] B1.ids.B                     tier=T1  n=32       bad=0      元素逐位（差 0 元素 / 0 字节）
+       └ 能 FAIL 掉的错误类别: mod 方向、乘子下标、xor 归 head、EOS 回退、chunk 边界取 ctx、offset 前缀和任一错
+RESULT|B1.ids.B|T1|32|0|PASS
+[PASS] B1.ids.B.range               tier=T1-struct n=32       bad=0      值域 [0,320001536)
+       └ 能 FAIL 掉的错误类别: offset 缺失、mod 未做、负余数未修正
+RESULT|B1.ids.B.range|T1-struct|32|0|PASS
+[PASS] B2.emb                       tier=T1  n=5120     bad=0      元素逐位（差 0 元素 / 0 字节）
+       └ 能 FAIL 掉的错误类别: 行 id 用错（片号/全局 id 混用）、head 顺序反、160/2560 展平顺序错
+RESULT|B2.emb|T1|5120|0|PASS
+[PASS] B3.kv                        tier=T3  n=25600    bad=0      eps=5.72e-06 maxRel=0.00719 max(d/bound)=0.999 (报告项)
+       └ 能 FAIL 掉的错误类别: key/value 顺序反（docs/14 §6.2 D1）、GEMM 转置错、权重行主序错
+RESULT|B3.kv|T3|25600|0|PASS
+[PASS] B4.gated                     tier=T3  n=20480    bad=0      eps=3.58e-07 maxRel=0 max(d/bound)=0.000 (报告项)
+       └ 能 FAIL 掉的错误类别: query 用了 pending BO（未物化）、4 流共享 value 错、`(1+w)` 漏 1、组宽错（2560 vs 10240）
+RESULT|B4.gated|T3|20480|0|PASS
+[PASS] B4.normed                    tier=T3  n=20480    bad=0      eps=3.58e-07 maxRel=0 max(d/bound)=0.000 (报告项)
+       └ 能 FAIL 掉的错误类别: query 用了 pending BO（未物化）、4 流共享 value 错、`(1+w)` 漏 1、组宽错（2560 vs 10240）
+RESULT|B4.normed|T3|20480|0|PASS
+[PASS] B5.null.out                  tier=T1  n=10240    bad=0      元素逐位（差 0 元素 / 0 字节）
+       └ 能 FAIL 掉的错误类别: null 行整行跳过（漏写）/ 把 null 行当普通行做卷积
+RESULT|B5.null.out|T1|10240|0|PASS
+[PASS] B5.null.state                tier=T1  n=92160    bad=0      元素逐位（差 0 元素 / 0 字节）
+       └ 能 FAIL 掉的错误类别: null 行的状态被移位（state_ok 未生效）
+RESULT|B5.null.state|T1|92160|0|PASS
+[PASS] B5.out                       tier=T3  n=20480    bad=0      eps=3.58e-07 maxRel=0 max(d/bound)=0.000 (报告项)
+       └ 能 FAIL 掉的错误类别: taps lag 9/6/3/0 错、SiLU 漏、先加卷积再加外层残差的顺序反、外层残差用了 pending BO
+RESULT|B5.out|T3|20480|0|PASS
+[PASS] B5.state                     tier=T3  n=184320   bad=0      eps=0 maxRel=0 max(d/bound)=0.000 (报告项)
+       └ 能 FAIL 掉的错误类别: 移位方向反（新→旧）、最新样本未写入行 8、状态未演化
+RESULT|B5.state|T3|184320|0|PASS
+[PASS] B5.state_evolve              tier=T4  n=92160    bad=0      活跃行 state_out != state_in 的元素 = 92082；参考侧 = 92082（null 行 1 行不计）
+       └ 能 FAIL 掉的错误类别: 状态没写回 / 写回与读同一行 / 设备输出整片退化
+RESULT|B5.state_evolve|T4|92160|0|PASS
+
+===== 判据合计 13 条 = 判定项 13 + 对照项 0；FAIL 0 条 =====
+       注：'咬合力被演示'的条数见 m15_ple_mutants.py 的 RESULT|coverage 行（本脚本不声明）
+===== ALL PASS =====
+check rc=0

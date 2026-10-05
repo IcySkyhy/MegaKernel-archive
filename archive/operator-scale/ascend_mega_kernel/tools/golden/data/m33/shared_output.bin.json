@@ -1,0 +1,18 @@
+{
+  "tensor": "shared_output.bin",
+  "shape": [
+    33,
+    2560
+  ],
+  "dtype": "bf16",
+  "strides": [
+    2560,
+    1
+  ],
+  "elem_size": 2,
+  "byte_order": "little",
+  "size_bytes": 168960,
+  "sha256": "e4d882e8b1280708733a02d22dea13b4217be5ab5ebb09b9363fde5b9f2052b6",
+  "kind": "golden",
+  "description": "shared expert output after sigmoid gate [m, hidden], bf16"
+}

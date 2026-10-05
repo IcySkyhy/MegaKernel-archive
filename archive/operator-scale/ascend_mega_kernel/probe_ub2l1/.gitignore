@@ -1,0 +1,13 @@
+# probe_ub2l1 的忽略规则。
+#
+# 说明（写清楚省的）：本探针的**证据目录 `evidence/` 是要交付的**——
+#   - `evidence/logs/` 设备档原始输出 + version_diff.log（逐字诊断就在这里）；
+#   - `evidence/dumps/` 是 `check_ref.py` 复核用的输入/输出二进制（几 KB 级）。
+# 所以本 .gitignore **不忽略 `evidence/`**，只显式列出确实要丢掉的东西；
+# 若不写这一条，后人很容易顺手把 `evidence/` 整个忽略掉，读数就跟着丢了。
+build/
+*.o
+*.tmp
+*.partial
+evidence/logs/*.tmp
+evidence/logs/*.partial

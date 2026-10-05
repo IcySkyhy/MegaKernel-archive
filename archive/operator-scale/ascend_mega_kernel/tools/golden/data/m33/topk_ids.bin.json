@@ -1,0 +1,18 @@
+{
+  "tensor": "topk_ids.bin",
+  "shape": [
+    33,
+    2
+  ],
+  "dtype": "int32",
+  "strides": [
+    2,
+    1
+  ],
+  "elem_size": 4,
+  "byte_order": "little",
+  "size_bytes": 264,
+  "sha256": "11b9bce09f005adb16b9293bae09a148c52a1d855a5185a41b89cf3533281474",
+  "kind": "golden",
+  "description": "top-k expert ids [m, top_k] sorted by descending score"
+}

@@ -1,0 +1,4 @@
+pre-fix pattern (no mkdir): OUT=/tmp/m28_fix_precheck_absent (absent)
+$ echo x > "$OUT/cmake.log"
+bash: line 1: /tmp/m28_fix_precheck_absent/cmake.log: No such file or directory
+pre-fix rc=1

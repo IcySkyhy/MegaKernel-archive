@@ -1,0 +1,13 @@
+[REF-REGRESS] 参考侧逐档（输入由 gen_case 逐位重生成；m18 设备 dump 未归档，设备档不可重跑）
+  case       H     T   nc    旧式refNaN   指数差refNaN      max|Δ|o     max|Δ|ht     max|Δ|hg
+  case    Σ|terms| 相对差（to=o项 / tS=终态项）         max rel to   max rel tS
+  gqa3       3   257    5           0           0    3.469e-17    2.776e-16    2.776e-16
+  gqa3    （exp(ĝ_L−ĝ_j) ≡ egL·ig，仅差 fp 舍入）      7.564e-16    1.073e-15
+  one        8    64    1           0           0    0.000e+00    3.886e-16    3.886e-16
+  one     （exp(ĝ_L−ĝ_j) ≡ egL·ig，仅差 fp 舍入）      0.000e+00    1.345e-15
+  all48     48   129    3           0           0    3.816e-17    4.441e-16    4.441e-16
+  all48   （exp(ĝ_L−ĝ_j) ≡ egL·ig，仅差 fp 舍入）      7.779e-16    1.392e-15
+  target    48  4097   65           0           0    4.857e-17    3.886e-16    3.886e-16
+  target  （exp(ĝ_L−ĝ_j) ≡ egL·ig，仅差 fp 舍入）      9.061e-16    1.226e-15
+[REF-REGRESS] 说明：以上为**参考侧**两式差异；设备侧判定差异需设备 dump（本 mission 零设备、无归档）
+[REF-REGRESS] rc=0（0=各档指数差参考恒有限且两式差异记录在案；1=指数差参考出现非有限）

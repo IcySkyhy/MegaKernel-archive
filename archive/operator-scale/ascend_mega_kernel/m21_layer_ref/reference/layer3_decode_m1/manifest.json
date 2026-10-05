@@ -1,0 +1,305 @@
+{
+ "segments": {
+  "attn.out": {
+   "file": "attn.out.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2560
+   ],
+   "sha256_stored_bytes": "72b3c1248d86b33be39c73cad75a58d0d393718f452b64aefa1b2ddfc91f4950"
+  },
+  "attn_hc.block_input": {
+   "file": "attn_hc.block_input.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2560
+   ],
+   "sha256_stored_bytes": "cebf9f050291cf4b42f12f2b6b8b894dfb5b7641a33b9ebc7edc23e78020531a"
+  },
+  "attn_hc.hidden": {
+   "file": "attn_hc.hidden.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    10240
+   ],
+   "sha256_stored_bytes": "ff2582a16c597bf54d3b105f0de87a67741a323d6fd23e406a69aefcb39bc3a6"
+  },
+  "attn_hc.injection": {
+   "file": "attn_hc.injection.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    4
+   ],
+   "sha256_stored_bytes": "1deba473c33242fe30bbc37c66507e14fc08f52b96c9d9742881b4f835e61e69"
+  },
+  "layer.input.hidden": {
+   "file": "layer.input.hidden.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    10240
+   ],
+   "sha256_stored_bytes": "8b6ecaeac17199e9d2aec0fa3b862ca77e3208217aac3a0578faa7d7edfdac3b"
+  },
+  "layer.input.prev_block_output": {
+   "file": "layer.input.prev_block_output.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2560
+   ],
+   "sha256_stored_bytes": "4b428dab1e567f110eac3c488fc6fcacb7aeb7e23efcbd5dd0c5670cca4458f8"
+  },
+  "layer.input.prev_injection": {
+   "file": "layer.input.prev_injection.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    4
+   ],
+   "sha256_stored_bytes": "00e9208dc190a2eb1be5c82c60186fc7257fd922ceb1b963869bb58a6bcee6d5"
+  },
+  "layer.out.block_output": {
+   "file": "layer.out.block_output.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2560
+   ],
+   "sha256_stored_bytes": "8539cc12d8ed2188f113f39f104e6e6eb470a9878c9ea25930e84aa708bc811d"
+  },
+  "layer.out.hidden": {
+   "file": "layer.out.hidden.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    10240
+   ],
+   "sha256_stored_bytes": "14c249ca7791b5c96ed7eb3825255624980e951853c2fa8acd654bfe16af5f80"
+  },
+  "layer.out.injection": {
+   "file": "layer.out.injection.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    4
+   ],
+   "sha256_stored_bytes": "1ded531364b5d77d8660784b47745e1126ddf4780395a1d5e2a124a8535af0f8"
+  },
+  "mlp_hc.block_input": {
+   "file": "mlp_hc.block_input.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2560
+   ],
+   "sha256_stored_bytes": "dc8ff53c83fec66fad63765c7d56f80329cc63e551cf59f9bb94e18943ddc9a6"
+  },
+  "mlp_hc.hidden": {
+   "file": "mlp_hc.hidden.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    10240
+   ],
+   "sha256_stored_bytes": "14c249ca7791b5c96ed7eb3825255624980e951853c2fa8acd654bfe16af5f80"
+  },
+  "mlp_hc.injection": {
+   "file": "mlp_hc.injection.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    4
+   ],
+   "sha256_stored_bytes": "1ded531364b5d77d8660784b47745e1126ddf4780395a1d5e2a124a8535af0f8"
+  },
+  "moe.block_input": {
+   "file": "moe.block_input.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2560
+   ],
+   "sha256_stored_bytes": "dc8ff53c83fec66fad63765c7d56f80329cc63e551cf59f9bb94e18943ddc9a6"
+  },
+  "moe.out": {
+   "file": "moe.out.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2560
+   ],
+   "sha256_stored_bytes": "8539cc12d8ed2188f113f39f104e6e6eb470a9878c9ea25930e84aa708bc811d"
+  },
+  "moe.routed_out": {
+   "file": "moe.routed_out.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2560
+   ],
+   "sha256_stored_bytes": "063519d1bab5daeb9a1b5952d1a0d58776a347e5ed6fd7a23d1554424b0aec65"
+  },
+  "moe.router_logits": {
+   "file": "moe.router_logits.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    512
+   ],
+   "sha256_stored_bytes": "9d8f000784c0a6fb4bcaf32fb84c617664fcbf004be649f3a4545e2df31ba264"
+  },
+  "moe.shared_out": {
+   "file": "moe.shared_out.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2560
+   ],
+   "sha256_stored_bytes": "e990f3f29e8fe74839653d6c8e6691205effc5bfc094ecce854de1e5c4827df2"
+  },
+  "moe.topk_ids": {
+   "file": "moe.topk_ids.npy",
+   "dtype": "int32",
+   "shape": [
+    1,
+    10
+   ],
+   "sha256_stored_bytes": "62287fed3c0481189576f053027fe5f56ebf660b62adb5561b6ee206018a4e11"
+  },
+  "moe.topk_weights": {
+   "file": "moe.topk_weights.npy",
+   "dtype": "float32",
+   "shape": [
+    1,
+    10
+   ],
+   "sha256_stored_bytes": "ced5cf58dd25e813ccf405d025085018a535148ea789ab3a0b7977ca92f47217"
+  },
+  "qsa.attn_out": {
+   "file": "qsa.attn_out.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    24,
+    256
+   ],
+   "sha256_stored_bytes": "c3f18cc66279cc0cdf764d7c1ba1029a6b7659fd2df40a275232058d49941b05"
+  },
+  "qsa.block_indices": {
+   "file": "qsa.block_indices.npy",
+   "dtype": "int32",
+   "shape": [
+    1,
+    512
+   ],
+   "sha256_stored_bytes": "75319fdf4ac65e9fdc9a24aeda8152143f36165a501ff50fcb5053621d6fc6b0"
+  },
+  "qsa.compressed_key": {
+   "file": "qsa.compressed_key.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    525,
+    128
+   ],
+   "sha256_stored_bytes": "41d713e488a7747ff9a8e58f266ab002694d66eea3662a1565a8ecc92f2ceb03"
+  },
+  "qsa.gate": {
+   "file": "qsa.gate.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    24,
+    256
+   ],
+   "sha256_stored_bytes": "7a7792c571530519803fc828fab03360d0a8f1d66f1647a8f734abece656127f"
+  },
+  "qsa.index_k": {
+   "file": "qsa.index_k.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    128
+   ],
+   "sha256_stored_bytes": "b60e305c182a0d0ed964619aae584659777bb96b74056a34a65a57fc73f54126"
+  },
+  "qsa.index_logits": {
+   "file": "qsa.index_logits.npy",
+   "dtype": "float32",
+   "shape": [
+    1,
+    525
+   ],
+   "sha256_stored_bytes": "77307e3a0c927553ea31082f2fa89659202048ff6fdc654f79d9780fbf384da3"
+  },
+  "qsa.index_q": {
+   "file": "qsa.index_q.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    4,
+    128
+   ],
+   "sha256_stored_bytes": "750a01c342da265af275d2ef4791957a1f862dfadc2253ebd33d79ed15132ee7"
+  },
+  "qsa.k": {
+   "file": "qsa.k.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2,
+    256
+   ],
+   "sha256_stored_bytes": "d04cd0175fe7ead1d00e0b8605e67c8cc90d85a5e2721492eb4185bc075c268b"
+  },
+  "qsa.q": {
+   "file": "qsa.q.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    24,
+    256
+   ],
+   "sha256_stored_bytes": "4347d698447de9abd5a9e22be1330f5b71f5fb4a082f79529d8ac8a5f8b55b4b"
+  },
+  "qsa.token_indices": {
+   "file": "qsa.token_indices.npy",
+   "dtype": "int32",
+   "shape": [
+    1,
+    2052
+   ],
+   "sha256_stored_bytes": "c1de031629af269393c79f586f1d2b3d24f3ceb001b8f82078fc373e4c5f8717"
+  },
+  "qsa.v": {
+   "file": "qsa.v.npy",
+   "dtype": "bfloat16",
+   "shape": [
+    1,
+    2,
+    256
+   ],
+   "sha256_stored_bytes": "6a0d8bea39b6fa221802a38dab8e51d7ca229a1a103bc243586a168f18305481"
+  }
+ },
+ "extra": {
+  "layer_idx": 3,
+  "layer_type": "full_attention",
+  "m": 1,
+  "dump_positions": [
+   2100,
+   2100
+  ],
+  "input_mode": "synthetic",
+  "pending": "synth",
+  "seed": 0,
+  "sigma": 0.05,
+  "moe_precision": "fp32",
+  "start_pos": 0,
+  "warmup": 2100
+ }
+}

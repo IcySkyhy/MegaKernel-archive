@@ -1,0 +1,1684 @@
+{
+  "repository": "ezgamehost/unlimited-ocr-kernel",
+  "url": "https://github.com/ezgamehost/unlimited-ocr-kernel",
+  "created_at": "2026-09-28T05:53:09Z",
+  "pushed_at": "2026-09-29T02:40:55Z",
+  "branch": "feat/rust-cpu-runtime",
+  "license": null,
+  "fork": false,
+  "parent": null,
+  "tree_truncated": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "size": 72
+    },
+    {
+      "path": "Cargo.lock",
+      "size": 30787
+    },
+    {
+      "path": "Cargo.toml",
+      "size": 645
+    },
+    {
+      "path": "README.md",
+      "size": 5366
+    },
+    {
+      "path": "benchmarks/corpus/chinese.png",
+      "size": 83097
+    },
+    {
+      "path": "benchmarks/corpus/chinese.txt",
+      "size": 568
+    },
+    {
+      "path": "benchmarks/corpus/dense.png",
+      "size": 169820
+    },
+    {
+      "path": "benchmarks/corpus/dense.txt",
+      "size": 3234
+    },
+    {
+      "path": "benchmarks/corpus/english.png",
+      "size": 45628
+    },
+    {
+      "path": "benchmarks/corpus/english.txt",
+      "size": 584
+    },
+    {
+      "path": "benchmarks/corpus/manifest.json",
+      "size": 6932
+    },
+    {
+      "path": "benchmarks/corpus/table.png",
+      "size": 42162
+    },
+    {
+      "path": "benchmarks/corpus/table.txt",
+      "size": 457
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/README.md",
+      "size": 5148
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/command.json",
+      "size": 572
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/provenance.json",
+      "size": 798
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run1.stderr.txt",
+      "size": 2403
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run1.stdout.txt",
+      "size": 0
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run2.stderr.txt",
+      "size": 1425
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run2.stdout.txt",
+      "size": 47
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run3.stderr.txt",
+      "size": 497822
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run3.stdout.txt",
+      "size": 47
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run4.json",
+      "size": 64
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run4.stderr.txt",
+      "size": 1425
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run4.stdout.txt",
+      "size": 47
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run5.json",
+      "size": 64
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run5.stderr.txt",
+      "size": 1425
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run5.stdout.txt",
+      "size": 47
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run6.json",
+      "size": 64
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run6.stderr.txt",
+      "size": 1425
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run6.stdout.txt",
+      "size": 47
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run7.json",
+      "size": 64
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run7.stderr.txt",
+      "size": 16021
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run7.stdout.txt",
+      "size": 47
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run8.json",
+      "size": 64
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run8.stderr.txt",
+      "size": 16021
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run8.stdout.txt",
+      "size": 47
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run9.json",
+      "size": 63
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run9.stderr.txt",
+      "size": 16021
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/run9.stdout.txt",
+      "size": 47
+    },
+    {
+      "path": "docs/benchmarks/2026-09-27-llama-cpu/summary.json",
+      "size": 604
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-blocks/README.md",
+      "size": 1682
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-blocks/block128.log",
+      "size": 288
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-blocks/block32.log",
+      "size": 288
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-blocks/english.json",
+      "size": 4358
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/README.md",
+      "size": 5095
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-guard-0-baseline.log",
+      "size": 1617
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-guard-1-candidate.log",
+      "size": 1599
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-guard-2-candidate.log",
+      "size": 1609
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-guard-3-baseline.log",
+      "size": 1598
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-guard-all-tests.log",
+      "size": 7404
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-guard-clippy.log",
+      "size": 3228
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-guard-correctness.log",
+      "size": 877
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-heads-0-baseline.log",
+      "size": 1602
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-heads-1-candidate.log",
+      "size": 1603
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-heads-2-candidate.log",
+      "size": 1617
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-heads-3-baseline.log",
+      "size": 1601
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-heads-4-candidate.log",
+      "size": 1601
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-heads-5-baseline.log",
+      "size": 1602
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-heads-decoder-tests.log",
+      "size": 466
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/attention-heads-tests.log",
+      "size": 473
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/blas-thread-guard-green.log",
+      "size": 2878
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/blas-thread-guard-red.log",
+      "size": 1307
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/blas-thread-guard-release.log",
+      "size": 634
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/candidate.patch",
+      "size": 10374
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fixed-work.json",
+      "size": 12414
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fresh/chinese.json",
+      "size": 2764
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fresh/chinese.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fresh/dense.json",
+      "size": 13696
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fresh/dense.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fresh/english.json",
+      "size": 2430
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fresh/english.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fresh/summary.json",
+      "size": 3279
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fresh/table.json",
+      "size": 2451
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/fresh/table.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/guarded-fixed-work.json",
+      "size": 8343
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/guarded-resident/chinese.json",
+      "size": 2777
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/guarded-resident/dense.json",
+      "size": 13720
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/guarded-resident/english.json",
+      "size": 2457
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/guarded-resident/process.json",
+      "size": 544
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/guarded-resident/process.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/guarded-resident/summary.json",
+      "size": 2331
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/guarded-resident/table.json",
+      "size": 2485
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/process-snapshot.txt",
+      "size": 590
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/run_resident_pilot.py",
+      "size": 2026
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-attention-heads/unguarded-candidate.patch",
+      "size": 4935
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/README.md",
+      "size": 1995
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/block-dequantize-fresh/chinese.json",
+      "size": 2757
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/block-dequantize-fresh/chinese.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/block-dequantize-fresh/dense.json",
+      "size": 13693
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/block-dequantize-fresh/dense.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/block-dequantize-fresh/english.json",
+      "size": 2434
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/block-dequantize-fresh/english.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/block-dequantize-fresh/summary.json",
+      "size": 3273
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/block-dequantize-fresh/table.json",
+      "size": 2448
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/block-dequantize-fresh/table.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/dequantize-after.log",
+      "size": 727
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-block-dequantize/dequantize-before.log",
+      "size": 727
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-crop-batch-experiment/README.md",
+      "size": 889
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-crop-batch-experiment/experiment.patch",
+      "size": 6341
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-crop-batch-experiment/timings.log",
+      "size": 150
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-direct-kv/README.md",
+      "size": 2273
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-direct-kv/attention.log",
+      "size": 798
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-direct-kv/dense.json",
+      "size": 25403
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/README.md",
+      "size": 3377
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fixed-work-0-baseline.log",
+      "size": 1609
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fixed-work-1-candidate.log",
+      "size": 1600
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fixed-work-2-candidate.log",
+      "size": 1610
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fixed-work-3-baseline.log",
+      "size": 1613
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fixed-work.json",
+      "size": 8443
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/four-row-after.log",
+      "size": 659
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/four-row-all-tests.log",
+      "size": 9688
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/four-row-before.log",
+      "size": 661
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/four-row-clippy.log",
+      "size": 3228
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/four-row-dispatch-tests.log",
+      "size": 1040
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/four-row-green.log",
+      "size": 399
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/four-row-red.log",
+      "size": 2938
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/four-row-release-final.log",
+      "size": 1169
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/four-row-release-tests.log",
+      "size": 390
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fresh/chinese.json",
+      "size": 2764
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fresh/chinese.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fresh/dense.json",
+      "size": 13695
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fresh/dense.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fresh/english.json",
+      "size": 2427
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fresh/english.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fresh/summary.json",
+      "size": 3272
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fresh/table.json",
+      "size": 2447
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/fresh/table.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-four-row-sdot/kernel.patch",
+      "size": 5941
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-kernels/README.md",
+      "size": 3707
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-kernels/microbench.log",
+      "size": 479
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-kernels/overlay-manifest.json",
+      "size": 301
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/README.md",
+      "size": 3536
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/bench-load-sha.stderr",
+      "size": 967
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/english-int8-hardware-sha.json",
+      "size": 2411
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/english-int8-hardware-sha.stderr",
+      "size": 885
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/english-int8-weights.json",
+      "size": 2413
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/english-int8-weights.stderr",
+      "size": 885
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/int8-corpus-dynamic.jsonl",
+      "size": 21452
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/int8-corpus-dynamic.stderr",
+      "size": 900
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/int8-corpus-requests.jsonl",
+      "size": 312
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/int8-corpus-weight-only.jsonl",
+      "size": 21378
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/int8-corpus-weight-only.stderr",
+      "size": 885
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-int8-runtime/summary.json",
+      "size": 3449
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/README.md",
+      "size": 3865
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/chinese-000.json",
+      "size": 2808
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/chinese-000.stderr.txt",
+      "size": 16612
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/chinese-000.stdout.txt",
+      "size": 1034
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/dense-000.json",
+      "size": 4575
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/dense-000.stderr.txt",
+      "size": 16612
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/dense-000.stdout.txt",
+      "size": 3313
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/english-000.json",
+      "size": 2152
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/english-000.stderr.txt",
+      "size": 16612
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/english-000.stdout.txt",
+      "size": 933
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/projector-manifest.json",
+      "size": 65384
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/summary.json",
+      "size": 1054
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/table-000.json",
+      "size": 2025
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/table-000.stderr.txt",
+      "size": 16612
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/table-000.stdout.txt",
+      "size": 798
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-llama-tiles32/vision-timing-correction.json",
+      "size": 918
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-corpus/README.md",
+      "size": 1736
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-corpus/chinese.json",
+      "size": 5502
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-corpus/dense.json",
+      "size": 25393
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-corpus/english.json",
+      "size": 4343
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-corpus/table.json",
+      "size": 4331
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-pilot/README.md",
+      "size": 3431
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-pilot/neon-dot.json",
+      "size": 433
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-pilot/resident.jsonl",
+      "size": 1357
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-pilot/scalar-dot-warm.json",
+      "size": 436
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-pilot/softmax-microbench.log",
+      "size": 498
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-native-pilot/vector-softmax-resident.jsonl",
+      "size": 2240
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/README.md",
+      "size": 2757
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/as-gelu-experiment.patch",
+      "size": 3759
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/gelu-bench.log",
+      "size": 815
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/gelu_coefficients.py",
+      "size": 808
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/int8-parallel-activations-dynamic.jsonl",
+      "size": 21441
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/int8-parallel-activations-dynamic.stderr",
+      "size": 897
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/parallel-activation-bench.log",
+      "size": 815
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/parallel-activation-vision-reference.log",
+      "size": 486
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/polynomial-gelu-bench.log",
+      "size": 816
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/polynomial-gelu-experiment.patch",
+      "size": 2389
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/polynomial-gelu-scalar-quick-reference.log",
+      "size": 1790
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/polynomial-gelu-vision-reference.log",
+      "size": 3138
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/polynomial-gelu.rs",
+      "size": 1516
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/stream-hash.stderr",
+      "size": 1089
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/summary.json",
+      "size": 2827
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-activations/vector-activations-vision-reference.log",
+      "size": 3138
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/README.md",
+      "size": 3239
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/dense-expert-baseline-fresh.json",
+      "size": 13681
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/dense-expert-baseline-fresh.stderr",
+      "size": 891
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/dense-parallel-experts.json",
+      "size": 13680
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/dense-parallel-experts.stderr",
+      "size": 883
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/int8-parallel-experts-dynamic.jsonl",
+      "size": 21448
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/int8-parallel-experts-dynamic.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/int8-parallel-experts-weight-only.jsonl",
+      "size": 21383
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/int8-parallel-experts-weight-only.stderr",
+      "size": 885
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-experts/summary.json",
+      "size": 5854
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/README.md",
+      "size": 2283
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-fresh/chinese.json",
+      "size": 2766
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-fresh/chinese.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-fresh/dense.json",
+      "size": 13697
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-fresh/dense.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-fresh/english.json",
+      "size": 2435
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-fresh/english.stderr",
+      "size": 906
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-fresh/summary.json",
+      "size": 3294
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-fresh/table.json",
+      "size": 2448
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-fresh/table.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-references.log",
+      "size": 819
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-score-vision-bench.log",
+      "size": 301
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-parallel-score-rows/parallel-softmax-vision-bench.log",
+      "size": 301
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/README.md",
+      "size": 2317
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/resident-runner-green.log",
+      "size": 475
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/resident-runner-red.log",
+      "size": 942
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/resident-runner-suite.log",
+      "size": 878
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/resident-startup-red.log",
+      "size": 928
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-llama/000-english.decoded.json",
+      "size": 3385
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-llama/000-english.raw.json",
+      "size": 5620
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-llama/000-english.record.json",
+      "size": 810
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-llama/000-english.sse",
+      "size": 32857
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-llama/process.json",
+      "size": 3521
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-llama/process.stderr",
+      "size": 19920
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-llama/process.stdout",
+      "size": 0
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-llama/props.json",
+      "size": 2544
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-llama/summary.json",
+      "size": 297
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-native/000-english.decoded.json",
+      "size": 3385
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-native/000-english.raw.json",
+      "size": 2465
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-native/000-english.record.json",
+      "size": 789
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-native/000-english.request.json",
+      "size": 180
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-native/process.json",
+      "size": 3218
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-native/process.stderr",
+      "size": 129
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-native/process.stdout",
+      "size": 2465
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-resident-runner/smoke-native/summary.json",
+      "size": 297
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/README.md",
+      "size": 3262
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/candidate.patch",
+      "size": 3711
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/decoder-tests.log",
+      "size": 467
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fixed-work.json",
+      "size": 8348
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fresh/chinese.json",
+      "size": 2768
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fresh/chinese.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fresh/dense.json",
+      "size": 13696
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fresh/dense.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fresh/english.json",
+      "size": 2431
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fresh/english.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fresh/summary.json",
+      "size": 3287
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fresh/table.json",
+      "size": 2453
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/fresh/table.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/ocr-process-snapshot.txt",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/shared-expert-0-baseline.log",
+      "size": 1614
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/shared-expert-1-candidate.log",
+      "size": 1602
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/shared-expert-2-candidate.log",
+      "size": 1610
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/shared-expert-3-baseline.log",
+      "size": 1609
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/shared-expert-all-tests.log",
+      "size": 9688
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-shared-expert/shared-expert-clippy.log",
+      "size": 3228
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/README.md",
+      "size": 2159
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/english-stream-checksum.json",
+      "size": 2430
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/english-stream-checksum.stderr",
+      "size": 900
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/english-stream-source-first.json",
+      "size": 2441
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/english-stream-source-first.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/load-stream-pairs/binaries.json",
+      "size": 293
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/load-stream-pairs/mapped-0.stderr",
+      "size": 900
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/load-stream-pairs/mapped-1.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/load-stream-pairs/mapped-2.stderr",
+      "size": 900
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/load-stream-pairs/streamed-0.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/load-stream-pairs/streamed-1.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/load-stream-pairs/streamed-2.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/load-stream-pairs/summary.json",
+      "size": 2258
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/load-stream-source-first.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-stream-checksums/vision-profile-top.txt",
+      "size": 2152
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/README.md",
+      "size": 6789
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/blas-cap-test-green.log",
+      "size": 107
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/blas-cap-test-red.log",
+      "size": 987
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/chat-marker-diagnostic/0-english.json",
+      "size": 1465
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/chat-marker-diagnostic/1-english.json",
+      "size": 1464
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/chat-marker-diagnostic/2-chinese.json",
+      "size": 1531
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/chat-marker-diagnostic/3-table.json",
+      "size": 1034
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/chat-marker-diagnostic/4-dense.json",
+      "size": 4002
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/chat-marker-diagnostic/process.json",
+      "size": 1078
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/chat-marker-diagnostic/server.stderr",
+      "size": 32114
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/chat-marker-diagnostic/server.stdout",
+      "size": 0
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/chat-marker-diagnostic/summary.json",
+      "size": 3367
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/eos-adapter-green.log",
+      "size": 109
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/eos-adapter-red.log",
+      "size": 1022
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/input-hashes.json",
+      "size": 1131
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/0-english-decoded.json",
+      "size": 3418
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/0-english.json",
+      "size": 3847
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/1-english-decoded.json",
+      "size": 3418
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/1-english.json",
+      "size": 3838
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/2-chinese-decoded.json",
+      "size": 3948
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/2-chinese.json",
+      "size": 4182
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/3-table-decoded.json",
+      "size": 3424
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/3-table.json",
+      "size": 3862
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/4-dense-decoded.json",
+      "size": 10730
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/4-dense.json",
+      "size": 8568
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/process.json",
+      "size": 1095
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/props.json",
+      "size": 2540
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/raw-special-text-summary.json",
+      "size": 2732
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/server.stderr",
+      "size": 31825
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/server.stdout",
+      "size": 0
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/llama-resident/summary.json",
+      "size": 3293
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/matched-pilot.json",
+      "size": 1574
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/media-marker-diagnostic/server.stderr",
+      "size": 16911
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/media-marker-diagnostic/server.stdout",
+      "size": 0
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-blas-pilot/1.json",
+      "size": 2435
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-blas-pilot/1.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-blas-pilot/8.json",
+      "size": 2432
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-blas-pilot/8.stderr",
+      "size": 898
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-blas-pilot/auto.json",
+      "size": 2434
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-blas-pilot/auto.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-blas-pilot/summary.json",
+      "size": 2202
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-resident/0-english.json",
+      "size": 2459
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-resident/1-english.json",
+      "size": 2467
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-resident/2-chinese.json",
+      "size": 2788
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-resident/3-table.json",
+      "size": 2474
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-resident/4-dense.json",
+      "size": 7176
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-resident/process.json",
+      "size": 638
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-resident/process.stderr",
+      "size": 899
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/native-resident/summary.json",
+      "size": 3317
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/run_llama_pilot.py",
+      "size": 4140
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/run_native_pilot.py",
+      "size": 2398
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-thread-controls/thread-controls-python-tests.log",
+      "size": 501
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-worker-scheduling/README.md",
+      "size": 1686
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-worker-scheduling/dense.json",
+      "size": 25418
+    },
+    {
+      "path": "docs/benchmarks/2026-09-28-worker-scheduling/gemv.log",
+      "size": 2361
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-27-rust-unlimited-ocr.md",
+      "size": 17939
+    },
+    {
+      "path": "docs/superpowers/specs/2026-09-27-rust-unlimited-ocr-design.md",
+      "size": 9839
+    },
+    {
+      "path": "examples/bench_activations.rs",
+      "size": 1075
+    },
+    {
+      "path": "examples/bench_decode_attention.rs",
+      "size": 1804
+    },
+    {
+      "path": "examples/bench_dequantize.rs",
+      "size": 860
+    },
+    {
+      "path": "examples/bench_gemv.rs",
+      "size": 1597
+    },
+    {
+      "path": "examples/bench_int8.rs",
+      "size": 1794
+    },
+    {
+      "path": "examples/bench_load.rs",
+      "size": 2011
+    },
+    {
+      "path": "examples/bench_softmax.rs",
+      "size": 810
+    },
+    {
+      "path": "examples/bench_vision.rs",
+      "size": 941
+    },
+    {
+      "path": "requirements-reference.txt",
+      "size": 660
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "size": 86
+    },
+    {
+      "path": "src/bin/uocr.rs",
+      "size": 4099
+    },
+    {
+      "path": "src/checkpoint.rs",
+      "size": 7413
+    },
+    {
+      "path": "src/cpu/accelerate.rs",
+      "size": 4502
+    },
+    {
+      "path": "src/cpu/blas_threads.rs",
+      "size": 3690
+    },
+    {
+      "path": "src/cpu/mod.rs",
+      "size": 2997
+    },
+    {
+      "path": "src/cpu/neon.rs",
+      "size": 10351
+    },
+    {
+      "path": "src/cpu/ops.rs",
+      "size": 20943
+    },
+    {
+      "path": "src/cpu/quantized.rs",
+      "size": 13918
+    },
+    {
+      "path": "src/decoder/cache.rs",
+      "size": 2875
+    },
+    {
+      "path": "src/decoder/mod.rs",
+      "size": 16284
+    },
+    {
+      "path": "src/decoder/moe.rs",
+      "size": 929
+    },
+    {
+      "path": "src/error.rs",
+      "size": 554
+    },
+    {
+      "path": "src/generation.rs",
+      "size": 1630
+    },
+    {
+      "path": "src/lib.rs",
+      "size": 210
+    },
+    {
+      "path": "src/model/benchmark.rs",
+      "size": 3053
+    },
+    {
+      "path": "src/model/config.rs",
+      "size": 3489
+    },
+    {
+      "path": "src/model/mod.rs",
+      "size": 6570
+    },
+    {
+      "path": "src/preprocess.rs",
+      "size": 7180
+    },
+    {
+      "path": "src/preprocess/crop_ratios.rs",
+      "size": 1652
+    },
+    {
+      "path": "src/prompt.rs",
+      "size": 1600
+    },
+    {
+      "path": "src/tensor.rs",
+      "size": 826
+    },
+    {
+      "path": "src/vision/clip.rs",
+      "size": 3553
+    },
+    {
+      "path": "src/vision/mod.rs",
+      "size": 6516
+    },
+    {
+      "path": "src/vision/sam.rs",
+      "size": 7936
+    },
+    {
+      "path": "src/vision/spatial.rs",
+      "size": 5165
+    },
+    {
+      "path": "tests/activations.rs",
+      "size": 1281
+    },
+    {
+      "path": "tests/cache.rs",
+      "size": 990
+    },
+    {
+      "path": "tests/checkpoint.rs",
+      "size": 3269
+    },
+    {
+      "path": "tests/config.rs",
+      "size": 933
+    },
+    {
+      "path": "tests/cpu_context.rs",
+      "size": 488
+    },
+    {
+      "path": "tests/decode_attention.rs",
+      "size": 3775
+    },
+    {
+      "path": "tests/decoder.rs",
+      "size": 3620
+    },
+    {
+      "path": "tests/fixtures/llama_completion_stream.sse",
+      "size": 32854
+    },
+    {
+      "path": "tests/fixtures/resize_rgb.json",
+      "size": 85
+    },
+    {
+      "path": "tests/generation.rs",
+      "size": 977
+    },
+    {
+      "path": "tests/moe.rs",
+      "size": 457
+    },
+    {
+      "path": "tests/ops.rs",
+      "size": 8557
+    },
+    {
+      "path": "tests/preprocess.rs",
+      "size": 1348
+    },
+    {
+      "path": "tests/prompt.rs",
+      "size": 747
+    },
+    {
+      "path": "tests/python/test_benchmark.py",
+      "size": 5862
+    },
+    {
+      "path": "tests/python/test_benchmark_resident.py",
+      "size": 4943
+    },
+    {
+      "path": "tests/python/test_corpus.py",
+      "size": 1149
+    },
+    {
+      "path": "tests/python/test_fetch.py",
+      "size": 1393
+    },
+    {
+      "path": "tests/python/test_projector_metadata.py",
+      "size": 1686
+    },
+    {
+      "path": "tests/python/test_quantize.py",
+      "size": 2109
+    },
+    {
+      "path": "tests/python/test_reference.py",
+      "size": 2521
+    },
+    {
+      "path": "tests/quantized.rs",
+      "size": 4688
+    },
+    {
+      "path": "tests/quantized_loader.rs",
+      "size": 4485
+    },
+    {
+      "path": "tests/vision.rs",
+      "size": 6478
+    },
+    {
+      "path": "tests/weights.rs",
+      "size": 3098
+    },
+    {
+      "path": "tools/benchmark.py",
+      "size": 7936
+    },
+    {
+      "path": "tools/benchmark_resident.py",
+      "size": 19531
+    },
+    {
+      "path": "tools/corpus.py",
+      "size": 5304
+    },
+    {
+      "path": "tools/fetch_model.py",
+      "size": 2829
+    },
+    {
+      "path": "tools/projector_metadata.py",
+      "size": 3593
+    },
+    {
+      "path": "tools/quantize.py",
+      "size": 4951
+    },
+    {
+      "path": "tools/reference.py",
+      "size": 12066
+    },
+    {
+      "path": "tools/score.py",
+      "size": 1314
+    }
+  ],
+  "recent_commits": [
+    {
+      "date": "2026-09-28T10:40:50Z",
+      "subject": "Add repeated resident OCR benchmark with per-child resource accounting",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/ce095b205d03f2cb8b90b0fbed3e1651f1fe9c46"
+    },
+    {
+      "date": "2026-09-28T10:30:52Z",
+      "subject": "Align OCR benchmark prompts and record explicit thread policies",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/4d8b509fc26dc44fa6f1d280ddc9429465a93feb"
+    },
+    {
+      "date": "2026-09-28T10:13:29Z",
+      "subject": "Parallelize decode attention with thread-local BLAS guards",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/e5dd8302c883bf58aeecfe4b16048476964b4364"
+    },
+    {
+      "date": "2026-09-28T09:57:05Z",
+      "subject": "Run shared and routed decode experts concurrently",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/771625899ef094272c64dee4a113ceb0d32de611"
+    },
+    {
+      "date": "2026-09-28T09:50:34Z",
+      "subject": "Accelerate dynamic INT8 decode with four-row SDOT",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/09b05fdad4aba9342975ea55d7dabc25f5f8760a"
+    },
+    {
+      "date": "2026-09-28T09:35:53Z",
+      "subject": "Accelerate INT8 expansion and sum all baseline vision batches",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/48ac31bc1ed515def11f174872d5f809210de9a2"
+    },
+    {
+      "date": "2026-09-28T09:27:32Z",
+      "subject": "Parallelize attention softmax and relative-position score rows",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/357235fa96797f6a960e4002bede6c82a9671476"
+    },
+    {
+      "date": "2026-09-28T09:17:27Z",
+      "subject": "Stream checkpoint checksums and keep overlay reads cache-local",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/cbe4996adbc1d4d7846e0f3a116451bec8064e2b"
+    },
+    {
+      "date": "2026-09-28T09:06:32Z",
+      "subject": "Parallelize vision activations without changing scalar arithmetic",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/74a7d63f6d226ea95deb32b2e98081c8c6f77353"
+    },
+    {
+      "date": "2026-09-28T08:52:40Z",
+      "subject": "Parallelize selected decode experts with stable accumulation",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/91f56b2e36a5f433f22166ea48f89ebe1d1ae1e7"
+    },
+    {
+      "date": "2026-09-28T08:42:52Z",
+      "subject": "Integrate validated INT8 overlays and record full OCR pilots",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/0a81dba73af9f804680a955c939051ed6bdbe8ed"
+    },
+    {
+      "date": "2026-09-28T08:25:35Z",
+      "subject": "Add tested INT8 kernels and versioned decoder weight preparation",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/4e3a47da9377cd11254cd42759c04b5b3a0f4fa3"
+    },
+    {
+      "date": "2026-09-28T08:11:55Z",
+      "subject": "Tune vision attention blocks to improve reuse within scratch budget",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/47da4c6b2ec9d328ac54c9c53de664724e6b29ba"
+    },
+    {
+      "date": "2026-09-28T08:02:12Z",
+      "subject": "Align llama projector crop metadata and record corrected CPU baseline",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/14b4708fd7e3811fb7b222605417274ac4d69cd0"
+    },
+    {
+      "date": "2026-09-28T07:57:22Z",
+      "subject": "Keep decode kernels on worker threads and bound GEMV task splitting",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/0cef15fe468d667790dcd3715127df5e5a5be82e"
+    },
+    {
+      "date": "2026-09-28T07:50:03Z",
+      "subject": "Read KV cache directly during decode without prefix rearrangement",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/150618dabe75afe7e8cfedc0c626b5f304ba46b2"
+    },
+    {
+      "date": "2026-09-28T07:43:52Z",
+      "subject": "Record complete native document accuracy and latency pilot",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/93545d36732fdd2763eede310422f072c1166d76"
+    },
+    {
+      "date": "2026-09-28T07:42:58Z",
+      "subject": "Vectorize attention softmax and stabilize vision LayerNorm",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/311ce184187a7079af07cecf4fcc5ec9769b3c3d"
+    },
+    {
+      "date": "2026-09-28T07:29:52Z",
+      "subject": "Implement native Rust OCR pipeline and ARM64 BF16 dot kernels",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/ae3adc90c071011676d375e8256cf3862dd7de6d"
+    },
+    {
+      "date": "2026-09-28T06:16:07Z",
+      "subject": "docs: record CPU baseline and Rust optimization implementation plan",
+      "url": "https://github.com/ezgamehost/unlimited-ocr-kernel/commit/5d6923beab0011fddf7e26f93b22b07870756c63"
+    }
+  ],
+  "readme": "# Unlimited-OCR CPU runtime\n\nNative Rust inference for Baidu Unlimited-OCR, currently optimized and measured\non an Apple M4 Pro. The runtime implements image preparation, SAM/CLIP vision,\nMoE decoding, preserved-prefix KV caching and generation. It uses custom NEON\nkernels and Apple Accelerate math primitives. PyTorch is used only for offline\nreference generation and optional weight preparation; llama.cpp is a benchmark\ncompetitor, not a runtime dependency.\n\nThis is an active performance project. Portable scalar fallbacks exist, but\nother CPU platforms have not received equivalent optimization or benchmarking.\nThe current pilots do not establish an overall win against llama.cpp.\n\n## Build and run\n\nThe toolchain is pinned in `rust-toolchain.toml`. On macOS, building also requires\nthe command-line developer tools for native dependencies and Accelerate linking.\n\n```sh\ncargo build --release\npython3 -m tools.fetch_model\ntarget/release/uocr --image benchmarks/corpus/english.png --threads 8 --json\n```\n\nThe download helper uses Python's standard library and pins the original model\nrevision `07dea832e22aefee32ad281d4b80551282e1c168`. Weights and their manifest\nlive in `artifacts/upstream`; they are not checked into Git. Downloaded model\nPython files are not executed by the Rust runtime. The upstream model license\nis downloaded alongside the weights.\n\nPNG and JPEG inputs are supported. Default `--mode gundam` uses a global view\nand adaptive local crops; `--mode base` uses the global view. The default prompt\nis `<image>document parsing.`. Use `--max-tokens` to bound generation; a\n`token_limit` finish is incomplete and must not be counted as a completed OCR\nbenchmark. `--help` lists the full CLI.\n\n`--threads` sizes the Rust worker pool. On macOS 15+, parallel decode attention\nuses single-threaded BLAS calls to avoid nested workers; older systems use\nserial attention heads. Dense vision/prefill matrix multiplication still uses\nAccelerate's automatic threading, so this option is not a global thread cap.\n\n## Keep a model resident\n\n```sh\ntarget/release/uocr --jsonl --threads 8\n```\n\nSend one request per line on stdin:\n\n```json\n{\"image\":\"benchmarks/corpus/english.png\",\"generation\":{\"max_tokens\":2048}}\n```\n\nEach request starts an independent generation cache. Responses contain either\n`status: \"ok\"` and a result, or `status: \"error\"` and an explanation. Results\ninclude raw text, token IDs, finish reason, precision, image-token count and\nphase timings. Load time is emitted separately on stderr. Resident inference\ntimings exclude load; fresh-process comparisons must include it.\n\n## Optional INT8 decoder\n\nPrepare an overlay in the offline Python environment:\n\n```sh\npython3 -m venv .venv\n.venv/bin/python -m pip install -r requirements-reference.txt\n.venv/bin/python -m tools.quantize --output artifacts/unlimited-ocr-q8-block32.safetensors\ntarget/release/uocr --image benchmarks/corpus/english.png --threads 8 --json \\\n  --int8-weights artifacts/unlimited-ocr-q8-block32.safetensors\n```\n\nThis keeps FP32 activations. Adding `--int8-activations` enables the separately\nlabeled experimental mode that also rounds single-row projection inputs,\nincluding single-row expert groups during prefill. Routing, normalization,\nembedding and vision weights remain original in both modes. The original\ncheckpoint is still required. The loader verifies complete source and overlay\nchecksums, version, shapes, dtypes, ranges and scales before dispatch.\n\nBF16 remains the default. Both INT8 modes introduced one table character error\nin the four-page pilot where native BF16 had none. See the retained\n[INT8 format and preparation](docs/benchmarks/2026-09-28-int8-kernels/README.md)\nand [page results](docs/benchmarks/2026-09-28-parallel-activations/README.md).\n\n## Rust API and checks\n\n`Model::load` loads the original checkpoint; `Model::load_with_quantization`\nselects an overlay and explicit `QuantizationMode`. Create a `CpuContext` with\nbackend, worker count and scratch budget, then call `Model::infer(&Request,\n&mut CpuContext)`. The scratch limit applies to checked operator allocations;\nit is not a total process-memory limit. Mapped checkpoint contents must remain\nimmutable throughout their lifetime.\n\n```sh\ncargo test\ncargo clippy --all-targets -- -D warnings\n```\n\nOriginal-weight decoder and vision tests are ignored by default and require\nthe downloaded weights and offline reference fixtures. With those present:\n\n```sh\ncargo test --release --test decoder -- --ignored --test-threads=1\ncargo test --release --test vision -- --ignored --test-threads=1\n```\n\nThe [implementation plan](docs/superpowers/plans/2026-09-27-rust-unlimited-ocr.md)\nand [design](docs/superpowers/specs/2026-09-27-rust-unlimited-ocr-design.md) describe\nthe remaining scope. Benchmark reports retain raw output and disclose differing\nprecision, attention policies, generation lengths and process lifetimes. The\nfinal repeated benchmark and resource/API hardening remain unfinished.\n\nFor the pinned llama.cpp comparison, use an explicit newline after `<image>`:\nits image processor inserts that newline automatically. The [matched-prompt\npilot](docs/benchmarks/2026-09-28-thread-controls/README.md) records the exact\nthread settings, raw outputs and why the earlier dense-page token counts differed.\nThis comparison setting does not change the runtime's default prompt.\n"
+}

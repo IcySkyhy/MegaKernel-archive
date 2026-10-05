@@ -1,0 +1,6 @@
+CASE dintlv_b16 id=7 misalign=0 pattern=u16-ramp
+LAUNCH aclError=0 (sync timeout=120000ms)
+NONZERO d0=256 d1=255 (of 256 bytes each)
+DUMP_FNV32 0xca14ddc5
+OUTCOME: OK
+RESULT: OK (structural: d0 256/256 bytes nonzero, d1 255/256；逐 lane 语义由 check_ref_ildl.py 判)

@@ -1,0 +1,11 @@
+include experiments/cluster_sweep/Makefile
+.DEFAULT_GOAL := xz4
+XZ4 := $(SWEEP)/xz4.cuh $(SWEEP)/xz4_debug.cuh $(SWEEP)/xz4_main.cu $(SWEEP)/Makefile.xz4
+.PHONY: xz4
+xz4: build/sweep/lbm-xz4 build/sweep/xz4-ownership build/sweep/xz4-model
+build/sweep/lbm-xz4: $(SWEEP_COMMON) $(XZ4) build/sweep/driver.cuh build/config.txt
+	$(CUDA_CXX) $(FLAGS) -I$(SWEEP) $(SWEEP)/xz4_main.cu -o $@ $(LIBS)
+build/sweep/xz4-ownership: $(SWEEP_COMMON) $(XZ4) $(SWEEP)/xz4_ownership.cu build/sweep/driver.cuh build/config.txt
+	$(CUDA_CXX) $(FLAGS) -I$(SWEEP) $(SWEEP)/xz4_ownership.cu -o $@ $(LIBS)
+build/sweep/xz4-model: $(SWEEP)/xz4_model.cpp include/layout_config.h
+	$(CXX) -O2 -std=c++11 $< -o $@

@@ -1,0 +1,9 @@
+# probe_ub2l1 —— slot.sh 的**只追加**尝试流水（每次调用一行：时间 / 档名 / 等待上限 / 结果）
+#
+# 为什么有它（r2 复审 P2-2）：每档的 <name>.log 是 `>` 截断写的，同一档"先失败、后成功"时，
+# 失败那次的记录会被随后成功那次覆盖。本文件用 `>>` 追加，专门留"每次尝试"的痕。
+# 结果取值：executed=yes（跑过，rc 见行尾） / LOCK_ACQUIRE_FAILED（未执行=未取得读数） / SKIP_BUSY（同上）。
+#
+# 下面两行是 2026-10-04 对本机制本身的**自测**（一次能进锁、一次故意拿不到锁）：
+2026-10-04T09:24:30+00:00 name=__selftest_attempts_ledger__ wait=0 result=rc0 executed=yes
+2026-10-04T09:24:54+00:00 name=__laf_selftest__ wait=1 result=LOCK_ACQUIRE_FAILED（未执行；未取得读数）

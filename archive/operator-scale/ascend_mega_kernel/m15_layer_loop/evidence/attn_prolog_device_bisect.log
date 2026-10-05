@@ -1,0 +1,63 @@
+# ⚠⚠ **本文件是 r1 的原始读数，r1 对它的解释已作废（r2 复审已定案）** ⚠⚠
+#
+# r1 在这里给出的根因（「AIC 的 mode-2 CrossCoreSetFlag 在配对 AIV 不消费时会阻塞 /
+# 配对关系或 flag 编号不符合本 kernel 的预期 / 根因未隔离」）**是错的**。
+# 真根因（r1 复审用 /tmp 副本实证、r2 已修）：`m15_attn_prolog_probe.h` 里 AIV 那条臂
+# 被整块写在 `if ASCEND_IS_AIC {` **内部**（全文件只有 ASCEND_IS_AIC、没有 ASCEND_IS_AIV）
+# ⇒ AIV 核上整段被编译掉，而 AIC 会执行属于 AIV 的那条 mode-2 `CrossCoreWaitFlag`
+# ⇒ 等一个只有 AIV 能置的 flag ⇒ 死锁。这正好逐个解释了下面的 rc 表。
+# 排查中试过的三种替代形态（AIC 单方面 set / GDN 式严格交替 / flagId 换号）**本来就都得挂**
+# （AIV 是死代码），与 flagId 无关 ⇒ 那三条已被真因解释掉，不再算「已排除的原因」。
+# 归位后的读数见 `attn_prolog_r2_runs.log` 与 `attn_prolog_r2_device_bisect.log`。
+#
+# 下面这段 **r1 原始内容保留原样**（当时的观测本身可复现），只作历史见证。
+# ============================================================
+# M88 device 探针的分档诊断读数（**冻结 tip 上重跑**；命令 → 输出，逐条实跑）
+#
+# tip 二进制 sha256 = c5fdb9ecb0ecedc7f69f2f2f0f714cebf9d4e06135cf0aa0ca8995b59acf0ee8
+# 环境：Ascend950PR，28 AIC + 56 AIV。并发背景（npu-smi info 实跑，2026-09-27 01:18 UTC）：
+#       另有两个 agent 的进程在跑 —— m15_layer_loop（pid 88834 → 后为 169508）与 probe_host_dma
+#       （pid 169981，M86）；跑矩阵后期 NPU util 100%、HBM 12990/131072 MB。
+#
+# 命令（每条都实跑过；一次跑一整张表）：
+#   for d in 3 2 4 5 1 0; do M15_AP_DBG=$d timeout 70 \
+#       <wt>/m15_layer_loop/build/m15_layer_loop <wt>/m15_layer_loop/weights_manifest.txt prolog \
+#       > /tmp/f_dbg$d.log 2>&1; echo "dbg=$d rc=$?"; done
+#   rc=124 = timeout 挂死；rc=0 = 正常退出；两张表里 errstr 一律 0（没有任何 core exception）
+#
+# dbg 闸的语义（kernel 第 8 个参数；host 侧环境变量 M15_AP_DBG 传入；见 m15_attn_prolog_probe.h）
+#   dbg=0 全跑（AIC 4 个 GEMM + 两条 flag；AIV norm/rope + 抄写）
+#   dbg=1 AIC：跳过 4 个 GEMM，仍发 mode-0 barrier + mode-2 set；AIV：全跑（含 mode-2 wait）
+#   dbg=2 AIC：跑 4 个 GEMM，**不发任何 cross-core**；AIV：全跳过
+#   dbg=3 AIC：全跳过；AIV：全跳过（只 InitSocState + PipeBarrier）
+#   dbg=4 AIC：跳过 GEMM，**只发 mode-0 barrier + mode-2 set**；AIV：全跳过（连 wait 都不做）
+#   dbg=5 AIC：跳过 GEMM，发两条 flag；AIV：只做一次 mode-2 wait 后立即 return
+#
+== 实测表（本次实跑输出，逐字）==
+SHA=c5fdb9ecb0ecedc7f69f2f2f0f714cebf9d4e06135cf0aa0ca8995b59acf0ee8
+== runs=all ==
+rc=0 [m15] ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+
+== runs=prolog ==
+rc=124
+
+== dbg 矩阵 ==
+dbg=3 rc=0 errstr=0
+dbg=2 rc=0 errstr=0
+dbg=4 rc=124 errstr=0
+dbg=5 rc=124 errstr=0
+dbg=1 rc=124 errstr=0
+dbg=0 rc=124 errstr=0
+
+# 隔离出的根因（只对本次实测负责，不复述为通用结论）：
+#   dbg=4 把 AIV 侧**完全**排除（连 wait 都不做），AIC 只做两件事：mode-0 barrier 与 mode-2 set。
+#   它 rc=124 ⇒ **AIC 的 mode-2 CrossCoreSetFlag 在配对 AIV 不消费时会阻塞**（不是 fire-and-forget）。
+#   而 dbg=5 / dbg=1（AIV **有** wait）**同样** rc=124 ⇒ AIV 的 wait 没能把 AIC 从 set 里解出来，
+#   即**配对关系或 flag 编号不符合本 kernel 的预期**。
+#
+# 已经试过、仍然挂死的替代形态（只记事实，不作为结论）：
+#   ① AIC 单方面 set<mode2,PIPE_MTE2> / AIV wait<mode2,PIPE_MTE2>（= m15_gdn_layer.h:1758-1760 的同构）；挂死
+#   ② GDN 那样的严格交替（AIV 先 set 就绪 → AIC wait → AIC set → AIV wait）；挂死
+#   ③ flagId 0 → 4/5（与 GDN 同号）；挂死
+# ⇒ **本 mission 未修好**，这是显式未完成项 ①。下一步应先取证「本探针 kernel 里 AIV 的 blockIdx 与
+#   AIC 的配对关系（预取：只做一次 set+wait 的最小 kernel，逐 flagId 试）」，再定 flag 分节。

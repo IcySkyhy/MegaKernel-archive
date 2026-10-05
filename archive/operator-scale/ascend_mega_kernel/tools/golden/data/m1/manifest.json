@@ -1,0 +1,639 @@
+{
+  "format_version": 2,
+  "name": "m1",
+  "m": 1,
+  "num_experts": 4,
+  "top_k": 2,
+  "hidden": 2560,
+  "moe_intermediate": 640,
+  "shared_expert_intermediate": 640,
+  "group_size": 32,
+  "routing": {
+    "scoring": "softmax over all experts",
+    "topk_order": "descending score, ties to lower expert id",
+    "renormalize_topk": true,
+    "shared_expert_gate": "sigmoid(x @ shared_expert_gate_weight.T)"
+  },
+  "quantization": {
+    "format": "mxfp4-pack-quantized-e8m0",
+    "weight": "e2m1 nibbles, lohi byte order, group 32 along K",
+    "weight_scale": "e8m0 bias-127 bytes as given \u2014 the checkpoint was packed by the model author's CPU RTN tool (cpu_rtn_provenance.tool = qwen3.8-flash-next-cpu-rtn-mxfp4); we consume the bytes and never re-pack.  This dataset's *synthetic* weights are packed with the legacy ceil rule (pack_mxfp4).",
+    "activation_scale_rules": {
+      "floor": "the official ops-nn sequence (OCP, docs/13 \u00a74): shared = clamp(bf16 exponent field of amax, >= emax=0x0100) - emax; e8m0 byte = shared >> 7 i.e. scale = 2**(floor(log2(amax)) - 2); non-finite group -> byte 0xFF, degenerate (zero/denormal) group -> byte 0 with halfScale 0.  Default and authoritative.",
+      "ceil": "LEGACY: e8m0 byte = 127 + ceil(log2(amax / 6)), i.e. scale = 2**ceil(log2(amax/6)) \u2014 the replaced m3 scalar quantizer rule and this directory's synthetic weight-packing rule; kept for reproducing pre-ruling goldens, not for grading device kernels."
+    },
+    "activation_data_rounding": {
+      "floor": "CAST_ROUND on the final fp4 cast (:755-758): round half away from zero, saturating at \u00b16",
+      "ceil": "nearest E2M1 level, ties to even code (legacy)"
+    },
+    "activation_default_rule": "floor",
+    "activation_rule_status": "authoritative: floor = the official ops-nn MXFP4 sequence (OCP; npu_dynamic_mx_quant(round_mode=\"round\", scale_alg=0)) transcribed line by line in moe_block_ref.quantize_ocp \u2014 see docs/13 and tools/golden/README.md for the step-by-step table. ceil = legacy (m3 scalar quantizer / synthetic weight packing), kept only for reproducing pre-ruling goldens.",
+    "qaware_golden": {
+      "floor": {
+        "dir": "qaware/floor",
+        "tensors": 21,
+        "summary": {
+          "routed_output": {
+            "measured_max_abs": 0.6043514460325241,
+            "ceiling": 6.35109964024606
+          },
+          "shared_output": {
+            "measured_max_abs": 0.626675009727478,
+            "ceiling": 5.360005143351895
+          },
+          "moe_output": {
+            "measured_max_abs": 0.7629101127386093,
+            "ceiling": 11.321212803461826
+          }
+        }
+      },
+      "ceil": {
+        "dir": "qaware/ceil",
+        "tensors": 21,
+        "summary": {
+          "routed_output": {
+            "measured_max_abs": 0.6241897940635681,
+            "ceiling": 7.642738765349985
+          },
+          "shared_output": {
+            "measured_max_abs": 0.6449976563453674,
+            "ceiling": 6.098137324261709
+          },
+          "moe_output": {
+            "measured_max_abs": 0.8501421213150024,
+            "ceiling": 13.230725424753043
+          }
+        }
+      }
+    }
+  },
+  "layer_chain": {
+    "input": "x_res.bin -> m6#1 (Add+RMSNorm with a zero residual, gamma1)",
+    "segment_input": "x.bin is the MoE segment input (post-norm); it is NOT norm(x_res, gamma1) \u2014 RMSNorm is invariant to a per-token scale, so the slice and the chain use separate inputs",
+    "norm_semantics": "resOut = f32(x) + f32(residual) (fp32, bit-exact); rstd = 1/sqrt(mean(xAdd^2) + 1e-6); y = bf16((xAdd*rstd)*gamma)",
+    "norm_eps": 1e-06,
+    "gammas": "gamma1 (m6#1, pre-MoE), gamma2 (m6#2, post-MoE); bf16 [1, hidden]",
+    "residuals": "res1 = f32(x_res); res2 = res1 + moe_output; the MoE block adds no residual of its own"
+  },
+  "seed": 20260926,
+  "files": [
+    {
+      "tensor": "x.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "1ac7cbbb11eca87c6975b3531fd14c91398f8c36d61c42a05b4ae33f63598b41",
+      "kind": "input",
+      "description": "MoE segment input activations [m, hidden], bf16 (chain mode: m6#1 output, i.e. post-norm \u2014 NOT norm(x_res, gamma1))"
+    },
+    {
+      "tensor": "router_weight.bin",
+      "shape": [
+        4,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 20480,
+      "sha256": "375fca2e6aa05dbe9ca65baf7b21e43be8a2a162d3229f298baf6a014c6492e5",
+      "kind": "input",
+      "description": "router gate weight [num_experts, hidden], bf16"
+    },
+    {
+      "tensor": "shared_expert_gate_weight.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "d223b0f746552726146384662294188b3c37e90275078a9eeda8b3f1e328f556",
+      "kind": "input",
+      "description": "shared expert gate weight [1, hidden], bf16"
+    },
+    {
+      "tensor": "x_res.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "351bb85e5212bfa73bdc3dd04b0f062ba0091549e7dbb1cd361acb056cb216db",
+      "kind": "input",
+      "description": "layer residual input [m, hidden], bf16 \u2014 m6#1 x (with a zero residual); also the fp32 residual the MoE block adds to (layer stacking)"
+    },
+    {
+      "tensor": "gamma1.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "c82c4f21893fbf2878805859adc11a10d0230847bf4303e45cd79aebc87ea132",
+      "kind": "input",
+      "description": "m6#1 RMSNorm weight [1, hidden], bf16 (pre-MoE norm)"
+    },
+    {
+      "tensor": "gamma2.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "85931ebf86942f6ff6e880e6e297f6b7de8c9ba5cab0a818cd746fa146e07704",
+      "kind": "input",
+      "description": "m6#2 RMSNorm weight [1, hidden], bf16 (post-MoE norm)"
+    },
+    {
+      "tensor": "experts.gate_up_proj.bin",
+      "shape": [
+        4,
+        1280,
+        1280
+      ],
+      "dtype": "uint8",
+      "strides": [
+        1638400,
+        1280,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 6553600,
+      "sha256": "591d0c88dfad6767fcd2f06901ae3ce8e366d546a44f8ddb7d3b7e4dc8679130",
+      "kind": "input",
+      "description": "MXFP4 packed weights [4, 1280, 1280], lohi nibbles along K"
+    },
+    {
+      "tensor": "experts.gate_up_proj.weight_scale.bin",
+      "shape": [
+        4,
+        1280,
+        80
+      ],
+      "dtype": "uint8",
+      "strides": [
+        102400,
+        80,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 409600,
+      "sha256": "b20f442fe749aaa8bcf2af96e9ebe4573fae8ddfb5c30e7f811b9cf014b68861",
+      "kind": "input",
+      "description": "E8M0 group scales [.., N, K//32], bias 127, group 32 along K"
+    },
+    {
+      "tensor": "experts.down_proj.bin",
+      "shape": [
+        4,
+        2560,
+        320
+      ],
+      "dtype": "uint8",
+      "strides": [
+        819200,
+        320,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 3276800,
+      "sha256": "6e0d913f948dc9c521490bea1d3bdfc024d5676052964e6b7527a4ed78978781",
+      "kind": "input",
+      "description": "MXFP4 packed weights [4, 2560, 320], lohi nibbles along K"
+    },
+    {
+      "tensor": "experts.down_proj.weight_scale.bin",
+      "shape": [
+        4,
+        2560,
+        20
+      ],
+      "dtype": "uint8",
+      "strides": [
+        51200,
+        20,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 204800,
+      "sha256": "d62f30ccc84be94c73aa5f7d60332065905da3b7611a26ac42fa353c66b144a9",
+      "kind": "input",
+      "description": "E8M0 group scales [.., N, K//32], bias 127, group 32 along K"
+    },
+    {
+      "tensor": "shared_expert.gate_proj.bin",
+      "shape": [
+        640,
+        1280
+      ],
+      "dtype": "uint8",
+      "strides": [
+        1280,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 819200,
+      "sha256": "20f948371f87ad70aaa43c8b8b7bb8a1647791233e293fff88ee3c46362ecd76",
+      "kind": "input",
+      "description": "MXFP4 packed weights [640, 1280], lohi nibbles along K"
+    },
+    {
+      "tensor": "shared_expert.gate_proj.weight_scale.bin",
+      "shape": [
+        640,
+        80
+      ],
+      "dtype": "uint8",
+      "strides": [
+        80,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 51200,
+      "sha256": "6b61ef44fe5c4fd63247c83e3c4211f589f854078de38d9d6ea604a0f6e4f85e",
+      "kind": "input",
+      "description": "E8M0 group scales [N, K//32], bias 127, group 32 along K"
+    },
+    {
+      "tensor": "shared_expert.up_proj.bin",
+      "shape": [
+        640,
+        1280
+      ],
+      "dtype": "uint8",
+      "strides": [
+        1280,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 819200,
+      "sha256": "4dae7a84fb846c0c88cac14b4813da22b612cfd8eec1c55d824e0672be440d04",
+      "kind": "input",
+      "description": "MXFP4 packed weights [640, 1280], lohi nibbles along K"
+    },
+    {
+      "tensor": "shared_expert.up_proj.weight_scale.bin",
+      "shape": [
+        640,
+        80
+      ],
+      "dtype": "uint8",
+      "strides": [
+        80,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 51200,
+      "sha256": "0d2639a0e7ab0a39490c8158d5501476d8172da333b77acae972fdbc00bcec2d",
+      "kind": "input",
+      "description": "E8M0 group scales [N, K//32], bias 127, group 32 along K"
+    },
+    {
+      "tensor": "shared_expert.down_proj.bin",
+      "shape": [
+        2560,
+        320
+      ],
+      "dtype": "uint8",
+      "strides": [
+        320,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 819200,
+      "sha256": "6b6307f376621ee9b4202e7f85d984d6f1b69150cd7f1aa36ede02f4f63696b6",
+      "kind": "input",
+      "description": "MXFP4 packed weights [2560, 320], lohi nibbles along K"
+    },
+    {
+      "tensor": "shared_expert.down_proj.weight_scale.bin",
+      "shape": [
+        2560,
+        20
+      ],
+      "dtype": "uint8",
+      "strides": [
+        20,
+        1
+      ],
+      "elem_size": 1,
+      "byte_order": "little",
+      "size_bytes": 51200,
+      "sha256": "990e6163999134148b6f2a636dd3575d1625e48eb55b87be29aa39c9c330ff60",
+      "kind": "input",
+      "description": "E8M0 group scales [N, K//32], bias 127, group 32 along K"
+    },
+    {
+      "tensor": "router_logits.bin",
+      "shape": [
+        1,
+        4
+      ],
+      "dtype": "fp32",
+      "strides": [
+        4,
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 16,
+      "sha256": "447515846206b0ea9e7592d492017e28f89520292964a36682f3c0eca090ed1c",
+      "kind": "golden",
+      "description": "router logits [m, num_experts], fp32 (softmax input, max-shifted)"
+    },
+    {
+      "tensor": "shared_gate_logits.bin",
+      "shape": [
+        1
+      ],
+      "dtype": "fp32",
+      "strides": [
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 4,
+      "sha256": "926a48d67dd0a0ff7941d217f9936326559c8f4d0406d535292a867751ab729b",
+      "kind": "golden",
+      "description": "shared expert gate raw dot [m], fp32 (sigmoid input, device sgate)"
+    },
+    {
+      "tensor": "topk_ids.bin",
+      "shape": [
+        1,
+        2
+      ],
+      "dtype": "int32",
+      "strides": [
+        2,
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 8,
+      "sha256": "9ae4c9d0864c30005acac91f21015f39e35691a056d606a097c8cf8380275a17",
+      "kind": "golden",
+      "description": "top-k expert ids [m, top_k] sorted by descending score"
+    },
+    {
+      "tensor": "topk_weights.bin",
+      "shape": [
+        1,
+        2
+      ],
+      "dtype": "fp32",
+      "strides": [
+        2,
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 8,
+      "sha256": "b7d338a27de180f9ae69d17d60d3ac30acc178314b5f10fcd9cf47a97191247f",
+      "kind": "golden",
+      "description": "top-k routing weights [m, top_k], renormalized to sum 1"
+    },
+    {
+      "tensor": "perm_src_token.bin",
+      "shape": [
+        2
+      ],
+      "dtype": "int32",
+      "strides": [
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 8,
+      "sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
+      "kind": "golden",
+      "description": "grouped permute: source token per sorted slot [m*top_k]"
+    },
+    {
+      "tensor": "perm_expert.bin",
+      "shape": [
+        2
+      ],
+      "dtype": "int32",
+      "strides": [
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 8,
+      "sha256": "9ae4c9d0864c30005acac91f21015f39e35691a056d606a097c8cf8380275a17",
+      "kind": "golden",
+      "description": "grouped permute: expert id per sorted slot [m*top_k]"
+    },
+    {
+      "tensor": "expert_token_counts.bin",
+      "shape": [
+        4
+      ],
+      "dtype": "int32",
+      "strides": [
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 16,
+      "sha256": "288b1793833bb59673891be54d485696d3f7d8ff9a9168758ef9d00b1bca8985",
+      "kind": "golden",
+      "description": "tokens per expert [num_experts]"
+    },
+    {
+      "tensor": "x_sorted.bin",
+      "shape": [
+        2,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 10240,
+      "sha256": "fb87a344fcc5c30ed8a6e8d3ef352dae19894e6f2251f5a5eb97d3dbd14cb192",
+      "kind": "golden",
+      "description": "rearranged activations grouped by expert [m*top_k, hidden], bf16"
+    },
+    {
+      "tensor": "routed_output.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "ab25b9f98fa7bd5dcf675dc8f444a8dd18c04665465b6137c15c8cca051ffd45",
+      "kind": "golden",
+      "description": "weighted routed-expert sum before shared expert [m, hidden], bf16"
+    },
+    {
+      "tensor": "shared_output.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "536db3341299697e1b34760d52a7b1424d3fa11e0e93517115f491c9405f4de2",
+      "kind": "golden",
+      "description": "shared expert output after sigmoid gate [m, hidden], bf16"
+    },
+    {
+      "tensor": "moe_output.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "3279e5191aff1cf42a7bcd78afec8b23dcdc11d3a0f7066d3b94d29c3fd0b5f3",
+      "kind": "golden",
+      "description": "final MoE block output = routed + shared [m, hidden], bf16"
+    },
+    {
+      "tensor": "x_norm1.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "1c74a375490750701b6743b5280a14bde9fbc9c4352f2dd207950dab4ab1502a",
+      "kind": "golden",
+      "description": "m6#1 output = bf16(rmsnorm(x_res, gamma1)) [m, hidden] \u2014 the layer-chain MoE segment input (differs from x.bin, see README)"
+    },
+    {
+      "tensor": "res1.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "fp32",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 10240,
+      "sha256": "472b02d05f9c0041c11a64d43ce6066ef4225449ff579d2a2cf315b376f6d6cb",
+      "kind": "golden",
+      "description": "m6#1 residual out (fp32) = f32(x_res) + 0 [m, hidden]; the m6#2 residual input"
+    },
+    {
+      "tensor": "y_final.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "bf16",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 2,
+      "byte_order": "little",
+      "size_bytes": 5120,
+      "sha256": "99015c05fdd492d929f72b3cbbe732866a58b55ec112d0b0ec6a5c049d067ac0",
+      "kind": "golden",
+      "description": "m6#2 output = bf16(rmsnorm(moe_output + res1, gamma2)) [m, hidden]"
+    },
+    {
+      "tensor": "res2.bin",
+      "shape": [
+        1,
+        2560
+      ],
+      "dtype": "fp32",
+      "strides": [
+        2560,
+        1
+      ],
+      "elem_size": 4,
+      "byte_order": "little",
+      "size_bytes": 10240,
+      "sha256": "a789bca24fcb2f7e7a2c4ec058a2ea9a78a5d982651be629c86163f8ba12b779",
+      "kind": "golden",
+      "description": "m6#2 residual out (fp32) = f32(moe_output) + res1 [m, hidden] \u2014 the residual stream handed to the next layer"
+    }
+  ]
+}

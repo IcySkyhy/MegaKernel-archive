@@ -1,0 +1,11 @@
+[PUB2L1] mode=basic-mmad kill=1(no-wait(AIC 两侧 wait 全去掉)) bytes=65536 reps=200
+[PUB2L1] build=default (no ENABLE_CV_COMM_VIA_SSBUF)
+[PUB2L1] tf=Sep 27 2026
+[PUB2L1] synchronize ret=0 (0=正常返回) hostWall=0.382 ms
+[PUB2L1][MMAD] M=32 N=48 K=64 elems=1536
+[PUB2L1][MMAD] maxAbs=6.183982e-07 meanAbs=7.704330e-08 maxRel=2.259530e-05 exact_vs_fp64=944/1536
+[PUB2L1][MMAD] absErr p50=5.308539e-08 p90=1.788139e-07 p99=3.455207e-07 p100=6.183982e-07
+[PUB2L1][MMAD] 绝对误差分桶(每桶计数): [0e+00,1e-06)=1536 [1e-06,1e-05)=0 [1e-05,1e-04)=0 [1e-04,1e-03)=0 [1e-03,1e+30)=0 
+[PUB2L1][MMAD] C[0][0] dev=2.79527545 ref_fp64=2.7952754
+[PUB2L1][MMAD] C[1][1] dev=2.57801533 ref_fp64=2.5780154
+[PUB2L1][MMAD] FINITE_AND_MATCHED=yes

@@ -1,0 +1,92 @@
+# M84 证据回扫清单（第 2 轮复审 p2「读数与命令输出对不上」的修法 2）
+
+对象 tip：`6f51587cfeefd07bfef85c5c83165f16caeed5f9`（回扫在它的工作树上跑；重出的证据随本批 commit 入库）。
+方法：抽出 `moe_relift/` 下**每一个**「命令 → 输出」对，在 tip 上重跑；**本地判据各跑 `LC_ALL=C` 与
+`LC_ALL=C.UTF-8` 两档**（读数不一致的会在此单列；本次没有出现）。结论三态：
+
+- **一致** —— 命令与读数都已在 tip 上复现。
+- **已改** —— 本轮改过命令文本或读数（P2 及其同类）。
+- **历史读数** —— 不能在 tip 上重跑（需要一个把源码退回改前的重建 / 或依赖某次已完成的设备运行），
+  已在文件里**显式标注**来源与重建方式，且其中一条已被复审独立重建复现。
+
+## A. `m84_verify.log`（12 对）
+
+| # | 行 | 命令 | 文件里的读数 | tip 重跑读数 | 结论 |
+|---|---|---|---|---|---|
+| A1 | :7 | `LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py --check` | `[lift] … 一致（… 62..2031，入口 2033）`，rc=0 | 逐字相同，rc=0 | 一致 |
+| A2 | :10 | `LC_ALL=C.UTF-8 … --check` | 同上，rc=0 | 逐字相同，rc=0 | 一致 |
+| A3 | :15 | `LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py` | 写出 2081 行，rc=0 | 逐字相同，rc=0 | 一致 |
+| A4 | :20 | `cmake --build m15_layer_loop/build -j4` | rc=0 | rc=0 | 一致 |
+| A5 | :22 | `sha256sum m15_layer_loop/build/m15_layer_loop` | `19846b4d…` | 逐字相同 | 一致 |
+| A6 | :29 | `… weights_manifest.txt all` | `checks=2012, guards=160, fails=0` | 逐字相同（本轮回扫重跑） | 一致 |
+| A7 | :34 | `… weights_manifest.txt chain` | `checks=910, guards=52, fails=0` | 逐字相同（本轮回扫重跑） | 一致 |
+| A8 | :41 | `… weights_manifest.txt all`（改前二进制） | `checks=2012, guards=160, fails=0` | 需 `git stash` 退回改前源码后重建 | **历史读数**（已在文件里标注来源与重建命令；复审在 tip 上独立重建同源基线复现过） |
+| A9 | :46 | `LC_ALL=C python3 …/check_prep.py` | 全文读数（汇总行见 A11） | 逐字相同 | **已改**（汇总行文案由 `19 条判据` 改为「判据 16 + 诊断读数 4（2 个代码点 × 2 档跑）」，见 C 段） |
+| A10 | :71 | `LC_ALL=C.UTF-8 … check_prep.py \| tail -1` | 汇总行，rc=0 | 逐字相同（且与 A9 的 C 档逐行相同） | 一致 |
+| A11 | :75 | `LC_ALL=C … check_prep.py --E 4 --topk 4 \| tail -1` | `判据 13 + 诊断读数 2（2 个代码点 × 1 档跑）` | 逐字相同 | **已改**（本轮新增：修复审观察 2 的档数标签；旧版打印「× 2 档」不实） |
+| A12 | :79 | `git status --short -- m15_layer_loop/m15_moe_layer.h m15_layer_loop/lift_moe_segment.py` | 无输出 | 无输出 | **已改**（原来把 `moe_relift/` 也放进这条 status，读数与「该文件正被编辑」绑定；现只查两处源码，任何时点都为空） |
+
+## B. `m84_ab_dump_sha256.log`（13 对）
+
+| # | 行 | 命令 | 文件里的读数 | tip 重跑读数 | 结论 |
+|---|---|---|---|---|---|
+| B1 | :5 | `sha256sum …build/m15_layer_loop` | `19846b4d…` | 逐字相同 | 一致 |
+| B2 | :7-10 | `git stash push …; cmake --build …`（改前重建） | 改前二进制 `07efbf03…` | 需退回改前源码重建 | **历史读数**（已标注重建命令；复审自建复现过） |
+| B3 | :18-20 | 改前 dump 运行 `(cd /tmp/m84_dump_base && M15_DUMP=1 … $BIN $MF all)` | rc 未声称 | —— | **历史运行**（改为注释形态，**不再声称 rc**；原来写的是带 `<bin>/<repo>` 占位符、跑不起来的模板） |
+| B4 | :22-26 | 改后 dump 运行（本轮在 tip 上实跑） | rc=0；`checks=2012, guards=161, fails=0` | 逐字相同 | **已改**（改用 `$BIN`/`$MF` 绝对路径，去掉了占位符） |
+| B5 | :27 | `(cd /tmp/m84_dump_base && sha256sum * \| sort -k2) > /tmp/m84_base_sha.txt` | rc=0 | rc=0 | 一致 |
+| B6 | :29 | `(cd /tmp/m84_dump && sha256sum * \| sort -k2) > /tmp/m84_dump_sha.txt` | rc=0 | rc=0 | 一致 |
+| B7 | :31 | `diff /tmp/m84_base_sha.txt /tmp/m84_dump_sha.txt; echo rc=$?` | rc=0（逐字节相同） | rc=0 | 一致 |
+| B8 | :33 | `wc -l /tmp/m84_base_sha.txt /tmp/m84_dump_sha.txt` | `1307 / 1307 / 2614` | 逐字相同 | 一致 |
+| B9 | :41 | `join … \| awk '$2!=$3' \| wc -l` | **`1`** | `1` | **已改**（原写 **1131** —— 那是 `join` 的输出行数、不是该管道的输出；管道真值 1。这就是复审的 P2） |
+| B10 | :43 | `join … \| awk '$2!=$3 {print $1}'` | `dump_manifest.txt` | 逐字相同 | **已改**（新增：把「哪一行不同」显式印出来） |
+| B11 | :45 | `join … \| awk '$2==$3' \| wc -l` | `1130` | 逐字相同 | **已改**（新增） |
+| B12 | :48 | `join … \| wc -l`（名目交集） | `1131` | 逐字相同 | **已改**（新增：把 1131 单列并注明「这是 join 的输出行数，不是上面那三条管道的输出」） |
+| B13 | :56-74 | r2 段：`sha256sum` / `rm -rf`+`mkdir` / dump 运行 / `sha256sum *` / `diff` / `wc -l` | `19846b4d…`（同 sha）、rc=0、rc=0、`1307/1307` | `sha256sum`、`diff`、`wc -l` 已重跑，逐字相同 | **已改**（dump 运行命令的 `<bin>/<repo>` 占位符改为 `$BIN`/`$MF`，并补上 `tail -1` 的 ALL PASS 读数） |
+
+**另**：B9–B12 的四条读数在 `LC_ALL=C` 与 `LC_ALL=C.UTF-8` 下**逐条一致**（回扫实跑；同时确认
+`LC_ALL` 不影响 `join`/`awk`/`wc` 的读数）。
+**另**：原块写的路径是 `evidence/dump_sha256.txt` —— **仓根没有 `evidence/`**，该命令照抄跑不起来；
+现统一写全 `m15_layer_loop/evidence/dump_sha256.txt`，并加 `grep -E '^[0-9a-f]{64}  '` 过滤
+（不加过滤 `join` 会在 stderr 报 `input is not in sorted order`，因为归档头两行是 `#` 注释）。
+
+## C. `m84_neg_controls.log`（7 对）
+
+| # | 行 | 命令 | 文件里的读数 | tip 重跑读数 | 结论 |
+|---|---|---|---|---|---|
+| C1 | :9 | `LC_ALL=C … check_prep.py; echo rc=$?` | 全文 + rc=0 | 逐字相同（汇总行随 A9 更新） | **已改**（同 A9 的汇总行文案） |
+| C2 | :36 | `… --header /tmp/m84_nc/nc1_diag_slot.h …` | rc=1；1 条 FAIL（E=512 档 #6） | 逐字相同 | 一致 |
+| C3 | :42 | `… nc2_stack_array.h …` | rc=1；1 条 FAIL（#5 栈数组残留） | 逐字相同 | 一致 |
+| C4 | :48 | `… nc3_switch_trunc.h …` | rc=1；1 条 FAIL（#7 case 集） | 逐字相同 | 一致 |
+| C5 | :54 | `… nc4_yview_padded.h …` | rc=1；1 条 FAIL（#8 Y 视图） | 逐字相同 | 一致 |
+| C6 | :60 | `… nc5_fma_trunc.h …` | rc=1；1 条 FAIL（#7 K 链） | 逐字相同 | 一致 |
+| C7 | :66 | `… nc6_diag_usage.h …` | rc=1；2 条 FAIL（#6 使用点） | 逐字相同 | 一致 |
+
+变异副本由 `/tmp/m84_nc/mutate.py` 生成（脚本逐字抄在本文件末尾），**只在 `/tmp` 做**。
+
+## D. 其它证据文件
+
+| 文件 | 「命令 → 输出」关系 | 结论 |
+|---|---|---|
+| `m84_check_prep.log` | 就是 C1/A9 那条命令的完整 stdout | **已改**（本轮重跑重出，含新汇总行） |
+| `m84_accept_run_all.log` | A6 那条命令的完整 stdout | 一致（本轮重跑重出） |
+| `m84_accept_chain.log` | A7 那条命令的完整 stdout | 一致（本轮重跑重出） |
+| `m84_dump_run.log` | B13 的 dump 运行 stdout 副本（`tail -1` = A/B 段的 161 guard 那条） | 一致（本轮重跑重出） |
+| `README.md` 的「复现」代码块 | 8 条命令，行内断言「`--check` 必须回绿」「16 判据 0 FAIL（+4 诊断读数）」 | 一致（两条断言本轮实跑；`--check` rc=0、check_prep 汇总行 = 判据 16 / 诊断读数 4） |
+| `README.md` 第 2 轮一节的措辞「未进代码路径」 | 机制上不准确（`IG_DIAG_SLOT_END` 进了 `offsGm.SetGlobalBuffer` 的实参） | **已改** → 「未改变可观测行为」+ 机制说明 |
+
+## E. 未能逐条复跑的两类（如实列出，不当作"已全部核对"）
+
+1. **`A8` / `B2` / `B3`（改前基线）**：需要一个把 `m15_moe_layer.h` + `lift_moe_segment.py` 退回改前的重建，
+   本文件只在 `/tmp` 副本里做过（第 1 轮），**本轮回扫没有重跑**；它们已被第 2 轮复审用自建二进制独立复现
+   （`07efbf03…` / `2012+160`）。文件里均已标为**历史读数/历史运行**。
+2. **`B13` 的 dump 运行本身**：本轮做的是「重跑 A/B 的**改后**一侧（B4）」+ 重跑两侧的 `sha256sum`/`diff`；
+   `B13` 的 dump 运行是第 2 轮做的（同一二进制 sha，故 stdout 一致），文件里标注为「第 2 轮」并给出其 stdout 落点。
+
+## F. 同族自查（复审要求 3）：印的是「最终管道的输出」
+
+- `B9`/`B11`/`B12` 都是**管道末端的 `wc -l`**，但语义不同（不匹配数 / 匹配数 / 名目交集数）——
+  已在文件里逐条**在命令上方写明它数的是什么**，并把 `B12` 显式标为「不是上面那三条管道的输出」。
+  **根因**：原块把中间步骤（`join` 的行数）当成了管道输出。
+- 同类复查：`m84_verify.log` / `m84_neg_controls.log` 里所有 `| tail -1` 都取的是**最终 stdout 的最后一行**
+  （`ALL PASS` / 汇总行），无中间步骤读数被当成输出的情形。

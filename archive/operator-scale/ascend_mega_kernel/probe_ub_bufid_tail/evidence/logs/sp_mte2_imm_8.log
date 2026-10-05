@@ -1,0 +1,33 @@
+--- run 1 (timeout 40s) ---
+[probe] mode=sp variant=mte2_imm_8 vi=5 run=1 N=8 pipeSel=1 drainLast=0 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_imm_8 run=1 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 2 (timeout 40s) ---
+[probe] mode=sp variant=mte2_imm_8 vi=5 run=2 N=8 pipeSel=1 drainLast=0 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_imm_8 run=2 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 3 (timeout 40s) ---
+[probe] mode=sp variant=mte2_imm_8 vi=5 run=3 N=8 pipeSel=1 drainLast=0 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_imm_8 run=3 N=8 aivs=2 mismatched=1 elems=4096 match=3968 zero=0 histOther=0 rc=1
+HIST mode=sp variant=mte2_imm_8 run=3 obs=[0,0,0,0,0,0,128,0] other=0 (下标=第几次 op 的 tag)
+exit=1
+--- run 4 (timeout 40s) ---
+[probe] mode=sp variant=mte2_imm_8 vi=5 run=4 N=8 pipeSel=1 drainLast=0 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_imm_8 run=4 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 5 (timeout 40s) ---
+[probe] mode=sp variant=mte2_imm_8 vi=5 run=5 N=8 pipeSel=1 drainLast=0 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_imm_8 run=5 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 6 (timeout 40s) ---
+[probe] mode=sp variant=mte2_imm_8 vi=5 run=6 N=8 pipeSel=1 drainLast=0 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_imm_8 run=6 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 7 (timeout 40s) ---
+[probe] mode=sp variant=mte2_imm_8 vi=5 run=7 N=8 pipeSel=1 drainLast=0 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_imm_8 run=7 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0
+--- run 8 (timeout 40s) ---
+[probe] mode=sp variant=mte2_imm_8 vi=5 run=8 N=8 pipeSel=1 drainLast=0 pb=0 trace=0
+SUMMARY mode=sp variant=mte2_imm_8 run=8 N=8 aivs=2 mismatched=0 elems=4096 match=4096 zero=0 histOther=0 rc=0
+exit=0

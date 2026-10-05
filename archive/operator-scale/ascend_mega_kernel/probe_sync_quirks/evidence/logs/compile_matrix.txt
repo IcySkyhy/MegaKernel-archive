@@ -1,0 +1,36 @@
+COMPILE-OK    probe_a_mrgsort4
+COMPILE-OK    probe_a2_mrgsort4_api
+COMPILE-OK    probe_b_idx_s16_f0_raw
+COMPILE-OK    probe_b_idx_s32_f0_raw
+COMPILE-OK    probe_b_idx_s64_f0_raw
+COMPILE-OK    probe_b_idx_u16_f0_raw
+COMPILE-OK    probe_b_idx_u32_f0_raw
+COMPILE-OK    probe_b_idx_u64_f0_raw
+COMPILE-OK    probe_b_idx_s16_f1_hoistub
+COMPILE-OK    probe_b_idx_s32_f1_hoistub
+COMPILE-OK    probe_b_idx_s64_f1_hoistub
+COMPILE-OK    probe_b_idx_u32_f1_hoistub
+COMPILE-OK    probe_b_idx_s32_f2_ctbound
+COMPILE-OK    probe_b_idx_s64_f2_ctbound
+COMPILE-OK    probe_b_idx_s32_f3_constidx
+COMPILE-OK    probe_b_idx_s16_f4_ubget
+COMPILE-OK    probe_b_idx_s32_f4_ubget
+COMPILE-OK    probe_b_idx_s64_f4_ubget
+COMPILE-OK    probe_b_idx_s32_f6_acc
+COMPILE-OK    probe_b_idx_s64_f6_acc
+COMPILE-OK    probe_b_idx_s32_f7_gmhoist
+COMPILE-OK    probe_b_idx_s64_f7_gmhoist
+COMPILE-OK    probe_b_idx_s32_f9_misalign_demo
+COMPILE-FAIL  probe_b_idx_s16_f5_gmget  (exit=2, 见 logs/build_probe_b_idx_s16_f5_gmget.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_s32_f5_gmget  (exit=2, 见 logs/build_probe_b_idx_s32_f5_gmget.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_s64_f5_gmget  (exit=2, 见 logs/build_probe_b_idx_s64_f5_gmget.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_u16_f5_gmget  (exit=2, 见 logs/build_probe_b_idx_u16_f5_gmget.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_u32_f5_gmget  (exit=2, 见 logs/build_probe_b_idx_u32_f5_gmget.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_u64_f5_gmget  (exit=2, 见 logs/build_probe_b_idx_u64_f5_gmget.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_s16_f8_gmraw  (exit=2, 见 logs/build_probe_b_idx_s16_f8_gmraw.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_s32_f8_gmraw  (exit=2, 见 logs/build_probe_b_idx_s32_f8_gmraw.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_s64_f8_gmraw  (exit=2, 见 logs/build_probe_b_idx_s64_f8_gmraw.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_u16_f8_gmraw  (exit=2, 见 logs/build_probe_b_idx_u16_f8_gmraw.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_u32_f8_gmraw  (exit=2, 见 logs/build_probe_b_idx_u32_f8_gmraw.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_u64_f8_gmraw  (exit=2, 见 logs/build_probe_b_idx_u64_f8_gmraw.log)  [预期失败：归档靶子，见 README §5]
+COMPILE-FAIL  probe_b_idx_s32_f0_u32loop  (exit=2, 见 logs/build_probe_b_idx_s32_f0_u32loop.log)  [预期失败：归档靶子，见 README §5]

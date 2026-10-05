@@ -1,0 +1,39 @@
+### RUN D —— B-4 硬化后的复跑：M24_ONLY=MUT_guard_nogemm（有界等待 flock -w 180；锁内先 npu-smi + df -h；命令 timeout 110）
+### 二进制 sha = 9fe07a3b303b3518a12baadb853e58aac849222798461d036e7f645a733d73bc
+### 硬化内容：expectRed 档若 guardMutant ⇒ PASS 额外要求 guardFails > 0
+### 起始 2026-10-04T08:30:52+00:00
+| npu-smi 25.7.rc1.10                              Version: 25.7.rc1.10                           |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 201.9       65                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5240  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+overlay         8.7T  8.3T  432G  96% /
+[lock] 已进锁 2026-10-04T08:31:56+00:00
+[M24] mix(1,2) launch: nblk(AIC)=28 → AIV=56；chunk=128 行 = 2 个 m-tile（64 行）
+[M24] 形状：HIDDEN=2560 NH=24 HD=256 NKV=2 IDX_NH=4 IDX_D=128 ROT=64 | item 维=56 | GEMM 项=218（2 m-tile × 109 N 块）
+[M24] cache：主 KV 层 stride=8421376、压缩层 stride=263168、环层 stride=1120、packed 行=8208 B
+[M24] 夹具：x 4099 行 × 2560 bf16、权重平面 71435776 B（8 role）、cos/sin 4097 行、packed seed 16416 B
+[M24] M24_ONLY=MUT_guard_nogemm（只跑名字里含该串的案例；诊断用）
+
+[M24] ==== 案例 MUT_guard_nogemm（rows=64 @0, chunk=64 × 1, mut=0x800, acMode=0, 逐 chunk 发射）====
+[M24][GUARD-FAIL] Pf.guard.y0live.c0 poisonRows=64/64(阈值 1e6)
+[M24][GUARD-FAIL] Ac.guard.poollive.c0 池化行参考 != 毒值面
+[M24]   Pf.y0.r0.c0                      T2' 越界 13952/13952
+[M24]     y0.r0 诊断：max|Δ|=4.29916e+08 @#9247 | got[0..3]=-4.299e+08 -4.299e+08 -4.299e+08 -4.299e+08 | exp[0..3]=-0.3394 -0.768 -0.5682 -0.05572
+[M24]   Pf.y0.r63.c0                     T2' 越界 13952/13952
+[M24]     y0.r63 诊断：max|Δ|=4.29916e+08 @#12640 | got[0..3]=-4.299e+08 -4.299e+08 -4.299e+08 -4.299e+08 | exp[0..3]=-0.2161 0.05159 -0.7081 -0.1385
+[M24]   MUT_guard_nogemm：checks=23 fails=2 guards=2(guardFails=2)
+[M24]   失败判据（前若干个）： Pf.y0.r0.c0 Pf.y0.r63.c0
+[M24]   MUT_guard_nogemm 变异档：PASS（判据咬住了）（变红判据数=2，guardFails=2，guardMutant 档额外要求 guardFails>0）
+
+[M24] ===== ALL PASS =====
+### D 的 rc=0 （1=180s 内未取到锁；124=锁内 timeout；0=跑完）
+### 结束 2026-10-04T08:32:03+00:00

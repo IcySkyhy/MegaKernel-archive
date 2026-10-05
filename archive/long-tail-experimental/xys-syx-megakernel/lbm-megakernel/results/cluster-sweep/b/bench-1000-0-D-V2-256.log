@@ -1,0 +1,25 @@
+DEVICE name=NVIDIA GeForce RTX 5090 cc=12.0 sms=170
+RESOURCE name=D-V2-256 threads=256 registers=56 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+CLUSTER runtime_cluster=0 dim=0x0x0 size=0 policy=None active_clusters_device=340 potential_cluster_size=8
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=136.550460815
+TRIAL 1 us_per_step=136.524993896
+TRIAL 2 us_per_step=136.567810059
+TRIAL 3 us_per_step=136.559616089
+TRIAL 4 us_per_step=136.561691284
+TRIAL 5 us_per_step=136.516769409
+TRIAL 6 us_per_step=136.572097778
+TRIAL 7 us_per_step=136.527038574
+TRIAL 8 us_per_step=136.523910522
+TRIAL 9 us_per_step=136.607803345
+TRIAL 10 us_per_step=136.565948486
+TRIAL 11 us_per_step=136.576644897
+TRIAL 12 us_per_step=136.559768677
+TRIAL 13 us_per_step=136.545318604
+TRIAL 14 us_per_step=136.575103760
+TRIAL 15 us_per_step=136.566528320
+TRIAL 16 us_per_step=136.564895630
+TRIAL 17 us_per_step=136.778747559
+TRIAL 18 us_per_step=136.573059082
+TRIAL 19 us_per_step=136.552612305
+BENCH mode=D-V2-256 warmups=5 trials=20 steps=1000 launches=500 median_us=136.563293457 min_us=136.516769409 p90_us=136.576644897 mlups=15816.841739245 equivalent_population_TB_s=2.404159944

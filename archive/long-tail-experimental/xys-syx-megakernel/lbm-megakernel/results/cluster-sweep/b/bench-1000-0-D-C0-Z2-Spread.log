@@ -1,0 +1,25 @@
+DEVICE name=NVIDIA GeForce RTX 5090 cc=12.0 sms=170
+RESOURCE name=D-C0-Z2-Spread threads=256 registers=56 static_shared=0 dynamic_shared=38912 local_bytes=0 active_blocks_per_sm=2 grid=8x15x38 block=256x1x1 steps_per_launch=2 theoretical_occupancy_pct=33.333333
+CLUSTER runtime_cluster=1 dim=1x1x2 size=2 policy=Spread active_clusters_device=170 potential_cluster_size=8
+LBM_allocateGrid: allocated 185.2 MByte
+TRIAL 0 us_per_step=144.234619141
+TRIAL 1 us_per_step=144.231460571
+TRIAL 2 us_per_step=144.219329834
+TRIAL 3 us_per_step=144.214080811
+TRIAL 4 us_per_step=144.219161987
+TRIAL 5 us_per_step=144.243804932
+TRIAL 6 us_per_step=144.237762451
+TRIAL 7 us_per_step=144.200897217
+TRIAL 8 us_per_step=144.214904785
+TRIAL 9 us_per_step=144.191650391
+TRIAL 10 us_per_step=144.216094971
+TRIAL 11 us_per_step=144.235076904
+TRIAL 12 us_per_step=144.219268799
+TRIAL 13 us_per_step=144.222274780
+TRIAL 14 us_per_step=144.260284424
+TRIAL 15 us_per_step=144.237701416
+TRIAL 16 us_per_step=144.180389404
+TRIAL 17 us_per_step=144.230560303
+TRIAL 18 us_per_step=144.259078979
+TRIAL 19 us_per_step=144.204803467
+BENCH mode=D-C0-Z2-Spread warmups=5 trials=20 steps=1000 launches=500 median_us=144.220802307 min_us=144.180389404 p90_us=144.243804932 mlups=14977.034973083 equivalent_population_TB_s=2.276509316

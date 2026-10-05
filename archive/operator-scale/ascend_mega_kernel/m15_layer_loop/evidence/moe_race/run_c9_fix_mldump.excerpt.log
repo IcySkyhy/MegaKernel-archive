@@ -1,0 +1,102 @@
+# 节选（来自该档完整 run.log；选取规则：首 40 行 + 所有 M.moews 判据行 + 所有“验证 …”小节行 + 末尾总分账）
+[m15] M25 48 层循环骨架：层类型 3:1（每 4 层 1 个 full attention 占位直通）；本次跑前 48 层，token 3，reps 10，权重=checkpoint，dump=开
+[m15] 层类型模式（config.json: full_attention_interval=4, num_hidden_layers=48）： 36 GDN + 12 attention（与 config 逐层一致）
+[m15] 核配置：28 AIC + 56 AIV（blockDim=28，__mix__(1,2)，核数由 API 获取）
+[m15] device 缓冲：weights 4174.15 MB（36 层 × 115.95 MB）+ states 115.5 MB + ws 5.3 MB + MoE 权重 628.4 MB（48 层 × 13.09 MB）+ 融合 ws 12.94 MB（GDN 5.26 + MoE 7.69）
+[m15] M58 hc 缓冲：权重 1318.63 MB（49 槽 × 26.91 MB/槽；49 = 48 个层槽（每层 2 个边界子槽 × 13.46 MB）+ 1 个全局 mixer 槽，该槽只用到 13.13 MB（norm+down+up），槽 stride 仍为 26.91 MB）+ hc ws 452.71 MB（52 槽 × 8.71 MB/槽 = 每层 2 块 + 3 块 scratch + 1 块全局 mixer ws）
+[m15] M65 层链缓冲：pending BO 双缓冲 0.66 MB（2 块 × 327680 B）；三态入口平面复用 hc_hin
+[m15] M82 attention cache 平面（跨 12 个 attention 层长寿，按第 k 层编址 k=0..11）：主 KV 50.53 MB（12 层 × 4.211 MB/层 = 257 页/层 × 16384 B）；compressed 3.16 MB（12 层 × 0.263 MB/层 = 1028 行/层 × 256 B）；raw ring 0.01344 MB（12 层 × 1120 B = 4 行/层 × 280 B）；packed 33.63 MB（4097 行 × 8208 B，**层间复用一块**）
+[m15] 权重装载完成（真实 checkpoint 切片）：前 48 层内 36 个 GDN 层，4174.15 MB → device，耗时 8015.3 ms
+[m15] MoE 段权重装载完成（真实 checkpoint 4 专家切片 + 真实共享专家）：48 层 × 13.09 MB = 628.4 MB → device，耗时 748.3 ms
+[m15] hc 段权重装载完成（真实 checkpoint（hc 权重不量化、原样消费））：本 run H2D 49 槽 × 26.91 MB/槽 = 1318.6 MB（48 个层槽，每层 2 个边界子槽 × 13.46 MB，+ 1 个全局 mixer 槽）；权重区分配 49 槽 × 26.91 MB/槽 = 1318.6 MB → device，耗时 1484.9 ms
+[m15] sha256 自检（NIST 向量："abc" 与 1e6×'a'）：PASS
+
+[m15] ===== 权重来源校验（review P2-1：in_proj/out_proj 独立字节级来源）=====
+[m15]   W.src.L00 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=4be850f53b884949b3b9cb74675f0066d78e53e1ff3a58b117dcda5d125c205d  ckpt-source sha256=4be850f53b884949b3b9cb74675f0066d78e53e1ff3a58b117dcda5d125c205d
+[m15]        out_proj slot sha256=61faf46f03e25a68c83cd45860b97bb50d834b30a200474b1a4d3de1aae5bcfe  ckpt-source sha256=61faf46f03e25a68c83cd45860b97bb50d834b30a200474b1a4d3de1aae5bcfe
+[m15]   W.src.L01 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=7f1a59c50b2c5cc8f5b5d6faff984ea80f76210a90bd28579f60887be90d9249  ckpt-source sha256=7f1a59c50b2c5cc8f5b5d6faff984ea80f76210a90bd28579f60887be90d9249
+[m15]        out_proj slot sha256=6718f11ec1b33d23be15e7bc83d84723f4ddff7cf485d015bfcff43d296a8034  ckpt-source sha256=6718f11ec1b33d23be15e7bc83d84723f4ddff7cf485d015bfcff43d296a8034
+[m15]   W.src.L02 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=c3bcf921144e862eddccf7970b7e47de5106716d0ddf4bf542a18cd6ae883bb7  ckpt-source sha256=c3bcf921144e862eddccf7970b7e47de5106716d0ddf4bf542a18cd6ae883bb7
+[m15]        out_proj slot sha256=ed42e0885ac9f2b73d0ede58ebdc126e1e9a22278c397e556836102a13bb4613  ckpt-source sha256=ed42e0885ac9f2b73d0ede58ebdc126e1e9a22278c397e556836102a13bb4613
+[m15]   W.src.L04 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=5e0c066d40326c18f938197c48338df9d1d5132a8bd715860854989406b07e2a  ckpt-source sha256=5e0c066d40326c18f938197c48338df9d1d5132a8bd715860854989406b07e2a
+[m15]        out_proj slot sha256=9c1ce966b07544cc46b3750315799c97dffdc97074bee6e08a495c5ffa94483a  ckpt-source sha256=9c1ce966b07544cc46b3750315799c97dffdc97074bee6e08a495c5ffa94483a
+[m15]   W.src.L05 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=a23abd015d441f9ef5b55ef80a9748b712b92e5c13e48ef130e644b3eb1852b8  ckpt-source sha256=a23abd015d441f9ef5b55ef80a9748b712b92e5c13e48ef130e644b3eb1852b8
+[m15]        out_proj slot sha256=c914dd9180a2933e4780f6689e225d7ea9b44d16c80ecf862c92760e73d8e375  ckpt-source sha256=c914dd9180a2933e4780f6689e225d7ea9b44d16c80ecf862c92760e73d8e375
+[m15]   W.src.L06 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=c2248c9cf3ef7b45d3ab4dea182ffb3b9b82c2e7af12dd09e7eb15d71de89e66  ckpt-source sha256=c2248c9cf3ef7b45d3ab4dea182ffb3b9b82c2e7af12dd09e7eb15d71de89e66
+[m15]        out_proj slot sha256=e941947ef26c77ff5063e03563eedf5bcfe42357ff7ed71b8cda1fe4eb7744b4  ckpt-source sha256=e941947ef26c77ff5063e03563eedf5bcfe42357ff7ed71b8cda1fe4eb7744b4
+[m15]   W.src.L08 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=97a1f31d369ac59b5602fc3b7a8102ec48b8bc3b7c9876b0b3833c5a36365826  ckpt-source sha256=97a1f31d369ac59b5602fc3b7a8102ec48b8bc3b7c9876b0b3833c5a36365826
+[m15]        out_proj slot sha256=3652f0ce3e64dac9d1f768e0d9e196635cfde510418c427ccf0e56a90f840798  ckpt-source sha256=3652f0ce3e64dac9d1f768e0d9e196635cfde510418c427ccf0e56a90f840798
+[m15]   W.src.L09 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=328a18cad7f46021c66c6137907ff00626b936b9c6af6c7107a62fcfd73c4e0c  ckpt-source sha256=328a18cad7f46021c66c6137907ff00626b936b9c6af6c7107a62fcfd73c4e0c
+[m15]        out_proj slot sha256=3055ac719dd134a7be532b384d782ebca73c6c718b2823453de26e02994203c9  ckpt-source sha256=3055ac719dd134a7be532b384d782ebca73c6c718b2823453de26e02994203c9
+[m15]   W.src.L10 PASS (slot_ref=逐字节一致 in_proj=逐字节一致 out_proj=逐字节一致)
+[m15]        in_proj  slot sha256=5ce0077adb5a6cc03c3aba76b7836956a0e2a6413bd4bf996ac79e2537ce542e  ckpt-source sha256=5ce0077adb5a6cc03c3aba76b7836956a0e2a6413bd4bf996ac79e2537ce542e
+[m15]        out_proj slot sha256=05111637e656d121f82cef0eb155331f68cbc21c141489b2c94f7d467207097c  ckpt-source sha256=05111637e656d121f82cef0eb155331f68cbc21c141489b2c94f7d467207097c
+# ---- 所有 M.moews 判据行 ----
+[m15]   M.moews.L00                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L01                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L02                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L03                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L04                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L05                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L06                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L07                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L08                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L09                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L10                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L11                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L12                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L13                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L14                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L15                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L16                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L17                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L18                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L19                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L20                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L21                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L22                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L23                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L24                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L25                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L26                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L27                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L28                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L29                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L30                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L31                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L32                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L33                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L34                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L35                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L36                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L37                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L38                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L39                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L40                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L41                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L42                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L43                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L44                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L45                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L46                    PASS (逐字节一致, n=7685472)
+[m15]   M.moews.L47                    PASS (逐字节一致, n=7685472)
+# ---- 各验证小节小结 ----
+[m15] 验证 A：48 层逐字节比对结束，本段判定项 216 条（累计 348），FAIL 0 条
+[m15] 验证 B：48 层 × 3 token；非空洞性：cs 演化 36/36，ssm 演化 36/36（应 = 层数）
+[m15] 验证 M1：48 层，本段判定项 348 条，累计 FAIL 0
+[m15] 验证 M2：本段判定项 8 条
+[m15] 验证 H：3 层（层表 M15_HC_LAYERS=0,1,3，m=1），本段判定项累计 21，累计 FAIL 0
+[m15] 验证 Ch：本段判定项 778 条 + guard 4 条（累计 checks 2012 / guards 161 / fails 0）
+[m15] 验证 Kv：本段判定项 56 条 + guard 130 条（累计 checks 2068 / guards 291 / fails 0）
+# ---- 末尾总账 ----
+[m15] 判据分账：权重来源 84（GDN+MoE）+ 48（hc）+ A 216 + B 506 + C 3 + M1 348 + M2 8 + H 21 + Ch 778 + Kv 56 + Prolog 0 + AttnWire 0 = 2068 条判定项（聚合判据按 1 条计；口径见 README §3/§3.7）
+[m15] guard：291 条（恒真前置断言，**不计入判定项**）：sha256 工具自检 1 + hc 注入行 [4,16) 全零 48 + 参考链锚点非空 108 + M65 链 4 + 其余 130
+[m15] ===== ALL PASS（checks=2068, guards=291, fails=0）=====

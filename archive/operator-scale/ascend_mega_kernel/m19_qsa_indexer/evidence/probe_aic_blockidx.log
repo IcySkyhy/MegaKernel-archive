@@ -1,0 +1,5 @@
+[probe_aic] AICORE=28 VECTOR=56
+[probe_aic] launch: OK
+[probe_aic] A) 无同步: (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) 
+[probe_aic] B) mode0 屏障后: (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) (bid=-1,num=-1) 
+[probe_aic] 判定项: A 组 bid 与槽位一致 4/4 FAIL；B 组（mode0 后）4/4 FAIL

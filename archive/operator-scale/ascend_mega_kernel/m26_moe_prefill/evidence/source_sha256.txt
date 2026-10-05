@@ -1,0 +1,30 @@
+# m26_moe_prefill 设备档源码指纹（run_probe.sh 生成）
+git_head=ef2e670c2bcac44b19769a73c9a6012741e0d7d2
+cann=/usr/local/Ascend/cann-9.1.0
+npu_smi=npu-smi 25.7.rc1.10 Version: 25.7.rc1.10
+date=2026-10-04T08:30:15+00:00
+m15_layer_loop/m15_moe_prefill.h sha256=e922375668ac4d63af54b75166545b4634d246639d3390cfe1fc06dd80910616
+m15_layer_loop/m15_moe_prefill_res.h sha256=82e00a97defcef6545b5cd7710183220130265caf45059eadbfb648f5bcb16bb
+m26_moe_prefill/m26_moe_prefill.asc sha256=84fb0435045f951f8330b80414f5f8f8ef7f8ca6a42cb2a4274d41a678b2d563
+m26_moe_prefill/check_ref.py sha256=dc898eda61e82d343b0f8b405e14a301112d5771c777056235104c2cad5fb775
+#
+# --- M188 指纹重钉说明【只改本指纹文本；未动任何设备代码/注释，未改任何已提交读数】---
+# 第 6 行 `m15_layer_loop/m15_moe_prefill.h` 已重钉到 M187（release 措辞清扫）之后的源文本：
+#   重钉前（== main dc045ae，即本文件生成时的口径）: e7167e4b5f87aab331a73e083923051270e126f887a62f84b17dd51ce26f9ec5
+#   重钉后（本行现值，== M187 tip 95671e7）: e922375668ac4d63af54b75166545b4634d246639d3390cfe1fc06dd80910616
+# M187（branch feat/m187-release-mode-module-readme-comment, tip 95671e7）只改注释、不进编译
+# ⇒ 二进制与全部读数不变，本文件之外无需任何改动。
+# 复算（两条等价，M187 合入 main 前/后各适用其一）：
+#   git show feat/m187-release-mode-module-readme-comment:m15_layer_loop/m15_moe_prefill.h | sha256sum
+#   sha256sum m15_layer_loop/m15_moe_prefill.h
+#
+# --- 与本轮无关的既有陈旧（已报塔另派；本轮未改其行值）---
+# 下面两行在本指纹生成后分别被 M170 / M155 改过，故与当前 tip 不一致：
+#   m26_moe_prefill/m26_moe_prefill.asc  记录 84fb0435…  实际 e14fb7f693ebbd3ccb89dace1c27c6b7bf992d1db272b9fc6382e659b65d5bcb（M170 补 include 起）
+#   m26_moe_prefill/check_ref.py         记录 dc898eda…  实际 3ec3bb55ac6b652d553b3ef95674bf6b5a5d7cc1f3875261b5869f1eab85005c（M155 判据补强起）
+#
+# ===== M190 复核（2026-10-05）=====
+# 上方 :8（M170）/ :9（M155）两行的既有陈旧标注经 M190 复核仍成立，记录值保留原样，补可复算命令：
+#   sha256sum m26_moe_prefill/m26_moe_prefill.asc m26_moe_prefill/check_ref.py
+#   git show 332778a:m26_moe_prefill/m26_moe_prefill.asc | sha256sum   # = 84fb0435045f...（记录值）
+#   git show ef2e670:m26_moe_prefill/check_ref.py        | sha256sum   # = dc898eda61e8...（记录值）

@@ -1,0 +1,88 @@
+[chk] m27 hc prefill 交叉校验：dump 目录 = /tmp/m27_mut/rowsteal；case 数 = 3
+
+===== case m1：m=1 mode=1(COMBINE_MIX) MT=8 tiles=1 arena_dumped=1 chain=1 mutant=rowsteal =====
+
+== m1_a1：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=1 mode=1(COMBINE_MIX) 权重档=a1 ij=m1_a1_ij(16 列) bo=m1_a1_bo
+[chk] 判定 m1_a1.hcp (H')           n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m1_a1.blk                n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m1_a1.injw (fp32)        maxRel=6.341e-08 (tol 1e-06) n=4  PASS
+[chk] 判定 m1_a1.rstd (fp32)        maxRel=6.273e-08 (tol 1e-04) n=4  PASS
+[chk] 判定 m1_a1.ij_handoff (OH 列)  n=4       逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+
+== m1_a2：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=1 mode=1(COMBINE_MIX) 权重档=a2 ij=m1_a1_ij_handoff(16 列) bo=m1_a2_bo
+[chk] 判定 m1_a2.hcp (H')           n=10240   逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m1_a2.blk                n=2560    逐位=1.0000 良态逐位=1.0000 ulpMax=0   归一maxAbs=0.000e+00  PASS
+[chk] 判定 m1_a2.injw (fp32)        maxRel=1.037e-07 (tol 1e-06) n=4  PASS
+[chk] 判定 m1_a2.rstd (fp32)        maxRel=4.873e-08 (tol 1e-04) n=4  PASS
+
+-- guard（非空洞性 / 结构性见证；不计入判定项）--
+[chk] guard a1.hin 值多样（非空洞）                        OK distinct=1010/10240
+[chk] guard a1.blk 值多样（非空洞）                        OK distinct=1143/2560
+[chk] guard a1.injw 值多样（非空洞）                       OK distinct=4/4
+[chk] guard H' != H（段体确实改了残差流）                     OK 
+[chk] guard a2.hcp != a1.hcp（第二边界确实在动）             OK 
+[chk] guard arena 全部 1 块的阻塞 blk == 设备平铺面           OK （d_blk=8 块后才被覆盖 ⇒ 更早的块必须靠块末重定位
+[chk] guard arena 末 1 块的阻塞 rstd == 设备平铺面           OK （d_rstd=8）
+
+===== case m33：m=33 mode=1(COMBINE_MIX) MT=8 tiles=5 arena_dumped=1 chain=1 mutant=rowsteal =====
+
+== m33_a1：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=33 mode=1(COMBINE_MIX) 权重档=a1 ij=m33_a1_ij(16 列) bo=m33_a1_bo
+[chk] 判定 m33_a1.hcp (H')          n=337920  逐位=0.2431 良态逐位=0.2436 ulpMax=32768 归一maxAbs=1.900e+00  FAIL
+[chk] 判定 m33_a1.blk               n=84480   逐位=0.2430 良态逐位=0.3308 ulpMax=33286 归一maxAbs=1.661e+00  FAIL
+[chk] 判定 m33_a1.injw (fp32)       maxRel=1.021e-07 (tol 1e-06) n=132  PASS
+[chk] 判定 m33_a1.rstd (fp32)       maxRel=3.773e-02 (tol 1e-04) n=132  FAIL
+[chk] 判定 m33_a1.ij_handoff (OH 列) n=132     逐位=0.2424 良态逐位=0.2523 ulpMax=32955 归一maxAbs=1.510e+00  FAIL
+
+== m33_a2：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=33 mode=1(COMBINE_MIX) 权重档=a2 ij=m33_a1_ij_handoff(16 列) bo=m33_a2_bo
+[chk] 判定 m33_a2.hcp (H')          n=337920  逐位=0.9999 良态逐位=1.0000 ulpMax=1   归一maxAbs=5.760e-04  PASS
+[chk] 判定 m33_a2.blk               n=84480   逐位=0.9814 良态逐位=0.9917 ulpMax=3   归一maxAbs=4.785e-03  FAIL
+[chk] 判定 m33_a2.injw (fp32)       maxRel=1.147e-07 (tol 1e-06) n=132  PASS
+[chk] 判定 m33_a2.rstd (fp32)       maxRel=2.843e-07 (tol 1e-04) n=132  PASS
+
+-- guard（非空洞性 / 结构性见证；不计入判定项）--
+[chk] guard a1.hin 值多样（非空洞）                        OK distinct=1013/337920
+[chk] guard a1.blk 值多样（非空洞）                        OK distinct=3192/84480
+[chk] guard a1.injw 值多样（非空洞）                       OK distinct=125/132
+[chk] guard H' != H（段体确实改了残差流）                     OK 
+[chk] guard a2.hcp != a1.hcp（第二边界确实在动）             OK 
+[chk] guard arena 全部 5 块的阻塞 blk == 设备平铺面           OK （d_blk=8 块后才被覆盖 ⇒ 更早的块必须靠块末重定位
+[chk] guard arena 末 5 块的阻塞 rstd == 设备平铺面           OK （d_rstd=8）
+
+===== case m257：m=257 mode=1(COMBINE_MIX) MT=8 tiles=33 arena_dumped=1 chain=1 mutant=rowsteal =====
+
+== m257_a1：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=257 mode=1(COMBINE_MIX) 权重档=a1 ij=m257_a1_ij(16 列) bo=m257_a1_bo
+[chk] 判定 m257_a1.hcp (H')         n=2631680 逐位=0.0320 良态逐位=0.0322 ulpMax=32775 归一maxAbs=1.948e+00  FAIL
+[chk] 判定 m257_a1.blk              n=657920  逐位=0.0319 良态逐位=0.0382 ulpMax=33286 归一maxAbs=1.661e+00  FAIL
+[chk] 判定 m257_a1.injw (fp32)      maxRel=1.280e-07 (tol 1e-06) n=1028  PASS
+[chk] 判定 m257_a1.rstd (fp32)      maxRel=6.077e-02 (tol 1e-04) n=1028  FAIL
+[chk] 判定 m257_a1.ij_handoff (OH 列) n=1028    逐位=0.0331 良态逐位=0.0330 ulpMax=33077 归一maxAbs=1.943e+00  FAIL
+
+== m257_a2：端到端（设备 vs 独立 numpy float64 参考 = m20_hyperconn/check_ref.py）==
+   m=257 mode=1(COMBINE_MIX) 权重档=a2 ij=m257_a1_ij_handoff(16 列) bo=m257_a2_bo
+[chk] 判定 m257_a2.hcp (H')         n=2631680 逐位=1.0000 良态逐位=1.0000 ulpMax=1   归一maxAbs=4.329e-03  PASS
+[chk] 判定 m257_a2.blk              n=657920  逐位=0.9793 良态逐位=0.9899 ulpMax=5   归一maxAbs=4.785e-03  FAIL
+[chk] 判定 m257_a2.injw (fp32)      maxRel=1.280e-07 (tol 1e-06) n=1028  PASS
+[chk] 判定 m257_a2.rstd (fp32)      maxRel=1.568e-05 (tol 1e-04) n=1028  PASS
+
+-- guard（非空洞性 / 结构性见证；不计入判定项）--
+[chk] guard a1.hin 值多样（非空洞）                        OK distinct=1013/655360
+[chk] guard a1.blk 值多样（非空洞）                        OK distinct=3689/163840
+[chk] guard a1.injw 值多样（非空洞）                       OK distinct=600/1028
+[chk] guard H' != H（段体确实改了残差流）                     OK 
+[chk] guard a2.hcp != a1.hcp（第二边界确实在动）             OK 
+[chk] guard arena 末 8 块的阻塞 blk == 设备平铺面            OK （d_blk=8 块后才被覆盖 ⇒ 更早的块必须靠块末重定位
+[chk] guard arena 末 8 块的阻塞 rstd == 设备平铺面           OK （d_rstd=8）
+[chk] guard 更早块的阻塞 blk 已被覆盖（⇒ 块末重定位承担负载）           OK （被块 t+8 的 GATE 写覆盖）
+[chk] guard 更早块的 arena OH 列已被覆盖（⇒ ij 也必须块末重定位）     OK （被块 t+8 的 H' 写覆盖；safe_oh=16 块）
+
+[chk] 计数：本脚本判定项 12；m20.judge 判定项 15；guard 23；SKIPPED 0
+[chk] 注记：case m1 是**负向对照**档（mutant=rowsteal）：本档期望判据变红
+[chk] 注记：case m33 是**负向对照**档（mutant=rowsteal）：本档期望判据变红
+[chk] 注记：case m257 是**负向对照**档（mutant=rowsteal）：本档期望判据变红
+[chk] 未过：m33_a1.hcp (H'), m33_a1.blk, m33_a1.ij_handoff (OH 列), m33_a2.blk, m257_a1.hcp (H'), m257_a1.blk, m257_a1.ij_handoff (OH 列), m257_a2.blk, m33_a1.rstd (fp32), m257_a1.rstd (fp32)
+[chk] RESULT: FAILED（10 条未过）

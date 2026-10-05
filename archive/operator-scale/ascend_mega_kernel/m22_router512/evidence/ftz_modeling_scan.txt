@@ -1,0 +1,20 @@
+# FTZ / softmax 下溢口径扫描（M42 报告项 R0）
+# 复现：cd m22_router512 && python3.12 tools/ftz_scan.py evidence/mode2/real_m4097 --w data/router_weight.bin --x-seed 5
+
+# FTZ / 下溢口径扫描   m=4097   x=重生成 seed=5   w=data/router_weight.bin
+# logits(max-shifted) 范围: [-221.031, 0.000]
+参考口径                                             ids 差异槽位      差异行
+golden 原样（保留次正规）                                      125       20
+scores < 1.1755e-38 → 0 (FTZ 建模)                        0        0
+scores < 1.0000e-35 → 0 (FTZ 建模)                      103       17
+scores < 1.0000e-30 → 0 (FTZ 建模)                      251       40
+scores < 1.0000e-25 → 0 (FTZ 建模)                      689      128
+scores < 1.0000e-20 → 0 (FTZ 建模)                     2210      388
+scores < 1.0000e-15 → 0 (FTZ 建模)                     5262      873
+logit < -64 → score 0 (输入钳位)                          356       67
+logit < -70 → score 0 (输入钳位)                          236       37
+logit < -80 → score 0 (输入钳位)                          113       18
+logit < -87 → score 0 (输入钳位)                            8        2
+logit < -100 → score 0 (输入钳位)                         117       19
+
+结论：只有「scores < 2^-126（fp32 最小正规数）→ 0」这一条与设备逐元素吻合（该口径差异 0 槽，原样 golden 差异 125 槽）。

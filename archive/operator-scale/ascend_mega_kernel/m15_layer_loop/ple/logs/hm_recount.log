@@ -1,0 +1,91 @@
+# M92 §6.2 / §6.3 读数的重算转录（命令见下；脚本 = ple/recount_hm.py，只读）
+
+=== $ python3.12 m15_layer_loop/ple/recount_hm.py m15_layer_loop/ple/out_hm
+outdir=m15_layer_loop/ple/out_hm  n_tok=64  items=1024  win_rows=838860  窗内 item=1022  参与 token=63
+
+== H2.emb（T1 逐字节）==
+  对照行非零元素 = 163520 / 163520；设备与对照全等 = True；不同 = 0
+
+== §6.2 ①  H3.kv：代理界 vs Σ|terms| ==
+[H3.kv 代理界] n=806400  界尺度=max(|out|,|ref|) 代理
+        与参考逐位不同的元素 = 88
+        d/ulp>0 分布(按个数取前 5，共 5 种取值) = [(1.0, 82), (2.0, 3), (12.0, 1), (3.0, 1), (94.5, 1)]
+        ulp_mult=1.0 ⇒ bad=6  max(d/bound)=94.430837  maxRel=2.821
+        ulp_mult=2.0 ⇒ bad=3  max(d/bound)=47.232703  maxRel=2.821
+[H3.kv Σ|terms| 界] n=806400  界尺度=Σ|terms|
+        与参考逐位不同的元素 = 88
+        d/ulp>0 分布(按个数取前 5，共 5 种取值) = [(1.0, 82), (2.0, 3), (12.0, 1), (3.0, 1), (94.5, 1)]
+        ulp_mult=1.0 ⇒ bad=0  max(d/bound)=0.992874  maxRel=2.821
+        ulp_mult=2.0 ⇒ bad=0  max(d/bound)=0.498212  maxRel=2.821
+        代理界打红的 6 个元素（占掩码 0.000744%）：|out|/Σ|terms| ∈ [4.85e-09, 7.05e-07]；d/(ε·Σ|terms|) max = 0.00104
+
+== §6.2 ②  ④⑤ 的格点项（参考链吃 kv_ref = 现行判据口径）==
+[H4.gated] n=645120  界尺度=max(|out|,|ref|) 代理
+        与参考逐位不同的元素 = 62
+        d/ulp>0 分布(按个数取前 2，共 2 种取值) = [(1.0, 50), (2.0, 12)]
+        ulp_mult=1.0 ⇒ bad=12  max(d/bound)=1.997765  maxRel=0.01087
+        ulp_mult=2.0 ⇒ bad=0  max(d/bound)=0.999441  maxRel=0.01087
+[H4.normed] n=645120  界尺度=max(|out|,|ref|) 代理
+        与参考逐位不同的元素 = 85
+        d/ulp>0 分布(按个数取前 3，共 3 种取值) = [(1.0, 66), (2.0, 18), (1.5, 1)]
+        ulp_mult=1.0 ⇒ bad=19  max(d/bound)=1.997923  maxRel=0.01176
+        ulp_mult=2.0 ⇒ bad=0  max(d/bound)=0.999480  maxRel=0.01176
+[H5.out] n=645120  界尺度=max(|out|,|ref|) 代理
+        与参考逐位不同的元素 = 2
+        d/ulp>0 分布(按个数取前 1，共 1 种取值) = [(1.0, 2)]
+        ulp_mult=1.0 ⇒ bad=0  max(d/bound)=0.999144  maxRel=0.007092
+        ulp_mult=2.0 ⇒ bad=0  max(d/bound)=0.499786  maxRel=0.007092
+
+== §6.3  参考链吃 kv_ref（现行）vs 吃设备 H_kv.bin（**诊断**，不参与 PASS/FAIL）==
+  吃 kv_ref(现行判据)   H4.gated  逐位不同=62  1.0ulp 界 bad=12  max(d/bound)=1.9978
+  吃 kv_ref(现行判据)   H4.normed 逐位不同=85  1.0ulp 界 bad=19  max(d/bound)=1.9979
+  吃 kv_ref(现行判据)   H5.out    逐位不同=2  1.0ulp 界 bad=0  max(d/bound)=0.9991
+  吃 kv_dev(诊断)     H4.gated  逐位不同=0  1.0ulp 界 bad=0  max(d/bound)=0.0000
+  吃 kv_dev(诊断)     H4.normed 逐位不同=4  1.0ulp 界 bad=0  max(d/bound)=0.9991
+  吃 kv_dev(诊断)     H5.out    逐位不同=0  1.0ulp 界 bad=0  max(d/bound)=0.0000
+rc=0
+
+=== $ python3.12 m15_layer_loop/ple/recount_hm.py m15_layer_loop/ple/out_hm_neg
+outdir=m15_layer_loop/ple/out_hm_neg  n_tok=64  items=1024  win_rows=838860  窗内 item=1022  参与 token=63
+
+== H2.emb（T1 逐字节）==
+  对照行非零元素 = 163520 / 163520；设备与对照全等 = False；不同 = 163373
+
+== §6.2 ①  H3.kv：代理界 vs Σ|terms| ==
+[H3.kv 代理界] n=806400  界尺度=max(|out|,|ref|) 代理
+        与参考逐位不同的元素 = 805679
+        d/ulp>0 分布(按个数取前 8，共 28458 种取值) = [(1.0, 1512), (5.0, 1485), (2.0, 1466), (4.0, 1465), (14.0, 1450), (7.0, 1446), (8.0, 1443), (9.0, 1439)]
+        ulp_mult=1.0 ⇒ bad=804163  max(d/bound)=174743.828171  maxRel=3.305e+07
+        ulp_mult=2.0 ⇒ bad=802688  max(d/bound)=174724.969566  maxRel=3.305e+07
+[H3.kv Σ|terms| 界] n=806400  界尺度=Σ|terms|
+        与参考逐位不同的元素 = 805679
+        d/ulp>0 分布(按个数取前 8，共 28458 种取值) = [(1.0, 1512), (5.0, 1485), (2.0, 1466), (4.0, 1465), (14.0, 1450), (7.0, 1446), (8.0, 1443), (9.0, 1439)]
+        ulp_mult=1.0 ⇒ bad=804162  max(d/bound)=23000.424443  maxRel=3.305e+07
+        ulp_mult=2.0 ⇒ bad=802686  max(d/bound)=22404.311463  maxRel=3.305e+07
+        代理界打红的 804163 个元素（占掩码 99.72%）：|out|/Σ|terms| ∈ [9.68e-09, 0.196]；d/(ε·Σ|terms|) max = 4.26e+04
+
+== §6.2 ②  ④⑤ 的格点项（参考链吃 kv_ref = 现行判据口径）==
+[H4.gated] n=645120  界尺度=max(|out|,|ref|) 代理
+        与参考逐位不同的元素 = 644607
+        d/ulp>0 分布(按个数取前 8，共 27720 种取值) = [(1.0, 1031), (2.0, 1023), (8.0, 1009), (4.0, 1008), (6.0, 1006), (3.0, 1004), (7.0, 994), (9.0, 994)]
+        ulp_mult=1.0 ⇒ bad=643574  max(d/bound)=164122.862225  maxRel=4.893e+05
+        ulp_mult=2.0 ⇒ bad=642546  max(d/bound)=163764.368601  maxRel=4.893e+05
+[H4.normed] n=645120  界尺度=max(|out|,|ref|) 代理
+        与参考逐位不同的元素 = 644518
+        d/ulp>0 分布(按个数取前 8，共 25502 种取值) = [(6.0, 1198), (3.0, 1190), (17.0, 1186), (1.0, 1181), (10.0, 1180), (9.0, 1177), (11.0, 1161), (4.0, 1160)]
+        ulp_mult=1.0 ⇒ bad=643333  max(d/bound)=164125.419565  maxRel=2.21e+05
+        ulp_mult=2.0 ⇒ bad=642175  max(d/bound)=163769.399132  maxRel=2.21e+05
+[H5.out] n=645120  界尺度=max(|out|,|ref|) 代理
+        与参考逐位不同的元素 = 515354
+        d/ulp>0 分布(按个数取前 8，共 3119 种取值) = [(1.0, 132378), (2.0, 69438), (3.0, 43257), (4.0, 29475), (5.0, 22004), (6.0, 17380), (7.0, 13897), (8.0, 11699)]
+        ulp_mult=1.0 ⇒ bad=382488  max(d/bound)=164482.509804  maxRel=1.699e+29
+        ulp_mult=2.0 ⇒ bad=312619  max(d/bound)=164482.509804  maxRel=1.699e+29
+
+== §6.3  参考链吃 kv_ref（现行）vs 吃设备 H_kv.bin（**诊断**，不参与 PASS/FAIL）==
+  吃 kv_ref(现行判据)   H4.gated  逐位不同=644607  1.0ulp 界 bad=643574  max(d/bound)=164122.8622
+  吃 kv_ref(现行判据)   H4.normed 逐位不同=644518  1.0ulp 界 bad=643333  max(d/bound)=164125.4196
+  吃 kv_ref(现行判据)   H5.out    逐位不同=515354  1.0ulp 界 bad=382488  max(d/bound)=164482.5098
+  吃 kv_dev(诊断)     H4.gated  逐位不同=0  1.0ulp 界 bad=0  max(d/bound)=0.0000
+  吃 kv_dev(诊断)     H4.normed 逐位不同=8  1.0ulp 界 bad=0  max(d/bound)=0.9992
+  吃 kv_dev(诊断)     H5.out    逐位不同=0  1.0ulp 界 bad=0  max(d/bound)=0.0000
+rc=0

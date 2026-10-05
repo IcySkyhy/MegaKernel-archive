@@ -1,0 +1,12 @@
+[in-lock] Sun Oct  4 07:56:18 UTC 2026
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+
+[m15ple] M85 PLE 独立 kernel | aic=28 aiv=56 | out=/tmp/m124_out_base data=m15_layer_loop/ple/data neg=0
+[m15ple] A    ① ids: 10 tok × 16 head, dev_range_fail=0 -> A_ids.bin
+[m15ple] B    ① ids: 2 tok × 16 head, dev_range_fail=0 -> B_ids.bin
+[m15ple] body ②③④⑤: stage_mask=15 n_tok=2 table_rows=1470 dev_fail=0
+[m15ple] ===== kernel-side OK =====
+rc=0
+[out-lock] Sun Oct  4 07:56:26 UTC 2026

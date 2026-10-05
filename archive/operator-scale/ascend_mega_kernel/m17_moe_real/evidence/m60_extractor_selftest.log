@@ -1,0 +1,42 @@
+# M60 提取器（`gen_witness_log.py`）的三态/六态自检输出
+
+用途：`evidence/m60_quant_rule_witness.log` 是**派生证据**，它的唯一再生路径是
+`m17_moe_real/gen_witness_log.py`。评审文件
+`.tower/comms/reviews/review-feat-m60-m17-quant-rule-external-pin-and-witn-reviewer-m60-r2.md`
+指出该提取器当时逐条违反 tower 的两条规则
+（「计数只能由与匹配器同源的遍历产出」+「无输入可比必须 `SKIPPED` 且非零」）：§1/§2 的
+「5 个 case 全 PASS」是手写字面量，且 0 条读数 / 含 FAIL / 缺文件时都不报 `SKIPPED`
+（前者 exit 0、后者未捕获 traceback）。本文件是修好之后该工具**自检**的原始输出。
+
+复跑（在 worktree 根；合成输入写在 `TemporaryDirectory`，不碰仓库）：
+
+```bash
+/usr/local/python3.12.13/bin/python3 m17_moe_real/gen_witness_log.py --selftest
+# → 本文件「以下为工具输出」之后的内容（原子性：同一 tip 上重跑逐字节相同）
+```
+
+期望：退出码 `0`/`1`/`2` 三态 = 「有读数且全 PASS」/「有读数但含 FAIL」/「没得比（0 条读数或
+缺文件）→ `RESULT: SKIPPED`，绝不发合格证」；②/④/⑤/⑥ 四态都必须是 `SKIPPED` + 2。
+
+以下为工具输出（原样，未编辑）：
+
+# `gen_witness_log.py --selftest`：六种输入状态的实测（退出码 + 汇总行）
+#
+# 每种状态都是「喂一份合成输入 → 跑 build() → 看它印出的汇总行与退出码」；
+# 退出码语义见本文件 docstring（0=有读数且全 PASS / 1=有读数但含 FAIL / 2=没得比）。
+
+| 状态 | 期望退出码 | 实测退出码 | 实测汇总行 | 期望内容 | 判定 |
+|---|---|---|---|---|---|
+| ① 正常态（W* 与自检-* 各 1 条，全 PASS） | 0 | 0 | `# 读数汇总（**由本提取器当场从输入派生**，不是手写常量）：cases=1（其中 1 个有读数）｜§1 `W*` 1 条（PASS 1 / FAIL 0）｜§2 `自检-*` 1 条（PASS 1 / FAIL 0）` | 含 `FAIL 0` | **符合** |
+| ② 0 case 态（日志里没有 case 段） | 2 | 2 | `RESULT: SKIPPED（run_log=<合成输入目录>/empty.log 里 cases=0、§1+§2 读数=0（此类输入通常是 pre-M60 日志或不含 W 行的日志）） —— 退出码 2；本文件 0 条读数，不发合格证` | 含 `SKIPPED` | **符合** |
+| ③ 含 FAIL 态（一条 W 行是 FAIL） | 1 | 1 | `# 读数汇总（**由本提取器当场从输入派生**，不是手写常量）：cases=1（其中 1 个有读数）｜§1 `W*` 1 条（PASS 0 / FAIL 1）｜§2 `自检-*` 1 条（PASS 1 / FAIL 0）` | 含 `FAIL 1` | **符合** |
+| ④ 缺文件态（run_log 不存在） | 2 | 2 | `RESULT: SKIPPED（必需输入缺失 ['<合成输入目录>/nope.log']） —— 退出码 2；本文件 0 条读数，不发合格证` | 含 `SKIPPED` | **符合** |
+| ⑤ 已知会被漏掉·只有非判定行（`[报告]`/`[coverage]`…） | 2 | 2 | `RESULT: SKIPPED（run_log=<合成输入目录>/nonverdict.log 里 cases=1、§1+§2 读数=0（此类输入通常是 pre-M60 日志或不含 W 行的日志）） —— 退出码 2；本文件 0 条读数，不发合格证` | 含 `SKIPPED` | **符合** |
+| ⑥ 已知会被漏掉·W 行分隔符不可解析（全角「：」） | 2 | 2 | `RESULT: SKIPPED（run_log=<合成输入目录>/unparsable.log 里 cases=1、§1+§2 读数=0（此类输入通常是 pre-M60 日志或不含 W 行的日志）） —— 退出码 2；本文件 0 条读数，不发合格证` | 含 `SKIPPED` | **符合** |
+
+⇒ 自检结论：6/6 态符合期望
+   （②/④/⑤/⑥ 都必须是 SKIPPED+2：0 条读数**绝不**发合格证；③ 的汇总必须写出 `FAIL 1`，
+    而不是照旧宣称「全 PASS」—— ⑤/⑥ 就是「已知会被漏掉」控制在提取器上的两种形态：
+    非判定行不计入读数、不可解析的行也不计入 ⇒ 两种都落到 SKIPPED 而非 OK）
+   合成输入目录：`TemporaryDirectory`（退出即删；本行故意不打印随机路径 —— 保证自检输出可归档且逐字节可复算）
+RESULT: OK（selftest 6 态，6/6 符合） —— 退出码 0

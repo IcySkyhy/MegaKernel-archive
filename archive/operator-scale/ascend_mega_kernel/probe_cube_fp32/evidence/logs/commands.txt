@@ -1,0 +1,55 @@
+# probe_cube_fp32（M106）证据生成记录
+date: 2026-09-27T08:46:12+00:00
+pwd: /workspace/ascend_mega_kernel/.tower/worktrees/wt-106/probe_cube_fp32
+HEAD_at_run: 5fb4739415ddab0f1e98e2323e6309f34690f9f3  # 可能早于把本批证据提交进去的 commit（见 sha256）
+dirty_at_run: 12 files
+CANN: Version=9.1.0 version_dir=cann required_package_runtime_version="9.1" required_package_ge-executor_version="9.1" required_package_metadef_version="9.1" required_package_bisheng-compiler_version="9.1" required_package_tbe-tik_version="9.1" timestamp=20260730_231653901 
+ASC arch: dav-3510
+
+## 源码内容指纹（内容寻址 ⇒ 用它核对「本 log 由哪份源码产出」）
+18261e78af6961ac843df92a313de1128ee76d651497e644c55c7722b7f0e172  probe_cube_fp32.asc
+deb39bb5d0b867c08e367dc17ac56e6e1bdae6892e094f8dc26cc08f6c3c6670  CMakeLists.txt
+22ed0b2ea59995c804f7a06f65a55ac0623d38a784bbd21b16bffcb6743fabd7  run_probes.sh
+16184e592ba7636f72aa99146683f8281ef7a752ab85b6d3b145557881c5faa9  check_ref.py
+
+## 复现命令（本目录执行）
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j4
+flock -w 900 /tmp/npu0.lock ./build/probe_cube_fp32 prec       # 默认（未开 HF32）
+flock -w 900 /tmp/npu0.lock ./build/probe_cube_fp32 hf32       # asc_enable_hf32()
+flock -w 900 /tmp/npu0.lock ./build/probe_cube_fp32 perf       # 吞吐 fp32 vs bf16
+flock -w 900 /tmp/npu0.lock ./build/probe_cube_fp32 perf_hf32  # 吞吐 HF32 vs bf16
+flock -w 900 /tmp/npu0.lock ./build/probe_cube_fp32 dump /workspace/ascend_mega_kernel/.tower/worktrees/wt-106/probe_cube_fp32/evidence/dumps
+/usr/local/python3.12.13/bin/python3 check_ref.py /workspace/ascend_mega_kernel/.tower/worktrees/wt-106/probe_cube_fp32/evidence/dumps   # 独立 numpy fp64 复核：rc 0 = d0/d1/d2/d3/d4/d5/d6 **七条判据全部成立**；1 = 有任一条不成立
+bash run_probes.sh            # 本文（含上面全部 + 两条负向对照）
+
+## 跑前 npu-smi（并发背景）
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.6                               Version: 25.7.rc1.6                            |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 196.7       57                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          12962 / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| 0                         | 335018        | m15_layer_loop           | 6867                    |
++===========================+===============+=====================================================+
+## 跑后 npu-smi（并发背景）
++-------------------------------------------------------------------------------------------------+
+| npu-smi 25.7.rc1.6                               Version: 25.7.rc1.6                            |
++--------+------------------+---------------+-----------------------------------------------------+
+| NPU ID | Name             | Health        | Power(W)    Temp(C)           Hugepages-Usage(page) |
+|        |                  | Bus-Id        | NPU Util(%) Memory-Usage(MB)  HBM-Usage(MB)         |
++========+==================+===============+=====================================================+
+| 0      | Ascend950PR      | OK            | 196.7       58                0     / 0             |
+|        |                  | 0000:61:00.0  | 0           0    / 0          5248  / 131072        |
++========+==================+===============+=====================================================+
++---------------------------+---------------+-----------------------------------------------------+
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| No running processes found in NPU 0                                                             |
++===========================+===============+=====================================================+

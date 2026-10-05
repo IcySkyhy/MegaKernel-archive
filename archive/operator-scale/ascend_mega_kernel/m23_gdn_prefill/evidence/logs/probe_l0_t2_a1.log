@@ -1,0 +1,2 @@
+[PL0] tiles=2 iters=200 arm=1 (1 AIC, fp32, N=K=128, tile=16 行)
+[PL0][OK] C[0][0]=128.0 (期望 = iters×tiles×K = 51200)

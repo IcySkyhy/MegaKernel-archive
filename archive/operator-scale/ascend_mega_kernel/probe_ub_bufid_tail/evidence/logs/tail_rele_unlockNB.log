@@ -1,0 +1,16 @@
+--- run 1 (timeout 30s) ---
+[probe] mode=tail variant=rele_unlockNB vi=25 run=1 N=32 handoffs=1 idSame=1 apiV=1 apiE3=3 skipVrel=0 skipE3rel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=rele_unlockNB run=1 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+exit=0
+--- run 2 (timeout 30s) ---
+[probe] mode=tail variant=rele_unlockNB vi=25 run=2 N=32 handoffs=1 idSame=1 apiV=1 apiE3=3 skipVrel=0 skipE3rel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=rele_unlockNB run=2 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+exit=0
+--- run 3 (timeout 30s) ---
+[probe] mode=tail variant=rele_unlockNB vi=25 run=3 N=32 handoffs=1 idSame=1 apiV=1 apiE3=3 skipVrel=0 skipE3rel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=rele_unlockNB run=3 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+exit=0
+--- run 4 (timeout 30s) ---
+[probe] mode=tail variant=rele_unlockNB vi=25 run=4 N=32 handoffs=1 idSame=1 apiV=1 apiE3=3 skipVrel=0 skipE3rel=0 copyForm=0 trace=0 blocks=1
+SUMMARY mode=tail variant=rele_unlockNB run=4 N=32 tiles=64 mismatched=0 elems=131072 match=131072 stale=0 zero=0 histOther=0 rc=0
+exit=0

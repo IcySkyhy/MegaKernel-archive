@@ -1,0 +1,6 @@
+raw_ub2gm_aic.asc:11:9: error: function type 'void (__gm__ void *, __ubuf__ void *, unsigned char, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_gm' does not support the given target feature
+        copy_ubuf_to_gm((__gm__ void*)outGm, (__ubuf__ void*)ub.GetPhyAddr(), 0, 1, 256, 0, 0);
+        ^
+raw_ub2gm_aic.asc:11:9: error: function type 'void (__gm__ void *, __ubuf__ void *, unsigned char, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_gm' does not support the given target feature
+raw_ub2gm_aic.asc:11:9: error: function type 'void (__gm__ void *, __ubuf__ void *, unsigned char, unsigned short, unsigned short, unsigned short, unsigned short) noexcept' of 'copy_ubuf_to_gm' does not support the given target feature
+3 errors generated.

@@ -1,0 +1,7 @@
+VARIANT op=scatter(id=14) a=0 b=16 n=64 model=3 window=256
+LAUNCH aclError=0 (sync timeout=120000ms)
+DUMP_FNV 0x9a51f6b8b22dc5b3
+HEAD32 a5a5a5a5 a5a5a5a5 a5a5a5a5 a5a5a5a5
+COMPARE window_bytes=256 bytes_outside_window_written=0
+OUTCOME: OK
+RESULT: OK (structural only: model=3; window 256B non-empty, 240 non-sentinel bytes, 0 bytes written outside window)

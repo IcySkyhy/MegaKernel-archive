@@ -1,0 +1,21 @@
+# M53 探针读数（probe_aiv_barrier.asc）：AIV 间「计数交换」的适用边界
+#
+# **适用范围前提（必读）**：每轮只挂一道「写完」屏障（写 → 屏障 → 读回 → 下一轮写），
+# 读回之后到下一轮写之前**没有**屏障。下表「多轮复用不可证」只在这个形态下成立；
+# 本探针不据此断言「就是缺一道屏障」（该假设另由 probe mission 实测，结论未出）。
+#
+# 6 变体并列：v0 无屏障（对照）／v1 单发・手写 mode0／v2 循环・手写 mode0／
+# v3 循环・手写 mode0 + MTE3_S 排空（docs/06 §5.2 规则 6）／v4 单发・官方 SyncAll<true>／
+# v5 循环・官方 SyncAll<true>。官方 SyncAll<true> 在 3510 上是 mode0 + flagId 14 + wait_flag_dev(PIPE_S,14)。
+# 数字逐次波动（本就是竞态）；v1/v4 每次复跑都 0/56、v0 每次 56/56。
+# 跑法：./m19_qsa_indexer/build/probe_aiv_barrier   （M19_PROBE_NVAR=4 只跑前 4 个）
+
+[probe_bar] AICORE=28 VECTOR=56 naiv=56；变体数 6（最多 6），每变体轮数 4（v1/v4 单发 1 轮）
+[probe_bar] launch: OK
+[probe_bar] v0 无屏障（对照，4 轮）                                 核 56/56；违规核 56（合计 222，单核最大 4）；最少见到的槽数 1 ⇒ VIOLATION
+[probe_bar] v1 **单发** 1 轮：Set<0,MTE3>(1)+Wait<0,MTE2>（主 kernel 交接段用法） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v2 循环 4 轮复用同片槽：Set<0,MTE3>(1+r%8)+Wait<0,MTE2> 核 56/56；违规核 34（合计 42，单核最大 3）；最少见到的槽数 4 ⇒ VIOLATION
+[probe_bar] v3 循环 4 轮 + set 前 MTE3_S 排空（docs/06 §5.2 规则 6） 核 56/56；违规核 18（合计 20，单核最大 2）；最少见到的槽数 7 ⇒ VIOLATION
+[probe_bar] v4 **单发** 1 轮 + SyncAll<true>()（框架 AIV-only 全核屏障，wait 挂 PIPE_S） 核 56/56；违规核 0（合计 0，单核最大 0）；最少见到的槽数 56 ⇒ OK
+[probe_bar] v5 循环 4 轮 + SyncAll<true>()                                核 56/56；违规核 35（合计 62，单核最大 3）；最少见到的槽数 20 ⇒ VIOLATION
+exit=0

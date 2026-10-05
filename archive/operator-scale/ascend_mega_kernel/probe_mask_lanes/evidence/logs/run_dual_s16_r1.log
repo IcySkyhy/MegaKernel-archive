@@ -1,0 +1,8 @@
+VARIANT name=dual_s16 kind=2 group=dual sd=s16 md=m8 pat=all rows=0 pitchI=0 pitchW=0 im=0
+LAUNCH aclError=0 (sync timeout=120000ms)
+AREABYTES 12288
+WRANGES 0-202,203-508,509-512
+NZ bytes_written=510 first_off=0 last_off=512
+FNV 0x3e630c9621b4d583
+OUTCOME: RAN
+rc=0

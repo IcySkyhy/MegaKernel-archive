@@ -1,0 +1,35 @@
+# M191 — PLE 跨 step short-conv 状态承接：逐字复现命令
+#
+# base（行号基准）= main 的 7738e0669d7e271434d2feb4ff9fa68867e7365b（M190 合入后）
+# worktree = .tower/worktrees/wt-191；所有命令从仓库根跑。
+
+# ---- 构建（锁外）----
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+cmake -B m15_layer_loop/build -S m15_layer_loop -DCMAKE_BUILD_TYPE=Release
+cmake --build m15_layer_loop/build -j8 --target m15_layer_loop
+# → BUILD_RC=0，21 warnings（与改前基线同为 21）
+
+# ---- 生成物一致性（m15_ple.asc 一字未动；--check 逐字节）----
+python3 m15_layer_loop/evidence/ple_wire/lift_ple_device_segment.py --check
+# → [ok] m15_ple_wire.h == 从 m15_ple.asc 重新抽取的结果（60422 字节，逐字节）
+
+# ---- 设备档（每档各自一次 flock；进锁先 npu-smi；timeout 在锁内）----
+# 档前 npu-smi 快照（三档一致）：No running processes found in NPU 0
+#   （快照见 npu_smi_carry_on.txt / npu_smi_carry_off.txt / npu_smi_runs_all.txt）
+
+# 档 A：跨 step 承接开（默认）
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info; timeout 900 env M15_PLE_WIRE=1 M15_PLE_STAGE=31 M15_PLE_STATECARRY=1 ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt plewire'
+# → rc=0 wall=29s；Pw.step2.* 三条 PASS；验证 Pw 判定项 15 / FAIL 0；ALL PASS；日志 carry_on.log
+
+# 档 B：负向对照（不搬状态）
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info; timeout 900 env M15_PLE_WIRE=1 M15_PLE_STAGE=31 M15_PLE_STATECARRY=0 ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt plewire'
+# → rc=1 wall=27s；Pw.step2.carry FAIL、Pw.step2.evolve FAIL；验证 Pw 判定项 15 / FAIL 2；日志 carry_off.log
+
+# 档 C：runs=all 零回归（接线默认关）
+flock -w 300 /tmp/npu0.lock bash -c 'npu-smi info; timeout 900 env M15_LAYERS=48 M15_STEPS=3 M15_HC_LAYERS=0,1,3 ./m15_layer_loop/build/m15_layer_loop m15_layer_loop/weights_manifest.txt all'
+# → rc=0 wall=28s；ALL PASS（checks=2095, guards=302, fails=0）；日志 runs_all.log
+
+# ---- 二进制 ----
+sha256sum m15_layer_loop/build/m15_layer_loop
+# → 079536ce6e870b1bb19943183d68769842287655dafc1cb043da4a389b77a1d6
+#   （权威副本 = 同目录 binary_sha256.txt；本行与它一致，r1 复审 P2-1 点名的陈旧 sha 已改）

@@ -1,0 +1,152 @@
+/usr/bin/cmake -S/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -B/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/gmake  -f CMakeFiles/Makefile2 ag_arange_u32
+gmake[1]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/cmake -S/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop -B/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles 2
+/usr/bin/gmake  -f CMakeFiles/Makefile2 CMakeFiles/ag_arange_u32.dir/all
+gmake[2]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/gmake  -f CMakeFiles/ag_arange_u32.dir/build.make CMakeFiles/ag_arange_u32.dir/depend
+gmake[3]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+cd /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles/ag_arange_u32.dir/DependInfo.cmake "--color="
+Dependencies file "CMakeFiles/ag_arange_u32.dir/probe_arange_gather.asc.o.d" is newer than depends file "/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build/CMakeFiles/ag_arange_u32.dir/compiler_depend.internal".
+Consolidate compiler generated dependencies of target ag_arange_u32
+gmake[3]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+/usr/bin/gmake  -f CMakeFiles/ag_arange_u32.dir/build.make CMakeFiles/ag_arange_u32.dir/build
+gmake[3]: Entering directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+[ 50%] Building ASC object CMakeFiles/ag_arange_u32.dir/probe_arange_gather.asc.o
+/usr/local/Ascend/cann-9.1.0/bin/bisheng -DAG_FORM=1 -DAG_NEL=16384 -DAG_TAG=ag_arange_u32 -DNPU_ARCH_DAV_3510   -std=c++17 --npu-arch=dav-3510 -O3 -DNDEBUG --npu-arch=dav-3510 -MD -MT CMakeFiles/ag_arange_u32.dir/probe_arange_gather.asc.o -MF CMakeFiles/ag_arange_u32.dir/probe_arange_gather.asc.o.d -o CMakeFiles/ag_arange_u32.dir/probe_arange_gather.asc.o -c --asc-aicore-lang /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/probe_arange_gather.asc
+In file included from /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/probe_arange_gather.asc:34:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/kernel_operator.h:22:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/dav_3510/../../../include/basic_api/kernel_tpipe.h:27:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/adv_api/normalization/../../../impl/adv_api/detail/normalization/groupnorm/../../../../../include/basic_api/kernel_tensor.h:304:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/dav_3510/../kernel_tensor_impl.h:27:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/kernel_operator_symbol_override_impl.h:40:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/reg_compute/kernel_reg_compute_intf.h:45:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf.h:36:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf_impl.h:30:
+/usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/../../basic_api/reg_compute/dav_3510/kernel_reg_compute_vec_arange_impl.h:47:5: error: static assertion failed due to requirement 'SupportType<unsigned int, signed char, short, int, float, half, long>()': current Arange data type is not supported on current device!
+    static_assert((SupportType<ActualT, int8_t, int16_t, int32_t, float, half, int64_t>()),
+    ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf_impl.h:38:5: note: in instantiation of function template specialization 'AscendC::Reg::ArangeImpl<AscendC::Reg::DefaultType, AscendC::Reg::IndexOrder::INCREASE_ORDER, unsigned int, AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>>' requested here
+    ArangeImpl<T, order, U, S>(dstReg, scalarValue);
+    ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/probe_arange_gather.asc:115:5: note: in instantiation of function template specialization 'AscendC::Reg::Arange<AscendC::Reg::DefaultType, AscendC::Reg::IndexOrder::INCREASE_ORDER, unsigned int, AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>>' requested here
+    Arange(idxU, 0u);
+    ^
+In file included from /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/probe_arange_gather.asc:34:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/kernel_operator.h:22:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/dav_3510/../../../include/basic_api/kernel_tpipe.h:27:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/adv_api/normalization/../../../impl/adv_api/detail/normalization/groupnorm/../../../../../include/basic_api/kernel_tensor.h:304:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/dav_3510/../kernel_tensor_impl.h:27:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/kernel_operator_symbol_override_impl.h:40:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/reg_compute/kernel_reg_compute_intf.h:45:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf.h:36:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf_impl.h:30:
+/usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/../../basic_api/reg_compute/dav_3510/kernel_reg_compute_vec_arange_impl.h:53:9: error: no matching function for call to 'vci'
+        vci(dstReg, scalarValue, orderMode);
+        ^~~
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7875:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_s8 &' for 1st argument
+__VF_VCI(s8, v256, int8_t)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7865:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7876:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_s16 &' for 1st argument
+__VF_VCI(s16, v128, int16_t)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7865:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7877:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_s32 &' for 1st argument
+__VF_VCI(s32, v64, int32_t)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7865:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7894:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_f16 &' for 1st argument
+__VF_VCI(f16, v128, half)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7888:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7895:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_f32 &' for 1st argument
+__VF_VCI(f32, v64, float)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7888:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:10978:20: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_2xvl_s64 &' for 1st argument
+CCE_INTRINSIC void vci(vector_2xvl_s64 &dst, int32_t index,
+                   ^
+2 errors generated.
+In file included from /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/probe_arange_gather.asc:34:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/kernel_operator.h:22:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/dav_3510/../../../include/basic_api/kernel_tpipe.h:27:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/adv_api/normalization/../../../impl/adv_api/detail/normalization/groupnorm/../../../../../include/basic_api/kernel_tensor.h:304:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/dav_3510/../kernel_tensor_impl.h:27:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/kernel_operator_symbol_override_impl.h:40:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/reg_compute/kernel_reg_compute_intf.h:45:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf.h:36:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf_impl.h:30:
+/usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/../../basic_api/reg_compute/dav_3510/kernel_reg_compute_vec_arange_impl.h:47:5: error: static assertion failed due to requirement 'SupportType<unsigned int, signed char, short, int, float, half, long>()': current Arange data type is not supported on current device!
+    static_assert((SupportType<ActualT, int8_t, int16_t, int32_t, float, half, int64_t>()),
+    ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf_impl.h:38:5: note: in instantiation of function template specialization 'AscendC::Reg::ArangeImpl<AscendC::Reg::DefaultType, AscendC::Reg::IndexOrder::INCREASE_ORDER, unsigned int, AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>>' requested here
+    ArangeImpl<T, order, U, S>(dstReg, scalarValue);
+    ^
+/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/probe_arange_gather.asc:115:5: note: in instantiation of function template specialization 'AscendC::Reg::Arange<AscendC::Reg::DefaultType, AscendC::Reg::IndexOrder::INCREASE_ORDER, unsigned int, AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>>' requested here
+    Arange(idxU, 0u);
+    ^
+In file included from /workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/probe_arange_gather.asc:34:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/kernel_operator.h:22:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/dav_3510/../../../include/basic_api/kernel_tpipe.h:27:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/adv_api/normalization/../../../impl/adv_api/detail/normalization/groupnorm/../../../../../include/basic_api/kernel_tensor.h:304:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/dav_3510/../kernel_tensor_impl.h:27:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/kernel_operator_symbol_override_impl.h:40:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/reg_compute/kernel_reg_compute_intf.h:45:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf.h:36:
+In file included from /usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/kernel_reg_compute_vec_arange_intf_impl.h:30:
+/usr/local/Ascend/cann-9.1.0/asc/include/basic_api/../../impl/basic_api/../../include/basic_api/reg_compute/../../../impl/basic_api/reg_compute/../../basic_api/reg_compute/dav_3510/kernel_reg_compute_vec_arange_impl.h:53:9: error: no matching function for call to 'vci'
+        vci(dstReg, scalarValue, orderMode);
+        ^~~
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7875:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_s8 &' for 1st argument
+__VF_VCI(s8, v256, int8_t)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7865:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7876:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_s16 &' for 1st argument
+__VF_VCI(s16, v128, int16_t)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7865:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7877:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_s32 &' for 1st argument
+__VF_VCI(s32, v64, int32_t)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7865:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7894:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_f16 &' for 1st argument
+__VF_VCI(f16, v128, half)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7888:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7895:1: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_f32 &' for 1st argument
+__VF_VCI(f32, v64, float)
+^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:7888:22: note: expanded from macro '__VF_VCI'
+  CCE_INTRINSIC void vci(vector_##TYPE &dst, IDX_TYPE index,                   \
+                     ^
+/usr/local/Ascend/cann-9.1.0/tools/bisheng_compiler/lib/clang/15.0.5/include/__clang_cce_vector_intrinsics.h:10978:20: note: candidate function template not viable: no known conversion from 'AscendC::Reg::RegTensor<unsigned int, AscendC::Reg::RegTraitNumOne>' to 'vector_2xvl_s64 &' for 1st argument
+CCE_INTRINSIC void vci(vector_2xvl_s64 &dst, int32_t index,
+                   ^
+2 errors generated.
+gmake[3]: *** [CMakeFiles/ag_arange_u32.dir/build.make:76: CMakeFiles/ag_arange_u32.dir/probe_arange_gather.asc.o] Error 1
+gmake[3]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+gmake[2]: *** [CMakeFiles/Makefile2:949: CMakeFiles/ag_arange_u32.dir/all] Error 2
+gmake[2]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+gmake[1]: *** [CMakeFiles/Makefile2:956: CMakeFiles/ag_arange_u32.dir/rule] Error 2
+gmake[1]: Leaving directory '/workspace/ascend_mega_kernel/.tower/worktrees/wt-43/probe_vf_loop/build'
+gmake: *** [Makefile:527: ag_arange_u32] Error 2

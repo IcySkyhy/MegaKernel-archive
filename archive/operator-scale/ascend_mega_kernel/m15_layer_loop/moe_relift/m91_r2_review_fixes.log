@@ -1,0 +1,162 @@
+# M91 第 2 轮：复审 r1（p2-3items）处置的「命令 -> 输出/rc」表（全部实跑；判据各跑两档 locale）
+# 复审对象 = 70cf4f4（冻结）。本轮三处 p2 + 两处措辞全部落在**注释/文档**（无代码行为改动）
+# 环境：source /usr/local/Ascend/ascend-toolkit/set_env.sh ; Ascend950PR
+
+## 1) 二进制 sha 与复审过的 tip **逐字节相同** ⇒ 三处改动零 codegen 影响
+$ sha256sum m15_layer_loop/build/m15_layer_loop
+2d42ba86e2f7d7918230d77f360295a5e12f4bbc2a6841602475e5b85945486c  m15_layer_loop/build/m15_layer_loop
+rc=0
+
+# 被复审的 70cf4f4 那一版（复审独立重建）= 2d42ba86e2f7d7918230d77f360295a5e12f4bbc2a6841602475e5b85945486c（与上一行相同）
+# ⇒ A/B dump **不重做**，理由：dump 比的是**机器码的行为**，而机器码逐字节相同；
+#   该二进制上一轮的 dump 已与 base（c6ee3ca0…）逐字节对拍过（1307 文件、diff rc=0，见 m91_stream_ab_dump_sha256.log）。
+
+## 2) 重生成生成物 + 抽取规则自洽（两档 locale）
+$ LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py
+[lift] 写出 m15_moe_layer.h（2197 行；内容锚点 asc 行 62..2031，入口第 2033 行）
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+
+$ LC_ALL=C.UTF-8 python3 m15_layer_loop/lift_moe_segment.py --check
+[lift] m15_moe_layer.h 与抽取规则一致（内容锚点：asc 行 62..2031，入口在第 2033 行）
+rc=0
+
+## 3) 三条静态判据（两档 locale，读数逐行一致）
+$ for s in check_prep check_rescale check_stream; do LC_ALL=C python3 m15_layer_loop/moe_relift/$s.py | tail -1; done
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+[check] ===== 可 FAIL 的判据 30 条（FAIL 0 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====
+[check] ===== 可 FAIL 的判据 15 条（FAIL 0 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+$ for s in check_prep check_rescale check_stream; do LC_ALL=C.UTF-8 python3 m15_layer_loop/moe_relift/$s.py | tail -1; done
+[check] ===== 可 FAIL 的判据 16 条（FAIL 0 条） + 诊断读数 4 条（2 个代码点 × 2 档跑，恒真、不计入判据数）=====
+[check] ===== 可 FAIL 的判据 30 条（FAIL 0 条） + 诊断读数 8 条（7 个代码点 × 2 档跑，恒真、不计入判据数）=====
+[check] ===== 可 FAIL 的判据 15 条（FAIL 0 条） + 诊断读数 1 条（1 个代码点 × 2 档跑，恒真、不计入判据数）=====
+rc=0
+
+$ diff /tmp/m91_r2_stream_C.log /tmp/m91_r2_stream_C.UTF-8.log
+rc=0
+
+## 4) 设备验收**重跑**（生成物/资源表变了 ⇒ 重新见证一次，不用旧读数）
+$ npu-smi info | sed -n '11,13p'
+| NPU ID                    | Process id    | Process name             | Process memory(MB)       |
++===========================+===============+=====================================================+
+| 0                         | 219102        | m15_layer_loop           | 6797                    |
+rc=0
+
+$ tail -1 /tmp/m91_r2_all.log
+[m15] ===== ALL PASS（checks=2068, guards=290, fails=0）=====
+rc=0
+
+$ tail -1 /tmp/m91_r2_chain.log
+[m15] ===== ALL PASS（checks=910, guards=52, fails=0）=====
+rc=0
+
+## 5) 6 条负向对照在**重生成后的产物**上重跑（变异只在 /tmp/m91_nc；计数与上一轮相同 3/2/2/1/1/1）
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_rescale.py --res /tmp/m91_nc/nc1_res.h | grep -c 'FAIL  '
+3
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_rescale.py --header /tmp/m91_nc/nc2_hdr.h | grep -c 'FAIL  '
+2
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_rescale.py --header /tmp/m91_nc/nc3_hdr.h | grep -c 'FAIL  '
+2
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_stream.py --header /tmp/m91_nc/nc4_hdr.h | grep -c 'FAIL  '
+1
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_stream.py --res /tmp/m91_nc/nc5_res.h | grep -c 'FAIL  '
+1
+rc=0
+
+$ LC_ALL=C python3 m15_layer_loop/moe_relift/check_stream.py --header /tmp/m91_nc/nc6_hdr.h | grep -c 'FAIL  '
+1
+rc=0
+
+## 6) 复审点名的口径在 tip 上的实测读数（逐条）
+# p2-1：同一文件对 UB_RT_END 只应有一个数
+$ grep -n 'UB_RT_END = 192544' m15_layer_loop/m15_moe_resources.h
+14: * UB_RT_END = 192544）与 m15_gdn_resources.h §4 的四段窗（@32768 起，峰值 UB_RC_END =
+rc=0
+
+$ grep -c '193600' m15_layer_loop/m15_moe_resources.h
+0
+rc=1
+
+#   （第二行 rc=1 = 无匹配；即该文件里 193600 已不再出现）
+# p2-2：生成物头部与脚本 docstring 的规则计数/口径
+$ grep -n '除下面列出的 8 类替换之外' m15_layer_loop/m15_moe_layer.h
+7: * **除下面列出的 8 类替换之外，算件代码逐行相同**（其中第 1–7 类是重命名式/插入式机械替换；
+rc=0
+
+$ grep -n '第 8 类是整块替换' m15_layer_loop/m15_moe_layer.h
+8: * **第 8 类是整块替换，非机械替换**）：
+rc=0
+
+$ grep -c '7 类机械替换' m15_layer_loop/m15_moe_layer.h
+0
+rc=1
+
+$ grep -c '6 类替换' m15_layer_loop/lift_moe_segment.py
+0
+rc=1
+
+#   （后两行 rc=1 = 无匹配；旧计数已不在 tip 上）
+$ grep -c 'router 权重流式（M91-#3' m15_layer_loop/m15_moe_layer.h
+1
+rc=0
+
+$ grep -c 'router 权重流式（M91-#3）' m15_layer_loop/lift_moe_segment.py
+1
+rc=0
+
+# p2-3：正确性上界口径 = 32
+$ grep -n '正确性上界是' m15_layer_loop/m15_moe_resources.h
+216:// **正确性上界是 NUM_EXPERTS ≤ 32**（单块 Sort32 只排 32 对、`Reduce<MAX>` 只覆盖 32 lane、
+rc=0
+
+$ grep -n '正确性上界是' m15_layer_loop/moe_relift/m91_README.md
+159:⇒ 合起来：**本段的正确性上界是 `NUM_EXPERTS ≤ 32`**（= 单块 `Sort32` / 单寄存器 `Reduce MAX` /
+rc=0
+
+$ grep -c 'NUM_EXPERTS 小于等于 64' m15_layer_loop/moe_relift/m91_README.md
+0
+rc=1
+
+#   （下一行的 rc=1 是无匹配：README 里已无「≤ 64」当正确性上界的写法；
+#     README 里唯一一处「耦合」是**引用旧措辞**的说明句，见其下一行 grep 的输出）
+$ grep -n '耦合' m15_layer_loop/moe_relift/m91_README.md
+139:   本文件的早先措辞「在 UB 布局层面耦合」已按复审意见改成「同表串行」）。
+rc=0
+
+# 措辞：BufAcquire 的旧推理已软化
+$ grep -c 'token 计数' m15_layer_loop/m15_moe_layer.h
+0
+rc=1
+
+$ grep -n 'get_buf(pipe,bufId,mode)' m15_layer_loop/m15_moe_layer.h
+807:    // 这里取更保守的那一侧；`GetBufInternal<pipe,false>` 展开到 `get_buf(pipe,bufId,mode)`，那个
+rc=0
+
+
+## 7) 时点与 tip 锚定
+$ git rev-parse 4e28544^{commit}
+4e285444bb4653a150f8352193de795006f37129
+rc=0
+
+$ git log --oneline -3
+4e28544 M91 r2: 复审 r1 的三条 p2 + 两处措辞（纯注释/文档，二进制 sha 与复审过的 tip 逐字节相同）
+70cf4f4 M91: tip 回扫日志（本目录每个命令→输出对在 f6d9727 上重跑；纪律 ⑤）
+f6d9727 M91-#3: router 权重改 m17 式流式（UB 常驻量与 NUM_EXPERTS 解耦）
+rc=0
+
+# 本日志的读数全部在代码树 = 4e28544（= 交付 tip）上跑；
+# 本日志文件本身在其**之后**追加到 m91_r2_review_fixes.log（不改代码树，只加本节）。
+# 被复审的 r1 对象 = 70cf4f4；本轮交付 tip = 4e28544（其上一条即 70cf4f4）。

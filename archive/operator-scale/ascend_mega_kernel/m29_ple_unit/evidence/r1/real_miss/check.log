@@ -1,0 +1,15 @@
+RESULT|B1.ids.s0|T1|32|0|PASS
+[PASS] B1.ids.s0                  tier=T1  n=32       bad=0      n-gram id 逐位
+RESULT|B2.emb.s0|T1|160|0|PASS
+[PASS] B2.emb.s0                  tier=T1  n=160      bad=0      表行逐字节（covered 1/32；真实档与直读分片比）
+RESULT|B2.miss.s0|T1-struct|32|0|PASS
+[PASS] B2.miss.s0                 tier=T1-struct n=32       bad=0      设备越窗计数 31 vs 参考未覆盖 31
+[m29-ref] step 0 covered 1/32 ⇒ 跳过后级 T3（越窗档）
+RESULT|B1.ids.s1|T1|32|0|PASS
+[PASS] B1.ids.s1                  tier=T1  n=32       bad=0      n-gram id 逐位
+RESULT|B2.emb.s1|T1|0|0|PASS
+[PASS] B2.emb.s1                  tier=T1  n=0        bad=0      表行逐字节（covered 0/32；真实档与直读分片比）
+RESULT|B2.miss.s1|T1-struct|32|0|PASS
+[PASS] B2.miss.s1                 tier=T1-struct n=32       bad=0      设备越窗计数 32 vs 参考未覆盖 32
+[m29-ref] step 1 covered 0/32 ⇒ 跳过后级 T3（越窗档）
+VERDICT=OK steps=2 n_fail=0

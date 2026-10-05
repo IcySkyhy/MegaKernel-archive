@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qwen3.8 · Lean CUDA</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f4f1e8;
+      --muted: #9c9a93;
+      --panel: rgba(22, 23, 24, .86);
+      --line: rgba(255, 255, 255, .09);
+      --accent: #ffb45b;
+      --accent-2: #ff7a59;
+      --user: #293239;
+      --assistant: #20201f;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255, 122, 89, .12), transparent 28rem),
+        radial-gradient(circle at 85% 85%, rgba(255, 180, 91, .08), transparent 32rem),
+        #111213;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .18;
+      background-image: linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, black, transparent 80%);
+    }
+
+    .shell {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      width: min(980px, 100%);
+      height: 100vh;
+      margin: 0 auto;
+      border-inline: 1px solid var(--line);
+      background: rgba(13, 14, 15, .58);
+      backdrop-filter: blur(18px);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand { display: flex; align-items: center; gap: .8rem; }
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 2.4rem;
+      aspect-ratio: 1;
+      border: 1px solid rgba(255, 180, 91, .42);
+      border-radius: .75rem;
+      color: var(--accent);
+      background: linear-gradient(145deg, rgba(255, 180, 91, .12), rgba(255, 122, 89, .03));
+      font: 700 1rem ui-monospace, SFMono-Regular, Menlo, monospace;
+      box-shadow: inset 0 0 20px rgba(255, 180, 91, .07);
+    }
+
+    h1 { margin: 0; font-size: .98rem; letter-spacing: .02em; }
+    .subtitle { margin-top: .16rem; color: var(--muted); font-size: .74rem; }
+    .status { display: flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .75rem; }
+    .dot { width: .48rem; height: .48rem; border-radius: 50%; background: #69d391; box-shadow: 0 0 10px #69d391; }
+    .dot.busy { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+    .dot.error { background: #ff665e; box-shadow: 0 0 10px #ff665e; }
+
+    #messages {
+      overflow-y: auto;
+      padding: 2rem clamp(1rem, 4vw, 3.5rem) 7rem;
+      scroll-behavior: smooth;
+    }
+
+    .welcome { max-width: 34rem; margin: 11vh auto 0; text-align: center; }
+    .welcome .eyebrow { color: var(--accent); font: 600 .7rem ui-monospace, monospace; letter-spacing: .16em; text-transform: uppercase; }
+    .welcome h2 { margin: .8rem 0 .65rem; font-size: clamp(2rem, 6vw, 3.6rem); line-height: .98; letter-spacing: -.055em; }
+    .welcome p { margin: 0 auto; max-width: 30rem; color: var(--muted); line-height: 1.6; }
+
+    .message { display: grid; grid-template-columns: 5rem minmax(0, 1fr); gap: 1rem; margin: 0 auto 1.3rem; max-width: 760px; }
+    .role { padding-top: .8rem; color: var(--muted); font: 600 .68rem ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; }
+    .bubble { min-height: 2.8rem; padding: .85rem 1rem; border: 1px solid var(--line); border-radius: 1rem; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.55; background: var(--assistant); box-shadow: 0 8px 30px rgba(0, 0, 0, .12); }
+    .message.user .bubble { background: var(--user); }
+    .message.pending .answer-copy::after { content: "▋"; color: var(--accent); animation: blink .8s steps(1) infinite; }
+    .message.error .bubble { color: #ffb3ad; border-color: rgba(255, 102, 94, .35); }
+    .reasoning-trace {
+      margin: -.1rem 0 .75rem;
+      padding-bottom: .7rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .reasoning-trace[hidden] { display: none; }
+    .reasoning-trace > summary {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      width: fit-content;
+      padding: .1rem 0;
+      color: var(--muted);
+      cursor: pointer;
+      list-style: none;
+      font: 600 .72rem ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: .02em;
+    }
+    .reasoning-trace > summary::-webkit-details-marker { display: none; }
+    .reasoning-trace > summary::before {
+      content: "›";
+      color: var(--accent);
+      font-size: 1rem;
+      line-height: 1;
+      transition: transform .15s ease;
+    }
+    .reasoning-trace[open] > summary::before { transform: rotate(90deg); }
+    .reasoning-copy {
+      max-height: 18rem;
+      margin-top: .55rem;
+      overflow: auto;
+      white-space: pre-wrap;
+      color: #bbb9b1;
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .composer-wrap {
+      position: absolute;
+      inset: auto clamp(.75rem, 3vw, 2.2rem) 1.1rem;
+      padding: .7rem;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 1.2rem;
+      background: rgba(28, 29, 30, .95);
+      box-shadow: 0 18px 70px rgba(0, 0, 0, .5);
+    }
+
+    textarea {
+      width: 100%; min-height: 3.2rem; max-height: 10rem; resize: none; border: 0; outline: 0;
+      padding: .55rem .65rem; color: var(--ink); background: transparent; font: inherit; line-height: 1.45;
+    }
+    textarea::placeholder { color: #777873; }
+    .composer-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+    .controls { display: flex; align-items: center; gap: .45rem; }
+    button, select, .settings-control > summary {
+      border: 1px solid var(--line); border-radius: .72rem; color: var(--muted); background: rgba(255,255,255,.035);
+      font: 600 .72rem inherit;
+    }
+    button, select { height: 2.35rem; padding: 0 .75rem; }
+    button { cursor: pointer; }
+    button:hover { color: var(--ink); border-color: rgba(255,255,255,.2); }
+    button:disabled { cursor: not-allowed; opacity: .45; }
+    #send { min-width: 5rem; color: #17120d; border-color: transparent; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+    #send:hover { filter: brightness(1.08); }
+
+    .settings-control { position: relative; }
+    .settings-control > summary { display: grid; place-items: center; height: 2.35rem; padding: 0 .75rem; cursor: pointer; list-style: none; }
+    .settings-control > summary::-webkit-details-marker { display: none; }
+    .settings {
+      position: absolute; bottom: 3rem; left: 0; width: min(330px, 82vw); padding: 1rem;
+      border: 1px solid var(--line); border-radius: 1rem; background: #202122; box-shadow: 0 18px 50px rgba(0,0,0,.45);
+    }
+    .settings label { display: block; margin-bottom: .45rem; color: var(--muted); font-size: .73rem; }
+    .settings textarea { min-height: 5rem; border: 1px solid var(--line); border-radius: .7rem; background: #171819; }
+    .meta { color: var(--muted); font: .67rem ui-monospace, monospace; }
+
+    @media (max-width: 600px) {
+      .shell { border: 0; }
+      header { padding: .8rem 1rem; }
+      .subtitle { display: none; }
+      #messages { padding-inline: .8rem; }
+      .message { grid-template-columns: 1fr; gap: .25rem; }
+      .role { padding-left: .45rem; padding-top: 0; }
+      .composer-wrap { bottom: .65rem; }
+      .meta { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand">
+        <div class="mark">λ</div>
+        <div><h1>Qwen3.8 · Lean CUDA</h1><div class="subtitle">27B checkpoint · persistent megakernel · greedy decode</div></div>
+      </div>
+      <div class="status"><span class="dot" id="status-dot"></span><span id="status-text">Ready</span></div>
+    </header>
+
+    <section id="messages">
+      <div class="welcome" id="welcome">
+        <div class="eyebrow">Device-resident inference</div>
+        <h2>Lean all the way down.</h2>
+        <p>Chat with the real 18-shard Qwen3.8 model. Tokens appear as the persistent CUDA grid publishes them.</p>
+      </div>
+    </section>
+
+    <div class="composer-wrap">
+      <textarea id="prompt" rows="1" placeholder="Message Qwen3.8…" autofocus></textarea>
+      <div class="composer-row">
+        <div class="controls">
+          <details class="settings-control">
+            <summary>System</summary>
+            <div class="settings">
+              <label for="system">System prompt</label>
+              <textarea id="system">You are a helpful, concise assistant.</textarea>
+            </div>
+          </details>
+          <button id="clear" type="button">Clear</button>
+        </div>
+        <div class="controls"><span class="meta" id="meta">__CONTEXT_SIZE_LABEL__-token context</span><button id="send" type="button">Send</button></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const messagesEl = document.querySelector('#messages');
+    const welcomeEl = document.querySelector('#welcome');
+    const promptEl = document.querySelector('#prompt');
+    const sendEl = document.querySelector('#send');
+    const clearEl = document.querySelector('#clear');
+    const systemEl = document.querySelector('#system');
+    const statusDot = document.querySelector('#status-dot');
+    const statusText = document.querySelector('#status-text');
+    const metaEl = document.querySelector('#meta');
+    let history = [];
+    let busy = false;
+
+    function setStatus(state, text) {
+      statusDot.className = `dot ${state || ''}`;
+      statusText.textContent = text;
+    }
+
+    function bubble(role, content = '', extra = '') {
+      welcomeEl.hidden = true;
+      const row = document.createElement('article');
+      row.className = `message ${role} ${extra}`;
+      const label = document.createElement('div');
+      label.className = 'role';
+      label.textContent = role === 'user' ? 'You' : 'Qwen';
+      const body = document.createElement('div');
+      body.className = 'bubble';
+      let answer = body;
+      let reasoning = null;
+      let reasoningBody = null;
+      let reasoningLabel = null;
+      if (role === 'assistant') {
+        reasoning = document.createElement('details');
+        reasoning.className = 'reasoning-trace';
+        reasoning.hidden = true;
+        const reasoningSummary = document.createElement('summary');
+        reasoningLabel = document.createElement('span');
+        reasoningLabel.textContent = 'Reasoning';
+        reasoningSummary.append(reasoningLabel);
+        reasoningBody = document.createElement('div');
+        reasoningBody.className = 'reasoning-copy';
+        reasoning.append(reasoningSummary, reasoningBody);
+        answer = document.createElement('div');
+        answer.className = 'answer-copy';
+        answer.textContent = content;
+        body.append(reasoning, answer);
+      } else {
+        body.textContent = content;
+      }
+      row.append(label, body);
+      messagesEl.append(row);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return { row, body, answer, reasoning, reasoningBody, reasoningLabel };
+    }
+
+    async function send() {
+      const content = promptEl.value.trim();
+      if (!content || busy) return;
+      busy = true;
+      promptEl.value = '';
+      promptEl.style.height = 'auto';
+      sendEl.disabled = true;
+      clearEl.disabled = true;
+      setStatus('busy', 'Generating');
+      history.push({ role: 'user', content });
+      bubble('user', content);
+      const reply = bubble('assistant', '', 'pending');
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: history,
+            system_prompt: systemEl.value,
+            enable_thinking: true,
+            reasoning_effort: 'xhigh',
+          }),
+        });
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || `HTTP ${response.status}`);
+        }
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let finalText = '';
+        while (true) {
+          const { value, done } = await reader.read();
+          buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+          for (const line of lines) {
+            if (!line) continue;
+            const event = JSON.parse(line);
+            if (event.type === 'reasoning' || event.type === 'reasoning_done') {
+              reply.reasoning.hidden = false;
+              reply.reasoningBody.textContent = event.text || '';
+              reply.reasoningLabel.textContent =
+                event.type === 'reasoning' ? 'Reasoning · generating' : 'Reasoning';
+              messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+            if (event.type === 'token' || event.type === 'done') {
+              finalText = event.text;
+              reply.answer.textContent = finalText;
+              messagesEl.scrollTop = messagesEl.scrollHeight;
+            }
+            if (event.type === 'done') {
+              if (event.reasoning) {
+                reply.reasoning.hidden = false;
+                reply.reasoningBody.textContent = event.reasoning;
+                reply.reasoningLabel.textContent = event.reasoning_complete
+                  ? `Reasoning · ${event.reasoning_tokens} tokens`
+                  : 'Reasoning · incomplete';
+              }
+              metaEl.textContent = `${event.prompt_tokens} prompt · ${event.generated_tokens} generated`;
+            }
+            if (event.type === 'error') throw new Error(event.message);
+          }
+          if (done) break;
+        }
+        reply.row.classList.remove('pending');
+        history.push({ role: 'assistant', content: finalText || '(empty response)' });
+        setStatus('', 'Ready');
+      } catch (error) {
+        reply.row.classList.remove('pending');
+        reply.row.classList.add('error');
+        reply.reasoning.hidden = true;
+        reply.answer.textContent = error.message;
+        history.pop();
+        setStatus('error', 'Error');
+      } finally {
+        busy = false;
+        sendEl.disabled = false;
+        clearEl.disabled = false;
+        promptEl.focus();
+      }
+    }
+
+    promptEl.addEventListener('input', () => {
+      promptEl.style.height = 'auto';
+      promptEl.style.height = `${Math.min(promptEl.scrollHeight, 160)}px`;
+    });
+    promptEl.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        send();
+      }
+    });
+    sendEl.addEventListener('click', send);
+    clearEl.addEventListener('click', () => {
+      if (busy) return;
+      history = [];
+      messagesEl.querySelectorAll('.message').forEach(node => node.remove());
+      welcomeEl.hidden = false;
+      metaEl.textContent = '__CONTEXT_SIZE_LABEL__-token context';
+      promptEl.focus();
+    });
+  </script>
+</body>
+</html>

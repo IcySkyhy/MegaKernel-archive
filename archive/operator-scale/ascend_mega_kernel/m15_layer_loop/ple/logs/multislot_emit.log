@@ -1,0 +1,20 @@
+[emit] multi-slot: slots=4 slot_rows=13107 pool=52428 rows (16776960 B) shard0_cross=0->1 segs=5
+[emit] /workspace/ascend_mega_kernel/.tower/worktrees/wt-171/m15_layer_loop/ple/data_hm: T=64 items=1024 bound=[2493459,317517562)
+        conv_state_hm.bin      368640 B
+        exp64.bin              131072 B
+        exp_rows.bin           327680 B
+        hidden_hm.bin          1310720 B
+        hm_fill.txt            499 B
+        hm_meta.json           1134 B
+        hm_meta.txt            125 B
+        hm_slots.txt           189 B
+        ids_hm.bin             8192 B
+        ids_hm_flat.bin        8192 B
+        ids_hm_miss.bin        8192 B
+        state_idx_hm.bin       256 B
+        w_conv1d_tap.bin       81920 B
+        w_key_proj.bin         52428800 B
+        w_norm_conv.bin        20480 B
+        w_norm_key.bin         20480 B
+        w_norm_query.bin       20480 B
+        w_value_proj.bin       13107200 B

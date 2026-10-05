@@ -1,0 +1,16 @@
+VARIANT op=f32bf16nb16(id=39) a=0 b=16 n=64 model=15 window=256
+LAUNCH aclError=507035 (sync timeout=120000ms)
+FAULT_CODE 507035
+FAULT_MSG EZ9999: Inner Error!
+EZ9999[PID: 1074651] 2026-09-26-15:20:22.104.946 (EZ9999):  The error from device(chipId:0, dieId:0), serial number is 926, there is an aivec error exception, core id is 0, error code = 340, dump info: pc start: 0x120041000000, current: 0x12004100094c, sc error info: 0xffffffffffff, su error info: 0xeffbd7fd0fd8019c,0xc00000585800eeb9, mte error info: 0x4a7, vec error info: 0x41000f100031016b, cube error info: 0, l1 error info: 0, aic error mask: 0x395856, para base: 0x120000200000, mte error: 0, aic cond: 0.
+The extend info: errcode:(340) errorStr: The address for VEC to access UB is not aligned. subErrType: 0x4.
+For details, see the troubleshooting document on the Ascend official website. Search for the keyword "AI Core Error".[FUNC:ProcessDavidStarsCoreErrorInfo][FILE:device_error_proc_c.cc][LINE:716]
+TraceBack (most recent call last):
+       An error occurred in the kernel task, retCode=0x31, [vector core exception].[FUNC:PreCheckTaskErr][FILE:davinci_kernel_task.cc][LINE:1262]
+       Vector Core kernel execution failed, retCode=0x31.[FUNC:GetError][FILE:stream.cc][LINE:1746]
+       [AIC_INFO] after execute:args print end[FUNC:GetError][FILE:stream.cc][LINE:1746]
+       [DFX_INFO]AI Core kernel execution failed, device_id=0, stream_id=58, report_stream_id=58, task_id=0, flip_num=0, fault kernel_name=_Z20probe_v_align_kernelPhS_S_jjjj, fault kernel info ext=none, program id=0, hash=16768803455292667294.[FUNC:GetError][FILE:stream.cc][LINE:1746]
+       rtStreamSynchronizeWithTimeout execution failed, reason=vector core exception[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:69]
+
+OUTCOME: FAULT
+RESULT: SKIPPED (FAULT, rc=507035)

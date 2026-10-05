@@ -1,0 +1,1147 @@
+{
+  "timestamp": "2026-09-24T21:22:41.501503+00:00",
+  "binary_sha256": "357c0ee1b4f9911c684141302e82d88556ff3d5c05570c8ed1871949afb4d1b6",
+  "sources": {
+    "src/driver.cuh": "bf908088ad05558fd3f78cade287996138f46fd3b4e21c0770f6169c8d179fc1",
+    "src/grid.cuh": "6e9666d4f756423e54f5ba239e9fbf6c5771cfc163f87b3ac302b23fa9544a81",
+    "src/main.cu": "7e990c49111d4eee38e3df932115cd5baf1a2b17ab95d13069b5f3115e9b5c41",
+    "src/variants.cuh": "ec5e9a13028e0b7b78fbdebaf2a10d98da84d99ae16d94d1ff7cdff816b80e33",
+    "kernels/b0.cuh": "d1b77815abc036e7be0c2b47b26f4495a480f2686e37212e5029600a636b5808",
+    "kernels/c1.cuh": "51b1cff0e9bc8d929fb1834dc5b5e2e5b6cb96c93edaff0052460b7025007dd7",
+    "kernels/c2.cuh": "5692f0e5345dd82572b656fe1abf34f24b5ca1a2772dec80de21cc15e9994a4d",
+    "kernels/c3.cuh": "dfbef61318ca67508ee654aa8834e1b6370540e94af1ed0d0b532293e836346d",
+    "kernels/cell.cuh": "11d938d4364de25159d201b3b2f5b37ea28096efe64428117743a363897837e0",
+    "kernels/collision.cuh": "4e6fca903a0c8ccf3d94b6dc282206519e18c5246114f6c959c1c88ce24955cf",
+    "kernels/s2_c128.cuh": "361c459303b5c32a354a7fa5224f218b5ed9cfc8e6224f1e56acde761bff3b90",
+    "kernels/s2_d128.cuh": "896fbc87cfb96f22d44c7ce2658a4978910de957f0a140dc685931e280bc3e5e",
+    "kernels/spatial.cuh": "b002a3151e0167a01b3c8fecc39d9b012fd1c46085bc5374cb34866c0013016d",
+    "kernels/t30_s1.cuh": "662016a3611a864ff0e03481c2867e303173a11712bbe77709424ae405208135",
+    "kernels/temporal_common.cuh": "dc6ff0f1ece42c07acd9e257c51d050ec08d15a4f9bb0878b2a4bbdec3991f2a",
+    "kernels/temporal_v1.cuh": "405cbbed345c2f235fa5a5e7abcdbb4582f8f1fa001ff01ba607c36382ce8480",
+    "kernels/temporal_v2.cuh": "13c451b7d15afa41e2d3369a96ee803a44294835392ade285142dc35682ec33a",
+    "include/layout_config.h": "c4759117b23e3353292739756f036a56c7152f1e891e7118eeff2175ac9a05c6",
+    "include/lbm.h": "2d48b6bc9e911bb8438e1a31f1134744792eb00f9033188d89af108aaacb2292",
+    "include/lbm_macros.h": "5bb7a8a9c303a5dadee24d0a5a895ebe2d102e7403efc396240e3d2a04697104"
+  },
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "gpu": "index, uuid, name, driver_version, pstate, temperature.gpu, clocks.current.sm [MHz], clocks.current.memory [MHz], memory.used [MiB], utilization.gpu [%]\n0, GPU-87c39f5e-618e-9ab7-4cb9-1491aac9cbc3, NVIDIA GeForce RTX 5090, 575.57.08, P1, 57, 2595 MHz, 13801 MHz, 266 MiB, 0 %\n1, GPU-d0f2fbdc-1170-600c-8c09-d2cb7db6f8ad, NVIDIA GeForce RTX 5090, 575.57.08, P8, 52, 24 MHz, 405 MHz, 134 MiB, 0 %\n",
+    "build": "clang version 23.0.0git (https://github.com/llvm/llvm-project c813428fb1b5678a6e4c541f4aee82a7977e95ea)\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /mnt2/xys-syx/Project/release/bin\nBuild config: +assertions\n/mnt2/xys-syx/Project/release/bin/clang++ -O3 -ffast-math -std=c++11 -fno-exceptions -DABI -DSIZE=20 -Iinclude -I/usr/local/cuda-12.9/include --cuda-path=/usr/local/cuda-12.9 --cuda-gpu-arch=sm_120  -L/usr/local/cuda-12.9/lib64 -lcudart_static -ldl -lrt -lpthread -lm\n",
+    "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Tue_May_27_02:21:03_PDT_2025\nCuda compilation tools, release 12.9, V12.9.86\nBuild cuda_12.9.r12.9/compiler.36037853_0\n"
+  },
+  "full": true,
+  "checks": [
+    {
+      "variant": "B0",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "B0",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "B0",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "B0",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "B0",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "C1",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C1",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C1",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "C1",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C1",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "C2",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C2",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C2",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "C2",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C2",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "C3",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C3",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C3",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "C3",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C3",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "S2-C128",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C128",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "S2-C128",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "S2-C128",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "S2-C128",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "S2-D128",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D128",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "S2-D128",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "S2-D128",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "S2-D128",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "S2-C256",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C256",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "S2-C256",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "S2-C256",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "S2-C256",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "S2-D256",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D256",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "S2-D256",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "S2-D256",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "S2-D256",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-128",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-128",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-128",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-128",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-128",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-256",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-256",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-256",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-256",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-256",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-128",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-128",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-128",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-128",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-128",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-256",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-256",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-256",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-256",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-256",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-128",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-128",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-128",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-128",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-128",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-256",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-256",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-256",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-256",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-256",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-128",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-128",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-128",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-128",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-128",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-128",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-128",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-128",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-128",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-128",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-256",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-256",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-256",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-256",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-256",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-128",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-128",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-128",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-128",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-128",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-256",
+      "case": "sentinels",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-256",
+      "case": "default",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-256",
+      "case": "parity",
+      "steps": 1002,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-256",
+      "case": "patterned",
+      "steps": 1000,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-256",
+      "case": "obstacles",
+      "steps": 102,
+      "pass": true
+    }
+  ],
+  "sanitizers": [
+    {
+      "variant": "B0",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "B0",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "B0",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "B0",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C1",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C1",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C1",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C1",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C2",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C2",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C2",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C2",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C3",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C3",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C3",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C3",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C128",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C128",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C128",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C128",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D128",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D128",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D128",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D128",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C256",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C256",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C256",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-C256",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D256",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D256",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D256",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "S2-D256",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-128",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-128",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-128",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-128",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-256",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-256",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-256",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V1-256",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-128",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-128",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-128",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-128",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-256",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-256",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-256",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "C-V2-256",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-128",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-128",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-128",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-128",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-256",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-256",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-256",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V1-256",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-128",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-128",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-128",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-128",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "D-V2-256",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-128",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-128",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-128",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-128",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-256",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-256",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-256",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-S1-256",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-128",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-128",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-128",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-128",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-256",
+      "tool": "memcheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-256",
+      "tool": "racecheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-256",
+      "tool": "synccheck",
+      "steps": 6,
+      "pass": true
+    },
+    {
+      "variant": "T30-V2-256",
+      "tool": "initcheck",
+      "steps": 6,
+      "pass": true
+    }
+  ],
+  "upstream_reference": {
+    "binary_sha256": "3b79455a919724fcba40d43a07956c49228be2c851ee141dc4b9e921868f3b66",
+    "velocity_checks": [
+      {
+        "steps": 2,
+        "sha256": "5fe9be38995c59c91f071cd61028b20cf0b4a96de26ed481f238cce603623b6b",
+        "pass": true
+      },
+      {
+        "steps": 6,
+        "sha256": "ee25d4199fc2c90d6b7b217afb30f88e1df5106c9e77f3c798026919cde3dd5f",
+        "pass": true
+      },
+      {
+        "steps": 100,
+        "sha256": "4a7a63bf997da96f8e00a5b78eb7ab51ec870d165e31cb995903a4fe6b628c43",
+        "pass": true
+      }
+    ]
+  },
+  "velocity_steps": [
+    2,
+    6
+  ],
+  "invalid_counts": [
+    "0",
+    "-2",
+    "3",
+    "nonnumeric"
+  ]
+}
